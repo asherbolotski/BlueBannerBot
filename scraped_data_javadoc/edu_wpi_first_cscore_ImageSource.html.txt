@@ -1,0 +1,336 @@
+Package
+edu.wpi.first.cscore
+Class ImageSource
+java.lang.Object
+edu.wpi.first.cscore.VideoSource
+edu.wpi.first.cscore.ImageSource
+All Implemented Interfaces:
+AutoCloseable
+Direct Known Subclasses:
+CvSource
+,
+RawSource
+public abstract class
+ImageSource
+extends
+VideoSource
+A base class for single image providing sources.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.cscore.
+VideoSource
+VideoSource.ConnectionStrategy
+,
+VideoSource.Kind
+Field Summary
+Fields inherited from class edu.wpi.first.cscore.
+VideoSource
+m_handle
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+ImageSource
+(int handle)
+Constructs an ImageSource.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+VideoProperty
+createBooleanProperty
+(
+String
+name,
+ boolean defaultValue,
+ boolean value)
+Create a boolean property.
+VideoProperty
+createIntegerProperty
+(
+String
+name,
+ int minimum,
+ int maximum,
+ int step,
+ int defaultValue,
+ int value)
+Create an integer property.
+VideoProperty
+createProperty
+(
+String
+name,
+VideoProperty.Kind
+kind,
+ int minimum,
+ int maximum,
+ int step,
+ int defaultValue,
+ int value)
+Create a property.
+VideoProperty
+createStringProperty
+(
+String
+name,
+String
+value)
+Create a string property.
+void
+notifyError
+(
+String
+msg)
+Signal sinks that an error has occurred.
+void
+setConnected
+(boolean connected)
+Set source connection status.
+void
+setDescription
+(
+String
+description)
+Set source description.
+void
+setEnumPropertyChoices
+(
+VideoProperty
+property,
+String
+[] choices)
+Configure enum property choices.
+Methods inherited from class edu.wpi.first.cscore.
+VideoSource
+close
+,
+enumerateProperties
+,
+enumerateSinks
+,
+enumerateSources
+,
+enumerateVideoModes
+,
+equals
+,
+getActualDataRate
+,
+getActualFPS
+,
+getConfigJson
+,
+getDescription
+,
+getHandle
+,
+getKind
+,
+getKindFromInt
+,
+getLastFrameTime
+,
+getName
+,
+getProperty
+,
+getVideoMode
+,
+hashCode
+,
+isConnected
+,
+isEnabled
+,
+isValid
+,
+setConfigJson
+,
+setConnectionStrategy
+,
+setFPS
+,
+setPixelFormat
+,
+setResolution
+,
+setVideoMode
+,
+setVideoMode
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ImageSource
+protected
+ImageSource
+(int handle)
+Constructs an ImageSource.
+Parameters:
+handle
+- The image source handle.
+Method Details
+notifyError
+public
+void
+notifyError
+(
+String
+msg)
+Signal sinks that an error has occurred. This should be called instead of NotifyFrame when an
+ error occurs.
+Parameters:
+msg
+- Error message.
+setConnected
+public
+void
+setConnected
+(boolean connected)
+Set source connection status. Defaults to true.
+Parameters:
+connected
+- True for connected, false for disconnected
+setDescription
+public
+void
+setDescription
+(
+String
+description)
+Set source description.
+Parameters:
+description
+- Description
+createProperty
+public
+VideoProperty
+createProperty
+(
+String
+name,
+VideoProperty.Kind
+kind,
+ int minimum,
+ int maximum,
+ int step,
+ int defaultValue,
+ int value)
+Create a property.
+Parameters:
+name
+- Property name
+kind
+- Property kind
+minimum
+- Minimum value
+maximum
+- Maximum value
+step
+- Step value
+defaultValue
+- Default value
+value
+- Current value
+Returns:
+Property
+createIntegerProperty
+public
+VideoProperty
+createIntegerProperty
+(
+String
+name,
+ int minimum,
+ int maximum,
+ int step,
+ int defaultValue,
+ int value)
+Create an integer property.
+Parameters:
+name
+- Property name
+minimum
+- Minimum value
+maximum
+- Maximum value
+step
+- Step value
+defaultValue
+- Default value
+value
+- Current value
+Returns:
+Property
+createBooleanProperty
+public
+VideoProperty
+createBooleanProperty
+(
+String
+name,
+ boolean defaultValue,
+ boolean value)
+Create a boolean property.
+Parameters:
+name
+- Property name
+defaultValue
+- Default value
+value
+- Current value
+Returns:
+Property
+createStringProperty
+public
+VideoProperty
+createStringProperty
+(
+String
+name,
+String
+value)
+Create a string property.
+Parameters:
+name
+- Property name
+value
+- Current value
+Returns:
+Property
+setEnumPropertyChoices
+public
+void
+setEnumPropertyChoices
+(
+VideoProperty
+property,
+String
+[] choices)
+Configure enum property choices.
+Parameters:
+property
+- Property
+choices
+- Choices

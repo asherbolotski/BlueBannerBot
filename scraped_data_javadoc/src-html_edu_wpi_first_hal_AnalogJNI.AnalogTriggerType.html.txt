@@ -1,0 +1,1004 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Analog Input / Output / Accumulator / Trigger JNI Functions.
+009
+*
+010
+* @see "hal/AnalogInput.h"
+011
+* @see "hal/AnalogOutput.h"
+012
+* @see "hal/AnalogAccumulator.h"
+013
+* @see "hal/AnalogTrigger.h"
+014
+*/
+015
+public class AnalogJNI extends JNIWrapper {
+016
+/**
+017
+* <i>native declaration : AthenaJava\target\native\include\HAL\Analog.h:58</i><br>
+018
+* enum values
+019
+*/
+020
+public interface AnalogTriggerType {
+021
+/** <i>native declaration : AthenaJava\target\native\include\HAL\Analog.h:54</i> */
+022
+int kInWindow = 0;
+023
+024
+/** <i>native declaration : AthenaJava\target\native\include\HAL\Analog.h:55</i> */
+025
+int kState = 1;
+026
+027
+/** <i>native declaration : AthenaJava\target\native\include\HAL\Analog.h:56</i> */
+028
+int kRisingPulse = 2;
+029
+030
+/** <i>native declaration : AthenaJava\target\native\include\HAL\Analog.h:57</i> */
+031
+int kFallingPulse = 3;
+032
+}
+033
+034
+/**
+035
+* Initializes the analog input port using the given port object.
+036
+*
+037
+* @param halPortHandle Handle to the port to initialize.
+038
+* @return the created analog input handle
+039
+* @see "HAL_InitializeAnalogInputPort"
+040
+*/
+041
+public static native int initializeAnalogInputPort(int halPortHandle);
+042
+043
+/**
+044
+* Frees an analog input port.
+045
+*
+046
+* @param portHandle Handle to the analog port.
+047
+* @see "HAL_FreeAnalogInputPort"
+048
+*/
+049
+public static native void freeAnalogInputPort(int portHandle);
+050
+051
+/**
+052
+* Initializes the analog output port using the given port object.
+053
+*
+054
+* @param halPortHandle handle to the port
+055
+* @return the created analog output handle
+056
+* @see "HAL_InitializeAnalogOutputPort"
+057
+*/
+058
+public static native int initializeAnalogOutputPort(int halPortHandle);
+059
+060
+/**
+061
+* Frees an analog output port.
+062
+*
+063
+* @param portHandle the analog output handle
+064
+* @see "HAL_FreeAnalogOutputPort"
+065
+*/
+066
+public static native void freeAnalogOutputPort(int portHandle);
+067
+068
+/**
+069
+* Checks that the analog module number is valid.
+070
+*
+071
+* @param module The analog module number.
+072
+* @return Analog module is valid and present
+073
+* @see "HAL_CheckAnalogModule"
+074
+*/
+075
+public static native boolean checkAnalogModule(byte module);
+076
+077
+/**
+078
+* Checks that the analog output channel number is valid. Verifies that the analog channel number
+079
+* is one of the legal channel numbers. Channel numbers are 0-based.
+080
+*
+081
+* @param channel The analog output channel number.
+082
+* @return Analog channel is valid
+083
+* @see "HAL_CheckAnalogInputChannel"
+084
+*/
+085
+public static native boolean checkAnalogInputChannel(int channel);
+086
+087
+/**
+088
+* Checks that the analog output channel number is valid.
+089
+*
+090
+* <p>Verifies that the analog channel number is one of the legal channel numbers. Channel numbers
+091
+* are 0-based.
+092
+*
+093
+* @param channel The analog output channel number.
+094
+* @return Analog channel is valid
+095
+* @see "HAL_CheckAnalogOutputChannel"
+096
+*/
+097
+public static native boolean checkAnalogOutputChannel(int channel);
+098
+099
+/**
+100
+* Indicates the analog input is used by a simulated device.
+101
+*
+102
+* @param handle the analog input handle
+103
+* @param device simulated device handle
+104
+* @see "HAL_SetAnalogInputSimDevice"
+105
+*/
+106
+public static native void setAnalogInputSimDevice(int handle, int device);
+107
+108
+/**
+109
+* Sets an analog output value.
+110
+*
+111
+* @param portHandle the analog output handle
+112
+* @param voltage the voltage (0-5v) to output
+113
+* @see "HAL_SetAnalogOutput"
+114
+*/
+115
+public static native void setAnalogOutput(int portHandle, double voltage);
+116
+117
+/**
+118
+* Gets the current analog output value.
+119
+*
+120
+* @param portHandle the analog output handle
+121
+* @return the current output voltage (0-5v)
+122
+* @see "HAL_GetAnalogOutput"
+123
+*/
+124
+public static native double getAnalogOutput(int portHandle);
+125
+126
+/**
+127
+* Sets the sample rate.
+128
+*
+129
+* <p>This is a global setting for the Athena and effects all channels.
+130
+*
+131
+* @param samplesPerSecond The number of samples per channel per second.
+132
+* @see "HAL_SetAnalogSampleRate"
+133
+*/
+134
+public static native void setAnalogSampleRate(double samplesPerSecond);
+135
+136
+/**
+137
+* Gets the current sample rate.
+138
+*
+139
+* <p>This assumes one entry in the scan list. This is a global setting for the Athena and effects
+140
+* all channels.
+141
+*
+142
+* @return Sample rate.
+143
+* @see "HAL_GetAnalogSampleRate"
+144
+*/
+145
+public static native double getAnalogSampleRate();
+146
+147
+/**
+148
+* Sets the number of averaging bits.
+149
+*
+150
+* <p>This sets the number of averaging bits. The actual number of averaged samples is 2**bits.
+151
+* Use averaging to improve the stability of your measurement at the expense of sampling rate. The
+152
+* averaging is done automatically in the FPGA.
+153
+*
+154
+* @param analogPortHandle Handle to the analog port to configure.
+155
+* @param bits Number of bits to average.
+156
+* @see "HAL_SetAnalogAverageBits"
+157
+*/
+158
+public static native void setAnalogAverageBits(int analogPortHandle, int bits);
+159
+160
+/**
+161
+* Gets the number of averaging bits.
+162
+*
+163
+* <p>This gets the number of averaging bits from the FPGA. The actual number of averaged samples
+164
+* is 2**bits. The averaging is done automatically in the FPGA.
+165
+*
+166
+* @param analogPortHandle Handle to the analog port to use.
+167
+* @return Bits to average.
+168
+* @see "HAL_GetAnalogAverageBits"
+169
+*/
+170
+public static native int getAnalogAverageBits(int analogPortHandle);
+171
+172
+/**
+173
+* Sets the number of oversample bits.
+174
+*
+175
+* <p>This sets the number of oversample bits. The actual number of oversampled values is 2**bits.
+176
+* Use oversampling to improve the resolution of your measurements at the expense of sampling
+177
+* rate. The oversampling is done automatically in the FPGA.
+178
+*
+179
+* @param analogPortHandle Handle to the analog port to use.
+180
+* @param bits Number of bits to oversample.
+181
+* @see "HAL_SetAnalogOversampleBits"
+182
+*/
+183
+public static native void setAnalogOversampleBits(int analogPortHandle, int bits);
+184
+185
+/**
+186
+* Gets the number of oversample bits.
+187
+*
+188
+* <p>This gets the number of oversample bits from the FPGA. The actual number of oversampled
+189
+* values is 2**bits. The oversampling is done automatically in the FPGA.
+190
+*
+191
+* @param analogPortHandle Handle to the analog port to use.
+192
+* @return Bits to oversample.
+193
+* @see "HAL_GetAnalogOversampleBits"
+194
+*/
+195
+public static native int getAnalogOversampleBits(int analogPortHandle);
+196
+197
+/**
+198
+* Gets a sample straight from the channel on this module.
+199
+*
+200
+* <p>The sample is a 12-bit value representing the 0V to 5V range of the A/D converter in the
+201
+* module. The units are in A/D converter codes. Use GetVoltage() to get the analog value in
+202
+* calibrated units.
+203
+*
+204
+* @param analogPortHandle Handle to the analog port to use.
+205
+* @return A sample straight from the channel on this module.
+206
+* @see "HAL_GetAnalogValue"
+207
+*/
+208
+public static native short getAnalogValue(int analogPortHandle);
+209
+210
+/**
+211
+* Gets a sample from the output of the oversample and average engine for the channel.
+212
+*
+213
+* <p>The sample is 12-bit + the value configured in SetOversampleBits(). The value configured in
+214
+* SetAverageBits() will cause this value to be averaged 2**bits number of samples. This is not a
+215
+* sliding window. The sample will not change until 2**(OversampleBits + AverageBits) samples have
+216
+* been acquired from the module on this channel. Use GetAverageVoltage() to get the analog value
+217
+* in calibrated units.
+218
+*
+219
+* @param analogPortHandle Handle to the analog port to use.
+220
+* @return A sample from the oversample and average engine for the channel.
+221
+* @see "HAL_GetAnalogAverageValue"
+222
+*/
+223
+public static native int getAnalogAverageValue(int analogPortHandle);
+224
+225
+/**
+226
+* Converts a voltage to a raw value for a specified channel.
+227
+*
+228
+* <p>This process depends on the calibration of each channel, so the channel must be specified.
+229
+*
+230
+* <p>todo This assumes raw values. Oversampling not supported as is.
+231
+*
+232
+* @param analogPortHandle Handle to the analog port to use.
+233
+* @param voltage The voltage to convert.
+234
+* @return The raw value for the channel.
+235
+* @see "HAL_GetAnalogVoltsToValue"
+236
+*/
+237
+public static native int getAnalogVoltsToValue(int analogPortHandle, double voltage);
+238
+239
+/**
+240
+* Get the analog voltage from a raw value.
+241
+*
+242
+* @param analogPortHandle Handle to the analog port the values were read from.
+243
+* @param value The raw analog value
+244
+* @return The voltage relating to the value
+245
+* @see "HAL_GetAnalogValueToVolts"
+246
+*/
+247
+public static native double getAnalogValueToVolts(int analogPortHandle, int value);
+248
+249
+/**
+250
+* Gets a scaled sample straight from the channel on this module.
+251
+*
+252
+* <p>The value is scaled to units of Volts using the calibrated scaling data from GetLSBWeight()
+253
+* and GetOffset().
+254
+*
+255
+* @param analogPortHandle Handle to the analog port to use.
+256
+* @return A scaled sample straight from the channel on this module.
+257
+* @see "HAL_GetAnalogVoltage"
+258
+*/
+259
+public static native double getAnalogVoltage(int analogPortHandle);
+260
+261
+/**
+262
+* Gets a scaled sample from the output of the oversample and average engine for the channel.
+263
+*
+264
+* <p>The value is scaled to units of Volts using the calibrated scaling data from GetLSBWeight()
+265
+* and GetOffset(). Using oversampling will cause this value to be higher resolution, but it will
+266
+* update more slowly. Using averaging will cause this value to be more stable, but it will update
+267
+* more slowly.
+268
+*
+269
+* @param analogPortHandle Handle to the analog port to use.
+270
+* @return A scaled sample from the output of the oversample and average engine for the channel.
+271
+* @see "HAL_GetAnalogAverageVoltage"
+272
+*/
+273
+public static native double getAnalogAverageVoltage(int analogPortHandle);
+274
+275
+/**
+276
+* Gets the factory scaling least significant bit weight constant. The least significant bit
+277
+* weight constant for the channel that was calibrated in manufacturing and stored in an eeprom in
+278
+* the module.
+279
+*
+280
+* <p>Volts = ((LSB_Weight * 1e-9) * raw) - (Offset * 1e-9)
+281
+*
+282
+* @param analogPortHandle Handle to the analog port to use.
+283
+* @return Least significant bit weight.
+284
+* @see "HAL_GetAnalogLSBWeight"
+285
+*/
+286
+public static native int getAnalogLSBWeight(int analogPortHandle);
+287
+288
+/**
+289
+* Gets the factory scaling offset constant. The offset constant for the channel that was
+290
+* calibrated in manufacturing and stored in an eeprom in the module.
+291
+*
+292
+* <p>Volts = ((LSB_Weight * 1e-9) * raw) - (Offset * 1e-9)
+293
+*
+294
+* @param analogPortHandle Handle to the analog port to use.
+295
+* @return Offset constant.
+296
+* @see "HAL_GetAnalogOffset"
+297
+*/
+298
+public static native int getAnalogOffset(int analogPortHandle);
+299
+300
+/**
+301
+* Is the channel attached to an accumulator.
+302
+*
+303
+* @param analogPortHandle Handle to the analog port.
+304
+* @return The analog channel is attached to an accumulator.
+305
+* @see "HAL_IsAccumulatorChannel"
+306
+*/
+307
+public static native boolean isAccumulatorChannel(int analogPortHandle);
+308
+309
+/**
+310
+* Initialize the accumulator.
+311
+*
+312
+* @param analogPortHandle Handle to the analog port.
+313
+* @see "HAL_InitAccumulator"
+314
+*/
+315
+public static native void initAccumulator(int analogPortHandle);
+316
+317
+/**
+318
+* Resets the accumulator to the initial value.
+319
+*
+320
+* @param analogPortHandle Handle to the analog port.
+321
+* @see "HAL_ResetAccumulator"
+322
+*/
+323
+public static native void resetAccumulator(int analogPortHandle);
+324
+325
+/**
+326
+* Set the center value of the accumulator.
+327
+*
+328
+* <p>The center value is subtracted from each A/D value before it is added to the accumulator.
+329
+* This is used for the center value of devices like gyros and accelerometers to make integration
+330
+* work and to take the device offset into account when integrating.
+331
+*
+332
+* <p>This center value is based on the output of the oversampled and averaged source from channel
+333
+* 1. Because of this, any non-zero oversample bits will affect the size of the value for this
+334
+* field.
+335
+*
+336
+* @param analogPortHandle Handle to the analog port.
+337
+* @param center The center value of the accumulator.
+338
+* @see "HAL_SetAccumulatorCenter"
+339
+*/
+340
+public static native void setAccumulatorCenter(int analogPortHandle, int center);
+341
+342
+/**
+343
+* Set the accumulator's deadband.
+344
+*
+345
+* @param analogPortHandle Handle to the analog port.
+346
+* @param deadband The deadband of the accumulator.
+347
+* @see "HAL_SetAccumulatorDeadband"
+348
+*/
+349
+public static native void setAccumulatorDeadband(int analogPortHandle, int deadband);
+350
+351
+/**
+352
+* Read the accumulated value.
+353
+*
+354
+* <p>Read the value that has been accumulating on channel 1. The accumulator is attached after
+355
+* the oversample and average engine.
+356
+*
+357
+* @param analogPortHandle Handle to the analog port.
+358
+* @return The 64-bit value accumulated since the last Reset().
+359
+* @see "HAL_GetAccumulatorValue"
+360
+*/
+361
+public static native long getAccumulatorValue(int analogPortHandle);
+362
+363
+/**
+364
+* Read the number of accumulated values.
+365
+*
+366
+* <p>Read the count of the accumulated values since the accumulator was last Reset().
+367
+*
+368
+* @param analogPortHandle Handle to the analog port.
+369
+* @return The number of times samples from the channel were accumulated.
+370
+* @see "HAL_GetAccumulatorCount"
+371
+*/
+372
+public static native int getAccumulatorCount(int analogPortHandle);
+373
+374
+/**
+375
+* Read the accumulated value and the number of accumulated values atomically.
+376
+*
+377
+* <p>This function reads the value and count from the FPGA atomically. This can be used for
+378
+* averaging.
+379
+*
+380
+* @param analogPortHandle Handle to the analog port.
+381
+* @param result Accumulator result.
+382
+* @see "HAL_GetAccumulatorOutput"
+383
+*/
+384
+public static native void getAccumulatorOutput(int analogPortHandle, AccumulatorResult result);
+385
+386
+/**
+387
+* Initializes an analog trigger.
+388
+*
+389
+* @param analogInputHandle the analog input to use for triggering
+390
+* @return the created analog trigger handle
+391
+* @see "HAL_InitializeAnalogTrigger"
+392
+*/
+393
+public static native int initializeAnalogTrigger(int analogInputHandle);
+394
+395
+/**
+396
+* Initializes an analog trigger with a Duty Cycle input.
+397
+*
+398
+* @param dutyCycleHandle the analog input to use for duty cycle
+399
+* @return tbe created analog trigger handle
+400
+* @see "HAL_InitializeAnalogTriggerDutyCycle"
+401
+*/
+402
+public static native int initializeAnalogTriggerDutyCycle(int dutyCycleHandle);
+403
+404
+/**
+405
+* Frees an analog trigger.
+406
+*
+407
+* @param analogTriggerHandle the trigger handle
+408
+* @see "HAL_CleanAnalogTrigger"
+409
+*/
+410
+public static native void cleanAnalogTrigger(int analogTriggerHandle);
+411
+412
+/**
+413
+* Sets the raw ADC upper and lower limits of the analog trigger.
+414
+*
+415
+* <p>HAL_SetAnalogTriggerLimitsVoltage or HAL_SetAnalogTriggerLimitsDutyCycle is likely better in
+416
+* most cases.
+417
+*
+418
+* @param analogTriggerHandle the trigger handle
+419
+* @param lower the lower ADC value
+420
+* @param upper the upper ADC value
+421
+* @see "HAL_SetAnalogTriggerLimitsRaw"
+422
+*/
+423
+public static native void setAnalogTriggerLimitsRaw(
+424
+int analogTriggerHandle, int lower, int upper);
+425
+426
+/**
+427
+* Sets the upper and lower limits of the analog trigger.
+428
+*
+429
+* <p>The limits are given as floating point duty cycle values.
+430
+*
+431
+* @param analogTriggerHandle the trigger handle
+432
+* @param lower the lower duty cycle value
+433
+* @param higher the upper duty cycle value
+434
+* @see "HAL_SetAnalogTriggerLimitsDutyCycle"
+435
+*/
+436
+public static native void setAnalogTriggerLimitsDutyCycle(
+437
+int analogTriggerHandle, double lower, double higher);
+438
+439
+/**
+440
+* Sets the upper and lower limits of the analog trigger.
+441
+*
+442
+* <p>The limits are given as floating point voltage values.
+443
+*
+444
+* @param analogTriggerHandle the trigger handle
+445
+* @param lower the lower voltage value
+446
+* @param upper the upper voltage value
+447
+* @see "HAL_SetAnalogTriggerLimitsVoltage"
+448
+*/
+449
+public static native void setAnalogTriggerLimitsVoltage(
+450
+int analogTriggerHandle, double lower, double upper);
+451
+452
+/**
+453
+* Configures the analog trigger to use the averaged vs. raw values.
+454
+*
+455
+* <p>If the value is true, then the averaged value is selected for the analog trigger, otherwise
+456
+* the immediate value is used.
+457
+*
+458
+* <p>This is not allowed to be used if filtered mode is set. This is not allowed to be used with
+459
+* Duty Cycle based inputs.
+460
+*
+461
+* @param analogTriggerHandle the trigger handle
+462
+* @param useAveragedValue true to use averaged values, false for raw
+463
+* @see "HAL_SetAnalogTriggerAveraged"
+464
+*/
+465
+public static native void setAnalogTriggerAveraged(
+466
+int analogTriggerHandle, boolean useAveragedValue);
+467
+468
+/**
+469
+* Configures the analog trigger to use a filtered value.
+470
+*
+471
+* <p>The analog trigger will operate with a 3 point average rejection filter. This is designed to
+472
+* help with 360 degree pot applications for the period where the pot crosses through zero.
+473
+*
+474
+* <p>This is not allowed to be used if averaged mode is set.
+475
+*
+476
+* @param analogTriggerHandle the trigger handle
+477
+* @param useFilteredValue true to use filtered values, false for average or raw
+478
+* @see "HAL_SetAnalogTriggerFiltered"
+479
+*/
+480
+public static native void setAnalogTriggerFiltered(
+481
+int analogTriggerHandle, boolean useFilteredValue);
+482
+483
+/**
+484
+* Returns the InWindow output of the analog trigger.
+485
+*
+486
+* <p>True if the analog input is between the upper and lower limits.
+487
+*
+488
+* @param analogTriggerHandle the trigger handle
+489
+* @return the InWindow output of the analog trigger
+490
+* @see "HAL_GetAnalogTriggerInWindow"
+491
+*/
+492
+public static native boolean getAnalogTriggerInWindow(int analogTriggerHandle);
+493
+494
+/**
+495
+* Returns the TriggerState output of the analog trigger.
+496
+*
+497
+* <p>True if above upper limit. False if below lower limit. If in Hysteresis, maintain previous
+498
+* state.
+499
+*
+500
+* @param analogTriggerHandle the trigger handle
+501
+* @return the TriggerState output of the analog trigger
+502
+* @see "HAL_GetAnalogTriggerTriggerState"
+503
+*/
+504
+public static native boolean getAnalogTriggerTriggerState(int analogTriggerHandle);
+505
+506
+/**
+507
+* Gets the state of the analog trigger output.
+508
+*
+509
+* @param analogTriggerHandle the trigger handle
+510
+* @param type the type of trigger to trigger on
+511
+* @return the state of the analog trigger output
+512
+* @see "HAL_GetAnalogTriggerOutput"
+513
+*/
+514
+public static native boolean getAnalogTriggerOutput(int analogTriggerHandle, int type);
+515
+516
+/**
+517
+* Get the FPGA index for the AnalogTrigger.
+518
+*
+519
+* @param analogTriggerHandle the trigger handle
+520
+* @return the FPGA index
+521
+* @see "HAL_GetAnalogTriggerFPGAIndex"
+522
+*/
+523
+public static native int getAnalogTriggerFPGAIndex(int analogTriggerHandle);
+524
+525
+/** Utility class. */
+526
+private AnalogJNI() {}
+527
+}

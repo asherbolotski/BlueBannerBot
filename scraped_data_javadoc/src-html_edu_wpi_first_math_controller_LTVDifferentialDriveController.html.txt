@@ -1,0 +1,585 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.DARE;
+008
+import edu.wpi.first.math.InterpolatingMatrixTreeMap;
+009
+import edu.wpi.first.math.MatBuilder;
+010
+import edu.wpi.first.math.MathUtil;
+011
+import edu.wpi.first.math.Matrix;
+012
+import edu.wpi.first.math.Nat;
+013
+import edu.wpi.first.math.StateSpaceUtil;
+014
+import edu.wpi.first.math.VecBuilder;
+015
+import edu.wpi.first.math.Vector;
+016
+import edu.wpi.first.math.geometry.Pose2d;
+017
+import edu.wpi.first.math.numbers.N1;
+018
+import edu.wpi.first.math.numbers.N2;
+019
+import edu.wpi.first.math.numbers.N5;
+020
+import edu.wpi.first.math.system.Discretization;
+021
+import edu.wpi.first.math.system.LinearSystem;
+022
+import edu.wpi.first.math.trajectory.Trajectory;
+023
+024
+/**
+025
+* The linear time-varying differential drive controller has a similar form to the LQR, but the
+026
+* model used to compute the controller gain is the nonlinear differential drive model linearized
+027
+* around the drivetrain's current state. We precompute gains for important places in our
+028
+* state-space, then interpolate between them with a lookup table to save computational resources.
+029
+*
+030
+* <p>This controller has a flat hierarchy with pose and wheel velocity references and voltage
+031
+* outputs. This is different from a Ramsete controller's nested hierarchy where the top-level
+032
+* controller has a pose reference and chassis velocity command outputs, and the low-level
+033
+* controller has wheel velocity references and voltage outputs. Flat hierarchies are easier to tune
+034
+* in one shot. Furthermore, this controller is more optimal in the "least-squares error" sense than
+035
+* a controller based on Ramsete.
+036
+*
+037
+* <p>See section 8.7 in Controls Engineering in FRC for a derivation of the control law we used
+038
+* shown in theorem 8.7.4.
+039
+*/
+040
+public class LTVDifferentialDriveController {
+041
+private final double m_trackwidth;
+042
+043
+// LUT from drivetrain linear velocity to LQR gain
+044
+private final InterpolatingMatrixTreeMap<Double, N2, N5> m_table =
+045
+new InterpolatingMatrixTreeMap<>();
+046
+047
+private Matrix<N5, N1> m_error = new Matrix<>(Nat.N5(), Nat.N1());
+048
+private Matrix<N5, N1> m_tolerance = new Matrix<>(Nat.N5(), Nat.N1());
+049
+050
+/** States of the drivetrain system. */
+051
+private enum State {
+052
+kX(0),
+053
+kY(1),
+054
+kHeading(2),
+055
+kLeftVelocity(3),
+056
+kRightVelocity(4);
+057
+058
+public final int value;
+059
+060
+State(int i) {
+061
+this.value = i;
+062
+}
+063
+}
+064
+065
+/**
+066
+* Constructs a linear time-varying differential drive controller.
+067
+*
+068
+* <p>See <a
+069
+* href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning">https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning</a>
+070
+* for how to select the tolerances.
+071
+*
+072
+* @param plant The differential drive velocity plant.
+073
+* @param trackwidth The distance between the differential drive's left and right wheels in
+074
+*     meters.
+075
+* @param qelems The maximum desired error tolerance for each state.
+076
+* @param relems The maximum desired control effort for each input.
+077
+* @param dt Discretization timestep in seconds.
+078
+* @throws IllegalArgumentException if max velocity of plant with 12 V input &lt;= 0 m/s or &gt;=
+079
+*     15 m/s.
+080
+*/
+081
+public LTVDifferentialDriveController(
+082
+LinearSystem<N2, N2, N2> plant,
+083
+double trackwidth,
+084
+Vector<N5> qelems,
+085
+Vector<N2> relems,
+086
+double dt) {
+087
+m_trackwidth = trackwidth;
+088
+089
+// Control law derivation is in section 8.7 of
+090
+// https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+091
+var A =
+092
+MatBuilder.fill(
+093
+Nat.N5(),
+094
+Nat.N5(),
+095
+0.0,
+096
+0.0,
+097
+0.0,
+098
+0.5,
+099
+0.5,
+100
+0.0,
+101
+0.0,
+102
+0.0,
+103
+0.0,
+104
+0.0,
+105
+0.0,
+106
+0.0,
+107
+0.0,
+108
+-1.0 / m_trackwidth,
+109
+1.0 / m_trackwidth,
+110
+0.0,
+111
+0.0,
+112
+0.0,
+113
+plant.getA(0, 0),
+114
+plant.getA(0, 1),
+115
+0.0,
+116
+0.0,
+117
+0.0,
+118
+plant.getA(1, 0),
+119
+plant.getA(1, 1));
+120
+var B =
+121
+MatBuilder.fill(
+122
+Nat.N5(),
+123
+Nat.N2(),
+124
+0.0,
+125
+0.0,
+126
+0.0,
+127
+0.0,
+128
+0.0,
+129
+0.0,
+130
+plant.getB(0, 0),
+131
+plant.getB(0, 1),
+132
+plant.getB(1, 0),
+133
+plant.getB(1, 1));
+134
+var Q = StateSpaceUtil.makeCostMatrix(qelems);
+135
+var R = StateSpaceUtil.makeCostMatrix(relems);
+136
+137
+// dx/dt = Ax + Bu
+138
+// 0 = Ax + Bu
+139
+// Ax = -Bu
+140
+// x = -A⁻¹Bu
+141
+double maxV =
+142
+plant.getA().solve(plant.getB().times(VecBuilder.fill(12.0, 12.0))).times(-1.0).get(0, 0);
+143
+144
+if (maxV <= 0.0) {
+145
+throw new IllegalArgumentException(
+146
+"Max velocity of plant with 12 V input must be greater than 0 m/s.");
+147
+}
+148
+if (maxV >= 15.0) {
+149
+throw new IllegalArgumentException(
+150
+"Max velocity of plant with 12 V input must be less than 15 m/s.");
+151
+}
+152
+153
+for (double velocity = -maxV; velocity < maxV; velocity += 0.01) {
+154
+// The DARE is ill-conditioned if the velocity is close to zero, so don't
+155
+// let the system stop.
+156
+if (Math.abs(velocity) < 1e-4) {
+157
+A.set(State.kY.value, State.kHeading.value, 1e-4);
+158
+} else {
+159
+A.set(State.kY.value, State.kHeading.value, velocity);
+160
+}
+161
+162
+var discABPair = Discretization.discretizeAB(A, B, dt);
+163
+var discA = discABPair.getFirst();
+164
+var discB = discABPair.getSecond();
+165
+166
+var S = DARE.dareNoPrecond(discA, discB, Q, R);
+167
+168
+// K = (BᵀSB + R)⁻¹BᵀSA
+169
+m_table.put(
+170
+velocity,
+171
+discB
+172
+.transpose()
+173
+.times(S)
+174
+.times(discB)
+175
+.plus(R)
+176
+.solve(discB.transpose().times(S).times(discA)));
+177
+}
+178
+}
+179
+180
+/**
+181
+* Returns true if the pose error is within tolerance of the reference.
+182
+*
+183
+* @return True if the pose error is within tolerance of the reference.
+184
+*/
+185
+public boolean atReference() {
+186
+return Math.abs(m_error.get(0, 0)) < m_tolerance.get(0, 0)
+187
+&& Math.abs(m_error.get(1, 0)) < m_tolerance.get(1, 0)
+188
+&& Math.abs(m_error.get(2, 0)) < m_tolerance.get(2, 0)
+189
+&& Math.abs(m_error.get(3, 0)) < m_tolerance.get(3, 0)
+190
+&& Math.abs(m_error.get(4, 0)) < m_tolerance.get(4, 0);
+191
+}
+192
+193
+/**
+194
+* Sets the pose error which is considered tolerable for use with atReference().
+195
+*
+196
+* @param poseTolerance Pose error which is tolerable.
+197
+* @param leftVelocityTolerance Left velocity error which is tolerable in meters per second.
+198
+* @param rightVelocityTolerance Right velocity error which is tolerable in meters per second.
+199
+*/
+200
+public void setTolerance(
+201
+Pose2d poseTolerance, double leftVelocityTolerance, double rightVelocityTolerance) {
+202
+m_tolerance =
+203
+VecBuilder.fill(
+204
+poseTolerance.getX(),
+205
+poseTolerance.getY(),
+206
+poseTolerance.getRotation().getRadians(),
+207
+leftVelocityTolerance,
+208
+rightVelocityTolerance);
+209
+}
+210
+211
+/**
+212
+* Returns the left and right output voltages of the LTV controller.
+213
+*
+214
+* <p>The reference pose, linear velocity, and angular velocity should come from a drivetrain
+215
+* trajectory.
+216
+*
+217
+* @param currentPose The current pose.
+218
+* @param leftVelocity The current left velocity in meters per second.
+219
+* @param rightVelocity The current right velocity in meters per second.
+220
+* @param poseRef The desired pose.
+221
+* @param leftVelocityRef The desired left velocity in meters per second.
+222
+* @param rightVelocityRef The desired right velocity in meters per second.
+223
+* @return Left and right output voltages of the LTV controller.
+224
+*/
+225
+public DifferentialDriveWheelVoltages calculate(
+226
+Pose2d currentPose,
+227
+double leftVelocity,
+228
+double rightVelocity,
+229
+Pose2d poseRef,
+230
+double leftVelocityRef,
+231
+double rightVelocityRef) {
+232
+// This implements the linear time-varying differential drive controller in
+233
+// theorem 9.6.3 of https://tavsys.net/controls-in-frc.
+234
+var x =
+235
+VecBuilder.fill(
+236
+currentPose.getX(),
+237
+currentPose.getY(),
+238
+currentPose.getRotation().getRadians(),
+239
+leftVelocity,
+240
+rightVelocity);
+241
+242
+var inRobotFrame = Matrix.eye(Nat.N5());
+243
+inRobotFrame.set(0, 0, Math.cos(x.get(State.kHeading.value, 0)));
+244
+inRobotFrame.set(0, 1, Math.sin(x.get(State.kHeading.value, 0)));
+245
+inRobotFrame.set(1, 0, -Math.sin(x.get(State.kHeading.value, 0)));
+246
+inRobotFrame.set(1, 1, Math.cos(x.get(State.kHeading.value, 0)));
+247
+248
+var r =
+249
+VecBuilder.fill(
+250
+poseRef.getX(),
+251
+poseRef.getY(),
+252
+poseRef.getRotation().getRadians(),
+253
+leftVelocityRef,
+254
+rightVelocityRef);
+255
+m_error = r.minus(x);
+256
+m_error.set(
+257
+State.kHeading.value, 0, MathUtil.angleModulus(m_error.get(State.kHeading.value, 0)));
+258
+259
+double velocity = (leftVelocity + rightVelocity) / 2.0;
+260
+var K = m_table.get(velocity);
+261
+262
+var u = K.times(inRobotFrame).times(m_error);
+263
+264
+return new DifferentialDriveWheelVoltages(u.get(0, 0), u.get(1, 0));
+265
+}
+266
+267
+/**
+268
+* Returns the left and right output voltages of the LTV controller.
+269
+*
+270
+* <p>The reference pose, linear velocity, and angular velocity should come from a drivetrain
+271
+* trajectory.
+272
+*
+273
+* @param currentPose The current pose.
+274
+* @param leftVelocity The left velocity in meters per second.
+275
+* @param rightVelocity The right velocity in meters per second.
+276
+* @param desiredState The desired pose, linear velocity, and angular velocity from a trajectory.
+277
+* @return The left and right output voltages of the LTV controller.
+278
+*/
+279
+public DifferentialDriveWheelVoltages calculate(
+280
+Pose2d currentPose,
+281
+double leftVelocity,
+282
+double rightVelocity,
+283
+Trajectory.State desiredState) {
+284
+// v = (v_r + v_l) / 2     (1)
+285
+// w = (v_r - v_l) / (2r)  (2)
+286
+// k = w / v               (3)
+287
+//
+288
+// v_l = v - wr
+289
+// v_l = v - (vk)r
+290
+// v_l = v(1 - kr)
+291
+//
+292
+// v_r = v + wr
+293
+// v_r = v + (vk)r
+294
+// v_r = v(1 + kr)
+295
+return calculate(
+296
+currentPose,
+297
+leftVelocity,
+298
+rightVelocity,
+299
+desiredState.poseMeters,
+300
+desiredState.velocityMetersPerSecond
+301
+* (1 - (desiredState.curvatureRadPerMeter * m_trackwidth / 2.0)),
+302
+desiredState.velocityMetersPerSecond
+303
+* (1 + (desiredState.curvatureRadPerMeter * m_trackwidth / 2.0)));
+304
+}
+305
+}

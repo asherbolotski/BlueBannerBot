@@ -1,0 +1,528 @@
+Package
+edu.wpi.first.math.geometry
+Class Translation2d
+java.lang.Object
+edu.wpi.first.math.geometry.Translation2d
+All Implemented Interfaces:
+Interpolatable
+<
+Translation2d
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Translation2d
+extends
+Object
+implements
+Interpolatable
+<
+Translation2d
+>,
+ProtobufSerializable
+,
+StructSerializable
+Represents a translation in 2D space. This object can be used to represent a point or a vector.
+This assumes that you are using conventional mathematical axes. When the robot is at the
+ origin facing in the positive X direction, forward is positive X and left is positive Y.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+Translation2d
+kZero
+A preallocated Translation2d representing the origin.
+static final
+Translation2dProto
+proto
+Translation2d protobuf for serialization.
+static final
+Translation2dStruct
+struct
+Translation2d struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+Translation2d
+()
+Constructs a Translation2d with X and Y components equal to zero.
+Translation2d
+(double x,
+ double y)
+Constructs a Translation2d with the X and Y components equal to the provided values.
+Translation2d
+(double distance,
+Rotation2d
+angle)
+Constructs a Translation2d with the provided distance and angle.
+Translation2d
+(
+Vector
+<
+N2
+> vector)
+Constructs a Translation2d from a 2D translation vector.
+Translation2d
+(
+Distance
+x,
+Distance
+y)
+Constructs a Translation2d with the X and Y components equal to the provided values.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Translation2d
+div
+(double scalar)
+Returns the translation divided by a scalar.
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Translation2d and another object.
+Rotation2d
+getAngle
+()
+Returns the angle this translation forms with the positive X axis.
+double
+getDistance
+(
+Translation2d
+other)
+Calculates the distance between two translations in 2D space.
+Distance
+getMeasureX
+()
+Returns the X component of the translation in a measure.
+Distance
+getMeasureY
+()
+Returns the Y component of the translation in a measure.
+double
+getNorm
+()
+Returns the norm, or distance from the origin to the translation.
+double
+getX
+()
+Returns the X component of the translation.
+double
+getY
+()
+Returns the Y component of the translation.
+int
+hashCode
+()
+Translation2d
+interpolate
+(
+Translation2d
+endValue,
+ double t)
+Return the interpolated value.
+Translation2d
+minus
+(
+Translation2d
+other)
+Returns the difference between two translations.
+Translation2d
+nearest
+(
+List
+<
+Translation2d
+> translations)
+Returns the nearest Translation2d from a list of translations.
+Translation2d
+plus
+(
+Translation2d
+other)
+Returns the sum of two translations in 2D space.
+Translation2d
+rotateAround
+(
+Translation2d
+other,
+Rotation2d
+rot)
+Rotates this translation around another translation in 2D space.
+Translation2d
+rotateBy
+(
+Rotation2d
+other)
+Applies a rotation to the translation in 2D space.
+Translation2d
+times
+(double scalar)
+Returns the translation multiplied by a scalar.
+String
+toString
+()
+Vector
+<
+N2
+>
+toVector
+()
+Returns a 2D translation vector representation of this translation.
+Translation2d
+unaryMinus
+()
+Returns the inverse of the current translation.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kZero
+public static final
+Translation2d
+kZero
+A preallocated Translation2d representing the origin.
+This exists to avoid allocations for common translations.
+proto
+public static final
+Translation2dProto
+proto
+Translation2d protobuf for serialization.
+struct
+public static final
+Translation2dStruct
+struct
+Translation2d struct for serialization.
+Constructor Details
+Translation2d
+public
+Translation2d
+()
+Constructs a Translation2d with X and Y components equal to zero.
+Translation2d
+public
+Translation2d
+(double x,
+ double y)
+Constructs a Translation2d with the X and Y components equal to the provided values.
+Parameters:
+x
+- The x component of the translation.
+y
+- The y component of the translation.
+Translation2d
+public
+Translation2d
+(double distance,
+Rotation2d
+angle)
+Constructs a Translation2d with the provided distance and angle. This is essentially converting
+ from polar coordinates to Cartesian coordinates.
+Parameters:
+distance
+- The distance from the origin to the end of the translation.
+angle
+- The angle between the x-axis and the translation vector.
+Translation2d
+public
+Translation2d
+(
+Distance
+x,
+Distance
+y)
+Constructs a Translation2d with the X and Y components equal to the provided values. The X and
+ Y components will be converted to and tracked as meters.
+Parameters:
+x
+- The x component of the translation.
+y
+- The y component of the translation.
+Translation2d
+public
+Translation2d
+(
+Vector
+<
+N2
+> vector)
+Constructs a Translation2d from a 2D translation vector. The values are assumed to be in
+ meters.
+Parameters:
+vector
+- The translation vector.
+Method Details
+getDistance
+public
+double
+getDistance
+(
+Translation2d
+other)
+Calculates the distance between two translations in 2D space.
+The distance between translations is defined as √((x₂−x₁)²+(y₂−y₁)²).
+Parameters:
+other
+- The translation to compute the distance to.
+Returns:
+The distance between the two translations.
+getX
+public
+double
+getX
+()
+Returns the X component of the translation.
+Returns:
+The X component of the translation.
+getY
+public
+double
+getY
+()
+Returns the Y component of the translation.
+Returns:
+The Y component of the translation.
+getMeasureX
+public
+Distance
+getMeasureX
+()
+Returns the X component of the translation in a measure.
+Returns:
+The x component of the translation in a measure.
+getMeasureY
+public
+Distance
+getMeasureY
+()
+Returns the Y component of the translation in a measure.
+Returns:
+The y component of the translation in a measure.
+toVector
+public
+Vector
+<
+N2
+>
+toVector
+()
+Returns a 2D translation vector representation of this translation.
+Returns:
+A 2D translation vector representation of this translation.
+getNorm
+public
+double
+getNorm
+()
+Returns the norm, or distance from the origin to the translation.
+Returns:
+The norm of the translation.
+getAngle
+public
+Rotation2d
+getAngle
+()
+Returns the angle this translation forms with the positive X axis.
+Returns:
+The angle of the translation
+rotateBy
+public
+Translation2d
+rotateBy
+(
+Rotation2d
+other)
+Applies a rotation to the translation in 2D space.
+This multiplies the translation vector by a counterclockwise rotation matrix of the given
+ angle.
+[x_new]   [other.cos, -other.sin][x]
+ [y_new] = [other.sin,  other.cos][y]
+For example, rotating a Translation2d of <2, 0> by 90 degrees will return a
+ Translation2d of <0, 2>.
+Parameters:
+other
+- The rotation to rotate the translation by.
+Returns:
+The new rotated translation.
+rotateAround
+public
+Translation2d
+rotateAround
+(
+Translation2d
+other,
+Rotation2d
+rot)
+Rotates this translation around another translation in 2D space.
+[x_new]   [rot.cos, -rot.sin][x - other.x]   [other.x]
+ [y_new] = [rot.sin,  rot.cos][y - other.y] + [other.y]
+Parameters:
+other
+- The other translation to rotate around.
+rot
+- The rotation to rotate the translation by.
+Returns:
+The new rotated translation.
+plus
+public
+Translation2d
+plus
+(
+Translation2d
+other)
+Returns the sum of two translations in 2D space.
+For example, Translation3d(1.0, 2.5) + Translation3d(2.0, 5.5) = Translation3d{3.0, 8.0).
+Parameters:
+other
+- The translation to add.
+Returns:
+The sum of the translations.
+minus
+public
+Translation2d
+minus
+(
+Translation2d
+other)
+Returns the difference between two translations.
+For example, Translation2d(5.0, 4.0) - Translation2d(1.0, 2.0) = Translation2d(4.0, 2.0).
+Parameters:
+other
+- The translation to subtract.
+Returns:
+The difference between the two translations.
+unaryMinus
+public
+Translation2d
+unaryMinus
+()
+Returns the inverse of the current translation. This is equivalent to rotating by 180 degrees,
+ flipping the point over both axes, or negating all components of the translation.
+Returns:
+The inverse of the current translation.
+times
+public
+Translation2d
+times
+(double scalar)
+Returns the translation multiplied by a scalar.
+For example, Translation2d(2.0, 2.5) * 2 = Translation2d(4.0, 5.0).
+Parameters:
+scalar
+- The scalar to multiply by.
+Returns:
+The scaled translation.
+div
+public
+Translation2d
+div
+(double scalar)
+Returns the translation divided by a scalar.
+For example, Translation3d(2.0, 2.5) / 2 = Translation3d(1.0, 1.25).
+Parameters:
+scalar
+- The scalar to multiply by.
+Returns:
+The reference to the new mutated object.
+nearest
+public
+Translation2d
+nearest
+(
+List
+<
+Translation2d
+> translations)
+Returns the nearest Translation2d from a list of translations.
+Parameters:
+translations
+- The list of translations.
+Returns:
+The nearest Translation2d from the list.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Translation2d and another object.
+Overrides:
+equals
+in class
+Object
+Parameters:
+obj
+- The other object.
+Returns:
+Whether the two objects are equal or not.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+interpolate
+public
+Translation2d
+interpolate
+(
+Translation2d
+endValue,
+ double t)
+Description copied from interface:
+Interpolatable
+Return the interpolated value. This object is assumed to be the starting position, or lower
+ bound.
+Specified by:
+interpolate
+in interface
+Interpolatable
+<
+Translation2d
+>
+Parameters:
+endValue
+- The upper bound, or end.
+t
+- How far between the lower and upper bound we are. This should be bounded in [0, 1].
+Returns:
+The interpolated value.

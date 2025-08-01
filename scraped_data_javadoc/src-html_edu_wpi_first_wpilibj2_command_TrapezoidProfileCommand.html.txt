@@ -1,0 +1,127 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+010
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+011
+import java.util.function.Consumer;
+012
+import java.util.function.Supplier;
+013
+014
+/**
+015
+* A command that runs a {@link TrapezoidProfile}. Useful for smoothly controlling mechanism motion.
+016
+*
+017
+* <p>This class is provided by the NewCommands VendorDep
+018
+*
+019
+* @deprecated Use a TrapezoidProfile instead
+020
+*/
+021
+@Deprecated(since = "2025", forRemoval = true)
+022
+public class TrapezoidProfileCommand extends Command {
+023
+private final TrapezoidProfile m_profile;
+024
+private final Consumer<State> m_output;
+025
+private final Supplier<State> m_goal;
+026
+private final Supplier<State> m_currentState;
+027
+028
+/**
+029
+* Creates a new TrapezoidProfileCommand that will execute the given {@link TrapezoidProfile}.
+030
+* Output will be piped to the provided consumer function.
+031
+*
+032
+* @param profile The motion profile to execute.
+033
+* @param output The consumer for the profile output.
+034
+* @param goal The supplier for the desired state
+035
+* @param currentState The current state
+036
+* @param requirements The subsystems required by this command.
+037
+*/
+038
+@SuppressWarnings("this-escape")
+039
+public TrapezoidProfileCommand(
+040
+TrapezoidProfile profile,
+041
+Consumer<State> output,
+042
+Supplier<State> goal,
+043
+Supplier<State> currentState,
+044
+Subsystem... requirements) {
+045
+m_profile = requireNonNullParam(profile, "profile", "TrapezoidProfileCommand");
+046
+m_output = requireNonNullParam(output, "output", "TrapezoidProfileCommand");
+047
+m_goal = goal;
+048
+m_currentState = currentState;
+049
+addRequirements(requirements);
+050
+}
+051
+052
+@Override
+053
+public void initialize() {}
+054
+055
+@Override
+056
+@SuppressWarnings("removal")
+057
+public void execute() {
+058
+m_output.accept(m_profile.calculate(0.02, m_currentState.get(), m_goal.get()));
+059
+}
+060
+061
+@Override
+062
+public void end(boolean interrupted) {}
+063
+064
+@Override
+065
+public boolean isFinished() {
+066
+return m_profile.isFinished(0);
+067
+}
+068
+}

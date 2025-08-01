@@ -1,0 +1,140 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.net;
+006
+007
+import edu.wpi.first.util.WPICleaner;
+008
+import java.lang.ref.Cleaner.Cleanable;
+009
+import java.util.Map;
+010
+011
+/** Class to announce over mDNS that a service is available. */
+012
+public class MulticastServiceAnnouncer implements AutoCloseable {
+013
+private final int m_handle;
+014
+private final Cleanable m_cleanable;
+015
+016
+private static Runnable cleanupAction(int handle) {
+017
+return () -> WPINetJNI.freeMulticastServiceAnnouncer(handle);
+018
+}
+019
+020
+/**
+021
+* Creates a MulticastServiceAnnouncer.
+022
+*
+023
+* @param serviceName service name
+024
+* @param serviceType service type
+025
+* @param port port
+026
+* @param txt txt
+027
+*/
+028
+@SuppressWarnings("this-escape")
+029
+public MulticastServiceAnnouncer(
+030
+String serviceName, String serviceType, int port, Map<String, String> txt) {
+031
+String[] keys = txt.keySet().toArray(String[]::new);
+032
+String[] values = txt.values().toArray(String[]::new);
+033
+m_handle =
+034
+WPINetJNI.createMulticastServiceAnnouncer(serviceName, serviceType, port, keys, values);
+035
+m_cleanable = WPICleaner.register(this, cleanupAction(m_handle));
+036
+}
+037
+038
+/**
+039
+* Creates a MulticastServiceAnnouncer.
+040
+*
+041
+* @param serviceName service name
+042
+* @param serviceType service type
+043
+* @param port port
+044
+*/
+045
+@SuppressWarnings("this-escape")
+046
+public MulticastServiceAnnouncer(String serviceName, String serviceType, int port) {
+047
+m_handle =
+048
+WPINetJNI.createMulticastServiceAnnouncer(serviceName, serviceType, port, null, null);
+049
+m_cleanable = WPICleaner.register(this, cleanupAction(m_handle));
+050
+}
+051
+052
+@Override
+053
+public void close() {
+054
+m_cleanable.clean();
+055
+}
+056
+057
+/** Starts multicast service announcer. */
+058
+public void start() {
+059
+WPINetJNI.startMulticastServiceAnnouncer(m_handle);
+060
+}
+061
+062
+/** Stops multicast service announcer. */
+063
+public void stop() {
+064
+WPINetJNI.stopMulticastServiceAnnouncer(m_handle);
+065
+}
+066
+067
+/**
+068
+* Returns true if there's a multicast service announcer implementation.
+069
+*
+070
+* @return True if there's a multicast service announcer implementation.
+071
+*/
+072
+public boolean hasImplementation() {
+073
+return WPINetJNI.getMulticastServiceAnnouncerHasImplementation(m_handle);
+074
+}
+075
+}

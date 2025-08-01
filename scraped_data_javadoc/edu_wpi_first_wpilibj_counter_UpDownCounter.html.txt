@@ -1,0 +1,185 @@
+Package
+edu.wpi.first.wpilibj.counter
+Class UpDownCounter
+java.lang.Object
+edu.wpi.first.wpilibj.counter.UpDownCounter
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+UpDownCounter
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Up Down Counter.
+This class can count edges on a single digital input or count up based on an edge from one
+ digital input and down on an edge from another digital input.
+Constructor Summary
+Constructors
+Constructor
+Description
+UpDownCounter
+(
+DigitalSource
+upSource,
+DigitalSource
+downSource)
+Constructs a new UpDown Counter.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+int
+getCount
+()
+Gets the current count.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+final void
+reset
+()
+Resets the current count.
+void
+setDownEdgeConfiguration
+(
+EdgeConfiguration
+configuration)
+Sets the configuration for the down source.
+void
+setReverseDirection
+(boolean reverseDirection)
+Sets to reverse the counter direction.
+void
+setUpEdgeConfiguration
+(
+EdgeConfiguration
+configuration)
+Sets the configuration for the up source.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+UpDownCounter
+public
+UpDownCounter
+(
+DigitalSource
+upSource,
+DigitalSource
+downSource)
+Constructs a new UpDown Counter.
+Parameters:
+upSource
+- The up count source (can be null).
+downSource
+- The down count source (can be null).
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+setUpEdgeConfiguration
+public
+void
+setUpEdgeConfiguration
+(
+EdgeConfiguration
+configuration)
+Sets the configuration for the up source.
+Parameters:
+configuration
+- The up source configuration.
+setDownEdgeConfiguration
+public
+void
+setDownEdgeConfiguration
+(
+EdgeConfiguration
+configuration)
+Sets the configuration for the down source.
+Parameters:
+configuration
+- The down source configuration.
+reset
+public final
+void
+reset
+()
+Resets the current count.
+setReverseDirection
+public
+void
+setReverseDirection
+(boolean reverseDirection)
+Sets to reverse the counter direction.
+Parameters:
+reverseDirection
+- True to reverse counting direction.
+getCount
+public
+int
+getCount
+()
+Gets the current count.
+Returns:
+The current count.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

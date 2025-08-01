@@ -1,0 +1,611 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+010
+import edu.wpi.first.hal.HAL;
+011
+import edu.wpi.first.hal.RelayJNI;
+012
+import edu.wpi.first.hal.util.HalHandleException;
+013
+import edu.wpi.first.hal.util.UncleanStatusException;
+014
+import edu.wpi.first.util.sendable.Sendable;
+015
+import edu.wpi.first.util.sendable.SendableBuilder;
+016
+import edu.wpi.first.util.sendable.SendableRegistry;
+017
+import java.util.Arrays;
+018
+import java.util.Optional;
+019
+020
+/**
+021
+* Class for VEX Robotics Spike style relay outputs. Relays are intended to be connected to Spikes
+022
+* or similar relays. The relay channels controls a pair of channels that are either both off, one
+023
+* on, the other on, or both on. This translates into two Spike outputs at 0v, one at 12v and one at
+024
+* 0v, one at 0v and the other at 12v, or two Spike outputs at 12V. This allows off, full forward,
+025
+* or full reverse control of motors without variable speed. It also allows the two channels
+026
+* (forward and reverse) to be used independently for something that does not care about voltage
+027
+* polarity (like a solenoid).
+028
+*/
+029
+public class Relay extends MotorSafety implements Sendable, AutoCloseable {
+030
+/**
+031
+* This class represents errors in trying to set relay values contradictory to the direction to
+032
+* which the relay is set.
+033
+*/
+034
+public static class InvalidValueException extends RuntimeException {
+035
+/**
+036
+* Create a new exception with the given message.
+037
+*
+038
+* @param message the message to pass with the exception
+039
+*/
+040
+public InvalidValueException(String message) {
+041
+super(message);
+042
+}
+043
+}
+044
+045
+/** The state to drive a Relay to. */
+046
+public enum Value {
+047
+/** Off. */
+048
+kOff("Off"),
+049
+/** On. */
+050
+kOn("On"),
+051
+/** Forward. */
+052
+kForward("Forward"),
+053
+/** Reverse. */
+054
+kReverse("Reverse");
+055
+056
+private final String m_prettyValue;
+057
+058
+Value(String prettyValue) {
+059
+m_prettyValue = prettyValue;
+060
+}
+061
+062
+/**
+063
+* Returns the pretty string representation of the value.
+064
+*
+065
+* @return The pretty string representation of the value.
+066
+*/
+067
+public String getPrettyValue() {
+068
+return m_prettyValue;
+069
+}
+070
+071
+/**
+072
+* Returns the value for a given pretty string.
+073
+*
+074
+* @param value The pretty string.
+075
+* @return The value or an empty optional if there is no corresponding value.
+076
+*/
+077
+public static Optional<Value> getValueOf(String value) {
+078
+return Arrays.stream(Value.values()).filter(v -> v.m_prettyValue.equals(value)).findFirst();
+079
+}
+080
+}
+081
+082
+/** The Direction(s) that a relay is configured to operate in. */
+083
+public enum Direction {
+084
+/** Both directions are valid. */
+085
+kBoth,
+086
+/** Only forward is valid. */
+087
+kForward,
+088
+/** Only reverse is valid. */
+089
+kReverse
+090
+}
+091
+092
+private final int m_channel;
+093
+094
+private int m_forwardHandle;
+095
+private int m_reverseHandle;
+096
+097
+private Direction m_direction;
+098
+099
+/**
+100
+* Common relay initialization method. This code is common to all Relay constructors and
+101
+* initializes the relay and reserves all resources that need to be locked. Initially the relay is
+102
+* set to both lines at 0v.
+103
+*/
+104
+private void initRelay() {
+105
+SensorUtil.checkRelayChannel(m_channel);
+106
+107
+int portHandle = HAL.getPort((byte) m_channel);
+108
+if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
+109
+m_forwardHandle = RelayJNI.initializeRelayPort(portHandle, true);
+110
+HAL.report(tResourceType.kResourceType_Relay, m_channel + 1);
+111
+}
+112
+if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
+113
+m_reverseHandle = RelayJNI.initializeRelayPort(portHandle, false);
+114
+HAL.report(tResourceType.kResourceType_Relay, m_channel + 128);
+115
+}
+116
+117
+setSafetyEnabled(false);
+118
+119
+SendableRegistry.addLW(this, "Relay", m_channel);
+120
+}
+121
+122
+/**
+123
+* Relay constructor given a channel.
+124
+*
+125
+* @param channel The channel number for this relay (0 - 3).
+126
+* @param direction The direction that the Relay object will control.
+127
+*/
+128
+@SuppressWarnings("this-escape")
+129
+public Relay(final int channel, Direction direction) {
+130
+m_channel = channel;
+131
+m_direction = requireNonNullParam(direction, "direction", "Relay");
+132
+initRelay();
+133
+set(Value.kOff);
+134
+}
+135
+136
+/**
+137
+* Relay constructor given a channel, allowing both directions.
+138
+*
+139
+* @param channel The channel number for this relay (0 - 3).
+140
+*/
+141
+public Relay(final int channel) {
+142
+this(channel, Direction.kBoth);
+143
+}
+144
+145
+@Override
+146
+public void close() {
+147
+SendableRegistry.remove(this);
+148
+freeRelay();
+149
+}
+150
+151
+private void freeRelay() {
+152
+try {
+153
+RelayJNI.setRelay(m_forwardHandle, false);
+154
+} catch (UncleanStatusException | HalHandleException ignored) {
+155
+// do nothing. Ignore
+156
+}
+157
+try {
+158
+RelayJNI.setRelay(m_reverseHandle, false);
+159
+} catch (UncleanStatusException | HalHandleException ignored) {
+160
+// do nothing. Ignore
+161
+}
+162
+163
+RelayJNI.freeRelayPort(m_forwardHandle);
+164
+RelayJNI.freeRelayPort(m_reverseHandle);
+165
+166
+m_forwardHandle = 0;
+167
+m_reverseHandle = 0;
+168
+}
+169
+170
+/**
+171
+* Set the relay state.
+172
+*
+173
+* <p>Valid values depend on which directions of the relay are controlled by the object.
+174
+*
+175
+* <p>When set to kBothDirections, the relay can be set to any of the four states: 0v-0v, 12v-0v,
+176
+* 0v-12v, 12v-12v
+177
+*
+178
+* <p>When set to kForwardOnly or kReverseOnly, you can specify the constant for the direction, or
+179
+* you can simply specify kOff and kOn. Using only kOff and kOn is recommended.
+180
+*
+181
+* @param value The state to set the relay.
+182
+*/
+183
+public void set(Value value) {
+184
+switch (value) {
+185
+case kOff -> {
+186
+if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
+187
+RelayJNI.setRelay(m_forwardHandle, false);
+188
+}
+189
+if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
+190
+RelayJNI.setRelay(m_reverseHandle, false);
+191
+}
+192
+}
+193
+case kOn -> {
+194
+if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
+195
+RelayJNI.setRelay(m_forwardHandle, true);
+196
+}
+197
+if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
+198
+RelayJNI.setRelay(m_reverseHandle, true);
+199
+}
+200
+}
+201
+case kForward -> {
+202
+if (m_direction == Direction.kReverse) {
+203
+throw new InvalidValueException(
+204
+"A relay configured for reverse cannot be set to " + "forward");
+205
+}
+206
+if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
+207
+RelayJNI.setRelay(m_forwardHandle, true);
+208
+}
+209
+if (m_direction == Direction.kBoth) {
+210
+RelayJNI.setRelay(m_reverseHandle, false);
+211
+}
+212
+}
+213
+case kReverse -> {
+214
+if (m_direction == Direction.kForward) {
+215
+throw new InvalidValueException(
+216
+"A relay configured for forward cannot be set to " + "reverse");
+217
+}
+218
+if (m_direction == Direction.kBoth) {
+219
+RelayJNI.setRelay(m_forwardHandle, false);
+220
+}
+221
+if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
+222
+RelayJNI.setRelay(m_reverseHandle, true);
+223
+}
+224
+}
+225
+default -> {
+226
+// Cannot hit this, limited by Value enum
+227
+}
+228
+}
+229
+}
+230
+231
+/**
+232
+* Get the Relay State.
+233
+*
+234
+* <p>Gets the current state of the relay.
+235
+*
+236
+* <p>When set to kForwardOnly or kReverseOnly, value is returned as kOn/kOff not
+237
+* kForward/kReverse (per the recommendation in Set)
+238
+*
+239
+* @return The current state of the relay as a Relay::Value
+240
+*/
+241
+public Value get() {
+242
+if (m_direction == Direction.kForward) {
+243
+if (RelayJNI.getRelay(m_forwardHandle)) {
+244
+return Value.kOn;
+245
+} else {
+246
+return Value.kOff;
+247
+}
+248
+} else if (m_direction == Direction.kReverse) {
+249
+if (RelayJNI.getRelay(m_reverseHandle)) {
+250
+return Value.kOn;
+251
+} else {
+252
+return Value.kOff;
+253
+}
+254
+} else {
+255
+if (RelayJNI.getRelay(m_forwardHandle)) {
+256
+if (RelayJNI.getRelay(m_reverseHandle)) {
+257
+return Value.kOn;
+258
+} else {
+259
+return Value.kForward;
+260
+}
+261
+} else {
+262
+if (RelayJNI.getRelay(m_reverseHandle)) {
+263
+return Value.kReverse;
+264
+} else {
+265
+return Value.kOff;
+266
+}
+267
+}
+268
+}
+269
+}
+270
+271
+/**
+272
+* Get the channel number.
+273
+*
+274
+* @return The channel number.
+275
+*/
+276
+public int getChannel() {
+277
+return m_channel;
+278
+}
+279
+280
+@Override
+281
+public void stopMotor() {
+282
+set(Value.kOff);
+283
+}
+284
+285
+@Override
+286
+public String getDescription() {
+287
+return "Relay ID " + getChannel();
+288
+}
+289
+290
+/**
+291
+* Set the Relay Direction.
+292
+*
+293
+* <p>Changes which values the relay can be set to depending on which direction is used
+294
+*
+295
+* <p>Valid inputs are kBothDirections, kForwardOnly, and kReverseOnly
+296
+*
+297
+* @param direction The direction for the relay to operate in
+298
+*/
+299
+@SuppressWarnings("this-escape")
+300
+public void setDirection(Direction direction) {
+301
+requireNonNullParam(direction, "direction", "setDirection");
+302
+if (m_direction == direction) {
+303
+return;
+304
+}
+305
+306
+freeRelay();
+307
+m_direction = direction;
+308
+initRelay();
+309
+}
+310
+311
+@Override
+312
+public void initSendable(SendableBuilder builder) {
+313
+builder.setSmartDashboardType("Relay");
+314
+builder.setActuator(true);
+315
+builder.setSafeState(() -> set(Value.kOff));
+316
+builder.addStringProperty(
+317
+"Value",
+318
+() -> get().getPrettyValue(),
+319
+value -> set(Value.getValueOf(value).orElse(Value.kOff)));
+320
+}
+321
+}

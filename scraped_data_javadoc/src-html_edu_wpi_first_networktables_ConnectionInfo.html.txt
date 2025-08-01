@@ -1,0 +1,95 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/** NetworkTables Connection information. */
+008
+@SuppressWarnings("MemberName")
+009
+public final class ConnectionInfo {
+010
+/**
+011
+* The remote identifier (as set on the remote node by {@link
+012
+* NetworkTableInstance#startClient4(String)}).
+013
+*/
+014
+public final String remote_id;
+015
+016
+/** The IP address of the remote node. */
+017
+public final String remote_ip;
+018
+019
+/** The port number of the remote node. */
+020
+public final int remote_port;
+021
+022
+/**
+023
+* The last time any update was received from the remote node (same scale as returned by {@link
+024
+* NetworkTablesJNI#now()}).
+025
+*/
+026
+public final long last_update;
+027
+028
+/**
+029
+* The protocol version being used for this connection. This is in protocol layer format, so
+030
+* 0x0200 = 2.0, 0x0300 = 3.0).
+031
+*/
+032
+public final int protocol_version;
+033
+034
+/**
+035
+* Constructor. This should generally only be used internally to NetworkTables.
+036
+*
+037
+* @param remoteId Remote identifier
+038
+* @param remoteIp Remote IP address
+039
+* @param remotePort Remote port number
+040
+* @param lastUpdate Last time an update was received
+041
+* @param protocolVersion The protocol version used for the connection
+042
+*/
+043
+public ConnectionInfo(
+044
+String remoteId, String remoteIp, int remotePort, long lastUpdate, int protocolVersion) {
+045
+remote_id = remoteId;
+046
+remote_ip = remoteIp;
+047
+remote_port = remotePort;
+048
+last_update = lastUpdate;
+049
+protocol_version = protocolVersion;
+050
+}
+051
+}

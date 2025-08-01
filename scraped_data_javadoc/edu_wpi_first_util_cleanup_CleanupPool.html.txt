@@ -1,0 +1,113 @@
+Package
+edu.wpi.first.util.cleanup
+Class CleanupPool
+java.lang.Object
+edu.wpi.first.util.cleanup.CleanupPool
+All Implemented Interfaces:
+AutoCloseable
+public class
+CleanupPool
+extends
+Object
+implements
+AutoCloseable
+An object containing a Stack of AutoCloseable objects that are closed when this object is closed.
+Constructor Summary
+Constructors
+Constructor
+Description
+CleanupPool
+()
+Default constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Closes all objects in the stack.
+<T extends
+AutoCloseable
+>
+T
+register
+(T object)
+Registers an object in the object stack for cleanup.
+void
+remove
+(
+AutoCloseable
+object)
+Removes an object from the cleanup stack.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CleanupPool
+public
+CleanupPool
+()
+Default constructor.
+Method Details
+register
+public
+<T extends
+AutoCloseable
+>
+T
+register
+(T object)
+Registers an object in the object stack for cleanup.
+Type Parameters:
+T
+- The object type
+Parameters:
+object
+- The object to register
+Returns:
+The registered object
+remove
+public
+void
+remove
+(
+AutoCloseable
+object)
+Removes an object from the cleanup stack.
+Parameters:
+object
+- the object to remove
+close
+public
+void
+close
+()
+Closes all objects in the stack.
+Specified by:
+close
+in interface
+AutoCloseable

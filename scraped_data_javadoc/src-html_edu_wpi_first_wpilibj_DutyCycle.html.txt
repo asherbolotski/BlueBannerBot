@@ -1,0 +1,228 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.DutyCycleJNI;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import edu.wpi.first.util.sendable.SendableBuilder;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+014
+/**
+015
+* Class to read a duty cycle PWM input.
+016
+*
+017
+* <p>PWM input signals are specified with a frequency and a ratio of high to low in that frequency.
+018
+* There are 8 of these in the roboRIO, and they can be attached to any {@link DigitalSource}.
+019
+*
+020
+* <p>These can be combined as the input of an AnalogTrigger to a Counter in order to implement
+021
+* rollover checking.
+022
+*/
+023
+public class DutyCycle implements Sendable, AutoCloseable {
+024
+// Explicitly package private
+025
+final int m_handle;
+026
+027
+private final DigitalSource m_source;
+028
+029
+/**
+030
+* Constructs a DutyCycle input from a DigitalSource input.
+031
+*
+032
+* <p>This class does not own the inputted source.
+033
+*
+034
+* @param digitalSource The DigitalSource to use.
+035
+*/
+036
+@SuppressWarnings("this-escape")
+037
+public DutyCycle(DigitalSource digitalSource) {
+038
+m_handle =
+039
+DutyCycleJNI.initialize(
+040
+digitalSource.getPortHandleForRouting(),
+041
+digitalSource.getAnalogTriggerTypeForRouting());
+042
+043
+m_source = digitalSource;
+044
+int index = getFPGAIndex();
+045
+HAL.report(tResourceType.kResourceType_DutyCycle, index + 1);
+046
+SendableRegistry.addLW(this, "Duty Cycle", index);
+047
+}
+048
+049
+/** Close the DutyCycle and free all resources. */
+050
+@Override
+051
+public void close() {
+052
+SendableRegistry.remove(this);
+053
+DutyCycleJNI.free(m_handle);
+054
+}
+055
+056
+/**
+057
+* Get the frequency of the duty cycle signal.
+058
+*
+059
+* @return frequency in Hertz
+060
+*/
+061
+public int getFrequency() {
+062
+return DutyCycleJNI.getFrequency(m_handle);
+063
+}
+064
+065
+/**
+066
+* Get the output ratio of the duty cycle signal.
+067
+*
+068
+* <p>0 means always low, 1 means always high.
+069
+*
+070
+* @return output ratio between 0 and 1
+071
+*/
+072
+public double getOutput() {
+073
+return DutyCycleJNI.getOutput(m_handle);
+074
+}
+075
+076
+/**
+077
+* Get the raw high time of the duty cycle signal.
+078
+*
+079
+* @return high time of last pulse in nanoseconds
+080
+*/
+081
+public int getHighTimeNanoseconds() {
+082
+return DutyCycleJNI.getHighTime(m_handle);
+083
+}
+084
+085
+/**
+086
+* Get the scale factor of the output.
+087
+*
+088
+* <p>An output equal to this value is always high, and then linearly scales down to 0. Divide a
+089
+* raw result by this in order to get the percentage between 0 and 1. Used by DMA.
+090
+*
+091
+* @return the output scale factor
+092
+*/
+093
+public int getOutputScaleFactor() {
+094
+return DutyCycleJNI.getOutputScaleFactor(m_handle);
+095
+}
+096
+097
+/**
+098
+* Get the FPGA index for the DutyCycle.
+099
+*
+100
+* @return the FPGA index
+101
+*/
+102
+public final int getFPGAIndex() {
+103
+return DutyCycleJNI.getFPGAIndex(m_handle);
+104
+}
+105
+106
+/**
+107
+* Get the channel of the source.
+108
+*
+109
+* @return the source channel
+110
+*/
+111
+public int getSourceChannel() {
+112
+return m_source.getChannel();
+113
+}
+114
+115
+@Override
+116
+public void initSendable(SendableBuilder builder) {
+117
+builder.setSmartDashboardType("Duty Cycle");
+118
+builder.addDoubleProperty("Frequency", this::getFrequency, null);
+119
+builder.addDoubleProperty("Output", this::getOutput, null);
+120
+}
+121
+}

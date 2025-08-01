@@ -1,0 +1,74 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.controller.proto.DifferentialDriveWheelVoltagesProto;
+008
+import edu.wpi.first.math.controller.struct.DifferentialDriveWheelVoltagesStruct;
+009
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+010
+import edu.wpi.first.util.struct.StructSerializable;
+011
+012
+/** Motor voltages for a differential drive. */
+013
+public class DifferentialDriveWheelVoltages implements ProtobufSerializable, StructSerializable {
+014
+/** Left wheel voltage. */
+015
+public double left;
+016
+017
+/** Right wheel voltage. */
+018
+public double right;
+019
+020
+/** DifferentialDriveWheelVoltages protobuf for serialization. */
+021
+public static final DifferentialDriveWheelVoltagesProto proto =
+022
+new DifferentialDriveWheelVoltagesProto();
+023
+024
+/** DifferentialDriveWheelVoltages struct for serialization. */
+025
+public static final DifferentialDriveWheelVoltagesStruct struct =
+026
+new DifferentialDriveWheelVoltagesStruct();
+027
+028
+/** Default constructor. */
+029
+public DifferentialDriveWheelVoltages() {}
+030
+031
+/**
+032
+* Constructs a DifferentialDriveWheelVoltages.
+033
+*
+034
+* @param left Left wheel voltage.
+035
+* @param right Right wheel voltage.
+036
+*/
+037
+public DifferentialDriveWheelVoltages(double left, double right) {
+038
+this.left = left;
+039
+this.right = right;
+040
+}
+041
+}

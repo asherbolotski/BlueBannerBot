@@ -1,0 +1,129 @@
+Package
+edu.wpi.first.hal.can
+Class CANStatus
+java.lang.Object
+edu.wpi.first.hal.can.CANStatus
+public class
+CANStatus
+extends
+Object
+Structure for holding the result of a CAN Status request.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+int
+busOffCount
+The CAN Bus off count.
+double
+percentBusUtilization
+The utilization of the CAN Bus.
+int
+receiveErrorCount
+The CAN Bus receive error count.
+int
+transmitErrorCount
+The CAN Bus transmit error count.
+int
+txFullCount
+The CAN Bus TX full count.
+Constructor Summary
+Constructors
+Constructor
+Description
+CANStatus
+()
+Default constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+setStatus
+(double percentBusUtilization,
+ int busOffCount,
+ int txFullCount,
+ int receiveErrorCount,
+ int transmitErrorCount)
+Set CAN bus status.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+percentBusUtilization
+public
+double
+percentBusUtilization
+The utilization of the CAN Bus.
+busOffCount
+public
+int
+busOffCount
+The CAN Bus off count.
+txFullCount
+public
+int
+txFullCount
+The CAN Bus TX full count.
+receiveErrorCount
+public
+int
+receiveErrorCount
+The CAN Bus receive error count.
+transmitErrorCount
+public
+int
+transmitErrorCount
+The CAN Bus transmit error count.
+Constructor Details
+CANStatus
+public
+CANStatus
+()
+Default constructor.
+Method Details
+setStatus
+public
+void
+setStatus
+(double percentBusUtilization,
+ int busOffCount,
+ int txFullCount,
+ int receiveErrorCount,
+ int transmitErrorCount)
+Set CAN bus status.
+Parameters:
+percentBusUtilization
+- CAN bus utilization as a percent.
+busOffCount
+- Bus off event count.
+txFullCount
+- TX buffer full event count.
+receiveErrorCount
+- Receive error event count.
+transmitErrorCount
+- Transmit error event count.

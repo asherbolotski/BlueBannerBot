@@ -1,0 +1,196 @@
+Package
+edu.wpi.first.math.controller
+Class DifferentialDriveFeedforward
+java.lang.Object
+edu.wpi.first.math.controller.DifferentialDriveFeedforward
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+DifferentialDriveFeedforward
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+A helper class which computes the feedforward outputs for a differential drive drivetrain.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final double
+m_kAAngular
+The angular acceleration gain in volts per (radians per second squared).
+final double
+m_kALinear
+The linear acceleration gain in volts per (meters per second squared).
+final double
+m_kVAngular
+The angular velocity gain in volts per (radians per second).
+final double
+m_kVLinear
+The linear velocity gain in volts per (meters per second).
+static final
+DifferentialDriveFeedforwardProto
+proto
+DifferentialDriveFeedforward protobuf for serialization.
+static final
+DifferentialDriveFeedforwardStruct
+struct
+DifferentialDriveFeedforward struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+DifferentialDriveFeedforward
+(double kVLinear,
+ double kALinear,
+ double kVAngular,
+ double kAAngular)
+Creates a new DifferentialDriveFeedforward with the specified parameters.
+DifferentialDriveFeedforward
+(double kVLinear,
+ double kALinear,
+ double kVAngular,
+ double kAAngular,
+ double trackwidth)
+Creates a new DifferentialDriveFeedforward with the specified parameters.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+DifferentialDriveWheelVoltages
+calculate
+(double currentLeftVelocity,
+ double nextLeftVelocity,
+ double currentRightVelocity,
+ double nextRightVelocity,
+ double dtSeconds)
+Calculates the differential drive feedforward inputs given velocity setpoints.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_kVLinear
+public final
+double
+m_kVLinear
+The linear velocity gain in volts per (meters per second).
+m_kALinear
+public final
+double
+m_kALinear
+The linear acceleration gain in volts per (meters per second squared).
+m_kVAngular
+public final
+double
+m_kVAngular
+The angular velocity gain in volts per (radians per second).
+m_kAAngular
+public final
+double
+m_kAAngular
+The angular acceleration gain in volts per (radians per second squared).
+struct
+public static final
+DifferentialDriveFeedforwardStruct
+struct
+DifferentialDriveFeedforward struct for serialization.
+proto
+public static final
+DifferentialDriveFeedforwardProto
+proto
+DifferentialDriveFeedforward protobuf for serialization.
+Constructor Details
+DifferentialDriveFeedforward
+public
+DifferentialDriveFeedforward
+(double kVLinear,
+ double kALinear,
+ double kVAngular,
+ double kAAngular,
+ double trackwidth)
+Creates a new DifferentialDriveFeedforward with the specified parameters.
+Parameters:
+kVLinear
+- The linear velocity gain in volts per (meters per second).
+kALinear
+- The linear acceleration gain in volts per (meters per second squared).
+kVAngular
+- The angular velocity gain in volts per (radians per second).
+kAAngular
+- The angular acceleration gain in volts per (radians per second squared).
+trackwidth
+- The distance between the differential drive's left and right wheels, in
+     meters.
+DifferentialDriveFeedforward
+public
+DifferentialDriveFeedforward
+(double kVLinear,
+ double kALinear,
+ double kVAngular,
+ double kAAngular)
+Creates a new DifferentialDriveFeedforward with the specified parameters.
+Parameters:
+kVLinear
+- The linear velocity gain in volts per (meters per second).
+kALinear
+- The linear acceleration gain in volts per (meters per second squared).
+kVAngular
+- The angular velocity gain in volts per (meters per second).
+kAAngular
+- The angular acceleration gain in volts per (meters per second squared).
+Method Details
+calculate
+public
+DifferentialDriveWheelVoltages
+calculate
+(double currentLeftVelocity,
+ double nextLeftVelocity,
+ double currentRightVelocity,
+ double nextRightVelocity,
+ double dtSeconds)
+Calculates the differential drive feedforward inputs given velocity setpoints.
+Parameters:
+currentLeftVelocity
+- The current left velocity of the differential drive in
+     meters/second.
+nextLeftVelocity
+- The next left velocity of the differential drive in meters/second.
+currentRightVelocity
+- The current right velocity of the differential drive in
+     meters/second.
+nextRightVelocity
+- The next right velocity of the differential drive in meters/second.
+dtSeconds
+- Discretization timestep.
+Returns:
+A DifferentialDriveWheelVoltages object containing the computed feedforward voltages.

@@ -1,0 +1,336 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.shuffleboard;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.networktables.NetworkTable;
+010
+import java.util.Map;
+011
+012
+/**
+013
+* A generic component in Shuffleboard.
+014
+*
+015
+* @param <C> the self type
+016
+*/
+017
+public abstract class ShuffleboardComponent<C extends ShuffleboardComponent<C>>
+018
+implements ShuffleboardValue {
+019
+private final ShuffleboardContainer m_parent;
+020
+private final String m_title;
+021
+private String m_type;
+022
+private Map<String, Object> m_properties;
+023
+private boolean m_metadataDirty = true;
+024
+private int m_column = -1;
+025
+private int m_row = -1;
+026
+private int m_width = -1;
+027
+private int m_height = -1;
+028
+029
+/**
+030
+* Constructs a ShuffleboardComponent.
+031
+*
+032
+* @param parent The parent container.
+033
+* @param title The component title.
+034
+* @param type The component type.
+035
+*/
+036
+protected ShuffleboardComponent(ShuffleboardContainer parent, String title, String type) {
+037
+m_parent = requireNonNullParam(parent, "parent", "ShuffleboardComponent");
+038
+m_title = requireNonNullParam(title, "title", "ShuffleboardComponent");
+039
+m_type = type;
+040
+}
+041
+042
+/**
+043
+* Constructs a ShuffleboardComponent.
+044
+*
+045
+* @param parent The parent container.
+046
+* @param title The component title.
+047
+*/
+048
+protected ShuffleboardComponent(ShuffleboardContainer parent, String title) {
+049
+this(parent, title, null);
+050
+}
+051
+052
+/**
+053
+* Returns the parent container.
+054
+*
+055
+* @return The parent container.
+056
+*/
+057
+public final ShuffleboardContainer getParent() {
+058
+return m_parent;
+059
+}
+060
+061
+/**
+062
+* Sets the component type.
+063
+*
+064
+* @param type The component type.
+065
+*/
+066
+protected final void setType(String type) {
+067
+m_type = type;
+068
+m_metadataDirty = true;
+069
+}
+070
+071
+/**
+072
+* Returns the component type.
+073
+*
+074
+* @return The component type.
+075
+*/
+076
+public final String getType() {
+077
+return m_type;
+078
+}
+079
+080
+@Override
+081
+public final String getTitle() {
+082
+return m_title;
+083
+}
+084
+085
+/** Gets the custom properties for this component. May be null. */
+086
+final Map<String, Object> getProperties() {
+087
+return m_properties;
+088
+}
+089
+090
+/**
+091
+* Sets custom properties for this component. Property names are case- and whitespace-insensitive
+092
+* (capitalization and spaces do not matter).
+093
+*
+094
+* @param properties the properties for this component
+095
+* @return this component
+096
+*/
+097
+@SuppressWarnings("unchecked")
+098
+public final C withProperties(Map<String, Object> properties) {
+099
+m_properties = properties;
+100
+m_metadataDirty = true;
+101
+return (C) this;
+102
+}
+103
+104
+/**
+105
+* Sets the position of this component in the tab. This has no effect if this component is inside
+106
+* a layout.
+107
+*
+108
+* <p>If the position of a single component is set, it is recommended to set the positions of
+109
+* <i>all</i> components inside a tab to prevent Shuffleboard from automatically placing another
+110
+* component there before the one with the specific position is sent.
+111
+*
+112
+* @param columnIndex the column in the tab to place this component
+113
+* @param rowIndex the row in the tab to place this component
+114
+* @return this component
+115
+*/
+116
+@SuppressWarnings("unchecked")
+117
+public final C withPosition(int columnIndex, int rowIndex) {
+118
+m_column = columnIndex;
+119
+m_row = rowIndex;
+120
+m_metadataDirty = true;
+121
+return (C) this;
+122
+}
+123
+124
+/**
+125
+* Sets the size of this component in the tab. This has no effect if this component is inside a
+126
+* layout.
+127
+*
+128
+* @param width how many columns wide the component should be
+129
+* @param height how many rows high the component should be
+130
+* @return this component
+131
+*/
+132
+@SuppressWarnings("unchecked")
+133
+public final C withSize(int width, int height) {
+134
+m_width = width;
+135
+m_height = height;
+136
+m_metadataDirty = true;
+137
+return (C) this;
+138
+}
+139
+140
+/**
+141
+* Builds NT metadata.
+142
+*
+143
+* @param metaTable The NT metadata table.
+144
+*/
+145
+protected final void buildMetadata(NetworkTable metaTable) {
+146
+if (!m_metadataDirty) {
+147
+return;
+148
+}
+149
+// Component type
+150
+if (getType() == null) {
+151
+metaTable.getEntry("PreferredComponent").unpublish();
+152
+} else {
+153
+metaTable.getEntry("PreferredComponent").setString(getType());
+154
+}
+155
+156
+// Tile size
+157
+if (m_width <= 0 || m_height <= 0) {
+158
+metaTable.getEntry("Size").unpublish();
+159
+} else {
+160
+metaTable.getEntry("Size").setDoubleArray(new double[] {m_width, m_height});
+161
+}
+162
+163
+// Tile position
+164
+if (m_column < 0 || m_row < 0) {
+165
+metaTable.getEntry("Position").unpublish();
+166
+} else {
+167
+metaTable.getEntry("Position").setDoubleArray(new double[] {m_column, m_row});
+168
+}
+169
+170
+// Custom properties
+171
+if (getProperties() != null) {
+172
+NetworkTable propTable = metaTable.getSubTable("Properties");
+173
+getProperties().forEach((name, value) -> propTable.getEntry(name).setValue(value));
+174
+}
+175
+m_metadataDirty = false;
+176
+}
+177
+}

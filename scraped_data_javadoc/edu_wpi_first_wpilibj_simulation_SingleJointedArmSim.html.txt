@@ -1,0 +1,414 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class SingleJointedArmSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.LinearSystemSim
+<
+N2
+,
+N1
+,
+N2
+>
+edu.wpi.first.wpilibj.simulation.SingleJointedArmSim
+public class
+SingleJointedArmSim
+extends
+LinearSystemSim
+<
+N2
+,
+N1
+,
+N2
+>
+Represents a simulated single jointed arm mechanism.
+Field Summary
+Fields inherited from class edu.wpi.first.wpilibj.simulation.
+LinearSystemSim
+m_measurementStdDevs
+,
+m_plant
+,
+m_u
+,
+m_x
+,
+m_y
+Constructor Summary
+Constructors
+Constructor
+Description
+SingleJointedArmSim
+(
+LinearSystem
+<
+N2
+,
+N1
+,
+N2
+> plant,
+DCMotor
+gearbox,
+ double gearing,
+ double armLengthMeters,
+ double minAngleRads,
+ double maxAngleRads,
+ boolean simulateGravity,
+ double startingAngleRads,
+ double... measurementStdDevs)
+Creates a simulated arm mechanism.
+SingleJointedArmSim
+(
+DCMotor
+gearbox,
+ double gearing,
+ double jKgMetersSquared,
+ double armLengthMeters,
+ double minAngleRads,
+ double maxAngleRads,
+ boolean simulateGravity,
+ double startingAngleRads,
+ double... measurementStdDevs)
+Creates a simulated arm mechanism.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static double
+estimateMOI
+(double lengthMeters,
+ double massKg)
+Calculates a rough estimate of the moment of inertia of an arm given its length and mass.
+double
+getAngleRads
+()
+Returns the current arm angle.
+double
+getCurrentDrawAmps
+()
+Returns the arm current draw.
+double
+getVelocityRadPerSec
+()
+Returns the current arm velocity.
+boolean
+hasHitLowerLimit
+()
+Returns whether the arm has hit the lower limit.
+boolean
+hasHitUpperLimit
+()
+Returns whether the arm has hit the upper limit.
+void
+setInputVoltage
+(double volts)
+Sets the input voltage for the arm.
+final void
+setState
+(double angleRadians,
+ double velocityRadPerSec)
+Sets the arm's state.
+protected
+Matrix
+<
+N2
+,
+N1
+>
+updateX
+(
+Matrix
+<
+N2
+,
+N1
+> currentXhat,
+Matrix
+<
+N1
+,
+N1
+> u,
+ double dtSeconds)
+Updates the state of the arm.
+boolean
+wouldHitLowerLimit
+(double currentAngleRads)
+Returns whether the arm would hit the lower limit.
+boolean
+wouldHitUpperLimit
+(double currentAngleRads)
+Returns whether the arm would hit the upper limit.
+Methods inherited from class edu.wpi.first.wpilibj.simulation.
+LinearSystemSim
+clampInput
+,
+getInput
+,
+getInput
+,
+getOutput
+,
+getOutput
+,
+setInput
+,
+setInput
+,
+setInput
+,
+setState
+,
+update
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SingleJointedArmSim
+public
+SingleJointedArmSim
+(
+LinearSystem
+<
+N2
+,
+N1
+,
+N2
+> plant,
+DCMotor
+gearbox,
+ double gearing,
+ double armLengthMeters,
+ double minAngleRads,
+ double maxAngleRads,
+ boolean simulateGravity,
+ double startingAngleRads,
+ double... measurementStdDevs)
+Creates a simulated arm mechanism.
+Parameters:
+plant
+- The linear system that represents the arm. This system can be created with
+LinearSystemId.createSingleJointedArmSystem(DCMotor, double, double)
+.
+gearbox
+- The type of and number of motors in the arm gearbox.
+gearing
+- The gearing of the arm (numbers greater than 1 represent reductions).
+armLengthMeters
+- The length of the arm.
+minAngleRads
+- The minimum angle that the arm is capable of.
+maxAngleRads
+- The maximum angle that the arm is capable of.
+simulateGravity
+- Whether gravity should be simulated or not.
+startingAngleRads
+- The initial position of the Arm simulation in radians.
+measurementStdDevs
+- The standard deviations of the measurements. Can be omitted if no
+     noise is desired. If present must have 1 element for position.
+SingleJointedArmSim
+public
+SingleJointedArmSim
+(
+DCMotor
+gearbox,
+ double gearing,
+ double jKgMetersSquared,
+ double armLengthMeters,
+ double minAngleRads,
+ double maxAngleRads,
+ boolean simulateGravity,
+ double startingAngleRads,
+ double... measurementStdDevs)
+Creates a simulated arm mechanism.
+Parameters:
+gearbox
+- The type of and number of motors in the arm gearbox.
+gearing
+- The gearing of the arm (numbers greater than 1 represent reductions).
+jKgMetersSquared
+- The moment of inertia of the arm; can be calculated from CAD software.
+armLengthMeters
+- The length of the arm.
+minAngleRads
+- The minimum angle that the arm is capable of.
+maxAngleRads
+- The maximum angle that the arm is capable of.
+simulateGravity
+- Whether gravity should be simulated or not.
+startingAngleRads
+- The initial position of the Arm simulation in radians.
+measurementStdDevs
+- The standard deviations of the measurements. Can be omitted if no
+     noise is desired. If present must have 1 element for position.
+Method Details
+setState
+public final
+void
+setState
+(double angleRadians,
+ double velocityRadPerSec)
+Sets the arm's state. The new angle will be limited between the minimum and maximum allowed
+ limits.
+Parameters:
+angleRadians
+- The new angle in radians.
+velocityRadPerSec
+- The new angular velocity in radians per second.
+wouldHitLowerLimit
+public
+boolean
+wouldHitLowerLimit
+(double currentAngleRads)
+Returns whether the arm would hit the lower limit.
+Parameters:
+currentAngleRads
+- The current arm height.
+Returns:
+Whether the arm would hit the lower limit.
+wouldHitUpperLimit
+public
+boolean
+wouldHitUpperLimit
+(double currentAngleRads)
+Returns whether the arm would hit the upper limit.
+Parameters:
+currentAngleRads
+- The current arm height.
+Returns:
+Whether the arm would hit the upper limit.
+hasHitLowerLimit
+public
+boolean
+hasHitLowerLimit
+()
+Returns whether the arm has hit the lower limit.
+Returns:
+Whether the arm has hit the lower limit.
+hasHitUpperLimit
+public
+boolean
+hasHitUpperLimit
+()
+Returns whether the arm has hit the upper limit.
+Returns:
+Whether the arm has hit the upper limit.
+getAngleRads
+public
+double
+getAngleRads
+()
+Returns the current arm angle.
+Returns:
+The current arm angle.
+getVelocityRadPerSec
+public
+double
+getVelocityRadPerSec
+()
+Returns the current arm velocity.
+Returns:
+The current arm velocity.
+getCurrentDrawAmps
+public
+double
+getCurrentDrawAmps
+()
+Returns the arm current draw.
+Returns:
+The arm current draw.
+setInputVoltage
+public
+void
+setInputVoltage
+(double volts)
+Sets the input voltage for the arm.
+Parameters:
+volts
+- The input voltage.
+estimateMOI
+public static
+double
+estimateMOI
+(double lengthMeters,
+ double massKg)
+Calculates a rough estimate of the moment of inertia of an arm given its length and mass.
+Parameters:
+lengthMeters
+- The length of the arm.
+massKg
+- The mass of the arm.
+Returns:
+The calculated moment of inertia.
+updateX
+protected
+Matrix
+<
+N2
+,
+N1
+>
+updateX
+(
+Matrix
+<
+N2
+,
+N1
+> currentXhat,
+Matrix
+<
+N1
+,
+N1
+> u,
+ double dtSeconds)
+Updates the state of the arm.
+Overrides:
+updateX
+in class
+LinearSystemSim
+<
+N2
+,
+N1
+,
+N2
+>
+Parameters:
+currentXhat
+- The current state estimate.
+u
+- The system inputs (voltage).
+dtSeconds
+- The time difference between controller updates.
+Returns:
+The new state.

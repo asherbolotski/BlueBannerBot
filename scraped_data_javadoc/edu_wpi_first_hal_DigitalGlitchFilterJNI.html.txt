@@ -1,0 +1,135 @@
+Package
+edu.wpi.first.hal
+Class DigitalGlitchFilterJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.DigitalGlitchFilterJNI
+public class
+DigitalGlitchFilterJNI
+extends
+JNIWrapper
+Digital Glitch Filter JNI functions.
+See Also:
+"hal/DIO.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static int
+getFilterPeriod
+(int filterIndex)
+Gets the filter period for the specified filter index.
+static int
+getFilterSelect
+(int digitalPortHandle)
+Reads the filter index from the FPGA.
+static void
+setFilterPeriod
+(int filterIndex,
+ int fpgaCycles)
+Sets the filter period for the specified filter index.
+static void
+setFilterSelect
+(int digitalPortHandle,
+ int filterIndex)
+Writes the filter index from the FPGA.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+setFilterSelect
+public static
+void
+setFilterSelect
+(int digitalPortHandle,
+ int filterIndex)
+Writes the filter index from the FPGA.
+Set the filter index used to filter out short pulses.
+Parameters:
+digitalPortHandle
+- the digital port handle
+filterIndex
+- the filter index (Must be in the range 0 - 3, where 0 means "none" and 1 - 3
+     means filter # filterIndex - 1)
+See Also:
+"HAL_SetFilterSelect"
+getFilterSelect
+public static
+int
+getFilterSelect
+(int digitalPortHandle)
+Reads the filter index from the FPGA.
+Gets the filter index used to filter out short pulses.
+Parameters:
+digitalPortHandle
+- the digital port handle
+Returns:
+the filter index (Must be in the range 0 - 3, where 0 means "none" and 1 - 3 means
+     filter # filterIndex - 1)
+See Also:
+"HAL_GetFilterSelect"
+setFilterPeriod
+public static
+void
+setFilterPeriod
+(int filterIndex,
+ int fpgaCycles)
+Sets the filter period for the specified filter index.
+Sets the filter period in FPGA cycles. Even though there are 2 different filter index
+ domains (MXP vs HDR), ignore that distinction for now since it complicates the interface. That
+ can be changed later.
+Parameters:
+filterIndex
+- the filter index, 0 - 2
+fpgaCycles
+- the number of cycles that the signal must not transition to be counted as a
+     transition.
+See Also:
+"HAL_SetFilterPeriod"
+getFilterPeriod
+public static
+int
+getFilterPeriod
+(int filterIndex)
+Gets the filter period for the specified filter index.
+Gets the filter period in FPGA cycles. Even though there are 2 different filter index
+ domains (MXP vs HDR), ignore that distinction for now since it complicates the interface.
+Parameters:
+filterIndex
+- the filter index, 0 - 2
+Returns:
+The number of FPGA cycles of the filter period.
+See Also:
+"HAL_GetFilterPeriod"

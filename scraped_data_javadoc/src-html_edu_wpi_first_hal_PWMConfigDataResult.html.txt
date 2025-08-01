@@ -1,0 +1,57 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/** Structure for holding the config data result for PWM. */
+008
+@SuppressWarnings("MemberName")
+009
+public class PWMConfigDataResult {
+010
+PWMConfigDataResult(int max, int deadbandMax, int center, int deadbandMin, int min) {
+011
+this.max = max;
+012
+this.deadbandMax = deadbandMax;
+013
+this.center = center;
+014
+this.deadbandMin = deadbandMin;
+015
+this.min = min;
+016
+}
+017
+018
+/** The maximum PWM value in microseconds. */
+019
+public int max;
+020
+021
+/** The deadband maximum PWM value in microseconds. */
+022
+public int deadbandMax;
+023
+024
+/** The center PWM value in microseconds. */
+025
+public int center;
+026
+027
+/** The deadband minimum PWM value in microseconds. */
+028
+public int deadbandMin;
+029
+030
+/** The minimum PWM value in microseconds. */
+031
+public int min;
+032
+}

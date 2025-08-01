@@ -1,0 +1,273 @@
+Package
+edu.wpi.first.wpilibj.smartdashboard
+Class MechanismLigament2d
+java.lang.Object
+edu.wpi.first.wpilibj.smartdashboard.MechanismObject2d
+edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d
+All Implemented Interfaces:
+AutoCloseable
+public class
+MechanismLigament2d
+extends
+MechanismObject2d
+Ligament node on a Mechanism2d. A ligament can have its length changed (like an elevator) or
+ angle changed, like an arm.
+See Also:
+Mechanism2d
+Constructor Summary
+Constructors
+Constructor
+Description
+MechanismLigament2d
+(
+String
+name,
+ double length,
+ double angle)
+Create a new ligament with the default color (orange) and thickness (6).
+MechanismLigament2d
+(
+String
+name,
+ double length,
+ double angle,
+ double lineWidth,
+Color8Bit
+color)
+Create a new ligament.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+double
+getAngle
+()
+Get the ligament's angle relative to its parent.
+Color8Bit
+getColor
+()
+Get the ligament color.
+double
+getLength
+()
+Get the ligament length.
+double
+getLineWeight
+()
+Get the line thickness.
+final void
+setAngle
+(double degrees)
+Set the ligament's angle relative to its parent.
+void
+setAngle
+(
+Rotation2d
+angle)
+Set the ligament's angle relative to its parent.
+final void
+setColor
+(
+Color8Bit
+color)
+Set the ligament color.
+final void
+setLength
+(double length)
+Set the ligament's length.
+final void
+setLineWeight
+(double weight)
+Set the line thickness.
+protected void
+updateEntries
+(
+NetworkTable
+table)
+Update this object's entries with new ones from a new table.
+Methods inherited from class edu.wpi.first.wpilibj.smartdashboard.
+MechanismObject2d
+append
+,
+getName
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MechanismLigament2d
+public
+MechanismLigament2d
+(
+String
+name,
+ double length,
+ double angle,
+ double lineWidth,
+Color8Bit
+color)
+Create a new ligament.
+Parameters:
+name
+- The ligament name.
+length
+- The ligament length.
+angle
+- The ligament angle in degrees.
+lineWidth
+- The ligament's line width.
+color
+- The ligament's color.
+MechanismLigament2d
+public
+MechanismLigament2d
+(
+String
+name,
+ double length,
+ double angle)
+Create a new ligament with the default color (orange) and thickness (6).
+Parameters:
+name
+- The ligament's name.
+length
+- The ligament's length.
+angle
+- The ligament's angle relative to its parent in degrees.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+Overrides:
+close
+in class
+MechanismObject2d
+setAngle
+public final
+void
+setAngle
+(double degrees)
+Set the ligament's angle relative to its parent.
+Parameters:
+degrees
+- the angle in degrees
+setAngle
+public
+void
+setAngle
+(
+Rotation2d
+angle)
+Set the ligament's angle relative to its parent.
+Parameters:
+angle
+- the angle
+getAngle
+public
+double
+getAngle
+()
+Get the ligament's angle relative to its parent.
+Returns:
+the angle in degrees
+setLength
+public final
+void
+setLength
+(double length)
+Set the ligament's length.
+Parameters:
+length
+- the line length
+getLength
+public
+double
+getLength
+()
+Get the ligament length.
+Returns:
+the line length
+setColor
+public final
+void
+setColor
+(
+Color8Bit
+color)
+Set the ligament color.
+Parameters:
+color
+- the color of the line
+getColor
+public
+Color8Bit
+getColor
+()
+Get the ligament color.
+Returns:
+the color of the line
+setLineWeight
+public final
+void
+setLineWeight
+(double weight)
+Set the line thickness.
+Parameters:
+weight
+- the line thickness
+getLineWeight
+public
+double
+getLineWeight
+()
+Get the line thickness.
+Returns:
+the line thickness
+updateEntries
+protected
+void
+updateEntries
+(
+NetworkTable
+table)
+Description copied from class:
+MechanismObject2d
+Update this object's entries with new ones from a new table.
+Specified by:
+updateEntries
+in class
+MechanismObject2d
+Parameters:
+table
+- the new table.

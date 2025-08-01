@@ -1,0 +1,773 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics;
+006
+007
+import static edu.wpi.first.units.Units.MetersPerSecond;
+008
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+009
+import static edu.wpi.first.units.Units.Seconds;
+010
+011
+import edu.wpi.first.math.geometry.Pose2d;
+012
+import edu.wpi.first.math.geometry.Rotation2d;
+013
+import edu.wpi.first.math.geometry.Translation2d;
+014
+import edu.wpi.first.math.geometry.Twist2d;
+015
+import edu.wpi.first.math.kinematics.proto.ChassisSpeedsProto;
+016
+import edu.wpi.first.math.kinematics.struct.ChassisSpeedsStruct;
+017
+import edu.wpi.first.units.measure.AngularVelocity;
+018
+import edu.wpi.first.units.measure.LinearVelocity;
+019
+import edu.wpi.first.units.measure.Time;
+020
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+021
+import edu.wpi.first.util.struct.StructSerializable;
+022
+import java.util.Objects;
+023
+024
+/**
+025
+* Represents the speed of a robot chassis. Although this class contains similar members compared to
+026
+* a Twist2d, they do NOT represent the same thing. Whereas a Twist2d represents a change in pose
+027
+* w.r.t to the robot frame of reference, a ChassisSpeeds object represents a robot's velocity.
+028
+*
+029
+* <p>A strictly non-holonomic drivetrain, such as a differential drive, should never have a dy
+030
+* component because it can never move sideways. Holonomic drivetrains such as swerve and mecanum
+031
+* will often have all three components.
+032
+*/
+033
+public class ChassisSpeeds implements ProtobufSerializable, StructSerializable {
+034
+/** Velocity along the x-axis. (Fwd is +) */
+035
+public double vxMetersPerSecond;
+036
+037
+/** Velocity along the y-axis. (Left is +) */
+038
+public double vyMetersPerSecond;
+039
+040
+/** Represents the angular velocity of the robot frame. (CCW is +) */
+041
+public double omegaRadiansPerSecond;
+042
+043
+/** ChassisSpeeds protobuf for serialization. */
+044
+public static final ChassisSpeedsProto proto = new ChassisSpeedsProto();
+045
+046
+/** ChassisSpeeds struct for serialization. */
+047
+public static final ChassisSpeedsStruct struct = new ChassisSpeedsStruct();
+048
+049
+/** Constructs a ChassisSpeeds with zeros for dx, dy, and theta. */
+050
+public ChassisSpeeds() {}
+051
+052
+/**
+053
+* Constructs a ChassisSpeeds object.
+054
+*
+055
+* @param vxMetersPerSecond Forward velocity.
+056
+* @param vyMetersPerSecond Sideways velocity.
+057
+* @param omegaRadiansPerSecond Angular velocity.
+058
+*/
+059
+public ChassisSpeeds(
+060
+double vxMetersPerSecond, double vyMetersPerSecond, double omegaRadiansPerSecond) {
+061
+this.vxMetersPerSecond = vxMetersPerSecond;
+062
+this.vyMetersPerSecond = vyMetersPerSecond;
+063
+this.omegaRadiansPerSecond = omegaRadiansPerSecond;
+064
+}
+065
+066
+/**
+067
+* Constructs a ChassisSpeeds object.
+068
+*
+069
+* @param vx Forward velocity.
+070
+* @param vy Sideways velocity.
+071
+* @param omega Angular velocity.
+072
+*/
+073
+public ChassisSpeeds(LinearVelocity vx, LinearVelocity vy, AngularVelocity omega) {
+074
+this(vx.in(MetersPerSecond), vy.in(MetersPerSecond), omega.in(RadiansPerSecond));
+075
+}
+076
+077
+/**
+078
+* Creates a Twist2d from ChassisSpeeds.
+079
+*
+080
+* @param dtSeconds The duration of the timestep.
+081
+* @return Twist2d.
+082
+*/
+083
+public Twist2d toTwist2d(double dtSeconds) {
+084
+return new Twist2d(
+085
+vxMetersPerSecond * dtSeconds,
+086
+vyMetersPerSecond * dtSeconds,
+087
+omegaRadiansPerSecond * dtSeconds);
+088
+}
+089
+090
+/**
+091
+* Discretizes a continuous-time chassis speed.
+092
+*
+093
+* <p>This function converts a continuous-time chassis speed into a discrete-time one such that
+094
+* when the discrete-time chassis speed is applied for one timestep, the robot moves as if the
+095
+* velocity components are independent (i.e., the robot moves v_x * dt along the x-axis, v_y * dt
+096
+* along the y-axis, and omega * dt around the z-axis).
+097
+*
+098
+* <p>This is useful for compensating for translational skew when translating and rotating a
+099
+* holonomic (swerve or mecanum) drivetrain. However, scaling down the ChassisSpeeds after
+100
+* discretizing (e.g., when desaturating swerve module speeds) rotates the direction of net motion
+101
+* in the opposite direction of rotational velocity, introducing a different translational skew
+102
+* which is not accounted for by discretization.
+103
+*
+104
+* @param vxMetersPerSecond Forward velocity.
+105
+* @param vyMetersPerSecond Sideways velocity.
+106
+* @param omegaRadiansPerSecond Angular velocity.
+107
+* @param dtSeconds The duration of the timestep the speeds should be applied for.
+108
+* @return Discretized ChassisSpeeds.
+109
+*/
+110
+public static ChassisSpeeds discretize(
+111
+double vxMetersPerSecond,
+112
+double vyMetersPerSecond,
+113
+double omegaRadiansPerSecond,
+114
+double dtSeconds) {
+115
+// Construct the desired pose after a timestep, relative to the current pose. The desired pose
+116
+// has decoupled translation and rotation.
+117
+var desiredDeltaPose =
+118
+new Pose2d(
+119
+vxMetersPerSecond * dtSeconds,
+120
+vyMetersPerSecond * dtSeconds,
+121
+new Rotation2d(omegaRadiansPerSecond * dtSeconds));
+122
+123
+// Find the chassis translation/rotation deltas in the robot frame that move the robot from its
+124
+// current pose to the desired pose
+125
+var twist = Pose2d.kZero.log(desiredDeltaPose);
+126
+127
+// Turn the chassis translation/rotation deltas into average velocities
+128
+return new ChassisSpeeds(twist.dx / dtSeconds, twist.dy / dtSeconds, twist.dtheta / dtSeconds);
+129
+}
+130
+131
+/**
+132
+* Discretizes a continuous-time chassis speed.
+133
+*
+134
+* <p>This function converts a continuous-time chassis speed into a discrete-time one such that
+135
+* when the discrete-time chassis speed is applied for one timestep, the robot moves as if the
+136
+* velocity components are independent (i.e., the robot moves v_x * dt along the x-axis, v_y * dt
+137
+* along the y-axis, and omega * dt around the z-axis).
+138
+*
+139
+* <p>This is useful for compensating for translational skew when translating and rotating a
+140
+* holonomic (swerve or mecanum) drivetrain. However, scaling down the ChassisSpeeds after
+141
+* discretizing (e.g., when desaturating swerve module speeds) rotates the direction of net motion
+142
+* in the opposite direction of rotational velocity, introducing a different translational skew
+143
+* which is not accounted for by discretization.
+144
+*
+145
+* @param vx Forward velocity.
+146
+* @param vy Sideways velocity.
+147
+* @param omega Angular velocity.
+148
+* @param dt The duration of the timestep the speeds should be applied for.
+149
+* @return Discretized ChassisSpeeds.
+150
+*/
+151
+public static ChassisSpeeds discretize(
+152
+LinearVelocity vx, LinearVelocity vy, AngularVelocity omega, Time dt) {
+153
+return discretize(
+154
+vx.in(MetersPerSecond), vy.in(MetersPerSecond), omega.in(RadiansPerSecond), dt.in(Seconds));
+155
+}
+156
+157
+/**
+158
+* Discretizes a continuous-time chassis speed.
+159
+*
+160
+* <p>This function converts a continuous-time chassis speed into a discrete-time one such that
+161
+* when the discrete-time chassis speed is applied for one timestep, the robot moves as if the
+162
+* velocity components are independent (i.e., the robot moves v_x * dt along the x-axis, v_y * dt
+163
+* along the y-axis, and omega * dt around the z-axis).
+164
+*
+165
+* <p>This is useful for compensating for translational skew when translating and rotating a
+166
+* holonomic (swerve or mecanum) drivetrain. However, scaling down the ChassisSpeeds after
+167
+* discretizing (e.g., when desaturating swerve module speeds) rotates the direction of net motion
+168
+* in the opposite direction of rotational velocity, introducing a different translational skew
+169
+* which is not accounted for by discretization.
+170
+*
+171
+* @param continuousSpeeds The continuous speeds.
+172
+* @param dtSeconds The duration of the timestep the speeds should be applied for.
+173
+* @return Discretized ChassisSpeeds.
+174
+*/
+175
+public static ChassisSpeeds discretize(ChassisSpeeds continuousSpeeds, double dtSeconds) {
+176
+return discretize(
+177
+continuousSpeeds.vxMetersPerSecond,
+178
+continuousSpeeds.vyMetersPerSecond,
+179
+continuousSpeeds.omegaRadiansPerSecond,
+180
+dtSeconds);
+181
+}
+182
+183
+/**
+184
+* Converts a user provided field-relative set of speeds into a robot-relative ChassisSpeeds
+185
+* object.
+186
+*
+187
+* @param vxMetersPerSecond The component of speed in the x direction relative to the field.
+188
+*     Positive x is away from your alliance wall.
+189
+* @param vyMetersPerSecond The component of speed in the y direction relative to the field.
+190
+*     Positive y is to your left when standing behind the alliance wall.
+191
+* @param omegaRadiansPerSecond The angular rate of the robot.
+192
+* @param robotAngle The angle of the robot as measured by a gyroscope. The robot's angle is
+193
+*     considered to be zero when it is facing directly away from your alliance station wall.
+194
+*     Remember that this should be CCW positive.
+195
+* @return ChassisSpeeds object representing the speeds in the robot's frame of reference.
+196
+*/
+197
+public static ChassisSpeeds fromFieldRelativeSpeeds(
+198
+double vxMetersPerSecond,
+199
+double vyMetersPerSecond,
+200
+double omegaRadiansPerSecond,
+201
+Rotation2d robotAngle) {
+202
+// CW rotation into chassis frame
+203
+var rotated =
+204
+new Translation2d(vxMetersPerSecond, vyMetersPerSecond).rotateBy(robotAngle.unaryMinus());
+205
+return new ChassisSpeeds(rotated.getX(), rotated.getY(), omegaRadiansPerSecond);
+206
+}
+207
+208
+/**
+209
+* Converts a user provided field-relative set of speeds into a robot-relative ChassisSpeeds
+210
+* object.
+211
+*
+212
+* @param vx The component of speed in the x direction relative to the field. Positive x is away
+213
+*     from your alliance wall.
+214
+* @param vy The component of speed in the y direction relative to the field. Positive y is to
+215
+*     your left when standing behind the alliance wall.
+216
+* @param omega The angular rate of the robot.
+217
+* @param robotAngle The angle of the robot as measured by a gyroscope. The robot's angle is
+218
+*     considered to be zero when it is facing directly away from your alliance station wall.
+219
+*     Remember that this should be CCW positive.
+220
+* @return ChassisSpeeds object representing the speeds in the robot's frame of reference.
+221
+*/
+222
+public static ChassisSpeeds fromFieldRelativeSpeeds(
+223
+LinearVelocity vx, LinearVelocity vy, AngularVelocity omega, Rotation2d robotAngle) {
+224
+return fromFieldRelativeSpeeds(
+225
+vx.in(MetersPerSecond), vy.in(MetersPerSecond), omega.in(RadiansPerSecond), robotAngle);
+226
+}
+227
+228
+/**
+229
+* Converts a user provided field-relative ChassisSpeeds object into a robot-relative
+230
+* ChassisSpeeds object.
+231
+*
+232
+* @param fieldRelativeSpeeds The ChassisSpeeds object representing the speeds in the field frame
+233
+*     of reference. Positive x is away from your alliance wall. Positive y is to your left when
+234
+*     standing behind the alliance wall.
+235
+* @param robotAngle The angle of the robot as measured by a gyroscope. The robot's angle is
+236
+*     considered to be zero when it is facing directly away from your alliance station wall.
+237
+*     Remember that this should be CCW positive.
+238
+* @return ChassisSpeeds object representing the speeds in the robot's frame of reference.
+239
+*/
+240
+public static ChassisSpeeds fromFieldRelativeSpeeds(
+241
+ChassisSpeeds fieldRelativeSpeeds, Rotation2d robotAngle) {
+242
+return fromFieldRelativeSpeeds(
+243
+fieldRelativeSpeeds.vxMetersPerSecond,
+244
+fieldRelativeSpeeds.vyMetersPerSecond,
+245
+fieldRelativeSpeeds.omegaRadiansPerSecond,
+246
+robotAngle);
+247
+}
+248
+249
+/**
+250
+* Converts a user provided robot-relative set of speeds into a field-relative ChassisSpeeds
+251
+* object.
+252
+*
+253
+* @param vxMetersPerSecond The component of speed in the x direction relative to the robot.
+254
+*     Positive x is towards the robot's front.
+255
+* @param vyMetersPerSecond The component of speed in the y direction relative to the robot.
+256
+*     Positive y is towards the robot's left.
+257
+* @param omegaRadiansPerSecond The angular rate of the robot.
+258
+* @param robotAngle The angle of the robot as measured by a gyroscope. The robot's angle is
+259
+*     considered to be zero when it is facing directly away from your alliance station wall.
+260
+*     Remember that this should be CCW positive.
+261
+* @return ChassisSpeeds object representing the speeds in the field's frame of reference.
+262
+*/
+263
+public static ChassisSpeeds fromRobotRelativeSpeeds(
+264
+double vxMetersPerSecond,
+265
+double vyMetersPerSecond,
+266
+double omegaRadiansPerSecond,
+267
+Rotation2d robotAngle) {
+268
+// CCW rotation out of chassis frame
+269
+var rotated = new Translation2d(vxMetersPerSecond, vyMetersPerSecond).rotateBy(robotAngle);
+270
+return new ChassisSpeeds(rotated.getX(), rotated.getY(), omegaRadiansPerSecond);
+271
+}
+272
+273
+/**
+274
+* Converts a user provided robot-relative set of speeds into a field-relative ChassisSpeeds
+275
+* object.
+276
+*
+277
+* @param vx The component of speed in the x direction relative to the robot. Positive x is
+278
+*     towards the robot's front.
+279
+* @param vy The component of speed in the y direction relative to the robot. Positive y is
+280
+*     towards the robot's left.
+281
+* @param omega The angular rate of the robot.
+282
+* @param robotAngle The angle of the robot as measured by a gyroscope. The robot's angle is
+283
+*     considered to be zero when it is facing directly away from your alliance station wall.
+284
+*     Remember that this should be CCW positive.
+285
+* @return ChassisSpeeds object representing the speeds in the field's frame of reference.
+286
+*/
+287
+public static ChassisSpeeds fromRobotRelativeSpeeds(
+288
+LinearVelocity vx, LinearVelocity vy, AngularVelocity omega, Rotation2d robotAngle) {
+289
+return fromRobotRelativeSpeeds(
+290
+vx.in(MetersPerSecond), vy.in(MetersPerSecond), omega.in(RadiansPerSecond), robotAngle);
+291
+}
+292
+293
+/**
+294
+* Converts a user provided robot-relative ChassisSpeeds object into a field-relative
+295
+* ChassisSpeeds object.
+296
+*
+297
+* @param robotRelativeSpeeds The ChassisSpeeds object representing the speeds in the robot frame
+298
+*     of reference. Positive x is towards the robot's front. Positive y is towards the robot's
+299
+*     left.
+300
+* @param robotAngle The angle of the robot as measured by a gyroscope. The robot's angle is
+301
+*     considered to be zero when it is facing directly away from your alliance station wall.
+302
+*     Remember that this should be CCW positive.
+303
+* @return ChassisSpeeds object representing the speeds in the field's frame of reference.
+304
+*/
+305
+public static ChassisSpeeds fromRobotRelativeSpeeds(
+306
+ChassisSpeeds robotRelativeSpeeds, Rotation2d robotAngle) {
+307
+return fromRobotRelativeSpeeds(
+308
+robotRelativeSpeeds.vxMetersPerSecond,
+309
+robotRelativeSpeeds.vyMetersPerSecond,
+310
+robotRelativeSpeeds.omegaRadiansPerSecond,
+311
+robotAngle);
+312
+}
+313
+314
+/**
+315
+* Adds two ChassisSpeeds and returns the sum.
+316
+*
+317
+* <p>For example, ChassisSpeeds{1.0, 0.5, 0.75} + ChassisSpeeds{2.0, 1.5, 0.25} =
+318
+* ChassisSpeeds{3.0, 2.0, 1.0}
+319
+*
+320
+* @param other The ChassisSpeeds to add.
+321
+* @return The sum of the ChassisSpeeds.
+322
+*/
+323
+public ChassisSpeeds plus(ChassisSpeeds other) {
+324
+return new ChassisSpeeds(
+325
+vxMetersPerSecond + other.vxMetersPerSecond,
+326
+vyMetersPerSecond + other.vyMetersPerSecond,
+327
+omegaRadiansPerSecond + other.omegaRadiansPerSecond);
+328
+}
+329
+330
+/**
+331
+* Subtracts the other ChassisSpeeds from the current ChassisSpeeds and returns the difference.
+332
+*
+333
+* <p>For example, ChassisSpeeds{5.0, 4.0, 2.0} - ChassisSpeeds{1.0, 2.0, 1.0} =
+334
+* ChassisSpeeds{4.0, 2.0, 1.0}
+335
+*
+336
+* @param other The ChassisSpeeds to subtract.
+337
+* @return The difference between the two ChassisSpeeds.
+338
+*/
+339
+public ChassisSpeeds minus(ChassisSpeeds other) {
+340
+return new ChassisSpeeds(
+341
+vxMetersPerSecond - other.vxMetersPerSecond,
+342
+vyMetersPerSecond - other.vyMetersPerSecond,
+343
+omegaRadiansPerSecond - other.omegaRadiansPerSecond);
+344
+}
+345
+346
+/**
+347
+* Returns the inverse of the current ChassisSpeeds. This is equivalent to negating all components
+348
+* of the ChassisSpeeds.
+349
+*
+350
+* @return The inverse of the current ChassisSpeeds.
+351
+*/
+352
+public ChassisSpeeds unaryMinus() {
+353
+return new ChassisSpeeds(-vxMetersPerSecond, -vyMetersPerSecond, -omegaRadiansPerSecond);
+354
+}
+355
+356
+/**
+357
+* Multiplies the ChassisSpeeds by a scalar and returns the new ChassisSpeeds.
+358
+*
+359
+* <p>For example, ChassisSpeeds{2.0, 2.5, 1.0} * 2 = ChassisSpeeds{4.0, 5.0, 1.0}
+360
+*
+361
+* @param scalar The scalar to multiply by.
+362
+* @return The scaled ChassisSpeeds.
+363
+*/
+364
+public ChassisSpeeds times(double scalar) {
+365
+return new ChassisSpeeds(
+366
+vxMetersPerSecond * scalar, vyMetersPerSecond * scalar, omegaRadiansPerSecond * scalar);
+367
+}
+368
+369
+/**
+370
+* Divides the ChassisSpeeds by a scalar and returns the new ChassisSpeeds.
+371
+*
+372
+* <p>For example, ChassisSpeeds{2.0, 2.5, 1.0} / 2 = ChassisSpeeds{1.0, 1.25, 0.5}
+373
+*
+374
+* @param scalar The scalar to divide by.
+375
+* @return The scaled ChassisSpeeds.
+376
+*/
+377
+public ChassisSpeeds div(double scalar) {
+378
+return new ChassisSpeeds(
+379
+vxMetersPerSecond / scalar, vyMetersPerSecond / scalar, omegaRadiansPerSecond / scalar);
+380
+}
+381
+382
+@Override
+383
+public final int hashCode() {
+384
+return Objects.hash(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+385
+}
+386
+387
+@Override
+388
+public boolean equals(Object o) {
+389
+return o == this
+390
+|| o instanceof ChassisSpeeds c
+391
+&& vxMetersPerSecond == c.vxMetersPerSecond
+392
+&& vyMetersPerSecond == c.vyMetersPerSecond
+393
+&& omegaRadiansPerSecond == c.omegaRadiansPerSecond;
+394
+}
+395
+396
+@Override
+397
+public String toString() {
+398
+return String.format(
+399
+"ChassisSpeeds(Vx: %.2f m/s, Vy: %.2f m/s, Omega: %.2f rad/s)",
+400
+vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+401
+}
+402
+}

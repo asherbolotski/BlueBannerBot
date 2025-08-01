@@ -1,0 +1,528 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math;
+006
+007
+import edu.wpi.first.math.geometry.Translation2d;
+008
+import edu.wpi.first.math.geometry.Translation3d;
+009
+010
+/** Math utility functions. */
+011
+public final class MathUtil {
+012
+private MathUtil() {
+013
+throw new AssertionError("utility class");
+014
+}
+015
+016
+/**
+017
+* Returns value clamped between low and high boundaries.
+018
+*
+019
+* @param value Value to clamp.
+020
+* @param low The lower boundary to which to clamp value.
+021
+* @param high The higher boundary to which to clamp value.
+022
+* @return The clamped value.
+023
+*/
+024
+public static int clamp(int value, int low, int high) {
+025
+return Math.max(low, Math.min(value, high));
+026
+}
+027
+028
+/**
+029
+* Returns value clamped between low and high boundaries.
+030
+*
+031
+* @param value Value to clamp.
+032
+* @param low The lower boundary to which to clamp value.
+033
+* @param high The higher boundary to which to clamp value.
+034
+* @return The clamped value.
+035
+*/
+036
+public static double clamp(double value, double low, double high) {
+037
+return Math.max(low, Math.min(value, high));
+038
+}
+039
+040
+/**
+041
+* Returns 0.0 if the given value is within the specified range around zero. The remaining range
+042
+* between the deadband and the maximum magnitude is scaled from 0.0 to the maximum magnitude.
+043
+*
+044
+* @param value Value to clip.
+045
+* @param deadband Range around zero.
+046
+* @param maxMagnitude The maximum magnitude of the input. Can be infinite.
+047
+* @return The value after the deadband is applied.
+048
+*/
+049
+public static double applyDeadband(double value, double deadband, double maxMagnitude) {
+050
+if (Math.abs(value) > deadband) {
+051
+if (maxMagnitude / deadband > 1.0e12) {
+052
+// If max magnitude is sufficiently large, the implementation encounters
+053
+// roundoff error.  Implementing the limiting behavior directly avoids
+054
+// the problem.
+055
+return value > 0.0 ? value - deadband : value + deadband;
+056
+}
+057
+if (value > 0.0) {
+058
+// Map deadband to 0 and map max to max.
+059
+//
+060
+// y - y₁ = m(x - x₁)
+061
+// y - y₁ = (y₂ - y₁)/(x₂ - x₁) (x - x₁)
+062
+// y = (y₂ - y₁)/(x₂ - x₁) (x - x₁) + y₁
+063
+//
+064
+// (x₁, y₁) = (deadband, 0) and (x₂, y₂) = (max, max).
+065
+// x₁ = deadband
+066
+// y₁ = 0
+067
+// x₂ = max
+068
+// y₂ = max
+069
+//
+070
+// y = (max - 0)/(max - deadband) (x - deadband) + 0
+071
+// y = max/(max - deadband) (x - deadband)
+072
+// y = max (x - deadband)/(max - deadband)
+073
+return maxMagnitude * (value - deadband) / (maxMagnitude - deadband);
+074
+} else {
+075
+// Map -deadband to 0 and map -max to -max.
+076
+//
+077
+// y - y₁ = m(x - x₁)
+078
+// y - y₁ = (y₂ - y₁)/(x₂ - x₁) (x - x₁)
+079
+// y = (y₂ - y₁)/(x₂ - x₁) (x - x₁) + y₁
+080
+//
+081
+// (x₁, y₁) = (-deadband, 0) and (x₂, y₂) = (-max, -max).
+082
+// x₁ = -deadband
+083
+// y₁ = 0
+084
+// x₂ = -max
+085
+// y₂ = -max
+086
+//
+087
+// y = (-max - 0)/(-max + deadband) (x + deadband) + 0
+088
+// y = max/(max - deadband) (x + deadband)
+089
+// y = max (x + deadband)/(max - deadband)
+090
+return maxMagnitude * (value + deadband) / (maxMagnitude - deadband);
+091
+}
+092
+} else {
+093
+return 0.0;
+094
+}
+095
+}
+096
+097
+/**
+098
+* Returns 0.0 if the given value is within the specified range around zero. The remaining range
+099
+* between the deadband and 1.0 is scaled from 0.0 to 1.0.
+100
+*
+101
+* @param value Value to clip.
+102
+* @param deadband Range around zero.
+103
+* @return The value after the deadband is applied.
+104
+*/
+105
+public static double applyDeadband(double value, double deadband) {
+106
+return applyDeadband(value, deadband, 1);
+107
+}
+108
+109
+/**
+110
+* Returns modulus of input.
+111
+*
+112
+* @param input Input value to wrap.
+113
+* @param minimumInput The minimum value expected from the input.
+114
+* @param maximumInput The maximum value expected from the input.
+115
+* @return The wrapped value.
+116
+*/
+117
+public static double inputModulus(double input, double minimumInput, double maximumInput) {
+118
+double modulus = maximumInput - minimumInput;
+119
+120
+// Wrap input if it's above the maximum input
+121
+int numMax = (int) ((input - minimumInput) / modulus);
+122
+input -= numMax * modulus;
+123
+124
+// Wrap input if it's below the minimum input
+125
+int numMin = (int) ((input - maximumInput) / modulus);
+126
+input -= numMin * modulus;
+127
+128
+return input;
+129
+}
+130
+131
+/**
+132
+* Wraps an angle to the range -π to π radians.
+133
+*
+134
+* @param angleRadians Angle to wrap in radians.
+135
+* @return The wrapped angle.
+136
+*/
+137
+public static double angleModulus(double angleRadians) {
+138
+return inputModulus(angleRadians, -Math.PI, Math.PI);
+139
+}
+140
+141
+/**
+142
+* Perform linear interpolation between two values.
+143
+*
+144
+* @param startValue The value to start at.
+145
+* @param endValue The value to end at.
+146
+* @param t How far between the two values to interpolate. This is clamped to [0, 1].
+147
+* @return The interpolated value.
+148
+*/
+149
+public static double interpolate(double startValue, double endValue, double t) {
+150
+return startValue + (endValue - startValue) * MathUtil.clamp(t, 0, 1);
+151
+}
+152
+153
+/**
+154
+* Return where within interpolation range [0, 1] q is between startValue and endValue.
+155
+*
+156
+* @param startValue Lower part of interpolation range.
+157
+* @param endValue Upper part of interpolation range.
+158
+* @param q Query.
+159
+* @return Interpolant in range [0, 1].
+160
+*/
+161
+public static double inverseInterpolate(double startValue, double endValue, double q) {
+162
+double totalRange = endValue - startValue;
+163
+if (totalRange <= 0) {
+164
+return 0.0;
+165
+}
+166
+double queryToStart = q - startValue;
+167
+if (queryToStart <= 0) {
+168
+return 0.0;
+169
+}
+170
+return queryToStart / totalRange;
+171
+}
+172
+173
+/**
+174
+* Checks if the given value matches an expected value within a certain tolerance.
+175
+*
+176
+* @param expected The expected value
+177
+* @param actual The actual value
+178
+* @param tolerance The allowed difference between the actual and the expected value
+179
+* @return Whether or not the actual value is within the allowed tolerance
+180
+*/
+181
+public static boolean isNear(double expected, double actual, double tolerance) {
+182
+if (tolerance < 0) {
+183
+throw new IllegalArgumentException("Tolerance must be a non-negative number!");
+184
+}
+185
+return Math.abs(expected - actual) < tolerance;
+186
+}
+187
+188
+/**
+189
+* Checks if the given value matches an expected value within a certain tolerance. Supports
+190
+* continuous input for cases like absolute encoders.
+191
+*
+192
+* <p>Continuous input means that the min and max value are considered to be the same point, and
+193
+* tolerances can be checked across them. A common example would be for absolute encoders: calling
+194
+* isNear(2, 359, 5, 0, 360) returns true because 359 is 1 away from 360 (which is treated as the
+195
+* same as 0) and 2 is 2 away from 0, adding up to an error of 3 degrees, which is within the
+196
+* given tolerance of 5.
+197
+*
+198
+* @param expected The expected value
+199
+* @param actual The actual value
+200
+* @param tolerance The allowed difference between the actual and the expected value
+201
+* @param min Smallest value before wrapping around to the largest value
+202
+* @param max Largest value before wrapping around to the smallest value
+203
+* @return Whether or not the actual value is within the allowed tolerance
+204
+*/
+205
+public static boolean isNear(
+206
+double expected, double actual, double tolerance, double min, double max) {
+207
+if (tolerance < 0) {
+208
+throw new IllegalArgumentException("Tolerance must be a non-negative number!");
+209
+}
+210
+// Max error is exactly halfway between the min and max
+211
+double errorBound = (max - min) / 2.0;
+212
+double error = MathUtil.inputModulus(expected - actual, -errorBound, errorBound);
+213
+return Math.abs(error) < tolerance;
+214
+}
+215
+216
+/**
+217
+* Limits translation velocity.
+218
+*
+219
+* @param current Translation at current timestep.
+220
+* @param next Translation at next timestep.
+221
+* @param dt Timestep duration.
+222
+* @param maxVelocity Maximum translation velocity.
+223
+* @return Returns the next Translation2d limited to maxVelocity
+224
+*/
+225
+public static Translation2d slewRateLimit(
+226
+Translation2d current, Translation2d next, double dt, double maxVelocity) {
+227
+if (maxVelocity < 0) {
+228
+Exception e = new IllegalArgumentException();
+229
+MathSharedStore.reportError(
+230
+"maxVelocity must be a non-negative number, got " + maxVelocity, e.getStackTrace());
+231
+return next;
+232
+}
+233
+Translation2d diff = next.minus(current);
+234
+double dist = diff.getNorm();
+235
+if (dist < 1e-9) {
+236
+return next;
+237
+}
+238
+if (dist > maxVelocity * dt) {
+239
+// Move maximum allowed amount in direction of the difference
+240
+return current.plus(diff.times(maxVelocity * dt / dist));
+241
+}
+242
+return next;
+243
+}
+244
+245
+/**
+246
+* Limits translation velocity.
+247
+*
+248
+* @param current Translation at current timestep.
+249
+* @param next Translation at next timestep.
+250
+* @param dt Timestep duration.
+251
+* @param maxVelocity Maximum translation velocity.
+252
+* @return Returns the next Translation3d limited to maxVelocity
+253
+*/
+254
+public static Translation3d slewRateLimit(
+255
+Translation3d current, Translation3d next, double dt, double maxVelocity) {
+256
+if (maxVelocity < 0) {
+257
+Exception e = new IllegalArgumentException();
+258
+MathSharedStore.reportError(
+259
+"maxVelocity must be a non-negative number, got " + maxVelocity, e.getStackTrace());
+260
+return next;
+261
+}
+262
+Translation3d diff = next.minus(current);
+263
+double dist = diff.getNorm();
+264
+if (dist < 1e-9) {
+265
+return next;
+266
+}
+267
+if (dist > maxVelocity * dt) {
+268
+// Move maximum allowed amount in direction of the difference
+269
+return current.plus(diff.times(maxVelocity * dt / dist));
+270
+}
+271
+return next;
+272
+}
+273
+}

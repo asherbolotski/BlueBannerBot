@@ -1,0 +1,555 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command.button;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.math.filter.Debouncer;
+010
+import edu.wpi.first.wpilibj.event.EventLoop;
+011
+import edu.wpi.first.wpilibj2.command.Command;
+012
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+013
+import java.util.function.BooleanSupplier;
+014
+015
+/**
+016
+* This class provides an easy way to link commands to conditions.
+017
+*
+018
+* <p>It is very easy to link a button to a command. For instance, you could link the trigger button
+019
+* of a joystick to a "score" command.
+020
+*
+021
+* <p>Triggers can easily be composed for advanced functionality using the {@link
+022
+* #and(BooleanSupplier)}, {@link #or(BooleanSupplier)}, {@link #negate()} operators.
+023
+*
+024
+* <p>This class is provided by the NewCommands VendorDep
+025
+*/
+026
+public class Trigger implements BooleanSupplier {
+027
+/** Functional interface for the body of a trigger binding. */
+028
+@FunctionalInterface
+029
+private interface BindingBody {
+030
+/**
+031
+* Executes the body of the binding.
+032
+*
+033
+* @param previous The previous state of the condition.
+034
+* @param current The current state of the condition.
+035
+*/
+036
+void run(boolean previous, boolean current);
+037
+}
+038
+039
+private final BooleanSupplier m_condition;
+040
+private final EventLoop m_loop;
+041
+042
+/**
+043
+* Creates a new trigger based on the given condition.
+044
+*
+045
+* @param loop The loop instance that polls this trigger.
+046
+* @param condition the condition represented by this trigger
+047
+*/
+048
+public Trigger(EventLoop loop, BooleanSupplier condition) {
+049
+m_loop = requireNonNullParam(loop, "loop", "Trigger");
+050
+m_condition = requireNonNullParam(condition, "condition", "Trigger");
+051
+}
+052
+053
+/**
+054
+* Creates a new trigger based on the given condition.
+055
+*
+056
+* <p>Polled by the default scheduler button loop.
+057
+*
+058
+* @param condition the condition represented by this trigger
+059
+*/
+060
+public Trigger(BooleanSupplier condition) {
+061
+this(CommandScheduler.getInstance().getDefaultButtonLoop(), condition);
+062
+}
+063
+064
+/**
+065
+* Adds a binding to the EventLoop.
+066
+*
+067
+* @param body The body of the binding to add.
+068
+*/
+069
+private void addBinding(BindingBody body) {
+070
+m_loop.bind(
+071
+new Runnable() {
+072
+private boolean m_previous = m_condition.getAsBoolean();
+073
+074
+@Override
+075
+public void run() {
+076
+boolean current = m_condition.getAsBoolean();
+077
+078
+body.run(m_previous, current);
+079
+080
+m_previous = current;
+081
+}
+082
+});
+083
+}
+084
+085
+/**
+086
+* Starts the command when the condition changes.
+087
+*
+088
+* @param command the command to start
+089
+* @return this trigger, so calls can be chained
+090
+*/
+091
+public Trigger onChange(Command command) {
+092
+requireNonNullParam(command, "command", "onChange");
+093
+addBinding(
+094
+(previous, current) -> {
+095
+if (previous != current) {
+096
+command.schedule();
+097
+}
+098
+});
+099
+return this;
+100
+}
+101
+102
+/**
+103
+* Starts the given command whenever the condition changes from `false` to `true`.
+104
+*
+105
+* @param command the command to start
+106
+* @return this trigger, so calls can be chained
+107
+*/
+108
+public Trigger onTrue(Command command) {
+109
+requireNonNullParam(command, "command", "onTrue");
+110
+addBinding(
+111
+(previous, current) -> {
+112
+if (!previous && current) {
+113
+command.schedule();
+114
+}
+115
+});
+116
+return this;
+117
+}
+118
+119
+/**
+120
+* Starts the given command whenever the condition changes from `true` to `false`.
+121
+*
+122
+* @param command the command to start
+123
+* @return this trigger, so calls can be chained
+124
+*/
+125
+public Trigger onFalse(Command command) {
+126
+requireNonNullParam(command, "command", "onFalse");
+127
+addBinding(
+128
+(previous, current) -> {
+129
+if (previous && !current) {
+130
+command.schedule();
+131
+}
+132
+});
+133
+return this;
+134
+}
+135
+136
+/**
+137
+* Starts the given command when the condition changes to `true` and cancels it when the condition
+138
+* changes to `false`.
+139
+*
+140
+* <p>Doesn't re-start the command if it ends while the condition is still `true`. If the command
+141
+* should restart, see {@link edu.wpi.first.wpilibj2.command.RepeatCommand}.
+142
+*
+143
+* @param command the command to start
+144
+* @return this trigger, so calls can be chained
+145
+*/
+146
+public Trigger whileTrue(Command command) {
+147
+requireNonNullParam(command, "command", "whileTrue");
+148
+addBinding(
+149
+(previous, current) -> {
+150
+if (!previous && current) {
+151
+command.schedule();
+152
+} else if (previous && !current) {
+153
+command.cancel();
+154
+}
+155
+});
+156
+return this;
+157
+}
+158
+159
+/**
+160
+* Starts the given command when the condition changes to `false` and cancels it when the
+161
+* condition changes to `true`.
+162
+*
+163
+* <p>Doesn't re-start the command if it ends while the condition is still `false`. If the command
+164
+* should restart, see {@link edu.wpi.first.wpilibj2.command.RepeatCommand}.
+165
+*
+166
+* @param command the command to start
+167
+* @return this trigger, so calls can be chained
+168
+*/
+169
+public Trigger whileFalse(Command command) {
+170
+requireNonNullParam(command, "command", "whileFalse");
+171
+addBinding(
+172
+(previous, current) -> {
+173
+if (previous && !current) {
+174
+command.schedule();
+175
+} else if (!previous && current) {
+176
+command.cancel();
+177
+}
+178
+});
+179
+return this;
+180
+}
+181
+182
+/**
+183
+* Toggles a command when the condition changes from `false` to `true`.
+184
+*
+185
+* @param command the command to toggle
+186
+* @return this trigger, so calls can be chained
+187
+*/
+188
+public Trigger toggleOnTrue(Command command) {
+189
+requireNonNullParam(command, "command", "toggleOnTrue");
+190
+addBinding(
+191
+(previous, current) -> {
+192
+if (!previous && current) {
+193
+if (command.isScheduled()) {
+194
+command.cancel();
+195
+} else {
+196
+command.schedule();
+197
+}
+198
+}
+199
+});
+200
+return this;
+201
+}
+202
+203
+/**
+204
+* Toggles a command when the condition changes from `true` to `false`.
+205
+*
+206
+* @param command the command to toggle
+207
+* @return this trigger, so calls can be chained
+208
+*/
+209
+public Trigger toggleOnFalse(Command command) {
+210
+requireNonNullParam(command, "command", "toggleOnFalse");
+211
+addBinding(
+212
+(previous, current) -> {
+213
+if (previous && !current) {
+214
+if (command.isScheduled()) {
+215
+command.cancel();
+216
+} else {
+217
+command.schedule();
+218
+}
+219
+}
+220
+});
+221
+return this;
+222
+}
+223
+224
+@Override
+225
+public boolean getAsBoolean() {
+226
+return m_condition.getAsBoolean();
+227
+}
+228
+229
+/**
+230
+* Composes two triggers with logical AND.
+231
+*
+232
+* @param trigger the condition to compose with
+233
+* @return A trigger which is active when both component triggers are active.
+234
+*/
+235
+public Trigger and(BooleanSupplier trigger) {
+236
+return new Trigger(m_loop, () -> m_condition.getAsBoolean() && trigger.getAsBoolean());
+237
+}
+238
+239
+/**
+240
+* Composes two triggers with logical OR.
+241
+*
+242
+* @param trigger the condition to compose with
+243
+* @return A trigger which is active when either component trigger is active.
+244
+*/
+245
+public Trigger or(BooleanSupplier trigger) {
+246
+return new Trigger(m_loop, () -> m_condition.getAsBoolean() || trigger.getAsBoolean());
+247
+}
+248
+249
+/**
+250
+* Creates a new trigger that is active when this trigger is inactive, i.e. that acts as the
+251
+* negation of this trigger.
+252
+*
+253
+* @return the negated trigger
+254
+*/
+255
+public Trigger negate() {
+256
+return new Trigger(m_loop, () -> !m_condition.getAsBoolean());
+257
+}
+258
+259
+/**
+260
+* Creates a new debounced trigger from this trigger - it will become active when this trigger has
+261
+* been active for longer than the specified period.
+262
+*
+263
+* @param seconds The debounce period.
+264
+* @return The debounced trigger (rising edges debounced only)
+265
+*/
+266
+public Trigger debounce(double seconds) {
+267
+return debounce(seconds, Debouncer.DebounceType.kRising);
+268
+}
+269
+270
+/**
+271
+* Creates a new debounced trigger from this trigger - it will become active when this trigger has
+272
+* been active for longer than the specified period.
+273
+*
+274
+* @param seconds The debounce period.
+275
+* @param type The debounce type.
+276
+* @return The debounced trigger.
+277
+*/
+278
+public Trigger debounce(double seconds, Debouncer.DebounceType type) {
+279
+return new Trigger(
+280
+m_loop,
+281
+new BooleanSupplier() {
+282
+final Debouncer m_debouncer = new Debouncer(seconds, type);
+283
+284
+@Override
+285
+public boolean getAsBoolean() {
+286
+return m_debouncer.calculate(m_condition.getAsBoolean());
+287
+}
+288
+});
+289
+}
+290
+}

@@ -1,0 +1,773 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry;
+006
+007
+import static edu.wpi.first.units.Units.Meters;
+008
+009
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+010
+import com.fasterxml.jackson.annotation.JsonCreator;
+011
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+012
+import com.fasterxml.jackson.annotation.JsonProperty;
+013
+import edu.wpi.first.math.MatBuilder;
+014
+import edu.wpi.first.math.Matrix;
+015
+import edu.wpi.first.math.Nat;
+016
+import edu.wpi.first.math.geometry.proto.Pose2dProto;
+017
+import edu.wpi.first.math.geometry.struct.Pose2dStruct;
+018
+import edu.wpi.first.math.interpolation.Interpolatable;
+019
+import edu.wpi.first.math.numbers.N3;
+020
+import edu.wpi.first.units.measure.Distance;
+021
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+022
+import edu.wpi.first.util.struct.StructSerializable;
+023
+import java.util.Collections;
+024
+import java.util.Comparator;
+025
+import java.util.List;
+026
+import java.util.Objects;
+027
+028
+/** Represents a 2D pose containing translational and rotational elements. */
+029
+@JsonIgnoreProperties(ignoreUnknown = true)
+030
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+031
+public class Pose2d implements Interpolatable<Pose2d>, ProtobufSerializable, StructSerializable {
+032
+/**
+033
+* A preallocated Pose2d representing the origin.
+034
+*
+035
+* <p>This exists to avoid allocations for common poses.
+036
+*/
+037
+public static final Pose2d kZero = new Pose2d();
+038
+039
+private final Translation2d m_translation;
+040
+private final Rotation2d m_rotation;
+041
+042
+/** Constructs a pose at the origin facing toward the positive X axis. */
+043
+public Pose2d() {
+044
+m_translation = Translation2d.kZero;
+045
+m_rotation = Rotation2d.kZero;
+046
+}
+047
+048
+/**
+049
+* Constructs a pose with the specified translation and rotation.
+050
+*
+051
+* @param translation The translational component of the pose.
+052
+* @param rotation The rotational component of the pose.
+053
+*/
+054
+@JsonCreator
+055
+public Pose2d(
+056
+@JsonProperty(required = true, value = "translation") Translation2d translation,
+057
+@JsonProperty(required = true, value = "rotation") Rotation2d rotation) {
+058
+m_translation = translation;
+059
+m_rotation = rotation;
+060
+}
+061
+062
+/**
+063
+* Constructs a pose with x and y translations instead of a separate Translation2d.
+064
+*
+065
+* @param x The x component of the translational component of the pose.
+066
+* @param y The y component of the translational component of the pose.
+067
+* @param rotation The rotational component of the pose.
+068
+*/
+069
+public Pose2d(double x, double y, Rotation2d rotation) {
+070
+m_translation = new Translation2d(x, y);
+071
+m_rotation = rotation;
+072
+}
+073
+074
+/**
+075
+* Constructs a pose with x and y translations instead of a separate Translation2d. The X and Y
+076
+* translations will be converted to and tracked as meters.
+077
+*
+078
+* @param x The x component of the translational component of the pose.
+079
+* @param y The y component of the translational component of the pose.
+080
+* @param rotation The rotational component of the pose.
+081
+*/
+082
+public Pose2d(Distance x, Distance y, Rotation2d rotation) {
+083
+this(x.in(Meters), y.in(Meters), rotation);
+084
+}
+085
+086
+/**
+087
+* Constructs a pose with the specified affine transformation matrix.
+088
+*
+089
+* @param matrix The affine transformation matrix.
+090
+* @throws IllegalArgumentException if the affine transformation matrix is invalid.
+091
+*/
+092
+public Pose2d(Matrix<N3, N3> matrix) {
+093
+m_translation = new Translation2d(matrix.get(0, 2), matrix.get(1, 2));
+094
+m_rotation = new Rotation2d(matrix.block(2, 2, 0, 0));
+095
+if (matrix.get(2, 0) != 0.0 || matrix.get(2, 1) != 0.0 || matrix.get(2, 2) != 1.0) {
+096
+throw new IllegalArgumentException("Affine transformation matrix is invalid");
+097
+}
+098
+}
+099
+100
+/**
+101
+* Transforms the pose by the given transformation and returns the new transformed pose.
+102
+*
+103
+* <pre>
+104
+* [x_new]    [cos, -sin, 0][transform.x]
+105
+* [y_new] += [sin,  cos, 0][transform.y]
+106
+* [t_new]    [  0,    0, 1][transform.t]
+107
+* </pre>
+108
+*
+109
+* @param other The transform to transform the pose by.
+110
+* @return The transformed pose.
+111
+*/
+112
+public Pose2d plus(Transform2d other) {
+113
+return transformBy(other);
+114
+}
+115
+116
+/**
+117
+* Returns the Transform2d that maps the one pose to another.
+118
+*
+119
+* @param other The initial pose of the transformation.
+120
+* @return The transform that maps the other pose to the current pose.
+121
+*/
+122
+public Transform2d minus(Pose2d other) {
+123
+final var pose = this.relativeTo(other);
+124
+return new Transform2d(pose.getTranslation(), pose.getRotation());
+125
+}
+126
+127
+/**
+128
+* Returns the translation component of the transformation.
+129
+*
+130
+* @return The translational component of the pose.
+131
+*/
+132
+@JsonProperty
+133
+public Translation2d getTranslation() {
+134
+return m_translation;
+135
+}
+136
+137
+/**
+138
+* Returns the X component of the pose's translation.
+139
+*
+140
+* @return The x component of the pose's translation.
+141
+*/
+142
+public double getX() {
+143
+return m_translation.getX();
+144
+}
+145
+146
+/**
+147
+* Returns the Y component of the pose's translation.
+148
+*
+149
+* @return The y component of the pose's translation.
+150
+*/
+151
+public double getY() {
+152
+return m_translation.getY();
+153
+}
+154
+155
+/**
+156
+* Returns the X component of the pose's translation in a measure.
+157
+*
+158
+* @return The x component of the pose's translation in a measure.
+159
+*/
+160
+public Distance getMeasureX() {
+161
+return m_translation.getMeasureX();
+162
+}
+163
+164
+/**
+165
+* Returns the Y component of the pose's translation in a measure.
+166
+*
+167
+* @return The y component of the pose's translation in a measure.
+168
+*/
+169
+public Distance getMeasureY() {
+170
+return m_translation.getMeasureY();
+171
+}
+172
+173
+/**
+174
+* Returns the rotational component of the transformation.
+175
+*
+176
+* @return The rotational component of the pose.
+177
+*/
+178
+@JsonProperty
+179
+public Rotation2d getRotation() {
+180
+return m_rotation;
+181
+}
+182
+183
+/**
+184
+* Multiplies the current pose by a scalar.
+185
+*
+186
+* @param scalar The scalar.
+187
+* @return The new scaled Pose2d.
+188
+*/
+189
+public Pose2d times(double scalar) {
+190
+return new Pose2d(m_translation.times(scalar), m_rotation.times(scalar));
+191
+}
+192
+193
+/**
+194
+* Divides the current pose by a scalar.
+195
+*
+196
+* @param scalar The scalar.
+197
+* @return The new scaled Pose2d.
+198
+*/
+199
+public Pose2d div(double scalar) {
+200
+return times(1.0 / scalar);
+201
+}
+202
+203
+/**
+204
+* Rotates the pose around the origin and returns the new pose.
+205
+*
+206
+* @param other The rotation to transform the pose by.
+207
+* @return The transformed pose.
+208
+*/
+209
+public Pose2d rotateBy(Rotation2d other) {
+210
+return new Pose2d(m_translation.rotateBy(other), m_rotation.rotateBy(other));
+211
+}
+212
+213
+/**
+214
+* Transforms the pose by the given transformation and returns the new pose. See + operator for
+215
+* the matrix multiplication performed.
+216
+*
+217
+* @param other The transform to transform the pose by.
+218
+* @return The transformed pose.
+219
+*/
+220
+public Pose2d transformBy(Transform2d other) {
+221
+return new Pose2d(
+222
+m_translation.plus(other.getTranslation().rotateBy(m_rotation)),
+223
+other.getRotation().plus(m_rotation));
+224
+}
+225
+226
+/**
+227
+* Returns the current pose relative to the given pose.
+228
+*
+229
+* <p>This function can often be used for trajectory tracking or pose stabilization algorithms to
+230
+* get the error between the reference and the current pose.
+231
+*
+232
+* @param other The pose that is the origin of the new coordinate frame that the current pose will
+233
+*     be converted into.
+234
+* @return The current pose relative to the new origin pose.
+235
+*/
+236
+public Pose2d relativeTo(Pose2d other) {
+237
+var transform = new Transform2d(other, this);
+238
+return new Pose2d(transform.getTranslation(), transform.getRotation());
+239
+}
+240
+241
+/**
+242
+* Rotates the current pose around a point in 2D space.
+243
+*
+244
+* @param point The point in 2D space to rotate around.
+245
+* @param rot The rotation to rotate the pose by.
+246
+* @return The new rotated pose.
+247
+*/
+248
+public Pose2d rotateAround(Translation2d point, Rotation2d rot) {
+249
+return new Pose2d(m_translation.rotateAround(point, rot), m_rotation.rotateBy(rot));
+250
+}
+251
+252
+/**
+253
+* Obtain a new Pose2d from a (constant curvature) velocity.
+254
+*
+255
+* <p>See <a href="https://file.tavsys.net/control/controls-engineering-in-frc.pdf">Controls
+256
+* Engineering in the FIRST Robotics Competition</a> section 10.2 "Pose exponential" for a
+257
+* derivation.
+258
+*
+259
+* <p>The twist is a change in pose in the robot's coordinate frame since the previous pose
+260
+* update. When the user runs exp() on the previous known field-relative pose with the argument
+261
+* being the twist, the user will receive the new field-relative pose.
+262
+*
+263
+* <p>"Exp" represents the pose exponential, which is solving a differential equation moving the
+264
+* pose forward in time.
+265
+*
+266
+* @param twist The change in pose in the robot's coordinate frame since the previous pose update.
+267
+*     For example, if a non-holonomic robot moves forward 0.01 meters and changes angle by 0.5
+268
+*     degrees since the previous pose update, the twist would be Twist2d(0.01, 0.0,
+269
+*     Units.degreesToRadians(0.5)).
+270
+* @return The new pose of the robot.
+271
+*/
+272
+public Pose2d exp(Twist2d twist) {
+273
+double dx = twist.dx;
+274
+double dy = twist.dy;
+275
+double dtheta = twist.dtheta;
+276
+277
+double sinTheta = Math.sin(dtheta);
+278
+double cosTheta = Math.cos(dtheta);
+279
+280
+double s;
+281
+double c;
+282
+if (Math.abs(dtheta) < 1E-9) {
+283
+s = 1.0 - 1.0 / 6.0 * dtheta * dtheta;
+284
+c = 0.5 * dtheta;
+285
+} else {
+286
+s = sinTheta / dtheta;
+287
+c = (1 - cosTheta) / dtheta;
+288
+}
+289
+var transform =
+290
+new Transform2d(
+291
+new Translation2d(dx * s - dy * c, dx * c + dy * s),
+292
+new Rotation2d(cosTheta, sinTheta));
+293
+294
+return this.plus(transform);
+295
+}
+296
+297
+/**
+298
+* Returns a Twist2d that maps this pose to the end pose. If c is the output of {@code a.Log(b)},
+299
+* then {@code a.Exp(c)} would yield b.
+300
+*
+301
+* @param end The end pose for the transformation.
+302
+* @return The twist that maps this to end.
+303
+*/
+304
+public Twist2d log(Pose2d end) {
+305
+final var transform = end.relativeTo(this);
+306
+final var dtheta = transform.getRotation().getRadians();
+307
+final var halfDtheta = dtheta / 2.0;
+308
+309
+final var cosMinusOne = transform.getRotation().getCos() - 1;
+310
+311
+double halfThetaByTanOfHalfDtheta;
+312
+if (Math.abs(cosMinusOne) < 1E-9) {
+313
+halfThetaByTanOfHalfDtheta = 1.0 - 1.0 / 12.0 * dtheta * dtheta;
+314
+} else {
+315
+halfThetaByTanOfHalfDtheta = -(halfDtheta * transform.getRotation().getSin()) / cosMinusOne;
+316
+}
+317
+318
+Translation2d translationPart =
+319
+transform
+320
+.getTranslation()
+321
+.rotateBy(new Rotation2d(halfThetaByTanOfHalfDtheta, -halfDtheta))
+322
+.times(Math.hypot(halfThetaByTanOfHalfDtheta, halfDtheta));
+323
+324
+return new Twist2d(translationPart.getX(), translationPart.getY(), dtheta);
+325
+}
+326
+327
+/**
+328
+* Returns an affine transformation matrix representation of this pose.
+329
+*
+330
+* @return An affine transformation matrix representation of this pose.
+331
+*/
+332
+public Matrix<N3, N3> toMatrix() {
+333
+var vec = m_translation.toVector();
+334
+var mat = m_rotation.toMatrix();
+335
+return MatBuilder.fill(
+336
+Nat.N3(),
+337
+Nat.N3(),
+338
+mat.get(0, 0),
+339
+mat.get(0, 1),
+340
+vec.get(0),
+341
+mat.get(1, 0),
+342
+mat.get(1, 1),
+343
+vec.get(1),
+344
+0.0,
+345
+0.0,
+346
+1.0);
+347
+}
+348
+349
+/**
+350
+* Returns the nearest Pose2d from a list of poses. If two or more poses in the list have the same
+351
+* distance from this pose, return the one with the closest rotation component.
+352
+*
+353
+* @param poses The list of poses to find the nearest.
+354
+* @return The nearest Pose2d from the list.
+355
+*/
+356
+public Pose2d nearest(List<Pose2d> poses) {
+357
+return Collections.min(
+358
+poses,
+359
+Comparator.comparing(
+360
+(Pose2d other) -> this.getTranslation().getDistance(other.getTranslation()))
+361
+.thenComparing(
+362
+(Pose2d other) ->
+363
+Math.abs(this.getRotation().minus(other.getRotation()).getRadians())));
+364
+}
+365
+366
+@Override
+367
+public String toString() {
+368
+return String.format("Pose2d(%s, %s)", m_translation, m_rotation);
+369
+}
+370
+371
+/**
+372
+* Checks equality between this Pose2d and another object.
+373
+*
+374
+* @param obj The other object.
+375
+* @return Whether the two objects are equal or not.
+376
+*/
+377
+@Override
+378
+public boolean equals(Object obj) {
+379
+return obj instanceof Pose2d pose
+380
+&& m_translation.equals(pose.m_translation)
+381
+&& m_rotation.equals(pose.m_rotation);
+382
+}
+383
+384
+@Override
+385
+public int hashCode() {
+386
+return Objects.hash(m_translation, m_rotation);
+387
+}
+388
+389
+@Override
+390
+public Pose2d interpolate(Pose2d endValue, double t) {
+391
+if (t < 0) {
+392
+return this;
+393
+} else if (t >= 1) {
+394
+return endValue;
+395
+} else {
+396
+var twist = this.log(endValue);
+397
+var scaledTwist = new Twist2d(twist.dx * t, twist.dy * t, twist.dtheta * t);
+398
+return this.exp(scaledTwist);
+399
+}
+400
+}
+401
+402
+/** Pose2d protobuf for serialization. */
+403
+public static final Pose2dProto proto = new Pose2dProto();
+404
+405
+/** Pose2d struct for serialization. */
+406
+public static final Pose2dStruct struct = new Pose2dStruct();
+407
+}

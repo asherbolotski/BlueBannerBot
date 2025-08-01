@@ -1,0 +1,140 @@
+Package
+edu.wpi.first.wpilibj
+Interface LEDReader
+All Known Implementing Classes:
+AddressableLEDBuffer
+,
+AddressableLEDBufferView
+public interface
+LEDReader
+Generic interface for reading data from an LED buffer.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Interface
+Description
+static interface
+LEDReader.IndexedColorIterator
+A functional interface that allows for iteration over an LED buffer without manually writing an
+ indexed for-loop.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default void
+forEach
+(
+LEDReader.IndexedColorIterator
+iterator)
+Iterates over the LEDs in the buffer, starting from index 0.
+int
+getBlue
+(int index)
+Gets the blue channel of the color at the specified index.
+int
+getGreen
+(int index)
+Gets the green channel of the color at the specified index.
+default
+Color
+getLED
+(int index)
+Gets the most recently written color for a particular LED in the buffer.
+default
+Color8Bit
+getLED8Bit
+(int index)
+Gets the most recently written color for a particular LED in the buffer.
+int
+getLength
+()
+Gets the length of the buffer.
+int
+getRed
+(int index)
+Gets the red channel of the color at the specified index.
+Method Details
+getLength
+int
+getLength
+()
+Gets the length of the buffer.
+Returns:
+the buffer length
+getLED
+default
+Color
+getLED
+(int index)
+Gets the most recently written color for a particular LED in the buffer.
+Parameters:
+index
+- the index of the LED
+Returns:
+the LED color
+Throws:
+IndexOutOfBoundsException
+- if the index is negative or greater than
+getLength()
+getLED8Bit
+default
+Color8Bit
+getLED8Bit
+(int index)
+Gets the most recently written color for a particular LED in the buffer.
+Parameters:
+index
+- the index of the LED
+Returns:
+the LED color
+Throws:
+IndexOutOfBoundsException
+- if the index is negative or greater than
+getLength()
+getRed
+int
+getRed
+(int index)
+Gets the red channel of the color at the specified index.
+Parameters:
+index
+- the index of the LED to read
+Returns:
+the value of the red channel, from [0, 255]
+getGreen
+int
+getGreen
+(int index)
+Gets the green channel of the color at the specified index.
+Parameters:
+index
+- the index of the LED to read
+Returns:
+the value of the green channel, from [0, 255]
+getBlue
+int
+getBlue
+(int index)
+Gets the blue channel of the color at the specified index.
+Parameters:
+index
+- the index of the LED to read
+Returns:
+the value of the blue channel, from [0, 255]
+forEach
+default
+void
+forEach
+(
+LEDReader.IndexedColorIterator
+iterator)
+Iterates over the LEDs in the buffer, starting from index 0. The iterator function is passed
+ the current index of iteration, along with the values for the red, green, and blue components
+ of the color written to the LED at that index.
+Parameters:
+iterator
+- the iterator function to call for each LED in the buffer.

@@ -1,0 +1,775 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry;
+006
+007
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+008
+import com.fasterxml.jackson.annotation.JsonCreator;
+009
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+010
+import com.fasterxml.jackson.annotation.JsonProperty;
+011
+import edu.wpi.first.math.VecBuilder;
+012
+import edu.wpi.first.math.Vector;
+013
+import edu.wpi.first.math.geometry.proto.QuaternionProto;
+014
+import edu.wpi.first.math.geometry.struct.QuaternionStruct;
+015
+import edu.wpi.first.math.numbers.N3;
+016
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+017
+import edu.wpi.first.util.struct.StructSerializable;
+018
+import java.util.Objects;
+019
+020
+/** Represents a quaternion. */
+021
+@JsonIgnoreProperties(ignoreUnknown = true)
+022
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+023
+public class Quaternion implements ProtobufSerializable, StructSerializable {
+024
+// Scalar r in versor form
+025
+private final double m_w;
+026
+027
+// Vector v in versor form
+028
+private final double m_x;
+029
+private final double m_y;
+030
+private final double m_z;
+031
+032
+/** Constructs a quaternion with a default angle of 0 degrees. */
+033
+public Quaternion() {
+034
+m_w = 1.0;
+035
+m_x = 0.0;
+036
+m_y = 0.0;
+037
+m_z = 0.0;
+038
+}
+039
+040
+/**
+041
+* Constructs a quaternion with the given components.
+042
+*
+043
+* @param w W component of the quaternion.
+044
+* @param x X component of the quaternion.
+045
+* @param y Y component of the quaternion.
+046
+* @param z Z component of the quaternion.
+047
+*/
+048
+@JsonCreator
+049
+public Quaternion(
+050
+@JsonProperty(required = true, value = "W") double w,
+051
+@JsonProperty(required = true, value = "X") double x,
+052
+@JsonProperty(required = true, value = "Y") double y,
+053
+@JsonProperty(required = true, value = "Z") double z) {
+054
+m_w = w;
+055
+m_x = x;
+056
+m_y = y;
+057
+m_z = z;
+058
+}
+059
+060
+/**
+061
+* Adds another quaternion to this quaternion entrywise.
+062
+*
+063
+* @param other The other quaternion.
+064
+* @return The quaternion sum.
+065
+*/
+066
+public Quaternion plus(Quaternion other) {
+067
+return new Quaternion(
+068
+getW() + other.getW(), getX() + other.getX(), getY() + other.getY(), getZ() + other.getZ());
+069
+}
+070
+071
+/**
+072
+* Subtracts another quaternion from this quaternion entrywise.
+073
+*
+074
+* @param other The other quaternion.
+075
+* @return The quaternion difference.
+076
+*/
+077
+public Quaternion minus(Quaternion other) {
+078
+return new Quaternion(
+079
+getW() - other.getW(), getX() - other.getX(), getY() - other.getY(), getZ() - other.getZ());
+080
+}
+081
+082
+/**
+083
+* Divides by a scalar.
+084
+*
+085
+* @param scalar The value to scale each component by.
+086
+* @return The scaled quaternion.
+087
+*/
+088
+public Quaternion divide(double scalar) {
+089
+return new Quaternion(getW() / scalar, getX() / scalar, getY() / scalar, getZ() / scalar);
+090
+}
+091
+092
+/**
+093
+* Multiplies with a scalar.
+094
+*
+095
+* @param scalar The value to scale each component by.
+096
+* @return The scaled quaternion.
+097
+*/
+098
+public Quaternion times(double scalar) {
+099
+return new Quaternion(getW() * scalar, getX() * scalar, getY() * scalar, getZ() * scalar);
+100
+}
+101
+102
+/**
+103
+* Multiply with another quaternion.
+104
+*
+105
+* @param other The other quaternion.
+106
+* @return The quaternion product.
+107
+*/
+108
+public Quaternion times(Quaternion other) {
+109
+// https://en.wikipedia.org/wiki/Quaternion#Scalar_and_vector_parts
+110
+final var r1 = m_w;
+111
+final var r2 = other.m_w;
+112
+113
+// v₁ ⋅ v₂
+114
+double dot = m_x * other.m_x + m_y * other.m_y + m_z * other.m_z;
+115
+116
+// v₁ x v₂
+117
+double cross_x = m_y * other.m_z - other.m_y * m_z;
+118
+double cross_y = other.m_x * m_z - m_x * other.m_z;
+119
+double cross_z = m_x * other.m_y - other.m_x * m_y;
+120
+121
+return new Quaternion(
+122
+// r = r₁r₂ − v₁ ⋅ v₂
+123
+r1 * r2 - dot,
+124
+// v = r₁v₂ + r₂v₁ + v₁ x v₂
+125
+r1 * other.m_x + r2 * m_x + cross_x,
+126
+r1 * other.m_y + r2 * m_y + cross_y,
+127
+r1 * other.m_z + r2 * m_z + cross_z);
+128
+}
+129
+130
+@Override
+131
+public String toString() {
+132
+return String.format("Quaternion(%s, %s, %s, %s)", getW(), getX(), getY(), getZ());
+133
+}
+134
+135
+/**
+136
+* Checks equality between this Quaternion and another object.
+137
+*
+138
+* @param obj The other object.
+139
+* @return Whether the two objects are equal or not.
+140
+*/
+141
+@Override
+142
+public boolean equals(Object obj) {
+143
+return obj instanceof Quaternion other
+144
+&& Math.abs(dot(other) - norm() * other.norm()) < 1e-9
+145
+&& Math.abs(norm() - other.norm()) < 1e-9;
+146
+}
+147
+148
+@Override
+149
+public int hashCode() {
+150
+return Objects.hash(m_w, m_x, m_y, m_z);
+151
+}
+152
+153
+/**
+154
+* Returns the conjugate of the quaternion.
+155
+*
+156
+* @return The conjugate quaternion.
+157
+*/
+158
+public Quaternion conjugate() {
+159
+return new Quaternion(getW(), -getX(), -getY(), -getZ());
+160
+}
+161
+162
+/**
+163
+* Returns the elementwise product of two quaternions.
+164
+*
+165
+* @param other The other quaternion.
+166
+* @return The dot product of two quaternions.
+167
+*/
+168
+public double dot(final Quaternion other) {
+169
+return getW() * other.getW()
+170
++ getX() * other.getX()
+171
++ getY() * other.getY()
+172
++ getZ() * other.getZ();
+173
+}
+174
+175
+/**
+176
+* Returns the inverse of the quaternion.
+177
+*
+178
+* @return The inverse quaternion.
+179
+*/
+180
+public Quaternion inverse() {
+181
+var norm = norm();
+182
+return conjugate().divide(norm * norm);
+183
+}
+184
+185
+/**
+186
+* Calculates the L2 norm of the quaternion.
+187
+*
+188
+* @return The L2 norm.
+189
+*/
+190
+public double norm() {
+191
+return Math.sqrt(dot(this));
+192
+}
+193
+194
+/**
+195
+* Normalizes the quaternion.
+196
+*
+197
+* @return The normalized quaternion.
+198
+*/
+199
+public Quaternion normalize() {
+200
+double norm = norm();
+201
+if (norm == 0.0) {
+202
+return new Quaternion();
+203
+} else {
+204
+return new Quaternion(getW() / norm, getX() / norm, getY() / norm, getZ() / norm);
+205
+}
+206
+}
+207
+208
+/**
+209
+* Rational power of a quaternion.
+210
+*
+211
+* @param t the power to raise this quaternion to.
+212
+* @return The quaternion power
+213
+*/
+214
+public Quaternion pow(double t) {
+215
+// q^t = e^(ln(q^t)) = e^(t * ln(q))
+216
+return this.log().times(t).exp();
+217
+}
+218
+219
+/**
+220
+* Matrix exponential of a quaternion.
+221
+*
+222
+* @param adjustment the "Twist" that will be applied to this quaternion.
+223
+* @return The quaternion product of exp(adjustment) * this
+224
+*/
+225
+public Quaternion exp(Quaternion adjustment) {
+226
+return adjustment.exp().times(this);
+227
+}
+228
+229
+/**
+230
+* Matrix exponential of a quaternion.
+231
+*
+232
+* <p>source: wpimath/algorithms.md
+233
+*
+234
+* <p>If this quaternion is in 𝖘𝖔(3) and you are looking for an element of SO(3), use {@link
+235
+* fromRotationVector}
+236
+*
+237
+* @return The Matrix exponential of this quaternion.
+238
+*/
+239
+public Quaternion exp() {
+240
+var scalar = Math.exp(getW());
+241
+242
+var axial_magnitude = Math.sqrt(getX() * getX() + getY() * getY() + getZ() * getZ());
+243
+var cosine = Math.cos(axial_magnitude);
+244
+245
+double axial_scalar;
+246
+247
+if (axial_magnitude < 1e-9) {
+248
+// Taylor series of sin(θ) / θ near θ = 0: 1 − θ²/6 + θ⁴/120 + O(n⁶)
+249
+var axial_magnitude_sq = axial_magnitude * axial_magnitude;
+250
+var axial_magnitude_sq_sq = axial_magnitude_sq * axial_magnitude_sq;
+251
+axial_scalar = 1.0 - axial_magnitude_sq / 6.0 + axial_magnitude_sq_sq / 120.0;
+252
+} else {
+253
+axial_scalar = Math.sin(axial_magnitude) / axial_magnitude;
+254
+}
+255
+256
+return new Quaternion(
+257
+cosine * scalar,
+258
+getX() * axial_scalar * scalar,
+259
+getY() * axial_scalar * scalar,
+260
+getZ() * axial_scalar * scalar);
+261
+}
+262
+263
+/**
+264
+* Log operator of a quaternion.
+265
+*
+266
+* @param end The quaternion to map this quaternion onto.
+267
+* @return The "Twist" that maps this quaternion to the argument.
+268
+*/
+269
+public Quaternion log(Quaternion end) {
+270
+return end.times(this.inverse()).log();
+271
+}
+272
+273
+/**
+274
+* The Log operator of a general quaternion.
+275
+*
+276
+* <p>source: wpimath/algorithms.md
+277
+*
+278
+* <p>If this quaternion is in SO(3) and you are looking for an element of 𝖘𝖔(3), use {@link
+279
+* toRotationVector}
+280
+*
+281
+* @return The logarithm of this quaternion.
+282
+*/
+283
+public Quaternion log() {
+284
+var norm = norm();
+285
+var scalar = Math.log(norm);
+286
+287
+var v_norm = Math.sqrt(getX() * getX() + getY() * getY() + getZ() * getZ());
+288
+289
+var s_norm = getW() / norm;
+290
+291
+if (Math.abs(s_norm + 1) < 1e-9) {
+292
+return new Quaternion(scalar, -Math.PI, 0, 0);
+293
+}
+294
+295
+double v_scalar;
+296
+297
+if (v_norm < 1e-9) {
+298
+// Taylor series expansion of atan2(y/x)/y at y = 0:
+299
+//
+300
+//   1/x - 1/3 y²/x³ + O(y⁴)
+301
+v_scalar = 1.0 / getW() - 1.0 / 3.0 * v_norm * v_norm / (getW() * getW() * getW());
+302
+} else {
+303
+v_scalar = Math.atan2(v_norm, getW()) / v_norm;
+304
+}
+305
+306
+return new Quaternion(scalar, v_scalar * getX(), v_scalar * getY(), v_scalar * getZ());
+307
+}
+308
+309
+/**
+310
+* Returns W component of the quaternion.
+311
+*
+312
+* @return W component of the quaternion.
+313
+*/
+314
+@JsonProperty(value = "W")
+315
+public double getW() {
+316
+return m_w;
+317
+}
+318
+319
+/**
+320
+* Returns X component of the quaternion.
+321
+*
+322
+* @return X component of the quaternion.
+323
+*/
+324
+@JsonProperty(value = "X")
+325
+public double getX() {
+326
+return m_x;
+327
+}
+328
+329
+/**
+330
+* Returns Y component of the quaternion.
+331
+*
+332
+* @return Y component of the quaternion.
+333
+*/
+334
+@JsonProperty(value = "Y")
+335
+public double getY() {
+336
+return m_y;
+337
+}
+338
+339
+/**
+340
+* Returns Z component of the quaternion.
+341
+*
+342
+* @return Z component of the quaternion.
+343
+*/
+344
+@JsonProperty(value = "Z")
+345
+public double getZ() {
+346
+return m_z;
+347
+}
+348
+349
+/**
+350
+* Returns the quaternion representation of this rotation vector.
+351
+*
+352
+* <p>This is also the exp operator of 𝖘𝖔(3).
+353
+*
+354
+* <p>source: wpimath/algorithms.md
+355
+*
+356
+* @param rvec The rotation vector.
+357
+* @return The quaternion representation of this rotation vector.
+358
+*/
+359
+public static Quaternion fromRotationVector(Vector<N3> rvec) {
+360
+double theta = rvec.norm();
+361
+362
+double cos = Math.cos(theta / 2);
+363
+364
+double axial_scalar;
+365
+366
+if (theta < 1e-9) {
+367
+// taylor series expansion of sin(θ/2) / θ = 1/2 - θ²/48 + O(θ⁴)
+368
+axial_scalar = 1.0 / 2.0 - theta * theta / 48.0;
+369
+} else {
+370
+axial_scalar = Math.sin(theta / 2) / theta;
+371
+}
+372
+373
+return new Quaternion(
+374
+cos,
+375
+axial_scalar * rvec.get(0, 0),
+376
+axial_scalar * rvec.get(1, 0),
+377
+axial_scalar * rvec.get(2, 0));
+378
+}
+379
+380
+/**
+381
+* Returns the rotation vector representation of this quaternion.
+382
+*
+383
+* <p>This is also the log operator of SO(3).
+384
+*
+385
+* @return The rotation vector representation of this quaternion.
+386
+*/
+387
+public Vector<N3> toRotationVector() {
+388
+// See equation (31) in "Integrating Generic Sensor Fusion Algorithms with
+389
+// Sound State Representation through Encapsulation of Manifolds"
+390
+//
+391
+// https://arxiv.org/pdf/1107.1119.pdf
+392
+double norm = Math.sqrt(getX() * getX() + getY() * getY() + getZ() * getZ());
+393
+394
+double coeff;
+395
+if (norm < 1e-9) {
+396
+coeff = 2.0 / getW() - 2.0 / 3.0 * norm * norm / (getW() * getW() * getW());
+397
+} else {
+398
+if (getW() < 0.0) {
+399
+coeff = 2.0 * Math.atan2(-norm, -getW()) / norm;
+400
+} else {
+401
+coeff = 2.0 * Math.atan2(norm, getW()) / norm;
+402
+}
+403
+}
+404
+405
+return VecBuilder.fill(coeff * getX(), coeff * getY(), coeff * getZ());
+406
+}
+407
+408
+/** Quaternion protobuf for serialization. */
+409
+public static final QuaternionProto proto = new QuaternionProto();
+410
+411
+/** Quaternion struct for serialization. */
+412
+public static final QuaternionStruct struct = new QuaternionStruct();
+413
+}

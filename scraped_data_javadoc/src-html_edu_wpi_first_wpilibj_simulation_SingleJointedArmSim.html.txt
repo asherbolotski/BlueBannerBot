@@ -1,0 +1,514 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.math.MathUtil;
+008
+import edu.wpi.first.math.Matrix;
+009
+import edu.wpi.first.math.VecBuilder;
+010
+import edu.wpi.first.math.numbers.N1;
+011
+import edu.wpi.first.math.numbers.N2;
+012
+import edu.wpi.first.math.system.LinearSystem;
+013
+import edu.wpi.first.math.system.NumericalIntegration;
+014
+import edu.wpi.first.math.system.plant.DCMotor;
+015
+import edu.wpi.first.math.system.plant.LinearSystemId;
+016
+import edu.wpi.first.wpilibj.RobotController;
+017
+018
+/** Represents a simulated single jointed arm mechanism. */
+019
+public class SingleJointedArmSim extends LinearSystemSim<N2, N1, N2> {
+020
+// The gearbox for the arm.
+021
+private final DCMotor m_gearbox;
+022
+023
+// The gearing between the motors and the output.
+024
+private final double m_gearing;
+025
+026
+// The length of the arm.
+027
+private final double m_armLenMeters;
+028
+029
+// The minimum angle that the arm is capable of.
+030
+private final double m_minAngle;
+031
+032
+// The maximum angle that the arm is capable of.
+033
+private final double m_maxAngle;
+034
+035
+// Whether the simulator should simulate gravity.
+036
+private final boolean m_simulateGravity;
+037
+038
+/**
+039
+* Creates a simulated arm mechanism.
+040
+*
+041
+* @param plant The linear system that represents the arm. This system can be created with {@link
+042
+*     edu.wpi.first.math.system.plant.LinearSystemId#createSingleJointedArmSystem(DCMotor,
+043
+*     double, double)}.
+044
+* @param gearbox The type of and number of motors in the arm gearbox.
+045
+* @param gearing The gearing of the arm (numbers greater than 1 represent reductions).
+046
+* @param armLengthMeters The length of the arm.
+047
+* @param minAngleRads The minimum angle that the arm is capable of.
+048
+* @param maxAngleRads The maximum angle that the arm is capable of.
+049
+* @param simulateGravity Whether gravity should be simulated or not.
+050
+* @param startingAngleRads The initial position of the Arm simulation in radians.
+051
+* @param measurementStdDevs The standard deviations of the measurements. Can be omitted if no
+052
+*     noise is desired. If present must have 1 element for position.
+053
+*/
+054
+@SuppressWarnings("this-escape")
+055
+public SingleJointedArmSim(
+056
+LinearSystem<N2, N1, N2> plant,
+057
+DCMotor gearbox,
+058
+double gearing,
+059
+double armLengthMeters,
+060
+double minAngleRads,
+061
+double maxAngleRads,
+062
+boolean simulateGravity,
+063
+double startingAngleRads,
+064
+double... measurementStdDevs) {
+065
+super(plant, measurementStdDevs);
+066
+m_gearbox = gearbox;
+067
+m_gearing = gearing;
+068
+m_armLenMeters = armLengthMeters;
+069
+m_minAngle = minAngleRads;
+070
+m_maxAngle = maxAngleRads;
+071
+m_simulateGravity = simulateGravity;
+072
+073
+setState(startingAngleRads, 0.0);
+074
+}
+075
+076
+/**
+077
+* Creates a simulated arm mechanism.
+078
+*
+079
+* @param gearbox The type of and number of motors in the arm gearbox.
+080
+* @param gearing The gearing of the arm (numbers greater than 1 represent reductions).
+081
+* @param jKgMetersSquared The moment of inertia of the arm; can be calculated from CAD software.
+082
+* @param armLengthMeters The length of the arm.
+083
+* @param minAngleRads The minimum angle that the arm is capable of.
+084
+* @param maxAngleRads The maximum angle that the arm is capable of.
+085
+* @param simulateGravity Whether gravity should be simulated or not.
+086
+* @param startingAngleRads The initial position of the Arm simulation in radians.
+087
+* @param measurementStdDevs The standard deviations of the measurements. Can be omitted if no
+088
+*     noise is desired. If present must have 1 element for position.
+089
+*/
+090
+public SingleJointedArmSim(
+091
+DCMotor gearbox,
+092
+double gearing,
+093
+double jKgMetersSquared,
+094
+double armLengthMeters,
+095
+double minAngleRads,
+096
+double maxAngleRads,
+097
+boolean simulateGravity,
+098
+double startingAngleRads,
+099
+double... measurementStdDevs) {
+100
+this(
+101
+LinearSystemId.createSingleJointedArmSystem(gearbox, jKgMetersSquared, gearing),
+102
+gearbox,
+103
+gearing,
+104
+armLengthMeters,
+105
+minAngleRads,
+106
+maxAngleRads,
+107
+simulateGravity,
+108
+startingAngleRads,
+109
+measurementStdDevs);
+110
+}
+111
+112
+/**
+113
+* Sets the arm's state. The new angle will be limited between the minimum and maximum allowed
+114
+* limits.
+115
+*
+116
+* @param angleRadians The new angle in radians.
+117
+* @param velocityRadPerSec The new angular velocity in radians per second.
+118
+*/
+119
+public final void setState(double angleRadians, double velocityRadPerSec) {
+120
+setState(
+121
+VecBuilder.fill(MathUtil.clamp(angleRadians, m_minAngle, m_maxAngle), velocityRadPerSec));
+122
+}
+123
+124
+/**
+125
+* Returns whether the arm would hit the lower limit.
+126
+*
+127
+* @param currentAngleRads The current arm height.
+128
+* @return Whether the arm would hit the lower limit.
+129
+*/
+130
+public boolean wouldHitLowerLimit(double currentAngleRads) {
+131
+return currentAngleRads <= this.m_minAngle;
+132
+}
+133
+134
+/**
+135
+* Returns whether the arm would hit the upper limit.
+136
+*
+137
+* @param currentAngleRads The current arm height.
+138
+* @return Whether the arm would hit the upper limit.
+139
+*/
+140
+public boolean wouldHitUpperLimit(double currentAngleRads) {
+141
+return currentAngleRads >= this.m_maxAngle;
+142
+}
+143
+144
+/**
+145
+* Returns whether the arm has hit the lower limit.
+146
+*
+147
+* @return Whether the arm has hit the lower limit.
+148
+*/
+149
+public boolean hasHitLowerLimit() {
+150
+return wouldHitLowerLimit(getAngleRads());
+151
+}
+152
+153
+/**
+154
+* Returns whether the arm has hit the upper limit.
+155
+*
+156
+* @return Whether the arm has hit the upper limit.
+157
+*/
+158
+public boolean hasHitUpperLimit() {
+159
+return wouldHitUpperLimit(getAngleRads());
+160
+}
+161
+162
+/**
+163
+* Returns the current arm angle.
+164
+*
+165
+* @return The current arm angle.
+166
+*/
+167
+public double getAngleRads() {
+168
+return getOutput(0);
+169
+}
+170
+171
+/**
+172
+* Returns the current arm velocity.
+173
+*
+174
+* @return The current arm velocity.
+175
+*/
+176
+public double getVelocityRadPerSec() {
+177
+return getOutput(1);
+178
+}
+179
+180
+/**
+181
+* Returns the arm current draw.
+182
+*
+183
+* @return The arm current draw.
+184
+*/
+185
+public double getCurrentDrawAmps() {
+186
+// Reductions are greater than 1, so a reduction of 10:1 would mean the motor is
+187
+// spinning 10x faster than the output
+188
+var motorVelocity = m_x.get(1, 0) * m_gearing;
+189
+return m_gearbox.getCurrent(motorVelocity, m_u.get(0, 0)) * Math.signum(m_u.get(0, 0));
+190
+}
+191
+192
+/**
+193
+* Sets the input voltage for the arm.
+194
+*
+195
+* @param volts The input voltage.
+196
+*/
+197
+public void setInputVoltage(double volts) {
+198
+setInput(volts);
+199
+clampInput(RobotController.getBatteryVoltage());
+200
+}
+201
+202
+/**
+203
+* Calculates a rough estimate of the moment of inertia of an arm given its length and mass.
+204
+*
+205
+* @param lengthMeters The length of the arm.
+206
+* @param massKg The mass of the arm.
+207
+* @return The calculated moment of inertia.
+208
+*/
+209
+public static double estimateMOI(double lengthMeters, double massKg) {
+210
+return 1.0 / 3.0 * massKg * lengthMeters * lengthMeters;
+211
+}
+212
+213
+/**
+214
+* Updates the state of the arm.
+215
+*
+216
+* @param currentXhat The current state estimate.
+217
+* @param u The system inputs (voltage).
+218
+* @param dtSeconds The time difference between controller updates.
+219
+*/
+220
+@Override
+221
+protected Matrix<N2, N1> updateX(Matrix<N2, N1> currentXhat, Matrix<N1, N1> u, double dtSeconds) {
+222
+// The torque on the arm is given by τ = F⋅r, where F is the force applied by
+223
+// gravity and r the distance from pivot to center of mass. Recall from
+224
+// dynamics that the sum of torques for a rigid body is τ = J⋅α, were τ is
+225
+// torque on the arm, J is the mass-moment of inertia about the pivot axis,
+226
+// and α is the angular acceleration in rad/s². Rearranging yields: α = F⋅r/J
+227
+//
+228
+// We substitute in F = m⋅g⋅cos(θ), where θ is the angle from horizontal:
+229
+//
+230
+//   α = (m⋅g⋅cos(θ))⋅r/J
+231
+//
+232
+// Multiply RHS by cos(θ) to account for the arm angle. Further, we know the
+233
+// arm mass-moment of inertia J of our arm is given by J=1/3 mL², modeled as a
+234
+// rod rotating about it's end, where L is the overall rod length. The mass
+235
+// distribution is assumed to be uniform. Substitute r=L/2 to find:
+236
+//
+237
+//   α = (m⋅g⋅cos(θ))⋅r/(1/3 mL²)
+238
+//   α = (m⋅g⋅cos(θ))⋅(L/2)/(1/3 mL²)
+239
+//   α = 3/2⋅g⋅cos(θ)/L
+240
+//
+241
+// This acceleration is next added to the linear system dynamics ẋ=Ax+Bu
+242
+//
+243
+//   f(x, u) = Ax + Bu + [0  α]ᵀ
+244
+//   f(x, u) = Ax + Bu + [0  3/2⋅g⋅cos(θ)/L]ᵀ
+245
+246
+Matrix<N2, N1> updatedXhat =
+247
+NumericalIntegration.rkdp(
+248
+(Matrix<N2, N1> x, Matrix<N1, N1> _u) -> {
+249
+Matrix<N2, N1> xdot = m_plant.getA().times(x).plus(m_plant.getB().times(_u));
+250
+if (m_simulateGravity) {
+251
+double alphaGrav = 3.0 / 2.0 * -9.8 * Math.cos(x.get(0, 0)) / m_armLenMeters;
+252
+xdot = xdot.plus(VecBuilder.fill(0, alphaGrav));
+253
+}
+254
+return xdot;
+255
+},
+256
+currentXhat,
+257
+u,
+258
+dtSeconds);
+259
+260
+// We check for collision after updating xhat
+261
+if (wouldHitLowerLimit(updatedXhat.get(0, 0))) {
+262
+return VecBuilder.fill(m_minAngle, 0);
+263
+}
+264
+if (wouldHitUpperLimit(updatedXhat.get(0, 0))) {
+265
+return VecBuilder.fill(m_maxAngle, 0);
+266
+}
+267
+return updatedXhat;
+268
+}
+269
+}

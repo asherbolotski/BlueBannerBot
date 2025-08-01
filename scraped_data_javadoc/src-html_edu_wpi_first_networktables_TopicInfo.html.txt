@@ -1,0 +1,120 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/** NetworkTables topic information. */
+008
+@SuppressWarnings("MemberName")
+009
+public final class TopicInfo {
+010
+/** Topic handle. */
+011
+public final int topic;
+012
+013
+/** Topic name. */
+014
+public final String name;
+015
+016
+/** Topic type. */
+017
+public final NetworkTableType type;
+018
+019
+/** Topic type string. */
+020
+public final String typeStr;
+021
+022
+/**
+023
+* Constructor. This should generally only be used internally to NetworkTables.
+024
+*
+025
+* @param inst Instance
+026
+* @param handle Topic handle
+027
+* @param name Name
+028
+* @param type Type (integer version of {@link NetworkTableType})
+029
+* @param typeStr Type string
+030
+*/
+031
+public TopicInfo(NetworkTableInstance inst, int handle, String name, int type, String typeStr) {
+032
+this.m_inst = inst;
+033
+this.topic = handle;
+034
+this.name = name;
+035
+this.type = NetworkTableType.getFromInt(type);
+036
+this.typeStr = typeStr;
+037
+}
+038
+039
+/* Network table instance. */
+040
+private final NetworkTableInstance m_inst;
+041
+042
+/* Cached topic object. */
+043
+private Topic m_topicObject;
+044
+045
+/**
+046
+* Get the instance.
+047
+*
+048
+* @return Instance
+049
+*/
+050
+public NetworkTableInstance getInstance() {
+051
+return m_inst;
+052
+}
+053
+054
+/**
+055
+* Get the topic as an object.
+056
+*
+057
+* @return Topic
+058
+*/
+059
+public Topic getTopic() {
+060
+if (m_topicObject == null) {
+061
+m_topicObject = new Topic(m_inst, topic);
+062
+}
+063
+return m_topicObject;
+064
+}
+065
+}

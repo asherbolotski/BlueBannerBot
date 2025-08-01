@@ -1,0 +1,355 @@
+Package
+edu.wpi.first.networktables
+Class IntegerTopic
+java.lang.Object
+edu.wpi.first.networktables.Topic
+edu.wpi.first.networktables.IntegerTopic
+public final class
+IntegerTopic
+extends
+Topic
+NetworkTables Integer topic.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+String
+kTypeString
+The default type string for this topic type.
+Fields inherited from class edu.wpi.first.networktables.
+Topic
+m_handle
+,
+m_inst
+Constructor Summary
+Constructors
+Constructor
+Description
+IntegerTopic
+(
+NetworkTableInstance
+inst,
+ int handle)
+Constructor; use NetworkTableInstance.getIntegerTopic() instead.
+IntegerTopic
+(
+Topic
+topic)
+Construct from a generic topic.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+IntegerEntry
+getEntry
+(long defaultValue,
+PubSubOption
+... options)
+Create a new entry for the topic.
+IntegerEntry
+getEntryEx
+(
+String
+typeString,
+ long defaultValue,
+PubSubOption
+... options)
+Create a new entry for the topic, with specified type string.
+IntegerPublisher
+publish
+(
+PubSubOption
+... options)
+Create a new publisher to the topic.
+IntegerPublisher
+publishEx
+(
+String
+typeString,
+String
+properties,
+PubSubOption
+... options)
+Create a new publisher to the topic, with type string and initial properties.
+IntegerSubscriber
+subscribe
+(long defaultValue,
+PubSubOption
+... options)
+Create a new subscriber to the topic.
+IntegerSubscriber
+subscribeEx
+(
+String
+typeString,
+ long defaultValue,
+PubSubOption
+... options)
+Create a new subscriber to the topic, with specified type string.
+Methods inherited from class edu.wpi.first.networktables.
+Topic
+deleteProperty
+,
+equals
+,
+exists
+,
+genericPublish
+,
+genericPublishEx
+,
+genericSubscribe
+,
+genericSubscribe
+,
+getGenericEntry
+,
+getGenericEntry
+,
+getHandle
+,
+getInfo
+,
+getInstance
+,
+getName
+,
+getProperties
+,
+getProperty
+,
+getType
+,
+getTypeString
+,
+hashCode
+,
+isCached
+,
+isPersistent
+,
+isRetained
+,
+isValid
+,
+setCached
+,
+setPersistent
+,
+setProperties
+,
+setProperty
+,
+setRetained
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kTypeString
+public static final
+String
+kTypeString
+The default type string for this topic type.
+See Also:
+Constant Field Values
+Constructor Details
+IntegerTopic
+public
+IntegerTopic
+(
+Topic
+topic)
+Construct from a generic topic.
+Parameters:
+topic
+- Topic
+IntegerTopic
+public
+IntegerTopic
+(
+NetworkTableInstance
+inst,
+ int handle)
+Constructor; use NetworkTableInstance.getIntegerTopic() instead.
+Parameters:
+inst
+- Instance
+handle
+- Native handle
+Method Details
+subscribe
+public
+IntegerSubscriber
+subscribe
+(long defaultValue,
+PubSubOption
+... options)
+Create a new subscriber to the topic.
+The subscriber is only active as long as the returned object
+ is not closed.
+Subscribers that do not match the published data type do not return
+ any values. To determine if the data type matches, use the appropriate
+ Topic functions.
+Parameters:
+defaultValue
+- default value used when a default is not provided to a
+        getter function
+options
+- subscribe options
+Returns:
+subscriber
+subscribeEx
+public
+IntegerSubscriber
+subscribeEx
+(
+String
+typeString,
+ long defaultValue,
+PubSubOption
+... options)
+Create a new subscriber to the topic, with specified type string.
+The subscriber is only active as long as the returned object
+ is not closed.
+Subscribers that do not match the published data type do not return
+ any values. To determine if the data type matches, use the appropriate
+ Topic functions.
+Parameters:
+typeString
+- type string
+defaultValue
+- default value used when a default is not provided to a
+        getter function
+options
+- subscribe options
+Returns:
+subscriber
+publish
+public
+IntegerPublisher
+publish
+(
+PubSubOption
+... options)
+Create a new publisher to the topic.
+The publisher is only active as long as the returned object
+ is not closed.
+It is not possible to publish two different data types to the same
+ topic. Conflicts between publishers are typically resolved by the server on
+ a first-come, first-served basis. Any published values that do not match
+ the topic's data type are dropped (ignored). To determine if the data type
+ matches, use the appropriate Topic functions.
+Parameters:
+options
+- publish options
+Returns:
+publisher
+publishEx
+public
+IntegerPublisher
+publishEx
+(
+String
+typeString,
+String
+properties,
+PubSubOption
+... options)
+Create a new publisher to the topic, with type string and initial properties.
+The publisher is only active as long as the returned object
+ is not closed.
+It is not possible to publish two different data types to the same
+ topic. Conflicts between publishers are typically resolved by the server on
+ a first-come, first-served basis. Any published values that do not match
+ the topic's data type are dropped (ignored). To determine if the data type
+ matches, use the appropriate Topic functions.
+Parameters:
+typeString
+- type string
+properties
+- JSON properties
+options
+- publish options
+Returns:
+publisher
+Throws:
+IllegalArgumentException
+- if properties is not a JSON object
+getEntry
+public
+IntegerEntry
+getEntry
+(long defaultValue,
+PubSubOption
+... options)
+Create a new entry for the topic.
+Entries act as a combination of a subscriber and a weak publisher. The
+ subscriber is active as long as the entry is not closed. The publisher is
+ created when the entry is first written to, and remains active until either
+ unpublish() is called or the entry is closed.
+It is not possible to use two different data types with the same
+ topic. Conflicts between publishers are typically resolved by the server on
+ a first-come, first-served basis. Any published values that do not match
+ the topic's data type are dropped (ignored), and the entry will show no new
+ values if the data type does not match. To determine if the data type
+ matches, use the appropriate Topic functions.
+Parameters:
+defaultValue
+- default value used when a default is not provided to a
+        getter function
+options
+- publish and/or subscribe options
+Returns:
+entry
+getEntryEx
+public
+IntegerEntry
+getEntryEx
+(
+String
+typeString,
+ long defaultValue,
+PubSubOption
+... options)
+Create a new entry for the topic, with specified type string.
+Entries act as a combination of a subscriber and a weak publisher. The
+ subscriber is active as long as the entry is not closed. The publisher is
+ created when the entry is first written to, and remains active until either
+ unpublish() is called or the entry is closed.
+It is not possible to use two different data types with the same
+ topic. Conflicts between publishers are typically resolved by the server on
+ a first-come, first-served basis. Any published values that do not match
+ the topic's data type are dropped (ignored), and the entry will show no new
+ values if the data type does not match. To determine if the data type
+ matches, use the appropriate Topic functions.
+Parameters:
+typeString
+- type string
+defaultValue
+- default value used when a default is not provided to a
+        getter function
+options
+- publish and/or subscribe options
+Returns:
+entry

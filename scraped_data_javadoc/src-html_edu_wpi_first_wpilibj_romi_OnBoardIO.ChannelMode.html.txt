@@ -1,0 +1,289 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.romi;
+006
+007
+import edu.wpi.first.wpilibj.DigitalInput;
+008
+import edu.wpi.first.wpilibj.DigitalOutput;
+009
+import edu.wpi.first.wpilibj.DriverStation;
+010
+import edu.wpi.first.wpilibj.Timer;
+011
+012
+/**
+013
+* This class represents the onboard IO of the Romi reference robot. This includes the pushbuttons
+014
+* and LEDs.
+015
+*
+016
+* <p>DIO 0 - Button A (input only) DIO 1 - Button B (input) or Green LED (output) DIO 2 - Button C
+017
+* (input) or Red LED (output) DIO 3 - Yellow LED (output only)
+018
+*/
+019
+public class OnBoardIO {
+020
+private final DigitalInput m_buttonA = new DigitalInput(0);
+021
+private final DigitalOutput m_yellowLed = new DigitalOutput(3);
+022
+023
+// DIO 1
+024
+private final DigitalInput m_buttonB;
+025
+private final DigitalOutput m_greenLed;
+026
+027
+// DIO 2
+028
+private final DigitalInput m_buttonC;
+029
+private final DigitalOutput m_redLed;
+030
+031
+private static final double MESSAGE_INTERVAL = 1.0;
+032
+private double m_nextMessageTime;
+033
+034
+/** Mode for Romi onboard IO channel. */
+035
+public enum ChannelMode {
+036
+/** Input. */
+037
+INPUT,
+038
+/** Output. */
+039
+OUTPUT
+040
+}
+041
+042
+/**
+043
+* Constructor.
+044
+*
+045
+* @param dio1 Mode for DIO 1 (input = Button B, output = green LED)
+046
+* @param dio2 Mode for DIO 2 (input = Button C, output = red LED)
+047
+*/
+048
+public OnBoardIO(ChannelMode dio1, ChannelMode dio2) {
+049
+if (dio1 == ChannelMode.INPUT) {
+050
+m_buttonB = new DigitalInput(1);
+051
+m_greenLed = null;
+052
+} else {
+053
+m_greenLed = new DigitalOutput(1);
+054
+m_buttonB = null;
+055
+}
+056
+057
+if (dio2 == ChannelMode.INPUT) {
+058
+m_buttonC = new DigitalInput(2);
+059
+m_redLed = null;
+060
+} else {
+061
+m_redLed = new DigitalOutput(2);
+062
+m_buttonC = null;
+063
+}
+064
+}
+065
+066
+/**
+067
+* Gets if the A button is pressed.
+068
+*
+069
+* @return Whether or not Button A is pressed
+070
+*/
+071
+public boolean getButtonAPressed() {
+072
+return m_buttonA.get();
+073
+}
+074
+075
+/**
+076
+* Gets if the B button is pressed.
+077
+*
+078
+* @return Whether or not Button B is pressed
+079
+*/
+080
+public boolean getButtonBPressed() {
+081
+if (m_buttonB != null) {
+082
+return m_buttonB.get();
+083
+}
+084
+085
+double currentTime = Timer.getTimestamp();
+086
+if (currentTime > m_nextMessageTime) {
+087
+DriverStation.reportError("Button B was not configured", true);
+088
+m_nextMessageTime = currentTime + MESSAGE_INTERVAL;
+089
+}
+090
+return false;
+091
+}
+092
+093
+/**
+094
+* Gets if the C button is pressed.
+095
+*
+096
+* @return Whether or not Button C is pressed
+097
+*/
+098
+public boolean getButtonCPressed() {
+099
+if (m_buttonC != null) {
+100
+return m_buttonC.get();
+101
+}
+102
+103
+double currentTime = Timer.getTimestamp();
+104
+if (currentTime > m_nextMessageTime) {
+105
+DriverStation.reportError("Button C was not configured", true);
+106
+m_nextMessageTime = currentTime + MESSAGE_INTERVAL;
+107
+}
+108
+return false;
+109
+}
+110
+111
+/**
+112
+* Sets the green LED.
+113
+*
+114
+* @param value Set whether or not to turn the Green LED on
+115
+*/
+116
+public void setGreenLed(boolean value) {
+117
+if (m_greenLed != null) {
+118
+m_greenLed.set(value);
+119
+} else {
+120
+double currentTime = Timer.getTimestamp();
+121
+if (currentTime > m_nextMessageTime) {
+122
+DriverStation.reportError("Green LED was not configured", true);
+123
+m_nextMessageTime = currentTime + MESSAGE_INTERVAL;
+124
+}
+125
+}
+126
+}
+127
+128
+/**
+129
+* Sets the red LED.
+130
+*
+131
+* @param value Set whether or not to turn the Red LED on
+132
+*/
+133
+public void setRedLed(boolean value) {
+134
+if (m_redLed != null) {
+135
+m_redLed.set(value);
+136
+} else {
+137
+double currentTime = Timer.getTimestamp();
+138
+if (currentTime > m_nextMessageTime) {
+139
+DriverStation.reportError("Red LED was not configured", true);
+140
+m_nextMessageTime = currentTime + MESSAGE_INTERVAL;
+141
+}
+142
+}
+143
+}
+144
+145
+/**
+146
+* Sets the yellow LED.
+147
+*
+148
+* @param value Set whether or not to turn the Yellow LED on
+149
+*/
+150
+public void setYellowLed(boolean value) {
+151
+m_yellowLed.set(value);
+152
+}
+153
+}

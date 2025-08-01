@@ -1,0 +1,361 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.CANAPIJNI;
+008
+import edu.wpi.first.hal.CANAPITypes;
+009
+import edu.wpi.first.hal.CANData;
+010
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+011
+import edu.wpi.first.hal.HAL;
+012
+import java.io.Closeable;
+013
+014
+/**
+015
+* High level class for interfacing with CAN devices conforming to the standard CAN spec.
+016
+*
+017
+* <p>No packets that can be sent gets blocked by the RoboRIO, so all methods work identically in
+018
+* all robot modes.
+019
+*
+020
+* <p>All methods are thread safe, however the CANData object passed into the read methods and the
+021
+* byte[] passed into the write methods need to not be modified for the duration of their respective
+022
+* calls.
+023
+*/
+024
+public class CAN implements Closeable {
+025
+/** Team manufacturer. */
+026
+public static final int kTeamManufacturer = CANAPITypes.CANManufacturer.kTeamUse.id;
+027
+028
+/** Team device type. */
+029
+public static final int kTeamDeviceType = CANAPITypes.CANDeviceType.kMiscellaneous.id;
+030
+031
+private final int m_handle;
+032
+033
+/**
+034
+* Create a new CAN communication interface with the specific device ID. This uses the team
+035
+* manufacturer and device types. The device ID is 6 bits (0-63).
+036
+*
+037
+* @param deviceId The device id
+038
+*/
+039
+public CAN(int deviceId) {
+040
+m_handle = CANAPIJNI.initializeCAN(kTeamManufacturer, deviceId, kTeamDeviceType);
+041
+HAL.report(tResourceType.kResourceType_CAN, deviceId + 1);
+042
+}
+043
+044
+/**
+045
+* Create a new CAN communication interface with a specific device ID, manufacturer and device
+046
+* type. The device ID is 6 bits, the manufacturer is 8 bits, and the device type is 5 bits.
+047
+*
+048
+* @param deviceId The device ID
+049
+* @param deviceManufacturer The device manufacturer
+050
+* @param deviceType The device type
+051
+*/
+052
+public CAN(int deviceId, int deviceManufacturer, int deviceType) {
+053
+m_handle = CANAPIJNI.initializeCAN(deviceManufacturer, deviceId, deviceType);
+054
+HAL.report(tResourceType.kResourceType_CAN, deviceId + 1);
+055
+}
+056
+057
+/** Closes the CAN communication. */
+058
+@Override
+059
+public void close() {
+060
+if (m_handle != 0) {
+061
+CANAPIJNI.cleanCAN(m_handle);
+062
+}
+063
+}
+064
+065
+/**
+066
+* Write a packet to the CAN device with a specific ID. This ID is 10 bits.
+067
+*
+068
+* @param data The data to write (8 bytes max)
+069
+* @param apiId The API ID to write.
+070
+*/
+071
+public void writePacket(byte[] data, int apiId) {
+072
+CANAPIJNI.writeCANPacket(m_handle, data, apiId);
+073
+}
+074
+075
+/**
+076
+* Write a repeating packet to the CAN device with a specific ID. This ID is 10 bits. The RoboRIO
+077
+* will automatically repeat the packet at the specified interval
+078
+*
+079
+* @param data The data to write (8 bytes max)
+080
+* @param apiId The API ID to write.
+081
+* @param repeatMs The period to repeat the packet at.
+082
+*/
+083
+public void writePacketRepeating(byte[] data, int apiId, int repeatMs) {
+084
+CANAPIJNI.writeCANPacketRepeating(m_handle, data, apiId, repeatMs);
+085
+}
+086
+087
+/**
+088
+* Write an RTR frame to the CAN device with a specific ID. This ID is 10 bits. The length by spec
+089
+* must match what is returned by the responding device
+090
+*
+091
+* @param length The length to request (0 to 8)
+092
+* @param apiId The API ID to write.
+093
+*/
+094
+public void writeRTRFrame(int length, int apiId) {
+095
+CANAPIJNI.writeCANRTRFrame(m_handle, length, apiId);
+096
+}
+097
+098
+/**
+099
+* Write a packet to the CAN device with a specific ID. This ID is 10 bits.
+100
+*
+101
+* @param data The data to write (8 bytes max)
+102
+* @param apiId The API ID to write.
+103
+* @return TODO
+104
+*/
+105
+public int writePacketNoThrow(byte[] data, int apiId) {
+106
+return CANAPIJNI.writeCANPacketNoThrow(m_handle, data, apiId);
+107
+}
+108
+109
+/**
+110
+* Write a repeating packet to the CAN device with a specific ID. This ID is 10 bits. The RoboRIO
+111
+* will automatically repeat the packet at the specified interval
+112
+*
+113
+* @param data The data to write (8 bytes max)
+114
+* @param apiId The API ID to write.
+115
+* @param repeatMs The period to repeat the packet at.
+116
+* @return TODO
+117
+*/
+118
+public int writePacketRepeatingNoThrow(byte[] data, int apiId, int repeatMs) {
+119
+return CANAPIJNI.writeCANPacketRepeatingNoThrow(m_handle, data, apiId, repeatMs);
+120
+}
+121
+122
+/**
+123
+* Write an RTR frame to the CAN device with a specific ID. This ID is 10 bits. The length by spec
+124
+* must match what is returned by the responding device
+125
+*
+126
+* @param length The length to request (0 to 8)
+127
+* @param apiId The API ID to write.
+128
+* @return TODO
+129
+*/
+130
+public int writeRTRFrameNoThrow(int length, int apiId) {
+131
+return CANAPIJNI.writeCANRTRFrameNoThrow(m_handle, length, apiId);
+132
+}
+133
+134
+/**
+135
+* Stop a repeating packet with a specific ID. This ID is 10 bits.
+136
+*
+137
+* @param apiId The API ID to stop repeating
+138
+*/
+139
+public void stopPacketRepeating(int apiId) {
+140
+CANAPIJNI.stopCANPacketRepeating(m_handle, apiId);
+141
+}
+142
+143
+/**
+144
+* Read a new CAN packet. This will only return properly once per packet received. Multiple calls
+145
+* without receiving another packet will return false.
+146
+*
+147
+* @param apiId The API ID to read.
+148
+* @param data Storage for the received data.
+149
+* @return True if the data is valid, otherwise false.
+150
+*/
+151
+public boolean readPacketNew(int apiId, CANData data) {
+152
+return CANAPIJNI.readCANPacketNew(m_handle, apiId, data);
+153
+}
+154
+155
+/**
+156
+* Read a CAN packet. This will continuously return the last packet received, without accounting
+157
+* for packet age.
+158
+*
+159
+* @param apiId The API ID to read.
+160
+* @param data Storage for the received data.
+161
+* @return True if the data is valid, otherwise false.
+162
+*/
+163
+public boolean readPacketLatest(int apiId, CANData data) {
+164
+return CANAPIJNI.readCANPacketLatest(m_handle, apiId, data);
+165
+}
+166
+167
+/**
+168
+* Read a CAN packet. This will return the last packet received until the packet is older than the
+169
+* requested timeout. Then it will return false.
+170
+*
+171
+* @param apiId The API ID to read.
+172
+* @param timeoutMs The timeout time for the packet
+173
+* @param data Storage for the received data.
+174
+* @return True if the data is valid, otherwise false.
+175
+*/
+176
+public boolean readPacketTimeout(int apiId, int timeoutMs, CANData data) {
+177
+return CANAPIJNI.readCANPacketTimeout(m_handle, apiId, timeoutMs, data);
+178
+}
+179
+180
+/**
+181
+* Reads the current value of the millisecond-resolution timer that {@link CANData} timestamps are
+182
+* based on.
+183
+*
+184
+* @return Current value of timer used as a base time for {@link CANData} timestamps in
+185
+*     milliseconds
+186
+*/
+187
+public static long getTimestampBaseTime() {
+188
+return CANAPIJNI.getCANPacketBaseTime();
+189
+}
+190
+}

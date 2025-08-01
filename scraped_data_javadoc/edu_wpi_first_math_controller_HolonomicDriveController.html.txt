@@ -1,0 +1,225 @@
+Package
+edu.wpi.first.math.controller
+Class HolonomicDriveController
+java.lang.Object
+edu.wpi.first.math.controller.HolonomicDriveController
+public class
+HolonomicDriveController
+extends
+Object
+This holonomic drive controller can be used to follow trajectories using a holonomic drivetrain
+ (i.e. swerve or mecanum). Holonomic trajectory following is a much simpler problem to solve
+ compared to skid-steer style drivetrains because it is possible to individually control forward,
+ sideways, and angular velocity.
+The holonomic drive controller takes in one PID controller for each direction, forward and
+ sideways, and one profiled PID controller for the angular direction. Because the heading dynamics
+ are decoupled from translations, users can specify a custom heading that the drivetrain should
+ point toward. This heading reference is profiled for smoothness.
+Constructor Summary
+Constructors
+Constructor
+Description
+HolonomicDriveController
+(
+PIDController
+xController,
+PIDController
+yController,
+ProfiledPIDController
+thetaController)
+Constructs a holonomic drive controller.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+atReference
+()
+Returns true if the pose error is within tolerance of the reference.
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Pose2d
+trajectoryPose,
+ double desiredLinearVelocityMetersPerSecond,
+Rotation2d
+desiredHeading)
+Returns the next output of the holonomic drive controller.
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Trajectory.State
+desiredState,
+Rotation2d
+desiredHeading)
+Returns the next output of the holonomic drive controller.
+ProfiledPIDController
+getThetaController
+()
+Returns the heading controller.
+PIDController
+getXController
+()
+Returns the x controller.
+PIDController
+getYController
+()
+Returns the y controller.
+void
+setEnabled
+(boolean enabled)
+Enables and disables the controller for troubleshooting problems.
+void
+setTolerance
+(
+Pose2d
+tolerance)
+Sets the pose error which is considered tolerance for use with atReference().
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+HolonomicDriveController
+public
+HolonomicDriveController
+(
+PIDController
+xController,
+PIDController
+yController,
+ProfiledPIDController
+thetaController)
+Constructs a holonomic drive controller.
+Parameters:
+xController
+- A PID Controller to respond to error in the field-relative x direction.
+yController
+- A PID Controller to respond to error in the field-relative y direction.
+thetaController
+- A profiled PID controller to respond to error in angle.
+Method Details
+atReference
+public
+boolean
+atReference
+()
+Returns true if the pose error is within tolerance of the reference.
+Returns:
+True if the pose error is within tolerance of the reference.
+setTolerance
+public
+void
+setTolerance
+(
+Pose2d
+tolerance)
+Sets the pose error which is considered tolerance for use with atReference().
+Parameters:
+tolerance
+- The pose error which is tolerable.
+calculate
+public
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Pose2d
+trajectoryPose,
+ double desiredLinearVelocityMetersPerSecond,
+Rotation2d
+desiredHeading)
+Returns the next output of the holonomic drive controller.
+Parameters:
+currentPose
+- The current pose, as measured by odometry or pose estimator.
+trajectoryPose
+- The desired trajectory pose, as sampled for the current timestep.
+desiredLinearVelocityMetersPerSecond
+- The desired linear velocity.
+desiredHeading
+- The desired heading.
+Returns:
+The next output of the holonomic drive controller.
+calculate
+public
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Trajectory.State
+desiredState,
+Rotation2d
+desiredHeading)
+Returns the next output of the holonomic drive controller.
+Parameters:
+currentPose
+- The current pose, as measured by odometry or pose estimator.
+desiredState
+- The desired trajectory pose, as sampled for the current timestep.
+desiredHeading
+- The desired heading.
+Returns:
+The next output of the holonomic drive controller.
+setEnabled
+public
+void
+setEnabled
+(boolean enabled)
+Enables and disables the controller for troubleshooting problems. When calculate() is called on
+ a disabled controller, only feedforward values are returned.
+Parameters:
+enabled
+- If the controller is enabled or not.
+getXController
+public
+PIDController
+getXController
+()
+Returns the x controller.
+Returns:
+X PIDController
+getYController
+public
+PIDController
+getYController
+()
+Returns the y controller.
+Returns:
+Y PIDController
+getThetaController
+public
+ProfiledPIDController
+getThetaController
+()
+Returns the heading controller.
+Returns:
+heading ProfiledPIDController

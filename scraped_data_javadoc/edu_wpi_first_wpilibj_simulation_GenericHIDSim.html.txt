@@ -1,0 +1,306 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class GenericHIDSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.GenericHIDSim
+Direct Known Subclasses:
+JoystickSim
+,
+PS4ControllerSim
+,
+PS5ControllerSim
+,
+StadiaControllerSim
+,
+XboxControllerSim
+public class
+GenericHIDSim
+extends
+Object
+Class to control a simulated generic joystick.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final int
+m_port
+GenericHID port.
+Constructor Summary
+Constructors
+Constructor
+Description
+GenericHIDSim
+(int port)
+Constructs from a joystick port number.
+GenericHIDSim
+(
+GenericHID
+joystick)
+Constructs from a GenericHID object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+getOutput
+(int outputNumber)
+Read the output of a button.
+long
+getOutputs
+()
+Get the encoded 16-bit integer that passes button values.
+double
+getRumble
+(
+GenericHID.RumbleType
+type)
+Get the joystick rumble.
+void
+notifyNewData
+()
+Updates joystick data so that new values are visible to the user program.
+void
+setAxisCount
+(int count)
+Set the axis count of this device.
+void
+setAxisType
+(int axis,
+ int type)
+Set the type of the provided axis channel.
+void
+setButtonCount
+(int count)
+Set the button count of this device.
+void
+setName
+(
+String
+name)
+Set the name of this device.
+void
+setPOV
+(int value)
+Set the value of the default POV (port 0).
+void
+setPOV
+(int pov,
+ int value)
+Set the value of a given POV.
+void
+setPOVCount
+(int count)
+Set the POV count of this device.
+void
+setRawAxis
+(int axis,
+ double value)
+Set the value of a given axis.
+void
+setRawButton
+(int button,
+ boolean value)
+Set the value of a given button.
+void
+setType
+(
+GenericHID.HIDType
+type)
+Set the type of this device.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_port
+protected final
+int
+m_port
+GenericHID port.
+Constructor Details
+GenericHIDSim
+public
+GenericHIDSim
+(
+GenericHID
+joystick)
+Constructs from a GenericHID object.
+Parameters:
+joystick
+- joystick to simulate
+GenericHIDSim
+public
+GenericHIDSim
+(int port)
+Constructs from a joystick port number.
+Parameters:
+port
+- port number
+Method Details
+notifyNewData
+public
+void
+notifyNewData
+()
+Updates joystick data so that new values are visible to the user program.
+setRawButton
+public
+void
+setRawButton
+(int button,
+ boolean value)
+Set the value of a given button.
+Parameters:
+button
+- the button to set
+value
+- the new value
+setRawAxis
+public
+void
+setRawAxis
+(int axis,
+ double value)
+Set the value of a given axis.
+Parameters:
+axis
+- the axis to set
+value
+- the new value
+setPOV
+public
+void
+setPOV
+(int pov,
+ int value)
+Set the value of a given POV.
+Parameters:
+pov
+- the POV to set
+value
+- the new value
+setPOV
+public
+void
+setPOV
+(int value)
+Set the value of the default POV (port 0).
+Parameters:
+value
+- the new value
+setAxisCount
+public
+void
+setAxisCount
+(int count)
+Set the axis count of this device.
+Parameters:
+count
+- the new axis count
+setPOVCount
+public
+void
+setPOVCount
+(int count)
+Set the POV count of this device.
+Parameters:
+count
+- the new POV count
+setButtonCount
+public
+void
+setButtonCount
+(int count)
+Set the button count of this device.
+Parameters:
+count
+- the new button count
+setType
+public
+void
+setType
+(
+GenericHID.HIDType
+type)
+Set the type of this device.
+Parameters:
+type
+- the new device type
+setName
+public
+void
+setName
+(
+String
+name)
+Set the name of this device.
+Parameters:
+name
+- the new device name
+setAxisType
+public
+void
+setAxisType
+(int axis,
+ int type)
+Set the type of the provided axis channel.
+Parameters:
+axis
+- the axis
+type
+- the type
+getOutput
+public
+boolean
+getOutput
+(int outputNumber)
+Read the output of a button.
+Parameters:
+outputNumber
+- the button number
+Returns:
+the value of the button (true = pressed)
+getOutputs
+public
+long
+getOutputs
+()
+Get the encoded 16-bit integer that passes button values.
+Returns:
+the button values
+getRumble
+public
+double
+getRumble
+(
+GenericHID.RumbleType
+type)
+Get the joystick rumble.
+Parameters:
+type
+- the rumble to read
+Returns:
+the rumble value

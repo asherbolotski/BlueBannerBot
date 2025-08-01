@@ -1,0 +1,337 @@
+Package
+edu.wpi.first.wpilibj
+Class DutyCycleEncoder
+java.lang.Object
+edu.wpi.first.wpilibj.DutyCycleEncoder
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+DutyCycleEncoder
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Class for supporting duty cycle/PWM encoders, such as the US Digital MA3 with PWM Output, the
+ CTRE Mag Encoder, the Rev Hex Encoder, and the AM Mag Encoder.
+Constructor Summary
+Constructors
+Constructor
+Description
+DutyCycleEncoder
+(int channel)
+Construct a new DutyCycleEncoder on a specific channel.
+DutyCycleEncoder
+(int channel,
+ double fullRange,
+ double expectedZero)
+Construct a new DutyCycleEncoder on a specific channel.
+DutyCycleEncoder
+(
+DigitalSource
+source)
+Construct a new DutyCycleEncoder attached to a DigitalSource object.
+DutyCycleEncoder
+(
+DigitalSource
+source,
+ double fullRange,
+ double expectedZero)
+Construct a new DutyCycleEncoder attached to a DigitalSource object.
+DutyCycleEncoder
+(
+DutyCycle
+dutyCycle)
+Construct a new DutyCycleEncoder attached to an existing DutyCycle object.
+DutyCycleEncoder
+(
+DutyCycle
+dutyCycle,
+ double fullRange,
+ double expectedZero)
+Construct a new DutyCycleEncoder attached to an existing DutyCycle object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+double
+get
+()
+Get the encoder value since the last reset.
+int
+getFPGAIndex
+()
+Get the FPGA index for the DutyCycleEncoder.
+int
+getFrequency
+()
+Get the frequency in Hz of the duty cycle signal from the encoder.
+int
+getSourceChannel
+()
+Get the channel of the source.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isConnected
+()
+Get if the sensor is connected
+void
+setAssumedFrequency
+(double frequency)
+Sets the assumed frequency of the connected device.
+void
+setConnectedFrequencyThreshold
+(int frequency)
+Change the frequency threshold for detecting connection used by
+isConnected()
+.
+void
+setDutyCycleRange
+(double min,
+ double max)
+Set the encoder duty cycle range.
+void
+setInverted
+(boolean inverted)
+Set if this encoder is inverted.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DutyCycleEncoder
+public
+DutyCycleEncoder
+(int channel,
+ double fullRange,
+ double expectedZero)
+Construct a new DutyCycleEncoder on a specific channel.
+Parameters:
+channel
+- the channel to attach to
+fullRange
+- the value to report at maximum travel
+expectedZero
+- the reading where you would expect a 0 from get()
+DutyCycleEncoder
+public
+DutyCycleEncoder
+(
+DutyCycle
+dutyCycle,
+ double fullRange,
+ double expectedZero)
+Construct a new DutyCycleEncoder attached to an existing DutyCycle object.
+Parameters:
+dutyCycle
+- the duty cycle to attach to
+fullRange
+- the value to report at maximum travel
+expectedZero
+- the reading where you would expect a 0 from get()
+DutyCycleEncoder
+public
+DutyCycleEncoder
+(
+DigitalSource
+source,
+ double fullRange,
+ double expectedZero)
+Construct a new DutyCycleEncoder attached to a DigitalSource object.
+Parameters:
+source
+- the digital source to attach to
+fullRange
+- the value to report at maximum travel
+expectedZero
+- the reading where you would expect a 0 from get()
+DutyCycleEncoder
+public
+DutyCycleEncoder
+(int channel)
+Construct a new DutyCycleEncoder on a specific channel.
+This has a fullRange of 1 and an expectedZero of 0.
+Parameters:
+channel
+- the channel to attach to
+DutyCycleEncoder
+public
+DutyCycleEncoder
+(
+DutyCycle
+dutyCycle)
+Construct a new DutyCycleEncoder attached to an existing DutyCycle object.
+This has a fullRange of 1 and an expectedZero of 0.
+Parameters:
+dutyCycle
+- the duty cycle to attach to
+DutyCycleEncoder
+public
+DutyCycleEncoder
+(
+DigitalSource
+source)
+Construct a new DutyCycleEncoder attached to a DigitalSource object.
+This has a fullRange of 1 and an expectedZero of 0.
+Parameters:
+source
+- the digital source to attach to
+Method Details
+get
+public
+double
+get
+()
+Get the encoder value since the last reset.
+This is reported in rotations since the last reset.
+Returns:
+the encoder value in rotations
+setDutyCycleRange
+public
+void
+setDutyCycleRange
+(double min,
+ double max)
+Set the encoder duty cycle range. As the encoder needs to maintain a duty cycle, the duty cycle
+ cannot go all the way to 0% or all the way to 100%. For example, an encoder with a 4096 us
+ period might have a minimum duty cycle of 1 us / 4096 us and a maximum duty cycle of 4095 /
+ 4096 us. Setting the range will result in an encoder duty cycle less than or equal to the
+ minimum being output as 0 rotation, the duty cycle greater than or equal to the maximum being
+ output as 1 rotation, and values in between linearly scaled from 0 to 1.
+Parameters:
+min
+- minimum duty cycle (0-1 range)
+max
+- maximum duty cycle (0-1 range)
+getFrequency
+public
+int
+getFrequency
+()
+Get the frequency in Hz of the duty cycle signal from the encoder.
+Returns:
+duty cycle frequency in Hz
+isConnected
+public
+boolean
+isConnected
+()
+Get if the sensor is connected
+This uses the duty cycle frequency to determine if the sensor is connected. By default, a
+ value of 100 Hz is used as the threshold, and this value can be changed with
+setConnectedFrequencyThreshold(int)
+.
+Returns:
+true if the sensor is connected
+setConnectedFrequencyThreshold
+public
+void
+setConnectedFrequencyThreshold
+(int frequency)
+Change the frequency threshold for detecting connection used by
+isConnected()
+.
+Parameters:
+frequency
+- the minimum frequency in Hz.
+setAssumedFrequency
+public
+void
+setAssumedFrequency
+(double frequency)
+Sets the assumed frequency of the connected device.
+By default, the DutyCycle engine has to compute the frequency of the input signal. This can
+ result in both delayed readings and jumpy readings. To solve this, you can pass the expected
+ frequency of the sensor to this function. This will use that frequency to compute the DutyCycle
+ percentage, rather than the computed frequency.
+Parameters:
+frequency
+- the assumed frequency of the sensor
+setInverted
+public
+void
+setInverted
+(boolean inverted)
+Set if this encoder is inverted.
+Parameters:
+inverted
+- true to invert the encoder, false otherwise
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getFPGAIndex
+public
+int
+getFPGAIndex
+()
+Get the FPGA index for the DutyCycleEncoder.
+Returns:
+the FPGA index
+getSourceChannel
+public
+int
+getSourceChannel
+()
+Get the channel of the source.
+Returns:
+the source channel
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

@@ -1,0 +1,282 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class RelaySim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.RelaySim
+public class
+RelaySim
+extends
+Object
+Class to control a simulated relay.
+Constructor Summary
+Constructors
+Constructor
+Description
+RelaySim
+(int channel)
+Constructs from a relay channel number.
+RelaySim
+(
+Relay
+relay)
+Constructs from a Relay object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+getForward
+()
+Check whether the forward direction is active.
+boolean
+getInitializedForward
+()
+Check whether the forward direction has been initialized.
+boolean
+getInitializedReverse
+()
+Check whether the reverse direction has been initialized.
+boolean
+getReverse
+()
+Check whether the reverse direction is active.
+CallbackStore
+registerForwardCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the forward direction changes state.
+CallbackStore
+registerInitializedForwardCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the forward direction is initialized.
+CallbackStore
+registerInitializedReverseCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the reverse direction is initialized.
+CallbackStore
+registerReverseCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the reverse direction changes state.
+void
+resetData
+()
+Reset all simulation data.
+void
+setForward
+(boolean forward)
+Set whether the forward direction is active.
+void
+setInitializedForward
+(boolean initializedForward)
+Define whether the forward direction has been initialized.
+void
+setInitializedReverse
+(boolean initializedReverse)
+Define whether the reverse direction has been initialized.
+void
+setReverse
+(boolean reverse)
+Set whether the reverse direction is active.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+RelaySim
+public
+RelaySim
+(
+Relay
+relay)
+Constructs from a Relay object.
+Parameters:
+relay
+- Relay to simulate
+RelaySim
+public
+RelaySim
+(int channel)
+Constructs from a relay channel number.
+Parameters:
+channel
+- Channel number
+Method Details
+registerInitializedForwardCallback
+public
+CallbackStore
+registerInitializedForwardCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the forward direction is initialized.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getInitializedForward
+public
+boolean
+getInitializedForward
+()
+Check whether the forward direction has been initialized.
+Returns:
+true if initialized
+setInitializedForward
+public
+void
+setInitializedForward
+(boolean initializedForward)
+Define whether the forward direction has been initialized.
+Parameters:
+initializedForward
+- whether this object is initialized
+registerInitializedReverseCallback
+public
+CallbackStore
+registerInitializedReverseCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the reverse direction is initialized.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getInitializedReverse
+public
+boolean
+getInitializedReverse
+()
+Check whether the reverse direction has been initialized.
+Returns:
+true if initialized
+setInitializedReverse
+public
+void
+setInitializedReverse
+(boolean initializedReverse)
+Define whether the reverse direction has been initialized.
+Parameters:
+initializedReverse
+- whether this object is initialized
+registerForwardCallback
+public
+CallbackStore
+registerForwardCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the forward direction changes state.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getForward
+public
+boolean
+getForward
+()
+Check whether the forward direction is active.
+Returns:
+true if active
+setForward
+public
+void
+setForward
+(boolean forward)
+Set whether the forward direction is active.
+Parameters:
+forward
+- true to make active
+registerReverseCallback
+public
+CallbackStore
+registerReverseCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the reverse direction changes state.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getReverse
+public
+boolean
+getReverse
+()
+Check whether the reverse direction is active.
+Returns:
+true if active
+setReverse
+public
+void
+setReverse
+(boolean reverse)
+Set whether the reverse direction is active.
+Parameters:
+reverse
+- true to make active
+resetData
+public
+void
+resetData
+()
+Reset all simulation data.

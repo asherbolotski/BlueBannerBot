@@ -1,0 +1,291 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.datalog;
+006
+007
+/** Log string values. */
+008
+public class StringLogEntry extends DataLogEntry {
+009
+/** The data type for string values. */
+010
+public static final String kDataType = "string";
+011
+012
+/**
+013
+* Constructs a String log entry.
+014
+*
+015
+* @param log datalog
+016
+* @param name name of the entry
+017
+* @param metadata metadata
+018
+* @param type Data type
+019
+* @param timestamp entry creation timestamp (0=now)
+020
+*/
+021
+public StringLogEntry(DataLog log, String name, String metadata, String type, long timestamp) {
+022
+super(log, name, type, metadata, timestamp);
+023
+}
+024
+025
+/**
+026
+* Constructs a String log entry.
+027
+*
+028
+* @param log datalog
+029
+* @param name name of the entry
+030
+* @param metadata metadata
+031
+* @param type Data type
+032
+*/
+033
+public StringLogEntry(DataLog log, String name, String metadata, String type) {
+034
+this(log, name, metadata, type, 0);
+035
+}
+036
+037
+/**
+038
+* Constructs a String log entry.
+039
+*
+040
+* @param log datalog
+041
+* @param name name of the entry
+042
+* @param metadata metadata
+043
+* @param timestamp entry creation timestamp (0=now)
+044
+*/
+045
+public StringLogEntry(DataLog log, String name, String metadata, long timestamp) {
+046
+this(log, name, metadata, kDataType, timestamp);
+047
+}
+048
+049
+/**
+050
+* Constructs a String log entry.
+051
+*
+052
+* @param log datalog
+053
+* @param name name of the entry
+054
+* @param metadata metadata
+055
+*/
+056
+public StringLogEntry(DataLog log, String name, String metadata) {
+057
+this(log, name, metadata, 0);
+058
+}
+059
+060
+/**
+061
+* Constructs a String log entry.
+062
+*
+063
+* @param log datalog
+064
+* @param name name of the entry
+065
+* @param timestamp entry creation timestamp (0=now)
+066
+*/
+067
+public StringLogEntry(DataLog log, String name, long timestamp) {
+068
+this(log, name, "", timestamp);
+069
+}
+070
+071
+/**
+072
+* Constructs a String log entry.
+073
+*
+074
+* @param log datalog
+075
+* @param name name of the entry
+076
+*/
+077
+public StringLogEntry(DataLog log, String name) {
+078
+this(log, name, 0);
+079
+}
+080
+081
+/**
+082
+* Appends a record to the log.
+083
+*
+084
+* @param value Value to record
+085
+* @param timestamp Time stamp (0 to indicate now)
+086
+*/
+087
+public void append(String value, long timestamp) {
+088
+m_log.appendString(m_entry, value, timestamp);
+089
+}
+090
+091
+/**
+092
+* Appends a record to the log.
+093
+*
+094
+* @param value Value to record
+095
+*/
+096
+public void append(String value) {
+097
+m_log.appendString(m_entry, value, 0);
+098
+}
+099
+100
+/**
+101
+* Updates the last value and appends a record to the log if it has changed.
+102
+*
+103
+* <p>Note: the last value is local to this class instance; using update() with two instances
+104
+* pointing to the same underlying log entry name will likely result in unexpected results.
+105
+*
+106
+* @param value Value to record
+107
+* @param timestamp Time stamp (0 to indicate now)
+108
+*/
+109
+public synchronized void update(String value, long timestamp) {
+110
+if (m_lastValue == null || !value.equals(m_lastValue)) {
+111
+m_lastValue = value;
+112
+append(value, timestamp);
+113
+}
+114
+}
+115
+116
+/**
+117
+* Updates the last value and appends a record to the log if it has changed.
+118
+*
+119
+* <p>Note: the last value is local to this class instance; using update() with two instances
+120
+* pointing to the same underlying log entry name will likely result in unexpected results.
+121
+*
+122
+* @param value Value to record
+123
+*/
+124
+public void update(String value) {
+125
+update(value, 0);
+126
+}
+127
+128
+/**
+129
+* Gets whether there is a last value.
+130
+*
+131
+* <p>Note: the last value is local to this class instance and updated only with update(), not
+132
+* append().
+133
+*
+134
+* @return True if last value exists, false otherwise.
+135
+*/
+136
+public synchronized boolean hasLastValue() {
+137
+return m_lastValue != null;
+138
+}
+139
+140
+/**
+141
+* Gets the last value.
+142
+*
+143
+* <p>Note: the last value is local to this class instance and updated only with update(), not
+144
+* append().
+145
+*
+146
+* @return Last value, or null if none.
+147
+*/
+148
+public synchronized String getLastValue() {
+149
+return m_lastValue;
+150
+}
+151
+152
+private String m_lastValue;
+153
+}

@@ -1,0 +1,97 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+import java.util.function.Consumer;
+008
+009
+/**
+010
+* NetworkTables struct-encoded value publisher.
+011
+*
+012
+* @param <T> value class
+013
+*/
+014
+public interface StructPublisher<T> extends Publisher, Consumer<T> {
+015
+/**
+016
+* Get the corresponding topic.
+017
+*
+018
+* @return Topic
+019
+*/
+020
+@Override
+021
+StructTopic<T> getTopic();
+022
+023
+/**
+024
+* Publish a new value using current NT time.
+025
+*
+026
+* @param value value to publish
+027
+*/
+028
+default void set(T value) {
+029
+set(value, 0);
+030
+}
+031
+032
+/**
+033
+* Publish a new value.
+034
+*
+035
+* @param value value to publish
+036
+* @param time timestamp; 0 indicates current NT time should be used
+037
+*/
+038
+void set(T value, long time);
+039
+040
+/**
+041
+* Publish a default value. On reconnect, a default value will never be used in preference to a
+042
+* published value.
+043
+*
+044
+* @param value value
+045
+*/
+046
+void setDefault(T value);
+047
+048
+@Override
+049
+default void accept(T value) {
+050
+set(value);
+051
+}
+052
+}

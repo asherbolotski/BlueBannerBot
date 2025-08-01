@@ -1,0 +1,149 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+import java.util.function.Supplier;
+008
+009
+/**
+010
+* NetworkTables struct-encoded array value subscriber.
+011
+*
+012
+* @param <T> value class
+013
+*/
+014
+@SuppressWarnings("PMD.MissingOverride")
+015
+public interface StructArraySubscriber<T> extends Subscriber, Supplier<T[]> {
+016
+/**
+017
+* Get the corresponding topic.
+018
+*
+019
+* @return Topic
+020
+*/
+021
+@Override
+022
+StructArrayTopic<T> getTopic();
+023
+024
+/**
+025
+* Get the last published value. If no value has been published or the value cannot be unpacked,
+026
+* returns the stored default value.
+027
+*
+028
+* @return value
+029
+*/
+030
+T[] get();
+031
+032
+/**
+033
+* Get the last published value. If no value has been published or the value cannot be unpacked,
+034
+* returns the passed defaultValue.
+035
+*
+036
+* @param defaultValue default value to return if no value has been published
+037
+* @return value
+038
+*/
+039
+T[] get(T[] defaultValue);
+040
+041
+/**
+042
+* Get the last published value along with its timestamp. If no value has been published or the
+043
+* value cannot be unpacked, returns the stored default value and a timestamp of 0.
+044
+*
+045
+* @return timestamped value
+046
+*/
+047
+TimestampedObject<T[]> getAtomic();
+048
+049
+/**
+050
+* Get the last published value along with its timestamp. If no value has been published or the
+051
+* value cannot be unpacked, returns the passed defaultValue and a timestamp of 0.
+052
+*
+053
+* @param defaultValue default value to return if no value has been published
+054
+* @return timestamped value
+055
+*/
+056
+TimestampedObject<T[]> getAtomic(T[] defaultValue);
+057
+058
+/**
+059
+* Get an array of all valid value changes since the last call to readQueue. Also provides a
+060
+* timestamp for each value. Values that cannot be unpacked are dropped.
+061
+*
+062
+* <p>The "poll storage" subscribe option can be used to set the queue depth.
+063
+*
+064
+* @return Array of timestamped values; empty array if no valid new changes have been published
+065
+*     since the previous call.
+066
+*/
+067
+TimestampedObject<T[]>[] readQueue();
+068
+069
+/**
+070
+* Get an array of all valid value changes since the last call to readQueue. Values that cannot be
+071
+* unpacked are dropped.
+072
+*
+073
+* <p>The "poll storage" subscribe option can be used to set the queue depth.
+074
+*
+075
+* @return Array of values; empty array if no valid new changes have been published since the
+076
+*     previous call.
+077
+*/
+078
+T[][] readQueueValues();
+079
+}

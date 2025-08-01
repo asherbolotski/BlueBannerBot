@@ -1,0 +1,446 @@
+Package
+edu.wpi.first.math.geometry
+Class Ellipse2d
+java.lang.Object
+edu.wpi.first.math.geometry.Ellipse2d
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Ellipse2d
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+Represents a 2d ellipse space containing translational, rotational, and scaling components.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+Ellipse2dProto
+proto
+Ellipse2d protobuf for serialization.
+static final
+Ellipse2dStruct
+struct
+Ellipse2d struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+Ellipse2d
+(
+Pose2d
+center,
+ double xSemiAxis,
+ double ySemiAxis)
+Constructs an ellipse around a center point and two semi-axes, a horizontal and vertical one.
+Ellipse2d
+(
+Pose2d
+center,
+Distance
+xSemiAxis,
+Distance
+ySemiAxis)
+Constructs an ellipse around a center point and two semi-axes, a horizontal and vertical one.
+Ellipse2d
+(
+Translation2d
+center,
+ double radius)
+Constructs a perfectly circular ellipse with the specified radius.
+Ellipse2d
+(
+Translation2d
+center,
+Distance
+radius)
+Constructs a perfectly circular ellipse with the specified radius.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+contains
+(
+Translation2d
+point)
+Checks if a point is contained within this ellipse.
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Ellipse2d and another object.
+Pose2d
+getCenter
+()
+Returns the center of the ellipse.
+double
+getDistance
+(
+Translation2d
+point)
+Returns the distance between the perimeter of the ellipse and the point.
+Pair
+<
+Translation2d
+,
+Translation2d
+>
+getFocalPoints
+()
+Returns the focal points of the ellipse.
+Distance
+getMeasureDistance
+(
+Translation2d
+point)
+Returns the distance between the perimeter of the ellipse and the point in a measure.
+Distance
+getMeasureXSemiAxis
+()
+Returns the x semi-axis in a measure.
+Distance
+getMeasureYSemiAxis
+()
+Returns the y semi-axis in a measure.
+Rotation2d
+getRotation
+()
+Returns the rotational component of the ellipse.
+double
+getXSemiAxis
+()
+Returns the x semi-axis.
+double
+getYSemiAxis
+()
+Returns the y semi-axis.
+int
+hashCode
+()
+boolean
+intersects
+(
+Translation2d
+point)
+Checks if a point is intersected by this ellipse's circumference.
+Translation2d
+nearest
+(
+Translation2d
+point)
+Returns the nearest point that is contained within the ellipse.
+Ellipse2d
+rotateBy
+(
+Rotation2d
+other)
+Rotates the center of the ellipse and returns the new ellipse.
+String
+toString
+()
+Ellipse2d
+transformBy
+(
+Transform2d
+other)
+Transforms the center of the ellipse and returns the new ellipse.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+proto
+public static final
+Ellipse2dProto
+proto
+Ellipse2d protobuf for serialization.
+struct
+public static final
+Ellipse2dStruct
+struct
+Ellipse2d struct for serialization.
+Constructor Details
+Ellipse2d
+public
+Ellipse2d
+(
+Pose2d
+center,
+ double xSemiAxis,
+ double ySemiAxis)
+Constructs an ellipse around a center point and two semi-axes, a horizontal and vertical one.
+Parameters:
+center
+- The center of the ellipse.
+xSemiAxis
+- The x semi-axis.
+ySemiAxis
+- The y semi-axis.
+Ellipse2d
+public
+Ellipse2d
+(
+Pose2d
+center,
+Distance
+xSemiAxis,
+Distance
+ySemiAxis)
+Constructs an ellipse around a center point and two semi-axes, a horizontal and vertical one.
+ The X and Y semi-axis will be converted to and tracked as meters.
+Parameters:
+center
+- The center of the ellipse.
+xSemiAxis
+- The x semi-axis.
+ySemiAxis
+- The y semi-axis.
+Ellipse2d
+public
+Ellipse2d
+(
+Translation2d
+center,
+ double radius)
+Constructs a perfectly circular ellipse with the specified radius.
+Parameters:
+center
+- The center of the circle.
+radius
+- The radius of the circle.
+Ellipse2d
+public
+Ellipse2d
+(
+Translation2d
+center,
+Distance
+radius)
+Constructs a perfectly circular ellipse with the specified radius. The radius will be converted
+ to and tracked as meters.
+Parameters:
+center
+- The center of the circle.
+radius
+- The radius of the circle.
+Method Details
+getCenter
+public
+Pose2d
+getCenter
+()
+Returns the center of the ellipse.
+Returns:
+The center of the ellipse.
+getRotation
+public
+Rotation2d
+getRotation
+()
+Returns the rotational component of the ellipse.
+Returns:
+The rotational component of the ellipse.
+getXSemiAxis
+public
+double
+getXSemiAxis
+()
+Returns the x semi-axis.
+Returns:
+The x semi-axis.
+getYSemiAxis
+public
+double
+getYSemiAxis
+()
+Returns the y semi-axis.
+Returns:
+The y semi-axis.
+getMeasureXSemiAxis
+public
+Distance
+getMeasureXSemiAxis
+()
+Returns the x semi-axis in a measure.
+Returns:
+The x semi-axis in a measure.
+getMeasureYSemiAxis
+public
+Distance
+getMeasureYSemiAxis
+()
+Returns the y semi-axis in a measure.
+Returns:
+The y semi-axis in a measure.
+getFocalPoints
+public
+Pair
+<
+Translation2d
+,
+Translation2d
+>
+getFocalPoints
+()
+Returns the focal points of the ellipse. In a perfect circle, this will always return the
+ center.
+Returns:
+The focal points.
+transformBy
+public
+Ellipse2d
+transformBy
+(
+Transform2d
+other)
+Transforms the center of the ellipse and returns the new ellipse.
+Parameters:
+other
+- The transform to transform by.
+Returns:
+The transformed ellipse.
+rotateBy
+public
+Ellipse2d
+rotateBy
+(
+Rotation2d
+other)
+Rotates the center of the ellipse and returns the new ellipse.
+Parameters:
+other
+- The rotation to transform by.
+Returns:
+The rotated ellipse.
+intersects
+public
+boolean
+intersects
+(
+Translation2d
+point)
+Checks if a point is intersected by this ellipse's circumference.
+Parameters:
+point
+- The point to check.
+Returns:
+True, if this ellipse's circumference intersects the point.
+contains
+public
+boolean
+contains
+(
+Translation2d
+point)
+Checks if a point is contained within this ellipse. This is inclusive, if the point lies on the
+ circumference this will return
+true
+.
+Parameters:
+point
+- The point to check.
+Returns:
+True, if the point is within or on the ellipse.
+getDistance
+public
+double
+getDistance
+(
+Translation2d
+point)
+Returns the distance between the perimeter of the ellipse and the point.
+Parameters:
+point
+- The point to check.
+Returns:
+The distance (0, if the point is contained by the ellipse)
+getMeasureDistance
+public
+Distance
+getMeasureDistance
+(
+Translation2d
+point)
+Returns the distance between the perimeter of the ellipse and the point in a measure.
+Parameters:
+point
+- The point to check.
+Returns:
+The distance (0, if the point is contained by the ellipse) in a measure.
+nearest
+public
+Translation2d
+nearest
+(
+Translation2d
+point)
+Returns the nearest point that is contained within the ellipse.
+Parameters:
+point
+- The point that this will find the nearest point to.
+Returns:
+A new point that is nearest to
+point
+and contained in the ellipse.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Ellipse2d and another object.
+Overrides:
+equals
+in class
+Object
+Parameters:
+obj
+- The other object.
+Returns:
+Whether the two objects are equal or not.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object

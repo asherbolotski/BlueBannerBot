@@ -1,0 +1,698 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.shuffleboard;
+006
+007
+import edu.wpi.first.cscore.VideoSource;
+008
+import edu.wpi.first.networktables.NetworkTableType;
+009
+import edu.wpi.first.util.function.FloatSupplier;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import java.util.List;
+012
+import java.util.NoSuchElementException;
+013
+import java.util.function.BooleanSupplier;
+014
+import java.util.function.DoubleSupplier;
+015
+import java.util.function.LongSupplier;
+016
+import java.util.function.Supplier;
+017
+018
+/** Common interface for objects that can contain shuffleboard components. */
+019
+public sealed interface ShuffleboardContainer extends ShuffleboardValue
+020
+permits ShuffleboardLayout, ShuffleboardTab {
+021
+/**
+022
+* Gets the components that are direct children of this container.
+023
+*
+024
+* @return The components that are direct children of this container.
+025
+*/
+026
+List<ShuffleboardComponent<?>> getComponents();
+027
+028
+/**
+029
+* Gets the layout with the given type and title, creating it if it does not already exist at the
+030
+* time this method is called. Note: this method should only be used to use a layout type that is
+031
+* not already built into Shuffleboard. To use a layout built into Shuffleboard, use {@link
+032
+* #getLayout(String, LayoutType)} and the layouts in {@link BuiltInLayouts}.
+033
+*
+034
+* @param title the title of the layout
+035
+* @param type the type of the layout, eg "List Layout" or "Grid Layout"
+036
+* @return the layout
+037
+* @see #getLayout(String, LayoutType)
+038
+*/
+039
+ShuffleboardLayout getLayout(String title, String type);
+040
+041
+/**
+042
+* Gets the layout with the given type and title, creating it if it does not already exist at the
+043
+* time this method is called.
+044
+*
+045
+* @param title the title of the layout
+046
+* @param layoutType the type of the layout, eg "List" or "Grid"
+047
+* @return the layout
+048
+*/
+049
+default ShuffleboardLayout getLayout(String title, LayoutType layoutType) {
+050
+return getLayout(title, layoutType.getLayoutName());
+051
+}
+052
+053
+/**
+054
+* Gets the already-defined layout in this container with the given title.
+055
+*
+056
+* <pre>{@code
+057
+* Shuffleboard.getTab("Example Tab")
+058
+*   .getLayout("My Layout", BuiltInLayouts.kList);
+059
+*
+060
+* // Later...
+061
+* Shuffleboard.getTab("Example Tab")
+062
+*   .getLayout("My Layout");
+063
+* }</pre>
+064
+*
+065
+* @param title the title of the layout to get
+066
+* @return the layout with the given title
+067
+* @throws NoSuchElementException if no layout has yet been defined with the given title
+068
+*/
+069
+ShuffleboardLayout getLayout(String title);
+070
+071
+/**
+072
+* Adds a widget to this container to display the given sendable.
+073
+*
+074
+* @param title the title of the widget
+075
+* @param sendable the sendable to display
+076
+* @return a widget to display the sendable data
+077
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+078
+*     title
+079
+*/
+080
+ComplexWidget add(String title, Sendable sendable);
+081
+082
+/**
+083
+* Adds a widget to this container to display the given video stream.
+084
+*
+085
+* @param title the title of the widget
+086
+* @param video the video stream to display
+087
+* @return a widget to display the sendable data
+088
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+089
+*     title
+090
+*/
+091
+default ComplexWidget add(String title, VideoSource video) {
+092
+return add(title, SendableCameraWrapper.wrap(video));
+093
+}
+094
+095
+/**
+096
+* Adds a widget to this container to display the given sendable.
+097
+*
+098
+* @param sendable the sendable to display
+099
+* @return a widget to display the sendable data
+100
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+101
+*     title, or if the sendable's name has not been specified
+102
+*/
+103
+ComplexWidget add(Sendable sendable);
+104
+105
+/**
+106
+* Adds a widget to this container to display the given video stream.
+107
+*
+108
+* @param video the video to display
+109
+* @return a widget to display the sendable data
+110
+* @throws IllegalArgumentException if a widget already exists in this container with the same
+111
+*     title as the video source
+112
+*/
+113
+default ComplexWidget add(VideoSource video) {
+114
+return add(SendableCameraWrapper.wrap(video));
+115
+}
+116
+117
+/**
+118
+* Adds a widget to this container to display the given data.
+119
+*
+120
+* @param title the title of the widget
+121
+* @param defaultValue the default value of the widget
+122
+* @return a widget to display the sendable data
+123
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+124
+*     title
+125
+* @see #addPersistent(String, Object) add(String title, Object defaultValue)
+126
+*/
+127
+SimpleWidget add(String title, Object defaultValue);
+128
+129
+/**
+130
+* Adds a widget to this container to display the given data.
+131
+*
+132
+* @param title the title of the widget
+133
+* @param typeString the NT type string
+134
+* @param defaultValue the default value of the widget
+135
+* @return a widget to display the sendable data
+136
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+137
+*     title
+138
+* @see #addPersistent(String, Object) add(String title, Object defaultValue)
+139
+*/
+140
+SimpleWidget add(String title, String typeString, Object defaultValue);
+141
+142
+/**
+143
+* Adds a widget to this container to display a video stream.
+144
+*
+145
+* @param title the title of the widget
+146
+* @param cameraName the name of the streamed camera
+147
+* @param cameraUrls the URLs with which the dashboard can access the camera stream
+148
+* @return a widget to display the camera stream
+149
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+150
+*     title
+151
+*/
+152
+default ComplexWidget addCamera(String title, String cameraName, String... cameraUrls) {
+153
+return add(title, SendableCameraWrapper.wrap(cameraName, cameraUrls));
+154
+}
+155
+156
+/**
+157
+* Adds a widget to this container. The widget will display the data provided by the value
+158
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+159
+* overridden by values from the value supplier.
+160
+*
+161
+* @param title the title of the widget
+162
+* @param valueSupplier the supplier for values
+163
+* @return a widget to display data
+164
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+165
+*     title
+166
+*/
+167
+SuppliedValueWidget<String> addString(String title, Supplier<String> valueSupplier);
+168
+169
+/**
+170
+* Adds a widget to this container. The widget will display the data provided by the value
+171
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+172
+* overridden by values from the value supplier.
+173
+*
+174
+* @param title the title of the widget
+175
+* @param valueSupplier the supplier for values
+176
+* @return a widget to display data
+177
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+178
+*     title
+179
+*/
+180
+SuppliedValueWidget<Double> addNumber(String title, DoubleSupplier valueSupplier);
+181
+182
+/**
+183
+* Adds a widget to this container. The widget will display the data provided by the value
+184
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+185
+* overridden by values from the value supplier.
+186
+*
+187
+* @param title the title of the widget
+188
+* @param valueSupplier the supplier for values
+189
+* @return a widget to display data
+190
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+191
+*     title
+192
+*/
+193
+SuppliedValueWidget<Double> addDouble(String title, DoubleSupplier valueSupplier);
+194
+195
+/**
+196
+* Adds a widget to this container. The widget will display the data provided by the value
+197
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+198
+* overridden by values from the value supplier.
+199
+*
+200
+* @param title the title of the widget
+201
+* @param valueSupplier the supplier for values
+202
+* @return a widget to display data
+203
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+204
+*     title
+205
+*/
+206
+SuppliedValueWidget<Float> addFloat(String title, FloatSupplier valueSupplier);
+207
+208
+/**
+209
+* Adds a widget to this container. The widget will display the data provided by the value
+210
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+211
+* overridden by values from the value supplier.
+212
+*
+213
+* @param title the title of the widget
+214
+* @param valueSupplier the supplier for values
+215
+* @return a widget to display data
+216
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+217
+*     title
+218
+*/
+219
+SuppliedValueWidget<Long> addInteger(String title, LongSupplier valueSupplier);
+220
+221
+/**
+222
+* Adds a widget to this container. The widget will display the data provided by the value
+223
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+224
+* overridden by values from the value supplier.
+225
+*
+226
+* @param title the title of the widget
+227
+* @param valueSupplier the supplier for values
+228
+* @return a widget to display data
+229
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+230
+*     title
+231
+*/
+232
+SuppliedValueWidget<Boolean> addBoolean(String title, BooleanSupplier valueSupplier);
+233
+234
+/**
+235
+* Adds a widget to this container. The widget will display the data provided by the value
+236
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+237
+* overridden by values from the value supplier.
+238
+*
+239
+* @param title the title of the widget
+240
+* @param valueSupplier the supplier for values
+241
+* @return a widget to display data
+242
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+243
+*     title
+244
+*/
+245
+SuppliedValueWidget<String[]> addStringArray(String title, Supplier<String[]> valueSupplier);
+246
+247
+/**
+248
+* Adds a widget to this container. The widget will display the data provided by the value
+249
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+250
+* overridden by values from the value supplier.
+251
+*
+252
+* @param title the title of the widget
+253
+* @param valueSupplier the supplier for values
+254
+* @return a widget to display data
+255
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+256
+*     title
+257
+*/
+258
+SuppliedValueWidget<double[]> addDoubleArray(String title, Supplier<double[]> valueSupplier);
+259
+260
+/**
+261
+* Adds a widget to this container. The widget will display the data provided by the value
+262
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+263
+* overridden by values from the value supplier.
+264
+*
+265
+* @param title the title of the widget
+266
+* @param valueSupplier the supplier for values
+267
+* @return a widget to display data
+268
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+269
+*     title
+270
+*/
+271
+SuppliedValueWidget<float[]> addFloatArray(String title, Supplier<float[]> valueSupplier);
+272
+273
+/**
+274
+* Adds a widget to this container. The widget will display the data provided by the value
+275
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+276
+* overridden by values from the value supplier.
+277
+*
+278
+* @param title the title of the widget
+279
+* @param valueSupplier the supplier for values
+280
+* @return a widget to display data
+281
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+282
+*     title
+283
+*/
+284
+SuppliedValueWidget<long[]> addIntegerArray(String title, Supplier<long[]> valueSupplier);
+285
+286
+/**
+287
+* Adds a widget to this container. The widget will display the data provided by the value
+288
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+289
+* overridden by values from the value supplier.
+290
+*
+291
+* @param title the title of the widget
+292
+* @param valueSupplier the supplier for values
+293
+* @return a widget to display data
+294
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+295
+*     title
+296
+*/
+297
+SuppliedValueWidget<boolean[]> addBooleanArray(String title, Supplier<boolean[]> valueSupplier);
+298
+299
+/**
+300
+* Adds a widget to this container. The widget will display the data provided by the value
+301
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+302
+* overridden by values from the value supplier.
+303
+*
+304
+* @param title the title of the widget
+305
+* @param valueSupplier the supplier for values
+306
+* @return a widget to display data
+307
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+308
+*     title
+309
+*/
+310
+default SuppliedValueWidget<byte[]> addRaw(String title, Supplier<byte[]> valueSupplier) {
+311
+return addRaw(title, "raw", valueSupplier);
+312
+}
+313
+314
+/**
+315
+* Adds a widget to this container. The widget will display the data provided by the value
+316
+* supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+317
+* overridden by values from the value supplier.
+318
+*
+319
+* @param title the title of the widget
+320
+* @param typeString the NT type string for the value
+321
+* @param valueSupplier the supplier for values
+322
+* @return a widget to display data
+323
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+324
+*     title
+325
+*/
+326
+SuppliedValueWidget<byte[]> addRaw(
+327
+String title, String typeString, Supplier<byte[]> valueSupplier);
+328
+329
+/**
+330
+* Adds a widget to this container to display a simple piece of data. Unlike {@link #add(String,
+331
+* Object)}, the value in the widget will be saved on the robot and will be used when the robot
+332
+* program next starts rather than {@code defaultValue}.
+333
+*
+334
+* @param title the title of the widget
+335
+* @param defaultValue the default value of the widget
+336
+* @return a widget to display the sendable data
+337
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+338
+*     title
+339
+* @see #add(String, Object) add(String title, Object defaultValue)
+340
+*/
+341
+default SimpleWidget addPersistent(String title, Object defaultValue) {
+342
+return addPersistent(title, NetworkTableType.getStringFromObject(defaultValue), defaultValue);
+343
+}
+344
+345
+/**
+346
+* Adds a widget to this container to display a simple piece of data. Unlike {@link #add(String,
+347
+* Object)}, the value in the widget will be saved on the robot and will be used when the robot
+348
+* program next starts rather than {@code defaultValue}.
+349
+*
+350
+* @param title the title of the widget
+351
+* @param typeString the NT type string
+352
+* @param defaultValue the default value of the widget
+353
+* @return a widget to display the sendable data
+354
+* @throws IllegalArgumentException if a widget already exists in this container with the given
+355
+*     title
+356
+* @see #add(String, Object) add(String title, Object defaultValue)
+357
+*/
+358
+default SimpleWidget addPersistent(String title, String typeString, Object defaultValue) {
+359
+SimpleWidget widget = add(title, defaultValue);
+360
+widget.getEntry(typeString).getTopic().setPersistent(true);
+361
+return widget;
+362
+}
+363
+}

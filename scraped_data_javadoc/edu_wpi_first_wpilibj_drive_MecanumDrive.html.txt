@@ -1,0 +1,413 @@
+Package
+edu.wpi.first.wpilibj.drive
+Class MecanumDrive
+java.lang.Object
+edu.wpi.first.wpilibj.MotorSafety
+edu.wpi.first.wpilibj.drive.RobotDriveBase
+edu.wpi.first.wpilibj.drive.MecanumDrive
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+MecanumDrive
+extends
+RobotDriveBase
+implements
+Sendable
+,
+AutoCloseable
+A class for driving Mecanum drive platforms.
+Mecanum drives are rectangular with one wheel on each corner. Each wheel has rollers toed in
+ 45 degrees toward the front or back. When looking at the wheels from the top, the roller axles
+ should form an X across the robot. Each drive() function provides different inverse kinematic
+ relations for a Mecanum drive robot.
+Drive base diagram:
+\\_______/
+ \\ |   | /
+   |   |
+ /_|___|_\\
+ /       \\
+Each drive() function provides different inverse kinematic relations for a Mecanum drive
+ robot.
+This library uses the NWU axes convention (North-West-Up as external reference in the world
+ frame). The positive X axis points ahead, the positive Y axis points to the left, and the
+ positive Z axis points up. Rotations follow the right-hand rule, so counterclockwise rotation
+ around the Z axis is positive.
+Inputs smaller then
+0.02
+will
+ be set to 0, and larger values will be scaled so that the full range is still used. This deadband
+ value can be changed with
+RobotDriveBase.setDeadband(double)
+.
+MotorSafety
+is enabled by default. The driveCartesian or
+ drivePolar methods should be called periodically to avoid Motor Safety timeouts.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static class
+MecanumDrive.WheelSpeeds
+Wheel speeds for a mecanum drive.
+Nested classes/interfaces inherited from class edu.wpi.first.wpilibj.drive.
+RobotDriveBase
+RobotDriveBase.MotorType
+Field Summary
+Fields inherited from class edu.wpi.first.wpilibj.drive.
+RobotDriveBase
+kDefaultDeadband
+,
+kDefaultMaxOutput
+,
+m_deadband
+,
+m_maxOutput
+Constructor Summary
+Constructors
+Constructor
+Description
+MecanumDrive
+(
+MotorController
+frontLeftMotor,
+MotorController
+rearLeftMotor,
+MotorController
+frontRightMotor,
+MotorController
+rearRightMotor)
+Construct a MecanumDrive.
+MecanumDrive
+(
+DoubleConsumer
+frontLeftMotor,
+DoubleConsumer
+rearLeftMotor,
+DoubleConsumer
+frontRightMotor,
+DoubleConsumer
+rearRightMotor)
+Construct a MecanumDrive.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+void
+driveCartesian
+(double xSpeed,
+ double ySpeed,
+ double zRotation)
+Drive method for Mecanum platform.
+void
+driveCartesian
+(double xSpeed,
+ double ySpeed,
+ double zRotation,
+Rotation2d
+gyroAngle)
+Drive method for Mecanum platform.
+static
+MecanumDrive.WheelSpeeds
+driveCartesianIK
+(double xSpeed,
+ double ySpeed,
+ double zRotation)
+Cartesian inverse kinematics for Mecanum platform.
+static
+MecanumDrive.WheelSpeeds
+driveCartesianIK
+(double xSpeed,
+ double ySpeed,
+ double zRotation,
+Rotation2d
+gyroAngle)
+Cartesian inverse kinematics for Mecanum platform.
+void
+drivePolar
+(double magnitude,
+Rotation2d
+angle,
+ double zRotation)
+Drive method for Mecanum platform.
+String
+getDescription
+()
+Returns a description to print when an error occurs.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+stopMotor
+()
+Called to stop the motor when the timeout expires.
+Methods inherited from class edu.wpi.first.wpilibj.drive.
+RobotDriveBase
+feedWatchdog
+,
+normalize
+,
+setDeadband
+,
+setMaxOutput
+Methods inherited from class edu.wpi.first.wpilibj.
+MotorSafety
+check
+,
+checkMotors
+,
+feed
+,
+getExpiration
+,
+isAlive
+,
+isSafetyEnabled
+,
+setExpiration
+,
+setSafetyEnabled
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MecanumDrive
+public
+MecanumDrive
+(
+MotorController
+frontLeftMotor,
+MotorController
+rearLeftMotor,
+MotorController
+frontRightMotor,
+MotorController
+rearRightMotor)
+Construct a MecanumDrive.
+If a motor needs to be inverted, do so before passing it in.
+Parameters:
+frontLeftMotor
+- The motor on the front-left corner.
+rearLeftMotor
+- The motor on the rear-left corner.
+frontRightMotor
+- The motor on the front-right corner.
+rearRightMotor
+- The motor on the rear-right corner.
+MecanumDrive
+public
+MecanumDrive
+(
+DoubleConsumer
+frontLeftMotor,
+DoubleConsumer
+rearLeftMotor,
+DoubleConsumer
+frontRightMotor,
+DoubleConsumer
+rearRightMotor)
+Construct a MecanumDrive.
+If a motor needs to be inverted, do so before passing it in.
+Parameters:
+frontLeftMotor
+- The setter for the motor on the front-left corner.
+rearLeftMotor
+- The setter for the motor on the rear-left corner.
+frontRightMotor
+- The setter for the motor on the front-right corner.
+rearRightMotor
+- The setter for the motor on the rear-right corner.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+driveCartesian
+public
+void
+driveCartesian
+(double xSpeed,
+ double ySpeed,
+ double zRotation)
+Drive method for Mecanum platform.
+Angles are measured counterclockwise from the positive X axis. The robot's speed is
+ independent of its angle or rotation rate.
+Parameters:
+xSpeed
+- The robot's speed along the X axis [-1.0..1.0]. Forward is positive.
+ySpeed
+- The robot's speed along the Y axis [-1.0..1.0]. Left is positive.
+zRotation
+- The robot's rotation rate around the Z axis [-1.0..1.0]. Counterclockwise is
+     positive.
+driveCartesian
+public
+void
+driveCartesian
+(double xSpeed,
+ double ySpeed,
+ double zRotation,
+Rotation2d
+gyroAngle)
+Drive method for Mecanum platform.
+Angles are measured counterclockwise from the positive X axis. The robot's speed is
+ independent of its angle or rotation rate.
+Parameters:
+xSpeed
+- The robot's speed along the X axis [-1.0..1.0]. Forward is positive.
+ySpeed
+- The robot's speed along the Y axis [-1.0..1.0]. Left is positive.
+zRotation
+- The robot's rotation rate around the Z axis [-1.0..1.0]. Counterclockwise is
+     positive.
+gyroAngle
+- The gyro heading around the Z axis. Use this to implement field-oriented
+     controls.
+drivePolar
+public
+void
+drivePolar
+(double magnitude,
+Rotation2d
+angle,
+ double zRotation)
+Drive method for Mecanum platform.
+Angles are measured counterclockwise from straight ahead. The speed at which the robot
+ drives (translation) is independent of its angle or rotation rate.
+Parameters:
+magnitude
+- The robot's speed at a given angle [-1.0..1.0]. Forward is positive.
+angle
+- The gyro heading around the Z axis at which the robot drives.
+zRotation
+- The robot's rotation rate around the Z axis [-1.0..1.0]. Counterclockwise is
+     positive.
+driveCartesianIK
+public static
+MecanumDrive.WheelSpeeds
+driveCartesianIK
+(double xSpeed,
+ double ySpeed,
+ double zRotation)
+Cartesian inverse kinematics for Mecanum platform.
+Angles are measured counterclockwise from the positive X axis. The robot's speed is
+ independent of its angle or rotation rate.
+Parameters:
+xSpeed
+- The robot's speed along the X axis [-1.0..1.0]. Forward is positive.
+ySpeed
+- The robot's speed along the Y axis [-1.0..1.0]. Left is positive.
+zRotation
+- The robot's rotation rate around the Z axis [-1.0..1.0]. Counterclockwise is
+     positive.
+Returns:
+Wheel speeds [-1.0..1.0].
+driveCartesianIK
+public static
+MecanumDrive.WheelSpeeds
+driveCartesianIK
+(double xSpeed,
+ double ySpeed,
+ double zRotation,
+Rotation2d
+gyroAngle)
+Cartesian inverse kinematics for Mecanum platform.
+Angles are measured clockwise from the positive X axis. The robot's speed is independent of
+ its angle or rotation rate.
+Parameters:
+xSpeed
+- The robot's speed along the X axis [-1.0..1.0]. Forward is positive.
+ySpeed
+- The robot's speed along the Y axis [-1.0..1.0]. Left is positive.
+zRotation
+- The robot's rotation rate around the Z axis [-1.0..1.0]. Counterclockwise is
+     positive.
+gyroAngle
+- The gyro heading around the Z axis. Use this to implement field-oriented
+     controls.
+Returns:
+Wheel speeds [-1.0..1.0].
+stopMotor
+public
+void
+stopMotor
+()
+Description copied from class:
+MotorSafety
+Called to stop the motor when the timeout expires.
+Specified by:
+stopMotor
+in class
+RobotDriveBase
+getDescription
+public
+String
+getDescription
+()
+Description copied from class:
+MotorSafety
+Returns a description to print when an error occurs.
+Specified by:
+getDescription
+in class
+RobotDriveBase
+Returns:
+Description to print when an error occurs.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

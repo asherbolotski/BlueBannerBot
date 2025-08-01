@@ -1,0 +1,608 @@
+Package
+edu.wpi.first.math.geometry
+Class Pose2d
+java.lang.Object
+edu.wpi.first.math.geometry.Pose2d
+All Implemented Interfaces:
+Interpolatable
+<
+Pose2d
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Pose2d
+extends
+Object
+implements
+Interpolatable
+<
+Pose2d
+>,
+ProtobufSerializable
+,
+StructSerializable
+Represents a 2D pose containing translational and rotational elements.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+Pose2d
+kZero
+A preallocated Pose2d representing the origin.
+static final
+Pose2dProto
+proto
+Pose2d protobuf for serialization.
+static final
+Pose2dStruct
+struct
+Pose2d struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+Pose2d
+()
+Constructs a pose at the origin facing toward the positive X axis.
+Pose2d
+(double x,
+ double y,
+Rotation2d
+rotation)
+Constructs a pose with x and y translations instead of a separate Translation2d.
+Pose2d
+(
+Translation2d
+translation,
+Rotation2d
+rotation)
+Constructs a pose with the specified translation and rotation.
+Pose2d
+(
+Matrix
+<
+N3
+,
+N3
+> matrix)
+Constructs a pose with the specified affine transformation matrix.
+Pose2d
+(
+Distance
+x,
+Distance
+y,
+Rotation2d
+rotation)
+Constructs a pose with x and y translations instead of a separate Translation2d.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Pose2d
+div
+(double scalar)
+Divides the current pose by a scalar.
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Pose2d and another object.
+Pose2d
+exp
+(
+Twist2d
+twist)
+Obtain a new Pose2d from a (constant curvature) velocity.
+Distance
+getMeasureX
+()
+Returns the X component of the pose's translation in a measure.
+Distance
+getMeasureY
+()
+Returns the Y component of the pose's translation in a measure.
+Rotation2d
+getRotation
+()
+Returns the rotational component of the transformation.
+Translation2d
+getTranslation
+()
+Returns the translation component of the transformation.
+double
+getX
+()
+Returns the X component of the pose's translation.
+double
+getY
+()
+Returns the Y component of the pose's translation.
+int
+hashCode
+()
+Pose2d
+interpolate
+(
+Pose2d
+endValue,
+ double t)
+Return the interpolated value.
+Twist2d
+log
+(
+Pose2d
+end)
+Returns a Twist2d that maps this pose to the end pose.
+Transform2d
+minus
+(
+Pose2d
+other)
+Returns the Transform2d that maps the one pose to another.
+Pose2d
+nearest
+(
+List
+<
+Pose2d
+> poses)
+Returns the nearest Pose2d from a list of poses.
+Pose2d
+plus
+(
+Transform2d
+other)
+Transforms the pose by the given transformation and returns the new transformed pose.
+Pose2d
+relativeTo
+(
+Pose2d
+other)
+Returns the current pose relative to the given pose.
+Pose2d
+rotateAround
+(
+Translation2d
+point,
+Rotation2d
+rot)
+Rotates the current pose around a point in 2D space.
+Pose2d
+rotateBy
+(
+Rotation2d
+other)
+Rotates the pose around the origin and returns the new pose.
+Pose2d
+times
+(double scalar)
+Multiplies the current pose by a scalar.
+Matrix
+<
+N3
+,
+N3
+>
+toMatrix
+()
+Returns an affine transformation matrix representation of this pose.
+String
+toString
+()
+Pose2d
+transformBy
+(
+Transform2d
+other)
+Transforms the pose by the given transformation and returns the new pose.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kZero
+public static final
+Pose2d
+kZero
+A preallocated Pose2d representing the origin.
+This exists to avoid allocations for common poses.
+proto
+public static final
+Pose2dProto
+proto
+Pose2d protobuf for serialization.
+struct
+public static final
+Pose2dStruct
+struct
+Pose2d struct for serialization.
+Constructor Details
+Pose2d
+public
+Pose2d
+()
+Constructs a pose at the origin facing toward the positive X axis.
+Pose2d
+public
+Pose2d
+(
+Translation2d
+translation,
+Rotation2d
+rotation)
+Constructs a pose with the specified translation and rotation.
+Parameters:
+translation
+- The translational component of the pose.
+rotation
+- The rotational component of the pose.
+Pose2d
+public
+Pose2d
+(double x,
+ double y,
+Rotation2d
+rotation)
+Constructs a pose with x and y translations instead of a separate Translation2d.
+Parameters:
+x
+- The x component of the translational component of the pose.
+y
+- The y component of the translational component of the pose.
+rotation
+- The rotational component of the pose.
+Pose2d
+public
+Pose2d
+(
+Distance
+x,
+Distance
+y,
+Rotation2d
+rotation)
+Constructs a pose with x and y translations instead of a separate Translation2d. The X and Y
+ translations will be converted to and tracked as meters.
+Parameters:
+x
+- The x component of the translational component of the pose.
+y
+- The y component of the translational component of the pose.
+rotation
+- The rotational component of the pose.
+Pose2d
+public
+Pose2d
+(
+Matrix
+<
+N3
+,
+N3
+> matrix)
+Constructs a pose with the specified affine transformation matrix.
+Parameters:
+matrix
+- The affine transformation matrix.
+Throws:
+IllegalArgumentException
+- if the affine transformation matrix is invalid.
+Method Details
+plus
+public
+Pose2d
+plus
+(
+Transform2d
+other)
+Transforms the pose by the given transformation and returns the new transformed pose.
+[x_new]    [cos, -sin, 0][transform.x]
+ [y_new] += [sin,  cos, 0][transform.y]
+ [t_new]    [  0,    0, 1][transform.t]
+Parameters:
+other
+- The transform to transform the pose by.
+Returns:
+The transformed pose.
+minus
+public
+Transform2d
+minus
+(
+Pose2d
+other)
+Returns the Transform2d that maps the one pose to another.
+Parameters:
+other
+- The initial pose of the transformation.
+Returns:
+The transform that maps the other pose to the current pose.
+getTranslation
+public
+Translation2d
+getTranslation
+()
+Returns the translation component of the transformation.
+Returns:
+The translational component of the pose.
+getX
+public
+double
+getX
+()
+Returns the X component of the pose's translation.
+Returns:
+The x component of the pose's translation.
+getY
+public
+double
+getY
+()
+Returns the Y component of the pose's translation.
+Returns:
+The y component of the pose's translation.
+getMeasureX
+public
+Distance
+getMeasureX
+()
+Returns the X component of the pose's translation in a measure.
+Returns:
+The x component of the pose's translation in a measure.
+getMeasureY
+public
+Distance
+getMeasureY
+()
+Returns the Y component of the pose's translation in a measure.
+Returns:
+The y component of the pose's translation in a measure.
+getRotation
+public
+Rotation2d
+getRotation
+()
+Returns the rotational component of the transformation.
+Returns:
+The rotational component of the pose.
+times
+public
+Pose2d
+times
+(double scalar)
+Multiplies the current pose by a scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The new scaled Pose2d.
+div
+public
+Pose2d
+div
+(double scalar)
+Divides the current pose by a scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The new scaled Pose2d.
+rotateBy
+public
+Pose2d
+rotateBy
+(
+Rotation2d
+other)
+Rotates the pose around the origin and returns the new pose.
+Parameters:
+other
+- The rotation to transform the pose by.
+Returns:
+The transformed pose.
+transformBy
+public
+Pose2d
+transformBy
+(
+Transform2d
+other)
+Transforms the pose by the given transformation and returns the new pose. See + operator for
+ the matrix multiplication performed.
+Parameters:
+other
+- The transform to transform the pose by.
+Returns:
+The transformed pose.
+relativeTo
+public
+Pose2d
+relativeTo
+(
+Pose2d
+other)
+Returns the current pose relative to the given pose.
+This function can often be used for trajectory tracking or pose stabilization algorithms to
+ get the error between the reference and the current pose.
+Parameters:
+other
+- The pose that is the origin of the new coordinate frame that the current pose will
+     be converted into.
+Returns:
+The current pose relative to the new origin pose.
+rotateAround
+public
+Pose2d
+rotateAround
+(
+Translation2d
+point,
+Rotation2d
+rot)
+Rotates the current pose around a point in 2D space.
+Parameters:
+point
+- The point in 2D space to rotate around.
+rot
+- The rotation to rotate the pose by.
+Returns:
+The new rotated pose.
+exp
+public
+Pose2d
+exp
+(
+Twist2d
+twist)
+Obtain a new Pose2d from a (constant curvature) velocity.
+See
+Controls
+ Engineering in the FIRST Robotics Competition
+section 10.2 "Pose exponential" for a
+ derivation.
+The twist is a change in pose in the robot's coordinate frame since the previous pose
+ update. When the user runs exp() on the previous known field-relative pose with the argument
+ being the twist, the user will receive the new field-relative pose.
+"Exp" represents the pose exponential, which is solving a differential equation moving the
+ pose forward in time.
+Parameters:
+twist
+- The change in pose in the robot's coordinate frame since the previous pose update.
+     For example, if a non-holonomic robot moves forward 0.01 meters and changes angle by 0.5
+     degrees since the previous pose update, the twist would be Twist2d(0.01, 0.0,
+     Units.degreesToRadians(0.5)).
+Returns:
+The new pose of the robot.
+log
+public
+Twist2d
+log
+(
+Pose2d
+end)
+Returns a Twist2d that maps this pose to the end pose. If c is the output of
+a.Log(b)
+,
+ then
+a.Exp(c)
+would yield b.
+Parameters:
+end
+- The end pose for the transformation.
+Returns:
+The twist that maps this to end.
+toMatrix
+public
+Matrix
+<
+N3
+,
+N3
+>
+toMatrix
+()
+Returns an affine transformation matrix representation of this pose.
+Returns:
+An affine transformation matrix representation of this pose.
+nearest
+public
+Pose2d
+nearest
+(
+List
+<
+Pose2d
+> poses)
+Returns the nearest Pose2d from a list of poses. If two or more poses in the list have the same
+ distance from this pose, return the one with the closest rotation component.
+Parameters:
+poses
+- The list of poses to find the nearest.
+Returns:
+The nearest Pose2d from the list.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Pose2d and another object.
+Overrides:
+equals
+in class
+Object
+Parameters:
+obj
+- The other object.
+Returns:
+Whether the two objects are equal or not.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+interpolate
+public
+Pose2d
+interpolate
+(
+Pose2d
+endValue,
+ double t)
+Description copied from interface:
+Interpolatable
+Return the interpolated value. This object is assumed to be the starting position, or lower
+ bound.
+Specified by:
+interpolate
+in interface
+Interpolatable
+<
+Pose2d
+>
+Parameters:
+endValue
+- The upper bound, or end.
+t
+- How far between the lower and upper bound we are. This should be bounded in [0, 1].
+Returns:
+The interpolated value.

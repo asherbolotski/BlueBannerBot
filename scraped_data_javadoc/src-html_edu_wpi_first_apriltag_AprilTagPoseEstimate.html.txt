@@ -1,0 +1,101 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.apriltag;
+006
+007
+import edu.wpi.first.math.geometry.Transform3d;
+008
+009
+/** A pair of AprilTag pose estimates. */
+010
+@SuppressWarnings("MemberName")
+011
+public class AprilTagPoseEstimate {
+012
+/**
+013
+* Constructs a pose estimate.
+014
+*
+015
+* @param pose1 first pose
+016
+* @param pose2 second pose
+017
+* @param error1 error of first pose
+018
+* @param error2 error of second pose
+019
+*/
+020
+public AprilTagPoseEstimate(Transform3d pose1, Transform3d pose2, double error1, double error2) {
+021
+this.pose1 = pose1;
+022
+this.pose2 = pose2;
+023
+this.error1 = error1;
+024
+this.error2 = error2;
+025
+}
+026
+027
+/**
+028
+* Get the ratio of pose reprojection errors, called ambiguity. Numbers above 0.2 are likely to be
+029
+* ambiguous.
+030
+*
+031
+* @return The ratio of pose reprojection errors.
+032
+*/
+033
+public double getAmbiguity() {
+034
+double min = Math.min(error1, error2);
+035
+double max = Math.max(error1, error2);
+036
+037
+if (max > 0) {
+038
+return min / max;
+039
+} else {
+040
+return -1;
+041
+}
+042
+}
+043
+044
+/** Pose 1. */
+045
+public final Transform3d pose1;
+046
+047
+/** Pose 2. */
+048
+public final Transform3d pose2;
+049
+050
+/** Object-space error of pose 1. */
+051
+public final double error1;
+052
+053
+/** Object-space error of pose 2. */
+054
+public final double error2;
+055
+}

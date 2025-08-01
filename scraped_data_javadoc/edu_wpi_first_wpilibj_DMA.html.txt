@@ -1,0 +1,397 @@
+Package
+edu.wpi.first.wpilibj
+Class DMA
+java.lang.Object
+edu.wpi.first.wpilibj.DMA
+All Implemented Interfaces:
+AutoCloseable
+public class
+DMA
+extends
+Object
+implements
+AutoCloseable
+Class for configuring Direct Memory Access (DMA) of FPGA inputs.
+Constructor Summary
+Constructors
+Constructor
+Description
+DMA
+()
+Default constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+addAnalogAccumulator
+(
+AnalogInput
+analogInput)
+Adds accumulator data of an analog input to be collected by DMA.
+void
+addAnalogInput
+(
+AnalogInput
+analogInput)
+Adds an analog input to be collected by DMA.
+void
+addAveragedAnalogInput
+(
+AnalogInput
+analogInput)
+Adds averaged data of an analog input to be collected by DMA.
+void
+addCounter
+(
+Counter
+counter)
+Adds position data for an counter to be collected by DMA.
+void
+addCounterPeriod
+(
+Counter
+counter)
+Adds timer data for an counter to be collected by DMA.
+void
+addDigitalSource
+(
+DigitalSource
+digitalSource)
+Adds a digital source to be collected by DMA.
+void
+addDutyCycle
+(
+DutyCycle
+dutyCycle)
+Adds a duty cycle input to be collected by DMA.
+void
+addEncoder
+(
+Encoder
+encoder)
+Adds position data for an encoder to be collected by DMA.
+void
+addEncoderPeriod
+(
+Encoder
+encoder)
+Adds timer data for an encoder to be collected by DMA.
+void
+clearExternalTriggers
+()
+Clear all external triggers from the DMA trigger list.
+void
+clearSensors
+()
+Clear all sensors from the DMA collection list.
+void
+close
+()
+int
+setExternalTrigger
+(
+DigitalSource
+source,
+ boolean rising,
+ boolean falling)
+Sets an external DMA trigger.
+void
+setPause
+(boolean pause)
+Sets whether DMA is paused.
+int
+setPwmEdgeTrigger
+(
+PWMMotorController
+pwm,
+ boolean rising,
+ boolean falling)
+Sets a DMA PWMMotorController edge trigger.
+int
+setPwmEdgeTrigger
+(
+PWM
+pwm,
+ boolean rising,
+ boolean falling)
+Sets a DMA PWM edge trigger.
+void
+setTimedTrigger
+(double periodSeconds)
+Sets DMA to trigger at an interval.
+void
+setTimedTriggerCycles
+(int cycles)
+Sets number of DMA cycles to trigger.
+void
+start
+(int queueDepth)
+Starts DMA Collection.
+void
+stop
+()
+Stops DMA Collection.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DMA
+public
+DMA
+()
+Default constructor.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+setPause
+public
+void
+setPause
+(boolean pause)
+Sets whether DMA is paused.
+Parameters:
+pause
+- True pauses DMA.
+setTimedTrigger
+public
+void
+setTimedTrigger
+(double periodSeconds)
+Sets DMA to trigger at an interval.
+Parameters:
+periodSeconds
+- Period at which to trigger DMA in seconds.
+setTimedTriggerCycles
+public
+void
+setTimedTriggerCycles
+(int cycles)
+Sets number of DMA cycles to trigger.
+Parameters:
+cycles
+- Number of cycles.
+addEncoder
+public
+void
+addEncoder
+(
+Encoder
+encoder)
+Adds position data for an encoder to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+encoder
+- Encoder to add to DMA.
+addEncoderPeriod
+public
+void
+addEncoderPeriod
+(
+Encoder
+encoder)
+Adds timer data for an encoder to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+encoder
+- Encoder to add to DMA.
+addCounter
+public
+void
+addCounter
+(
+Counter
+counter)
+Adds position data for an counter to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+counter
+- Counter to add to DMA.
+addCounterPeriod
+public
+void
+addCounterPeriod
+(
+Counter
+counter)
+Adds timer data for an counter to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+counter
+- Counter to add to DMA.
+addDigitalSource
+public
+void
+addDigitalSource
+(
+DigitalSource
+digitalSource)
+Adds a digital source to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+digitalSource
+- DigitalSource to add to DMA.
+addDutyCycle
+public
+void
+addDutyCycle
+(
+DutyCycle
+dutyCycle)
+Adds a duty cycle input to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+dutyCycle
+- DutyCycle to add to DMA.
+addAnalogInput
+public
+void
+addAnalogInput
+(
+AnalogInput
+analogInput)
+Adds an analog input to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+analogInput
+- AnalogInput to add to DMA.
+addAveragedAnalogInput
+public
+void
+addAveragedAnalogInput
+(
+AnalogInput
+analogInput)
+Adds averaged data of an analog input to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+analogInput
+- AnalogInput to add to DMA.
+addAnalogAccumulator
+public
+void
+addAnalogAccumulator
+(
+AnalogInput
+analogInput)
+Adds accumulator data of an analog input to be collected by DMA.
+This can only be called if DMA is not started.
+Parameters:
+analogInput
+- AnalogInput to add to DMA.
+setExternalTrigger
+public
+int
+setExternalTrigger
+(
+DigitalSource
+source,
+ boolean rising,
+ boolean falling)
+Sets an external DMA trigger.
+Parameters:
+source
+- the source to trigger from.
+rising
+- trigger on rising edge.
+falling
+- trigger on falling edge.
+Returns:
+the index of the trigger
+setPwmEdgeTrigger
+public
+int
+setPwmEdgeTrigger
+(
+PWM
+pwm,
+ boolean rising,
+ boolean falling)
+Sets a DMA PWM edge trigger.
+Parameters:
+pwm
+- the PWM to trigger from.
+rising
+- trigger on rising edge.
+falling
+- trigger on falling edge.
+Returns:
+the index of the trigger
+setPwmEdgeTrigger
+public
+int
+setPwmEdgeTrigger
+(
+PWMMotorController
+pwm,
+ boolean rising,
+ boolean falling)
+Sets a DMA PWMMotorController edge trigger.
+Parameters:
+pwm
+- the PWMMotorController to trigger from.
+rising
+- trigger on rising edge.
+falling
+- trigger on falling edge.
+Returns:
+the index of the trigger
+clearSensors
+public
+void
+clearSensors
+()
+Clear all sensors from the DMA collection list.
+This can only be called if DMA is not started.
+clearExternalTriggers
+public
+void
+clearExternalTriggers
+()
+Clear all external triggers from the DMA trigger list.
+This can only be called if DMA is not started.
+start
+public
+void
+start
+(int queueDepth)
+Starts DMA Collection.
+Parameters:
+queueDepth
+- The number of objects to be able to queue.
+stop
+public
+void
+stop
+()
+Stops DMA Collection.

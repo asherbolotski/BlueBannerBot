@@ -1,0 +1,408 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.AddressableLEDDataJNI;
+008
+import edu.wpi.first.hal.simulation.ConstBufferCallback;
+009
+import edu.wpi.first.hal.simulation.NotifyCallback;
+010
+import edu.wpi.first.wpilibj.AddressableLED;
+011
+import java.util.NoSuchElementException;
+012
+013
+/** Class to control a simulated addressable LED. */
+014
+public class AddressableLEDSim {
+015
+private final int m_index;
+016
+017
+/** Constructs for the first addressable LED. */
+018
+public AddressableLEDSim() {
+019
+m_index = 0;
+020
+}
+021
+022
+/**
+023
+* Constructs from an AddressableLED object.
+024
+*
+025
+* @param addressableLED AddressableLED to simulate
+026
+*/
+027
+@SuppressWarnings("PMD.UnusedFormalParameter")
+028
+public AddressableLEDSim(AddressableLED addressableLED) {
+029
+// there is only support for a single AddressableLED, so no lookup
+030
+m_index = 0;
+031
+}
+032
+033
+private AddressableLEDSim(int index) {
+034
+m_index = index;
+035
+}
+036
+037
+/**
+038
+* Creates an AddressableLEDSim for a PWM channel.
+039
+*
+040
+* @param pwmChannel PWM channel
+041
+* @return Simulated object
+042
+* @throws NoSuchElementException if no AddressableLED is configured for that channel
+043
+*/
+044
+public static AddressableLEDSim createForChannel(int pwmChannel) {
+045
+int index = AddressableLEDDataJNI.findForChannel(pwmChannel);
+046
+if (index < 0) {
+047
+throw new NoSuchElementException("no addressable LED found for PWM channel " + pwmChannel);
+048
+}
+049
+return new AddressableLEDSim(index);
+050
+}
+051
+052
+/**
+053
+* Creates an AddressableLEDSim for a simulated index. The index is incremented for each simulated
+054
+* AddressableLED.
+055
+*
+056
+* @param index simulator index
+057
+* @return Simulated object
+058
+*/
+059
+public static AddressableLEDSim createForIndex(int index) {
+060
+return new AddressableLEDSim(index);
+061
+}
+062
+063
+/**
+064
+* Register a callback on the Initialized property.
+065
+*
+066
+* @param callback the callback that will be called whenever the Initialized property is changed
+067
+* @param initialNotify if true, the callback will be run on the initial value
+068
+* @return the {@link CallbackStore} object associated with this callback.
+069
+*/
+070
+public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+071
+int uid = AddressableLEDDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+072
+return new CallbackStore(m_index, uid, AddressableLEDDataJNI::cancelInitializedCallback);
+073
+}
+074
+075
+/**
+076
+* Check if initialized.
+077
+*
+078
+* @return true if initialized
+079
+*/
+080
+public boolean getInitialized() {
+081
+return AddressableLEDDataJNI.getInitialized(m_index);
+082
+}
+083
+084
+/**
+085
+* Change the Initialized value of the LED strip.
+086
+*
+087
+* @param initialized the new value
+088
+*/
+089
+public void setInitialized(boolean initialized) {
+090
+AddressableLEDDataJNI.setInitialized(m_index, initialized);
+091
+}
+092
+093
+/**
+094
+* Register a callback on the output port.
+095
+*
+096
+* @param callback the callback that will be called whenever the output port is changed
+097
+* @param initialNotify if true, the callback will be run on the initial value
+098
+* @return the {@link CallbackStore} object associated with this callback.
+099
+*/
+100
+public CallbackStore registerOutputPortCallback(NotifyCallback callback, boolean initialNotify) {
+101
+int uid = AddressableLEDDataJNI.registerOutputPortCallback(m_index, callback, initialNotify);
+102
+return new CallbackStore(m_index, uid, AddressableLEDDataJNI::cancelOutputPortCallback);
+103
+}
+104
+105
+/**
+106
+* Get the output port.
+107
+*
+108
+* @return the output port
+109
+*/
+110
+public int getOutputPort() {
+111
+return AddressableLEDDataJNI.getOutputPort(m_index);
+112
+}
+113
+114
+/**
+115
+* Change the output port.
+116
+*
+117
+* @param outputPort the new output port
+118
+*/
+119
+public void setOutputPort(int outputPort) {
+120
+AddressableLEDDataJNI.setOutputPort(m_index, outputPort);
+121
+}
+122
+123
+/**
+124
+* Register a callback on the length.
+125
+*
+126
+* @param callback the callback that will be called whenever the length is changed
+127
+* @param initialNotify if true, the callback will be run on the initial value
+128
+* @return the {@link CallbackStore} object associated with this callback.
+129
+*/
+130
+public CallbackStore registerLengthCallback(NotifyCallback callback, boolean initialNotify) {
+131
+int uid = AddressableLEDDataJNI.registerLengthCallback(m_index, callback, initialNotify);
+132
+return new CallbackStore(m_index, uid, AddressableLEDDataJNI::cancelLengthCallback);
+133
+}
+134
+135
+/**
+136
+* Get the length of the LED strip.
+137
+*
+138
+* @return the length
+139
+*/
+140
+public int getLength() {
+141
+return AddressableLEDDataJNI.getLength(m_index);
+142
+}
+143
+144
+/**
+145
+* Change the length of the LED strip.
+146
+*
+147
+* @param length the new value
+148
+*/
+149
+public void setLength(int length) {
+150
+AddressableLEDDataJNI.setLength(m_index, length);
+151
+}
+152
+153
+/**
+154
+* Register a callback on whether the LEDs are running.
+155
+*
+156
+* @param callback the callback that will be called whenever the LED state is changed
+157
+* @param initialNotify if true, the callback will be run on the initial value
+158
+* @return the {@link CallbackStore} object associated with this callback.
+159
+*/
+160
+public CallbackStore registerRunningCallback(NotifyCallback callback, boolean initialNotify) {
+161
+int uid = AddressableLEDDataJNI.registerRunningCallback(m_index, callback, initialNotify);
+162
+return new CallbackStore(m_index, uid, AddressableLEDDataJNI::cancelRunningCallback);
+163
+}
+164
+165
+/**
+166
+* Check if the LEDs are running.
+167
+*
+168
+* @return true if they are
+169
+*/
+170
+public boolean getRunning() {
+171
+return AddressableLEDDataJNI.getRunning(m_index);
+172
+}
+173
+174
+/**
+175
+* Change whether the LEDs are active.
+176
+*
+177
+* @param running the new value
+178
+*/
+179
+public void setRunning(boolean running) {
+180
+AddressableLEDDataJNI.setRunning(m_index, running);
+181
+}
+182
+183
+/**
+184
+* Register a callback on the LED data.
+185
+*
+186
+* @param callback the callback that will be called whenever the LED data is changed
+187
+* @return the {@link CallbackStore} object associated with this callback.
+188
+*/
+189
+public CallbackStore registerDataCallback(ConstBufferCallback callback) {
+190
+int uid = AddressableLEDDataJNI.registerDataCallback(m_index, callback);
+191
+return new CallbackStore(m_index, uid, AddressableLEDDataJNI::cancelDataCallback);
+192
+}
+193
+194
+/**
+195
+* Get the LED data.
+196
+*
+197
+* @return the LED data
+198
+*/
+199
+public byte[] getData() {
+200
+return AddressableLEDDataJNI.getData(m_index);
+201
+}
+202
+203
+/**
+204
+* Change the LED data.
+205
+*
+206
+* @param data the new data
+207
+*/
+208
+public void setData(byte[] data) {
+209
+AddressableLEDDataJNI.setData(m_index, data);
+210
+}
+211
+212
+/** Reset all simulation data for this LED object. */
+213
+public void resetData() {
+214
+AddressableLEDDataJNI.resetData(m_index);
+215
+}
+216
+}

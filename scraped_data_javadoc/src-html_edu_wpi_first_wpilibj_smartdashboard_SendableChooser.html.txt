@@ -1,0 +1,329 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.smartdashboard;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.util.sendable.Sendable;
+010
+import edu.wpi.first.util.sendable.SendableBuilder;
+011
+import edu.wpi.first.util.sendable.SendableRegistry;
+012
+import java.util.LinkedHashMap;
+013
+import java.util.Map;
+014
+import java.util.concurrent.atomic.AtomicInteger;
+015
+import java.util.concurrent.locks.ReentrantLock;
+016
+import java.util.function.Consumer;
+017
+018
+/**
+019
+* The {@link SendableChooser} class is a useful tool for presenting a selection of options to the
+020
+* {@link SmartDashboard}.
+021
+*
+022
+* <p>For instance, you may wish to be able to select between multiple autonomous modes. You can do
+023
+* this by putting every possible Command you want to run as an autonomous into a {@link
+024
+* SendableChooser} and then put it into the {@link SmartDashboard} to have a list of options appear
+025
+* on the laptop. Once autonomous starts, simply ask the {@link SendableChooser} what the selected
+026
+* value is.
+027
+*
+028
+* @param <V> The type of the values to be stored
+029
+*/
+030
+public class SendableChooser<V> implements Sendable, AutoCloseable {
+031
+/** The key for the default value. */
+032
+private static final String DEFAULT = "default";
+033
+034
+/** The key for the selected option. */
+035
+private static final String SELECTED = "selected";
+036
+037
+/** The key for the active option. */
+038
+private static final String ACTIVE = "active";
+039
+040
+/** The key for the option array. */
+041
+private static final String OPTIONS = "options";
+042
+043
+/** The key for the instance number. */
+044
+private static final String INSTANCE = ".instance";
+045
+046
+/** A map linking strings to the objects they represent. */
+047
+private final Map<String, V> m_map = new LinkedHashMap<>();
+048
+049
+private String m_defaultChoice = "";
+050
+private final int m_instance;
+051
+private String m_previousVal;
+052
+private Consumer<V> m_listener;
+053
+private static final AtomicInteger s_instances = new AtomicInteger();
+054
+055
+/** Instantiates a {@link SendableChooser}. */
+056
+@SuppressWarnings("this-escape")
+057
+public SendableChooser() {
+058
+m_instance = s_instances.getAndIncrement();
+059
+SendableRegistry.add(this, "SendableChooser", m_instance);
+060
+}
+061
+062
+@Override
+063
+public void close() {
+064
+SendableRegistry.remove(this);
+065
+}
+066
+067
+/**
+068
+* Adds the given object to the list of options. On the {@link SmartDashboard} on the desktop, the
+069
+* object will appear as the given name.
+070
+*
+071
+* @param name the name of the option
+072
+* @param object the option
+073
+*/
+074
+public void addOption(String name, V object) {
+075
+m_map.put(name, object);
+076
+}
+077
+078
+/**
+079
+* Adds the given object to the list of options and marks it as the default. Functionally, this is
+080
+* very close to {@link #addOption(String, Object)} except that it will use this as the default
+081
+* option if none other is explicitly selected.
+082
+*
+083
+* @param name the name of the option
+084
+* @param object the option
+085
+*/
+086
+public void setDefaultOption(String name, V object) {
+087
+requireNonNullParam(name, "name", "setDefaultOption");
+088
+089
+m_defaultChoice = name;
+090
+addOption(name, object);
+091
+}
+092
+093
+/**
+094
+* Returns the selected option. If there is none selected, it will return the default. If there is
+095
+* none selected and no default, then it will return {@code null}.
+096
+*
+097
+* @return the option selected
+098
+*/
+099
+public V getSelected() {
+100
+m_mutex.lock();
+101
+try {
+102
+if (m_selected != null) {
+103
+return m_map.get(m_selected);
+104
+} else {
+105
+return m_map.get(m_defaultChoice);
+106
+}
+107
+} finally {
+108
+m_mutex.unlock();
+109
+}
+110
+}
+111
+112
+/**
+113
+* Bind a listener that's called when the selected value changes. Only one listener can be bound.
+114
+* Calling this function will replace the previous listener.
+115
+*
+116
+* @param listener The function to call that accepts the new value
+117
+*/
+118
+public void onChange(Consumer<V> listener) {
+119
+requireNonNullParam(listener, "listener", "onChange");
+120
+m_mutex.lock();
+121
+m_listener = listener;
+122
+m_mutex.unlock();
+123
+}
+124
+125
+private String m_selected;
+126
+private final ReentrantLock m_mutex = new ReentrantLock();
+127
+128
+@Override
+129
+public void initSendable(SendableBuilder builder) {
+130
+builder.setSmartDashboardType("String Chooser");
+131
+builder.publishConstInteger(INSTANCE, m_instance);
+132
+builder.addStringProperty(DEFAULT, () -> m_defaultChoice, null);
+133
+builder.addStringArrayProperty(OPTIONS, () -> m_map.keySet().toArray(new String[0]), null);
+134
+builder.addStringProperty(
+135
+ACTIVE,
+136
+() -> {
+137
+m_mutex.lock();
+138
+try {
+139
+if (m_selected != null) {
+140
+return m_selected;
+141
+} else {
+142
+return m_defaultChoice;
+143
+}
+144
+} finally {
+145
+m_mutex.unlock();
+146
+}
+147
+},
+148
+null);
+149
+builder.addStringProperty(
+150
+SELECTED,
+151
+null,
+152
+val -> {
+153
+V choice;
+154
+Consumer<V> listener;
+155
+m_mutex.lock();
+156
+try {
+157
+m_selected = val;
+158
+if (!m_selected.equals(m_previousVal) && m_listener != null) {
+159
+choice = m_map.get(val);
+160
+listener = m_listener;
+161
+} else {
+162
+choice = null;
+163
+listener = null;
+164
+}
+165
+m_previousVal = val;
+166
+} finally {
+167
+m_mutex.unlock();
+168
+}
+169
+if (listener != null) {
+170
+listener.accept(choice);
+171
+}
+172
+});
+173
+}
+174
+}

@@ -1,0 +1,695 @@
+Package
+edu.wpi.first.units
+Class PerUnit<N extends
+Unit
+,
+D extends
+Unit
+>
+java.lang.Object
+edu.wpi.first.units.Unit
+edu.wpi.first.units.PerUnit<N,
+D>
+Type Parameters:
+N
+- the type of the numerator unit
+D
+- the type of the denominator unit
+Direct Known Subclasses:
+AccelerationUnit
+,
+AngularAccelerationUnit
+,
+AngularVelocityUnit
+,
+FrequencyUnit
+,
+LinearAccelerationUnit
+,
+LinearVelocityUnit
+,
+MomentOfInertiaUnit
+,
+PowerUnit
+,
+ResistanceUnit
+,
+VelocityUnit
+public class
+PerUnit
+<N extends
+Unit
+,
+D extends
+Unit
+>
+extends
+Unit
+Generic combinatory unit type that represents the proportion of one unit to another, such as
+ Meters per Second or Radians per Celsius.
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+PerUnit
+(
+PerUnit
+<
+N
+,
+D
+> baseUnit,
+N
+numerator,
+D
+denominator)
+Creates a new proportional unit derived from the ratio of one unit to another.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static <N extends
+Unit
+,
+D extends
+Unit
+>
+PerUnit
+<N,
+D>
+combine
+(N numerator,
+ D denominator)
+Creates a new PerUnit unit derived from an arbitrary numerator and time denominator units.
+double
+convertFrom
+(double magnitude,
+PerUnit
+<? extends
+N
+,
+? extends
+D
+> otherUnit)
+Converts a measurement value in terms of another unit to this unit.
+D
+denominator
+()
+Gets the denominator unit.
+boolean
+equals
+(
+Object
+o)
+PerUnit
+<
+N
+,
+D
+>
+getBaseUnit
+()
+Gets the base unit of measurement that this unit is derived from.
+int
+hashCode
+()
+N
+mult
+(
+D
+denom)
+Multiplies this unit by a unit of its denominator.
+MutableMeasure
+<? extends
+PerUnit
+<
+N
+,
+D
+>,
+?,
+?>
+mutable
+(double initialMagnitude)
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit.
+final
+MutPer
+<
+N
+,
+D
+>
+mutableNative
+(double initialMagnitude)
+Creates a new mutable measurement of the given magnitude in terms of the ratio unit.
+N
+numerator
+()
+Gets the numerator unit.
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+of
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+ofBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+final
+Per
+<
+N
+,
+D
+>
+ofNative
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of the ratio unit.
+final
+Per
+<
+N
+,
+D
+>
+ofNativeBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of the ratio unit's base
+ unit.
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+one
+()
+Gets a measure with a magnitude of 1.0 in terms of this unit.
+Unit
+per
+(
+TimeUnit
+time)
+Combines this unit with a unit of time.
+PerUnit
+<
+D
+,
+N
+>
+reciprocal
+()
+Returns the reciprocal of this PerUnit.
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+zero
+()
+Gets a measure of zero magnitude in terms of this unit.
+Methods inherited from class edu.wpi.first.units.
+Unit
+equivalent
+,
+fromBaseUnits
+,
+getConverterFromBase
+,
+getConverterToBase
+,
+isBaseUnit
+,
+name
+,
+symbol
+,
+toBaseUnits
+,
+toString
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+PerUnit
+protected
+PerUnit
+(
+PerUnit
+<
+N
+,
+D
+> baseUnit,
+N
+numerator,
+D
+denominator)
+Creates a new proportional unit derived from the ratio of one unit to another. Subclasses of
+PerUnit
+should use this constructor.
+Parameters:
+baseUnit
+- the base unit. Set this to null if the unit being constructed is its own base
+     unit
+numerator
+- the numerator unit
+denominator
+- the denominator unit
+Method Details
+combine
+public static
+<N extends
+Unit
+,
+D extends
+Unit
+>
+PerUnit
+<N,
+D>
+combine
+(N numerator,
+ D denominator)
+Creates a new PerUnit unit derived from an arbitrary numerator and time denominator units.
+PerUnit.combine(Volts, Meters) // possible PID constant
+Type Parameters:
+N
+- the type of the numerator unit
+D
+- the type of the denominator unit
+Parameters:
+numerator
+- the numerator unit
+denominator
+- the denominator for unit time
+Returns:
+the combined unit
+getBaseUnit
+public
+PerUnit
+<
+N
+,
+D
+>
+getBaseUnit
+()
+Description copied from class:
+Unit
+Gets the base unit of measurement that this unit is derived from. If the unit is the base unit,
+ the unit will be returned.
+NOTE:
+Subclasses
+must
+override this method to provide the
+ correct return type. Failing to do say will make unit combinations that use it break at
+ runtime!
+Unit baseUnit = new Unit(null, ...);
+   baseUnit.getBaseUnit(); // returns baseUnit
+
+   Unit derivedUnit = new Unit(baseUnit, ...);
+   derivedUnit.getBaseUnit(); // returns baseUnit
+Overrides:
+getBaseUnit
+in class
+Unit
+Returns:
+the base unit
+numerator
+public
+N
+numerator
+()
+Gets the numerator unit. For a
+PerUnit<A, B>
+, this will return the
+A
+unit.
+Returns:
+the numerator unit
+denominator
+public
+D
+denominator
+()
+Gets the denominator unit. For a
+PerUnit<A, B>
+, this will return the
+B
+unit.
+Returns:
+the denominator unit
+reciprocal
+public
+PerUnit
+<
+D
+,
+N
+>
+reciprocal
+()
+Returns the reciprocal of this PerUnit.
+Returns:
+the reciprocal
+mult
+public
+N
+mult
+(
+D
+denom)
+Multiplies this unit by a unit of its denominator.
+Parameters:
+denom
+- the denominator-typed unit to multiply by
+Returns:
+the result
+of
+public
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+of
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+Per
+instance. If you want to
+ avoid casting, use
+ofNative(double)
+that returns a
+Per
+instance directly.
+Specified by:
+of
+in class
+Unit
+Parameters:
+magnitude
+- the magnitude of the measure
+Returns:
+the ratio measure
+ofBaseUnits
+public
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+ofBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+Per
+instance. If you want to
+ avoid casting, use
+ofNativeBaseUnits(double)
+that returns a
+Per
+instance
+ directly.
+Specified by:
+ofBaseUnits
+in class
+Unit
+Parameters:
+baseUnitMagnitude
+- the magnitude of the measure in terms of its base units.
+Returns:
+the ratio measure
+ofNative
+public final
+Per
+<
+N
+,
+D
+>
+ofNative
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of the ratio unit. This
+ will always return a
+Per
+object and cannot be overridden by subclasses.
+Parameters:
+magnitude
+- the magnitude of the measurement.
+Returns:
+the measurement object
+See Also:
+of(double)
+ofNativeBaseUnits
+public final
+Per
+<
+N
+,
+D
+>
+ofNativeBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of the ratio unit's base
+ unit. This will always return a
+Per
+object and cannot be overridden by subclasses.
+Parameters:
+baseUnitMagnitude
+- the magnitude of the measure in terms of its base units.
+Returns:
+the measurement object
+See Also:
+ofBaseUnits(double)
+zero
+public
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+zero
+()
+Description copied from class:
+Unit
+Gets a measure of zero magnitude in terms of this unit. The returned object is guaranteed to be
+ of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override this
+ method to sharpen the return type.
+Overrides:
+zero
+in class
+Unit
+Returns:
+a zero-magnitude measure of this unit
+one
+public
+Measure
+<? extends
+PerUnit
+<
+N
+,
+D
+>>
+one
+()
+Description copied from class:
+Unit
+Gets a measure with a magnitude of 1.0 in terms of this unit. The returned object is guaranteed
+ to be of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override
+ this method to sharpen the return type.
+Overrides:
+one
+in class
+Unit
+Returns:
+a measure of magnitude 1.0 in terms of this unit
+mutable
+public
+MutableMeasure
+<? extends
+PerUnit
+<
+N
+,
+D
+>,
+?,
+?>
+mutable
+(double initialMagnitude)
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit. Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+MutPer
+instance.
+Specified by:
+mutable
+in class
+Unit
+Parameters:
+initialMagnitude
+- the starting magnitude of the measure
+Returns:
+the ratio measure
+mutableNative
+public final
+MutPer
+<
+N
+,
+D
+>
+mutableNative
+(double initialMagnitude)
+Creates a new mutable measurement of the given magnitude in terms of the ratio unit. This will
+ always return a
+Per
+object and cannot be overridden by subclasses.
+Parameters:
+initialMagnitude
+- the starting magnitude of the measure
+Returns:
+the ratio measure
+See Also:
+mutable(double)
+per
+public
+Unit
+per
+(
+TimeUnit
+time)
+Description copied from class:
+Unit
+Combines this unit with a unit of time. This often - but not always - results in a velocity.
+ Subclasses should sharpen the return type to be unit-specific.
+Specified by:
+per
+in class
+Unit
+Parameters:
+time
+- the unit of time
+Returns:
+the combined unit
+convertFrom
+public
+double
+convertFrom
+(double magnitude,
+PerUnit
+<? extends
+N
+,
+? extends
+D
+> otherUnit)
+Converts a measurement value in terms of another unit to this unit.
+Parameters:
+magnitude
+- the magnitude of the measurement in terms of the other unit
+otherUnit
+- the other unit
+Returns:
+the value of the measurement in terms of this unit
+equals
+public
+boolean
+equals
+(
+Object
+o)
+Overrides:
+equals
+in class
+Unit
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Unit

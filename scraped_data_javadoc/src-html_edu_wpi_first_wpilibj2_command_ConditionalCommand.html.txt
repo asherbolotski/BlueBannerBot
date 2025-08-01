@@ -1,0 +1,192 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.util.sendable.SendableBuilder;
+010
+import java.util.function.BooleanSupplier;
+011
+012
+/**
+013
+* A command composition that runs one of two commands, depending on the value of the given
+014
+* condition when this command is initialized.
+015
+*
+016
+* <p>The rules for command compositions apply: command instances that are passed to it cannot be
+017
+* added to any other composition or scheduled individually, and the composition requires all
+018
+* subsystems its components require.
+019
+*
+020
+* <p>This class is provided by the NewCommands VendorDep
+021
+*/
+022
+public class ConditionalCommand extends Command {
+023
+private final Command m_onTrue;
+024
+private final Command m_onFalse;
+025
+private final BooleanSupplier m_condition;
+026
+private Command m_selectedCommand;
+027
+028
+/**
+029
+* Creates a new ConditionalCommand.
+030
+*
+031
+* @param onTrue the command to run if the condition is true
+032
+* @param onFalse the command to run if the condition is false
+033
+* @param condition the condition to determine which command to run
+034
+*/
+035
+@SuppressWarnings("this-escape")
+036
+public ConditionalCommand(Command onTrue, Command onFalse, BooleanSupplier condition) {
+037
+m_onTrue = requireNonNullParam(onTrue, "onTrue", "ConditionalCommand");
+038
+m_onFalse = requireNonNullParam(onFalse, "onFalse", "ConditionalCommand");
+039
+m_condition = requireNonNullParam(condition, "condition", "ConditionalCommand");
+040
+041
+CommandScheduler.getInstance().registerComposedCommands(onTrue, onFalse);
+042
+043
+addRequirements(m_onTrue.getRequirements());
+044
+addRequirements(m_onFalse.getRequirements());
+045
+}
+046
+047
+@Override
+048
+public void initialize() {
+049
+if (m_condition.getAsBoolean()) {
+050
+m_selectedCommand = m_onTrue;
+051
+} else {
+052
+m_selectedCommand = m_onFalse;
+053
+}
+054
+m_selectedCommand.initialize();
+055
+}
+056
+057
+@Override
+058
+public void execute() {
+059
+m_selectedCommand.execute();
+060
+}
+061
+062
+@Override
+063
+public void end(boolean interrupted) {
+064
+m_selectedCommand.end(interrupted);
+065
+}
+066
+067
+@Override
+068
+public boolean isFinished() {
+069
+return m_selectedCommand.isFinished();
+070
+}
+071
+072
+@Override
+073
+public boolean runsWhenDisabled() {
+074
+return m_onTrue.runsWhenDisabled() && m_onFalse.runsWhenDisabled();
+075
+}
+076
+077
+@Override
+078
+public InterruptionBehavior getInterruptionBehavior() {
+079
+if (m_onTrue.getInterruptionBehavior() == InterruptionBehavior.kCancelSelf
+080
+|| m_onFalse.getInterruptionBehavior() == InterruptionBehavior.kCancelSelf) {
+081
+return InterruptionBehavior.kCancelSelf;
+082
+} else {
+083
+return InterruptionBehavior.kCancelIncoming;
+084
+}
+085
+}
+086
+087
+@Override
+088
+public void initSendable(SendableBuilder builder) {
+089
+super.initSendable(builder);
+090
+builder.addStringProperty("onTrue", m_onTrue::getName, null);
+091
+builder.addStringProperty("onFalse", m_onFalse::getName, null);
+092
+builder.addStringProperty(
+093
+"selected",
+094
+() -> {
+095
+if (m_selectedCommand == null) {
+096
+return "null";
+097
+} else {
+098
+return m_selectedCommand.getName();
+099
+}
+100
+},
+101
+null);
+102
+}
+103
+}

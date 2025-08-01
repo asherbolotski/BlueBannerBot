@@ -1,0 +1,305 @@
+Package
+edu.wpi.first.wpilibj2.command
+Class SequentialCommandGroup
+java.lang.Object
+edu.wpi.first.wpilibj2.command.Command
+edu.wpi.first.wpilibj2.command.SequentialCommandGroup
+All Implemented Interfaces:
+Sendable
+public class
+SequentialCommandGroup
+extends
+Command
+A command composition that runs a list of commands in sequence.
+The rules for command compositions apply: command instances that are passed to it cannot be
+ added to any other composition or scheduled individually, and the composition requires all
+ subsystems its components require.
+This class is provided by the NewCommands VendorDep
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.wpilibj2.command.
+Command
+Command.InterruptionBehavior
+Constructor Summary
+Constructors
+Constructor
+Description
+SequentialCommandGroup
+(
+Command
+... commands)
+Creates a new SequentialCommandGroup.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+final void
+addCommands
+(
+Command
+... commands)
+Adds the given commands to the group.
+final void
+end
+(boolean interrupted)
+The action to take when the command ends.
+final void
+execute
+()
+The main body of a command.
+Command.InterruptionBehavior
+getInterruptionBehavior
+()
+How the command behaves when another command with a shared requirement is scheduled.
+final void
+initialize
+()
+The initial subroutine of a command.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+final boolean
+isFinished
+()
+Whether the command has finished.
+boolean
+runsWhenDisabled
+()
+Whether the given command should run when the robot is disabled.
+Methods inherited from class edu.wpi.first.wpilibj2.command.
+Command
+addRequirements
+,
+addRequirements
+,
+alongWith
+,
+andThen
+,
+andThen
+,
+asProxy
+,
+beforeStarting
+,
+beforeStarting
+,
+cancel
+,
+deadlineFor
+,
+deadlineWith
+,
+finallyDo
+,
+finallyDo
+,
+getName
+,
+getRequirements
+,
+getSubsystem
+,
+handleInterrupt
+,
+hasRequirement
+,
+ignoringDisable
+,
+isScheduled
+,
+onlyIf
+,
+onlyWhile
+,
+raceWith
+,
+repeatedly
+,
+schedule
+,
+setName
+,
+setSubsystem
+,
+unless
+,
+until
+,
+withDeadline
+,
+withInterruptBehavior
+,
+withName
+,
+withTimeout
+,
+withTimeout
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SequentialCommandGroup
+public
+SequentialCommandGroup
+(
+Command
+... commands)
+Creates a new SequentialCommandGroup. The given commands will be run sequentially, with the
+ composition finishing when the last command finishes.
+Parameters:
+commands
+- the commands to include in this composition.
+Method Details
+addCommands
+public final
+void
+addCommands
+(
+Command
+... commands)
+Adds the given commands to the group.
+Parameters:
+commands
+- Commands to add, in order of execution.
+initialize
+public final
+void
+initialize
+()
+Description copied from class:
+Command
+The initial subroutine of a command. Called once when the command is initially scheduled.
+Overrides:
+initialize
+in class
+Command
+execute
+public final
+void
+execute
+()
+Description copied from class:
+Command
+The main body of a command. Called repeatedly while the command is scheduled.
+Overrides:
+execute
+in class
+Command
+end
+public final
+void
+end
+(boolean interrupted)
+Description copied from class:
+Command
+The action to take when the command ends. Called when either the command finishes normally, or
+ when it interrupted/canceled.
+Do not schedule commands here that share requirements with this command. Use
+Command.andThen(Command...)
+instead.
+Overrides:
+end
+in class
+Command
+Parameters:
+interrupted
+- whether the command was interrupted/canceled
+isFinished
+public final
+boolean
+isFinished
+()
+Description copied from class:
+Command
+Whether the command has finished. Once a command finishes, the scheduler will call its end()
+ method and un-schedule it.
+Overrides:
+isFinished
+in class
+Command
+Returns:
+whether the command has finished.
+runsWhenDisabled
+public
+boolean
+runsWhenDisabled
+()
+Description copied from class:
+Command
+Whether the given command should run when the robot is disabled. Override to return true if the
+ command should run when disabled.
+Overrides:
+runsWhenDisabled
+in class
+Command
+Returns:
+whether the command should run when the robot is disabled
+getInterruptionBehavior
+public
+Command.InterruptionBehavior
+getInterruptionBehavior
+()
+Description copied from class:
+Command
+How the command behaves when another command with a shared requirement is scheduled.
+Overrides:
+getInterruptionBehavior
+in class
+Command
+Returns:
+a variant of
+Command.InterruptionBehavior
+, defaulting to
+kCancelSelf
+.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Overrides:
+initSendable
+in class
+Command
+Parameters:
+builder
+- sendable builder

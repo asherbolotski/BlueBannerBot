@@ -1,0 +1,507 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.DARE;
+008
+import edu.wpi.first.math.Matrix;
+009
+import edu.wpi.first.math.Num;
+010
+import edu.wpi.first.math.StateSpaceUtil;
+011
+import edu.wpi.first.math.Vector;
+012
+import edu.wpi.first.math.numbers.N1;
+013
+import edu.wpi.first.math.system.Discretization;
+014
+import edu.wpi.first.math.system.LinearSystem;
+015
+import org.ejml.simple.SimpleMatrix;
+016
+017
+/**
+018
+* Contains the controller coefficients and logic for a linear-quadratic regulator (LQR). LQRs use
+019
+* the control law u = K(r - x).
+020
+*
+021
+* <p>For more on the underlying math, read <a
+022
+* href="https://file.tavsys.net/control/controls-engineering-in-frc.pdf">https://file.tavsys.net/control/controls-engineering-in-frc.pdf</a>.
+023
+*
+024
+* @param <States> Number of states.
+025
+* @param <Inputs> Number of inputs.
+026
+* @param <Outputs> Number of outputs.
+027
+*/
+028
+public class LinearQuadraticRegulator<States extends Num, Inputs extends Num, Outputs extends Num> {
+029
+/** The current reference state. */
+030
+private Matrix<States, N1> m_r;
+031
+032
+/** The computed and capped controller output. */
+033
+private Matrix<Inputs, N1> m_u;
+034
+035
+// Controller gain.
+036
+private Matrix<Inputs, States> m_K;
+037
+038
+/**
+039
+* Constructs a controller with the given coefficients and plant. Rho is defaulted to 1.
+040
+*
+041
+* <p>See <a
+042
+* href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning">https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning</a>
+043
+* for how to select the tolerances.
+044
+*
+045
+* @param plant The plant being controlled.
+046
+* @param qelms The maximum desired error tolerance for each state.
+047
+* @param relms The maximum desired control effort for each input.
+048
+* @param dtSeconds Discretization timestep.
+049
+* @throws IllegalArgumentException If the system is unstabilizable.
+050
+*/
+051
+public LinearQuadraticRegulator(
+052
+LinearSystem<States, Inputs, Outputs> plant,
+053
+Vector<States> qelms,
+054
+Vector<Inputs> relms,
+055
+double dtSeconds) {
+056
+this(
+057
+plant.getA(),
+058
+plant.getB(),
+059
+StateSpaceUtil.makeCostMatrix(qelms),
+060
+StateSpaceUtil.makeCostMatrix(relms),
+061
+dtSeconds);
+062
+}
+063
+064
+/**
+065
+* Constructs a controller with the given coefficients and plant.
+066
+*
+067
+* <p>See <a
+068
+* href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning">https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning</a>
+069
+* for how to select the tolerances.
+070
+*
+071
+* @param A Continuous system matrix of the plant being controlled.
+072
+* @param B Continuous input matrix of the plant being controlled.
+073
+* @param qelms The maximum desired error tolerance for each state.
+074
+* @param relms The maximum desired control effort for each input.
+075
+* @param dtSeconds Discretization timestep.
+076
+* @throws IllegalArgumentException If the system is unstabilizable.
+077
+*/
+078
+public LinearQuadraticRegulator(
+079
+Matrix<States, States> A,
+080
+Matrix<States, Inputs> B,
+081
+Vector<States> qelms,
+082
+Vector<Inputs> relms,
+083
+double dtSeconds) {
+084
+this(
+085
+A,
+086
+B,
+087
+StateSpaceUtil.makeCostMatrix(qelms),
+088
+StateSpaceUtil.makeCostMatrix(relms),
+089
+dtSeconds);
+090
+}
+091
+092
+/**
+093
+* Constructs a controller with the given coefficients and plant.
+094
+*
+095
+* @param A Continuous system matrix of the plant being controlled.
+096
+* @param B Continuous input matrix of the plant being controlled.
+097
+* @param Q The state cost matrix.
+098
+* @param R The input cost matrix.
+099
+* @param dtSeconds Discretization timestep.
+100
+* @throws IllegalArgumentException If the system is unstabilizable.
+101
+*/
+102
+public LinearQuadraticRegulator(
+103
+Matrix<States, States> A,
+104
+Matrix<States, Inputs> B,
+105
+Matrix<States, States> Q,
+106
+Matrix<Inputs, Inputs> R,
+107
+double dtSeconds) {
+108
+var discABPair = Discretization.discretizeAB(A, B, dtSeconds);
+109
+var discA = discABPair.getFirst();
+110
+var discB = discABPair.getSecond();
+111
+112
+var S = DARE.dare(discA, discB, Q, R);
+113
+114
+// K = (BᵀSB + R)⁻¹BᵀSA
+115
+m_K =
+116
+discB
+117
+.transpose()
+118
+.times(S)
+119
+.times(discB)
+120
+.plus(R)
+121
+.solve(discB.transpose().times(S).times(discA));
+122
+123
+m_r = new Matrix<>(new SimpleMatrix(B.getNumRows(), 1));
+124
+m_u = new Matrix<>(new SimpleMatrix(B.getNumCols(), 1));
+125
+126
+reset();
+127
+}
+128
+129
+/**
+130
+* Constructs a controller with the given coefficients and plant.
+131
+*
+132
+* @param A Continuous system matrix of the plant being controlled.
+133
+* @param B Continuous input matrix of the plant being controlled.
+134
+* @param Q The state cost matrix.
+135
+* @param R The input cost matrix.
+136
+* @param N The state-input cross-term cost matrix.
+137
+* @param dtSeconds Discretization timestep.
+138
+* @throws IllegalArgumentException If the system is unstabilizable.
+139
+*/
+140
+public LinearQuadraticRegulator(
+141
+Matrix<States, States> A,
+142
+Matrix<States, Inputs> B,
+143
+Matrix<States, States> Q,
+144
+Matrix<Inputs, Inputs> R,
+145
+Matrix<States, Inputs> N,
+146
+double dtSeconds) {
+147
+var discABPair = Discretization.discretizeAB(A, B, dtSeconds);
+148
+var discA = discABPair.getFirst();
+149
+var discB = discABPair.getSecond();
+150
+151
+var S = DARE.dare(discA, discB, Q, R, N);
+152
+153
+// K = (BᵀSB + R)⁻¹(BᵀSA + Nᵀ)
+154
+m_K =
+155
+discB
+156
+.transpose()
+157
+.times(S)
+158
+.times(discB)
+159
+.plus(R)
+160
+.solve(discB.transpose().times(S).times(discA).plus(N.transpose()));
+161
+162
+m_r = new Matrix<>(new SimpleMatrix(B.getNumRows(), 1));
+163
+m_u = new Matrix<>(new SimpleMatrix(B.getNumCols(), 1));
+164
+165
+reset();
+166
+}
+167
+168
+/**
+169
+* Returns the control input vector u.
+170
+*
+171
+* @return The control input.
+172
+*/
+173
+public Matrix<Inputs, N1> getU() {
+174
+return m_u;
+175
+}
+176
+177
+/**
+178
+* Returns an element of the control input vector u.
+179
+*
+180
+* @param row Row of u.
+181
+* @return The row of the control input vector.
+182
+*/
+183
+public double getU(int row) {
+184
+return m_u.get(row, 0);
+185
+}
+186
+187
+/**
+188
+* Returns the reference vector r.
+189
+*
+190
+* @return The reference vector.
+191
+*/
+192
+public Matrix<States, N1> getR() {
+193
+return m_r;
+194
+}
+195
+196
+/**
+197
+* Returns an element of the reference vector r.
+198
+*
+199
+* @param row Row of r.
+200
+* @return The row of the reference vector.
+201
+*/
+202
+public double getR(int row) {
+203
+return m_r.get(row, 0);
+204
+}
+205
+206
+/**
+207
+* Returns the controller matrix K.
+208
+*
+209
+* @return the controller matrix K.
+210
+*/
+211
+public Matrix<Inputs, States> getK() {
+212
+return m_K;
+213
+}
+214
+215
+/** Resets the controller. */
+216
+public final void reset() {
+217
+m_r.fill(0.0);
+218
+m_u.fill(0.0);
+219
+}
+220
+221
+/**
+222
+* Returns the next output of the controller.
+223
+*
+224
+* @param x The current state x.
+225
+* @return The next controller output.
+226
+*/
+227
+public Matrix<Inputs, N1> calculate(Matrix<States, N1> x) {
+228
+m_u = m_K.times(m_r.minus(x));
+229
+return m_u;
+230
+}
+231
+232
+/**
+233
+* Returns the next output of the controller.
+234
+*
+235
+* @param x The current state x.
+236
+* @param nextR the next reference vector r.
+237
+* @return The next controller output.
+238
+*/
+239
+public Matrix<Inputs, N1> calculate(Matrix<States, N1> x, Matrix<States, N1> nextR) {
+240
+m_r = nextR;
+241
+return calculate(x);
+242
+}
+243
+244
+/**
+245
+* Adjusts LQR controller gain to compensate for a pure time delay in the input.
+246
+*
+247
+* <p>Linear-Quadratic regulator controller gains tend to be aggressive. If sensor measurements
+248
+* are time-delayed too long, the LQR may be unstable. However, if we know the amount of delay, we
+249
+* can compute the control based on where the system will be after the time delay.
+250
+*
+251
+* <p>See <a
+252
+* href="https://file.tavsys.net/control/controls-engineering-in-frc.pdf">https://file.tavsys.net/control/controls-engineering-in-frc.pdf</a>
+253
+* appendix C.4 for a derivation.
+254
+*
+255
+* @param plant The plant being controlled.
+256
+* @param dtSeconds Discretization timestep in seconds.
+257
+* @param inputDelaySeconds Input time delay in seconds.
+258
+*/
+259
+public void latencyCompensate(
+260
+LinearSystem<States, Inputs, Outputs> plant, double dtSeconds, double inputDelaySeconds) {
+261
+var discABPair = Discretization.discretizeAB(plant.getA(), plant.getB(), dtSeconds);
+262
+var discA = discABPair.getFirst();
+263
+var discB = discABPair.getSecond();
+264
+265
+m_K = m_K.times((discA.minus(discB.times(m_K))).pow(inputDelaySeconds / dtSeconds));
+266
+}
+267
+}

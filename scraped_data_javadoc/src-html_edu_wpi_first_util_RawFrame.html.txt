@@ -1,0 +1,432 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+import java.nio.ByteBuffer;
+008
+009
+/**
+010
+* Class for storing raw frame data between image read call.
+011
+*
+012
+* <p>Data is reused for each frame read, rather then reallocating every frame.
+013
+*/
+014
+public class RawFrame implements AutoCloseable {
+015
+private long m_nativeObj;
+016
+private ByteBuffer m_data;
+017
+private int m_width;
+018
+private int m_height;
+019
+private int m_stride;
+020
+private PixelFormat m_pixelFormat = PixelFormat.kUnknown;
+021
+private long m_time;
+022
+private TimestampSource m_timeSource = TimestampSource.kUnknown;
+023
+024
+/** Construct a new empty RawFrame. */
+025
+public RawFrame() {
+026
+m_nativeObj = WPIUtilJNI.allocateRawFrame();
+027
+}
+028
+029
+/**
+030
+* Close the RawFrame, releasing native resources. Any images currently using the data will be
+031
+* invalidated.
+032
+*/
+033
+@Override
+034
+public void close() {
+035
+WPIUtilJNI.freeRawFrame(m_nativeObj);
+036
+m_nativeObj = 0;
+037
+}
+038
+039
+/**
+040
+* Called from JNI to set data in class.
+041
+*
+042
+* @param data A native ByteBuffer pointing to the frame data.
+043
+* @param width The width of the frame, in pixels
+044
+* @param height The height of the frame, in pixels
+045
+* @param stride The number of bytes in each row of image data
+046
+* @param pixelFormat The PixelFormat of the frame
+047
+*/
+048
+void setDataJNI(
+049
+ByteBuffer data, int width, int height, int stride, int pixelFormat, long time, int timeSrc) {
+050
+m_data = data;
+051
+m_width = width;
+052
+m_height = height;
+053
+m_stride = stride;
+054
+m_pixelFormat = PixelFormat.getFromInt(pixelFormat);
+055
+m_time = time;
+056
+m_timeSource = TimestampSource.getFromInt(timeSrc);
+057
+}
+058
+059
+/**
+060
+* Called from JNI to set info in class.
+061
+*
+062
+* @param width The width of the frame, in pixels
+063
+* @param height The height of the frame, in pixels
+064
+* @param stride The number of bytes in each row of image data
+065
+* @param pixelFormat The PixelFormat of the frame
+066
+*/
+067
+void setInfoJNI(int width, int height, int stride, int pixelFormat, long time, int timeSrc) {
+068
+m_width = width;
+069
+m_height = height;
+070
+m_stride = stride;
+071
+m_pixelFormat = PixelFormat.getFromInt(pixelFormat);
+072
+m_time = time;
+073
+m_timeSource = TimestampSource.getFromInt(timeSrc);
+074
+}
+075
+076
+/**
+077
+* Set frame data.
+078
+*
+079
+* @param data A native ByteBuffer pointing to the frame data.
+080
+* @param width The width of the frame, in pixels
+081
+* @param height The height of the frame, in pixels
+082
+* @param stride The number of bytes in each row of image data
+083
+* @param pixelFormat The PixelFormat of the frame
+084
+*/
+085
+public void setData(ByteBuffer data, int width, int height, int stride, PixelFormat pixelFormat) {
+086
+if (!data.isDirect()) {
+087
+throw new UnsupportedOperationException("ByteBuffer must be direct");
+088
+}
+089
+m_data = data;
+090
+m_width = width;
+091
+m_height = height;
+092
+m_stride = stride;
+093
+m_pixelFormat = pixelFormat;
+094
+WPIUtilJNI.setRawFrameData(
+095
+m_nativeObj, data, data.limit(), width, height, stride, pixelFormat.getValue());
+096
+}
+097
+098
+/**
+099
+* Call to set frame information.
+100
+*
+101
+* @param width The width of the frame, in pixels
+102
+* @param height The height of the frame, in pixels
+103
+* @param stride The number of bytes in each row of image data
+104
+* @param pixelFormat The PixelFormat of the frame
+105
+*/
+106
+public void setInfo(int width, int height, int stride, PixelFormat pixelFormat) {
+107
+m_width = width;
+108
+m_height = height;
+109
+m_stride = stride;
+110
+m_pixelFormat = pixelFormat;
+111
+WPIUtilJNI.setRawFrameInfo(
+112
+m_nativeObj,
+113
+m_data != null ? m_data.limit() : 0,
+114
+width,
+115
+height,
+116
+stride,
+117
+pixelFormat.getValue());
+118
+}
+119
+120
+/**
+121
+* Update this frame's timestamp info.
+122
+*
+123
+* @param frameTime the time this frame was grabbed at. This uses the same time base as
+124
+*     wpi::Now(), in us.
+125
+* @param frameTimeSource the time source for the timestamp this frame was grabbed at.
+126
+*/
+127
+public void setTimeInfo(long frameTime, TimestampSource frameTimeSource) {
+128
+m_time = frameTime;
+129
+m_timeSource = frameTimeSource;
+130
+WPIUtilJNI.setRawFrameTime(m_nativeObj, frameTime, frameTimeSource.getValue());
+131
+}
+132
+133
+/**
+134
+* Get the pointer to native representation of this frame.
+135
+*
+136
+* @return The pointer to native representation of this frame.
+137
+*/
+138
+public long getNativeObj() {
+139
+return m_nativeObj;
+140
+}
+141
+142
+/**
+143
+* Get a ByteBuffer pointing to the frame data. This ByteBuffer is backed by the frame directly.
+144
+* Its lifetime is controlled by the frame. If a new frame gets read, it will overwrite the
+145
+* current one.
+146
+*
+147
+* @return A ByteBuffer pointing to the frame data.
+148
+*/
+149
+public ByteBuffer getData() {
+150
+return m_data;
+151
+}
+152
+153
+/**
+154
+* Get a long (is a uint8_t* in native code) pointing to the frame data. This pointer is backed by
+155
+* the frame directly. Its lifetime is controlled by the frame. If a new frame gets read, it will
+156
+* overwrite the current one.
+157
+*
+158
+* @return A long pointing to the frame data.
+159
+*/
+160
+public long getDataPtr() {
+161
+return WPIUtilJNI.getRawFrameDataPtr(m_nativeObj);
+162
+}
+163
+164
+/**
+165
+* Get the total size of the data stored in the frame, in bytes.
+166
+*
+167
+* @return The total size of the data stored in the frame.
+168
+*/
+169
+public int getSize() {
+170
+return m_data != null ? m_data.limit() : 0;
+171
+}
+172
+173
+/**
+174
+* Get the width of the image.
+175
+*
+176
+* @return The width of the image, in pixels.
+177
+*/
+178
+public int getWidth() {
+179
+return m_width;
+180
+}
+181
+182
+/**
+183
+* Get the height of the image.
+184
+*
+185
+* @return The height of the image, in pixels.
+186
+*/
+187
+public int getHeight() {
+188
+return m_height;
+189
+}
+190
+191
+/**
+192
+* Get the number of bytes in each row of image data.
+193
+*
+194
+* @return The image data stride, in bytes.
+195
+*/
+196
+public int getStride() {
+197
+return m_stride;
+198
+}
+199
+200
+/**
+201
+* Get the PixelFormat of the frame.
+202
+*
+203
+* @return The PixelFormat of the frame.
+204
+*/
+205
+public PixelFormat getPixelFormat() {
+206
+return m_pixelFormat;
+207
+}
+208
+209
+/**
+210
+* Get the time this frame was grabbed at. This uses the same time base as wpi::Now(), in us.
+211
+*
+212
+* @return Time in 1 us increments.
+213
+*/
+214
+public long getTimestamp() {
+215
+return m_time;
+216
+}
+217
+218
+/**
+219
+* Get the time source for the timestamp this frame was grabbed at.
+220
+*
+221
+* @return Time source
+222
+*/
+223
+public TimestampSource getTimestampSource() {
+224
+return m_timeSource;
+225
+}
+226
+}

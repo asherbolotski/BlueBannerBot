@@ -1,0 +1,128 @@
+Package
+edu.wpi.first.wpilibj
+Class DigitalSource
+java.lang.Object
+edu.wpi.first.wpilibj.DigitalSource
+All Implemented Interfaces:
+AutoCloseable
+Direct Known Subclasses:
+AnalogTriggerOutput
+,
+DigitalInput
+,
+DigitalOutput
+public abstract class
+DigitalSource
+extends
+Object
+implements
+AutoCloseable
+DigitalSource Interface. The DigitalSource represents all the possible inputs for a counter or a
+ quadrature encoder. The source may be either a digital input or an analog input. If the caller
+ just provides a channel, then a digital input will be constructed and freed when finished for the
+ source. The source can either be a digital input or analog trigger but not both.
+Constructor Summary
+Constructors
+Constructor
+Description
+DigitalSource
+()
+Default constructor.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+abstract int
+getAnalogTriggerTypeForRouting
+()
+If this is an analog trigger.
+abstract int
+getChannel
+()
+The DigitalSource channel.
+abstract int
+getPortHandleForRouting
+()
+The channel routing number.
+abstract boolean
+isAnalogTrigger
+()
+Returns true if this DigitalSource is an AnalogTrigger.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DigitalSource
+public
+DigitalSource
+()
+Default constructor.
+Method Details
+isAnalogTrigger
+public abstract
+boolean
+isAnalogTrigger
+()
+Returns true if this DigitalSource is an AnalogTrigger.
+Returns:
+True if this DigitalSource is an AnalogTrigger.
+getChannel
+public abstract
+int
+getChannel
+()
+The DigitalSource channel.
+Returns:
+The DigitalSource channel.
+getAnalogTriggerTypeForRouting
+public abstract
+int
+getAnalogTriggerTypeForRouting
+()
+If this is an analog trigger.
+Returns:
+true if this is an analog trigger.
+getPortHandleForRouting
+public abstract
+int
+getPortHandleForRouting
+()
+The channel routing number.
+Returns:
+channel routing number
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable

@@ -1,0 +1,36 @@
+Package
+edu.wpi.first.epilogue
+Annotation Interface CustomLoggerFor
+@Retention
+(
+RUNTIME
+)
+@Target
+(
+TYPE
+)
+public @interface
+CustomLoggerFor
+Placed on a subclass of
+ClassSpecificLogger
+. Epilogue will detect it at compile time and
+ allow logging of data types compatible with the logger.
+@CustomLoggerFor(VendorMotorType.class)
+    class ExampleMotorLogger extends ClassSpecificLogger<VendorMotorType> { }
+Required Element Summary
+Required Elements
+Modifier and Type
+Required Element
+Description
+Class
+<?>[]
+value
+The class or classes of objects able to be logged with the annotated logger.
+Element Details
+value
+Class
+<?>[]
+value
+The class or classes of objects able to be logged with the annotated logger.
+Returns:
+the supported data types

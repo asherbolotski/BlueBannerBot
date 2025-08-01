@@ -1,0 +1,235 @@
+Package
+edu.wpi.first.cscore
+Class CvSource
+java.lang.Object
+edu.wpi.first.cscore.VideoSource
+edu.wpi.first.cscore.ImageSource
+edu.wpi.first.cscore.CvSource
+All Implemented Interfaces:
+AutoCloseable
+public class
+CvSource
+extends
+ImageSource
+A source that represents a video camera. These sources require the WPILib OpenCV builds. For an
+ alternate OpenCV, see the documentation how to build your own with RawSource.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.cscore.
+VideoSource
+VideoSource.ConnectionStrategy
+,
+VideoSource.Kind
+Field Summary
+Fields inherited from class edu.wpi.first.cscore.
+VideoSource
+m_handle
+Constructor Summary
+Constructors
+Constructor
+Description
+CvSource
+(
+String
+name,
+VideoMode
+mode)
+Create an OpenCV source.
+CvSource
+(
+String
+name,
+PixelFormat
+pixelFormat,
+ int width,
+ int height,
+ int fps)
+Create an OpenCV source.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+putFrame
+(
+Mat
+image)
+Put an OpenCV image and notify sinks
+void
+putFrame
+(
+Mat
+image,
+PixelFormat
+format,
+ boolean skipVerification)
+Put an OpenCV image and notify sinks.
+Methods inherited from class edu.wpi.first.cscore.
+ImageSource
+createBooleanProperty
+,
+createIntegerProperty
+,
+createProperty
+,
+createStringProperty
+,
+notifyError
+,
+setConnected
+,
+setDescription
+,
+setEnumPropertyChoices
+Methods inherited from class edu.wpi.first.cscore.
+VideoSource
+close
+,
+enumerateProperties
+,
+enumerateSinks
+,
+enumerateSources
+,
+enumerateVideoModes
+,
+equals
+,
+getActualDataRate
+,
+getActualFPS
+,
+getConfigJson
+,
+getDescription
+,
+getHandle
+,
+getKind
+,
+getKindFromInt
+,
+getLastFrameTime
+,
+getName
+,
+getProperty
+,
+getVideoMode
+,
+hashCode
+,
+isConnected
+,
+isEnabled
+,
+isValid
+,
+setConfigJson
+,
+setConnectionStrategy
+,
+setFPS
+,
+setPixelFormat
+,
+setResolution
+,
+setVideoMode
+,
+setVideoMode
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CvSource
+public
+CvSource
+(
+String
+name,
+VideoMode
+mode)
+Create an OpenCV source.
+Parameters:
+name
+- Source name (arbitrary unique identifier)
+mode
+- Video mode being generated
+CvSource
+public
+CvSource
+(
+String
+name,
+PixelFormat
+pixelFormat,
+ int width,
+ int height,
+ int fps)
+Create an OpenCV source.
+Parameters:
+name
+- Source name (arbitrary unique identifier)
+pixelFormat
+- Pixel format
+width
+- width
+height
+- height
+fps
+- fps
+Method Details
+putFrame
+public
+void
+putFrame
+(
+Mat
+image)
+Put an OpenCV image and notify sinks
+The image format is guessed from the number of channels. The channel mapping is as follows.
+ 1: kGray 2: kYUYV 3: BGR 4: BGRA Any other channel numbers will throw an error. If your image
+ is an in alternate format, use the overload that takes a PixelFormat.
+Parameters:
+image
+- OpenCV Image
+putFrame
+public
+void
+putFrame
+(
+Mat
+image,
+PixelFormat
+format,
+ boolean skipVerification)
+Put an OpenCV image and notify sinks.
+The format of the Mat must match the PixelFormat. You will corrupt memory if they dont. With
+ skipVerification false, we will verify the number of channels matches the pixel format. If
+ skipVerification is true, this step is skipped and is passed straight through.
+Parameters:
+image
+- OpenCV image
+format
+- The pixel format of the image
+skipVerification
+- skip verifying pixel format

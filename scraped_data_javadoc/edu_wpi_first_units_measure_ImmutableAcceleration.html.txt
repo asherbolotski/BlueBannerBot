@@ -1,0 +1,564 @@
+Package
+edu.wpi.first.units.measure
+Record Class ImmutableAcceleration<D extends
+Unit
+>
+java.lang.Object
+java.lang.Record
+edu.wpi.first.units.measure.ImmutableAcceleration<D>
+All Implemented Interfaces:
+Measure
+<
+AccelerationUnit
+<D>>
+,
+Acceleration
+<D>
+,
+Comparable
+<
+Measure
+<
+AccelerationUnit
+<D>>>
+public record
+ImmutableAcceleration
+<D extends
+Unit
+>
+(double magnitude, double baseUnitMagnitude,
+AccelerationUnit
+<
+D
+extends
+Unit
+> unit)
+extends
+Record
+implements
+Acceleration
+<D>
+Field Summary
+Fields inherited from interface edu.wpi.first.units.
+Measure
+EQUIVALENCE_THRESHOLD
+Constructor Summary
+Constructors
+Constructor
+Description
+ImmutableAcceleration
+(double magnitude,
+ double baseUnitMagnitude,
+AccelerationUnit
+<
+D
+> unit)
+Creates an instance of a
+ImmutableAcceleration
+record class.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+baseUnitMagnitude
+()
+Returns the value of the
+baseUnitMagnitude
+record component.
+Acceleration
+<
+D
+>
+copy
+()
+Returns an immutable copy of this measure.
+boolean
+equals
+(
+Object
+o)
+Indicates whether some other object is "equal to" this one.
+final int
+hashCode
+()
+Returns a hash code value for this object.
+double
+magnitude
+()
+Returns the value of the
+magnitude
+record component.
+String
+toString
+()
+Returns a string representation of this record class.
+AccelerationUnit
+<
+D
+>
+unit
+()
+Returns the value of the
+unit
+record component.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.units.measure.
+Acceleration
+baseUnit
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+in
+,
+minus
+,
+mutableCopy
+,
+negate
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+plus
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+unaryMinus
+Methods inherited from interface edu.wpi.first.units.
+Measure
+abs
+,
+compareTo
+,
+copySign
+,
+div
+,
+divide
+,
+divideRatio
+,
+gt
+,
+gte
+,
+isEquivalent
+,
+isNear
+,
+isNear
+,
+lt
+,
+lte
+,
+times
+,
+timesConversionFactor
+,
+timesInverse
+,
+timesRatio
+,
+toLongString
+,
+toShortString
+Constructor Details
+ImmutableAcceleration
+public
+ImmutableAcceleration
+(double magnitude,
+ double baseUnitMagnitude,
+AccelerationUnit
+<
+D
+> unit)
+Creates an instance of a
+ImmutableAcceleration
+record class.
+Parameters:
+magnitude
+- the value for the
+magnitude
+record component
+baseUnitMagnitude
+- the value for the
+baseUnitMagnitude
+record component
+unit
+- the value for the
+unit
+record component
+Method Details
+copy
+public
+Acceleration
+<
+D
+>
+copy
+()
+Description copied from interface:
+Measure
+Returns an immutable copy of this measure. The copy can be used freely and is guaranteed never
+ to change.
+Specified by:
+copy
+in interface
+Acceleration
+<
+D
+extends
+Unit
+>
+Specified by:
+copy
+in interface
+Measure
+<
+D
+extends
+Unit
+>
+Returns:
+the copied measure
+toString
+public
+String
+toString
+()
+Returns a string representation of this record class. The representation contains the name of the class, followed by the name and value of each of the record components.
+Specified by:
+toString
+in class
+Record
+Returns:
+a string representation of this object
+equals
+public
+boolean
+equals
+(
+Object
+o)
+Indicates whether some other object is "equal to" this one. The objects are equal if the other object is of the same class and if all the record components are equal. Reference components are compared with
+Objects::equals(Object,Object)
+; primitive components are compared with '=='.
+Specified by:
+equals
+in class
+Record
+Parameters:
+o
+- the object with which to compare
+Returns:
+true
+if this object is the same as the
+o
+argument;
+false
+otherwise.
+hashCode
+public final
+int
+hashCode
+()
+Returns a hash code value for this object. The value is derived from the hash code of each of the record components.
+Specified by:
+hashCode
+in class
+Record
+Returns:
+a hash code value for this object
+magnitude
+public
+double
+magnitude
+()
+Returns the value of the
+magnitude
+record component.
+Specified by:
+magnitude
+in interface
+Measure
+<
+D
+extends
+Unit
+>
+Returns:
+the value of the
+magnitude
+record component
+baseUnitMagnitude
+public
+double
+baseUnitMagnitude
+()
+Returns the value of the
+baseUnitMagnitude
+record component.
+Specified by:
+baseUnitMagnitude
+in interface
+Measure
+<
+D
+extends
+Unit
+>
+Returns:
+the value of the
+baseUnitMagnitude
+record component
+unit
+public
+AccelerationUnit
+<
+D
+>
+unit
+()
+Returns the value of the
+unit
+record component.
+Specified by:
+unit
+in interface
+Acceleration
+<
+D
+extends
+Unit
+>
+Specified by:
+unit
+in interface
+Measure
+<
+D
+extends
+Unit
+>
+Returns:
+the value of the
+unit
+record component

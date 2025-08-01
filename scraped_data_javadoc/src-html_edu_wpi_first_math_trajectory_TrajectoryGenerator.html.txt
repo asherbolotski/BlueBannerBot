@@ -1,0 +1,548 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.trajectory;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+import edu.wpi.first.math.geometry.Pose2d;
+009
+import edu.wpi.first.math.geometry.Rotation2d;
+010
+import edu.wpi.first.math.geometry.Transform2d;
+011
+import edu.wpi.first.math.geometry.Translation2d;
+012
+import edu.wpi.first.math.spline.PoseWithCurvature;
+013
+import edu.wpi.first.math.spline.Spline;
+014
+import edu.wpi.first.math.spline.SplineHelper;
+015
+import edu.wpi.first.math.spline.SplineParameterizer;
+016
+import edu.wpi.first.math.spline.SplineParameterizer.MalformedSplineException;
+017
+import java.util.ArrayList;
+018
+import java.util.Collection;
+019
+import java.util.List;
+020
+import java.util.function.BiConsumer;
+021
+022
+/** Helper class used to generate trajectories with various constraints. */
+023
+public final class TrajectoryGenerator {
+024
+private static final Transform2d kFlip = new Transform2d(Translation2d.kZero, Rotation2d.kPi);
+025
+026
+private static final Trajectory kDoNothingTrajectory =
+027
+new Trajectory(List.of(new Trajectory.State()));
+028
+private static BiConsumer<String, StackTraceElement[]> errorFunc;
+029
+030
+/** Private constructor because this is a utility class. */
+031
+private TrajectoryGenerator() {}
+032
+033
+private static void reportError(String error, StackTraceElement[] stackTrace) {
+034
+if (errorFunc != null) {
+035
+errorFunc.accept(error, stackTrace);
+036
+} else {
+037
+MathSharedStore.reportError(error, stackTrace);
+038
+}
+039
+}
+040
+041
+/**
+042
+* Set error reporting function. By default, DriverStation.reportError() is used.
+043
+*
+044
+* @param func Error reporting function, arguments are error and stackTrace.
+045
+*/
+046
+public static void setErrorHandler(BiConsumer<String, StackTraceElement[]> func) {
+047
+errorFunc = func;
+048
+}
+049
+050
+/**
+051
+* Generates a trajectory from the given control vectors and config. This method uses clamped
+052
+* cubic splines -- a method in which the exterior control vectors and interior waypoints are
+053
+* provided. The headings are automatically determined at the interior points to ensure continuous
+054
+* curvature.
+055
+*
+056
+* @param initial The initial control vector.
+057
+* @param interiorWaypoints The interior waypoints.
+058
+* @param end The ending control vector.
+059
+* @param config The configuration for the trajectory.
+060
+* @return The generated trajectory.
+061
+*/
+062
+public static Trajectory generateTrajectory(
+063
+Spline.ControlVector initial,
+064
+List<Translation2d> interiorWaypoints,
+065
+Spline.ControlVector end,
+066
+TrajectoryConfig config) {
+067
+// Clone the control vectors.
+068
+var newInitial = new Spline.ControlVector(initial.x, initial.y);
+069
+var newEnd = new Spline.ControlVector(end.x, end.y);
+070
+071
+// Change the orientation if reversed.
+072
+if (config.isReversed()) {
+073
+newInitial.x[1] *= -1;
+074
+newInitial.y[1] *= -1;
+075
+newEnd.x[1] *= -1;
+076
+newEnd.y[1] *= -1;
+077
+}
+078
+079
+// Get the spline points
+080
+List<PoseWithCurvature> points;
+081
+try {
+082
+points =
+083
+splinePointsFromSplines(
+084
+SplineHelper.getCubicSplinesFromControlVectors(
+085
+newInitial, interiorWaypoints.toArray(new Translation2d[0]), newEnd));
+086
+} catch (MalformedSplineException ex) {
+087
+reportError(ex.getMessage(), ex.getStackTrace());
+088
+return kDoNothingTrajectory;
+089
+}
+090
+091
+// Change the points back to their original orientation.
+092
+if (config.isReversed()) {
+093
+for (var point : points) {
+094
+point.poseMeters = point.poseMeters.plus(kFlip);
+095
+point.curvatureRadPerMeter *= -1;
+096
+}
+097
+}
+098
+099
+// Generate and return trajectory.
+100
+return TrajectoryParameterizer.timeParameterizeTrajectory(
+101
+points,
+102
+config.getConstraints(),
+103
+config.getStartVelocity(),
+104
+config.getEndVelocity(),
+105
+config.getMaxVelocity(),
+106
+config.getMaxAcceleration(),
+107
+config.isReversed());
+108
+}
+109
+110
+/**
+111
+* Generates a trajectory from the given waypoints and config. This method uses clamped cubic
+112
+* splines -- a method in which the initial pose, final pose, and interior waypoints are provided.
+113
+* The headings are automatically determined at the interior points to ensure continuous
+114
+* curvature.
+115
+*
+116
+* @param start The starting pose.
+117
+* @param interiorWaypoints The interior waypoints.
+118
+* @param end The ending pose.
+119
+* @param config The configuration for the trajectory.
+120
+* @return The generated trajectory.
+121
+*/
+122
+public static Trajectory generateTrajectory(
+123
+Pose2d start, List<Translation2d> interiorWaypoints, Pose2d end, TrajectoryConfig config) {
+124
+var controlVectors =
+125
+SplineHelper.getCubicControlVectorsFromWaypoints(
+126
+start, interiorWaypoints.toArray(new Translation2d[0]), end);
+127
+128
+// Return the generated trajectory.
+129
+return generateTrajectory(controlVectors[0], interiorWaypoints, controlVectors[1], config);
+130
+}
+131
+132
+/**
+133
+* Generates a trajectory from the given quintic control vectors and config. This method uses
+134
+* quintic hermite splines -- therefore, all points must be represented by control vectors.
+135
+* Continuous curvature is guaranteed in this method.
+136
+*
+137
+* @param controlVectors List of quintic control vectors.
+138
+* @param config The configuration for the trajectory.
+139
+* @return The generated trajectory.
+140
+*/
+141
+public static Trajectory generateTrajectory(
+142
+ControlVectorList controlVectors, TrajectoryConfig config) {
+143
+final var newControlVectors = new ArrayList<Spline.ControlVector>(controlVectors.size());
+144
+145
+// Create a new control vector list, flipping the orientation if reversed.
+146
+for (final var vector : controlVectors) {
+147
+var newVector = new Spline.ControlVector(vector.x, vector.y);
+148
+if (config.isReversed()) {
+149
+newVector.x[1] *= -1;
+150
+newVector.y[1] *= -1;
+151
+}
+152
+newControlVectors.add(newVector);
+153
+}
+154
+155
+// Get the spline points
+156
+List<PoseWithCurvature> points;
+157
+try {
+158
+points =
+159
+splinePointsFromSplines(
+160
+SplineHelper.getQuinticSplinesFromControlVectors(
+161
+newControlVectors.toArray(new Spline.ControlVector[] {})));
+162
+} catch (MalformedSplineException ex) {
+163
+reportError(ex.getMessage(), ex.getStackTrace());
+164
+return kDoNothingTrajectory;
+165
+}
+166
+167
+// Change the points back to their original orientation.
+168
+if (config.isReversed()) {
+169
+for (var point : points) {
+170
+point.poseMeters = point.poseMeters.plus(kFlip);
+171
+point.curvatureRadPerMeter *= -1;
+172
+}
+173
+}
+174
+175
+// Generate and return trajectory.
+176
+return TrajectoryParameterizer.timeParameterizeTrajectory(
+177
+points,
+178
+config.getConstraints(),
+179
+config.getStartVelocity(),
+180
+config.getEndVelocity(),
+181
+config.getMaxVelocity(),
+182
+config.getMaxAcceleration(),
+183
+config.isReversed());
+184
+}
+185
+186
+/**
+187
+* Generates a trajectory from the given waypoints and config. This method uses quintic hermite
+188
+* splines -- therefore, all points must be represented by Pose2d objects. Continuous curvature is
+189
+* guaranteed in this method.
+190
+*
+191
+* @param waypoints List of waypoints..
+192
+* @param config The configuration for the trajectory.
+193
+* @return The generated trajectory.
+194
+*/
+195
+public static Trajectory generateTrajectory(List<Pose2d> waypoints, TrajectoryConfig config) {
+196
+List<Pose2d> newWaypoints = new ArrayList<>();
+197
+if (config.isReversed()) {
+198
+for (Pose2d originalWaypoint : waypoints) {
+199
+newWaypoints.add(originalWaypoint.plus(kFlip));
+200
+}
+201
+} else {
+202
+newWaypoints.addAll(waypoints);
+203
+}
+204
+205
+// Get the spline points
+206
+List<PoseWithCurvature> points;
+207
+try {
+208
+points =
+209
+splinePointsFromSplines(
+210
+SplineHelper.optimizeCurvature(
+211
+SplineHelper.getQuinticSplinesFromWaypoints(newWaypoints)));
+212
+} catch (MalformedSplineException ex) {
+213
+reportError(ex.getMessage(), ex.getStackTrace());
+214
+return kDoNothingTrajectory;
+215
+}
+216
+217
+// Change the points back to their original orientation.
+218
+if (config.isReversed()) {
+219
+for (var point : points) {
+220
+point.poseMeters = point.poseMeters.plus(kFlip);
+221
+point.curvatureRadPerMeter *= -1;
+222
+}
+223
+}
+224
+225
+// Generate and return trajectory.
+226
+return TrajectoryParameterizer.timeParameterizeTrajectory(
+227
+points,
+228
+config.getConstraints(),
+229
+config.getStartVelocity(),
+230
+config.getEndVelocity(),
+231
+config.getMaxVelocity(),
+232
+config.getMaxAcceleration(),
+233
+config.isReversed());
+234
+}
+235
+236
+/**
+237
+* Generate spline points from a vector of splines by parameterizing the splines.
+238
+*
+239
+* @param splines The splines to parameterize.
+240
+* @return The spline points for use in time parameterization of a trajectory.
+241
+* @throws MalformedSplineException When the spline is malformed (e.g. has close adjacent points
+242
+*     with approximately opposing headings)
+243
+*/
+244
+public static List<PoseWithCurvature> splinePointsFromSplines(Spline[] splines) {
+245
+// Create the vector of spline points.
+246
+var splinePoints = new ArrayList<PoseWithCurvature>();
+247
+248
+// Add the first point to the vector.
+249
+splinePoints.add(splines[0].getPoint(0.0).get());
+250
+251
+// Iterate through the vector and parameterize each spline, adding the
+252
+// parameterized points to the final vector.
+253
+for (final var spline : splines) {
+254
+var points = SplineParameterizer.parameterize(spline);
+255
+256
+// Append the array of poses to the vector. We are removing the first
+257
+// point because it's a duplicate of the last point from the previous
+258
+// spline.
+259
+splinePoints.addAll(points.subList(1, points.size()));
+260
+}
+261
+return splinePoints;
+262
+}
+263
+264
+/** Control vector list type that works around type erasure signatures. */
+265
+public static class ControlVectorList extends ArrayList<Spline.ControlVector> {
+266
+/** Default constructor. */
+267
+public ControlVectorList() {
+268
+super();
+269
+}
+270
+271
+/**
+272
+* Constructs a ControlVectorList.
+273
+*
+274
+* @param initialCapacity The initial list capacity.
+275
+*/
+276
+public ControlVectorList(int initialCapacity) {
+277
+super(initialCapacity);
+278
+}
+279
+280
+/**
+281
+* Constructs a ControlVectorList.
+282
+*
+283
+* @param collection A collection of spline control vectors.
+284
+*/
+285
+public ControlVectorList(Collection<? extends Spline.ControlVector> collection) {
+286
+super(collection);
+287
+}
+288
+}
+289
+}

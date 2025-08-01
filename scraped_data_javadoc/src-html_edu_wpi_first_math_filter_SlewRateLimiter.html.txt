@@ -1,0 +1,162 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.filter;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+import edu.wpi.first.math.MathUtil;
+009
+010
+/**
+011
+* A class that limits the rate of change of an input value. Useful for implementing voltage,
+012
+* setpoint, and/or output ramps. A slew-rate limit is most appropriate when the quantity being
+013
+* controlled is a velocity or a voltage; when controlling a position, consider using a {@link
+014
+* edu.wpi.first.math.trajectory.TrapezoidProfile} instead.
+015
+*/
+016
+public class SlewRateLimiter {
+017
+private final double m_positiveRateLimit;
+018
+private final double m_negativeRateLimit;
+019
+private double m_prevVal;
+020
+private double m_prevTime;
+021
+022
+/**
+023
+* Creates a new SlewRateLimiter with the given positive and negative rate limits and initial
+024
+* value.
+025
+*
+026
+* @param positiveRateLimit The rate-of-change limit in the positive direction, in units per
+027
+*     second. This is expected to be positive.
+028
+* @param negativeRateLimit The rate-of-change limit in the negative direction, in units per
+029
+*     second. This is expected to be negative.
+030
+* @param initialValue The initial value of the input.
+031
+*/
+032
+public SlewRateLimiter(double positiveRateLimit, double negativeRateLimit, double initialValue) {
+033
+m_positiveRateLimit = positiveRateLimit;
+034
+m_negativeRateLimit = negativeRateLimit;
+035
+m_prevVal = initialValue;
+036
+m_prevTime = MathSharedStore.getTimestamp();
+037
+}
+038
+039
+/**
+040
+* Creates a new SlewRateLimiter with the given positive rate limit and negative rate limit of
+041
+* -rateLimit.
+042
+*
+043
+* @param rateLimit The rate-of-change limit, in units per second.
+044
+*/
+045
+public SlewRateLimiter(double rateLimit) {
+046
+this(rateLimit, -rateLimit, 0);
+047
+}
+048
+049
+/**
+050
+* Filters the input to limit its slew rate.
+051
+*
+052
+* @param input The input value whose slew rate is to be limited.
+053
+* @return The filtered value, which will not change faster than the slew rate.
+054
+*/
+055
+public double calculate(double input) {
+056
+double currentTime = MathSharedStore.getTimestamp();
+057
+double elapsedTime = currentTime - m_prevTime;
+058
+m_prevVal +=
+059
+MathUtil.clamp(
+060
+input - m_prevVal,
+061
+m_negativeRateLimit * elapsedTime,
+062
+m_positiveRateLimit * elapsedTime);
+063
+m_prevTime = currentTime;
+064
+return m_prevVal;
+065
+}
+066
+067
+/**
+068
+* Returns the value last calculated by the SlewRateLimiter.
+069
+*
+070
+* @return The last value.
+071
+*/
+072
+public double lastValue() {
+073
+return m_prevVal;
+074
+}
+075
+076
+/**
+077
+* Resets the slew rate limiter to the specified value; ignores the rate limit when doing so.
+078
+*
+079
+* @param value The value to reset to.
+080
+*/
+081
+public void reset(double value) {
+082
+m_prevVal = value;
+083
+m_prevTime = MathSharedStore.getTimestamp();
+084
+}
+085
+}

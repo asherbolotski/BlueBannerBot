@@ -1,0 +1,369 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+import java.io.File;
+008
+009
+/**
+010
+* A utility class for detecting and providing platform-specific such as OS and CPU architecture.
+011
+*
+012
+* @deprecated platform detection is brittle and may be removed in the future.
+013
+*/
+014
+@Deprecated(since = "2025", forRemoval = true)
+015
+public final class RuntimeDetector {
+016
+private static String filePrefix;
+017
+private static String fileExtension;
+018
+private static String filePath;
+019
+020
+private static synchronized void computePlatform() {
+021
+if (fileExtension != null && filePath != null && filePrefix != null) {
+022
+return;
+023
+}
+024
+025
+boolean intel32 = is32BitIntel();
+026
+boolean intel64 = is64BitIntel();
+027
+boolean arm64 = isArm64();
+028
+029
+if (isWindows()) {
+030
+filePrefix = "";
+031
+fileExtension = ".dll";
+032
+if (intel32) {
+033
+filePath = "/windows/x86/";
+034
+} else {
+035
+filePath = "/windows/x86-64/";
+036
+}
+037
+} else if (isMac()) {
+038
+filePrefix = "lib";
+039
+fileExtension = ".dylib";
+040
+filePath = "/osx/universal/";
+041
+} else if (isLinux()) {
+042
+filePrefix = "lib";
+043
+fileExtension = ".so";
+044
+if (intel32) {
+045
+filePath = "/linux/x86/";
+046
+} else if (intel64) {
+047
+filePath = "/linux/x86-64/";
+048
+} else if (isAthena()) {
+049
+filePath = "/linux/athena/";
+050
+} else if (isArm32()) {
+051
+filePath = "/linux/arm32/";
+052
+} else if (arm64) {
+053
+filePath = "/linux/arm64/";
+054
+} else {
+055
+filePath = "/linux/nativearm/";
+056
+}
+057
+} else {
+058
+throw new IllegalStateException("Failed to determine OS");
+059
+}
+060
+}
+061
+062
+/**
+063
+* Get the file prefix for the current system.
+064
+*
+065
+* @return The file prefix.
+066
+*/
+067
+public static synchronized String getFilePrefix() {
+068
+computePlatform();
+069
+070
+return filePrefix;
+071
+}
+072
+073
+/**
+074
+* Get the file extension for the current system.
+075
+*
+076
+* @return The file extension.
+077
+*/
+078
+public static synchronized String getFileExtension() {
+079
+computePlatform();
+080
+081
+return fileExtension;
+082
+}
+083
+084
+/**
+085
+* Get the platform path for the current system.
+086
+*
+087
+* @return The platform path.
+088
+*/
+089
+public static synchronized String getPlatformPath() {
+090
+computePlatform();
+091
+092
+return filePath;
+093
+}
+094
+095
+/**
+096
+* Get the path to the requested resource.
+097
+*
+098
+* @param libName Library name.
+099
+* @return The path to the requested resource.
+100
+*/
+101
+public static synchronized String getLibraryResource(String libName) {
+102
+computePlatform();
+103
+104
+return filePath + filePrefix + libName + fileExtension;
+105
+}
+106
+107
+/**
+108
+* Get the path to the hash to the requested resource.
+109
+*
+110
+* @param libName Library name.
+111
+* @return The path to the hash to the requested resource.
+112
+*/
+113
+public static synchronized String getHashLibraryResource(String libName) {
+114
+computePlatform();
+115
+116
+return filePath + libName + ".hash";
+117
+}
+118
+119
+/**
+120
+* Check if hardware platform is Athena.
+121
+*
+122
+* @return True if hardware platform is Athena.
+123
+*/
+124
+public static boolean isAthena() {
+125
+File runRobotFile = new File("/usr/local/frc/bin/frcRunRobot.sh");
+126
+return runRobotFile.exists();
+127
+}
+128
+129
+/**
+130
+* Check if OS is Arm32.
+131
+*
+132
+* @return True if OS is Arm32.
+133
+*/
+134
+public static boolean isArm32() {
+135
+String arch = System.getProperty("os.arch");
+136
+return "arm".equals(arch) || "arm32".equals(arch);
+137
+}
+138
+139
+/**
+140
+* Check if architecture is Arm64.
+141
+*
+142
+* @return if architecture is Arm64.
+143
+*/
+144
+public static boolean isArm64() {
+145
+String arch = System.getProperty("os.arch");
+146
+return "aarch64".equals(arch) || "arm64".equals(arch);
+147
+}
+148
+149
+/**
+150
+* Check if OS is Linux.
+151
+*
+152
+* @return if OS is Linux.
+153
+*/
+154
+public static boolean isLinux() {
+155
+return System.getProperty("os.name").startsWith("Linux");
+156
+}
+157
+158
+/**
+159
+* Check if OS is Windows.
+160
+*
+161
+* @return if OS is Windows.
+162
+*/
+163
+public static boolean isWindows() {
+164
+return System.getProperty("os.name").startsWith("Windows");
+165
+}
+166
+167
+/**
+168
+* Check if OS is Mac.
+169
+*
+170
+* @return if OS is Mac.
+171
+*/
+172
+public static boolean isMac() {
+173
+return System.getProperty("os.name").startsWith("Mac");
+174
+}
+175
+176
+/**
+177
+* Check if OS is 32bit Intel.
+178
+*
+179
+* @return if OS is 32bit Intel.
+180
+*/
+181
+public static boolean is32BitIntel() {
+182
+String arch = System.getProperty("os.arch");
+183
+return "x86".equals(arch) || "i386".equals(arch);
+184
+}
+185
+186
+/**
+187
+* Check if OS is 64bit Intel.
+188
+*
+189
+* @return if OS is 64bit Intel.
+190
+*/
+191
+public static boolean is64BitIntel() {
+192
+String arch = System.getProperty("os.arch");
+193
+return "amd64".equals(arch) || "x86_64".equals(arch);
+194
+}
+195
+196
+private RuntimeDetector() {}
+197
+}

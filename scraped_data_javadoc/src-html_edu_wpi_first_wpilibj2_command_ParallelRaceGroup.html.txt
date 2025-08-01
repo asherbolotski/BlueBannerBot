@@ -1,0 +1,201 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import java.util.Collections;
+008
+import java.util.LinkedHashSet;
+009
+import java.util.Set;
+010
+011
+/**
+012
+* A composition that runs a set of commands in parallel, ending when any one of the commands ends
+013
+* and interrupting all the others.
+014
+*
+015
+* <p>The rules for command compositions apply: command instances that are passed to it cannot be
+016
+* added to any other composition or scheduled individually, and the composition requires all
+017
+* subsystems its components require.
+018
+*
+019
+* <p>This class is provided by the NewCommands VendorDep
+020
+*/
+021
+public class ParallelRaceGroup extends Command {
+022
+// LinkedHashSet guarantees we iterate over commands in the order they were added
+023
+private final Set<Command> m_commands = new LinkedHashSet<>();
+024
+private boolean m_runWhenDisabled = true;
+025
+private boolean m_finished = true;
+026
+private InterruptionBehavior m_interruptBehavior = InterruptionBehavior.kCancelIncoming;
+027
+028
+/**
+029
+* Creates a new ParallelCommandRace. The given commands will be executed simultaneously, and will
+030
+* "race to the finish" - the first command to finish ends the entire command, with all other
+031
+* commands being interrupted.
+032
+*
+033
+* @param commands the commands to include in this composition.
+034
+*/
+035
+@SuppressWarnings("this-escape")
+036
+public ParallelRaceGroup(Command... commands) {
+037
+addCommands(commands);
+038
+}
+039
+040
+/**
+041
+* Adds the given commands to the group.
+042
+*
+043
+* @param commands Commands to add to the group.
+044
+*/
+045
+@SuppressWarnings("PMD.UseArraysAsList")
+046
+public final void addCommands(Command... commands) {
+047
+if (!m_finished) {
+048
+throw new IllegalStateException(
+049
+"Commands cannot be added to a composition while it's running!");
+050
+}
+051
+052
+CommandScheduler.getInstance().registerComposedCommands(commands);
+053
+054
+for (Command command : commands) {
+055
+if (!Collections.disjoint(command.getRequirements(), getRequirements())) {
+056
+throw new IllegalArgumentException(
+057
+"Multiple commands in a parallel composition cannot require the same subsystems");
+058
+}
+059
+m_commands.add(command);
+060
+addRequirements(command.getRequirements());
+061
+m_runWhenDisabled &= command.runsWhenDisabled();
+062
+if (command.getInterruptionBehavior() == InterruptionBehavior.kCancelSelf) {
+063
+m_interruptBehavior = InterruptionBehavior.kCancelSelf;
+064
+}
+065
+}
+066
+}
+067
+068
+@Override
+069
+public final void initialize() {
+070
+m_finished = false;
+071
+for (Command command : m_commands) {
+072
+command.initialize();
+073
+}
+074
+}
+075
+076
+@Override
+077
+public final void execute() {
+078
+for (Command command : m_commands) {
+079
+command.execute();
+080
+if (command.isFinished()) {
+081
+m_finished = true;
+082
+}
+083
+}
+084
+}
+085
+086
+@Override
+087
+public final void end(boolean interrupted) {
+088
+for (Command command : m_commands) {
+089
+command.end(!command.isFinished());
+090
+}
+091
+}
+092
+093
+@Override
+094
+public final boolean isFinished() {
+095
+return m_finished;
+096
+}
+097
+098
+@Override
+099
+public boolean runsWhenDisabled() {
+100
+return m_runWhenDisabled;
+101
+}
+102
+103
+@Override
+104
+public InterruptionBehavior getInterruptionBehavior() {
+105
+return m_interruptBehavior;
+106
+}
+107
+}

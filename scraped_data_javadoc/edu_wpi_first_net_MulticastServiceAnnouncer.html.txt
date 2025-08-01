@@ -1,0 +1,158 @@
+Package
+edu.wpi.first.net
+Class MulticastServiceAnnouncer
+java.lang.Object
+edu.wpi.first.net.MulticastServiceAnnouncer
+All Implemented Interfaces:
+AutoCloseable
+public class
+MulticastServiceAnnouncer
+extends
+Object
+implements
+AutoCloseable
+Class to announce over mDNS that a service is available.
+Constructor Summary
+Constructors
+Constructor
+Description
+MulticastServiceAnnouncer
+(
+String
+serviceName,
+String
+serviceType,
+ int port)
+Creates a MulticastServiceAnnouncer.
+MulticastServiceAnnouncer
+(
+String
+serviceName,
+String
+serviceType,
+ int port,
+Map
+<
+String
+,
+String
+> txt)
+Creates a MulticastServiceAnnouncer.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+boolean
+hasImplementation
+()
+Returns true if there's a multicast service announcer implementation.
+void
+start
+()
+Starts multicast service announcer.
+void
+stop
+()
+Stops multicast service announcer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MulticastServiceAnnouncer
+public
+MulticastServiceAnnouncer
+(
+String
+serviceName,
+String
+serviceType,
+ int port,
+Map
+<
+String
+,
+String
+> txt)
+Creates a MulticastServiceAnnouncer.
+Parameters:
+serviceName
+- service name
+serviceType
+- service type
+port
+- port
+txt
+- txt
+MulticastServiceAnnouncer
+public
+MulticastServiceAnnouncer
+(
+String
+serviceName,
+String
+serviceType,
+ int port)
+Creates a MulticastServiceAnnouncer.
+Parameters:
+serviceName
+- service name
+serviceType
+- service type
+port
+- port
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+start
+public
+void
+start
+()
+Starts multicast service announcer.
+stop
+public
+void
+stop
+()
+Stops multicast service announcer.
+hasImplementation
+public
+boolean
+hasImplementation
+()
+Returns true if there's a multicast service announcer implementation.
+Returns:
+True if there's a multicast service announcer implementation.

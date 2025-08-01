@@ -1,0 +1,167 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.system.struct;
+006
+007
+import edu.wpi.first.math.Matrix;
+008
+import edu.wpi.first.math.Nat;
+009
+import edu.wpi.first.math.Num;
+010
+import edu.wpi.first.math.struct.MatrixStruct;
+011
+import edu.wpi.first.math.system.LinearSystem;
+012
+import edu.wpi.first.util.struct.Struct;
+013
+import java.nio.ByteBuffer;
+014
+015
+public final class LinearSystemStruct<States extends Num, Inputs extends Num, Outputs extends Num>
+016
+implements Struct<LinearSystem<States, Inputs, Outputs>> {
+017
+private final int m_states;
+018
+private final int m_inputs;
+019
+private final int m_outputs;
+020
+private final MatrixStruct<States, States> m_AStruct;
+021
+private final MatrixStruct<States, Inputs> m_BStruct;
+022
+private final MatrixStruct<Outputs, States> m_CStruct;
+023
+private final MatrixStruct<Outputs, Inputs> m_DStruct;
+024
+025
+/**
+026
+* Constructs the {@link Struct} implementation.
+027
+*
+028
+* @param states The number of states of the linear systems this serializer processes.
+029
+* @param inputs The number of inputs of the linear systems this serializer processes.
+030
+* @param outputs The number of outputs of the linear systems this serializer processes.
+031
+*/
+032
+public LinearSystemStruct(Nat<States> states, Nat<Inputs> inputs, Nat<Outputs> outputs) {
+033
+m_states = states.getNum();
+034
+m_inputs = inputs.getNum();
+035
+m_outputs = outputs.getNum();
+036
+m_AStruct = Matrix.getStruct(states, states);
+037
+m_BStruct = Matrix.getStruct(states, inputs);
+038
+m_CStruct = Matrix.getStruct(outputs, states);
+039
+m_DStruct = Matrix.getStruct(outputs, inputs);
+040
+}
+041
+042
+@Override
+043
+public Class<LinearSystem<States, Inputs, Outputs>> getTypeClass() {
+044
+@SuppressWarnings("unchecked")
+045
+var clazz = (Class<LinearSystem<States, Inputs, Outputs>>) (Class<?>) LinearSystem.class;
+046
+return clazz;
+047
+}
+048
+049
+@Override
+050
+public String getTypeName() {
+051
+return "LinearSystem__" + m_states + "_" + m_inputs + "_" + m_outputs;
+052
+}
+053
+054
+@Override
+055
+public int getSize() {
+056
+return m_AStruct.getSize() + m_BStruct.getSize() + m_CStruct.getSize() + m_DStruct.getSize();
+057
+}
+058
+059
+@Override
+060
+public String getSchema() {
+061
+return m_AStruct.getTypeName()
+062
++ " a;"
+063
++ m_BStruct.getTypeName()
+064
++ " b;"
+065
++ m_CStruct.getTypeName()
+066
++ " c;"
+067
++ m_DStruct.getTypeName()
+068
++ " d";
+069
+}
+070
+071
+@Override
+072
+public Struct<?>[] getNested() {
+073
+return new Struct<?>[] {m_AStruct, m_BStruct, m_CStruct, m_DStruct};
+074
+}
+075
+076
+@Override
+077
+public LinearSystem<States, Inputs, Outputs> unpack(ByteBuffer bb) {
+078
+return new LinearSystem<>(
+079
+m_AStruct.unpack(bb), m_BStruct.unpack(bb), m_CStruct.unpack(bb), m_DStruct.unpack(bb));
+080
+}
+081
+082
+@Override
+083
+public void pack(ByteBuffer bb, LinearSystem<States, Inputs, Outputs> value) {
+084
+m_AStruct.pack(bb, value.getA());
+085
+m_BStruct.pack(bb, value.getB());
+086
+m_CStruct.pack(bb, value.getC());
+087
+m_DStruct.pack(bb, value.getD());
+088
+}
+089
+}

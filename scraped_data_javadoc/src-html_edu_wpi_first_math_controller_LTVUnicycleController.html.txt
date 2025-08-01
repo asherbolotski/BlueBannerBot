@@ -1,0 +1,520 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.DARE;
+008
+import edu.wpi.first.math.InterpolatingMatrixTreeMap;
+009
+import edu.wpi.first.math.MatBuilder;
+010
+import edu.wpi.first.math.Matrix;
+011
+import edu.wpi.first.math.Nat;
+012
+import edu.wpi.first.math.StateSpaceUtil;
+013
+import edu.wpi.first.math.VecBuilder;
+014
+import edu.wpi.first.math.Vector;
+015
+import edu.wpi.first.math.geometry.Pose2d;
+016
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+017
+import edu.wpi.first.math.numbers.N2;
+018
+import edu.wpi.first.math.numbers.N3;
+019
+import edu.wpi.first.math.system.Discretization;
+020
+import edu.wpi.first.math.trajectory.Trajectory;
+021
+022
+/**
+023
+* The linear time-varying unicycle controller has a similar form to the LQR, but the model used to
+024
+* compute the controller gain is the nonlinear unicycle model linearized around the drivetrain's
+025
+* current state.
+026
+*
+027
+* <p>This controller is a roughly drop-in replacement for {@link RamseteController} with more
+028
+* optimal feedback gains in the "least-squares error" sense.
+029
+*
+030
+* <p>See section 8.9 in Controls Engineering in FRC for a derivation of the control law we used
+031
+* shown in theorem 8.9.1.
+032
+*/
+033
+public class LTVUnicycleController {
+034
+// LUT from drivetrain linear velocity to LQR gain
+035
+private final InterpolatingMatrixTreeMap<Double, N2, N3> m_table =
+036
+new InterpolatingMatrixTreeMap<>();
+037
+038
+private Pose2d m_poseError;
+039
+private Pose2d m_poseTolerance;
+040
+private boolean m_enabled = true;
+041
+042
+/** States of the drivetrain system. */
+043
+private enum State {
+044
+kX(0),
+045
+kY(1),
+046
+kHeading(2);
+047
+048
+public final int value;
+049
+050
+State(int i) {
+051
+this.value = i;
+052
+}
+053
+}
+054
+055
+/**
+056
+* Constructs a linear time-varying unicycle controller with default maximum desired error
+057
+* tolerances of (x = 0.0625 m, y = 0.125 m, heading = 2 rad), default maximum desired control
+058
+* effort of (linear velocity = 1 m/s, angular velocity = 2 rad/s), and default maximum Velocity
+059
+* of 9 m/s.
+060
+*
+061
+* @param dt Discretization timestep in seconds.
+062
+*/
+063
+public LTVUnicycleController(double dt) {
+064
+this(VecBuilder.fill(0.0625, 0.125, 2.0), VecBuilder.fill(1.0, 2.0), dt, 9.0);
+065
+}
+066
+067
+/**
+068
+* Constructs a linear time-varying unicycle controller with default maximum desired error
+069
+* tolerances of (x = 0.0625 m, y = 0.125 m, heading = 2 rad), default maximum desired control
+070
+* effort of (1 m/s, 2 rad/s).
+071
+*
+072
+* @param dt Discretization timestep in seconds.
+073
+* @param maxVelocity The maximum velocity in meters per second for the controller gain lookup
+074
+*     table. The default is 9 m/s.
+075
+* @throws IllegalArgumentException if maxVelocity &lt;= 0 m/s or &gt;= 15 m/s.
+076
+*/
+077
+public LTVUnicycleController(double dt, double maxVelocity) {
+078
+this(VecBuilder.fill(0.0625, 0.125, 2.0), VecBuilder.fill(1.0, 2.0), dt, maxVelocity);
+079
+}
+080
+081
+/**
+082
+* Constructs a linear time-varying unicycle controller.
+083
+*
+084
+* <p>See <a
+085
+* href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning">https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning</a>
+086
+* for how to select the tolerances.
+087
+*
+088
+* <p>The default maximum Velocity is 9 m/s.
+089
+*
+090
+* @param qelems The maximum desired error tolerance for each state (x, y, heading).
+091
+* @param relems The maximum desired control effort for each input (linear velocity, angular
+092
+*     velocity).
+093
+* @param dt Discretization timestep in seconds.
+094
+*/
+095
+public LTVUnicycleController(Vector<N3> qelems, Vector<N2> relems, double dt) {
+096
+this(qelems, relems, dt, 9.0);
+097
+}
+098
+099
+/**
+100
+* Constructs a linear time-varying unicycle controller.
+101
+*
+102
+* <p>See <a
+103
+* href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning">https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning</a>
+104
+* for how to select the tolerances.
+105
+*
+106
+* @param qelems The maximum desired error tolerance for each state (x, y, heading).
+107
+* @param relems The maximum desired control effort for each input (linear velocity, angular
+108
+*     velocity).
+109
+* @param dt Discretization timestep in seconds.
+110
+* @param maxVelocity The maximum velocity in meters per second for the controller gain lookup
+111
+*     table. The default is 9 m/s.
+112
+* @throws IllegalArgumentException if maxVelocity &lt;= 0 m/s or &gt;= 15 m/s.
+113
+*/
+114
+public LTVUnicycleController(
+115
+Vector<N3> qelems, Vector<N2> relems, double dt, double maxVelocity) {
+116
+if (maxVelocity <= 0.0) {
+117
+throw new IllegalArgumentException("Max velocity must be greater than 0 m/s.");
+118
+}
+119
+if (maxVelocity >= 15.0) {
+120
+throw new IllegalArgumentException("Max velocity must be less than 15 m/s.");
+121
+}
+122
+123
+// The change in global pose for a unicycle is defined by the following
+124
+// three equations.
+125
+//
+126
+// ẋ = v cosθ
+127
+// ẏ = v sinθ
+128
+// θ̇ = ω
+129
+//
+130
+// Here's the model as a vector function where x = [x  y  θ]ᵀ and
+131
+// u = [v  ω]ᵀ.
+132
+//
+133
+//           [v cosθ]
+134
+// f(x, u) = [v sinθ]
+135
+//           [  ω   ]
+136
+//
+137
+// To create an LQR, we need to linearize this.
+138
+//
+139
+//               [0  0  −v sinθ]                  [cosθ  0]
+140
+// ∂f(x, u)/∂x = [0  0   v cosθ]    ∂f(x, u)/∂u = [sinθ  0]
+141
+//               [0  0     0   ]                  [ 0    1]
+142
+//
+143
+// We're going to make a cross-track error controller, so we'll apply a
+144
+// clockwise rotation matrix to the global tracking error to transform it
+145
+// into the robot's coordinate frame. Since the cross-track error is always
+146
+// measured from the robot's coordinate frame, the model used to compute the
+147
+// LQR should be linearized around θ = 0 at all times.
+148
+//
+149
+//     [0  0  −v sin0]        [cos0  0]
+150
+// A = [0  0   v cos0]    B = [sin0  0]
+151
+//     [0  0     0   ]        [ 0    1]
+152
+//
+153
+//     [0  0  0]              [1  0]
+154
+// A = [0  0  v]          B = [0  0]
+155
+//     [0  0  0]              [0  1]
+156
+var A = new Matrix<>(Nat.N3(), Nat.N3());
+157
+var B = MatBuilder.fill(Nat.N3(), Nat.N2(), 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+158
+var Q = StateSpaceUtil.makeCostMatrix(qelems);
+159
+var R = StateSpaceUtil.makeCostMatrix(relems);
+160
+161
+for (double velocity = -maxVelocity; velocity < maxVelocity; velocity += 0.01) {
+162
+// The DARE is ill-conditioned if the velocity is close to zero, so don't
+163
+// let the system stop.
+164
+if (Math.abs(velocity) < 1e-4) {
+165
+A.set(State.kY.value, State.kHeading.value, 1e-4);
+166
+} else {
+167
+A.set(State.kY.value, State.kHeading.value, velocity);
+168
+}
+169
+170
+var discABPair = Discretization.discretizeAB(A, B, dt);
+171
+var discA = discABPair.getFirst();
+172
+var discB = discABPair.getSecond();
+173
+174
+var S = DARE.dareNoPrecond(discA, discB, Q, R);
+175
+176
+// K = (BᵀSB + R)⁻¹BᵀSA
+177
+m_table.put(
+178
+velocity,
+179
+discB
+180
+.transpose()
+181
+.times(S)
+182
+.times(discB)
+183
+.plus(R)
+184
+.solve(discB.transpose().times(S).times(discA)));
+185
+}
+186
+}
+187
+188
+/**
+189
+* Returns true if the pose error is within tolerance of the reference.
+190
+*
+191
+* @return True if the pose error is within tolerance of the reference.
+192
+*/
+193
+public boolean atReference() {
+194
+final var eTranslate = m_poseError.getTranslation();
+195
+final var eRotate = m_poseError.getRotation();
+196
+final var tolTranslate = m_poseTolerance.getTranslation();
+197
+final var tolRotate = m_poseTolerance.getRotation();
+198
+return Math.abs(eTranslate.getX()) < tolTranslate.getX()
+199
+&& Math.abs(eTranslate.getY()) < tolTranslate.getY()
+200
+&& Math.abs(eRotate.getRadians()) < tolRotate.getRadians();
+201
+}
+202
+203
+/**
+204
+* Sets the pose error which is considered tolerable for use with atReference().
+205
+*
+206
+* @param poseTolerance Pose error which is tolerable.
+207
+*/
+208
+public void setTolerance(Pose2d poseTolerance) {
+209
+m_poseTolerance = poseTolerance;
+210
+}
+211
+212
+/**
+213
+* Returns the linear and angular velocity outputs of the LTV controller.
+214
+*
+215
+* <p>The reference pose, linear velocity, and angular velocity should come from a drivetrain
+216
+* trajectory.
+217
+*
+218
+* @param currentPose The current pose.
+219
+* @param poseRef The desired pose.
+220
+* @param linearVelocityRef The desired linear velocity in meters per second.
+221
+* @param angularVelocityRef The desired angular velocity in radians per second.
+222
+* @return The linear and angular velocity outputs of the LTV controller.
+223
+*/
+224
+public ChassisSpeeds calculate(
+225
+Pose2d currentPose, Pose2d poseRef, double linearVelocityRef, double angularVelocityRef) {
+226
+if (!m_enabled) {
+227
+return new ChassisSpeeds(linearVelocityRef, 0.0, angularVelocityRef);
+228
+}
+229
+230
+m_poseError = poseRef.relativeTo(currentPose);
+231
+232
+var K = m_table.get(linearVelocityRef);
+233
+var e =
+234
+MatBuilder.fill(
+235
+Nat.N3(),
+236
+Nat.N1(),
+237
+m_poseError.getX(),
+238
+m_poseError.getY(),
+239
+m_poseError.getRotation().getRadians());
+240
+var u = K.times(e);
+241
+242
+return new ChassisSpeeds(
+243
+linearVelocityRef + u.get(0, 0), 0.0, angularVelocityRef + u.get(1, 0));
+244
+}
+245
+246
+/**
+247
+* Returns the next output of the LTV controller.
+248
+*
+249
+* <p>The reference pose, linear velocity, and angular velocity should come from a drivetrain
+250
+* trajectory.
+251
+*
+252
+* @param currentPose The current pose.
+253
+* @param desiredState The desired pose, linear velocity, and angular velocity from a trajectory.
+254
+* @return The linear and angular velocity outputs of the LTV controller.
+255
+*/
+256
+public ChassisSpeeds calculate(Pose2d currentPose, Trajectory.State desiredState) {
+257
+return calculate(
+258
+currentPose,
+259
+desiredState.poseMeters,
+260
+desiredState.velocityMetersPerSecond,
+261
+desiredState.velocityMetersPerSecond * desiredState.curvatureRadPerMeter);
+262
+}
+263
+264
+/**
+265
+* Enables and disables the controller for troubleshooting purposes.
+266
+*
+267
+* @param enabled If the controller is enabled or not.
+268
+*/
+269
+public void setEnabled(boolean enabled) {
+270
+m_enabled = enabled;
+271
+}
+272
+}

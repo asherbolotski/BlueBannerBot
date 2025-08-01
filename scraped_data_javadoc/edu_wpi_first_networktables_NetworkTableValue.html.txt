@@ -1,0 +1,1013 @@
+Package
+edu.wpi.first.networktables
+Class NetworkTableValue
+java.lang.Object
+edu.wpi.first.networktables.NetworkTableValue
+public final class
+NetworkTableValue
+extends
+Object
+A network table entry value.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+equals
+(
+Object
+other)
+boolean
+getBoolean
+()
+Get the boolean value.
+boolean[]
+getBooleanArray
+()
+Get the boolean[] value.
+double
+getDouble
+()
+Get the double value.
+double[]
+getDoubleArray
+()
+Get the double[] value.
+float
+getFloat
+()
+Get the float value.
+float[]
+getFloatArray
+()
+Get the float[] value.
+long
+getInteger
+()
+Get the long value.
+long[]
+getIntegerArray
+()
+Get the long[] value.
+byte[]
+getRaw
+()
+Get the byte[] value.
+long
+getServerTime
+()
+Get the creation time of the value in server time.
+String
+getString
+()
+Get the String value.
+String
+[]
+getStringArray
+()
+Get the String[] value.
+long
+getTime
+()
+Get the creation time of the value in local time.
+NetworkTableType
+getType
+()
+Get the data type.
+Object
+getValue
+()
+Get the data value stored.
+int
+hashCode
+()
+boolean
+isBoolean
+()
+Determine if entry value contains a boolean.
+boolean
+isBooleanArray
+()
+Determine if entry value contains a boolean[].
+boolean
+isDouble
+()
+Determine if entry value contains a double.
+boolean
+isDoubleArray
+()
+Determine if entry value contains a double[].
+boolean
+isFloat
+()
+Determine if entry value contains a float.
+boolean
+isFloatArray
+()
+Determine if entry value contains a float[].
+boolean
+isInteger
+()
+Determine if entry value contains a long.
+boolean
+isIntegerArray
+()
+Determine if entry value contains a long[].
+boolean
+isRaw
+()
+Determine if entry value contains a byte[].
+boolean
+isString
+()
+Determine if entry value contains a String.
+boolean
+isStringArray
+()
+Determine if entry value contains a String[].
+boolean
+isValid
+()
+Determine if entry value contains a value or is unassigned.
+static
+NetworkTableValue
+makeBoolean
+(boolean value)
+Creates a boolean value.
+static
+NetworkTableValue
+makeBoolean
+(boolean value,
+ long time)
+Creates a boolean value.
+static
+NetworkTableValue
+makeBooleanArray
+(boolean[] value)
+Creates a boolean[] value.
+static
+NetworkTableValue
+makeBooleanArray
+(boolean[] value,
+ long time)
+Creates a boolean[] value.
+static
+NetworkTableValue
+makeBooleanArray
+(
+Boolean
+[] value)
+Creates a boolean[] value.
+static
+NetworkTableValue
+makeBooleanArray
+(
+Boolean
+[] value,
+ long time)
+Creates a boolean[] value.
+static
+NetworkTableValue
+makeDouble
+(double value)
+Creates a double value.
+static
+NetworkTableValue
+makeDouble
+(double value,
+ long time)
+Creates a double value.
+static
+NetworkTableValue
+makeDoubleArray
+(double[] value)
+Creates a double[] value.
+static
+NetworkTableValue
+makeDoubleArray
+(double[] value,
+ long time)
+Creates a double[] value.
+static
+NetworkTableValue
+makeDoubleArray
+(
+Double
+[] value)
+Creates a double[] value.
+static
+NetworkTableValue
+makeDoubleArray
+(
+Double
+[] value,
+ long time)
+Creates a double[] value.
+static
+NetworkTableValue
+makeFloat
+(float value)
+Creates a float value.
+static
+NetworkTableValue
+makeFloat
+(float value,
+ long time)
+Creates a float value.
+static
+NetworkTableValue
+makeFloatArray
+(float[] value)
+Creates a float[] value.
+static
+NetworkTableValue
+makeFloatArray
+(float[] value,
+ long time)
+Creates a float[] value.
+static
+NetworkTableValue
+makeFloatArray
+(
+Float
+[] value)
+Creates a float[] value.
+static
+NetworkTableValue
+makeFloatArray
+(
+Float
+[] value,
+ long time)
+Creates a float[] value.
+static
+NetworkTableValue
+makeInteger
+(long value)
+Creates a long value.
+static
+NetworkTableValue
+makeInteger
+(long value,
+ long time)
+Creates a long value.
+static
+NetworkTableValue
+makeIntegerArray
+(long[] value)
+Creates a long[] value.
+static
+NetworkTableValue
+makeIntegerArray
+(long[] value,
+ long time)
+Creates a long[] value.
+static
+NetworkTableValue
+makeIntegerArray
+(
+Long
+[] value)
+Creates a long[] value.
+static
+NetworkTableValue
+makeIntegerArray
+(
+Long
+[] value,
+ long time)
+Creates a long[] value.
+static
+NetworkTableValue
+makeRaw
+(byte[] value)
+Creates a byte[] value.
+static
+NetworkTableValue
+makeRaw
+(byte[] value,
+ long time)
+Creates a byte[] value.
+static
+NetworkTableValue
+makeString
+(
+String
+value)
+Creates a String value.
+static
+NetworkTableValue
+makeString
+(
+String
+value,
+ long time)
+Creates a String value.
+static
+NetworkTableValue
+makeStringArray
+(
+String
+[] value)
+Creates a String[] value.
+static
+NetworkTableValue
+makeStringArray
+(
+String
+[] value,
+ long time)
+Creates a String[] value.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getType
+public
+NetworkTableType
+getType
+()
+Get the data type.
+Returns:
+The type.
+getValue
+public
+Object
+getValue
+()
+Get the data value stored.
+Returns:
+The type.
+getTime
+public
+long
+getTime
+()
+Get the creation time of the value in local time.
+Returns:
+The time, in the units returned by NetworkTablesJNI.now().
+getServerTime
+public
+long
+getServerTime
+()
+Get the creation time of the value in server time.
+Returns:
+The server time.
+isValid
+public
+boolean
+isValid
+()
+Determine if entry value contains a value or is unassigned.
+Returns:
+True if the entry value contains a value.
+isBoolean
+public
+boolean
+isBoolean
+()
+Determine if entry value contains a boolean.
+Returns:
+True if the entry value is of boolean type.
+isInteger
+public
+boolean
+isInteger
+()
+Determine if entry value contains a long.
+Returns:
+True if the entry value is of long type.
+isFloat
+public
+boolean
+isFloat
+()
+Determine if entry value contains a float.
+Returns:
+True if the entry value is of float type.
+isDouble
+public
+boolean
+isDouble
+()
+Determine if entry value contains a double.
+Returns:
+True if the entry value is of double type.
+isString
+public
+boolean
+isString
+()
+Determine if entry value contains a String.
+Returns:
+True if the entry value is of String type.
+isRaw
+public
+boolean
+isRaw
+()
+Determine if entry value contains a byte[].
+Returns:
+True if the entry value is of byte[] type.
+isBooleanArray
+public
+boolean
+isBooleanArray
+()
+Determine if entry value contains a boolean[].
+Returns:
+True if the entry value is of boolean[] type.
+isIntegerArray
+public
+boolean
+isIntegerArray
+()
+Determine if entry value contains a long[].
+Returns:
+True if the entry value is of long[] type.
+isFloatArray
+public
+boolean
+isFloatArray
+()
+Determine if entry value contains a float[].
+Returns:
+True if the entry value is of float[] type.
+isDoubleArray
+public
+boolean
+isDoubleArray
+()
+Determine if entry value contains a double[].
+Returns:
+True if the entry value is of double[] type.
+isStringArray
+public
+boolean
+isStringArray
+()
+Determine if entry value contains a String[].
+Returns:
+True if the entry value is of String[] type.
+getBoolean
+public
+boolean
+getBoolean
+()
+Get the boolean value.
+Returns:
+The boolean value.
+Throws:
+ClassCastException
+- if the entry value is not of boolean type.
+getInteger
+public
+long
+getInteger
+()
+Get the long value.
+Returns:
+The long value.
+Throws:
+ClassCastException
+- if the entry value is not of long type.
+getFloat
+public
+float
+getFloat
+()
+Get the float value.
+Returns:
+The float value.
+Throws:
+ClassCastException
+- if the entry value is not of float type.
+getDouble
+public
+double
+getDouble
+()
+Get the double value.
+Returns:
+The double value.
+Throws:
+ClassCastException
+- if the entry value is not of double type.
+getString
+public
+String
+getString
+()
+Get the String value.
+Returns:
+The String value.
+Throws:
+ClassCastException
+- if the entry value is not of String type.
+getRaw
+public
+byte[]
+getRaw
+()
+Get the byte[] value.
+Returns:
+The byte[] value.
+Throws:
+ClassCastException
+- if the entry value is not of byte[] type.
+getBooleanArray
+public
+boolean[]
+getBooleanArray
+()
+Get the boolean[] value.
+Returns:
+The boolean[] value.
+Throws:
+ClassCastException
+- if the entry value is not of boolean[] type.
+getIntegerArray
+public
+long[]
+getIntegerArray
+()
+Get the long[] value.
+Returns:
+The long[] value.
+Throws:
+ClassCastException
+- if the entry value is not of long[] type.
+getFloatArray
+public
+float[]
+getFloatArray
+()
+Get the float[] value.
+Returns:
+The float[] value.
+Throws:
+ClassCastException
+- if the entry value is not of float[] type.
+getDoubleArray
+public
+double[]
+getDoubleArray
+()
+Get the double[] value.
+Returns:
+The double[] value.
+Throws:
+ClassCastException
+- if the entry value is not of double[] type.
+getStringArray
+public
+String
+[]
+getStringArray
+()
+Get the String[] value.
+Returns:
+The String[] value.
+Throws:
+ClassCastException
+- if the entry value is not of String[] type.
+makeBoolean
+public static
+NetworkTableValue
+makeBoolean
+(boolean value)
+Creates a boolean value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeBoolean
+public static
+NetworkTableValue
+makeBoolean
+(boolean value,
+ long time)
+Creates a boolean value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeInteger
+public static
+NetworkTableValue
+makeInteger
+(long value)
+Creates a long value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeInteger
+public static
+NetworkTableValue
+makeInteger
+(long value,
+ long time)
+Creates a long value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeFloat
+public static
+NetworkTableValue
+makeFloat
+(float value)
+Creates a float value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeFloat
+public static
+NetworkTableValue
+makeFloat
+(float value,
+ long time)
+Creates a float value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeDouble
+public static
+NetworkTableValue
+makeDouble
+(double value)
+Creates a double value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeDouble
+public static
+NetworkTableValue
+makeDouble
+(double value,
+ long time)
+Creates a double value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeString
+public static
+NetworkTableValue
+makeString
+(
+String
+value)
+Creates a String value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeString
+public static
+NetworkTableValue
+makeString
+(
+String
+value,
+ long time)
+Creates a String value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeRaw
+public static
+NetworkTableValue
+makeRaw
+(byte[] value)
+Creates a byte[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeRaw
+public static
+NetworkTableValue
+makeRaw
+(byte[] value,
+ long time)
+Creates a byte[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeBooleanArray
+public static
+NetworkTableValue
+makeBooleanArray
+(boolean[] value)
+Creates a boolean[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeBooleanArray
+public static
+NetworkTableValue
+makeBooleanArray
+(boolean[] value,
+ long time)
+Creates a boolean[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeBooleanArray
+public static
+NetworkTableValue
+makeBooleanArray
+(
+Boolean
+[] value)
+Creates a boolean[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeBooleanArray
+public static
+NetworkTableValue
+makeBooleanArray
+(
+Boolean
+[] value,
+ long time)
+Creates a boolean[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeIntegerArray
+public static
+NetworkTableValue
+makeIntegerArray
+(long[] value)
+Creates a long[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeIntegerArray
+public static
+NetworkTableValue
+makeIntegerArray
+(long[] value,
+ long time)
+Creates a long[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeIntegerArray
+public static
+NetworkTableValue
+makeIntegerArray
+(
+Long
+[] value)
+Creates a long[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeIntegerArray
+public static
+NetworkTableValue
+makeIntegerArray
+(
+Long
+[] value,
+ long time)
+Creates a long[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeFloatArray
+public static
+NetworkTableValue
+makeFloatArray
+(float[] value)
+Creates a float[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeFloatArray
+public static
+NetworkTableValue
+makeFloatArray
+(float[] value,
+ long time)
+Creates a float[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeFloatArray
+public static
+NetworkTableValue
+makeFloatArray
+(
+Float
+[] value)
+Creates a float[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeFloatArray
+public static
+NetworkTableValue
+makeFloatArray
+(
+Float
+[] value,
+ long time)
+Creates a float[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeDoubleArray
+public static
+NetworkTableValue
+makeDoubleArray
+(double[] value)
+Creates a double[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeDoubleArray
+public static
+NetworkTableValue
+makeDoubleArray
+(double[] value,
+ long time)
+Creates a double[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeDoubleArray
+public static
+NetworkTableValue
+makeDoubleArray
+(
+Double
+[] value)
+Creates a double[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeDoubleArray
+public static
+NetworkTableValue
+makeDoubleArray
+(
+Double
+[] value,
+ long time)
+Creates a double[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+makeStringArray
+public static
+NetworkTableValue
+makeStringArray
+(
+String
+[] value)
+Creates a String[] value.
+Parameters:
+value
+- the value
+Returns:
+The entry value
+makeStringArray
+public static
+NetworkTableValue
+makeStringArray
+(
+String
+[] value,
+ long time)
+Creates a String[] value.
+Parameters:
+value
+- the value
+time
+- the creation time to use (instead of the current time)
+Returns:
+The entry value
+equals
+public
+boolean
+equals
+(
+Object
+other)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object

@@ -1,0 +1,887 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics;
+006
+007
+import static edu.wpi.first.units.Units.MetersPerSecond;
+008
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+009
+010
+import edu.wpi.first.math.MathSharedStore;
+011
+import edu.wpi.first.math.MathUsageId;
+012
+import edu.wpi.first.math.geometry.Rotation2d;
+013
+import edu.wpi.first.math.geometry.Translation2d;
+014
+import edu.wpi.first.math.geometry.Twist2d;
+015
+import edu.wpi.first.math.kinematics.proto.SwerveDriveKinematicsProto;
+016
+import edu.wpi.first.math.kinematics.struct.SwerveDriveKinematicsStruct;
+017
+import edu.wpi.first.units.measure.AngularVelocity;
+018
+import edu.wpi.first.units.measure.LinearVelocity;
+019
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+020
+import edu.wpi.first.util.struct.Struct;
+021
+import edu.wpi.first.util.struct.StructSerializable;
+022
+import java.util.Arrays;
+023
+import org.ejml.simple.SimpleMatrix;
+024
+025
+/**
+026
+* Helper class that converts a chassis velocity (dx, dy, and dtheta components) into individual
+027
+* module states (speed and angle).
+028
+*
+029
+* <p>The inverse kinematics (converting from a desired chassis velocity to individual module
+030
+* states) uses the relative locations of the modules with respect to the center of rotation. The
+031
+* center of rotation for inverse kinematics is also variable. This means that you can set your
+032
+* center of rotation in a corner of the robot to perform special evasion maneuvers.
+033
+*
+034
+* <p>Forward kinematics (converting an array of module states into the overall chassis motion) is
+035
+* performs the exact opposite of what inverse kinematics does. Since this is an overdetermined
+036
+* system (more equations than variables), we use a least-squares approximation.
+037
+*
+038
+* <p>The inverse kinematics: [moduleStates] = [moduleLocations] * [chassisSpeeds] We take the
+039
+* Moore-Penrose pseudoinverse of [moduleLocations] and then multiply by [moduleStates] to get our
+040
+* chassis speeds.
+041
+*
+042
+* <p>Forward kinematics is also used for odometry -- determining the position of the robot on the
+043
+* field using encoders and a gyro.
+044
+*/
+045
+@SuppressWarnings("overrides")
+046
+public class SwerveDriveKinematics
+047
+implements Kinematics<SwerveModuleState[], SwerveModulePosition[]>,
+048
+ProtobufSerializable,
+049
+StructSerializable {
+050
+private final SimpleMatrix m_inverseKinematics;
+051
+private final SimpleMatrix m_forwardKinematics;
+052
+053
+private final int m_numModules;
+054
+private final Translation2d[] m_modules;
+055
+private Rotation2d[] m_moduleHeadings;
+056
+private Translation2d m_prevCoR = Translation2d.kZero;
+057
+058
+/**
+059
+* Constructs a swerve drive kinematics object. This takes in a variable number of module
+060
+* locations as Translation2d objects. The order in which you pass in the module locations is the
+061
+* same order that you will receive the module states when performing inverse kinematics. It is
+062
+* also expected that you pass in the module states in the same order when calling the forward
+063
+* kinematics methods.
+064
+*
+065
+* @param moduleTranslationsMeters The locations of the modules relative to the physical center of
+066
+*     the robot.
+067
+*/
+068
+public SwerveDriveKinematics(Translation2d... moduleTranslationsMeters) {
+069
+if (moduleTranslationsMeters.length < 2) {
+070
+throw new IllegalArgumentException("A swerve drive requires at least two modules");
+071
+}
+072
+m_numModules = moduleTranslationsMeters.length;
+073
+m_modules = Arrays.copyOf(moduleTranslationsMeters, m_numModules);
+074
+m_moduleHeadings = new Rotation2d[m_numModules];
+075
+Arrays.fill(m_moduleHeadings, Rotation2d.kZero);
+076
+m_inverseKinematics = new SimpleMatrix(m_numModules * 2, 3);
+077
+078
+for (int i = 0; i < m_numModules; i++) {
+079
+m_inverseKinematics.setRow(i * 2 + 0, 0, /* Start Data */ 1, 0, -m_modules[i].getY());
+080
+m_inverseKinematics.setRow(i * 2 + 1, 0, /* Start Data */ 0, 1, +m_modules[i].getX());
+081
+}
+082
+m_forwardKinematics = m_inverseKinematics.pseudoInverse();
+083
+084
+MathSharedStore.reportUsage(MathUsageId.kKinematics_SwerveDrive, 1);
+085
+}
+086
+087
+/**
+088
+* Reset the internal swerve module headings.
+089
+*
+090
+* @param moduleHeadings The swerve module headings. The order of the module headings should be
+091
+*     same as passed into the constructor of this class.
+092
+*/
+093
+public void resetHeadings(Rotation2d... moduleHeadings) {
+094
+if (moduleHeadings.length != m_numModules) {
+095
+throw new IllegalArgumentException(
+096
+"Number of headings is not consistent with number of module locations provided in "
+097
++ "constructor");
+098
+}
+099
+m_moduleHeadings = Arrays.copyOf(moduleHeadings, m_numModules);
+100
+}
+101
+102
+/**
+103
+* Performs inverse kinematics to return the module states from a desired chassis velocity. This
+104
+* method is often used to convert joystick values into module speeds and angles.
+105
+*
+106
+* <p>This function also supports variable centers of rotation. During normal operations, the
+107
+* center of rotation is usually the same as the physical center of the robot; therefore, the
+108
+* argument is defaulted to that use case. However, if you wish to change the center of rotation
+109
+* for evasive maneuvers, vision alignment, or for any other use case, you can do so.
+110
+*
+111
+* <p>In the case that the desired chassis speeds are zero (i.e. the robot will be stationary),
+112
+* the previously calculated module angle will be maintained.
+113
+*
+114
+* @param chassisSpeeds The desired chassis speed.
+115
+* @param centerOfRotationMeters The center of rotation. For example, if you set the center of
+116
+*     rotation at one corner of the robot and provide a chassis speed that only has a dtheta
+117
+*     component, the robot will rotate around that corner.
+118
+* @return An array containing the module states. Use caution because these module states are not
+119
+*     normalized. Sometimes, a user input may cause one of the module speeds to go above the
+120
+*     attainable max velocity. Use the {@link #desaturateWheelSpeeds(SwerveModuleState[], double)
+121
+*     DesaturateWheelSpeeds} function to rectify this issue.
+122
+*/
+123
+public SwerveModuleState[] toSwerveModuleStates(
+124
+ChassisSpeeds chassisSpeeds, Translation2d centerOfRotationMeters) {
+125
+var moduleStates = new SwerveModuleState[m_numModules];
+126
+127
+if (chassisSpeeds.vxMetersPerSecond == 0.0
+128
+&& chassisSpeeds.vyMetersPerSecond == 0.0
+129
+&& chassisSpeeds.omegaRadiansPerSecond == 0.0) {
+130
+for (int i = 0; i < m_numModules; i++) {
+131
+moduleStates[i] = new SwerveModuleState(0.0, m_moduleHeadings[i]);
+132
+}
+133
+134
+return moduleStates;
+135
+}
+136
+137
+if (!centerOfRotationMeters.equals(m_prevCoR)) {
+138
+for (int i = 0; i < m_numModules; i++) {
+139
+m_inverseKinematics.setRow(
+140
+i * 2 + 0,
+141
+0, /* Start Data */
+142
+1,
+143
+0,
+144
+-m_modules[i].getY() + centerOfRotationMeters.getY());
+145
+m_inverseKinematics.setRow(
+146
+i * 2 + 1,
+147
+0, /* Start Data */
+148
+0,
+149
+1,
+150
++m_modules[i].getX() - centerOfRotationMeters.getX());
+151
+}
+152
+m_prevCoR = centerOfRotationMeters;
+153
+}
+154
+155
+var chassisSpeedsVector = new SimpleMatrix(3, 1);
+156
+chassisSpeedsVector.setColumn(
+157
+0,
+158
+0,
+159
+chassisSpeeds.vxMetersPerSecond,
+160
+chassisSpeeds.vyMetersPerSecond,
+161
+chassisSpeeds.omegaRadiansPerSecond);
+162
+163
+var moduleStatesMatrix = m_inverseKinematics.mult(chassisSpeedsVector);
+164
+165
+for (int i = 0; i < m_numModules; i++) {
+166
+double x = moduleStatesMatrix.get(i * 2, 0);
+167
+double y = moduleStatesMatrix.get(i * 2 + 1, 0);
+168
+169
+double speed = Math.hypot(x, y);
+170
+Rotation2d angle = speed > 1e-6 ? new Rotation2d(x, y) : m_moduleHeadings[i];
+171
+172
+moduleStates[i] = new SwerveModuleState(speed, angle);
+173
+m_moduleHeadings[i] = angle;
+174
+}
+175
+176
+return moduleStates;
+177
+}
+178
+179
+/**
+180
+* Performs inverse kinematics. See {@link #toSwerveModuleStates(ChassisSpeeds, Translation2d)}
+181
+* toSwerveModuleStates for more information.
+182
+*
+183
+* @param chassisSpeeds The desired chassis speed.
+184
+* @return An array containing the module states.
+185
+*/
+186
+public SwerveModuleState[] toSwerveModuleStates(ChassisSpeeds chassisSpeeds) {
+187
+return toSwerveModuleStates(chassisSpeeds, Translation2d.kZero);
+188
+}
+189
+190
+@Override
+191
+public SwerveModuleState[] toWheelSpeeds(ChassisSpeeds chassisSpeeds) {
+192
+return toSwerveModuleStates(chassisSpeeds);
+193
+}
+194
+195
+/**
+196
+* Performs forward kinematics to return the resulting chassis state from the given module states.
+197
+* This method is often used for odometry -- determining the robot's position on the field using
+198
+* data from the real-world speed and angle of each module on the robot.
+199
+*
+200
+* @param moduleStates The state of the modules (as a SwerveModuleState type) as measured from
+201
+*     respective encoders and gyros. The order of the swerve module states should be same as
+202
+*     passed into the constructor of this class.
+203
+* @return The resulting chassis speed.
+204
+*/
+205
+@Override
+206
+public ChassisSpeeds toChassisSpeeds(SwerveModuleState... moduleStates) {
+207
+if (moduleStates.length != m_numModules) {
+208
+throw new IllegalArgumentException(
+209
+"Number of modules is not consistent with number of module locations provided in "
+210
++ "constructor");
+211
+}
+212
+var moduleStatesMatrix = new SimpleMatrix(m_numModules * 2, 1);
+213
+214
+for (int i = 0; i < m_numModules; i++) {
+215
+var module = moduleStates[i];
+216
+moduleStatesMatrix.set(i * 2, 0, module.speedMetersPerSecond * module.angle.getCos());
+217
+moduleStatesMatrix.set(i * 2 + 1, module.speedMetersPerSecond * module.angle.getSin());
+218
+}
+219
+220
+var chassisSpeedsVector = m_forwardKinematics.mult(moduleStatesMatrix);
+221
+return new ChassisSpeeds(
+222
+chassisSpeedsVector.get(0, 0),
+223
+chassisSpeedsVector.get(1, 0),
+224
+chassisSpeedsVector.get(2, 0));
+225
+}
+226
+227
+/**
+228
+* Performs forward kinematics to return the resulting chassis state from the given module states.
+229
+* This method is often used for odometry -- determining the robot's position on the field using
+230
+* data from the real-world speed and angle of each module on the robot.
+231
+*
+232
+* @param moduleDeltas The latest change in position of the modules (as a SwerveModulePosition
+233
+*     type) as measured from respective encoders and gyros. The order of the swerve module states
+234
+*     should be same as passed into the constructor of this class.
+235
+* @return The resulting Twist2d.
+236
+*/
+237
+public Twist2d toTwist2d(SwerveModulePosition... moduleDeltas) {
+238
+if (moduleDeltas.length != m_numModules) {
+239
+throw new IllegalArgumentException(
+240
+"Number of modules is not consistent with number of module locations provided in "
+241
++ "constructor");
+242
+}
+243
+var moduleDeltaMatrix = new SimpleMatrix(m_numModules * 2, 1);
+244
+245
+for (int i = 0; i < m_numModules; i++) {
+246
+var module = moduleDeltas[i];
+247
+moduleDeltaMatrix.set(i * 2, 0, module.distanceMeters * module.angle.getCos());
+248
+moduleDeltaMatrix.set(i * 2 + 1, module.distanceMeters * module.angle.getSin());
+249
+}
+250
+251
+var chassisDeltaVector = m_forwardKinematics.mult(moduleDeltaMatrix);
+252
+return new Twist2d(
+253
+chassisDeltaVector.get(0, 0), chassisDeltaVector.get(1, 0), chassisDeltaVector.get(2, 0));
+254
+}
+255
+256
+@Override
+257
+public Twist2d toTwist2d(SwerveModulePosition[] start, SwerveModulePosition[] end) {
+258
+if (start.length != end.length) {
+259
+throw new IllegalArgumentException("Inconsistent number of modules!");
+260
+}
+261
+var newPositions = new SwerveModulePosition[start.length];
+262
+for (int i = 0; i < start.length; i++) {
+263
+newPositions[i] =
+264
+new SwerveModulePosition(end[i].distanceMeters - start[i].distanceMeters, end[i].angle);
+265
+}
+266
+return toTwist2d(newPositions);
+267
+}
+268
+269
+/**
+270
+* Renormalizes the wheel speeds if any individual speed is above the specified maximum.
+271
+*
+272
+* <p>Sometimes, after inverse kinematics, the requested speed from one or more modules may be
+273
+* above the max attainable speed for the driving motor on that module. To fix this issue, one can
+274
+* reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+275
+* absolute threshold, while maintaining the ratio of speeds between modules.
+276
+*
+277
+* <p>Scaling down the module speeds rotates the direction of net motion in the opposite direction
+278
+* of rotational velocity, which makes discretizing the chassis speeds inaccurate because the
+279
+* discretization did not account for this translational skew.
+280
+*
+281
+* @param moduleStates Reference to array of module states. The array will be mutated with the
+282
+*     normalized speeds!
+283
+* @param attainableMaxSpeedMetersPerSecond The absolute max speed that a module can reach.
+284
+*/
+285
+public static void desaturateWheelSpeeds(
+286
+SwerveModuleState[] moduleStates, double attainableMaxSpeedMetersPerSecond) {
+287
+double realMaxSpeed = 0;
+288
+for (SwerveModuleState moduleState : moduleStates) {
+289
+realMaxSpeed = Math.max(realMaxSpeed, Math.abs(moduleState.speedMetersPerSecond));
+290
+}
+291
+if (realMaxSpeed > attainableMaxSpeedMetersPerSecond) {
+292
+for (SwerveModuleState moduleState : moduleStates) {
+293
+moduleState.speedMetersPerSecond =
+294
+moduleState.speedMetersPerSecond / realMaxSpeed * attainableMaxSpeedMetersPerSecond;
+295
+}
+296
+}
+297
+}
+298
+299
+/**
+300
+* Renormalizes the wheel speeds if any individual speed is above the specified maximum.
+301
+*
+302
+* <p>Sometimes, after inverse kinematics, the requested speed from one or more modules may be
+303
+* above the max attainable speed for the driving motor on that module. To fix this issue, one can
+304
+* reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+305
+* absolute threshold, while maintaining the ratio of speeds between modules.
+306
+*
+307
+* <p>Scaling down the module speeds rotates the direction of net motion in the opposite direction
+308
+* of rotational velocity, which makes discretizing the chassis speeds inaccurate because the
+309
+* discretization did not account for this translational skew.
+310
+*
+311
+* @param moduleStates Reference to array of module states. The array will be mutated with the
+312
+*     normalized speeds!
+313
+* @param attainableMaxSpeed The absolute max speed that a module can reach.
+314
+*/
+315
+public static void desaturateWheelSpeeds(
+316
+SwerveModuleState[] moduleStates, LinearVelocity attainableMaxSpeed) {
+317
+desaturateWheelSpeeds(moduleStates, attainableMaxSpeed.in(MetersPerSecond));
+318
+}
+319
+320
+/**
+321
+* Renormalizes the wheel speeds if any individual speed is above the specified maximum, as well
+322
+* as getting rid of joystick saturation at edges of joystick.
+323
+*
+324
+* <p>Sometimes, after inverse kinematics, the requested speed from one or more modules may be
+325
+* above the max attainable speed for the driving motor on that module. To fix this issue, one can
+326
+* reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+327
+* absolute threshold, while maintaining the ratio of speeds between modules.
+328
+*
+329
+* <p>Scaling down the module speeds rotates the direction of net motion in the opposite direction
+330
+* of rotational velocity, which makes discretizing the chassis speeds inaccurate because the
+331
+* discretization did not account for this translational skew.
+332
+*
+333
+* @param moduleStates Reference to array of module states. The array will be mutated with the
+334
+*     normalized speeds!
+335
+* @param desiredChassisSpeed The desired speed of the robot
+336
+* @param attainableMaxModuleSpeedMetersPerSecond The absolute max speed that a module can reach
+337
+* @param attainableMaxTranslationalSpeedMetersPerSecond The absolute max speed that your robot
+338
+*     can reach while translating
+339
+* @param attainableMaxRotationalVelocityRadiansPerSecond The absolute max speed the robot can
+340
+*     reach while rotating
+341
+*/
+342
+public static void desaturateWheelSpeeds(
+343
+SwerveModuleState[] moduleStates,
+344
+ChassisSpeeds desiredChassisSpeed,
+345
+double attainableMaxModuleSpeedMetersPerSecond,
+346
+double attainableMaxTranslationalSpeedMetersPerSecond,
+347
+double attainableMaxRotationalVelocityRadiansPerSecond) {
+348
+double realMaxSpeed = 0;
+349
+for (SwerveModuleState moduleState : moduleStates) {
+350
+realMaxSpeed = Math.max(realMaxSpeed, Math.abs(moduleState.speedMetersPerSecond));
+351
+}
+352
+353
+if (attainableMaxTranslationalSpeedMetersPerSecond == 0
+354
+|| attainableMaxRotationalVelocityRadiansPerSecond == 0
+355
+|| realMaxSpeed == 0) {
+356
+return;
+357
+}
+358
+double translationalK =
+359
+Math.hypot(desiredChassisSpeed.vxMetersPerSecond, desiredChassisSpeed.vyMetersPerSecond)
+360
+/ attainableMaxTranslationalSpeedMetersPerSecond;
+361
+double rotationalK =
+362
+Math.abs(desiredChassisSpeed.omegaRadiansPerSecond)
+363
+/ attainableMaxRotationalVelocityRadiansPerSecond;
+364
+double k = Math.max(translationalK, rotationalK);
+365
+double scale = Math.min(k * attainableMaxModuleSpeedMetersPerSecond / realMaxSpeed, 1);
+366
+for (SwerveModuleState moduleState : moduleStates) {
+367
+moduleState.speedMetersPerSecond *= scale;
+368
+}
+369
+}
+370
+371
+/**
+372
+* Renormalizes the wheel speeds if any individual speed is above the specified maximum, as well
+373
+* as getting rid of joystick saturation at edges of joystick.
+374
+*
+375
+* <p>Sometimes, after inverse kinematics, the requested speed from one or more modules may be
+376
+* above the max attainable speed for the driving motor on that module. To fix this issue, one can
+377
+* reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+378
+* absolute threshold, while maintaining the ratio of speeds between modules.
+379
+*
+380
+* <p>Scaling down the module speeds rotates the direction of net motion in the opposite direction
+381
+* of rotational velocity, which makes discretizing the chassis speeds inaccurate because the
+382
+* discretization did not account for this translational skew.
+383
+*
+384
+* @param moduleStates Reference to array of module states. The array will be mutated with the
+385
+*     normalized speeds!
+386
+* @param desiredChassisSpeed The desired speed of the robot
+387
+* @param attainableMaxModuleSpeed The absolute max speed that a module can reach
+388
+* @param attainableMaxTranslationalSpeed The absolute max speed that your robot can reach while
+389
+*     translating
+390
+* @param attainableMaxRotationalVelocity The absolute max speed the robot can reach while
+391
+*     rotating
+392
+*/
+393
+public static void desaturateWheelSpeeds(
+394
+SwerveModuleState[] moduleStates,
+395
+ChassisSpeeds desiredChassisSpeed,
+396
+LinearVelocity attainableMaxModuleSpeed,
+397
+LinearVelocity attainableMaxTranslationalSpeed,
+398
+AngularVelocity attainableMaxRotationalVelocity) {
+399
+desaturateWheelSpeeds(
+400
+moduleStates,
+401
+desiredChassisSpeed,
+402
+attainableMaxModuleSpeed.in(MetersPerSecond),
+403
+attainableMaxTranslationalSpeed.in(MetersPerSecond),
+404
+attainableMaxRotationalVelocity.in(RadiansPerSecond));
+405
+}
+406
+407
+@Override
+408
+public SwerveModulePosition[] copy(SwerveModulePosition[] positions) {
+409
+var newPositions = new SwerveModulePosition[positions.length];
+410
+for (int i = 0; i < positions.length; ++i) {
+411
+newPositions[i] = positions[i].copy();
+412
+}
+413
+return newPositions;
+414
+}
+415
+416
+@Override
+417
+public void copyInto(SwerveModulePosition[] positions, SwerveModulePosition[] output) {
+418
+if (positions.length != output.length) {
+419
+throw new IllegalArgumentException("Inconsistent number of modules!");
+420
+}
+421
+for (int i = 0; i < positions.length; ++i) {
+422
+output[i].distanceMeters = positions[i].distanceMeters;
+423
+output[i].angle = positions[i].angle;
+424
+}
+425
+}
+426
+427
+@Override
+428
+public SwerveModulePosition[] interpolate(
+429
+SwerveModulePosition[] startValue, SwerveModulePosition[] endValue, double t) {
+430
+if (endValue.length != startValue.length) {
+431
+throw new IllegalArgumentException("Inconsistent number of modules!");
+432
+}
+433
+var newPositions = new SwerveModulePosition[startValue.length];
+434
+for (int i = 0; i < startValue.length; ++i) {
+435
+newPositions[i] = startValue[i].interpolate(endValue[i], t);
+436
+}
+437
+return newPositions;
+438
+}
+439
+440
+/**
+441
+* Gets the locations of the modules relative to the center of rotation.
+442
+*
+443
+* @return The locations of the modules relative to the center of rotation. This array should not
+444
+*     be modified.
+445
+*/
+446
+@SuppressWarnings("PMD.MethodReturnsInternalArray")
+447
+public Translation2d[] getModules() {
+448
+return m_modules;
+449
+}
+450
+451
+/** SwerveDriveKinematics protobuf for serialization. */
+452
+public static final SwerveDriveKinematicsProto proto = new SwerveDriveKinematicsProto();
+453
+454
+/**
+455
+* Creates an implementation of the {@link Struct} interface for swerve drive kinematics objects.
+456
+*
+457
+* @param numModules The number of modules of the kinematics objects this serializer processes.
+458
+* @return The struct implementation.
+459
+*/
+460
+public static final SwerveDriveKinematicsStruct getStruct(int numModules) {
+461
+return new SwerveDriveKinematicsStruct(numModules);
+462
+}
+463
+}

@@ -1,0 +1,466 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.hal.NotifierJNI;
+010
+import java.util.concurrent.atomic.AtomicInteger;
+011
+import java.util.concurrent.locks.ReentrantLock;
+012
+013
+/**
+014
+* Notifiers run a user-provided callback function on a separate thread.
+015
+*
+016
+* <p>If startSingle() is used, the callback will run once. If startPeriodic() is used, the callback
+017
+* will run repeatedly with the given period until stop() is called.
+018
+*/
+019
+public class Notifier implements AutoCloseable {
+020
+// The thread waiting on the HAL alarm.
+021
+private Thread m_thread;
+022
+023
+// The lock held while updating process information.
+024
+private final ReentrantLock m_processLock = new ReentrantLock();
+025
+026
+// HAL handle passed to the JNI bindings (atomic for proper destruction).
+027
+private final AtomicInteger m_notifier = new AtomicInteger();
+028
+029
+// The user-provided callback.
+030
+private Runnable m_callback;
+031
+032
+// The time, in seconds, at which the callback should be called. Has the same
+033
+// zero as RobotController.getFPGATime().
+034
+private double m_expirationTimeSeconds;
+035
+036
+// If periodic, stores the callback period; if single, stores the time until
+037
+// the callback call.
+038
+private double m_periodSeconds;
+039
+040
+// True if the callback is periodic
+041
+private boolean m_periodic;
+042
+043
+@Override
+044
+public void close() {
+045
+int handle = m_notifier.getAndSet(0);
+046
+if (handle == 0) {
+047
+return;
+048
+}
+049
+NotifierJNI.stopNotifier(handle);
+050
+// Join the thread to ensure the callback has exited.
+051
+if (m_thread.isAlive()) {
+052
+try {
+053
+m_thread.interrupt();
+054
+m_thread.join();
+055
+} catch (InterruptedException ex) {
+056
+Thread.currentThread().interrupt();
+057
+}
+058
+}
+059
+NotifierJNI.cleanNotifier(handle);
+060
+m_thread = null;
+061
+}
+062
+063
+/**
+064
+* Update the alarm hardware to reflect the next alarm.
+065
+*
+066
+* @param triggerTimeMicroS the time in microseconds at which the next alarm will be triggered
+067
+*/
+068
+private void updateAlarm(long triggerTimeMicroS) {
+069
+int notifier = m_notifier.get();
+070
+if (notifier == 0) {
+071
+return;
+072
+}
+073
+NotifierJNI.updateNotifierAlarm(notifier, triggerTimeMicroS);
+074
+}
+075
+076
+/** Update the alarm hardware to reflect the next alarm. */
+077
+private void updateAlarm() {
+078
+updateAlarm((long) (m_expirationTimeSeconds * 1e6));
+079
+}
+080
+081
+/**
+082
+* Create a Notifier with the given callback.
+083
+*
+084
+* <p>Configure when the callback runs with startSingle() or startPeriodic().
+085
+*
+086
+* @param callback The callback to run.
+087
+*/
+088
+public Notifier(Runnable callback) {
+089
+requireNonNullParam(callback, "callback", "Notifier");
+090
+091
+m_callback = callback;
+092
+m_notifier.set(NotifierJNI.initializeNotifier());
+093
+094
+m_thread =
+095
+new Thread(
+096
+() -> {
+097
+while (!Thread.interrupted()) {
+098
+int notifier = m_notifier.get();
+099
+if (notifier == 0) {
+100
+break;
+101
+}
+102
+long curTime = NotifierJNI.waitForNotifierAlarm(notifier);
+103
+if (curTime == 0) {
+104
+break;
+105
+}
+106
+107
+Runnable threadHandler;
+108
+m_processLock.lock();
+109
+try {
+110
+threadHandler = m_callback;
+111
+if (m_periodic) {
+112
+m_expirationTimeSeconds += m_periodSeconds;
+113
+updateAlarm();
+114
+} else {
+115
+// Need to update the alarm to cause it to wait again
+116
+updateAlarm(-1);
+117
+}
+118
+} finally {
+119
+m_processLock.unlock();
+120
+}
+121
+122
+// Call callback
+123
+if (threadHandler != null) {
+124
+threadHandler.run();
+125
+}
+126
+}
+127
+});
+128
+m_thread.setName("Notifier");
+129
+m_thread.setDaemon(true);
+130
+m_thread.setUncaughtExceptionHandler(
+131
+(thread, error) -> {
+132
+Throwable cause = error.getCause();
+133
+if (cause != null) {
+134
+error = cause;
+135
+}
+136
+DriverStation.reportError(
+137
+"Unhandled exception in Notifier thread: " + error, error.getStackTrace());
+138
+DriverStation.reportError(
+139
+"The Runnable for this Notifier (or methods called by it) should have handled "
+140
++ "the exception above.\n"
+141
++ "  The above stacktrace can help determine where the error occurred.\n"
+142
++ "  See https://wpilib.org/stacktrace for more information.",
+143
+false);
+144
+});
+145
+m_thread.start();
+146
+}
+147
+148
+/**
+149
+* Sets the name of the notifier. Used for debugging purposes only.
+150
+*
+151
+* @param name Name
+152
+*/
+153
+public void setName(String name) {
+154
+m_thread.setName(name);
+155
+NotifierJNI.setNotifierName(m_notifier.get(), name);
+156
+}
+157
+158
+/**
+159
+* Change the callback function.
+160
+*
+161
+* @param callback The callback function.
+162
+*/
+163
+public void setCallback(Runnable callback) {
+164
+m_processLock.lock();
+165
+try {
+166
+m_callback = callback;
+167
+} finally {
+168
+m_processLock.unlock();
+169
+}
+170
+}
+171
+172
+/**
+173
+* Run the callback once after the given delay.
+174
+*
+175
+* @param delaySeconds Time in seconds to wait before the callback is called.
+176
+*/
+177
+public void startSingle(double delaySeconds) {
+178
+m_processLock.lock();
+179
+try {
+180
+m_periodic = false;
+181
+m_periodSeconds = delaySeconds;
+182
+m_expirationTimeSeconds = RobotController.getFPGATime() * 1e-6 + delaySeconds;
+183
+updateAlarm();
+184
+} finally {
+185
+m_processLock.unlock();
+186
+}
+187
+}
+188
+189
+/**
+190
+* Run the callback periodically with the given period.
+191
+*
+192
+* <p>The user-provided callback should be written so that it completes before the next time it's
+193
+* scheduled to run.
+194
+*
+195
+* @param periodSeconds Period in seconds after which to to call the callback starting one period
+196
+*     after the call to this method.
+197
+*/
+198
+public void startPeriodic(double periodSeconds) {
+199
+m_processLock.lock();
+200
+try {
+201
+m_periodic = true;
+202
+m_periodSeconds = periodSeconds;
+203
+m_expirationTimeSeconds = RobotController.getFPGATime() * 1e-6 + periodSeconds;
+204
+updateAlarm();
+205
+} finally {
+206
+m_processLock.unlock();
+207
+}
+208
+}
+209
+210
+/**
+211
+* Stop further callback invocations.
+212
+*
+213
+* <p>No further periodic callbacks will occur. Single invocations will also be cancelled if they
+214
+* haven't yet occurred.
+215
+*
+216
+* <p>If a callback invocation is in progress, this function will block until the callback is
+217
+* complete.
+218
+*/
+219
+public void stop() {
+220
+m_processLock.lock();
+221
+try {
+222
+m_periodic = false;
+223
+NotifierJNI.cancelNotifierAlarm(m_notifier.get());
+224
+} finally {
+225
+m_processLock.unlock();
+226
+}
+227
+}
+228
+229
+/**
+230
+* Sets the HAL notifier thread priority.
+231
+*
+232
+* <p>The HAL notifier thread is responsible for managing the FPGA's notifier interrupt and waking
+233
+* up user's Notifiers when it's their time to run. Giving the HAL notifier thread real-time
+234
+* priority helps ensure the user's real-time Notifiers, if any, are notified to run in a timely
+235
+* manner.
+236
+*
+237
+* @param realTime Set to true to set a real-time priority, false for standard priority.
+238
+* @param priority Priority to set the thread to. For real-time, this is 1-99 with 99 being
+239
+*     highest. For non-real-time, this is forced to 0. See "man 7 sched" for more details.
+240
+* @return True on success.
+241
+*/
+242
+public static boolean setHALThreadPriority(boolean realTime, int priority) {
+243
+return NotifierJNI.setHALThreadPriority(realTime, priority);
+244
+}
+245
+}

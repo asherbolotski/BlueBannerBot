@@ -1,0 +1,195 @@
+Package
+edu.wpi.first.vision
+Class VisionThread
+java.lang.Object
+java.lang.Thread
+edu.wpi.first.vision.VisionThread
+All Implemented Interfaces:
+Runnable
+public class
+VisionThread
+extends
+Thread
+A vision thread is a special thread that runs a vision pipeline. It is a
+daemon
+thread; it
+ does not prevent the program from exiting when all other non-daemon threads have finished
+ running.
+See Also:
+VisionPipeline
+VisionRunner
+Thread.setDaemon(boolean)
+Nested Class Summary
+Nested classes/interfaces inherited from class java.lang.
+Thread
+Thread.State
+,
+Thread.UncaughtExceptionHandler
+Field Summary
+Fields inherited from class java.lang.
+Thread
+MAX_PRIORITY
+,
+MIN_PRIORITY
+,
+NORM_PRIORITY
+Constructor Summary
+Constructors
+Constructor
+Description
+VisionThread
+(
+VideoSource
+videoSource,
+ P pipeline,
+VisionRunner.Listener
+<? super P> listener)
+Creates a new vision thread that continuously runs the given vision pipeline.
+VisionThread
+(
+VisionRunner
+<?> visionRunner)
+Creates a vision thread that continuously runs a
+VisionPipeline
+.
+Method Summary
+Methods inherited from class java.lang.
+Thread
+activeCount
+,
+checkAccess
+,
+clone
+,
+countStackFrames
+,
+currentThread
+,
+dumpStack
+,
+enumerate
+,
+getAllStackTraces
+,
+getContextClassLoader
+,
+getDefaultUncaughtExceptionHandler
+,
+getId
+,
+getName
+,
+getPriority
+,
+getStackTrace
+,
+getState
+,
+getThreadGroup
+,
+getUncaughtExceptionHandler
+,
+holdsLock
+,
+interrupt
+,
+interrupted
+,
+isAlive
+,
+isDaemon
+,
+isInterrupted
+,
+join
+,
+join
+,
+join
+,
+onSpinWait
+,
+resume
+,
+run
+,
+setContextClassLoader
+,
+setDaemon
+,
+setDefaultUncaughtExceptionHandler
+,
+setName
+,
+setPriority
+,
+setUncaughtExceptionHandler
+,
+sleep
+,
+sleep
+,
+start
+,
+stop
+,
+suspend
+,
+toString
+,
+yield
+Methods inherited from class java.lang.
+Object
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+VisionThread
+public
+VisionThread
+(
+VisionRunner
+<?> visionRunner)
+Creates a vision thread that continuously runs a
+VisionPipeline
+.
+Parameters:
+visionRunner
+- the runner for a vision pipeline
+VisionThread
+public
+VisionThread
+(
+VideoSource
+videoSource,
+ P pipeline,
+VisionRunner.Listener
+<? super P> listener)
+Creates a new vision thread that continuously runs the given vision pipeline. This is
+ equivalent to
+new VisionThread(new VisionRunner<>(videoSource, pipeline, listener))
+.
+Type Parameters:
+P
+- the type of the pipeline
+Parameters:
+videoSource
+- the source for images the pipeline should process
+pipeline
+- the pipeline to run
+listener
+- the listener to copy outputs from the pipeline after it runs

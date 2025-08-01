@@ -1,0 +1,387 @@
+Package
+edu.wpi.first.hal
+Class DIOJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.DIOJNI
+Direct Known Subclasses:
+PWMJNI
+,
+RelayJNI
+public class
+DIOJNI
+extends
+JNIWrapper
+Digital Input/Output (IO) JNI Functions.
+See Also:
+"hal/DIO.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static int
+allocateDigitalPWM
+()
+Allocates a DO PWM Generator.
+static boolean
+checkDIOChannel
+(int channel)
+Checks if a DIO channel is valid.
+static void
+freeDigitalPWM
+(int pwmGenerator)
+Frees the resource associated with a DO PWM generator.
+static void
+freeDIOPort
+(int dioPortHandle)
+Frees a DIO port.
+static boolean
+getDIO
+(int dioPortHandle)
+Reads a digital value from a DIO channel.
+static boolean
+getDIODirection
+(int dioPortHandle)
+Reads the direction of a DIO channel.
+static short
+getLoopTiming
+()
+Gets the loop timing of the PWM system.
+static int
+initializeDIOPort
+(int halPortHandle,
+ boolean input)
+Creates a new instance of a digital port.
+static boolean
+isAnyPulsing
+()
+Checks if any DIO line is currently generating a pulse.
+static boolean
+isPulsing
+(int dioPortHandle)
+Checks a DIO line to see if it is currently generating a pulse.
+static void
+pulse
+(int dioPortHandle,
+ double pulseLengthSeconds)
+Generates a single digital pulse.
+static void
+pulseMultiple
+(long channelMask,
+ double pulseLengthSeconds)
+Generates a single digital pulse on multiple channels.
+static void
+setDigitalPWMDutyCycle
+(int pwmGenerator,
+ double dutyCycle)
+Configures the duty-cycle of the PWM generator.
+static void
+setDigitalPWMOutputChannel
+(int pwmGenerator,
+ int channel)
+Configures which DO channel the PWM signal is output on.
+static void
+setDigitalPWMPPS
+(int pwmGenerator,
+ double dutyCycle)
+Configures the digital PWM to be a PPS signal with specified duty cycle.
+static void
+setDigitalPWMRate
+(double rate)
+Changes the frequency of the DO PWM generator.
+static void
+setDIO
+(int dioPortHandle,
+ boolean value)
+Writes a digital value to a DIO channel.
+static void
+setDIODirection
+(int dioPortHandle,
+ boolean input)
+Sets the direction of a DIO channel.
+static void
+setDIOSimDevice
+(int handle,
+ int device)
+Indicates the DIO channel is used by a simulated device.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+initializeDIOPort
+public static
+int
+initializeDIOPort
+(int halPortHandle,
+ boolean input)
+Creates a new instance of a digital port.
+Parameters:
+halPortHandle
+- the port handle to create from
+input
+- true for input, false for output
+Returns:
+the created digital handle
+See Also:
+"HAL_InitializeDIOPort"
+checkDIOChannel
+public static
+boolean
+checkDIOChannel
+(int channel)
+Checks if a DIO channel is valid.
+Parameters:
+channel
+- the channel number to check
+Returns:
+true if the channel is valid, otherwise false
+See Also:
+"HAL_CheckDIOChannel"
+freeDIOPort
+public static
+void
+freeDIOPort
+(int dioPortHandle)
+Frees a DIO port.
+Parameters:
+dioPortHandle
+- the DIO channel handle
+See Also:
+"HAL_FreeDIOPort"
+setDIOSimDevice
+public static
+void
+setDIOSimDevice
+(int handle,
+ int device)
+Indicates the DIO channel is used by a simulated device.
+Parameters:
+handle
+- the DIO channel handle
+device
+- simulated device handle
+See Also:
+"HAL_SetDIOSimDevice"
+setDIO
+public static
+void
+setDIO
+(int dioPortHandle,
+ boolean value)
+Writes a digital value to a DIO channel.
+Parameters:
+dioPortHandle
+- the digital port handle
+value
+- the state to set the digital channel (if it is configured as an output)
+See Also:
+"HAL_SetDIO"
+setDIODirection
+public static
+void
+setDIODirection
+(int dioPortHandle,
+ boolean input)
+Sets the direction of a DIO channel.
+Parameters:
+dioPortHandle
+- the digital port handle
+input
+- true to set input, false for output
+See Also:
+"HAL_SetDIODirection"
+getDIO
+public static
+boolean
+getDIO
+(int dioPortHandle)
+Reads a digital value from a DIO channel.
+Parameters:
+dioPortHandle
+- the digital port handle
+Returns:
+the state of the specified channel
+See Also:
+"HAL_GetDIO"
+getDIODirection
+public static
+boolean
+getDIODirection
+(int dioPortHandle)
+Reads the direction of a DIO channel.
+Parameters:
+dioPortHandle
+- the digital port handle
+Returns:
+true for input, false for output
+See Also:
+"HAL_GetDIODirection"
+pulse
+public static
+void
+pulse
+(int dioPortHandle,
+ double pulseLengthSeconds)
+Generates a single digital pulse.
+Write a pulse to the specified digital output channel. There can only be a single pulse
+ going at any time.
+Parameters:
+dioPortHandle
+- the digital port handle
+pulseLengthSeconds
+- the active length of the pulse (in seconds)
+See Also:
+"HAL_Pulse"
+pulseMultiple
+public static
+void
+pulseMultiple
+(long channelMask,
+ double pulseLengthSeconds)
+Generates a single digital pulse on multiple channels.
+Write a pulse to the channels enabled by the mask. There can only be a single pulse going at
+ any time.
+Parameters:
+channelMask
+- the channel mask
+pulseLengthSeconds
+- the active length of the pulse (in seconds)
+See Also:
+"HAL_PulseMultiple"
+isPulsing
+public static
+boolean
+isPulsing
+(int dioPortHandle)
+Checks a DIO line to see if it is currently generating a pulse.
+Parameters:
+dioPortHandle
+- the digital port handle
+Returns:
+true if a pulse is in progress, otherwise false
+See Also:
+"HAL_IsPulsing"
+isAnyPulsing
+public static
+boolean
+isAnyPulsing
+()
+Checks if any DIO line is currently generating a pulse.
+Returns:
+true if a pulse on some line is in progress
+See Also:
+"HAL_IsAnyPulsing"
+getLoopTiming
+public static
+short
+getLoopTiming
+()
+Gets the loop timing of the PWM system.
+Returns:
+the loop time in clock ticks
+allocateDigitalPWM
+public static
+int
+allocateDigitalPWM
+()
+Allocates a DO PWM Generator.
+Returns:
+the allocated digital PWM handle
+freeDigitalPWM
+public static
+void
+freeDigitalPWM
+(int pwmGenerator)
+Frees the resource associated with a DO PWM generator.
+Parameters:
+pwmGenerator
+- the digital PWM handle
+See Also:
+"HAL_FreeDigitalPWM"
+setDigitalPWMRate
+public static
+void
+setDigitalPWMRate
+(double rate)
+Changes the frequency of the DO PWM generator.
+The valid range is from 0.6 Hz to 19 kHz.
+The frequency resolution is logarithmic.
+Parameters:
+rate
+- the frequency to output all digital output PWM signals
+See Also:
+"HAL_SetDigitalPWMRate"
+setDigitalPWMDutyCycle
+public static
+void
+setDigitalPWMDutyCycle
+(int pwmGenerator,
+ double dutyCycle)
+Configures the duty-cycle of the PWM generator.
+Parameters:
+pwmGenerator
+- the digital PWM handle
+dutyCycle
+- the percent duty cycle to output [0..1]
+See Also:
+"HAL_SetDigitalPWMDutyCycle"
+setDigitalPWMPPS
+public static
+void
+setDigitalPWMPPS
+(int pwmGenerator,
+ double dutyCycle)
+Configures the digital PWM to be a PPS signal with specified duty cycle.
+Parameters:
+pwmGenerator
+- the digital PWM handle
+dutyCycle
+- the percent duty cycle to output [0..1]
+See Also:
+"HAL_SetDigitalPWMPPS"
+setDigitalPWMOutputChannel
+public static
+void
+setDigitalPWMOutputChannel
+(int pwmGenerator,
+ int channel)
+Configures which DO channel the PWM signal is output on.
+Parameters:
+pwmGenerator
+- the digital PWM handle
+channel
+- the channel to output on
+See Also:
+"HAL_SetDigitalPWMOutputChannel"

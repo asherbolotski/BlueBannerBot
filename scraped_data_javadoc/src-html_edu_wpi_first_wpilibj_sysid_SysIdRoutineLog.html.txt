@@ -1,0 +1,433 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.sysid;
+006
+007
+import static edu.wpi.first.units.Units.Amps;
+008
+import static edu.wpi.first.units.Units.Meters;
+009
+import static edu.wpi.first.units.Units.MetersPerSecond;
+010
+import static edu.wpi.first.units.Units.Rotations;
+011
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+012
+import static edu.wpi.first.units.Units.Second;
+013
+import static edu.wpi.first.units.Units.Volts;
+014
+015
+import edu.wpi.first.units.measure.Angle;
+016
+import edu.wpi.first.units.measure.AngularAcceleration;
+017
+import edu.wpi.first.units.measure.AngularVelocity;
+018
+import edu.wpi.first.units.measure.Current;
+019
+import edu.wpi.first.units.measure.Distance;
+020
+import edu.wpi.first.units.measure.LinearAcceleration;
+021
+import edu.wpi.first.units.measure.LinearVelocity;
+022
+import edu.wpi.first.units.measure.Voltage;
+023
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+024
+import edu.wpi.first.util.datalog.StringLogEntry;
+025
+import edu.wpi.first.wpilibj.DataLogManager;
+026
+import java.util.HashMap;
+027
+import java.util.Map;
+028
+029
+/**
+030
+* Utility for logging data from a SysId test routine. Each complete routine (quasistatic and
+031
+* dynamic, forward and reverse) should have its own SysIdRoutineLog instance, with a unique log
+032
+* name.
+033
+*/
+034
+public class SysIdRoutineLog {
+035
+private final Map<String, Map<String, DoubleLogEntry>> m_logEntries = new HashMap<>();
+036
+private final String m_logName;
+037
+private StringLogEntry m_state;
+038
+039
+/**
+040
+* Create a new logging utility for a SysId test routine.
+041
+*
+042
+* @param logName The name for the test routine in the log. Should be unique between complete test
+043
+*     routines (quasistatic and dynamic, forward and reverse). The current state of this test
+044
+*     (e.g. "quasistatic-forward") will appear in WPILog under the "sysid-test-state-logName"
+045
+*     entry.
+046
+*/
+047
+public SysIdRoutineLog(String logName) {
+048
+m_logName = logName;
+049
+}
+050
+051
+/** Possible state of a SysId routine. */
+052
+public enum State {
+053
+/** Quasistatic forward test. */
+054
+kQuasistaticForward("quasistatic-forward"),
+055
+/** Quasistatic reverse test. */
+056
+kQuasistaticReverse("quasistatic-reverse"),
+057
+/** Dynamic forward test. */
+058
+kDynamicForward("dynamic-forward"),
+059
+/** Dynamic reverse test. */
+060
+kDynamicReverse("dynamic-reverse"),
+061
+/** No test. */
+062
+kNone("none");
+063
+064
+private final String m_state;
+065
+066
+State(String state) {
+067
+m_state = state;
+068
+}
+069
+070
+@Override
+071
+public String toString() {
+072
+return m_state;
+073
+}
+074
+}
+075
+076
+/** Logs data from a single motor during a SysIdRoutine. */
+077
+public final class MotorLog {
+078
+private final String m_motorName;
+079
+080
+/**
+081
+* Create a new SysId motor log handle.
+082
+*
+083
+* @param motorName The name of the motor whose data is being logged.
+084
+*/
+085
+private MotorLog(String motorName) {
+086
+m_motorName = motorName;
+087
+m_logEntries.put(motorName, new HashMap<>());
+088
+}
+089
+090
+/**
+091
+* Log a generic data value from the motor.
+092
+*
+093
+* @param name The name of the data field being recorded.
+094
+* @param value The numeric value of the data field.
+095
+* @param unit The unit string of the data field.
+096
+* @return The motor log (for call chaining).
+097
+*/
+098
+public MotorLog value(String name, double value, String unit) {
+099
+var motorEntries = m_logEntries.get(m_motorName);
+100
+var entry = motorEntries.get(name);
+101
+102
+if (entry == null) {
+103
+var log = DataLogManager.getLog();
+104
+105
+entry = new DoubleLogEntry(log, name + "-" + m_motorName + "-" + m_logName, unit);
+106
+motorEntries.put(name, entry);
+107
+}
+108
+109
+entry.append(value);
+110
+return this;
+111
+}
+112
+113
+/**
+114
+* Log the voltage applied to the motor.
+115
+*
+116
+* @param voltage The voltage to record.
+117
+* @return The motor log (for call chaining).
+118
+*/
+119
+public MotorLog voltage(Voltage voltage) {
+120
+return value("voltage", voltage.in(Volts), Volts.name());
+121
+}
+122
+123
+/**
+124
+* Log the linear position of the motor.
+125
+*
+126
+* @param position The linear position to record.
+127
+* @return The motor log (for call chaining).
+128
+*/
+129
+public MotorLog linearPosition(Distance position) {
+130
+return value("position", position.in(Meters), Meters.name());
+131
+}
+132
+133
+/**
+134
+* Log the angular position of the motor.
+135
+*
+136
+* @param position The angular position to record.
+137
+* @return The motor log (for call chaining).
+138
+*/
+139
+public MotorLog angularPosition(Angle position) {
+140
+return value("position", position.in(Rotations), Rotations.name());
+141
+}
+142
+143
+/**
+144
+* Log the linear velocity of the motor.
+145
+*
+146
+* @param velocity The linear velocity to record.
+147
+* @return The motor log (for call chaining).
+148
+*/
+149
+public MotorLog linearVelocity(LinearVelocity velocity) {
+150
+return value("velocity", velocity.in(MetersPerSecond), MetersPerSecond.name());
+151
+}
+152
+153
+/**
+154
+* Log the angular velocity of the motor.
+155
+*
+156
+* @param velocity The angular velocity to record.
+157
+* @return The motor log (for call chaining).
+158
+*/
+159
+public MotorLog angularVelocity(AngularVelocity velocity) {
+160
+return value("velocity", velocity.in(RotationsPerSecond), RotationsPerSecond.name());
+161
+}
+162
+163
+/**
+164
+* Log the linear acceleration of the motor.
+165
+*
+166
+* <p>This is optional; SysId can perform an accurate fit without it.
+167
+*
+168
+* @param acceleration The linear acceleration to record.
+169
+* @return The motor log (for call chaining).
+170
+*/
+171
+public MotorLog linearAcceleration(LinearAcceleration acceleration) {
+172
+return value(
+173
+"acceleration",
+174
+acceleration.in(MetersPerSecond.per(Second)),
+175
+MetersPerSecond.per(Second).name());
+176
+}
+177
+178
+/**
+179
+* Log the angular acceleration of the motor.
+180
+*
+181
+* <p>This is optional; SysId can perform an accurate fit without it.
+182
+*
+183
+* @param acceleration The angular acceleration to record.
+184
+* @return The motor log (for call chaining).
+185
+*/
+186
+public MotorLog angularAcceleration(AngularAcceleration acceleration) {
+187
+return value(
+188
+"acceleration",
+189
+acceleration.in(RotationsPerSecond.per(Second)),
+190
+RotationsPerSecond.per(Second).name());
+191
+}
+192
+193
+/**
+194
+* Log the current applied to the motor.
+195
+*
+196
+* <p>This is optional; SysId can perform an accurate fit without it.
+197
+*
+198
+* @param current The current to record.
+199
+* @return The motor log (for call chaining).
+200
+*/
+201
+public MotorLog current(Current current) {
+202
+value("current", current.in(Amps), Amps.name());
+203
+return this;
+204
+}
+205
+}
+206
+207
+/**
+208
+* Log data from a motor during a SysId routine.
+209
+*
+210
+* @param motorName The name of the motor.
+211
+* @return Handle with chainable callbacks to log individual data fields.
+212
+*/
+213
+public MotorLog motor(String motorName) {
+214
+return new MotorLog(motorName);
+215
+}
+216
+217
+/**
+218
+* Records the current state of the SysId test routine. Should be called once per iteration during
+219
+* tests with the type of the current test, and once upon test end with state `none`.
+220
+*
+221
+* @param state The current state of the SysId test routine.
+222
+*/
+223
+public void recordState(State state) {
+224
+if (m_state == null) {
+225
+m_state = new StringLogEntry(DataLogManager.getLog(), "sysid-test-state-" + m_logName);
+226
+}
+227
+m_state.append(state.toString());
+228
+}
+229
+}

@@ -1,0 +1,191 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.ImmutableTime;
+008
+import edu.wpi.first.units.measure.MutTime;
+009
+import edu.wpi.first.units.measure.Time;
+010
+011
+/**
+012
+* Unit of time dimension.
+013
+*
+014
+* <p>This is the base type for units of time dimension. It is also used to specify the dimension
+015
+* for {@link Measure}: <code>Measure&lt;TimeUnit&gt;</code>.
+016
+*
+017
+* <p>Actual units (such as {@link Units#Seconds} and {@link Units#Milliseconds}) can be found in
+018
+* the {@link Units} class.
+019
+*/
+020
+public final class TimeUnit extends Unit {
+021
+TimeUnit(TimeUnit baseUnit, double baseUnitEquivalent, String name, String symbol) {
+022
+super(baseUnit, baseUnitEquivalent, name, symbol);
+023
+}
+024
+025
+TimeUnit(
+026
+TimeUnit baseUnit,
+027
+UnaryFunction toBaseConverter,
+028
+UnaryFunction fromBaseConverter,
+029
+String name,
+030
+String symbol) {
+031
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+032
+}
+033
+034
+@Override
+035
+public TimeUnit getBaseUnit() {
+036
+return (TimeUnit) super.getBaseUnit();
+037
+}
+038
+039
+/**
+040
+* Creates a dimensionless unit corresponding to the scale factor between this and another unit of
+041
+* time.
+042
+*
+043
+* @param other the other unit of time
+044
+* @return the result
+045
+*/
+046
+@Override
+047
+public DimensionlessUnit per(TimeUnit other) {
+048
+return Units.derive(Units.Value)
+049
+.toBase(this.getConverterToBase().div(other.getConverterToBase()))
+050
+.fromBase(other.getConverterFromBase().div(this.getConverterFromBase()))
+051
+.named(this.name() + " per " + other.name())
+052
+.symbol(this.symbol() + "/" + other.symbol())
+053
+.make();
+054
+}
+055
+056
+/**
+057
+* Creates a ratio unit between this unit and an arbitrary other unit.
+058
+*
+059
+* @param other the other unit
+060
+* @param <U> the type of the other unit
+061
+* @return the ratio unit
+062
+*/
+063
+public <U extends Unit> PerUnit<TimeUnit, U> per(U other) {
+064
+return PerUnit.combine(this, other);
+065
+}
+066
+067
+/**
+068
+* Converts a measurement value in terms of another unit to this unit.
+069
+*
+070
+* @param magnitude the magnitude of the measurement in terms of the other unit
+071
+* @param otherUnit the other unit
+072
+* @return the value of the measurement in terms of this unit
+073
+*/
+074
+public double convertFrom(double magnitude, TimeUnit otherUnit) {
+075
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+076
+}
+077
+078
+@Override
+079
+public Time of(double magnitude) {
+080
+return new ImmutableTime(magnitude, toBaseUnits(magnitude), this);
+081
+}
+082
+083
+@Override
+084
+public Time ofBaseUnits(double baseUnitMagnitude) {
+085
+return new ImmutableTime(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+086
+}
+087
+088
+@Override
+089
+public Time zero() {
+090
+return (Time) super.zero();
+091
+}
+092
+093
+@Override
+094
+public Time one() {
+095
+return (Time) super.one();
+096
+}
+097
+098
+@Override
+099
+public MutTime mutable(double initialMagnitude) {
+100
+return new MutTime(initialMagnitude, toBaseUnits(initialMagnitude), this);
+101
+}
+102
+}

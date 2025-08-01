@@ -1,0 +1,459 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.math.controller.HolonomicDriveController;
+010
+import edu.wpi.first.math.controller.PIDController;
+011
+import edu.wpi.first.math.controller.ProfiledPIDController;
+012
+import edu.wpi.first.math.geometry.Pose2d;
+013
+import edu.wpi.first.math.geometry.Rotation2d;
+014
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+015
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+016
+import edu.wpi.first.math.trajectory.Trajectory;
+017
+import edu.wpi.first.wpilibj.Timer;
+018
+import java.util.function.Consumer;
+019
+import java.util.function.Supplier;
+020
+021
+/**
+022
+* A command that uses two PID controllers ({@link PIDController}) and a ProfiledPIDController
+023
+* ({@link ProfiledPIDController}) to follow a trajectory {@link Trajectory} with a swerve drive.
+024
+*
+025
+* <p>This command outputs the raw desired Swerve Module States ({@link SwerveModuleState}) in an
+026
+* array. The desired wheel and module rotation velocities should be taken from those and used in
+027
+* velocity PIDs.
+028
+*
+029
+* <p>The robot angle controller does not follow the angle given by the trajectory but rather goes
+030
+* to the angle given in the final state of the trajectory.
+031
+*
+032
+* <p>This class is provided by the NewCommands VendorDep
+033
+*/
+034
+public class SwerveControllerCommand extends Command {
+035
+private final Timer m_timer = new Timer();
+036
+private final Trajectory m_trajectory;
+037
+private final Supplier<Pose2d> m_pose;
+038
+private final SwerveDriveKinematics m_kinematics;
+039
+private final HolonomicDriveController m_controller;
+040
+private final Consumer<SwerveModuleState[]> m_outputModuleStates;
+041
+private final Supplier<Rotation2d> m_desiredRotation;
+042
+043
+/**
+044
+* Constructs a new SwerveControllerCommand that when executed will follow the provided
+045
+* trajectory. This command will not return output voltages but rather raw module states from the
+046
+* position controllers which need to be put into a velocity PID.
+047
+*
+048
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path.
+049
+* This is left to the user to do since it is not appropriate for paths with nonstationary
+050
+* endstates.
+051
+*
+052
+* @param trajectory The trajectory to follow.
+053
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+054
+*     provide this.
+055
+* @param kinematics The kinematics for the robot drivetrain.
+056
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+057
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+058
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+059
+* @param desiredRotation The angle that the drivetrain should be facing. This is sampled at each
+060
+*     time step.
+061
+* @param outputModuleStates The raw output module states from the position controllers.
+062
+* @param requirements The subsystems to require.
+063
+*/
+064
+public SwerveControllerCommand(
+065
+Trajectory trajectory,
+066
+Supplier<Pose2d> pose,
+067
+SwerveDriveKinematics kinematics,
+068
+PIDController xController,
+069
+PIDController yController,
+070
+ProfiledPIDController thetaController,
+071
+Supplier<Rotation2d> desiredRotation,
+072
+Consumer<SwerveModuleState[]> outputModuleStates,
+073
+Subsystem... requirements) {
+074
+this(
+075
+trajectory,
+076
+pose,
+077
+kinematics,
+078
+new HolonomicDriveController(
+079
+requireNonNullParam(xController, "xController", "SwerveControllerCommand"),
+080
+requireNonNullParam(yController, "yController", "SwerveControllerCommand"),
+081
+requireNonNullParam(thetaController, "thetaController", "SwerveControllerCommand")),
+082
+desiredRotation,
+083
+outputModuleStates,
+084
+requirements);
+085
+}
+086
+087
+/**
+088
+* Constructs a new SwerveControllerCommand that when executed will follow the provided
+089
+* trajectory. This command will not return output voltages but rather raw module states from the
+090
+* position controllers which need to be put into a velocity PID.
+091
+*
+092
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path.
+093
+* This is left to the user since it is not appropriate for paths with nonstationary endstates.
+094
+*
+095
+* <p>Note 2: The final rotation of the robot will be set to the rotation of the final pose in the
+096
+* trajectory. The robot will not follow the rotations from the poses at each timestep. If
+097
+* alternate rotation behavior is desired, the other constructor with a supplier for rotation
+098
+* should be used.
+099
+*
+100
+* @param trajectory The trajectory to follow.
+101
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+102
+*     provide this.
+103
+* @param kinematics The kinematics for the robot drivetrain.
+104
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+105
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+106
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+107
+* @param outputModuleStates The raw output module states from the position controllers.
+108
+* @param requirements The subsystems to require.
+109
+*/
+110
+public SwerveControllerCommand(
+111
+Trajectory trajectory,
+112
+Supplier<Pose2d> pose,
+113
+SwerveDriveKinematics kinematics,
+114
+PIDController xController,
+115
+PIDController yController,
+116
+ProfiledPIDController thetaController,
+117
+Consumer<SwerveModuleState[]> outputModuleStates,
+118
+Subsystem... requirements) {
+119
+this(
+120
+trajectory,
+121
+pose,
+122
+kinematics,
+123
+xController,
+124
+yController,
+125
+thetaController,
+126
+() ->
+127
+trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
+128
+outputModuleStates,
+129
+requirements);
+130
+}
+131
+132
+/**
+133
+* Constructs a new SwerveControllerCommand that when executed will follow the provided
+134
+* trajectory. This command will not return output voltages but rather raw module states from the
+135
+* position controllers which need to be put into a velocity PID.
+136
+*
+137
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
+138
+* this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+139
+*
+140
+* <p>Note 2: The final rotation of the robot will be set to the rotation of the final pose in the
+141
+* trajectory. The robot will not follow the rotations from the poses at each timestep. If
+142
+* alternate rotation behavior is desired, the other constructor with a supplier for rotation
+143
+* should be used.
+144
+*
+145
+* @param trajectory The trajectory to follow.
+146
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+147
+*     provide this.
+148
+* @param kinematics The kinematics for the robot drivetrain.
+149
+* @param controller The HolonomicDriveController for the drivetrain.
+150
+* @param outputModuleStates The raw output module states from the position controllers.
+151
+* @param requirements The subsystems to require.
+152
+*/
+153
+public SwerveControllerCommand(
+154
+Trajectory trajectory,
+155
+Supplier<Pose2d> pose,
+156
+SwerveDriveKinematics kinematics,
+157
+HolonomicDriveController controller,
+158
+Consumer<SwerveModuleState[]> outputModuleStates,
+159
+Subsystem... requirements) {
+160
+this(
+161
+trajectory,
+162
+pose,
+163
+kinematics,
+164
+controller,
+165
+() ->
+166
+trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
+167
+outputModuleStates,
+168
+requirements);
+169
+}
+170
+171
+/**
+172
+* Constructs a new SwerveControllerCommand that when executed will follow the provided
+173
+* trajectory. This command will not return output voltages but rather raw module states from the
+174
+* position controllers which need to be put into a velocity PID.
+175
+*
+176
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
+177
+* this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+178
+*
+179
+* @param trajectory The trajectory to follow.
+180
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+181
+*     provide this.
+182
+* @param kinematics The kinematics for the robot drivetrain.
+183
+* @param controller The HolonomicDriveController for the drivetrain.
+184
+* @param desiredRotation The angle that the drivetrain should be facing. This is sampled at each
+185
+*     time step.
+186
+* @param outputModuleStates The raw output module states from the position controllers.
+187
+* @param requirements The subsystems to require.
+188
+*/
+189
+@SuppressWarnings("this-escape")
+190
+public SwerveControllerCommand(
+191
+Trajectory trajectory,
+192
+Supplier<Pose2d> pose,
+193
+SwerveDriveKinematics kinematics,
+194
+HolonomicDriveController controller,
+195
+Supplier<Rotation2d> desiredRotation,
+196
+Consumer<SwerveModuleState[]> outputModuleStates,
+197
+Subsystem... requirements) {
+198
+m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
+199
+m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");
+200
+m_kinematics = requireNonNullParam(kinematics, "kinematics", "SwerveControllerCommand");
+201
+m_controller = requireNonNullParam(controller, "controller", "SwerveControllerCommand");
+202
+203
+m_desiredRotation =
+204
+requireNonNullParam(desiredRotation, "desiredRotation", "SwerveControllerCommand");
+205
+206
+m_outputModuleStates =
+207
+requireNonNullParam(outputModuleStates, "outputModuleStates", "SwerveControllerCommand");
+208
+209
+addRequirements(requirements);
+210
+}
+211
+212
+@Override
+213
+public void initialize() {
+214
+m_timer.restart();
+215
+}
+216
+217
+@Override
+218
+public void execute() {
+219
+double curTime = m_timer.get();
+220
+var desiredState = m_trajectory.sample(curTime);
+221
+222
+var targetChassisSpeeds =
+223
+m_controller.calculate(m_pose.get(), desiredState, m_desiredRotation.get());
+224
+var targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
+225
+226
+m_outputModuleStates.accept(targetModuleStates);
+227
+}
+228
+229
+@Override
+230
+public void end(boolean interrupted) {
+231
+m_timer.stop();
+232
+}
+233
+234
+@Override
+235
+public boolean isFinished() {
+236
+return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
+237
+}
+238
+}

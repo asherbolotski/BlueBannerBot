@@ -1,0 +1,520 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.units.measure.Time;
+010
+import java.util.Map;
+011
+import java.util.Set;
+012
+import java.util.function.BooleanSupplier;
+013
+import java.util.function.Supplier;
+014
+015
+/**
+016
+* Namespace for command factory methods.
+017
+*
+018
+* <p>For convenience, you might want to static import the members of this class.
+019
+*/
+020
+public final class Commands {
+021
+/**
+022
+* Constructs a command that does nothing, finishing immediately.
+023
+*
+024
+* @return the command
+025
+*/
+026
+public static Command none() {
+027
+return new InstantCommand();
+028
+}
+029
+030
+/**
+031
+* Constructs a command that does nothing until interrupted.
+032
+*
+033
+* @param requirements Subsystems to require
+034
+* @return the command
+035
+*/
+036
+public static Command idle(Subsystem... requirements) {
+037
+return run(() -> {}, requirements);
+038
+}
+039
+040
+// Action Commands
+041
+042
+/**
+043
+* Constructs a command that runs an action once and finishes.
+044
+*
+045
+* @param action the action to run
+046
+* @param requirements subsystems the action requires
+047
+* @return the command
+048
+* @see InstantCommand
+049
+*/
+050
+public static Command runOnce(Runnable action, Subsystem... requirements) {
+051
+return new InstantCommand(action, requirements);
+052
+}
+053
+054
+/**
+055
+* Constructs a command that runs an action every iteration until interrupted.
+056
+*
+057
+* @param action the action to run
+058
+* @param requirements subsystems the action requires
+059
+* @return the command
+060
+* @see RunCommand
+061
+*/
+062
+public static Command run(Runnable action, Subsystem... requirements) {
+063
+return new RunCommand(action, requirements);
+064
+}
+065
+066
+/**
+067
+* Constructs a command that runs an action once and another action when the command is
+068
+* interrupted.
+069
+*
+070
+* @param start the action to run on start
+071
+* @param end the action to run on interrupt
+072
+* @param requirements subsystems the action requires
+073
+* @return the command
+074
+* @see StartEndCommand
+075
+*/
+076
+public static Command startEnd(Runnable start, Runnable end, Subsystem... requirements) {
+077
+return new StartEndCommand(start, end, requirements);
+078
+}
+079
+080
+/**
+081
+* Constructs a command that runs an action every iteration until interrupted, and then runs a
+082
+* second action.
+083
+*
+084
+* @param run the action to run every iteration
+085
+* @param end the action to run on interrupt
+086
+* @param requirements subsystems the action requires
+087
+* @return the command
+088
+*/
+089
+public static Command runEnd(Runnable run, Runnable end, Subsystem... requirements) {
+090
+requireNonNullParam(end, "end", "Command.runEnd");
+091
+return new FunctionalCommand(
+092
+() -> {}, run, interrupted -> end.run(), () -> false, requirements);
+093
+}
+094
+095
+/**
+096
+* Constructs a command that runs an action once, and then runs an action every iteration until
+097
+* interrupted.
+098
+*
+099
+* @param start the action to run on start
+100
+* @param run the action to run every iteration
+101
+* @param requirements subsystems the action requires
+102
+* @return the command
+103
+*/
+104
+public static Command startRun(Runnable start, Runnable run, Subsystem... requirements) {
+105
+return new FunctionalCommand(start, run, interrupted -> {}, () -> false, requirements);
+106
+}
+107
+108
+/**
+109
+* Constructs a command that prints a message and finishes.
+110
+*
+111
+* @param message the message to print
+112
+* @return the command
+113
+* @see PrintCommand
+114
+*/
+115
+public static Command print(String message) {
+116
+return new PrintCommand(message);
+117
+}
+118
+119
+// Idling Commands
+120
+121
+/**
+122
+* Constructs a command that does nothing, finishing after a specified duration.
+123
+*
+124
+* @param seconds after how long the command finishes
+125
+* @return the command
+126
+* @see WaitCommand
+127
+*/
+128
+public static Command waitSeconds(double seconds) {
+129
+return new WaitCommand(seconds);
+130
+}
+131
+132
+/**
+133
+* Constructs a command that does nothing, finishing after a specified duration.
+134
+*
+135
+* @param time after how long the command finishes
+136
+* @return the command
+137
+* @see WaitCommand
+138
+*/
+139
+public static Command waitTime(Time time) {
+140
+return new WaitCommand(time);
+141
+}
+142
+143
+/**
+144
+* Constructs a command that does nothing, finishing once a condition becomes true.
+145
+*
+146
+* @param condition the condition
+147
+* @return the command
+148
+* @see WaitUntilCommand
+149
+*/
+150
+public static Command waitUntil(BooleanSupplier condition) {
+151
+return new WaitUntilCommand(condition);
+152
+}
+153
+154
+// Selector Commands
+155
+156
+/**
+157
+* Runs one of two commands, based on the boolean selector function.
+158
+*
+159
+* @param onTrue the command to run if the selector function returns true
+160
+* @param onFalse the command to run if the selector function returns false
+161
+* @param selector the selector function
+162
+* @return the command
+163
+* @see ConditionalCommand
+164
+*/
+165
+public static Command either(Command onTrue, Command onFalse, BooleanSupplier selector) {
+166
+return new ConditionalCommand(onTrue, onFalse, selector);
+167
+}
+168
+169
+/**
+170
+* Runs one of several commands, based on the selector function.
+171
+*
+172
+* @param <K> The type of key used to select the command
+173
+* @param selector the selector function
+174
+* @param commands map of commands to select from
+175
+* @return the command
+176
+* @see SelectCommand
+177
+*/
+178
+public static <K> Command select(Map<K, Command> commands, Supplier<? extends K> selector) {
+179
+return new SelectCommand<>(commands, selector);
+180
+}
+181
+182
+/**
+183
+* Runs the command supplied by the supplier.
+184
+*
+185
+* @param supplier the command supplier
+186
+* @param requirements the set of requirements for this command
+187
+* @return the command
+188
+* @see DeferredCommand
+189
+*/
+190
+public static Command defer(Supplier<Command> supplier, Set<Subsystem> requirements) {
+191
+return new DeferredCommand(supplier, requirements);
+192
+}
+193
+194
+/**
+195
+* Constructs a command that schedules the command returned from the supplier when initialized,
+196
+* and ends when it is no longer scheduled. The supplier is called when the command is
+197
+* initialized.
+198
+*
+199
+* @param supplier the command supplier
+200
+* @return the command
+201
+* @see ProxyCommand
+202
+* @see DeferredCommand
+203
+*/
+204
+public static Command deferredProxy(Supplier<Command> supplier) {
+205
+return defer(() -> supplier.get().asProxy(), Set.of());
+206
+}
+207
+208
+// Command Groups
+209
+210
+/**
+211
+* Runs a group of commands in series, one after the other.
+212
+*
+213
+* @param commands the commands to include
+214
+* @return the command group
+215
+* @see SequentialCommandGroup
+216
+*/
+217
+public static Command sequence(Command... commands) {
+218
+return new SequentialCommandGroup(commands);
+219
+}
+220
+221
+/**
+222
+* Runs a group of commands in series, one after the other. Once the last command ends, the group
+223
+* is restarted.
+224
+*
+225
+* @param commands the commands to include
+226
+* @return the command group
+227
+* @see SequentialCommandGroup
+228
+* @see Command#repeatedly()
+229
+*/
+230
+public static Command repeatingSequence(Command... commands) {
+231
+return sequence(commands).repeatedly();
+232
+}
+233
+234
+/**
+235
+* Runs a group of commands at the same time. Ends once all commands in the group finish.
+236
+*
+237
+* @param commands the commands to include
+238
+* @return the command
+239
+* @see ParallelCommandGroup
+240
+*/
+241
+public static Command parallel(Command... commands) {
+242
+return new ParallelCommandGroup(commands);
+243
+}
+244
+245
+/**
+246
+* Runs a group of commands at the same time. Ends once any command in the group finishes, and
+247
+* cancels the others.
+248
+*
+249
+* @param commands the commands to include
+250
+* @return the command group
+251
+* @see ParallelRaceGroup
+252
+*/
+253
+public static Command race(Command... commands) {
+254
+return new ParallelRaceGroup(commands);
+255
+}
+256
+257
+/**
+258
+* Runs a group of commands at the same time. Ends once a specific command finishes, and cancels
+259
+* the others.
+260
+*
+261
+* @param deadline the deadline command
+262
+* @param otherCommands the other commands to include
+263
+* @return the command group
+264
+* @see ParallelDeadlineGroup
+265
+* @throws IllegalArgumentException if the deadline command is also in the otherCommands argument
+266
+*/
+267
+public static Command deadline(Command deadline, Command... otherCommands) {
+268
+return new ParallelDeadlineGroup(deadline, otherCommands);
+269
+}
+270
+271
+private Commands() {
+272
+throw new UnsupportedOperationException("This is a utility class");
+273
+}
+274
+}

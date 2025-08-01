@@ -1,0 +1,159 @@
+Package
+edu.wpi.first.epilogue
+Enum Class Logged.Importance
+java.lang.Object
+java.lang.Enum
+<
+Logged.Importance
+>
+edu.wpi.first.epilogue.Logged.Importance
+All Implemented Interfaces:
+Serializable
+,
+Comparable
+<
+Logged.Importance
+>
+,
+Constable
+Enclosing class:
+Logged
+public static enum
+Logged.Importance
+extends
+Enum
+<
+Logged.Importance
+>
+Data importance. Can be used at the class level to set the default importance for all data
+ points in the class, and can be used on individual fields and methods to set a specific
+ importance level overriding the class-level default.
+Nested Class Summary
+Nested classes/interfaces inherited from class java.lang.
+Enum
+Enum.EnumDesc
+<
+E
+extends
+Enum
+<
+E
+>>
+Enum Constant Summary
+Enum Constants
+Enum Constant
+Description
+CRITICAL
+Critical data that should always be present in logs.
+DEBUG
+Debug information.
+INFO
+Informational data.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+Logged.Importance
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+static
+Logged.Importance
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Methods inherited from class java.lang.
+Enum
+clone
+,
+compareTo
+,
+describeConstable
+,
+equals
+,
+finalize
+,
+getDeclaringClass
+,
+hashCode
+,
+name
+,
+ordinal
+,
+toString
+,
+valueOf
+Methods inherited from class java.lang.
+Object
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Enum Constant Details
+DEBUG
+public static final
+Logged.Importance
+DEBUG
+Debug information. Useful for low-level information like raw sensor values.
+INFO
+public static final
+Logged.Importance
+INFO
+Informational data. Useful for higher-level information like pose estimates or subsystem
+ state.
+CRITICAL
+public static final
+Logged.Importance
+CRITICAL
+Critical data that should always be present in logs.
+Method Details
+values
+public static
+Logged.Importance
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Returns:
+an array containing the constants of this enum class, in the order they are declared
+valueOf
+public static
+Logged.Importance
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+The string must match
+exactly
+an identifier used to declare an
+enum constant in this class.  (Extraneous whitespace characters are 
+not permitted.)
+Parameters:
+name
+- the name of the enum constant to be returned.
+Returns:
+the enum constant with the specified name
+Throws:
+IllegalArgumentException
+- if this enum class has no constant with the specified name
+NullPointerException
+- if the argument is null

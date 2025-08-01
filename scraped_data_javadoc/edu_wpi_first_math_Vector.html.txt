@@ -1,0 +1,613 @@
+Package
+edu.wpi.first.math
+Class Vector<R extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.Matrix
+<R,
+N1
+>
+edu.wpi.first.math.Vector<R>
+Type Parameters:
+R
+- The number of rows in this matrix.
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Vector
+<R extends
+Num
+>
+extends
+Matrix
+<R,
+N1
+>
+implements
+ProtobufSerializable
+,
+StructSerializable
+A shape-safe wrapper over Efficient Java Matrix Library (EJML) matrices.
+This class is intended to be used alongside the state space library.
+Field Summary
+Fields inherited from class edu.wpi.first.math.
+Matrix
+m_storage
+Constructor Summary
+Constructors
+Constructor
+Description
+Vector
+(
+Matrix
+<
+R
+,
+N1
+> other)
+Constructs a new vector with the storage of the supplied matrix.
+Vector
+(
+Nat
+<
+R
+> rows)
+Constructs an empty zero vector of the given dimensions.
+Vector
+(org.ejml.simple.SimpleMatrix storage)
+Constructs a new
+Vector
+with the given storage.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+Vector
+<
+N3
+>
+cross
+(
+Vector
+<
+N3
+> a,
+Vector
+<
+N3
+> b)
+Returns the cross product of 3 dimensional vectors a and b.
+Vector
+<
+R
+>
+div
+(double value)
+Divides all elements of this matrix by the given value.
+Vector
+<
+R
+>
+div
+(int value)
+Divides all elements of this matrix by the given value.
+double
+dot
+(
+Vector
+<
+R
+> other)
+Returns the dot product of this vector with another.
+double
+get
+(int row)
+Returns an element of the vector at a specified row.
+static final <R extends
+Num
+>
+VectorProto
+<R>
+getProto
+(
+Nat
+<R> rows)
+Creates an implementation of the
+Protobuf
+interface for vectors.
+static final <R extends
+Num
+>
+VectorStruct
+<R>
+getStruct
+(
+Nat
+<R> rows)
+Creates an implementation of the
+Struct
+interface for vectors.
+final
+Vector
+<
+R
+>
+minus
+(
+Vector
+<
+R
+> value)
+Subtracts the given vector to this vector.
+double
+norm
+()
+Returns the norm of this vector.
+final
+Vector
+<
+R
+>
+plus
+(
+Vector
+<
+R
+> value)
+Adds the given vector to this vector.
+Vector
+<
+R
+>
+projection
+(
+Vector
+<
+R
+> other)
+Returns the projection of this vector along another.
+Vector
+<
+R
+>
+times
+(double value)
+Multiplies all the elements of this matrix by the given scalar.
+Vector
+<
+R
+>
+unit
+()
+Returns the unit vector parallel with this vector.
+Methods inherited from class edu.wpi.first.math.
+Matrix
+assignBlock
+,
+block
+,
+block
+,
+changeBoundsUnchecked
+,
+copy
+,
+det
+,
+diag
+,
+elementPower
+,
+elementPower
+,
+elementSum
+,
+elementTimes
+,
+equals
+,
+exp
+,
+extractColumnVector
+,
+extractFrom
+,
+extractRowVector
+,
+eye
+,
+eye
+,
+fill
+,
+get
+,
+getData
+,
+getNumCols
+,
+getNumRows
+,
+getProto
+,
+getStorage
+,
+getStruct
+,
+hashCode
+,
+inv
+,
+isEqual
+,
+isIdentical
+,
+lltDecompose
+,
+max
+,
+maxAbs
+,
+mean
+,
+minInternal
+,
+minus
+,
+minus
+,
+normF
+,
+normIndP1
+,
+plus
+,
+plus
+,
+pow
+,
+rankUpdate
+,
+set
+,
+setColumn
+,
+setRow
+,
+solve
+,
+solveFullPivHouseholderQr
+,
+times
+,
+toString
+,
+trace
+,
+transpose
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+Vector
+public
+Vector
+(
+Nat
+<
+R
+> rows)
+Constructs an empty zero vector of the given dimensions.
+Parameters:
+rows
+- The number of rows of the vector.
+Vector
+public
+Vector
+(org.ejml.simple.SimpleMatrix storage)
+Constructs a new
+Vector
+with the given storage. Caller should make sure that the
+ provided generic bounds match the shape of the provided
+Vector
+.
+NOTE:It is not recommended to use this constructor unless the
+SimpleMatrix
+API is
+ absolutely necessary due to the desired function not being accessible through the
+Vector
+wrapper.
+Parameters:
+storage
+- The
+SimpleMatrix
+to back this vector.
+Vector
+public
+Vector
+(
+Matrix
+<
+R
+,
+N1
+> other)
+Constructs a new vector with the storage of the supplied matrix.
+Parameters:
+other
+- The
+Vector
+to copy the storage of.
+Method Details
+get
+public
+double
+get
+(int row)
+Returns an element of the vector at a specified row.
+Parameters:
+row
+- The row that the element is located at.
+Returns:
+An element of the vector.
+times
+public
+Vector
+<
+R
+>
+times
+(double value)
+Description copied from class:
+Matrix
+Multiplies all the elements of this matrix by the given scalar.
+Overrides:
+times
+in class
+Matrix
+<
+R
+extends
+Num
+,
+N1
+>
+Parameters:
+value
+- The scalar value to multiply by.
+Returns:
+A new matrix with all the elements multiplied by the given value.
+div
+public
+Vector
+<
+R
+>
+div
+(int value)
+Description copied from class:
+Matrix
+Divides all elements of this matrix by the given value.
+Overrides:
+div
+in class
+Matrix
+<
+R
+extends
+Num
+,
+N1
+>
+Parameters:
+value
+- The value to divide by.
+Returns:
+The resultant matrix.
+div
+public
+Vector
+<
+R
+>
+div
+(double value)
+Description copied from class:
+Matrix
+Divides all elements of this matrix by the given value.
+Overrides:
+div
+in class
+Matrix
+<
+R
+extends
+Num
+,
+N1
+>
+Parameters:
+value
+- The value to divide by.
+Returns:
+The resultant matrix.
+plus
+public final
+Vector
+<
+R
+>
+plus
+(
+Vector
+<
+R
+> value)
+Adds the given vector to this vector.
+Parameters:
+value
+- The vector to add.
+Returns:
+The resultant vector.
+minus
+public final
+Vector
+<
+R
+>
+minus
+(
+Vector
+<
+R
+> value)
+Subtracts the given vector to this vector.
+Parameters:
+value
+- The vector to add.
+Returns:
+The resultant vector.
+dot
+public
+double
+dot
+(
+Vector
+<
+R
+> other)
+Returns the dot product of this vector with another.
+Parameters:
+other
+- The other vector.
+Returns:
+The dot product.
+norm
+public
+double
+norm
+()
+Returns the norm of this vector.
+Returns:
+The norm.
+unit
+public
+Vector
+<
+R
+>
+unit
+()
+Returns the unit vector parallel with this vector.
+Returns:
+The unit vector.
+projection
+public
+Vector
+<
+R
+>
+projection
+(
+Vector
+<
+R
+> other)
+Returns the projection of this vector along another.
+Parameters:
+other
+- The vector to project along.
+Returns:
+The projection.
+cross
+public static
+Vector
+<
+N3
+>
+cross
+(
+Vector
+<
+N3
+> a,
+Vector
+<
+N3
+> b)
+Returns the cross product of 3 dimensional vectors a and b.
+Parameters:
+a
+- The vector to cross with b.
+b
+- The vector to cross with a.
+Returns:
+The cross product of a and b.
+getProto
+public static final
+<R extends
+Num
+>
+VectorProto
+<R>
+getProto
+(
+Nat
+<R> rows)
+Creates an implementation of the
+Protobuf
+interface for vectors.
+Type Parameters:
+R
+- The number of rows of the vectors this serializer processes.
+Parameters:
+rows
+- The number of rows of the vectors this serializer processes.
+Returns:
+The protobuf implementation.
+getStruct
+public static final
+<R extends
+Num
+>
+VectorStruct
+<R>
+getStruct
+(
+Nat
+<R> rows)
+Creates an implementation of the
+Struct
+interface for vectors.
+Type Parameters:
+R
+- The number of rows of the vectors this serializer processes.
+Parameters:
+rows
+- The number of rows of the vectors this serializer processes.
+Returns:
+The struct implementation.

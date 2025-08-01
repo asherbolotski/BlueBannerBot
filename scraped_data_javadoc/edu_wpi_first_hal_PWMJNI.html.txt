@@ -1,0 +1,379 @@
+Package
+edu.wpi.first.hal
+Class PWMJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.DIOJNI
+edu.wpi.first.hal.PWMJNI
+public class
+PWMJNI
+extends
+DIOJNI
+PWM JNI Functions.
+See Also:
+"hal/PWM.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static boolean
+checkPWMChannel
+(int channel)
+Checks if a pwm channel is valid.
+static void
+freePWMPort
+(int pwmPortHandle)
+Frees a PWM port.
+static int
+getPulseTimeMicroseconds
+(int pwmPortHandle)
+Gets the current microsecond pulse time from a PWM channel.
+static
+PWMConfigDataResult
+getPWMConfigMicroseconds
+(int pwmPortHandle)
+Gets the pwm configuration settings for the PWM channel.
+static boolean
+getPWMEliminateDeadband
+(int pwmPortHandle)
+Gets the current eliminate deadband value.
+static double
+getPWMPosition
+(int pwmPortHandle)
+Gets a position value from a PWM channel.
+static double
+getPWMSpeed
+(int pwmPortHandle)
+Gets a scaled value from a PWM channel.
+static int
+initializePWMPort
+(int halPortHandle)
+Initializes a PWM port.
+static void
+latchPWMZero
+(int pwmPortHandle)
+Forces a PWM signal to go to 0 temporarily.
+static void
+setAlwaysHighMode
+(int pwmPortHandle)
+Sets the PWM output to be a continuous high signal while enabled.
+static void
+setPulseTimeMicroseconds
+(int pwmPortHandle,
+ int microsecondPulseTime)
+Sets a PWM channel to the desired pulse width in microseconds.
+static void
+setPWMConfigMicroseconds
+(int pwmPortHandle,
+ int maxPwm,
+ int deadbandMaxPwm,
+ int centerPwm,
+ int deadbandMinPwm,
+ int minPwm)
+Sets the configuration settings for the PWM channel.
+static void
+setPWMDisabled
+(int pwmPortHandle)
+Sets a PWM channel to be disabled.
+static void
+setPWMEliminateDeadband
+(int pwmPortHandle,
+ boolean eliminateDeadband)
+Sets if the FPGA should output the center value if the input value is within the deadband.
+static void
+setPWMPeriodScale
+(int pwmPortHandle,
+ int squelchMask)
+Sets how how often the PWM signal is squelched, thus scaling the period.
+static void
+setPWMPosition
+(int pwmPortHandle,
+ double position)
+Sets a PWM channel to the desired position value.
+static void
+setPWMSpeed
+(int pwmPortHandle,
+ double speed)
+Sets a PWM channel to the desired scaled value.
+Methods inherited from class edu.wpi.first.hal.
+DIOJNI
+allocateDigitalPWM
+,
+checkDIOChannel
+,
+freeDigitalPWM
+,
+freeDIOPort
+,
+getDIO
+,
+getDIODirection
+,
+getLoopTiming
+,
+initializeDIOPort
+,
+isAnyPulsing
+,
+isPulsing
+,
+pulse
+,
+pulseMultiple
+,
+setDigitalPWMDutyCycle
+,
+setDigitalPWMOutputChannel
+,
+setDigitalPWMPPS
+,
+setDigitalPWMRate
+,
+setDIO
+,
+setDIODirection
+,
+setDIOSimDevice
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+initializePWMPort
+public static
+int
+initializePWMPort
+(int halPortHandle)
+Initializes a PWM port.
+Parameters:
+halPortHandle
+- the port to initialize
+Returns:
+the created pwm handle
+checkPWMChannel
+public static
+boolean
+checkPWMChannel
+(int channel)
+Checks if a pwm channel is valid.
+Parameters:
+channel
+- the channel to check
+Returns:
+true if the channel is valid, otherwise false
+freePWMPort
+public static
+void
+freePWMPort
+(int pwmPortHandle)
+Frees a PWM port.
+Parameters:
+pwmPortHandle
+- the pwm handle
+setPWMConfigMicroseconds
+public static
+void
+setPWMConfigMicroseconds
+(int pwmPortHandle,
+ int maxPwm,
+ int deadbandMaxPwm,
+ int centerPwm,
+ int deadbandMinPwm,
+ int minPwm)
+Sets the configuration settings for the PWM channel.
+All values are in microseconds.
+Parameters:
+pwmPortHandle
+- the PWM handle
+maxPwm
+- the maximum PWM value
+deadbandMaxPwm
+- the high range of the center deadband
+centerPwm
+- the center PWM value
+deadbandMinPwm
+- the low range of the center deadband
+minPwm
+- the minimum PWM value
+getPWMConfigMicroseconds
+public static
+PWMConfigDataResult
+getPWMConfigMicroseconds
+(int pwmPortHandle)
+Gets the pwm configuration settings for the PWM channel.
+Values are in microseconds.
+Parameters:
+pwmPortHandle
+- the PWM handle
+Returns:
+the pwm configuration settings
+setPWMEliminateDeadband
+public static
+void
+setPWMEliminateDeadband
+(int pwmPortHandle,
+ boolean eliminateDeadband)
+Sets if the FPGA should output the center value if the input value is within the deadband.
+Parameters:
+pwmPortHandle
+- the PWM handle
+eliminateDeadband
+- true to eliminate deadband, otherwise false
+getPWMEliminateDeadband
+public static
+boolean
+getPWMEliminateDeadband
+(int pwmPortHandle)
+Gets the current eliminate deadband value.
+Parameters:
+pwmPortHandle
+- the PWM handle
+Returns:
+true if set, otherwise false
+setPulseTimeMicroseconds
+public static
+void
+setPulseTimeMicroseconds
+(int pwmPortHandle,
+ int microsecondPulseTime)
+Sets a PWM channel to the desired pulse width in microseconds.
+Parameters:
+pwmPortHandle
+- the PWM handle
+microsecondPulseTime
+- the PWM value to set
+setPWMSpeed
+public static
+void
+setPWMSpeed
+(int pwmPortHandle,
+ double speed)
+Sets a PWM channel to the desired scaled value.
+The values range from -1 to 1 and the period is controlled by the PWM Period and MinHigh
+ registers.
+Parameters:
+pwmPortHandle
+- the PWM handle
+speed
+- the scaled PWM value to set
+setPWMPosition
+public static
+void
+setPWMPosition
+(int pwmPortHandle,
+ double position)
+Sets a PWM channel to the desired position value.
+The values range from 0 to 1 and the period is controlled by the PWM Period and MinHigh
+ registers.
+Parameters:
+pwmPortHandle
+- the PWM handle
+position
+- the positional PWM value to set
+getPulseTimeMicroseconds
+public static
+int
+getPulseTimeMicroseconds
+(int pwmPortHandle)
+Gets the current microsecond pulse time from a PWM channel.
+Parameters:
+pwmPortHandle
+- the PWM handle
+Returns:
+the current PWM microsecond pulse time
+getPWMSpeed
+public static
+double
+getPWMSpeed
+(int pwmPortHandle)
+Gets a scaled value from a PWM channel.
+The values range from -1 to 1.
+Parameters:
+pwmPortHandle
+- the PWM handle
+Returns:
+the current speed PWM value
+getPWMPosition
+public static
+double
+getPWMPosition
+(int pwmPortHandle)
+Gets a position value from a PWM channel.
+The values range from 0 to 1.
+Parameters:
+pwmPortHandle
+- the PWM handle
+Returns:
+the current positional PWM value
+setPWMDisabled
+public static
+void
+setPWMDisabled
+(int pwmPortHandle)
+Sets a PWM channel to be disabled.
+The channel is disabled until the next time it is set. Note this is different from just
+ setting a 0 speed, as this will actively stop all signaling on the channel.
+Parameters:
+pwmPortHandle
+- the PWM handle.
+latchPWMZero
+public static
+void
+latchPWMZero
+(int pwmPortHandle)
+Forces a PWM signal to go to 0 temporarily.
+Parameters:
+pwmPortHandle
+- the PWM handle.
+setAlwaysHighMode
+public static
+void
+setAlwaysHighMode
+(int pwmPortHandle)
+Sets the PWM output to be a continuous high signal while enabled.
+Parameters:
+pwmPortHandle
+- the PWM handle.
+setPWMPeriodScale
+public static
+void
+setPWMPeriodScale
+(int pwmPortHandle,
+ int squelchMask)
+Sets how how often the PWM signal is squelched, thus scaling the period.
+Parameters:
+pwmPortHandle
+- the PWM handle.
+squelchMask
+- the 2-bit mask of outputs to squelch

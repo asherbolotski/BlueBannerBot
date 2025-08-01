@@ -1,0 +1,79 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/** Represents a CAN message read from a stream. */
+008
+public class CANStreamMessage {
+009
+/** The message data. */
+010
+@SuppressWarnings("MemberName")
+011
+public final byte[] data = new byte[8];
+012
+013
+/** The length of the data received (0-8 bytes). */
+014
+@SuppressWarnings("MemberName")
+015
+public int length;
+016
+017
+/** Timestamp message was received, in milliseconds (based off of CLOCK_MONOTONIC). */
+018
+@SuppressWarnings("MemberName")
+019
+public long timestamp;
+020
+021
+/** The message ID. */
+022
+@SuppressWarnings("MemberName")
+023
+public int messageID;
+024
+025
+/** Default constructor. */
+026
+public CANStreamMessage() {}
+027
+028
+/**
+029
+* API used from JNI to set the data.
+030
+*
+031
+* @param length Length of packet in bytes.
+032
+* @param messageID CAN message ID of the message.
+033
+* @param timestamp CAN frame timestamp in microseconds.
+034
+* @return Buffer containing CAN frame.
+035
+*/
+036
+@SuppressWarnings("PMD.MethodReturnsInternalArray")
+037
+public byte[] setStreamData(int length, int messageID, long timestamp) {
+038
+this.messageID = messageID;
+039
+this.length = length;
+040
+this.timestamp = timestamp;
+041
+return data;
+042
+}
+043
+}

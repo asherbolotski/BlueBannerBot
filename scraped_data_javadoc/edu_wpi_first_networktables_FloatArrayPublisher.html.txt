@@ -1,0 +1,112 @@
+Package
+edu.wpi.first.networktables
+Interface FloatArrayPublisher
+All Superinterfaces:
+AutoCloseable
+,
+Consumer
+<float[]>
+,
+Publisher
+,
+PubSub
+All Known Subinterfaces:
+FloatArrayEntry
+public interface
+FloatArrayPublisher
+extends
+Publisher
+,
+Consumer
+<float[]>
+NetworkTables FloatArray publisher.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default void
+accept
+(float[] value)
+FloatArrayTopic
+getTopic
+()
+Get the corresponding topic.
+default void
+set
+(float[] value)
+Publish a new value using current NT time.
+void
+set
+(float[] value,
+ long time)
+Publish a new value.
+void
+setDefault
+(float[] value)
+Publish a default value.
+Methods inherited from interface java.util.function.
+Consumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Method Details
+getTopic
+FloatArrayTopic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+set
+default
+void
+set
+(float[] value)
+Publish a new value using current NT time.
+Parameters:
+value
+- value to publish
+set
+void
+set
+(float[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+setDefault
+void
+setDefault
+(float[] value)
+Publish a default value.
+ On reconnect, a default value will never be used in preference to a
+ published value.
+Parameters:
+value
+- value
+accept
+default
+void
+accept
+(float[] value)
+Specified by:
+accept
+in interface
+Consumer
+<float[]>

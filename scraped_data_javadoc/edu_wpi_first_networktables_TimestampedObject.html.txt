@@ -1,0 +1,95 @@
+Package
+edu.wpi.first.networktables
+Class TimestampedObject<T>
+java.lang.Object
+edu.wpi.first.networktables.TimestampedObject<T>
+Type Parameters:
+T
+- Value type.
+public final class
+TimestampedObject
+<T>
+extends
+Object
+NetworkTables timestamped object.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final long
+serverTime
+Timestamp in server time base.
+final long
+timestamp
+Timestamp in local time base.
+final
+T
+value
+Value.
+Constructor Summary
+Constructors
+Constructor
+Description
+TimestampedObject
+(long timestamp,
+ long serverTime,
+T
+value)
+Create a timestamped value.
+Method Summary
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+timestamp
+public final
+long
+timestamp
+Timestamp in local time base.
+serverTime
+public final
+long
+serverTime
+Timestamp in server time base. May be 0 or 1 for locally set values.
+value
+public final
+T
+value
+Value.
+Constructor Details
+TimestampedObject
+public
+TimestampedObject
+(long timestamp,
+ long serverTime,
+T
+value)
+Create a timestamped value.
+Parameters:
+timestamp
+- timestamp in local time base
+serverTime
+- timestamp in server time base
+value
+- value

@@ -1,0 +1,186 @@
+Package
+edu.wpi.first.wpilibj2.command.sysid
+Class SysIdRoutine.Config
+java.lang.Object
+edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config
+Enclosing class:
+SysIdRoutine
+public static class
+SysIdRoutine.Config
+extends
+Object
+Hardware-independent configuration for a SysId test routine.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final
+Velocity
+<
+VoltageUnit
+>
+m_rampRate
+The voltage ramp rate used for quasistatic test routines.
+final
+Consumer
+<
+SysIdRoutineLog.State
+>
+m_recordState
+Optional handle for recording test state in a third-party logging solution.
+final
+Voltage
+m_stepVoltage
+The step voltage output used for dynamic test routines.
+final
+Time
+m_timeout
+Safety timeout for the test routine commands.
+Constructor Summary
+Constructors
+Constructor
+Description
+Config
+()
+Create a default configuration for a SysId test routine with all default settings.
+Config
+(
+Velocity
+<
+VoltageUnit
+> rampRate,
+Voltage
+stepVoltage,
+Time
+timeout)
+Create a new configuration for a SysId test routine.
+Config
+(
+Velocity
+<
+VoltageUnit
+> rampRate,
+Voltage
+stepVoltage,
+Time
+timeout,
+Consumer
+<
+SysIdRoutineLog.State
+> recordState)
+Create a new configuration for a SysId test routine.
+Method Summary
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_rampRate
+public final
+Velocity
+<
+VoltageUnit
+>
+m_rampRate
+The voltage ramp rate used for quasistatic test routines.
+m_stepVoltage
+public final
+Voltage
+m_stepVoltage
+The step voltage output used for dynamic test routines.
+m_timeout
+public final
+Time
+m_timeout
+Safety timeout for the test routine commands.
+m_recordState
+public final
+Consumer
+<
+SysIdRoutineLog.State
+>
+m_recordState
+Optional handle for recording test state in a third-party logging solution.
+Constructor Details
+Config
+public
+Config
+(
+Velocity
+<
+VoltageUnit
+> rampRate,
+Voltage
+stepVoltage,
+Time
+timeout,
+Consumer
+<
+SysIdRoutineLog.State
+> recordState)
+Create a new configuration for a SysId test routine.
+Parameters:
+rampRate
+- The voltage ramp rate used for quasistatic test routines. Defaults to 1 volt
+     per second if left null.
+stepVoltage
+- The step voltage output used for dynamic test routines. Defaults to 7
+     volts if left null.
+timeout
+- Safety timeout for the test routine commands. Defaults to 10 seconds if left
+     null.
+recordState
+- Optional handle for recording test state in a third-party logging
+     solution. If provided, the test routine state will be passed to this callback instead of
+     logged in WPILog.
+Config
+public
+Config
+(
+Velocity
+<
+VoltageUnit
+> rampRate,
+Voltage
+stepVoltage,
+Time
+timeout)
+Create a new configuration for a SysId test routine.
+Parameters:
+rampRate
+- The voltage ramp rate used for quasistatic test routines. Defaults to 1 volt
+     per second if left null.
+stepVoltage
+- The step voltage output used for dynamic test routines. Defaults to 7
+     volts if left null.
+timeout
+- Safety timeout for the test routine commands. Defaults to 10 seconds if left
+     null.
+Config
+public
+Config
+()
+Create a default configuration for a SysId test routine with all default settings.
+rampRate: 1 volt/sec
+stepVoltage: 7 volts
+timeout: 10 seconds

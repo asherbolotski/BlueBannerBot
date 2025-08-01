@@ -1,0 +1,210 @@
+Package
+edu.wpi.first.wpilibj.shuffleboard
+Enum Class BuiltInLayouts
+java.lang.Object
+java.lang.Enum
+<
+BuiltInLayouts
+>
+edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts
+All Implemented Interfaces:
+LayoutType
+,
+Serializable
+,
+Comparable
+<
+BuiltInLayouts
+>
+,
+Constable
+public enum
+BuiltInLayouts
+extends
+Enum
+<
+BuiltInLayouts
+>
+implements
+LayoutType
+The types of layouts bundled with Shuffleboard.
+ShuffleboardLayout myList = Shuffleboard.getTab("My Tab")
+   .getLayout(BuiltinLayouts.kList, "My List");
+Nested Class Summary
+Nested classes/interfaces inherited from class java.lang.
+Enum
+Enum.EnumDesc
+<
+E
+extends
+Enum
+<
+E
+>>
+Enum Constant Summary
+Enum Constants
+Enum Constant
+Description
+kGrid
+Groups components in an
+n
+x
+m
+grid.
+kList
+Groups components in a vertical list.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+String
+getLayoutName
+()
+Gets the string type of the layout as defined by that layout in Shuffleboard.
+static
+BuiltInLayouts
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+static
+BuiltInLayouts
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Methods inherited from class java.lang.
+Enum
+clone
+,
+compareTo
+,
+describeConstable
+,
+equals
+,
+finalize
+,
+getDeclaringClass
+,
+hashCode
+,
+name
+,
+ordinal
+,
+toString
+,
+valueOf
+Methods inherited from class java.lang.
+Object
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Enum Constant Details
+kList
+public static final
+BuiltInLayouts
+kList
+Groups components in a vertical list. New widgets added to the layout will be placed at the
+ bottom of the list.
+Custom properties:
+Name
+Type
+Default Value
+Notes
+Label position
+String
+"BOTTOM"
+The position of component labels inside the grid. One of
+["TOP", "LEFT", "BOTTOM", "RIGHT", "HIDDEN"
+kGrid
+public static final
+BuiltInLayouts
+kGrid
+Groups components in an
+n
+x
+m
+grid. Grid layouts default to 3x3.
+Custom properties:
+Name
+Type
+Default Value
+Notes
+Number of columns
+Number
+3
+Must be in the range [1,15]
+Number of rows
+Number
+3
+Must be in the range [1,15]
+Label position
+String
+"BOTTOM"
+The position of component labels inside the grid.
+ One of
+["TOP", "LEFT", "BOTTOM", "RIGHT", "HIDDEN"
+Method Details
+values
+public static
+BuiltInLayouts
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Returns:
+an array containing the constants of this enum class, in the order they are declared
+valueOf
+public static
+BuiltInLayouts
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+The string must match
+exactly
+an identifier used to declare an
+enum constant in this class.  (Extraneous whitespace characters are 
+not permitted.)
+Parameters:
+name
+- the name of the enum constant to be returned.
+Returns:
+the enum constant with the specified name
+Throws:
+IllegalArgumentException
+- if this enum class has no constant with the specified name
+NullPointerException
+- if the argument is null
+getLayoutName
+public
+String
+getLayoutName
+()
+Description copied from interface:
+LayoutType
+Gets the string type of the layout as defined by that layout in Shuffleboard.
+Specified by:
+getLayoutName
+in interface
+LayoutType
+Returns:
+The string type of the layout.

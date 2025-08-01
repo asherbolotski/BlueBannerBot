@@ -1,0 +1,372 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.DIODataJNI;
+008
+import edu.wpi.first.hal.simulation.NotifyCallback;
+009
+import edu.wpi.first.wpilibj.DigitalInput;
+010
+import edu.wpi.first.wpilibj.DigitalOutput;
+011
+012
+/** Class to control a simulated digital input or output. */
+013
+public class DIOSim {
+014
+private final int m_index;
+015
+016
+/**
+017
+* Constructs from a DigitalInput object.
+018
+*
+019
+* @param input DigitalInput to simulate
+020
+*/
+021
+public DIOSim(DigitalInput input) {
+022
+m_index = input.getChannel();
+023
+}
+024
+025
+/**
+026
+* Constructs from a DigitalOutput object.
+027
+*
+028
+* @param output DigitalOutput to simulate
+029
+*/
+030
+public DIOSim(DigitalOutput output) {
+031
+m_index = output.getChannel();
+032
+}
+033
+034
+/**
+035
+* Constructs from a digital I/O channel number.
+036
+*
+037
+* @param channel Channel number
+038
+*/
+039
+public DIOSim(int channel) {
+040
+m_index = channel;
+041
+}
+042
+043
+/**
+044
+* Register a callback to be run when this DIO is initialized.
+045
+*
+046
+* @param callback the callback
+047
+* @param initialNotify whether to run the callback with the initial state
+048
+* @return the {@link CallbackStore} object associated with this callback.
+049
+*/
+050
+public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+051
+int uid = DIODataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+052
+return new CallbackStore(m_index, uid, DIODataJNI::cancelInitializedCallback);
+053
+}
+054
+055
+/**
+056
+* Check whether this DIO has been initialized.
+057
+*
+058
+* @return true if initialized
+059
+*/
+060
+public boolean getInitialized() {
+061
+return DIODataJNI.getInitialized(m_index);
+062
+}
+063
+064
+/**
+065
+* Define whether this DIO has been initialized.
+066
+*
+067
+* @param initialized whether this object is initialized
+068
+*/
+069
+public void setInitialized(boolean initialized) {
+070
+DIODataJNI.setInitialized(m_index, initialized);
+071
+}
+072
+073
+/**
+074
+* Register a callback to be run whenever the DIO value changes.
+075
+*
+076
+* @param callback the callback
+077
+* @param initialNotify whether the callback should be called with the initial value
+078
+* @return the {@link CallbackStore} object associated with this callback.
+079
+*/
+080
+public CallbackStore registerValueCallback(NotifyCallback callback, boolean initialNotify) {
+081
+int uid = DIODataJNI.registerValueCallback(m_index, callback, initialNotify);
+082
+return new CallbackStore(m_index, uid, DIODataJNI::cancelValueCallback);
+083
+}
+084
+085
+/**
+086
+* Read the value of the DIO port.
+087
+*
+088
+* @return the DIO value
+089
+*/
+090
+public boolean getValue() {
+091
+return DIODataJNI.getValue(m_index);
+092
+}
+093
+094
+/**
+095
+* Change the DIO value.
+096
+*
+097
+* @param value the new value
+098
+*/
+099
+public void setValue(boolean value) {
+100
+DIODataJNI.setValue(m_index, value);
+101
+}
+102
+103
+/**
+104
+* Register a callback to be run whenever the pulse length changes.
+105
+*
+106
+* @param callback the callback
+107
+* @param initialNotify whether to call the callback with the initial state
+108
+* @return the {@link CallbackStore} object associated with this callback.
+109
+*/
+110
+public CallbackStore registerPulseLengthCallback(NotifyCallback callback, boolean initialNotify) {
+111
+int uid = DIODataJNI.registerPulseLengthCallback(m_index, callback, initialNotify);
+112
+return new CallbackStore(m_index, uid, DIODataJNI::cancelPulseLengthCallback);
+113
+}
+114
+115
+/**
+116
+* Read the pulse length.
+117
+*
+118
+* @return the pulse length of this DIO port
+119
+*/
+120
+public double getPulseLength() {
+121
+return DIODataJNI.getPulseLength(m_index);
+122
+}
+123
+124
+/**
+125
+* Change the pulse length of this DIO port.
+126
+*
+127
+* @param pulseLength the new pulse length
+128
+*/
+129
+public void setPulseLength(double pulseLength) {
+130
+DIODataJNI.setPulseLength(m_index, pulseLength);
+131
+}
+132
+133
+/**
+134
+* Register a callback to be run whenever this DIO changes to be an input.
+135
+*
+136
+* @param callback the callback
+137
+* @param initialNotify whether the callback should be called with the initial state
+138
+* @return the {@link CallbackStore} object associated with this callback.
+139
+*/
+140
+public CallbackStore registerIsInputCallback(NotifyCallback callback, boolean initialNotify) {
+141
+int uid = DIODataJNI.registerIsInputCallback(m_index, callback, initialNotify);
+142
+return new CallbackStore(m_index, uid, DIODataJNI::cancelIsInputCallback);
+143
+}
+144
+145
+/**
+146
+* Check whether this DIO port is currently an Input.
+147
+*
+148
+* @return true if Input
+149
+*/
+150
+public boolean getIsInput() {
+151
+return DIODataJNI.getIsInput(m_index);
+152
+}
+153
+154
+/**
+155
+* Define whether this DIO port is an Input.
+156
+*
+157
+* @param isInput whether this DIO should be an Input
+158
+*/
+159
+public void setIsInput(boolean isInput) {
+160
+DIODataJNI.setIsInput(m_index, isInput);
+161
+}
+162
+163
+/**
+164
+* Register a callback to be run whenever the filter index changes.
+165
+*
+166
+* @param callback the callback
+167
+* @param initialNotify whether the callback should be called with the initial value
+168
+* @return the {@link CallbackStore} object associated with this callback.
+169
+*/
+170
+public CallbackStore registerFilterIndexCallback(NotifyCallback callback, boolean initialNotify) {
+171
+int uid = DIODataJNI.registerFilterIndexCallback(m_index, callback, initialNotify);
+172
+return new CallbackStore(m_index, uid, DIODataJNI::cancelFilterIndexCallback);
+173
+}
+174
+175
+/**
+176
+* Read the filter index.
+177
+*
+178
+* @return the filter index of this DIO port
+179
+*/
+180
+public int getFilterIndex() {
+181
+return DIODataJNI.getFilterIndex(m_index);
+182
+}
+183
+184
+/**
+185
+* Change the filter index of this DIO port.
+186
+*
+187
+* @param filterIndex the new filter index
+188
+*/
+189
+public void setFilterIndex(int filterIndex) {
+190
+DIODataJNI.setFilterIndex(m_index, filterIndex);
+191
+}
+192
+193
+/** Reset all simulation data of this object. */
+194
+public void resetData() {
+195
+DIODataJNI.resetData(m_index);
+196
+}
+197
+}

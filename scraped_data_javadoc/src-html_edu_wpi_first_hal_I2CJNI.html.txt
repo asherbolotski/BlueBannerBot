@@ -1,0 +1,271 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+import java.nio.ByteBuffer;
+008
+009
+/**
+010
+* I2C HAL JNI functions.
+011
+*
+012
+* @see "I2C.h"
+013
+*/
+014
+public class I2CJNI extends JNIWrapper {
+015
+/**
+016
+* Initializes the I2C port.
+017
+*
+018
+* <p>Opens the port if necessary and saves the handle. If opening the MXP port, also sets up the
+019
+* channel functions appropriately.
+020
+*
+021
+* @param port The port to open, 0 for the on-board, 1 for the MXP.
+022
+* @see "HAL_InitializeI2C"
+023
+*/
+024
+public static native void i2CInitialize(int port);
+025
+026
+/**
+027
+* Generic I2C read/write transaction.
+028
+*
+029
+* <p>This is a lower-level interface to the I2C hardware giving you more control over each
+030
+* transaction.
+031
+*
+032
+* @param port The I2C port, 0 for the on-board, 1 for the MXP.
+033
+* @param address The address of the register on the device to be read/written.
+034
+* @param dataToSend Buffer of data to send as part of the transaction.
+035
+* @param sendSize Number of bytes to send as part of the transaction.
+036
+* @param dataReceived Buffer to read data into.
+037
+* @param receiveSize Number of bytes to read from the device.
+038
+* @return &gt;= 0 on success or -1 on transfer abort.
+039
+* @see "HAL_TransactionI2C"
+040
+*/
+041
+public static native int i2CTransaction(
+042
+int port,
+043
+byte address,
+044
+ByteBuffer dataToSend,
+045
+byte sendSize,
+046
+ByteBuffer dataReceived,
+047
+byte receiveSize);
+048
+049
+/**
+050
+* Generic I2C read/write transaction.
+051
+*
+052
+* <p>This is a lower-level interface to the I2C hardware giving you more control over each
+053
+* transaction.
+054
+*
+055
+* @param port The I2C port, 0 for the on-board, 1 for the MXP.
+056
+* @param address The address of the register on the device to be read/written.
+057
+* @param dataToSend Buffer of data to send as part of the transaction.
+058
+* @param sendSize Number of bytes to send as part of the transaction.
+059
+* @param dataReceived Buffer to read data into.
+060
+* @param receiveSize Number of bytes to read from the device.
+061
+* @return &gt;= 0 on success or -1 on transfer abort.
+062
+* @see "HAL_TransactionI2C"
+063
+*/
+064
+public static native int i2CTransactionB(
+065
+int port,
+066
+byte address,
+067
+byte[] dataToSend,
+068
+byte sendSize,
+069
+byte[] dataReceived,
+070
+byte receiveSize);
+071
+072
+/**
+073
+* Executes a write transaction with the device.
+074
+*
+075
+* <p>Writes a single byte to a register on a device and wait until the transaction is complete.
+076
+*
+077
+* @param port The I2C port, 0 for the on-board, 1 for the MXP.
+078
+* @param address The address of the register on the device to be written.
+079
+* @param dataToSend The byte to write to the register on the device.
+080
+* @param sendSize Number of bytes to send.
+081
+* @return &gt;= 0 on success or -1 on transfer abort.
+082
+* @see "HAL_WriteI2C"
+083
+*/
+084
+public static native int i2CWrite(int port, byte address, ByteBuffer dataToSend, byte sendSize);
+085
+086
+/**
+087
+* Executes a write transaction with the device.
+088
+*
+089
+* <p>Writes a single byte to a register on a device and wait until the transaction is complete.
+090
+*
+091
+* @param port The I2C port, 0 for the on-board, 1 for the MXP.
+092
+* @param address The address of the register on the device to be written.
+093
+* @param dataToSend The byte to write to the register on the device.
+094
+* @param sendSize Number of bytes to send.
+095
+* @return &gt;= 0 on success or -1 on transfer abort.
+096
+* @see "HAL_WriteI2C"
+097
+*/
+098
+public static native int i2CWriteB(int port, byte address, byte[] dataToSend, byte sendSize);
+099
+100
+/**
+101
+* Executes a read transaction with the device.
+102
+*
+103
+* <p>Reads bytes from a device. Most I2C devices will auto-increment the register pointer
+104
+* internally allowing you to read consecutive registers on a device in a single transaction.
+105
+*
+106
+* @param port The I2C port, 0 for the on-board, 1 for the MXP.
+107
+* @param address The register to read first in the transaction.
+108
+* @param dataReceived A ByteBuffer to store the data read from the device.
+109
+* @param receiveSize The number of bytes to read in the transaction.
+110
+* @return &gt;= 0 on success or -1 on transfer abort.
+111
+* @see "HAL_ReadI2C"
+112
+*/
+113
+public static native int i2CRead(
+114
+int port, byte address, ByteBuffer dataReceived, byte receiveSize);
+115
+116
+/**
+117
+* Executes a read transaction with the device.
+118
+*
+119
+* <p>Reads bytes from a device. Most I2C devices will auto-increment the register pointer
+120
+* internally allowing you to read consecutive registers on a device in a single transaction.
+121
+*
+122
+* @param port The I2C port, 0 for the on-board, 1 for the MXP.
+123
+* @param address The register to read first in the transaction.
+124
+* @param dataReceived A byte array to store the data read from the device.
+125
+* @param receiveSize The number of bytes to read in the transaction.
+126
+* @return &gt;= 0 on success or -1 on transfer abort.
+127
+* @see "HAL_ReadI2C"
+128
+*/
+129
+public static native int i2CReadB(int port, byte address, byte[] dataReceived, byte receiveSize);
+130
+131
+/**
+132
+* Closes an I2C port.
+133
+*
+134
+* @param port The I2C port, 0 for the on-board, 1 for the MXP.
+135
+* @see "HAL_CloseI2C"
+136
+*/
+137
+public static native void i2CClose(int port);
+138
+139
+/** Utility class. */
+140
+private I2CJNI() {}
+141
+}

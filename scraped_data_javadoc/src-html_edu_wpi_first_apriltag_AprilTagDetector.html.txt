@@ -1,0 +1,574 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.apriltag;
+006
+007
+import edu.wpi.first.apriltag.jni.AprilTagJNI;
+008
+import org.opencv.core.Mat;
+009
+010
+/**
+011
+* An AprilTag detector engine. This is expensive to set up and tear down, so most use cases should
+012
+* only create one of these, add a family to it, set up any other configuration, and repeatedly call
+013
+* Detect().
+014
+*/
+015
+public class AprilTagDetector implements AutoCloseable {
+016
+/** Detector configuration. */
+017
+@SuppressWarnings("MemberName")
+018
+public static class Config {
+019
+/**
+020
+* How many threads should be used for computation. Default is single-threaded operation (1
+021
+* thread).
+022
+*/
+023
+public int numThreads = 1;
+024
+025
+/**
+026
+* Quad decimation. Detection of quads can be done on a lower-resolution image, improving speed
+027
+* at a cost of pose accuracy and a slight decrease in detection rate. Decoding the binary
+028
+* payload is still done at full resolution. Default is 2.0.
+029
+*/
+030
+public float quadDecimate = 2.0f;
+031
+032
+/**
+033
+* What Gaussian blur should be applied to the segmented image (used for quad detection). Very
+034
+* noisy images benefit from non-zero values (e.g. 0.8). Default is 0.0.
+035
+*/
+036
+public float quadSigma;
+037
+038
+/**
+039
+* When true, the edges of the each quad are adjusted to "snap to" strong gradients nearby. This
+040
+* is useful when decimation is employed, as it can increase the quality of the initial quad
+041
+* estimate substantially. Generally recommended to be on (true). Default is true.
+042
+*
+043
+* <p>Very computationally inexpensive. Option is ignored if quad_decimate = 1.
+044
+*/
+045
+public boolean refineEdges = true;
+046
+047
+/**
+048
+* How much sharpening should be done to decoded images. This can help decode small tags but may
+049
+* or may not help in odd lighting conditions or low light conditions. Default is 0.25.
+050
+*/
+051
+public double decodeSharpening = 0.25;
+052
+053
+/**
+054
+* Debug mode. When true, the decoder writes a variety of debugging images to the current
+055
+* working directory at various stages through the detection process. This is slow and should
+056
+* *not* be used on space-limited systems such as the RoboRIO. Default is disabled (false).
+057
+*/
+058
+public boolean debug;
+059
+060
+/** Default constructor. */
+061
+public Config() {}
+062
+063
+/**
+064
+* Constructs a detector configuration.
+065
+*
+066
+* @param numThreads How many threads should be used for computation.
+067
+* @param quadDecimate Quad decimation.
+068
+* @param quadSigma What Gaussian blur should be applied to the segmented image (used for quad
+069
+*     detection).
+070
+* @param refineEdges When true, the edges of the each quad are adjusted to "snap to" strong
+071
+*     gradients nearby.
+072
+* @param decodeSharpening How much sharpening should be done to decoded images.
+073
+* @param debug Debug mode.
+074
+*/
+075
+Config(
+076
+int numThreads,
+077
+float quadDecimate,
+078
+float quadSigma,
+079
+boolean refineEdges,
+080
+double decodeSharpening,
+081
+boolean debug) {
+082
+this.numThreads = numThreads;
+083
+this.quadDecimate = quadDecimate;
+084
+this.quadSigma = quadSigma;
+085
+this.refineEdges = refineEdges;
+086
+this.decodeSharpening = decodeSharpening;
+087
+this.debug = debug;
+088
+}
+089
+090
+@Override
+091
+public int hashCode() {
+092
+return numThreads
+093
++ Float.hashCode(quadDecimate)
+094
++ Float.hashCode(quadSigma)
+095
++ Boolean.hashCode(refineEdges)
+096
++ Double.hashCode(decodeSharpening)
+097
++ Boolean.hashCode(debug);
+098
+}
+099
+100
+@Override
+101
+public boolean equals(Object obj) {
+102
+return obj instanceof Config other
+103
+&& numThreads == other.numThreads
+104
+&& quadDecimate == other.quadDecimate
+105
+&& quadSigma == other.quadSigma
+106
+&& refineEdges == other.refineEdges
+107
+&& decodeSharpening == other.decodeSharpening
+108
+&& debug == other.debug;
+109
+}
+110
+}
+111
+112
+/** Quad threshold parameters. */
+113
+@SuppressWarnings("MemberName")
+114
+public static class QuadThresholdParameters {
+115
+/** Threshold used to reject quads containing too few pixels. Default is 300 pixels. */
+116
+public int minClusterPixels = 300;
+117
+118
+/**
+119
+* How many corner candidates to consider when segmenting a group of pixels into a quad. Default
+120
+* is 10.
+121
+*/
+122
+public int maxNumMaxima = 10;
+123
+124
+/**
+125
+* Critical angle, in radians. The detector will reject quads where pairs of edges have angles
+126
+* that are close to straight or close to 180 degrees. Zero means that no quads are rejected.
+127
+* Default is 45 degrees.
+128
+*/
+129
+public double criticalAngle = 45 * Math.PI / 180.0;
+130
+131
+/**
+132
+* When fitting lines to the contours, the maximum mean squared error allowed. This is useful in
+133
+* rejecting contours that are far from being quad shaped; rejecting these quads "early" saves
+134
+* expensive decoding processing. Default is 10.0.
+135
+*/
+136
+public float maxLineFitMSE = 10.0f;
+137
+138
+/**
+139
+* Minimum brightness offset. When we build our model of black &amp; white pixels, we add an
+140
+* extra check that the white model must be (overall) brighter than the black model. How much
+141
+* brighter? (in pixel values, [0,255]). Default is 5.
+142
+*/
+143
+public int minWhiteBlackDiff = 5;
+144
+145
+/**
+146
+* Whether the thresholded image be should be deglitched. Only useful for very noisy images.
+147
+* Default is disabled (false).
+148
+*/
+149
+public boolean deglitch;
+150
+151
+/** Default constructor. */
+152
+public QuadThresholdParameters() {}
+153
+154
+/**
+155
+* Constructs quad threshold parameters.
+156
+*
+157
+* @param minClusterPixels Threshold used to reject quads containing too few pixels.
+158
+* @param maxNumMaxima How many corner candidates to consider when segmenting a group of pixels
+159
+*     into a quad.
+160
+* @param criticalAngle Critical angle, in radians.
+161
+* @param maxLineFitMSE When fitting lines to the contours, the maximum mean squared error
+162
+*     allowed.
+163
+* @param minWhiteBlackDiff Minimum brightness offset.
+164
+* @param deglitch Whether the thresholded image be should be deglitched.
+165
+*/
+166
+QuadThresholdParameters(
+167
+int minClusterPixels,
+168
+int maxNumMaxima,
+169
+double criticalAngle,
+170
+float maxLineFitMSE,
+171
+int minWhiteBlackDiff,
+172
+boolean deglitch) {
+173
+this.minClusterPixels = minClusterPixels;
+174
+this.maxNumMaxima = maxNumMaxima;
+175
+this.criticalAngle = criticalAngle;
+176
+this.maxLineFitMSE = maxLineFitMSE;
+177
+this.minWhiteBlackDiff = minWhiteBlackDiff;
+178
+this.deglitch = deglitch;
+179
+}
+180
+181
+@Override
+182
+public int hashCode() {
+183
+return minClusterPixels
+184
++ maxNumMaxima
+185
++ Double.hashCode(criticalAngle)
+186
++ Float.hashCode(maxLineFitMSE)
+187
++ minWhiteBlackDiff
+188
++ Boolean.hashCode(deglitch);
+189
+}
+190
+191
+@Override
+192
+public boolean equals(Object obj) {
+193
+return obj instanceof QuadThresholdParameters other
+194
+&& minClusterPixels == other.minClusterPixels
+195
+&& maxNumMaxima == other.maxNumMaxima
+196
+&& criticalAngle == other.criticalAngle
+197
+&& maxLineFitMSE == other.maxLineFitMSE
+198
+&& minWhiteBlackDiff == other.minWhiteBlackDiff
+199
+&& deglitch == other.deglitch;
+200
+}
+201
+}
+202
+203
+/** Constructs an AprilTagDetector. */
+204
+@SuppressWarnings("this-escape")
+205
+public AprilTagDetector() {
+206
+m_native = AprilTagJNI.createDetector();
+207
+setQuadThresholdParameters(new QuadThresholdParameters());
+208
+}
+209
+210
+@Override
+211
+public void close() {
+212
+if (m_native != 0) {
+213
+AprilTagJNI.destroyDetector(m_native);
+214
+}
+215
+m_native = 0;
+216
+}
+217
+218
+/**
+219
+* Sets detector configuration.
+220
+*
+221
+* @param config Configuration
+222
+*/
+223
+public void setConfig(Config config) {
+224
+AprilTagJNI.setDetectorConfig(m_native, config);
+225
+}
+226
+227
+/**
+228
+* Gets detector configuration.
+229
+*
+230
+* @return Configuration
+231
+*/
+232
+public Config getConfig() {
+233
+return AprilTagJNI.getDetectorConfig(m_native);
+234
+}
+235
+236
+/**
+237
+* Sets quad threshold parameters.
+238
+*
+239
+* @param params Parameters
+240
+*/
+241
+public void setQuadThresholdParameters(QuadThresholdParameters params) {
+242
+AprilTagJNI.setDetectorQTP(m_native, params);
+243
+}
+244
+245
+/**
+246
+* Gets quad threshold parameters.
+247
+*
+248
+* @return Parameters
+249
+*/
+250
+public QuadThresholdParameters getQuadThresholdParameters() {
+251
+return AprilTagJNI.getDetectorQTP(m_native);
+252
+}
+253
+254
+/**
+255
+* Adds a family of tags to be detected.
+256
+*
+257
+* @param fam Family name, e.g. "tag16h5"
+258
+* @throws IllegalArgumentException if family name not recognized
+259
+*/
+260
+public void addFamily(String fam) {
+261
+addFamily(fam, 2);
+262
+}
+263
+264
+/**
+265
+* Adds a family of tags to be detected.
+266
+*
+267
+* @param fam Family name, e.g. "tag16h5"
+268
+* @param bitsCorrected Maximum number of bits to correct
+269
+* @throws IllegalArgumentException if family name not recognized
+270
+*/
+271
+public void addFamily(String fam, int bitsCorrected) {
+272
+if (!AprilTagJNI.addFamily(m_native, fam, bitsCorrected)) {
+273
+throw new IllegalArgumentException("unknown family name '" + fam + "'");
+274
+}
+275
+}
+276
+277
+/**
+278
+* Removes a family of tags from the detector.
+279
+*
+280
+* @param fam Family name, e.g. "tag16h5"
+281
+*/
+282
+public void removeFamily(String fam) {
+283
+AprilTagJNI.removeFamily(m_native, fam);
+284
+}
+285
+286
+/** Unregister all families. */
+287
+public void clearFamilies() {
+288
+AprilTagJNI.clearFamilies(m_native);
+289
+}
+290
+291
+/**
+292
+* Detect tags from an 8-bit image.
+293
+*
+294
+* <p>The image must be grayscale.
+295
+*
+296
+* @param img 8-bit OpenCV Mat image
+297
+* @return Results (array of AprilTagDetection)
+298
+*/
+299
+public AprilTagDetection[] detect(Mat img) {
+300
+return AprilTagJNI.detect(m_native, img.cols(), img.rows(), (int) img.step1(), img.dataAddr());
+301
+}
+302
+303
+private long m_native;
+304
+}

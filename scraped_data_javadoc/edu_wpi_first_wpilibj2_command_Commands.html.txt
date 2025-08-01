@@ -1,0 +1,578 @@
+Package
+edu.wpi.first.wpilibj2.command
+Class Commands
+java.lang.Object
+edu.wpi.first.wpilibj2.command.Commands
+public final class
+Commands
+extends
+Object
+Namespace for command factory methods.
+For convenience, you might want to static import the members of this class.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+Command
+deadline
+(
+Command
+deadline,
+Command
+... otherCommands)
+Runs a group of commands at the same time.
+static
+Command
+defer
+(
+Supplier
+<
+Command
+> supplier,
+Set
+<
+Subsystem
+> requirements)
+Runs the command supplied by the supplier.
+static
+Command
+deferredProxy
+(
+Supplier
+<
+Command
+> supplier)
+Constructs a command that schedules the command returned from the supplier when initialized,
+ and ends when it is no longer scheduled.
+static
+Command
+either
+(
+Command
+onTrue,
+Command
+onFalse,
+BooleanSupplier
+selector)
+Runs one of two commands, based on the boolean selector function.
+static
+Command
+idle
+(
+Subsystem
+... requirements)
+Constructs a command that does nothing until interrupted.
+static
+Command
+none
+()
+Constructs a command that does nothing, finishing immediately.
+static
+Command
+parallel
+(
+Command
+... commands)
+Runs a group of commands at the same time.
+static
+Command
+print
+(
+String
+message)
+Constructs a command that prints a message and finishes.
+static
+Command
+race
+(
+Command
+... commands)
+Runs a group of commands at the same time.
+static
+Command
+repeatingSequence
+(
+Command
+... commands)
+Runs a group of commands in series, one after the other.
+static
+Command
+run
+(
+Runnable
+action,
+Subsystem
+... requirements)
+Constructs a command that runs an action every iteration until interrupted.
+static
+Command
+runEnd
+(
+Runnable
+run,
+Runnable
+end,
+Subsystem
+... requirements)
+Constructs a command that runs an action every iteration until interrupted, and then runs a
+ second action.
+static
+Command
+runOnce
+(
+Runnable
+action,
+Subsystem
+... requirements)
+Constructs a command that runs an action once and finishes.
+static <K>
+Command
+select
+(
+Map
+<K,
+Command
+> commands,
+Supplier
+<? extends K> selector)
+Runs one of several commands, based on the selector function.
+static
+Command
+sequence
+(
+Command
+... commands)
+Runs a group of commands in series, one after the other.
+static
+Command
+startEnd
+(
+Runnable
+start,
+Runnable
+end,
+Subsystem
+... requirements)
+Constructs a command that runs an action once and another action when the command is
+ interrupted.
+static
+Command
+startRun
+(
+Runnable
+start,
+Runnable
+run,
+Subsystem
+... requirements)
+Constructs a command that runs an action once, and then runs an action every iteration until
+ interrupted.
+static
+Command
+waitSeconds
+(double seconds)
+Constructs a command that does nothing, finishing after a specified duration.
+static
+Command
+waitTime
+(
+Time
+time)
+Constructs a command that does nothing, finishing after a specified duration.
+static
+Command
+waitUntil
+(
+BooleanSupplier
+condition)
+Constructs a command that does nothing, finishing once a condition becomes true.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+none
+public static
+Command
+none
+()
+Constructs a command that does nothing, finishing immediately.
+Returns:
+the command
+idle
+public static
+Command
+idle
+(
+Subsystem
+... requirements)
+Constructs a command that does nothing until interrupted.
+Parameters:
+requirements
+- Subsystems to require
+Returns:
+the command
+runOnce
+public static
+Command
+runOnce
+(
+Runnable
+action,
+Subsystem
+... requirements)
+Constructs a command that runs an action once and finishes.
+Parameters:
+action
+- the action to run
+requirements
+- subsystems the action requires
+Returns:
+the command
+See Also:
+InstantCommand
+run
+public static
+Command
+run
+(
+Runnable
+action,
+Subsystem
+... requirements)
+Constructs a command that runs an action every iteration until interrupted.
+Parameters:
+action
+- the action to run
+requirements
+- subsystems the action requires
+Returns:
+the command
+See Also:
+RunCommand
+startEnd
+public static
+Command
+startEnd
+(
+Runnable
+start,
+Runnable
+end,
+Subsystem
+... requirements)
+Constructs a command that runs an action once and another action when the command is
+ interrupted.
+Parameters:
+start
+- the action to run on start
+end
+- the action to run on interrupt
+requirements
+- subsystems the action requires
+Returns:
+the command
+See Also:
+StartEndCommand
+runEnd
+public static
+Command
+runEnd
+(
+Runnable
+run,
+Runnable
+end,
+Subsystem
+... requirements)
+Constructs a command that runs an action every iteration until interrupted, and then runs a
+ second action.
+Parameters:
+run
+- the action to run every iteration
+end
+- the action to run on interrupt
+requirements
+- subsystems the action requires
+Returns:
+the command
+startRun
+public static
+Command
+startRun
+(
+Runnable
+start,
+Runnable
+run,
+Subsystem
+... requirements)
+Constructs a command that runs an action once, and then runs an action every iteration until
+ interrupted.
+Parameters:
+start
+- the action to run on start
+run
+- the action to run every iteration
+requirements
+- subsystems the action requires
+Returns:
+the command
+print
+public static
+Command
+print
+(
+String
+message)
+Constructs a command that prints a message and finishes.
+Parameters:
+message
+- the message to print
+Returns:
+the command
+See Also:
+PrintCommand
+waitSeconds
+public static
+Command
+waitSeconds
+(double seconds)
+Constructs a command that does nothing, finishing after a specified duration.
+Parameters:
+seconds
+- after how long the command finishes
+Returns:
+the command
+See Also:
+WaitCommand
+waitTime
+public static
+Command
+waitTime
+(
+Time
+time)
+Constructs a command that does nothing, finishing after a specified duration.
+Parameters:
+time
+- after how long the command finishes
+Returns:
+the command
+See Also:
+WaitCommand
+waitUntil
+public static
+Command
+waitUntil
+(
+BooleanSupplier
+condition)
+Constructs a command that does nothing, finishing once a condition becomes true.
+Parameters:
+condition
+- the condition
+Returns:
+the command
+See Also:
+WaitUntilCommand
+either
+public static
+Command
+either
+(
+Command
+onTrue,
+Command
+onFalse,
+BooleanSupplier
+selector)
+Runs one of two commands, based on the boolean selector function.
+Parameters:
+onTrue
+- the command to run if the selector function returns true
+onFalse
+- the command to run if the selector function returns false
+selector
+- the selector function
+Returns:
+the command
+See Also:
+ConditionalCommand
+select
+public static
+<K>
+Command
+select
+(
+Map
+<K,
+Command
+> commands,
+Supplier
+<? extends K> selector)
+Runs one of several commands, based on the selector function.
+Type Parameters:
+K
+- The type of key used to select the command
+Parameters:
+selector
+- the selector function
+commands
+- map of commands to select from
+Returns:
+the command
+See Also:
+SelectCommand
+defer
+public static
+Command
+defer
+(
+Supplier
+<
+Command
+> supplier,
+Set
+<
+Subsystem
+> requirements)
+Runs the command supplied by the supplier.
+Parameters:
+supplier
+- the command supplier
+requirements
+- the set of requirements for this command
+Returns:
+the command
+See Also:
+DeferredCommand
+deferredProxy
+public static
+Command
+deferredProxy
+(
+Supplier
+<
+Command
+> supplier)
+Constructs a command that schedules the command returned from the supplier when initialized,
+ and ends when it is no longer scheduled. The supplier is called when the command is
+ initialized.
+Parameters:
+supplier
+- the command supplier
+Returns:
+the command
+See Also:
+ProxyCommand
+DeferredCommand
+sequence
+public static
+Command
+sequence
+(
+Command
+... commands)
+Runs a group of commands in series, one after the other.
+Parameters:
+commands
+- the commands to include
+Returns:
+the command group
+See Also:
+SequentialCommandGroup
+repeatingSequence
+public static
+Command
+repeatingSequence
+(
+Command
+... commands)
+Runs a group of commands in series, one after the other. Once the last command ends, the group
+ is restarted.
+Parameters:
+commands
+- the commands to include
+Returns:
+the command group
+See Also:
+SequentialCommandGroup
+Command.repeatedly()
+parallel
+public static
+Command
+parallel
+(
+Command
+... commands)
+Runs a group of commands at the same time. Ends once all commands in the group finish.
+Parameters:
+commands
+- the commands to include
+Returns:
+the command
+See Also:
+ParallelCommandGroup
+race
+public static
+Command
+race
+(
+Command
+... commands)
+Runs a group of commands at the same time. Ends once any command in the group finishes, and
+ cancels the others.
+Parameters:
+commands
+- the commands to include
+Returns:
+the command group
+See Also:
+ParallelRaceGroup
+deadline
+public static
+Command
+deadline
+(
+Command
+deadline,
+Command
+... otherCommands)
+Runs a group of commands at the same time. Ends once a specific command finishes, and cancels
+ the others.
+Parameters:
+deadline
+- the deadline command
+otherCommands
+- the other commands to include
+Returns:
+the command group
+Throws:
+IllegalArgumentException
+- if the deadline command is also in the otherCommands argument
+See Also:
+ParallelDeadlineGroup

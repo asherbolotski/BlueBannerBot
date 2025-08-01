@@ -1,0 +1,96 @@
+Package
+edu.wpi.first.math.filter
+Class MedianFilter
+java.lang.Object
+edu.wpi.first.math.filter.MedianFilter
+public class
+MedianFilter
+extends
+Object
+A class that implements a moving-window median filter. Useful for reducing measurement noise,
+ especially with processes that generate occasional, extreme outliers (such as values from vision
+ processing, LIDAR, or ultrasonic sensors).
+Constructor Summary
+Constructors
+Constructor
+Description
+MedianFilter
+(int size)
+Creates a new MedianFilter.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+calculate
+(double next)
+Calculates the moving-window median for the next value of the input stream.
+double
+lastValue
+()
+Returns the last value calculated by the MedianFilter.
+void
+reset
+()
+Resets the filter, clearing the window of all elements.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MedianFilter
+public
+MedianFilter
+(int size)
+Creates a new MedianFilter.
+Parameters:
+size
+- The number of samples in the moving window.
+Method Details
+calculate
+public
+double
+calculate
+(double next)
+Calculates the moving-window median for the next value of the input stream.
+Parameters:
+next
+- The next input value.
+Returns:
+The median of the moving window, updated to include the next value.
+lastValue
+public
+double
+lastValue
+()
+Returns the last value calculated by the MedianFilter.
+Returns:
+The last value.
+reset
+public
+void
+reset
+()
+Resets the filter, clearing the window of all elements.

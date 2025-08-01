@@ -1,0 +1,189 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.AngularAcceleration;
+008
+import edu.wpi.first.units.measure.ImmutableAngularAcceleration;
+009
+import edu.wpi.first.units.measure.MutAngularAcceleration;
+010
+011
+/** A unit of angular acceleration, such as {@link Units#RadiansPerSecondPerSecond}. */
+012
+public final class AngularAccelerationUnit extends PerUnit<AngularVelocityUnit, TimeUnit> {
+013
+private static final CombinatoryUnitCache<AngularVelocityUnit, TimeUnit, AngularAccelerationUnit>
+014
+cache = new CombinatoryUnitCache<>(AngularAccelerationUnit::new);
+015
+016
+AngularAccelerationUnit(AngularVelocityUnit velocity, TimeUnit period) {
+017
+super(
+018
+velocity.isBaseUnit() && period.isBaseUnit()
+019
+? null
+020
+: combine(velocity.getBaseUnit(), period.getBaseUnit()),
+021
+velocity,
+022
+period);
+023
+}
+024
+025
+AngularAccelerationUnit(
+026
+AngularAccelerationUnit baseUnit,
+027
+UnaryFunction toBaseConverter,
+028
+UnaryFunction fromBaseConverter,
+029
+String name,
+030
+String symbol) {
+031
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+032
+}
+033
+034
+/**
+035
+* Combines an angular velocity and time period unit into an angular acceleration.
+036
+*
+037
+* @param velocity the unit of velocity
+038
+* @param period the unit of time
+039
+* @return the combined angular acceleration unit
+040
+*/
+041
+public static AngularAccelerationUnit combine(AngularVelocityUnit velocity, TimeUnit period) {
+042
+return cache.combine(velocity, period);
+043
+}
+044
+045
+@Override
+046
+public AngularAccelerationUnit getBaseUnit() {
+047
+return (AngularAccelerationUnit) super.getBaseUnit();
+048
+}
+049
+050
+@Override
+051
+public AngularAcceleration of(double magnitude) {
+052
+return new ImmutableAngularAcceleration(magnitude, toBaseUnits(magnitude), this);
+053
+}
+054
+055
+@Override
+056
+public AngularAcceleration ofBaseUnits(double baseUnitMagnitude) {
+057
+return new ImmutableAngularAcceleration(
+058
+fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+059
+}
+060
+061
+@Override
+062
+public AngularAcceleration zero() {
+063
+return (AngularAcceleration) super.zero();
+064
+}
+065
+066
+@Override
+067
+public AngularAcceleration one() {
+068
+return (AngularAcceleration) super.one();
+069
+}
+070
+071
+@Override
+072
+public MutAngularAcceleration mutable(double initialMagnitude) {
+073
+return new MutAngularAcceleration(initialMagnitude, toBaseUnits(initialMagnitude), this);
+074
+}
+075
+076
+@Override
+077
+public VelocityUnit<AngularAccelerationUnit> per(TimeUnit time) {
+078
+return VelocityUnit.combine(this, time);
+079
+}
+080
+081
+/**
+082
+* Creates a ratio unit between this unit and an arbitrary other unit.
+083
+*
+084
+* @param other the other unit
+085
+* @param <U> the type of the other unit
+086
+* @return the ratio unit
+087
+*/
+088
+public <U extends Unit> PerUnit<AngularAccelerationUnit, U> per(U other) {
+089
+return PerUnit.combine(this, other);
+090
+}
+091
+092
+/**
+093
+* Converts a measurement value in terms of another unit to this unit.
+094
+*
+095
+* @param magnitude the magnitude of the measurement in terms of the other unit
+096
+* @param otherUnit the other unit
+097
+* @return the value of the measurement in terms of this unit
+098
+*/
+099
+public double convertFrom(double magnitude, AngularAccelerationUnit otherUnit) {
+100
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+101
+}
+102
+}

@@ -1,0 +1,734 @@
+Package
+edu.wpi.first.wpilibj2.command
+Class CommandScheduler
+java.lang.Object
+edu.wpi.first.wpilibj2.command.CommandScheduler
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public final class
+CommandScheduler
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+The scheduler responsible for running
+Command
+s. A Command-based robot should call
+run()
+on the singleton instance in its periodic block in order to run commands
+ synchronously from the main loop. Subsystems should be registered with the scheduler using
+registerSubsystem(Subsystem...)
+in order for their
+Subsystem.periodic()
+methods to be called and for their default commands to be scheduled.
+This class is provided by the NewCommands VendorDep
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+cancel
+(
+Command
+... commands)
+Cancels commands.
+void
+cancelAll
+()
+Cancels all commands that are currently scheduled.
+void
+clearComposedCommands
+()
+Clears the list of composed commands, allowing all commands to be freely used again.
+void
+close
+()
+void
+disable
+()
+Disables the command scheduler.
+void
+enable
+()
+Enables the command scheduler.
+EventLoop
+getActiveButtonLoop
+()
+Get the active button poll.
+EventLoop
+getDefaultButtonLoop
+()
+Get the default button poll.
+Command
+getDefaultCommand
+(
+Subsystem
+subsystem)
+Gets the default command associated with this subsystem.
+static
+CommandScheduler
+getInstance
+()
+Returns the Scheduler instance.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isComposed
+(
+Command
+command)
+Check if the given command has been composed.
+boolean
+isScheduled
+(
+Command
+command)
+Whether the given commands are running.
+boolean
+isScheduled
+(
+Command
+... commands)
+Whether the given commands are running.
+void
+onCommandExecute
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the execution of any command by the scheduler.
+void
+onCommandFinish
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the finishing of any command by the scheduler.
+void
+onCommandInitialize
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the initialization of any command by the scheduler.
+void
+onCommandInterrupt
+(
+BiConsumer
+<
+Command
+,
+Optional
+<
+Command
+>> action)
+Adds an action to perform on the interruption of any command by the scheduler.
+void
+onCommandInterrupt
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the interruption of any command by the scheduler.
+void
+printWatchdogEpochs
+()
+Prints list of epochs added so far and their times.
+void
+registerComposedCommands
+(
+Command
+... commands)
+Register commands as composed.
+void
+registerSubsystem
+(
+Subsystem
+... subsystems)
+Registers subsystems with the scheduler.
+void
+removeComposedCommand
+(
+Command
+command)
+Removes a single command from the list of composed commands, allowing it to be freely used
+ again.
+void
+removeDefaultCommand
+(
+Subsystem
+subsystem)
+Removes the default command for a subsystem.
+void
+requireNotComposed
+(
+Command
+... commands)
+Requires that the specified command hasn't already been added to a composition.
+void
+requireNotComposed
+(
+Collection
+<
+Command
+> commands)
+Requires that the specified commands have not already been added to a composition.
+void
+requireNotComposedOrScheduled
+(
+Command
+command)
+Requires that the specified command hasn't already been added to a composition, and is not
+ currently scheduled.
+void
+requireNotComposedOrScheduled
+(
+Collection
+<
+Command
+> commands)
+Requires that the specified commands have not already been added to a composition, and are not
+ currently scheduled.
+Command
+requiring
+(
+Subsystem
+subsystem)
+Returns the command currently requiring a given subsystem.
+void
+run
+()
+Runs a single iteration of the scheduler.
+void
+schedule
+(
+Command
+... commands)
+Schedules multiple commands for execution.
+void
+setActiveButtonLoop
+(
+EventLoop
+loop)
+Replace the button poll with another one.
+void
+setDefaultCommand
+(
+Subsystem
+subsystem,
+Command
+defaultCommand)
+Sets the default command for a subsystem.
+void
+setPeriod
+(double period)
+Changes the period of the loop overrun watchdog.
+void
+unregisterAllSubsystems
+()
+Un-registers all registered Subsystems with the scheduler.
+void
+unregisterSubsystem
+(
+Subsystem
+... subsystems)
+Un-registers subsystems with the scheduler.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getInstance
+public static
+CommandScheduler
+getInstance
+()
+Returns the Scheduler instance.
+Returns:
+the instance
+setPeriod
+public
+void
+setPeriod
+(double period)
+Changes the period of the loop overrun watchdog. This should be kept in sync with the
+ TimedRobot period.
+Parameters:
+period
+- Period in seconds.
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getDefaultButtonLoop
+public
+EventLoop
+getDefaultButtonLoop
+()
+Get the default button poll.
+Returns:
+a reference to the default
+EventLoop
+object polling buttons.
+getActiveButtonLoop
+public
+EventLoop
+getActiveButtonLoop
+()
+Get the active button poll.
+Returns:
+a reference to the current
+EventLoop
+object polling buttons.
+setActiveButtonLoop
+public
+void
+setActiveButtonLoop
+(
+EventLoop
+loop)
+Replace the button poll with another one.
+Parameters:
+loop
+- the new button polling loop object.
+schedule
+public
+void
+schedule
+(
+Command
+... commands)
+Schedules multiple commands for execution. Does nothing for commands already scheduled.
+WARNING: using this function directly can often lead to unexpected behavior and should be
+ avoided. Instead Triggers should be used to schedule Commands.
+Parameters:
+commands
+- the commands to schedule. No-op on null.
+run
+public
+void
+run
+()
+Runs a single iteration of the scheduler. The execution occurs in the following order:
+Subsystem periodic methods are called.
+Button bindings are polled, and new commands are scheduled from them.
+Currently-scheduled commands are executed.
+End conditions are checked on currently-scheduled commands, and commands that are finished
+ have their end methods called and are removed.
+Any subsystems not being used as requirements have their default methods started.
+registerSubsystem
+public
+void
+registerSubsystem
+(
+Subsystem
+... subsystems)
+Registers subsystems with the scheduler. This must be called for the subsystem's periodic block
+ to run when the scheduler is run, and for the subsystem's default command to be scheduled. It
+ is recommended to call this from the constructor of your subsystem implementations.
+Parameters:
+subsystems
+- the subsystem to register
+unregisterSubsystem
+public
+void
+unregisterSubsystem
+(
+Subsystem
+... subsystems)
+Un-registers subsystems with the scheduler. The subsystem will no longer have its periodic
+ block called, and will not have its default command scheduled.
+Parameters:
+subsystems
+- the subsystem to un-register
+unregisterAllSubsystems
+public
+void
+unregisterAllSubsystems
+()
+Un-registers all registered Subsystems with the scheduler. All currently registered subsystems
+ will no longer have their periodic block called, and will not have their default command
+ scheduled.
+setDefaultCommand
+public
+void
+setDefaultCommand
+(
+Subsystem
+subsystem,
+Command
+defaultCommand)
+Sets the default command for a subsystem. Registers that subsystem if it is not already
+ registered. Default commands will run whenever there is no other command currently scheduled
+ that requires the subsystem. Default commands should be written to never end (i.e. their
+Command.isFinished()
+method should return false), as they would simply be re-scheduled if they
+ do. Default commands must also require their subsystem.
+Parameters:
+subsystem
+- the subsystem whose default command will be set
+defaultCommand
+- the default command to associate with the subsystem
+removeDefaultCommand
+public
+void
+removeDefaultCommand
+(
+Subsystem
+subsystem)
+Removes the default command for a subsystem. The current default command will run until another
+ command is scheduled that requires the subsystem, at which point the current default command
+ will not be re-scheduled.
+Parameters:
+subsystem
+- the subsystem whose default command will be removed
+getDefaultCommand
+public
+Command
+getDefaultCommand
+(
+Subsystem
+subsystem)
+Gets the default command associated with this subsystem. Null if this subsystem has no default
+ command associated with it.
+Parameters:
+subsystem
+- the subsystem to inquire about
+Returns:
+the default command associated with the subsystem
+cancel
+public
+void
+cancel
+(
+Command
+... commands)
+Cancels commands. The scheduler will only call
+Command.end(boolean)
+method of the
+ canceled command with
+true
+, indicating they were canceled (as opposed to finishing
+ normally).
+Commands will be canceled regardless of
+interruption behavior
+.
+Parameters:
+commands
+- the commands to cancel
+cancelAll
+public
+void
+cancelAll
+()
+Cancels all commands that are currently scheduled.
+isScheduled
+public
+boolean
+isScheduled
+(
+Command
+... commands)
+Whether the given commands are running. Note that this only works on commands that are directly
+ scheduled by the scheduler; it will not work on commands inside compositions, as the scheduler
+ does not see them.
+Parameters:
+commands
+- multiple commands to check
+Returns:
+whether all of the commands are currently scheduled
+isScheduled
+public
+boolean
+isScheduled
+(
+Command
+command)
+Whether the given commands are running. Note that this only works on commands that are directly
+ scheduled by the scheduler; it will not work on commands inside compositions, as the scheduler
+ does not see them.
+Parameters:
+command
+- a single command to check
+Returns:
+whether all of the commands are currently scheduled
+requiring
+public
+Command
+requiring
+(
+Subsystem
+subsystem)
+Returns the command currently requiring a given subsystem. Null if no command is currently
+ requiring the subsystem
+Parameters:
+subsystem
+- the subsystem to be inquired about
+Returns:
+the command currently requiring the subsystem, or null if no command is currently
+     scheduled
+disable
+public
+void
+disable
+()
+Disables the command scheduler.
+enable
+public
+void
+enable
+()
+Enables the command scheduler.
+printWatchdogEpochs
+public
+void
+printWatchdogEpochs
+()
+Prints list of epochs added so far and their times.
+onCommandInitialize
+public
+void
+onCommandInitialize
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the initialization of any command by the scheduler.
+Parameters:
+action
+- the action to perform
+onCommandExecute
+public
+void
+onCommandExecute
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the execution of any command by the scheduler.
+Parameters:
+action
+- the action to perform
+onCommandInterrupt
+public
+void
+onCommandInterrupt
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the interruption of any command by the scheduler.
+Parameters:
+action
+- the action to perform
+onCommandInterrupt
+public
+void
+onCommandInterrupt
+(
+BiConsumer
+<
+Command
+,
+Optional
+<
+Command
+>> action)
+Adds an action to perform on the interruption of any command by the scheduler. The action
+ receives the interrupted command and an Optional containing the interrupting command, or
+ Optional.empty() if it was not canceled by a command (e.g., by
+cancel(edu.wpi.first.wpilibj2.command.Command...)
+).
+Parameters:
+action
+- the action to perform
+onCommandFinish
+public
+void
+onCommandFinish
+(
+Consumer
+<
+Command
+> action)
+Adds an action to perform on the finishing of any command by the scheduler.
+Parameters:
+action
+- the action to perform
+registerComposedCommands
+public
+void
+registerComposedCommands
+(
+Command
+... commands)
+Register commands as composed. An exception will be thrown if these commands are scheduled
+ directly or added to a composition.
+Parameters:
+commands
+- the commands to register
+Throws:
+IllegalArgumentException
+- if the given commands have already been composed, or the array
+     of commands has duplicates.
+clearComposedCommands
+public
+void
+clearComposedCommands
+()
+Clears the list of composed commands, allowing all commands to be freely used again.
+WARNING: Using this haphazardly can result in unexpected/undesirable behavior. Do not use
+ this unless you fully understand what you are doing.
+removeComposedCommand
+public
+void
+removeComposedCommand
+(
+Command
+command)
+Removes a single command from the list of composed commands, allowing it to be freely used
+ again.
+WARNING: Using this haphazardly can result in unexpected/undesirable behavior. Do not use
+ this unless you fully understand what you are doing.
+Parameters:
+command
+- the command to remove from the list of grouped commands
+requireNotComposed
+public
+void
+requireNotComposed
+(
+Command
+... commands)
+Requires that the specified command hasn't already been added to a composition.
+Parameters:
+commands
+- The commands to check
+Throws:
+IllegalArgumentException
+- if the given commands have already been composed.
+requireNotComposed
+public
+void
+requireNotComposed
+(
+Collection
+<
+Command
+> commands)
+Requires that the specified commands have not already been added to a composition.
+Parameters:
+commands
+- The commands to check
+Throws:
+IllegalArgumentException
+- if the given commands have already been composed.
+requireNotComposedOrScheduled
+public
+void
+requireNotComposedOrScheduled
+(
+Command
+command)
+Requires that the specified command hasn't already been added to a composition, and is not
+ currently scheduled.
+Parameters:
+command
+- The command to check
+Throws:
+IllegalArgumentException
+- if the given command has already been composed or scheduled.
+requireNotComposedOrScheduled
+public
+void
+requireNotComposedOrScheduled
+(
+Collection
+<
+Command
+> commands)
+Requires that the specified commands have not already been added to a composition, and are not
+ currently scheduled.
+Parameters:
+commands
+- The commands to check
+Throws:
+IllegalArgumentException
+- if the given commands have already been composed or scheduled.
+isComposed
+public
+boolean
+isComposed
+(
+Command
+command)
+Check if the given command has been composed.
+Parameters:
+command
+- The command to check
+Returns:
+true if composed
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

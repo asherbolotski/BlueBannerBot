@@ -1,0 +1,707 @@
+Package
+edu.wpi.first.wpilibj2.command.button
+Class CommandXboxController
+java.lang.Object
+edu.wpi.first.wpilibj2.command.button.CommandGenericHID
+edu.wpi.first.wpilibj2.command.button.CommandXboxController
+public class
+CommandXboxController
+extends
+CommandGenericHID
+A version of
+XboxController
+with
+Trigger
+factories for command-based.
+See Also:
+XboxController
+Constructor Summary
+Constructors
+Constructor
+Description
+CommandXboxController
+(int port)
+Construct an instance of a controller.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Trigger
+a
+()
+Constructs a Trigger instance around the A button's digital signal.
+Trigger
+a
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the A button's digital signal.
+Trigger
+b
+()
+Constructs a Trigger instance around the B button's digital signal.
+Trigger
+b
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the B button's digital signal.
+Trigger
+back
+()
+Constructs a Trigger instance around the back button's digital signal.
+Trigger
+back
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the back button's digital signal.
+XboxController
+getHID
+()
+Get the underlying GenericHID object.
+double
+getLeftTriggerAxis
+()
+Get the left trigger axis value of the controller.
+double
+getLeftX
+()
+Get the X axis value of left side of the controller.
+double
+getLeftY
+()
+Get the Y axis value of left side of the controller.
+double
+getRightTriggerAxis
+()
+Get the right trigger axis value of the controller.
+double
+getRightX
+()
+Get the X axis value of right side of the controller.
+double
+getRightY
+()
+Get the Y axis value of right side of the controller.
+Trigger
+leftBumper
+()
+Constructs a Trigger instance around the left bumper button's digital signal.
+Trigger
+leftBumper
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left bumper button's digital signal.
+Trigger
+leftStick
+()
+Constructs a Trigger instance around the left stick button's digital signal.
+Trigger
+leftStick
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left stick button's digital signal.
+Trigger
+leftTrigger
+()
+Constructs a Trigger instance around the axis value of the left trigger.
+Trigger
+leftTrigger
+(double threshold)
+Constructs a Trigger instance around the axis value of the left trigger.
+Trigger
+leftTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs a Trigger instance around the axis value of the left trigger.
+Trigger
+rightBumper
+()
+Constructs a Trigger instance around the right bumper button's digital signal.
+Trigger
+rightBumper
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right bumper button's digital signal.
+Trigger
+rightStick
+()
+Constructs a Trigger instance around the right stick button's digital signal.
+Trigger
+rightStick
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right stick button's digital signal.
+Trigger
+rightTrigger
+()
+Constructs a Trigger instance around the axis value of the right trigger.
+Trigger
+rightTrigger
+(double threshold)
+Constructs a Trigger instance around the axis value of the right trigger.
+Trigger
+rightTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs a Trigger instance around the axis value of the right trigger.
+Trigger
+start
+()
+Constructs a Trigger instance around the start button's digital signal.
+Trigger
+start
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the start button's digital signal.
+Trigger
+x
+()
+Constructs a Trigger instance around the X button's digital signal.
+Trigger
+x
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the X button's digital signal.
+Trigger
+y
+()
+Constructs a Trigger instance around the Y button's digital signal.
+Trigger
+y
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the Y button's digital signal.
+Methods inherited from class edu.wpi.first.wpilibj2.command.button.
+CommandGenericHID
+axisGreaterThan
+,
+axisGreaterThan
+,
+axisLessThan
+,
+axisLessThan
+,
+axisMagnitudeGreaterThan
+,
+axisMagnitudeGreaterThan
+,
+button
+,
+button
+,
+getRawAxis
+,
+isConnected
+,
+pov
+,
+pov
+,
+povCenter
+,
+povDown
+,
+povDownLeft
+,
+povDownRight
+,
+povLeft
+,
+povRight
+,
+povUp
+,
+povUpLeft
+,
+povUpRight
+,
+setRumble
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CommandXboxController
+public
+CommandXboxController
+(int port)
+Construct an instance of a controller.
+Parameters:
+port
+- The port index on the Driver Station that the controller is plugged into.
+Method Details
+getHID
+public
+XboxController
+getHID
+()
+Get the underlying GenericHID object.
+Overrides:
+getHID
+in class
+CommandGenericHID
+Returns:
+the wrapped GenericHID object
+a
+public
+Trigger
+a
+()
+Constructs a Trigger instance around the A button's digital signal.
+Returns:
+a Trigger instance representing the A button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+a(EventLoop)
+a
+public
+Trigger
+a
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the A button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the A button's digital signal attached
+     to the given loop.
+b
+public
+Trigger
+b
+()
+Constructs a Trigger instance around the B button's digital signal.
+Returns:
+a Trigger instance representing the B button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+b(EventLoop)
+b
+public
+Trigger
+b
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the B button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the B button's digital signal attached
+     to the given loop.
+x
+public
+Trigger
+x
+()
+Constructs a Trigger instance around the X button's digital signal.
+Returns:
+a Trigger instance representing the X button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+x(EventLoop)
+x
+public
+Trigger
+x
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the X button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the X button's digital signal attached
+     to the given loop.
+y
+public
+Trigger
+y
+()
+Constructs a Trigger instance around the Y button's digital signal.
+Returns:
+a Trigger instance representing the Y button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+y(EventLoop)
+y
+public
+Trigger
+y
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the Y button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the Y button's digital signal attached
+     to the given loop.
+leftBumper
+public
+Trigger
+leftBumper
+()
+Constructs a Trigger instance around the left bumper button's digital signal.
+Returns:
+a Trigger instance representing the left bumper button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+leftBumper(EventLoop)
+leftBumper
+public
+Trigger
+leftBumper
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left bumper button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the left bumper button's digital signal attached
+     to the given loop.
+rightBumper
+public
+Trigger
+rightBumper
+()
+Constructs a Trigger instance around the right bumper button's digital signal.
+Returns:
+a Trigger instance representing the right bumper button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+rightBumper(EventLoop)
+rightBumper
+public
+Trigger
+rightBumper
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right bumper button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the right bumper button's digital signal attached
+     to the given loop.
+back
+public
+Trigger
+back
+()
+Constructs a Trigger instance around the back button's digital signal.
+Returns:
+a Trigger instance representing the back button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+back(EventLoop)
+back
+public
+Trigger
+back
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the back button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the back button's digital signal attached
+     to the given loop.
+start
+public
+Trigger
+start
+()
+Constructs a Trigger instance around the start button's digital signal.
+Returns:
+a Trigger instance representing the start button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+start(EventLoop)
+start
+public
+Trigger
+start
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the start button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the start button's digital signal attached
+     to the given loop.
+leftStick
+public
+Trigger
+leftStick
+()
+Constructs a Trigger instance around the left stick button's digital signal.
+Returns:
+a Trigger instance representing the left stick button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+leftStick(EventLoop)
+leftStick
+public
+Trigger
+leftStick
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left stick button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the left stick button's digital signal attached
+     to the given loop.
+rightStick
+public
+Trigger
+rightStick
+()
+Constructs a Trigger instance around the right stick button's digital signal.
+Returns:
+a Trigger instance representing the right stick button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+rightStick(EventLoop)
+rightStick
+public
+Trigger
+rightStick
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right stick button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the right stick button's digital signal attached
+     to the given loop.
+leftTrigger
+public
+Trigger
+leftTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs a Trigger instance around the axis value of the left trigger. The returned
+ trigger will be true when the axis value is greater than
+threshold
+.
+Parameters:
+threshold
+- the minimum axis value for the returned
+Trigger
+to be true. This value
+     should be in the range [0, 1] where 0 is the unpressed state of the axis.
+loop
+- the event loop instance to attach the Trigger to.
+Returns:
+a Trigger instance that is true when the left trigger's axis exceeds the provided
+     threshold, attached to the given event loop
+leftTrigger
+public
+Trigger
+leftTrigger
+(double threshold)
+Constructs a Trigger instance around the axis value of the left trigger. The returned
+ trigger will be true when the axis value is greater than
+threshold
+.
+Parameters:
+threshold
+- the minimum axis value for the returned
+Trigger
+to be true. This value
+     should be in the range [0, 1] where 0 is the unpressed state of the axis.
+Returns:
+a Trigger instance that is true when the left trigger's axis exceeds the provided
+     threshold, attached to the
+default scheduler
+     button loop
+.
+leftTrigger
+public
+Trigger
+leftTrigger
+()
+Constructs a Trigger instance around the axis value of the left trigger. The returned trigger
+ will be true when the axis value is greater than 0.5.
+Returns:
+a Trigger instance that is true when the left trigger's axis exceeds 0.5, attached to
+     the
+default scheduler button loop
+.
+rightTrigger
+public
+Trigger
+rightTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs a Trigger instance around the axis value of the right trigger. The returned
+ trigger will be true when the axis value is greater than
+threshold
+.
+Parameters:
+threshold
+- the minimum axis value for the returned
+Trigger
+to be true. This value
+     should be in the range [0, 1] where 0 is the unpressed state of the axis.
+loop
+- the event loop instance to attach the Trigger to.
+Returns:
+a Trigger instance that is true when the right trigger's axis exceeds the provided
+     threshold, attached to the given event loop
+rightTrigger
+public
+Trigger
+rightTrigger
+(double threshold)
+Constructs a Trigger instance around the axis value of the right trigger. The returned
+ trigger will be true when the axis value is greater than
+threshold
+.
+Parameters:
+threshold
+- the minimum axis value for the returned
+Trigger
+to be true. This value
+     should be in the range [0, 1] where 0 is the unpressed state of the axis.
+Returns:
+a Trigger instance that is true when the right trigger's axis exceeds the provided
+     threshold, attached to the
+default scheduler
+     button loop
+.
+rightTrigger
+public
+Trigger
+rightTrigger
+()
+Constructs a Trigger instance around the axis value of the right trigger. The returned trigger
+ will be true when the axis value is greater than 0.5.
+Returns:
+a Trigger instance that is true when the right trigger's axis exceeds 0.5, attached to
+     the
+default scheduler button loop
+.
+getLeftX
+public
+double
+getLeftX
+()
+Get the X axis value of left side of the controller. Right is positive.
+Returns:
+The axis value.
+getRightX
+public
+double
+getRightX
+()
+Get the X axis value of right side of the controller. Right is positive.
+Returns:
+The axis value.
+getLeftY
+public
+double
+getLeftY
+()
+Get the Y axis value of left side of the controller. Back is positive.
+Returns:
+The axis value.
+getRightY
+public
+double
+getRightY
+()
+Get the Y axis value of right side of the controller. Back is positive.
+Returns:
+The axis value.
+getLeftTriggerAxis
+public
+double
+getLeftTriggerAxis
+()
+Get the left trigger axis value of the controller. Note that this axis is bound to the
+ range of [0, 1] as opposed to the usual [-1, 1].
+Returns:
+The axis value.
+getRightTriggerAxis
+public
+double
+getRightTriggerAxis
+()
+Get the right trigger axis value of the controller. Note that this axis is bound to the
+ range of [0, 1] as opposed to the usual [-1, 1].
+Returns:
+The axis value.

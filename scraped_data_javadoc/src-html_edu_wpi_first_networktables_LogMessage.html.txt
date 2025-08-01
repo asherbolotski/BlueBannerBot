@@ -1,0 +1,111 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/** NetworkTables log message. */
+008
+@SuppressWarnings("MemberName")
+009
+public final class LogMessage {
+010
+/** Critical logging level. */
+011
+public static final int kCritical = 50;
+012
+013
+/** Error logging level. */
+014
+public static final int kError = 40;
+015
+016
+/** Warning log level. */
+017
+public static final int kWarning = 30;
+018
+019
+/** Info log level. */
+020
+public static final int kInfo = 20;
+021
+022
+/** Debug log level. */
+023
+public static final int kDebug = 10;
+024
+025
+/** Debug log level 1. */
+026
+public static final int kDebug1 = 9;
+027
+028
+/** Debug log level 2. */
+029
+public static final int kDebug2 = 8;
+030
+031
+/** Debug log level 3. */
+032
+public static final int kDebug3 = 7;
+033
+034
+/** Debug log level 4. */
+035
+public static final int kDebug4 = 6;
+036
+037
+/** Log level of the message. */
+038
+public final int level;
+039
+040
+/** The filename of the source file that generated the message. */
+041
+public final String filename;
+042
+043
+/** The line number in the source file that generated the message. */
+044
+public final int line;
+045
+046
+/** The message. */
+047
+public final String message;
+048
+049
+/**
+050
+* Constructor. This should generally only be used internally to NetworkTables.
+051
+*
+052
+* @param level Log level
+053
+* @param filename Filename
+054
+* @param line Line number
+055
+* @param message Message
+056
+*/
+057
+public LogMessage(int level, String filename, int line, String message) {
+058
+this.level = level;
+059
+this.filename = filename;
+060
+this.line = line;
+061
+this.message = message;
+062
+}
+063
+}

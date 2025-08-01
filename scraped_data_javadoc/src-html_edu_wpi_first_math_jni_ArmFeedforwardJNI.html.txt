@@ -1,0 +1,69 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.jni;
+006
+007
+/** ArmFeedforward JNI. */
+008
+public final class ArmFeedforwardJNI extends WPIMathJNI {
+009
+/**
+010
+* Obtain a feedforward voltage from a single jointed arm feedforward object.
+011
+*
+012
+* <p>Constructs an ArmFeedforward object and runs its currentVelocity and nextVelocity overload
+013
+*
+014
+* @param ks The ArmFeedforward's static gain in volts.
+015
+* @param kv The ArmFeedforward's velocity gain in volt seconds per radian.
+016
+* @param ka The ArmFeedforward's acceleration gain in volt seconds² per radian.
+017
+* @param kg The ArmFeedforward's gravity gain in volts.
+018
+* @param currentAngle The current angle in the calculation in radians.
+019
+* @param currentVelocity The current velocity in the calculation in radians per second.
+020
+* @param nextVelocity The next velocity in the calculation in radians per second.
+021
+* @param dt The time between velocity setpoints in seconds.
+022
+* @return The calculated feedforward in volts.
+023
+*/
+024
+public static native double calculate(
+025
+double ks,
+026
+double kv,
+027
+double ka,
+028
+double kg,
+029
+double currentAngle,
+030
+double currentVelocity,
+031
+double nextVelocity,
+032
+double dt);
+033
+034
+/** Utility class. */
+035
+private ArmFeedforwardJNI() {}
+036
+}

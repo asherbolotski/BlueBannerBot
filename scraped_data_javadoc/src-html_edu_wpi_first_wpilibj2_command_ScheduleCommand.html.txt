@@ -1,0 +1,81 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import java.util.Set;
+008
+009
+/**
+010
+* Schedules the given commands when this command is initialized. Useful for forking off from
+011
+* CommandGroups. Note that if run from a composition, the composition will not know about the
+012
+* status of the scheduled commands, and will treat this command as finishing instantly.
+013
+*
+014
+* <p>This class is provided by the NewCommands VendorDep
+015
+*/
+016
+public class ScheduleCommand extends Command {
+017
+private final Set<Command> m_toSchedule;
+018
+019
+/**
+020
+* Creates a new ScheduleCommand that schedules the given commands when initialized.
+021
+*
+022
+* @param toSchedule the commands to schedule
+023
+*/
+024
+public ScheduleCommand(Command... toSchedule) {
+025
+m_toSchedule = Set.of(toSchedule);
+026
+}
+027
+028
+@Override
+029
+public void initialize() {
+030
+for (Command command : m_toSchedule) {
+031
+command.schedule();
+032
+}
+033
+}
+034
+035
+@Override
+036
+public boolean isFinished() {
+037
+return true;
+038
+}
+039
+040
+@Override
+041
+public boolean runsWhenDisabled() {
+042
+return true;
+043
+}
+044
+}

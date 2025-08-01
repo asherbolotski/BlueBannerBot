@@ -1,0 +1,317 @@
+Package
+edu.wpi.first.networktables
+Interface RawPublisher
+All Superinterfaces:
+AutoCloseable
+,
+Consumer
+<byte[]>
+,
+Publisher
+,
+PubSub
+All Known Subinterfaces:
+RawEntry
+public interface
+RawPublisher
+extends
+Publisher
+,
+Consumer
+<byte[]>
+NetworkTables Raw publisher.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default void
+accept
+(byte[] value)
+RawTopic
+getTopic
+()
+Get the corresponding topic.
+default void
+set
+(byte[] value)
+Publish a new value using current NT time.
+default void
+set
+(byte[] value,
+ int start,
+ int len)
+Publish a new value using current NT time.
+void
+set
+(byte[] value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+default void
+set
+(byte[] value,
+ long time)
+Publish a new value.
+default void
+set
+(
+ByteBuffer
+value)
+Publish a new value using current NT time.
+default void
+set
+(
+ByteBuffer
+value,
+ int start,
+ int len)
+Publish a new value using current NT time.
+void
+set
+(
+ByteBuffer
+value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+default void
+set
+(
+ByteBuffer
+value,
+ long time)
+Publish a new value.
+default void
+setDefault
+(byte[] value)
+Publish a default value.
+void
+setDefault
+(byte[] value,
+ int start,
+ int len)
+Publish a default value.
+default void
+setDefault
+(
+ByteBuffer
+value)
+Publish a default value.
+void
+setDefault
+(
+ByteBuffer
+value,
+ int start,
+ int len)
+Publish a default value.
+Methods inherited from interface java.util.function.
+Consumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Method Details
+getTopic
+RawTopic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+set
+default
+void
+set
+(byte[] value)
+Publish a new value using current NT time.
+Parameters:
+value
+- value to publish
+set
+default
+void
+set
+(byte[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+set
+default
+void
+set
+(byte[] value,
+ int start,
+ int len)
+Publish a new value using current NT time.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.length - start)
+set
+void
+set
+(byte[] value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.length - start)
+time
+- timestamp; 0 indicates current NT time should be used
+set
+default
+void
+set
+(
+ByteBuffer
+value)
+Publish a new value using current NT time.
+Parameters:
+value
+- value to publish; will send from value.position() to value.limit()
+set
+default
+void
+set
+(
+ByteBuffer
+value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish; will send from value.position() to value.limit()
+time
+- timestamp; 0 indicates current NT time should be used
+set
+default
+void
+set
+(
+ByteBuffer
+value,
+ int start,
+ int len)
+Publish a new value using current NT time.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.capacity() - start)
+set
+void
+set
+(
+ByteBuffer
+value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.capacity() - start)
+time
+- timestamp; 0 indicates current NT time should be used
+setDefault
+default
+void
+setDefault
+(byte[] value)
+Publish a default value.
+ On reconnect, a default value will never be used in preference to a
+ published value.
+Parameters:
+value
+- value
+setDefault
+void
+setDefault
+(byte[] value,
+ int start,
+ int len)
+Publish a default value.
+ On reconnect, a default value will never be used in preference to a
+ published value.
+Parameters:
+value
+- value
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.length - start)
+setDefault
+default
+void
+setDefault
+(
+ByteBuffer
+value)
+Publish a default value.
+ On reconnect, a default value will never be used in preference to a
+ published value.
+Parameters:
+value
+- value; will send from value.position() to value.limit()
+setDefault
+void
+setDefault
+(
+ByteBuffer
+value,
+ int start,
+ int len)
+Publish a default value.
+ On reconnect, a default value will never be used in preference to a
+ published value.
+Parameters:
+value
+- value
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.capacity() - start)
+accept
+default
+void
+accept
+(byte[] value)
+Specified by:
+accept
+in interface
+Consumer
+<byte[]>

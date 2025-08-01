@@ -1,0 +1,711 @@
+Package
+edu.wpi.first.hal
+Class SPIJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.SPIJNI
+public class
+SPIJNI
+extends
+JNIWrapper
+SPI HAL JNI functions.
+See Also:
+"SPI.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final int
+INVALID_PORT
+Invalid port number.
+static final int
+MXP_PORT
+MXP (roboRIO MXP) SPI bus port.
+static final int
+ONBOARD_CS0_PORT
+Onboard SPI bus port CS0.
+static final int
+ONBOARD_CS1_PORT
+Onboard SPI bus port CS1.
+static final int
+ONBOARD_CS2_PORT
+Onboard SPI bus port CS2.
+static final int
+ONBOARD_CS3_PORT
+Onboard SPI bus port CS3.
+static final int
+SPI_MODE0
+Clock idle low, data sampled on rising edge.
+static final int
+SPI_MODE1
+Clock idle low, data sampled on falling edge.
+static final int
+SPI_MODE2
+Clock idle high, data sampled on falling edge.
+static final int
+SPI_MODE3
+Clock idle high, data sampled on rising edge.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+spiClose
+(int port)
+Closes the SPI port.
+static void
+spiConfigureAutoStall
+(int port,
+ int csToSclkTicks,
+ int stallTicks,
+ int pow2BytesPerRead)
+Configure the Auto SPI Stall time between reads.
+static void
+spiForceAutoRead
+(int port)
+Immediately forces an SPI read to happen.
+static void
+spiFreeAuto
+(int port)
+Frees an SPI automatic accumulator.
+static int
+spiGetAutoDroppedCount
+(int port)
+Gets the count of how many SPI accumulations have been missed.
+static int
+spiGetMode
+(int port)
+Gets the SPI Mode.
+static void
+spiInitAuto
+(int port,
+ int bufferSize)
+Initializes the SPI automatic accumulator.
+static void
+spiInitialize
+(int port)
+Initializes the SPI port.
+static int
+spiRead
+(int port,
+ boolean initiate,
+ByteBuffer
+dataReceived,
+ int size)
+Executes a read from the device.
+static int
+spiReadAutoReceivedData
+(int port,
+ int[] buffer,
+ int numToRead,
+ double timeout)
+Reads data received by the SPI accumulator.
+static int
+spiReadAutoReceivedData
+(int port,
+ByteBuffer
+buffer,
+ int numToRead,
+ double timeout)
+Reads data received by the SPI accumulator.
+static int
+spiReadB
+(int port,
+ boolean initiate,
+ byte[] dataReceived,
+ int size)
+Executes a read from the device.
+static void
+spiSetAutoTransmitData
+(int port,
+ byte[] dataToSend,
+ int zeroSize)
+Sets the data to be transmitted to the device to initiate a read.
+static void
+spiSetChipSelectActiveHigh
+(int port)
+Sets the CS Active high for a SPI port.
+static void
+spiSetChipSelectActiveLow
+(int port)
+Sets the CS Active low for a SPI port.
+static void
+spiSetMode
+(int port,
+ int mode)
+Sets the SPI Mode.
+static void
+spiSetSpeed
+(int port,
+ int speed)
+Sets the clock speed for the SPI bus.
+static void
+spiStartAutoRate
+(int port,
+ double period)
+Sets the period for automatic SPI accumulation.
+static void
+spiStartAutoTrigger
+(int port,
+ int digitalSourceHandle,
+ int analogTriggerType,
+ boolean triggerRising,
+ boolean triggerFalling)
+Starts the auto SPI accumulator on a specific trigger.
+static void
+spiStopAuto
+(int port)
+Stops an automatic SPI accumulation.
+static int
+spiTransaction
+(int port,
+ByteBuffer
+dataToSend,
+ByteBuffer
+dataReceived,
+ int size)
+Performs an SPI send/receive transaction.
+static int
+spiTransactionB
+(int port,
+ byte[] dataToSend,
+ byte[] dataReceived,
+ int size)
+Performs an SPI send/receive transaction.
+static int
+spiWrite
+(int port,
+ByteBuffer
+dataToSend,
+ int sendSize)
+Executes a write transaction with the device.
+static int
+spiWriteB
+(int port,
+ byte[] dataToSend,
+ int sendSize)
+Executes a write transaction with the device.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+INVALID_PORT
+public static final
+int
+INVALID_PORT
+Invalid port number.
+See Also:
+Constant Field Values
+ONBOARD_CS0_PORT
+public static final
+int
+ONBOARD_CS0_PORT
+Onboard SPI bus port CS0.
+See Also:
+Constant Field Values
+ONBOARD_CS1_PORT
+public static final
+int
+ONBOARD_CS1_PORT
+Onboard SPI bus port CS1.
+See Also:
+Constant Field Values
+ONBOARD_CS2_PORT
+public static final
+int
+ONBOARD_CS2_PORT
+Onboard SPI bus port CS2.
+See Also:
+Constant Field Values
+ONBOARD_CS3_PORT
+public static final
+int
+ONBOARD_CS3_PORT
+Onboard SPI bus port CS3.
+See Also:
+Constant Field Values
+MXP_PORT
+public static final
+int
+MXP_PORT
+MXP (roboRIO MXP) SPI bus port.
+See Also:
+Constant Field Values
+SPI_MODE0
+public static final
+int
+SPI_MODE0
+Clock idle low, data sampled on rising edge.
+See Also:
+Constant Field Values
+SPI_MODE1
+public static final
+int
+SPI_MODE1
+Clock idle low, data sampled on falling edge.
+See Also:
+Constant Field Values
+SPI_MODE2
+public static final
+int
+SPI_MODE2
+Clock idle high, data sampled on falling edge.
+See Also:
+Constant Field Values
+SPI_MODE3
+public static final
+int
+SPI_MODE3
+Clock idle high, data sampled on rising edge.
+See Also:
+Constant Field Values
+Method Details
+spiInitialize
+public static
+void
+spiInitialize
+(int port)
+Initializes the SPI port. Opens the port if necessary and saves the handle.
+If opening the MXP port, also sets up the channel functions appropriately.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS3, 4 for MXP
+See Also:
+"HAL_InitializeSPI"
+spiTransaction
+public static
+int
+spiTransaction
+(int port,
+ByteBuffer
+dataToSend,
+ByteBuffer
+dataReceived,
+ int size)
+Performs an SPI send/receive transaction.
+This is a lower-level interface to the spi hardware giving you more control over each
+ transaction.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+dataToSend
+- Buffer of data to send as part of the transaction.
+dataReceived
+- Buffer to read data into.
+size
+- Number of bytes to transfer.
+Returns:
+Number of bytes transferred, -1 for error
+See Also:
+"HAL_TransactionSPI"
+spiTransactionB
+public static
+int
+spiTransactionB
+(int port,
+ byte[] dataToSend,
+ byte[] dataReceived,
+ int size)
+Performs an SPI send/receive transaction.
+This is a lower-level interface to the spi hardware giving you more control over each
+ transaction.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+dataToSend
+- Buffer of data to send as part of the transaction.
+dataReceived
+- Buffer to read data into.
+size
+- Number of bytes to transfer.
+Returns:
+Number of bytes transferred, -1 for error
+See Also:
+"HAL_TransactionSPI"
+spiWrite
+public static
+int
+spiWrite
+(int port,
+ByteBuffer
+dataToSend,
+ int sendSize)
+Executes a write transaction with the device.
+Writes to a device and wait until the transaction is complete.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+dataToSend
+- The data to write to the register on the device.
+sendSize
+- The number of bytes to be written
+Returns:
+The number of bytes written. -1 for an error
+See Also:
+"HAL_WriteSPI"
+spiWriteB
+public static
+int
+spiWriteB
+(int port,
+ byte[] dataToSend,
+ int sendSize)
+Executes a write transaction with the device.
+Writes to a device and wait until the transaction is complete.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+dataToSend
+- The data to write to the register on the device.
+sendSize
+- The number of bytes to be written
+Returns:
+The number of bytes written. -1 for an error
+See Also:
+"HAL_WriteSPI"
+spiRead
+public static
+int
+spiRead
+(int port,
+ boolean initiate,
+ByteBuffer
+dataReceived,
+ int size)
+Executes a read from the device.
+This method does not write any data out to the device.
+Most spi devices will require a register address to be written before they begin returning
+ data.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+initiate
+- initiates a transaction when true. Just reads when false.
+dataReceived
+- A pointer to the array of bytes to store the data read from the device.
+size
+- The number of bytes to read in the transaction.
+Returns:
+Number of bytes read. -1 for error.
+See Also:
+"HAL_ReadSPI"
+spiReadB
+public static
+int
+spiReadB
+(int port,
+ boolean initiate,
+ byte[] dataReceived,
+ int size)
+Executes a read from the device.
+This method does not write any data out to the device.
+Most spi devices will require a register address to be written before they begin returning
+ data.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+initiate
+- initiates a transaction when true. Just reads when false.
+dataReceived
+- A pointer to the array of bytes to store the data read from the device.
+size
+- The number of bytes to read in the transaction.
+Returns:
+Number of bytes read. -1 for error.
+See Also:
+"HAL_ReadSPI"
+spiClose
+public static
+void
+spiClose
+(int port)
+Closes the SPI port.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+See Also:
+"HAL_CloseSPI"
+spiSetSpeed
+public static
+void
+spiSetSpeed
+(int port,
+ int speed)
+Sets the clock speed for the SPI bus.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+speed
+- The speed in Hz (500KHz-10MHz)
+See Also:
+"HAL_SetSPISpeed"
+spiSetMode
+public static
+void
+spiSetMode
+(int port,
+ int mode)
+Sets the SPI Mode.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+mode
+- The SPI mode to use
+See Also:
+"HAL_SetSPIMode"
+spiGetMode
+public static
+int
+spiGetMode
+(int port)
+Gets the SPI Mode.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+Returns:
+The SPI mode currently set
+See Also:
+"HAL_GetSPIMode"
+spiSetChipSelectActiveHigh
+public static
+void
+spiSetChipSelectActiveHigh
+(int port)
+Sets the CS Active high for a SPI port.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+See Also:
+"HAL_SetSPIChipSelectActiveHigh"
+spiSetChipSelectActiveLow
+public static
+void
+spiSetChipSelectActiveLow
+(int port)
+Sets the CS Active low for a SPI port.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP
+See Also:
+"HAL_SetSPIChipSelectActiveLow"
+spiInitAuto
+public static
+void
+spiInitAuto
+(int port,
+ int bufferSize)
+Initializes the SPI automatic accumulator.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+bufferSize
+- The accumulator buffer size.
+See Also:
+"HAL_InitSPIAuto"
+spiFreeAuto
+public static
+void
+spiFreeAuto
+(int port)
+Frees an SPI automatic accumulator.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+See Also:
+"HAL_FreeSPIAuto"
+spiStartAutoRate
+public static
+void
+spiStartAutoRate
+(int port,
+ double period)
+Sets the period for automatic SPI accumulation.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+period
+- The accumulation period (seconds).
+See Also:
+"HAL_StartSPIAutoRate"
+spiStartAutoTrigger
+public static
+void
+spiStartAutoTrigger
+(int port,
+ int digitalSourceHandle,
+ int analogTriggerType,
+ boolean triggerRising,
+ boolean triggerFalling)
+Starts the auto SPI accumulator on a specific trigger.
+Note that triggering on both rising and falling edges is a valid configuration.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+digitalSourceHandle
+- The trigger source to use (Either HAL_AnalogTriggerHandle or
+     HAL_DigitalHandle).
+analogTriggerType
+- The analog trigger type, if the source is an analog trigger.
+triggerRising
+- Trigger on the rising edge if true.
+triggerFalling
+- Trigger on the falling edge if true.
+See Also:
+"HAL_StartSPIAutoTrigger"
+spiStopAuto
+public static
+void
+spiStopAuto
+(int port)
+Stops an automatic SPI accumulation.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+See Also:
+"HAL_StopSPIAuto"
+spiSetAutoTransmitData
+public static
+void
+spiSetAutoTransmitData
+(int port,
+ byte[] dataToSend,
+ int zeroSize)
+Sets the data to be transmitted to the device to initiate a read.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+dataToSend
+- Pointer to the data to send (Gets copied for continue use, so no need to keep
+     alive).
+zeroSize
+- The number of zeros to send after the data.
+See Also:
+"HAL_SetSPIAutoTransmitData"
+spiForceAutoRead
+public static
+void
+spiForceAutoRead
+(int port)
+Immediately forces an SPI read to happen.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+See Also:
+"HAL_ForceSPIAutoRead"
+spiReadAutoReceivedData
+public static
+int
+spiReadAutoReceivedData
+(int port,
+ByteBuffer
+buffer,
+ int numToRead,
+ double timeout)
+Reads data received by the SPI accumulator. Each received data sequence consists of a timestamp
+ followed by the received data bytes, one byte per word (in the least significant byte). The
+ length of each received data sequence is the same as the combined dataSize + zeroSize set in
+ spiSetAutoTransmitData.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+buffer
+- The buffer to store the data into.
+numToRead
+- The number of words to read.
+timeout
+- The read timeout (in seconds).
+Returns:
+The number of words actually read.
+See Also:
+"HAL_ReadSPIAutoReceivedData"
+spiReadAutoReceivedData
+public static
+int
+spiReadAutoReceivedData
+(int port,
+ int[] buffer,
+ int numToRead,
+ double timeout)
+Reads data received by the SPI accumulator. Each received data sequence consists of a timestamp
+ followed by the received data bytes, one byte per word (in the least significant byte). The
+ length of each received data sequence is the same as the combined dataSize + zeroSize set in
+ spiSetAutoTransmitData.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+buffer
+- The buffer to store the data into.
+numToRead
+- The number of words to read.
+timeout
+- The read timeout (in seconds).
+Returns:
+The number of words actually read.
+See Also:
+"HAL_ReadSPIAutoReceivedData"
+spiGetAutoDroppedCount
+public static
+int
+spiGetAutoDroppedCount
+(int port)
+Gets the count of how many SPI accumulations have been missed.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+Returns:
+The number of missed accumulations.
+See Also:
+"HAL_GetSPIAutoDroppedCount"
+spiConfigureAutoStall
+public static
+void
+spiConfigureAutoStall
+(int port,
+ int csToSclkTicks,
+ int stallTicks,
+ int pow2BytesPerRead)
+Configure the Auto SPI Stall time between reads.
+Parameters:
+port
+- The number of the port to use. 0-3 for Onboard CS0-CS2, 4 for MXP.
+csToSclkTicks
+- the number of ticks to wait before asserting the cs pin
+stallTicks
+- the number of ticks to stall for
+pow2BytesPerRead
+- the number of bytes to read before stalling
+See Also:
+"HAL_ConfigureSPIAutoStall"

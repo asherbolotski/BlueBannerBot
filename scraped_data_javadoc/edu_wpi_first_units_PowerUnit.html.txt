@@ -1,0 +1,538 @@
+Package
+edu.wpi.first.units
+Class PowerUnit
+java.lang.Object
+edu.wpi.first.units.Unit
+edu.wpi.first.units.PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+edu.wpi.first.units.PowerUnit
+public final class
+PowerUnit
+extends
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Unit of power dimension.
+This is the base type for units of power dimension. It is also used to specify the dimension
+ for
+Measure
+:
+Measure<PowerUnit>
+.
+Actual units (such as
+Units.Watts
+and
+Units.Horsepower
+) can be found in the
+Units
+class.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+PowerUnit
+combine
+(
+AngularVelocityUnit
+angularVelocity,
+TorqueUnit
+torque)
+Combines angular velocity and torque into power.
+static
+PowerUnit
+combine
+(
+CurrentUnit
+current,
+VoltageUnit
+voltage)
+Combines voltage and current into power.
+static
+PowerUnit
+combine
+(
+EnergyUnit
+energy,
+TimeUnit
+period)
+Combines an energy and a time unit to form a unit of power.
+static
+PowerUnit
+combine
+(
+TorqueUnit
+torque,
+AngularVelocityUnit
+angularVelocity)
+Combines angular velocity and torque into power.
+static
+PowerUnit
+combine
+(
+VoltageUnit
+voltage,
+CurrentUnit
+current)
+Combines voltage and current into power.
+double
+convertFrom
+(double magnitude,
+PowerUnit
+otherUnit)
+Converts a measurement value in terms of another power unit to this unit.
+PowerUnit
+getBaseUnit
+()
+Gets the base unit of measurement that this unit is derived from.
+MutPower
+mutable
+(double initialMagnitude)
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit.
+Power
+of
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+Power
+ofBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+Power
+one
+()
+Gets a measure with a magnitude of 1.0 in terms of this unit.
+VelocityUnit
+<
+PowerUnit
+>
+per
+(
+TimeUnit
+time)
+Combines this unit with a unit of time.
+<U extends
+Unit
+>
+PerUnit
+<
+PowerUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+Power
+zero
+()
+Gets a measure of zero magnitude in terms of this unit.
+Methods inherited from class edu.wpi.first.units.
+PerUnit
+combine
+,
+convertFrom
+,
+denominator
+,
+equals
+,
+hashCode
+,
+mult
+,
+mutableNative
+,
+numerator
+,
+ofNative
+,
+ofNativeBaseUnits
+,
+reciprocal
+Methods inherited from class edu.wpi.first.units.
+Unit
+equivalent
+,
+fromBaseUnits
+,
+getConverterFromBase
+,
+getConverterToBase
+,
+isBaseUnit
+,
+name
+,
+symbol
+,
+toBaseUnits
+,
+toString
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Method Details
+combine
+public static
+PowerUnit
+combine
+(
+EnergyUnit
+energy,
+TimeUnit
+period)
+Combines an energy and a time unit to form a unit of power.
+Parameters:
+energy
+- the unit of energy
+period
+- the unit of time
+Returns:
+the combined unit of power
+combine
+public static
+PowerUnit
+combine
+(
+VoltageUnit
+voltage,
+CurrentUnit
+current)
+Combines voltage and current into power.
+Parameters:
+voltage
+- the unit of voltage
+current
+- the unit of current
+Returns:
+the combined unit of power
+combine
+public static
+PowerUnit
+combine
+(
+CurrentUnit
+current,
+VoltageUnit
+voltage)
+Combines voltage and current into power.
+Parameters:
+current
+- the unit of current
+voltage
+- the unit of voltage
+Returns:
+the combined unit of power
+combine
+public static
+PowerUnit
+combine
+(
+AngularVelocityUnit
+angularVelocity,
+TorqueUnit
+torque)
+Combines angular velocity and torque into power. Useful when dealing with motors and flywheels.
+Parameters:
+angularVelocity
+- the unit of angular velocity
+torque
+- the unit of torque
+Returns:
+the combined unit of power
+combine
+public static
+PowerUnit
+combine
+(
+TorqueUnit
+torque,
+AngularVelocityUnit
+angularVelocity)
+Combines angular velocity and torque into power. Useful when dealing with motors and flywheels.
+Parameters:
+torque
+- the unit of torque
+angularVelocity
+- the unit of angular velocity
+Returns:
+the combined unit of power
+getBaseUnit
+public
+PowerUnit
+getBaseUnit
+()
+Description copied from class:
+Unit
+Gets the base unit of measurement that this unit is derived from. If the unit is the base unit,
+ the unit will be returned.
+NOTE:
+Subclasses
+must
+override this method to provide the
+ correct return type. Failing to do say will make unit combinations that use it break at
+ runtime!
+Unit baseUnit = new Unit(null, ...);
+   baseUnit.getBaseUnit(); // returns baseUnit
+
+   Unit derivedUnit = new Unit(baseUnit, ...);
+   derivedUnit.getBaseUnit(); // returns baseUnit
+Overrides:
+getBaseUnit
+in class
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Returns:
+the base unit
+of
+public
+Power
+of
+(double magnitude)
+Description copied from class:
+PerUnit
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+Per
+instance. If you want to
+ avoid casting, use
+PerUnit.ofNative(double)
+that returns a
+Per
+instance directly.
+Overrides:
+of
+in class
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Parameters:
+magnitude
+- the magnitude of the measure
+Returns:
+the ratio measure
+ofBaseUnits
+public
+Power
+ofBaseUnits
+(double baseUnitMagnitude)
+Description copied from class:
+PerUnit
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+Per
+instance. If you want to
+ avoid casting, use
+PerUnit.ofNativeBaseUnits(double)
+that returns a
+Per
+instance
+ directly.
+Overrides:
+ofBaseUnits
+in class
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Parameters:
+baseUnitMagnitude
+- the magnitude of the measure in terms of its base units.
+Returns:
+the ratio measure
+zero
+public
+Power
+zero
+()
+Description copied from class:
+Unit
+Gets a measure of zero magnitude in terms of this unit. The returned object is guaranteed to be
+ of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override this
+ method to sharpen the return type.
+Overrides:
+zero
+in class
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Returns:
+a zero-magnitude measure of this unit
+one
+public
+Power
+one
+()
+Description copied from class:
+Unit
+Gets a measure with a magnitude of 1.0 in terms of this unit. The returned object is guaranteed
+ to be of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override
+ this method to sharpen the return type.
+Overrides:
+one
+in class
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Returns:
+a measure of magnitude 1.0 in terms of this unit
+mutable
+public
+MutPower
+mutable
+(double initialMagnitude)
+Description copied from class:
+PerUnit
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit. Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+MutPer
+instance.
+Overrides:
+mutable
+in class
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Parameters:
+initialMagnitude
+- the starting magnitude of the measure
+Returns:
+the ratio measure
+per
+public
+VelocityUnit
+<
+PowerUnit
+>
+per
+(
+TimeUnit
+time)
+Description copied from class:
+Unit
+Combines this unit with a unit of time. This often - but not always - results in a velocity.
+ Subclasses should sharpen the return type to be unit-specific.
+Overrides:
+per
+in class
+PerUnit
+<
+EnergyUnit
+,
+TimeUnit
+>
+Parameters:
+time
+- the unit of time
+Returns:
+the combined unit
+per
+public
+<U extends
+Unit
+>
+PerUnit
+<
+PowerUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+Type Parameters:
+U
+- the type of the other unit
+Parameters:
+other
+- the other unit
+Returns:
+the ratio unit
+convertFrom
+public
+double
+convertFrom
+(double magnitude,
+PowerUnit
+otherUnit)
+Converts a measurement value in terms of another power unit to this unit.
+Parameters:
+magnitude
+- the magnitude of the measurement in terms of the other power unit
+otherUnit
+- the other power unit
+Returns:
+the value of the measurement in terms of this unit

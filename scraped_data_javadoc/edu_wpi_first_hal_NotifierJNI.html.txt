@@ -1,0 +1,204 @@
+Package
+edu.wpi.first.hal
+Class NotifierJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.NotifierJNI
+public class
+NotifierJNI
+extends
+JNIWrapper
+The NotifierJNI class directly wraps the C++ HAL Notifier.
+This class is not meant for direct use by teams. Instead, the edu.wpi.first.wpilibj.Notifier
+ class, which corresponds to the C++ Notifier class, should be used.
+See Also:
+"hal/Notifier.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+cancelNotifierAlarm
+(int notifierHandle)
+Cancels the next notifier alarm.
+static void
+cleanNotifier
+(int notifierHandle)
+Cleans a notifier.
+static int
+initializeNotifier
+()
+Initializes a notifier.
+static boolean
+setHALThreadPriority
+(boolean realTime,
+ int priority)
+Sets the HAL notifier thread priority.
+static void
+setNotifierName
+(int notifierHandle,
+String
+name)
+Sets the name of the notifier.
+static void
+stopNotifier
+(int notifierHandle)
+Stops a notifier from running.
+static void
+updateNotifierAlarm
+(int notifierHandle,
+ long triggerTime)
+Updates the trigger time for a notifier.
+static long
+waitForNotifierAlarm
+(int notifierHandle)
+Waits for the next alarm for the specific notifier.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+initializeNotifier
+public static
+int
+initializeNotifier
+()
+Initializes a notifier.
+A notifier is an FPGA controller timer that triggers at requested intervals based on the
+ FPGA time. This can be used to make precise control loops.
+Returns:
+the created notifier
+See Also:
+"HAL_InitializeNotifier"
+setHALThreadPriority
+public static
+boolean
+setHALThreadPriority
+(boolean realTime,
+ int priority)
+Sets the HAL notifier thread priority.
+The HAL notifier thread is responsible for managing the FPGA's notifier interrupt and waking
+ up user's Notifiers when it's their time to run. Giving the HAL notifier thread real-time
+ priority helps ensure the user's real-time Notifiers, if any, are notified to run in a timely
+ manner.
+Parameters:
+realTime
+- Set to true to set a real-time priority, false for standard priority.
+priority
+- Priority to set the thread to. For real-time, this is 1-99 with 99 being
+     highest. For non-real-time, this is forced to 0. See "man 7 sched" for more details.
+Returns:
+True on success.
+See Also:
+"HAL_SetNotifierThreadPriority"
+setNotifierName
+public static
+void
+setNotifierName
+(int notifierHandle,
+String
+name)
+Sets the name of the notifier.
+Parameters:
+notifierHandle
+- Notifier handle.
+name
+- Notifier name.
+See Also:
+"HAL_SetNotifierName"
+stopNotifier
+public static
+void
+stopNotifier
+(int notifierHandle)
+Stops a notifier from running.
+This will cause any call into waitForNotifierAlarm to return with time = 0.
+Parameters:
+notifierHandle
+- the notifier handle
+See Also:
+"HAL_StopNotifier"
+cleanNotifier
+public static
+void
+cleanNotifier
+(int notifierHandle)
+Cleans a notifier.
+Note this also stops a notifier if it is already running.
+Parameters:
+notifierHandle
+- the notifier handle
+See Also:
+"HAL_CleanNotifier"
+updateNotifierAlarm
+public static
+void
+updateNotifierAlarm
+(int notifierHandle,
+ long triggerTime)
+Updates the trigger time for a notifier.
+Note that this time is an absolute time relative to getFPGATime()
+Parameters:
+notifierHandle
+- the notifier handle
+triggerTime
+- the updated trigger time
+See Also:
+"HAL_UpdateNotifierAlarm"
+cancelNotifierAlarm
+public static
+void
+cancelNotifierAlarm
+(int notifierHandle)
+Cancels the next notifier alarm.
+This does not cause waitForNotifierAlarm to return.
+Parameters:
+notifierHandle
+- the notifier handle
+See Also:
+"HAL_CancelNotifierAlarm"
+waitForNotifierAlarm
+public static
+long
+waitForNotifierAlarm
+(int notifierHandle)
+Waits for the next alarm for the specific notifier.
+This is a blocking call until either the time elapses or stopNotifier gets called. If the
+ latter occurs, this function will return zero and any loops using this function should exit.
+ Failing to do so can lead to use-after-frees.
+Parameters:
+notifierHandle
+- the notifier handle
+Returns:
+the FPGA time the notifier returned

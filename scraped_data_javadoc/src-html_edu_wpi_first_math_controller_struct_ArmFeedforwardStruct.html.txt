@@ -1,0 +1,92 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller.struct;
+006
+007
+import edu.wpi.first.math.controller.ArmFeedforward;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class ArmFeedforwardStruct implements Struct<ArmFeedforward> {
+012
+@Override
+013
+public Class<ArmFeedforward> getTypeClass() {
+014
+return ArmFeedforward.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "ArmFeedforward";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble * 5;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double ks;double kg;double kv;double ka;double dt";
+030
+}
+031
+032
+@Override
+033
+public ArmFeedforward unpack(ByteBuffer bb) {
+034
+double ks = bb.getDouble();
+035
+double kg = bb.getDouble();
+036
+double kv = bb.getDouble();
+037
+double ka = bb.getDouble();
+038
+double dt = bb.getDouble();
+039
+return new ArmFeedforward(ks, kg, kv, ka, dt);
+040
+}
+041
+042
+@Override
+043
+public void pack(ByteBuffer bb, ArmFeedforward value) {
+044
+bb.putDouble(value.getKs());
+045
+bb.putDouble(value.getKg());
+046
+bb.putDouble(value.getKv());
+047
+bb.putDouble(value.getKa());
+048
+bb.putDouble(value.getDt());
+049
+}
+050
+}

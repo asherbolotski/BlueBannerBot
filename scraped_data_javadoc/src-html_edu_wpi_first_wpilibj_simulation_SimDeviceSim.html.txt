@@ -1,0 +1,516 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.SimBoolean;
+008
+import edu.wpi.first.hal.SimDouble;
+009
+import edu.wpi.first.hal.SimEnum;
+010
+import edu.wpi.first.hal.SimInt;
+011
+import edu.wpi.first.hal.SimLong;
+012
+import edu.wpi.first.hal.SimValue;
+013
+import edu.wpi.first.hal.simulation.SimDeviceCallback;
+014
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+015
+import edu.wpi.first.hal.simulation.SimValueCallback;
+016
+017
+/** Class to control the simulation side of a SimDevice. */
+018
+public class SimDeviceSim {
+019
+private final int m_handle;
+020
+021
+/**
+022
+* Constructs a SimDeviceSim.
+023
+*
+024
+* @param name name of the SimDevice
+025
+*/
+026
+public SimDeviceSim(String name) {
+027
+this(SimDeviceDataJNI.getSimDeviceHandle(name));
+028
+}
+029
+030
+/**
+031
+* Constructs a SimDeviceSim.
+032
+*
+033
+* @param name name of the SimDevice
+034
+* @param index device index number to append to name
+035
+*/
+036
+public SimDeviceSim(String name, int index) {
+037
+this(name + "[" + index + "]");
+038
+}
+039
+040
+/**
+041
+* Constructs a SimDeviceSim.
+042
+*
+043
+* @param name name of the SimDevice
+044
+* @param index device index number to append to name
+045
+* @param channel device channel number to append to name
+046
+*/
+047
+public SimDeviceSim(String name, int index, int channel) {
+048
+this(name + "[" + index + "," + channel + "]");
+049
+}
+050
+051
+/**
+052
+* Constructs a SimDeviceSim.
+053
+*
+054
+* @param handle the low level handle for the corresponding SimDevice
+055
+*/
+056
+public SimDeviceSim(int handle) {
+057
+m_handle = handle;
+058
+}
+059
+060
+/**
+061
+* Get the name of this object.
+062
+*
+063
+* @return name
+064
+*/
+065
+public String getName() {
+066
+return SimDeviceDataJNI.getSimDeviceName(m_handle);
+067
+}
+068
+069
+/**
+070
+* Get the property object with the given name.
+071
+*
+072
+* @param name the property name
+073
+* @return the property object
+074
+*/
+075
+public SimValue getValue(String name) {
+076
+int handle = SimDeviceDataJNI.getSimValueHandle(m_handle, name);
+077
+if (handle <= 0) {
+078
+return null;
+079
+}
+080
+return new SimValue(handle);
+081
+}
+082
+083
+/**
+084
+* Get the property object with the given name.
+085
+*
+086
+* @param name the property name
+087
+* @return the property object
+088
+*/
+089
+public SimInt getInt(String name) {
+090
+int handle = SimDeviceDataJNI.getSimValueHandle(m_handle, name);
+091
+if (handle <= 0) {
+092
+return null;
+093
+}
+094
+return new SimInt(handle);
+095
+}
+096
+097
+/**
+098
+* Get the property object with the given name.
+099
+*
+100
+* @param name the property name
+101
+* @return the property object
+102
+*/
+103
+public SimLong getLong(String name) {
+104
+int handle = SimDeviceDataJNI.getSimValueHandle(m_handle, name);
+105
+if (handle <= 0) {
+106
+return null;
+107
+}
+108
+return new SimLong(handle);
+109
+}
+110
+111
+/**
+112
+* Get the property object with the given name.
+113
+*
+114
+* @param name the property name
+115
+* @return the property object
+116
+*/
+117
+public SimDouble getDouble(String name) {
+118
+int handle = SimDeviceDataJNI.getSimValueHandle(m_handle, name);
+119
+if (handle <= 0) {
+120
+return null;
+121
+}
+122
+return new SimDouble(handle);
+123
+}
+124
+125
+/**
+126
+* Get the property object with the given name.
+127
+*
+128
+* @param name the property name
+129
+* @return the property object
+130
+*/
+131
+public SimEnum getEnum(String name) {
+132
+int handle = SimDeviceDataJNI.getSimValueHandle(m_handle, name);
+133
+if (handle <= 0) {
+134
+return null;
+135
+}
+136
+return new SimEnum(handle);
+137
+}
+138
+139
+/**
+140
+* Get the property object with the given name.
+141
+*
+142
+* @param name the property name
+143
+* @return the property object
+144
+*/
+145
+public SimBoolean getBoolean(String name) {
+146
+int handle = SimDeviceDataJNI.getSimValueHandle(m_handle, name);
+147
+if (handle <= 0) {
+148
+return null;
+149
+}
+150
+return new SimBoolean(handle);
+151
+}
+152
+153
+/**
+154
+* Get all options for the given enum.
+155
+*
+156
+* @param val the enum
+157
+* @return names of the different values for that enum
+158
+*/
+159
+public static String[] getEnumOptions(SimEnum val) {
+160
+return SimDeviceDataJNI.getSimValueEnumOptions(val.getNativeHandle());
+161
+}
+162
+163
+/**
+164
+* Get all data of this object.
+165
+*
+166
+* @return all data and fields of this object
+167
+*/
+168
+public SimDeviceDataJNI.SimValueInfo[] enumerateValues() {
+169
+return SimDeviceDataJNI.enumerateSimValues(m_handle);
+170
+}
+171
+172
+/**
+173
+* Get the native handle of this object.
+174
+*
+175
+* @return the handle used to refer to this object through JNI
+176
+*/
+177
+public int getNativeHandle() {
+178
+return m_handle;
+179
+}
+180
+181
+/**
+182
+* Register a callback to be run every time a new value is added to this device.
+183
+*
+184
+* @param callback the callback
+185
+* @param initialNotify should the callback be run with the initial state
+186
+* @return the {@link CallbackStore} object associated with this callback.
+187
+*/
+188
+public CallbackStore registerValueCreatedCallback(
+189
+SimValueCallback callback, boolean initialNotify) {
+190
+int uid = SimDeviceDataJNI.registerSimValueCreatedCallback(m_handle, callback, initialNotify);
+191
+return new CallbackStore(uid, SimDeviceDataJNI::cancelSimValueCreatedCallback);
+192
+}
+193
+194
+/**
+195
+* Register a callback to be run every time a value is changed on this device.
+196
+*
+197
+* @param value simulated value
+198
+* @param callback the callback
+199
+* @param initialNotify should the callback be run with the initial state
+200
+* @return the {@link CallbackStore} object associated with this callback.
+201
+*/
+202
+public CallbackStore registerValueChangedCallback(
+203
+SimValue value, SimValueCallback callback, boolean initialNotify) {
+204
+int uid =
+205
+SimDeviceDataJNI.registerSimValueChangedCallback(
+206
+value.getNativeHandle(), callback, initialNotify);
+207
+return new CallbackStore(uid, SimDeviceDataJNI::cancelSimValueChangedCallback);
+208
+}
+209
+210
+/**
+211
+* Register a callback for SimDouble.reset() and similar functions. The callback is called with
+212
+* the old value.
+213
+*
+214
+* @param value simulated value
+215
+* @param callback callback
+216
+* @param initialNotify ignored (present for consistency)
+217
+* @return the {@link CallbackStore} object associated with this callback.
+218
+*/
+219
+public CallbackStore registerValueResetCallback(
+220
+SimValue value, SimValueCallback callback, boolean initialNotify) {
+221
+int uid =
+222
+SimDeviceDataJNI.registerSimValueResetCallback(
+223
+value.getNativeHandle(), callback, initialNotify);
+224
+return new CallbackStore(uid, SimDeviceDataJNI::cancelSimValueResetCallback);
+225
+}
+226
+227
+/**
+228
+* Get all sim devices with the given prefix.
+229
+*
+230
+* @param prefix the prefix to filter sim devices
+231
+* @return all sim devices
+232
+*/
+233
+public static SimDeviceDataJNI.SimDeviceInfo[] enumerateDevices(String prefix) {
+234
+return SimDeviceDataJNI.enumerateSimDevices(prefix);
+235
+}
+236
+237
+/**
+238
+* Register a callback to be run every time a new {@link edu.wpi.first.hal.SimDevice} is created.
+239
+*
+240
+* @param prefix the prefix to filter sim devices
+241
+* @param callback the callback
+242
+* @param initialNotify should the callback be run with the initial state
+243
+* @return the {@link CallbackStore} object associated with this callback.
+244
+*/
+245
+public static CallbackStore registerDeviceCreatedCallback(
+246
+String prefix, SimDeviceCallback callback, boolean initialNotify) {
+247
+int uid = SimDeviceDataJNI.registerSimDeviceCreatedCallback(prefix, callback, initialNotify);
+248
+return new CallbackStore(uid, SimDeviceDataJNI::cancelSimDeviceCreatedCallback);
+249
+}
+250
+251
+/**
+252
+* Register a callback to be run every time a {@link edu.wpi.first.hal.SimDevice} is
+253
+* freed/destroyed.
+254
+*
+255
+* @param prefix the prefix to filter sim devices
+256
+* @param callback the callback
+257
+* @param initialNotify should the callback be run with the initial state
+258
+* @return the {@link CallbackStore} object associated with this callback.
+259
+*/
+260
+public static CallbackStore registerDeviceFreedCallback(
+261
+String prefix, SimDeviceCallback callback, boolean initialNotify) {
+262
+int uid = SimDeviceDataJNI.registerSimDeviceFreedCallback(prefix, callback, initialNotify);
+263
+return new CallbackStore(uid, SimDeviceDataJNI::cancelSimDeviceFreedCallback);
+264
+}
+265
+266
+/** Reset all SimDevice data. */
+267
+public static void resetData() {
+268
+SimDeviceDataJNI.resetSimDeviceData();
+269
+}
+270
+}

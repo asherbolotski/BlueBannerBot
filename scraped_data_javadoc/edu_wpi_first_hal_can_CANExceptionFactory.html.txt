@@ -1,0 +1,67 @@
+Package
+edu.wpi.first.hal.can
+Class CANExceptionFactory
+java.lang.Object
+edu.wpi.first.hal.can.CANExceptionFactory
+public final class
+CANExceptionFactory
+extends
+Object
+Checks the status of a CAN message and throws an exception of the appropriate type if necessary.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+checkStatus
+(int status,
+ int messageID)
+Checks the status of a CAN message with the given message ID.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+checkStatus
+public static
+void
+checkStatus
+(int status,
+ int messageID)
+Checks the status of a CAN message with the given message ID.
+Parameters:
+status
+- The CAN status.
+messageID
+- The CAN message ID.
+Throws:
+CANInvalidBufferException
+- if the buffer is invalid.
+CANMessageNotAllowedException
+- if the message isn't allowed.
+CANNotInitializedException
+- if the CAN bus isn't initialized.
+UncleanStatusException
+- if the status code passed in reports an error.

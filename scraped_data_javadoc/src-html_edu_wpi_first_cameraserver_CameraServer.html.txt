@@ -1,0 +1,1745 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cameraserver;
+006
+007
+import edu.wpi.first.cscore.AxisCamera;
+008
+import edu.wpi.first.cscore.CameraServerJNI;
+009
+import edu.wpi.first.cscore.CvSink;
+010
+import edu.wpi.first.cscore.CvSource;
+011
+import edu.wpi.first.cscore.MjpegServer;
+012
+import edu.wpi.first.cscore.UsbCamera;
+013
+import edu.wpi.first.cscore.VideoEvent;
+014
+import edu.wpi.first.cscore.VideoException;
+015
+import edu.wpi.first.cscore.VideoListener;
+016
+import edu.wpi.first.cscore.VideoMode;
+017
+import edu.wpi.first.cscore.VideoSink;
+018
+import edu.wpi.first.cscore.VideoSource;
+019
+import edu.wpi.first.networktables.BooleanEntry;
+020
+import edu.wpi.first.networktables.BooleanPublisher;
+021
+import edu.wpi.first.networktables.IntegerEntry;
+022
+import edu.wpi.first.networktables.IntegerPublisher;
+023
+import edu.wpi.first.networktables.NetworkTable;
+024
+import edu.wpi.first.networktables.NetworkTableInstance;
+025
+import edu.wpi.first.networktables.StringArrayPublisher;
+026
+import edu.wpi.first.networktables.StringArrayTopic;
+027
+import edu.wpi.first.networktables.StringEntry;
+028
+import edu.wpi.first.networktables.StringPublisher;
+029
+import edu.wpi.first.util.PixelFormat;
+030
+import java.lang.ref.Reference;
+031
+import java.util.ArrayList;
+032
+import java.util.Arrays;
+033
+import java.util.HashMap;
+034
+import java.util.Map;
+035
+import java.util.Objects;
+036
+import java.util.concurrent.atomic.AtomicInteger;
+037
+038
+/**
+039
+* Singleton class for creating and keeping camera servers. Also publishes camera information to
+040
+* NetworkTables.
+041
+*/
+042
+public final class CameraServer {
+043
+/** CameraServer base port. */
+044
+public static final int kBasePort = 1181;
+045
+046
+private static final String kPublishName = "/CameraPublisher";
+047
+048
+private static final class PropertyPublisher implements AutoCloseable {
+049
+@SuppressWarnings({"PMD.MissingBreakInSwitch", "PMD.ImplicitSwitchFallThrough", "fallthrough"})
+050
+PropertyPublisher(NetworkTable table, VideoEvent event) {
+051
+String name;
+052
+String infoName;
+053
+if (event.name.startsWith("raw_")) {
+054
+name = "RawProperty/" + event.name;
+055
+infoName = "RawPropertyInfo/" + event.name;
+056
+} else {
+057
+name = "Property/" + event.name;
+058
+infoName = "PropertyInfo/" + event.name;
+059
+}
+060
+061
+try {
+062
+switch (event.propertyKind) {
+063
+case kBoolean:
+064
+m_booleanValueEntry = table.getBooleanTopic(name).getEntry(false);
+065
+m_booleanValueEntry.setDefault(event.value != 0);
+066
+break;
+067
+case kEnum:
+068
+m_choicesTopic = table.getStringArrayTopic(infoName + "/choices");
+069
+// fall through
+070
+case kInteger:
+071
+m_integerValueEntry = table.getIntegerTopic(name).getEntry(0);
+072
+m_minPublisher = table.getIntegerTopic(infoName + "/min").publish();
+073
+m_maxPublisher = table.getIntegerTopic(infoName + "/max").publish();
+074
+m_stepPublisher = table.getIntegerTopic(infoName + "/step").publish();
+075
+m_defaultPublisher = table.getIntegerTopic(infoName + "/default").publish();
+076
+077
+m_integerValueEntry.setDefault(event.value);
+078
+m_minPublisher.set(CameraServerJNI.getPropertyMin(event.propertyHandle));
+079
+m_maxPublisher.set(CameraServerJNI.getPropertyMax(event.propertyHandle));
+080
+m_stepPublisher.set(CameraServerJNI.getPropertyStep(event.propertyHandle));
+081
+m_defaultPublisher.set(CameraServerJNI.getPropertyDefault(event.propertyHandle));
+082
+break;
+083
+case kString:
+084
+m_stringValueEntry = table.getStringTopic(name).getEntry("");
+085
+m_stringValueEntry.setDefault(event.valueStr);
+086
+break;
+087
+default:
+088
+break;
+089
+}
+090
+} catch (VideoException ignored) {
+091
+// ignore
+092
+}
+093
+}
+094
+095
+void update(VideoEvent event) {
+096
+switch (event.propertyKind) {
+097
+case kBoolean -> {
+098
+if (m_booleanValueEntry != null) {
+099
+m_booleanValueEntry.set(event.value != 0);
+100
+}
+101
+}
+102
+case kInteger, kEnum -> {
+103
+if (m_integerValueEntry != null) {
+104
+m_integerValueEntry.set(event.value);
+105
+}
+106
+}
+107
+case kString -> {
+108
+if (m_stringValueEntry != null) {
+109
+m_stringValueEntry.set(event.valueStr);
+110
+}
+111
+}
+112
+default -> {
+113
+// NOP
+114
+}
+115
+}
+116
+}
+117
+118
+@Override
+119
+public void close() {
+120
+try {
+121
+if (m_booleanValueEntry != null) {
+122
+m_booleanValueEntry.close();
+123
+}
+124
+if (m_integerValueEntry != null) {
+125
+m_integerValueEntry.close();
+126
+}
+127
+if (m_stringValueEntry != null) {
+128
+m_stringValueEntry.close();
+129
+}
+130
+if (m_minPublisher != null) {
+131
+m_minPublisher.close();
+132
+}
+133
+if (m_maxPublisher != null) {
+134
+m_maxPublisher.close();
+135
+}
+136
+if (m_stepPublisher != null) {
+137
+m_stepPublisher.close();
+138
+}
+139
+if (m_defaultPublisher != null) {
+140
+m_defaultPublisher.close();
+141
+}
+142
+if (m_choicesPublisher != null) {
+143
+m_choicesPublisher.close();
+144
+}
+145
+} finally {
+146
+Reference.reachabilityFence(m_videoListener);
+147
+}
+148
+}
+149
+150
+BooleanEntry m_booleanValueEntry;
+151
+IntegerEntry m_integerValueEntry;
+152
+StringEntry m_stringValueEntry;
+153
+IntegerPublisher m_minPublisher;
+154
+IntegerPublisher m_maxPublisher;
+155
+IntegerPublisher m_stepPublisher;
+156
+IntegerPublisher m_defaultPublisher;
+157
+StringArrayTopic m_choicesTopic;
+158
+StringArrayPublisher m_choicesPublisher;
+159
+}
+160
+161
+private static final class SourcePublisher implements AutoCloseable {
+162
+SourcePublisher(NetworkTable table, int sourceHandle) {
+163
+this.m_table = table;
+164
+m_sourcePublisher = table.getStringTopic("source").publish();
+165
+m_descriptionPublisher = table.getStringTopic("description").publish();
+166
+m_connectedPublisher = table.getBooleanTopic("connected").publish();
+167
+m_streamsPublisher = table.getStringArrayTopic("streams").publish();
+168
+m_modeEntry = table.getStringTopic("mode").getEntry("");
+169
+m_modesPublisher = table.getStringArrayTopic("modes").publish();
+170
+171
+m_sourcePublisher.set(makeSourceValue(sourceHandle));
+172
+m_descriptionPublisher.set(CameraServerJNI.getSourceDescription(sourceHandle));
+173
+m_connectedPublisher.set(CameraServerJNI.isSourceConnected(sourceHandle));
+174
+m_streamsPublisher.set(getSourceStreamValues(sourceHandle));
+175
+176
+try {
+177
+VideoMode mode = CameraServerJNI.getSourceVideoMode(sourceHandle);
+178
+m_modeEntry.setDefault(videoModeToString(mode));
+179
+m_modesPublisher.set(getSourceModeValues(sourceHandle));
+180
+} catch (VideoException ignored) {
+181
+// Do nothing. Let the other event handlers update this if there is an error.
+182
+}
+183
+}
+184
+185
+@Override
+186
+public void close() throws Exception {
+187
+m_sourcePublisher.close();
+188
+m_descriptionPublisher.close();
+189
+m_connectedPublisher.close();
+190
+m_streamsPublisher.close();
+191
+m_modeEntry.close();
+192
+m_modesPublisher.close();
+193
+for (PropertyPublisher pp : m_properties.values()) {
+194
+pp.close();
+195
+}
+196
+}
+197
+198
+final NetworkTable m_table;
+199
+final StringPublisher m_sourcePublisher;
+200
+final StringPublisher m_descriptionPublisher;
+201
+final BooleanPublisher m_connectedPublisher;
+202
+final StringArrayPublisher m_streamsPublisher;
+203
+final StringEntry m_modeEntry;
+204
+final StringArrayPublisher m_modesPublisher;
+205
+final Map<Integer, PropertyPublisher> m_properties = new HashMap<>();
+206
+}
+207
+208
+private static final AtomicInteger m_defaultUsbDevice = new AtomicInteger();
+209
+private static String m_primarySourceName;
+210
+private static final Map<String, VideoSource> m_sources = new HashMap<>();
+211
+private static final Map<String, VideoSink> m_sinks = new HashMap<>();
+212
+private static final Map<Integer, SourcePublisher> m_publishers =
+213
+new HashMap<>(); // indexed by source handle
+214
+// source handle indexed by sink handle
+215
+private static final Map<Integer, Integer> m_fixedSources = new HashMap<>();
+216
+private static final NetworkTable m_publishTable =
+217
+NetworkTableInstance.getDefault().getTable(kPublishName);
+218
+219
+// We publish sources to NetworkTables using the following structure:
+220
+// "/CameraPublisher/{Source.Name}/" - root
+221
+// - "source" (string): Descriptive, prefixed with type (e.g. "usb:0")
+222
+// - "streams" (string array): URLs that can be used to stream data
+223
+// - "description" (string): Description of the source
+224
+// - "connected" (boolean): Whether source is connected
+225
+// - "mode" (string): Current video mode
+226
+// - "modes" (string array): Available video modes
+227
+// - "Property/{Property}" - Property values
+228
+// - "PropertyInfo/{Property}" - Property supporting information
+229
+230
+// Listener for video events
+231
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
+232
+private static final VideoListener m_videoListener =
+233
+new VideoListener(
+234
+event -> {
+235
+synchronized (CameraServer.class) {
+236
+switch (event.kind) {
+237
+case kSourceCreated -> {
+238
+// Create subtable for the camera
+239
+NetworkTable table = m_publishTable.getSubTable(event.name);
+240
+m_publishers.put(
+241
+event.sourceHandle, new SourcePublisher(table, event.sourceHandle));
+242
+}
+243
+case kSourceDestroyed -> {
+244
+SourcePublisher publisher = m_publishers.remove(event.sourceHandle);
+245
+if (publisher != null) {
+246
+try {
+247
+publisher.close();
+248
+} catch (Exception e) {
+249
+// ignore (nothing we can do about it)
+250
+}
+251
+}
+252
+}
+253
+case kSourceConnected -> {
+254
+SourcePublisher publisher = m_publishers.get(event.sourceHandle);
+255
+if (publisher != null) {
+256
+// update the description too (as it may have changed)
+257
+publisher.m_descriptionPublisher.set(
+258
+CameraServerJNI.getSourceDescription(event.sourceHandle));
+259
+publisher.m_connectedPublisher.set(true);
+260
+}
+261
+}
+262
+case kSourceDisconnected -> {
+263
+SourcePublisher publisher = m_publishers.get(event.sourceHandle);
+264
+if (publisher != null) {
+265
+publisher.m_connectedPublisher.set(false);
+266
+}
+267
+}
+268
+case kSourceVideoModesUpdated -> {
+269
+SourcePublisher publisher = m_publishers.get(event.sourceHandle);
+270
+if (publisher != null) {
+271
+publisher.m_modesPublisher.set(getSourceModeValues(event.sourceHandle));
+272
+}
+273
+}
+274
+case kSourceVideoModeChanged -> {
+275
+SourcePublisher publisher = m_publishers.get(event.sourceHandle);
+276
+if (publisher != null) {
+277
+publisher.m_modeEntry.set(videoModeToString(event.mode));
+278
+}
+279
+}
+280
+case kSourcePropertyCreated -> {
+281
+SourcePublisher publisher = m_publishers.get(event.sourceHandle);
+282
+if (publisher != null) {
+283
+publisher.m_properties.put(
+284
+event.propertyHandle, new PropertyPublisher(publisher.m_table, event));
+285
+}
+286
+}
+287
+case kSourcePropertyValueUpdated -> {
+288
+SourcePublisher publisher = m_publishers.get(event.sourceHandle);
+289
+if (publisher != null) {
+290
+PropertyPublisher pp = publisher.m_properties.get(event.propertyHandle);
+291
+if (pp != null) {
+292
+pp.update(event);
+293
+}
+294
+}
+295
+}
+296
+case kSourcePropertyChoicesUpdated -> {
+297
+SourcePublisher publisher = m_publishers.get(event.sourceHandle);
+298
+if (publisher != null) {
+299
+PropertyPublisher pp = publisher.m_properties.get(event.propertyHandle);
+300
+if (pp != null && pp.m_choicesTopic != null) {
+301
+try {
+302
+String[] choices =
+303
+CameraServerJNI.getEnumPropertyChoices(event.propertyHandle);
+304
+if (pp.m_choicesPublisher == null) {
+305
+pp.m_choicesPublisher = pp.m_choicesTopic.publish();
+306
+}
+307
+pp.m_choicesPublisher.set(choices);
+308
+} catch (VideoException ignored) {
+309
+// ignore (just don't publish choices if we can't get them)
+310
+}
+311
+}
+312
+}
+313
+}
+314
+case kSinkSourceChanged,
+315
+kSinkCreated,
+316
+kSinkDestroyed,
+317
+kNetworkInterfacesChanged -> {
+318
+m_addresses = CameraServerJNI.getNetworkInterfaces();
+319
+updateStreamValues();
+320
+}
+321
+default -> {
+322
+// NOP
+323
+}
+324
+}
+325
+}
+326
+},
+327
+0x4fff,
+328
+true);
+329
+330
+private static int m_nextPort = kBasePort;
+331
+private static String[] m_addresses = new String[0];
+332
+333
+/**
+334
+* Return URI of source with the given index.
+335
+*
+336
+* @param source Source index.
+337
+*/
+338
+private static String makeSourceValue(int source) {
+339
+return switch (VideoSource.getKindFromInt(CameraServerJNI.getSourceKind(source))) {
+340
+case kUsb -> "usb:" + CameraServerJNI.getUsbCameraPath(source);
+341
+case kHttp -> {
+342
+String[] urls = CameraServerJNI.getHttpCameraUrls(source);
+343
+if (urls.length > 0) {
+344
+yield "ip:" + urls[0];
+345
+} else {
+346
+yield "ip:";
+347
+}
+348
+}
+349
+case kCv -> "cv:";
+350
+case kRaw -> "raw:";
+351
+case kUnknown -> "unknown:";
+352
+};
+353
+}
+354
+355
+/**
+356
+* Return URI of stream with the given address and port.
+357
+*
+358
+* @param address Stream IP address.
+359
+* @param port Stream remote port.
+360
+*/
+361
+private static String makeStreamValue(String address, int port) {
+362
+return "mjpg:http://" + address + ":" + port + "/?action=stream";
+363
+}
+364
+365
+/**
+366
+* Return URI of sink stream with the given index.
+367
+*
+368
+* @param sink Sink index.
+369
+*/
+370
+private static synchronized String[] getSinkStreamValues(int sink) {
+371
+// Ignore all but MjpegServer
+372
+if (VideoSink.getKindFromInt(CameraServerJNI.getSinkKind(sink)) != VideoSink.Kind.kMjpeg) {
+373
+return new String[0];
+374
+}
+375
+376
+// Get port
+377
+int port = CameraServerJNI.getMjpegServerPort(sink);
+378
+379
+// Generate values
+380
+ArrayList<String> values = new ArrayList<>(m_addresses.length + 1);
+381
+String listenAddress = CameraServerJNI.getMjpegServerListenAddress(sink);
+382
+if (!listenAddress.isEmpty()) {
+383
+// If a listen address is specified, only use that
+384
+values.add(makeStreamValue(listenAddress, port));
+385
+} else {
+386
+// Otherwise generate for hostname and all interface addresses
+387
+values.add(makeStreamValue(CameraServerJNI.getHostname() + ".local", port));
+388
+for (String addr : m_addresses) {
+389
+if ("127.0.0.1".equals(addr)) {
+390
+continue; // ignore localhost
+391
+}
+392
+values.add(makeStreamValue(addr, port));
+393
+}
+394
+}
+395
+396
+return values.toArray(new String[0]);
+397
+}
+398
+399
+/**
+400
+* Return list of stream source URIs for the given source index.
+401
+*
+402
+* @param source Source index.
+403
+*/
+404
+private static synchronized String[] getSourceStreamValues(int source) {
+405
+// Ignore all but HttpCamera
+406
+if (VideoSource.getKindFromInt(CameraServerJNI.getSourceKind(source))
+407
+!= VideoSource.Kind.kHttp) {
+408
+return new String[0];
+409
+}
+410
+411
+// Generate values
+412
+String[] values = CameraServerJNI.getHttpCameraUrls(source);
+413
+for (int j = 0; j < values.length; j++) {
+414
+values[j] = "mjpg:" + values[j];
+415
+}
+416
+417
+if (CameraServerSharedStore.getCameraServerShared().isRoboRIO()) {
+418
+// Look to see if we have a passthrough server for this source
+419
+// Only do this on the roboRIO
+420
+for (VideoSink i : m_sinks.values()) {
+421
+int sink = i.getHandle();
+422
+int sinkSource = CameraServerJNI.getSinkSource(sink);
+423
+if (source == sinkSource
+424
+&& VideoSink.getKindFromInt(CameraServerJNI.getSinkKind(sink))
+425
+== VideoSink.Kind.kMjpeg) {
+426
+// Add USB-only passthrough
+427
+String[] finalValues = Arrays.copyOf(values, values.length + 1);
+428
+int port = CameraServerJNI.getMjpegServerPort(sink);
+429
+finalValues[values.length] = makeStreamValue("172.22.11.2", port);
+430
+return finalValues;
+431
+}
+432
+}
+433
+}
+434
+435
+return values;
+436
+}
+437
+438
+/** Update list of stream URIs. */
+439
+private static synchronized void updateStreamValues() {
+440
+// Over all the sinks...
+441
+for (VideoSink i : m_sinks.values()) {
+442
+int sink = i.getHandle();
+443
+444
+// Get the source's subtable (if none exists, we're done)
+445
+int source =
+446
+Objects.requireNonNullElseGet(
+447
+m_fixedSources.get(sink), () -> CameraServerJNI.getSinkSource(sink));
+448
+449
+if (source == 0) {
+450
+continue;
+451
+}
+452
+SourcePublisher publisher = m_publishers.get(source);
+453
+if (publisher != null) {
+454
+// Don't set stream values if this is a HttpCamera passthrough
+455
+if (VideoSource.getKindFromInt(CameraServerJNI.getSourceKind(source))
+456
+== VideoSource.Kind.kHttp) {
+457
+continue;
+458
+}
+459
+460
+// Set table value
+461
+String[] values = getSinkStreamValues(sink);
+462
+if (values.length > 0) {
+463
+publisher.m_streamsPublisher.set(values);
+464
+}
+465
+}
+466
+}
+467
+468
+// Over all the sources...
+469
+for (VideoSource i : m_sources.values()) {
+470
+int source = i.getHandle();
+471
+472
+// Get the source's subtable (if none exists, we're done)
+473
+SourcePublisher publisher = m_publishers.get(source);
+474
+if (publisher != null) {
+475
+// Set table value
+476
+String[] values = getSourceStreamValues(source);
+477
+if (values.length > 0) {
+478
+publisher.m_streamsPublisher.set(values);
+479
+}
+480
+}
+481
+}
+482
+}
+483
+484
+/** Provide string description of pixel format. */
+485
+private static String pixelFormatToString(PixelFormat pixelFormat) {
+486
+return switch (pixelFormat) {
+487
+case kMJPEG -> "MJPEG";
+488
+case kYUYV -> "YUYV";
+489
+case kRGB565 -> "RGB565";
+490
+case kBGR -> "BGR";
+491
+case kBGRA -> "BGRA";
+492
+case kGray -> "Gray";
+493
+case kY16 -> "Y16";
+494
+case kUYVY -> "UYVY";
+495
+case kUnknown -> "Unknown";
+496
+};
+497
+}
+498
+499
+/**
+500
+* Provide string description of video mode.
+501
+*
+502
+* <p>The returned string is "{width}x{height} {format} {fps} fps".
+503
+*/
+504
+private static String videoModeToString(VideoMode mode) {
+505
+return mode.width
+506
++ "x"
+507
++ mode.height
+508
++ " "
+509
++ pixelFormatToString(mode.pixelFormat)
+510
++ " "
+511
++ mode.fps
+512
++ " fps";
+513
+}
+514
+515
+/**
+516
+* Get list of video modes for the given source handle.
+517
+*
+518
+* @param sourceHandle Source handle.
+519
+*/
+520
+private static String[] getSourceModeValues(int sourceHandle) {
+521
+VideoMode[] modes = CameraServerJNI.enumerateSourceVideoModes(sourceHandle);
+522
+String[] modeStrings = new String[modes.length];
+523
+for (int i = 0; i < modes.length; i++) {
+524
+modeStrings[i] = videoModeToString(modes[i]);
+525
+}
+526
+return modeStrings;
+527
+}
+528
+529
+private CameraServer() {}
+530
+531
+/**
+532
+* Start automatically capturing images to send to the dashboard.
+533
+*
+534
+* <p>You should call this method to see a camera feed on the dashboard. If you also want to
+535
+* perform vision processing on the roboRIO, use getVideo() to get access to the camera images.
+536
+*
+537
+* <p>The first time this overload is called, it calls {@link #startAutomaticCapture(int)} with
+538
+* device 0, creating a camera named "USB Camera 0". Subsequent calls increment the device number
+539
+* (e.g. 1, 2, etc).
+540
+*
+541
+* @return The USB camera capturing images.
+542
+*/
+543
+public static UsbCamera startAutomaticCapture() {
+544
+UsbCamera camera = startAutomaticCapture(m_defaultUsbDevice.getAndIncrement());
+545
+CameraServerSharedStore.getCameraServerShared().reportUsbCamera(camera.getHandle());
+546
+return camera;
+547
+}
+548
+549
+/**
+550
+* Start automatically capturing images to send to the dashboard.
+551
+*
+552
+* <p>This overload calls {@link #startAutomaticCapture(String, int)} with a name of "USB Camera
+553
+* {dev}".
+554
+*
+555
+* @param dev The device number of the camera interface
+556
+* @return The USB camera capturing images.
+557
+*/
+558
+public static UsbCamera startAutomaticCapture(int dev) {
+559
+UsbCamera camera = new UsbCamera("USB Camera " + dev, dev);
+560
+startAutomaticCapture(camera);
+561
+CameraServerSharedStore.getCameraServerShared().reportUsbCamera(camera.getHandle());
+562
+return camera;
+563
+}
+564
+565
+/**
+566
+* Start automatically capturing images to send to the dashboard.
+567
+*
+568
+* @param name The name to give the camera
+569
+* @param dev The device number of the camera interface
+570
+* @return The USB camera capturing images.
+571
+*/
+572
+public static UsbCamera startAutomaticCapture(String name, int dev) {
+573
+UsbCamera camera = new UsbCamera(name, dev);
+574
+startAutomaticCapture(camera);
+575
+CameraServerSharedStore.getCameraServerShared().reportUsbCamera(camera.getHandle());
+576
+return camera;
+577
+}
+578
+579
+/**
+580
+* Start automatically capturing images to send to the dashboard.
+581
+*
+582
+* @param name The name to give the camera
+583
+* @param path The device path (e.g. "/dev/video0") of the camera
+584
+* @return The USB camera capturing images.
+585
+*/
+586
+public static UsbCamera startAutomaticCapture(String name, String path) {
+587
+UsbCamera camera = new UsbCamera(name, path);
+588
+startAutomaticCapture(camera);
+589
+CameraServerSharedStore.getCameraServerShared().reportUsbCamera(camera.getHandle());
+590
+return camera;
+591
+}
+592
+593
+/**
+594
+* Start automatically capturing images to send to the dashboard from an existing camera.
+595
+*
+596
+* @param camera Camera
+597
+* @return The MJPEG server serving images from the given camera.
+598
+*/
+599
+public static MjpegServer startAutomaticCapture(VideoSource camera) {
+600
+addCamera(camera);
+601
+MjpegServer server = addServer("serve_" + camera.getName());
+602
+server.setSource(camera);
+603
+return server;
+604
+}
+605
+606
+/**
+607
+* Adds an Axis IP camera.
+608
+*
+609
+* <p>This overload calls {@link #addAxisCamera(String, String)} with name "Axis Camera".
+610
+*
+611
+* @param host Camera host IP or DNS name (e.g. "10.x.y.11")
+612
+* @return The Axis camera capturing images.
+613
+* @deprecated Call startAutomaticCapture with a HttpCamera instead.
+614
+*/
+615
+@Deprecated(forRemoval = true, since = "2025")
+616
+@SuppressWarnings("removal")
+617
+public static AxisCamera addAxisCamera(String host) {
+618
+return addAxisCamera("Axis Camera", host);
+619
+}
+620
+621
+/**
+622
+* Adds an Axis IP camera.
+623
+*
+624
+* <p>This overload calls {@link #addAxisCamera(String, String[])} with name "Axis Camera".
+625
+*
+626
+* @param hosts Array of Camera host IPs/DNS names
+627
+* @return The Axis camera capturing images.
+628
+* @deprecated Call startAutomaticCapture with a HttpCamera instead.
+629
+*/
+630
+@Deprecated(forRemoval = true, since = "2025")
+631
+@SuppressWarnings("removal")
+632
+public static AxisCamera addAxisCamera(String[] hosts) {
+633
+return addAxisCamera("Axis Camera", hosts);
+634
+}
+635
+636
+/**
+637
+* Adds an Axis IP camera.
+638
+*
+639
+* @param name The name to give the camera
+640
+* @param host Camera host IP or DNS name (e.g. "10.x.y.11")
+641
+* @return The Axis camera capturing images.
+642
+* @deprecated Call startAutomaticCapture with a HttpCamera instead.
+643
+*/
+644
+@Deprecated(forRemoval = true, since = "2025")
+645
+@SuppressWarnings("removal")
+646
+public static AxisCamera addAxisCamera(String name, String host) {
+647
+AxisCamera camera = new AxisCamera(name, host);
+648
+// Create a passthrough MJPEG server for USB access
+649
+startAutomaticCapture(camera);
+650
+CameraServerSharedStore.getCameraServerShared().reportAxisCamera(camera.getHandle());
+651
+return camera;
+652
+}
+653
+654
+/**
+655
+* Adds an Axis IP camera.
+656
+*
+657
+* @param name The name to give the camera
+658
+* @param hosts Array of Camera host IPs/DNS names
+659
+* @return The Axis camera capturing images.
+660
+* @deprecated Call startAutomaticCapture with a HttpCamera instead.
+661
+*/
+662
+@Deprecated(forRemoval = true, since = "2025")
+663
+@SuppressWarnings("removal")
+664
+public static AxisCamera addAxisCamera(String name, String[] hosts) {
+665
+AxisCamera camera = new AxisCamera(name, hosts);
+666
+// Create a passthrough MJPEG server for USB access
+667
+startAutomaticCapture(camera);
+668
+CameraServerSharedStore.getCameraServerShared().reportAxisCamera(camera.getHandle());
+669
+return camera;
+670
+}
+671
+672
+/**
+673
+* Adds a virtual camera for switching between two streams. Unlike the other addCamera methods,
+674
+* this returns a VideoSink rather than a VideoSource. Calling setSource() on the returned object
+675
+* can be used to switch the actual source of the stream.
+676
+*
+677
+* @param name The name to give the camera
+678
+* @return The MJPEG server serving images from the given camera.
+679
+*/
+680
+public static MjpegServer addSwitchedCamera(String name) {
+681
+// create a dummy CvSource
+682
+CvSource source = new CvSource(name, PixelFormat.kMJPEG, 160, 120, 30);
+683
+MjpegServer server = startAutomaticCapture(source);
+684
+synchronized (CameraServer.class) {
+685
+m_fixedSources.put(server.getHandle(), source.getHandle());
+686
+}
+687
+688
+return server;
+689
+}
+690
+691
+/**
+692
+* Get OpenCV access to the primary camera feed. This allows you to get images from the camera for
+693
+* image processing on the roboRIO.
+694
+*
+695
+* <p>This is only valid to call after a camera feed has been added with startAutomaticCapture()
+696
+* or addServer().
+697
+*
+698
+* @return OpenCV sink for the primary camera feed
+699
+*/
+700
+public static CvSink getVideo() {
+701
+VideoSource source;
+702
+synchronized (CameraServer.class) {
+703
+if (m_primarySourceName == null) {
+704
+throw new VideoException("no camera available");
+705
+}
+706
+source = m_sources.get(m_primarySourceName);
+707
+}
+708
+if (source == null) {
+709
+throw new VideoException("no camera available");
+710
+}
+711
+return getVideo(source);
+712
+}
+713
+714
+/**
+715
+* Get OpenCV access to the specified camera. This allows you to get images from the camera for
+716
+* image processing on the roboRIO.
+717
+*
+718
+* @param camera Camera (e.g. as returned by startAutomaticCapture).
+719
+* @return OpenCV sink for the specified camera
+720
+*/
+721
+public static CvSink getVideo(VideoSource camera) {
+722
+String name = "opencv_" + camera.getName();
+723
+724
+synchronized (CameraServer.class) {
+725
+VideoSink sink = m_sinks.get(name);
+726
+if (sink != null) {
+727
+VideoSink.Kind kind = sink.getKind();
+728
+if (kind != VideoSink.Kind.kCv) {
+729
+throw new VideoException("expected OpenCV sink, but got " + kind);
+730
+}
+731
+return (CvSink) sink;
+732
+}
+733
+}
+734
+735
+CvSink newsink = new CvSink(name);
+736
+newsink.setSource(camera);
+737
+addServer(newsink);
+738
+return newsink;
+739
+}
+740
+741
+/**
+742
+* Get OpenCV access to the specified camera. This allows you to get images from the camera for
+743
+* image processing on the roboRIO.
+744
+*
+745
+* @param camera Camera (e.g. as returned by startAutomaticCapture).
+746
+* @param pixelFormat Desired pixelFormat of the camera
+747
+* @return OpenCV sink for the specified camera
+748
+*/
+749
+public static CvSink getVideo(VideoSource camera, PixelFormat pixelFormat) {
+750
+String name = "opencv_" + camera.getName();
+751
+752
+synchronized (CameraServer.class) {
+753
+VideoSink sink = m_sinks.get(name);
+754
+if (sink != null) {
+755
+VideoSink.Kind kind = sink.getKind();
+756
+if (kind != VideoSink.Kind.kCv) {
+757
+throw new VideoException("expected OpenCV sink, but got " + kind);
+758
+}
+759
+return (CvSink) sink;
+760
+}
+761
+}
+762
+763
+CvSink newsink = new CvSink(name, pixelFormat);
+764
+newsink.setSource(camera);
+765
+addServer(newsink);
+766
+return newsink;
+767
+}
+768
+769
+/**
+770
+* Get OpenCV access to the specified camera. This allows you to get images from the camera for
+771
+* image processing on the roboRIO.
+772
+*
+773
+* @param name Camera name
+774
+* @return OpenCV sink for the specified camera
+775
+*/
+776
+public static CvSink getVideo(String name) {
+777
+VideoSource source;
+778
+synchronized (CameraServer.class) {
+779
+source = m_sources.get(name);
+780
+if (source == null) {
+781
+throw new VideoException("could not find camera " + name);
+782
+}
+783
+}
+784
+return getVideo(source);
+785
+}
+786
+787
+/**
+788
+* Create a MJPEG stream with OpenCV input. This can be called to pass custom annotated images to
+789
+* the dashboard.
+790
+*
+791
+* @param name Name to give the stream
+792
+* @param width Width of the image being sent
+793
+* @param height Height of the image being sent
+794
+* @return OpenCV source for the MJPEG stream
+795
+*/
+796
+public static CvSource putVideo(String name, int width, int height) {
+797
+CvSource source = new CvSource(name, PixelFormat.kMJPEG, width, height, 30);
+798
+startAutomaticCapture(source);
+799
+return source;
+800
+}
+801
+802
+/**
+803
+* Adds a MJPEG server at the next available port.
+804
+*
+805
+* @param name Server name
+806
+* @return The MJPEG server
+807
+*/
+808
+public static MjpegServer addServer(String name) {
+809
+int port;
+810
+synchronized (CameraServer.class) {
+811
+port = m_nextPort;
+812
+m_nextPort++;
+813
+}
+814
+return addServer(name, port);
+815
+}
+816
+817
+/**
+818
+* Adds a MJPEG server.
+819
+*
+820
+* @param name Server name
+821
+* @param port Server port
+822
+* @return The MJPEG server
+823
+*/
+824
+public static MjpegServer addServer(String name, int port) {
+825
+MjpegServer server = new MjpegServer(name, port);
+826
+addServer(server);
+827
+return server;
+828
+}
+829
+830
+/**
+831
+* Adds an already created server.
+832
+*
+833
+* @param server Server
+834
+*/
+835
+public static void addServer(VideoSink server) {
+836
+synchronized (CameraServer.class) {
+837
+m_sinks.put(server.getName(), server);
+838
+}
+839
+}
+840
+841
+/**
+842
+* Removes a server by name.
+843
+*
+844
+* @param name Server name
+845
+*/
+846
+public static void removeServer(String name) {
+847
+synchronized (CameraServer.class) {
+848
+m_sinks.remove(name);
+849
+}
+850
+}
+851
+852
+/**
+853
+* Get server for the primary camera feed.
+854
+*
+855
+* <p>This is only valid to call after a camera feed has been added with startAutomaticCapture()
+856
+* or addServer().
+857
+*
+858
+* @return The server for the primary camera feed
+859
+*/
+860
+public static VideoSink getServer() {
+861
+synchronized (CameraServer.class) {
+862
+if (m_primarySourceName == null) {
+863
+throw new VideoException("no camera available");
+864
+}
+865
+return getServer("serve_" + m_primarySourceName);
+866
+}
+867
+}
+868
+869
+/**
+870
+* Gets a server by name.
+871
+*
+872
+* @param name Server name
+873
+* @return The server
+874
+*/
+875
+public static VideoSink getServer(String name) {
+876
+synchronized (CameraServer.class) {
+877
+return m_sinks.get(name);
+878
+}
+879
+}
+880
+881
+/**
+882
+* Adds an already created camera.
+883
+*
+884
+* @param camera Camera
+885
+*/
+886
+public static void addCamera(VideoSource camera) {
+887
+String name = camera.getName();
+888
+synchronized (CameraServer.class) {
+889
+if (m_primarySourceName == null) {
+890
+m_primarySourceName = name;
+891
+}
+892
+m_sources.put(name, camera);
+893
+}
+894
+}
+895
+896
+/**
+897
+* Removes a camera by name.
+898
+*
+899
+* @param name Camera name
+900
+*/
+901
+public static void removeCamera(String name) {
+902
+synchronized (CameraServer.class) {
+903
+m_sources.remove(name);
+904
+}
+905
+}
+906
+}

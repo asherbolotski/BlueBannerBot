@@ -1,0 +1,148 @@
+Package
+edu.wpi.first.math.trajectory
+Class TrajectoryUtil
+java.lang.Object
+edu.wpi.first.math.trajectory.TrajectoryUtil
+public final class
+TrajectoryUtil
+extends
+Object
+Trajectory utilities.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static class
+TrajectoryUtil.TrajectorySerializationException
+Exception for trajectory serialization failure.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+Trajectory
+deserializeTrajectory
+(
+String
+json)
+Deserializes a Trajectory from JSON exported from PathWeaver.
+static
+Trajectory
+fromPathweaverJson
+(
+Path
+path)
+Imports a Trajectory from a JSON file exported from PathWeaver.
+static
+String
+serializeTrajectory
+(
+Trajectory
+trajectory)
+Serializes a Trajectory to PathWeaver-style JSON.
+static void
+toPathweaverJson
+(
+Trajectory
+trajectory,
+Path
+path)
+Exports a Trajectory to a PathWeaver-style JSON file.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+fromPathweaverJson
+public static
+Trajectory
+fromPathweaverJson
+(
+Path
+path)
+throws
+IOException
+Imports a Trajectory from a JSON file exported from PathWeaver.
+Parameters:
+path
+- The path of the json file to import from
+Returns:
+The trajectory represented by the file.
+Throws:
+IOException
+- if reading from the file fails.
+toPathweaverJson
+public static
+void
+toPathweaverJson
+(
+Trajectory
+trajectory,
+Path
+path)
+throws
+IOException
+Exports a Trajectory to a PathWeaver-style JSON file.
+Parameters:
+trajectory
+- The trajectory to export
+path
+- The path of the file to export to
+Throws:
+IOException
+- if writing to the file fails.
+deserializeTrajectory
+public static
+Trajectory
+deserializeTrajectory
+(
+String
+json)
+Deserializes a Trajectory from JSON exported from PathWeaver.
+Parameters:
+json
+- The string containing the serialized JSON
+Returns:
+the trajectory represented by the JSON
+Throws:
+TrajectoryUtil.TrajectorySerializationException
+- if deserialization of the string fails.
+serializeTrajectory
+public static
+String
+serializeTrajectory
+(
+Trajectory
+trajectory)
+Serializes a Trajectory to PathWeaver-style JSON.
+Parameters:
+trajectory
+- The trajectory to export
+Returns:
+The string containing the serialized JSON
+Throws:
+TrajectoryUtil.TrajectorySerializationException
+- if serialization of the trajectory fails.

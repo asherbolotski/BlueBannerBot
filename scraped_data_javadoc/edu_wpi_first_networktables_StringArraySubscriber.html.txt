@@ -1,0 +1,173 @@
+Package
+edu.wpi.first.networktables
+Interface StringArraySubscriber
+All Superinterfaces:
+AutoCloseable
+,
+PubSub
+,
+Subscriber
+,
+Supplier
+<
+String
+[]>
+All Known Subinterfaces:
+StringArrayEntry
+public interface
+StringArraySubscriber
+extends
+Subscriber
+,
+Supplier
+<
+String
+[]>
+NetworkTables StringArray subscriber.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+String
+[]
+get
+()
+Get the last published value.
+String
+[]
+get
+(
+String
+[] defaultValue)
+Get the last published value.
+TimestampedStringArray
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+TimestampedStringArray
+getAtomic
+(
+String
+[] defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+StringArrayTopic
+getTopic
+()
+Get the corresponding topic.
+TimestampedStringArray
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+String
+[][]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+getTopic
+StringArrayTopic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+get
+String
+[]
+get
+()
+Get the last published value.
+ If no value has been published, returns the stored default value.
+Specified by:
+get
+in interface
+Supplier
+<
+String
+[]>
+Returns:
+value
+get
+String
+[]
+get
+(
+String
+[] defaultValue)
+Get the last published value.
+ If no value has been published, returns the passed defaultValue.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+value
+getAtomic
+TimestampedStringArray
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+Returns:
+timestamped value
+getAtomic
+TimestampedStringArray
+getAtomic
+(
+String
+[] defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+timestamped value
+readQueue
+TimestampedStringArray
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+ Also provides a timestamp for each value.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of timestamped values; empty array if no new changes have
+     been published since the previous call.
+readQueueValues
+String
+[][]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of values; empty array if no new changes have been
+     published since the previous call.

@@ -1,0 +1,250 @@
+Package
+edu.wpi.first.wpilibj.counter
+Class Tachometer
+java.lang.Object
+edu.wpi.first.wpilibj.counter.Tachometer
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+Tachometer
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Tachometer.
+The Tachometer class measures the time between digital pulses to determine the rotation speed
+ of a mechanism. Examples of devices that could be used with the tachometer class are a hall
+ effect sensor, break beam sensor, or optical sensor detecting tape on a shooter wheel. Unlike
+ encoders, this class only needs a single digital input.
+Constructor Summary
+Constructors
+Constructor
+Description
+Tachometer
+(
+DigitalSource
+source)
+Constructs a new tachometer.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+int
+getEdgesPerRevolution
+()
+Gets the number of edges per revolution.
+double
+getFrequency
+()
+Gets the tachometer frequency.
+double
+getPeriod
+()
+Gets the tachometer period.
+double
+getRevolutionsPerMinute
+()
+Gets the current tachometer revolutions per minute.
+double
+getRevolutionsPerSecond
+()
+Gets the current tachometer revolutions per second.
+int
+getSamplesToAverage
+()
+Gets the number of samples to average.
+boolean
+getStopped
+()
+Gets if the tachometer is stopped.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+setEdgesPerRevolution
+(int edgesPerRevolution)
+Sets the number of edges per revolution.
+void
+setMaxPeriod
+(double maxPeriod)
+Sets the maximum period before the tachometer is considered stopped.
+void
+setSamplesToAverage
+(int samplesToAverage)
+Sets the number of samples to average.
+void
+setUpdateWhenEmpty
+(boolean updateWhenEmpty)
+Sets if to update when empty.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+Tachometer
+public
+Tachometer
+(
+DigitalSource
+source)
+Constructs a new tachometer.
+Parameters:
+source
+- The DigitalSource (e.g. DigitalInput) of the Tachometer.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getPeriod
+public
+double
+getPeriod
+()
+Gets the tachometer period.
+Returns:
+Current period (in seconds).
+getFrequency
+public
+double
+getFrequency
+()
+Gets the tachometer frequency.
+Returns:
+Current frequency (in hertz).
+getEdgesPerRevolution
+public
+int
+getEdgesPerRevolution
+()
+Gets the number of edges per revolution.
+Returns:
+Edges per revolution.
+setEdgesPerRevolution
+public
+void
+setEdgesPerRevolution
+(int edgesPerRevolution)
+Sets the number of edges per revolution.
+Parameters:
+edgesPerRevolution
+- Edges per revolution.
+getRevolutionsPerSecond
+public
+double
+getRevolutionsPerSecond
+()
+Gets the current tachometer revolutions per second.
+setEdgesPerRevolution must be set with a non 0 value for this to return valid values.
+Returns:
+Current RPS.
+getRevolutionsPerMinute
+public
+double
+getRevolutionsPerMinute
+()
+Gets the current tachometer revolutions per minute.
+setEdgesPerRevolution must be set with a non 0 value for this to return valid values.
+Returns:
+Current RPM.
+getStopped
+public
+boolean
+getStopped
+()
+Gets if the tachometer is stopped.
+Returns:
+True if the tachometer is stopped.
+getSamplesToAverage
+public
+int
+getSamplesToAverage
+()
+Gets the number of samples to average.
+Returns:
+Samples to average.
+setSamplesToAverage
+public
+void
+setSamplesToAverage
+(int samplesToAverage)
+Sets the number of samples to average.
+Parameters:
+samplesToAverage
+- Samples to average.
+setMaxPeriod
+public
+void
+setMaxPeriod
+(double maxPeriod)
+Sets the maximum period before the tachometer is considered stopped.
+Parameters:
+maxPeriod
+- The max period (in seconds).
+setUpdateWhenEmpty
+public
+void
+setUpdateWhenEmpty
+(boolean updateWhenEmpty)
+Sets if to update when empty.
+Parameters:
+updateWhenEmpty
+- Update when empty if true.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

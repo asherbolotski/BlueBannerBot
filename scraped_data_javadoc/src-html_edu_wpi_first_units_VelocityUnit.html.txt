@@ -1,0 +1,263 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.ImmutableVelocity;
+008
+import edu.wpi.first.units.measure.MutVelocity;
+009
+import edu.wpi.first.units.measure.Velocity;
+010
+011
+/**
+012
+* Unit of velocity dimension that is a combination of a distance unit (numerator) and a time unit
+013
+* (denominator).
+014
+*
+015
+* <p>This is a generic velocity type for units that do not have discrete velocity units (eg {@link
+016
+* DistanceUnit} has {@link LinearVelocityUnit}, and so would not use this class).
+017
+*
+018
+* @param <D> the unit of the changing quantity, such as {@link VoltageUnit} or {@link
+019
+*     TemperatureUnit}
+020
+*/
+021
+public final class VelocityUnit<D extends Unit> extends PerUnit<D, TimeUnit> {
+022
+@SuppressWarnings("rawtypes")
+023
+private static final CombinatoryUnitCache<Unit, TimeUnit, VelocityUnit> cache =
+024
+new CombinatoryUnitCache<>(VelocityUnit::new);
+025
+026
+@SuppressWarnings("unchecked")
+027
+VelocityUnit(D numerator, TimeUnit denominator) {
+028
+super(
+029
+numerator.isBaseUnit() && denominator.isBaseUnit()
+030
+? null
+031
+: combine((D) numerator.getBaseUnit(), denominator.getBaseUnit()),
+032
+numerator,
+033
+denominator);
+034
+}
+035
+036
+VelocityUnit(
+037
+VelocityUnit<D> baseUnit,
+038
+UnaryFunction toBaseConverter,
+039
+UnaryFunction fromBaseConverter,
+040
+String name,
+041
+String symbol) {
+042
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+043
+}
+044
+045
+/**
+046
+* Combines a dimension unit and a unit of the period of change to create a unit of velocity.
+047
+*
+048
+* @param unit the unit of the changing dimension
+049
+* @param period the unit of the period of change in the velocity
+050
+* @param <D> the unit of the changing dimension
+051
+* @return the combined velocity unit
+052
+*/
+053
+@SuppressWarnings("unchecked")
+054
+public static <D extends Unit> VelocityUnit<D> combine(D unit, TimeUnit period) {
+055
+return cache.combine(unit, period);
+056
+}
+057
+058
+@Override
+059
+public VelocityUnit<D> getBaseUnit() {
+060
+return (VelocityUnit<D>) super.getBaseUnit();
+061
+}
+062
+063
+/**
+064
+* Gets the major unit being measured (eg Meters for Meters per Second).
+065
+*
+066
+* @return the major unit
+067
+*/
+068
+public D getUnit() {
+069
+return numerator();
+070
+}
+071
+072
+/**
+073
+* Gets the period unit of the velocity, eg Seconds or Milliseconds.
+074
+*
+075
+* @return the period unit
+076
+*/
+077
+public TimeUnit getPeriod() {
+078
+return denominator();
+079
+}
+080
+081
+@Override
+082
+public Velocity<D> of(double magnitude) {
+083
+return new ImmutableVelocity<>(magnitude, toBaseUnits(magnitude), this);
+084
+}
+085
+086
+@Override
+087
+public Velocity<D> ofBaseUnits(double baseUnitMagnitude) {
+088
+return new ImmutableVelocity<>(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+089
+}
+090
+091
+@Override
+092
+@SuppressWarnings("unchecked")
+093
+public Velocity<D> zero() {
+094
+return (Velocity<D>) super.zero();
+095
+}
+096
+097
+@Override
+098
+@SuppressWarnings("unchecked")
+099
+public Velocity<D> one() {
+100
+return (Velocity<D>) super.one();
+101
+}
+102
+103
+@Override
+104
+public MutableMeasure<VelocityUnit<D>, ?, ?> mutable(double initialMagnitude) {
+105
+return new MutVelocity<>(initialMagnitude, toBaseUnits(initialMagnitude), this);
+106
+}
+107
+108
+/**
+109
+* Combines this velocity unit with a unit of a period of change to create an acceleration unit.
+110
+*
+111
+* @param period the unit of the period of change
+112
+* @return the acceleration unit
+113
+*/
+114
+@Override
+115
+public AccelerationUnit<D> per(TimeUnit period) {
+116
+return AccelerationUnit.combine(this, period);
+117
+}
+118
+119
+/**
+120
+* Creates a ratio unit between this unit and an arbitrary other unit.
+121
+*
+122
+* @param other the other unit
+123
+* @param <U> the type of the other unit
+124
+* @return the ratio unit
+125
+*/
+126
+public <U extends Unit> PerUnit<VelocityUnit<D>, U> per(U other) {
+127
+return PerUnit.combine(this, other);
+128
+}
+129
+130
+/**
+131
+* Converts a measurement value in terms of another velocity unit to this unit.
+132
+*
+133
+* @param magnitude the magnitude of the measurement in terms of the other velocity unit
+134
+* @param otherUnit the other velocity unit
+135
+* @return the value of the measurement in terms of this unit
+136
+*/
+137
+public double convertFrom(double magnitude, VelocityUnit<? extends D> otherUnit) {
+138
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+139
+}
+140
+}

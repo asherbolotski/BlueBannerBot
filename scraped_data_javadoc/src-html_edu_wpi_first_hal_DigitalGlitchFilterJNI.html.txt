@@ -1,0 +1,124 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Digital Glitch Filter JNI functions.
+009
+*
+010
+* @see "hal/DIO.h"
+011
+*/
+012
+public class DigitalGlitchFilterJNI extends JNIWrapper {
+013
+/**
+014
+* Writes the filter index from the FPGA.
+015
+*
+016
+* <p>Set the filter index used to filter out short pulses.
+017
+*
+018
+* @param digitalPortHandle the digital port handle
+019
+* @param filterIndex the filter index (Must be in the range 0 - 3, where 0 means "none" and 1 - 3
+020
+*     means filter # filterIndex - 1)
+021
+* @see "HAL_SetFilterSelect"
+022
+*/
+023
+public static native void setFilterSelect(int digitalPortHandle, int filterIndex);
+024
+025
+/**
+026
+* Reads the filter index from the FPGA.
+027
+*
+028
+* <p>Gets the filter index used to filter out short pulses.
+029
+*
+030
+* @param digitalPortHandle the digital port handle
+031
+* @return the filter index (Must be in the range 0 - 3, where 0 means "none" and 1 - 3 means
+032
+*     filter # filterIndex - 1)
+033
+* @see "HAL_GetFilterSelect"
+034
+*/
+035
+public static native int getFilterSelect(int digitalPortHandle);
+036
+037
+/**
+038
+* Sets the filter period for the specified filter index.
+039
+*
+040
+* <p>Sets the filter period in FPGA cycles. Even though there are 2 different filter index
+041
+* domains (MXP vs HDR), ignore that distinction for now since it complicates the interface. That
+042
+* can be changed later.
+043
+*
+044
+* @param filterIndex the filter index, 0 - 2
+045
+* @param fpgaCycles the number of cycles that the signal must not transition to be counted as a
+046
+*     transition.
+047
+* @see "HAL_SetFilterPeriod"
+048
+*/
+049
+public static native void setFilterPeriod(int filterIndex, int fpgaCycles);
+050
+051
+/**
+052
+* Gets the filter period for the specified filter index.
+053
+*
+054
+* <p>Gets the filter period in FPGA cycles. Even though there are 2 different filter index
+055
+* domains (MXP vs HDR), ignore that distinction for now since it complicates the interface.
+056
+*
+057
+* @param filterIndex the filter index, 0 - 2
+058
+* @return The number of FPGA cycles of the filter period.
+059
+* @see "HAL_GetFilterPeriod"
+060
+*/
+061
+public static native int getFilterPeriod(int filterIndex);
+062
+063
+/** Utility class. */
+064
+private DigitalGlitchFilterJNI() {}
+065
+}

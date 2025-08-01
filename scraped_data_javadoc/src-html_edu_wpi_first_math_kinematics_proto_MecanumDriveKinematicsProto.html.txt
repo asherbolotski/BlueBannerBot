@@ -1,0 +1,85 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics.proto;
+006
+007
+import edu.wpi.first.math.geometry.Translation2d;
+008
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+009
+import edu.wpi.first.math.proto.Kinematics.ProtobufMecanumDriveKinematics;
+010
+import edu.wpi.first.util.protobuf.Protobuf;
+011
+import us.hebi.quickbuf.Descriptors.Descriptor;
+012
+013
+public class MecanumDriveKinematicsProto
+014
+implements Protobuf<MecanumDriveKinematics, ProtobufMecanumDriveKinematics> {
+015
+@Override
+016
+public Class<MecanumDriveKinematics> getTypeClass() {
+017
+return MecanumDriveKinematics.class;
+018
+}
+019
+020
+@Override
+021
+public Descriptor getDescriptor() {
+022
+return ProtobufMecanumDriveKinematics.getDescriptor();
+023
+}
+024
+025
+@Override
+026
+public ProtobufMecanumDriveKinematics createMessage() {
+027
+return ProtobufMecanumDriveKinematics.newInstance();
+028
+}
+029
+030
+@Override
+031
+public MecanumDriveKinematics unpack(ProtobufMecanumDriveKinematics msg) {
+032
+return new MecanumDriveKinematics(
+033
+Translation2d.proto.unpack(msg.getFrontLeft()),
+034
+Translation2d.proto.unpack(msg.getFrontRight()),
+035
+Translation2d.proto.unpack(msg.getRearLeft()),
+036
+Translation2d.proto.unpack(msg.getRearRight()));
+037
+}
+038
+039
+@Override
+040
+public void pack(ProtobufMecanumDriveKinematics msg, MecanumDriveKinematics value) {
+041
+Translation2d.proto.pack(msg.getMutableFrontLeft(), value.getFrontLeft());
+042
+Translation2d.proto.pack(msg.getMutableFrontRight(), value.getFrontRight());
+043
+Translation2d.proto.pack(msg.getMutableRearLeft(), value.getRearLeft());
+044
+Translation2d.proto.pack(msg.getMutableRearRight(), value.getRearRight());
+045
+}
+046
+}

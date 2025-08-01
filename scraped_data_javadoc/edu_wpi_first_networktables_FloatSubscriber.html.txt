@@ -1,0 +1,165 @@
+Package
+edu.wpi.first.networktables
+Interface FloatSubscriber
+All Superinterfaces:
+AutoCloseable
+,
+FloatSupplier
+,
+PubSub
+,
+Subscriber
+All Known Subinterfaces:
+FloatEntry
+public interface
+FloatSubscriber
+extends
+Subscriber
+,
+FloatSupplier
+NetworkTables Float subscriber.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+float
+get
+()
+Get the last published value.
+float
+get
+(float defaultValue)
+Get the last published value.
+default float
+getAsFloat
+()
+Gets a result.
+TimestampedFloat
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+TimestampedFloat
+getAtomic
+(float defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+FloatTopic
+getTopic
+()
+Get the corresponding topic.
+TimestampedFloat
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+float[]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+getTopic
+FloatTopic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+get
+float
+get
+()
+Get the last published value.
+ If no value has been published, returns the stored default value.
+Returns:
+value
+get
+float
+get
+(float defaultValue)
+Get the last published value.
+ If no value has been published, returns the passed defaultValue.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+value
+getAsFloat
+default
+float
+getAsFloat
+()
+Description copied from interface:
+FloatSupplier
+Gets a result.
+Specified by:
+getAsFloat
+in interface
+FloatSupplier
+Returns:
+a result
+getAtomic
+TimestampedFloat
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+Returns:
+timestamped value
+getAtomic
+TimestampedFloat
+getAtomic
+(float defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+timestamped value
+readQueue
+TimestampedFloat
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+ Also provides a timestamp for each value.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of timestamped values; empty array if no new changes have
+     been published since the previous call.
+readQueueValues
+float[]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of values; empty array if no new changes have been
+     published since the previous call.

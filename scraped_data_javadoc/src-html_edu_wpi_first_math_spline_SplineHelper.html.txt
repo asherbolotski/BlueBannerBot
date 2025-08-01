@@ -1,0 +1,634 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.spline;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.geometry.Translation2d;
+009
+import java.util.Arrays;
+010
+import java.util.List;
+011
+import org.ejml.simple.SimpleMatrix;
+012
+013
+/** Helper class that is used to generate cubic and quintic splines from user provided waypoints. */
+014
+public final class SplineHelper {
+015
+/** Private constructor because this is a utility class. */
+016
+private SplineHelper() {}
+017
+018
+/**
+019
+* Returns 2 cubic control vectors from a set of exterior waypoints and interior translations.
+020
+*
+021
+* @param start The starting pose.
+022
+* @param interiorWaypoints The interior waypoints.
+023
+* @param end The ending pose.
+024
+* @return 2 cubic control vectors.
+025
+*/
+026
+public static Spline.ControlVector[] getCubicControlVectorsFromWaypoints(
+027
+Pose2d start, Translation2d[] interiorWaypoints, Pose2d end) {
+028
+// Generate control vectors from poses.
+029
+Spline.ControlVector initialCV;
+030
+Spline.ControlVector endCV;
+031
+032
+// Chooses a magnitude automatically that makes the splines look better.
+033
+if (interiorWaypoints.length < 1) {
+034
+double scalar = start.getTranslation().getDistance(end.getTranslation()) * 1.2;
+035
+initialCV = getCubicControlVector(scalar, start);
+036
+endCV = getCubicControlVector(scalar, end);
+037
+} else {
+038
+double scalar = start.getTranslation().getDistance(interiorWaypoints[0]) * 1.2;
+039
+initialCV = getCubicControlVector(scalar, start);
+040
+scalar =
+041
+end.getTranslation().getDistance(interiorWaypoints[interiorWaypoints.length - 1]) * 1.2;
+042
+endCV = getCubicControlVector(scalar, end);
+043
+}
+044
+return new Spline.ControlVector[] {initialCV, endCV};
+045
+}
+046
+047
+/**
+048
+* Returns quintic splines from a set of waypoints.
+049
+*
+050
+* @param waypoints The waypoints
+051
+* @return array of splines.
+052
+*/
+053
+public static QuinticHermiteSpline[] getQuinticSplinesFromWaypoints(List<Pose2d> waypoints) {
+054
+QuinticHermiteSpline[] splines = new QuinticHermiteSpline[waypoints.size() - 1];
+055
+for (int i = 0; i < waypoints.size() - 1; ++i) {
+056
+var p0 = waypoints.get(i);
+057
+var p1 = waypoints.get(i + 1);
+058
+059
+// This just makes the splines look better.
+060
+final var scalar = 1.2 * p0.getTranslation().getDistance(p1.getTranslation());
+061
+062
+var controlVecA = getQuinticControlVector(scalar, p0);
+063
+var controlVecB = getQuinticControlVector(scalar, p1);
+064
+065
+splines[i] =
+066
+new QuinticHermiteSpline(controlVecA.x, controlVecB.x, controlVecA.y, controlVecB.y);
+067
+}
+068
+return splines;
+069
+}
+070
+071
+/**
+072
+* Returns a set of cubic splines corresponding to the provided control vectors. The user is free
+073
+* to set the direction of the start and end point. The directions for the middle waypoints are
+074
+* determined automatically to ensure continuous curvature throughout the path.
+075
+*
+076
+* @param start The starting control vector.
+077
+* @param waypoints The middle waypoints. This can be left blank if you only wish to create a path
+078
+*     with two waypoints.
+079
+* @param end The ending control vector.
+080
+* @return A vector of cubic hermite splines that interpolate through the provided waypoints and
+081
+*     control vectors.
+082
+*/
+083
+public static CubicHermiteSpline[] getCubicSplinesFromControlVectors(
+084
+Spline.ControlVector start, Translation2d[] waypoints, Spline.ControlVector end) {
+085
+CubicHermiteSpline[] splines = new CubicHermiteSpline[waypoints.length + 1];
+086
+087
+double[] xInitial = start.x;
+088
+double[] yInitial = start.y;
+089
+double[] xFinal = end.x;
+090
+double[] yFinal = end.y;
+091
+092
+if (waypoints.length > 1) {
+093
+Translation2d[] newWaypts = new Translation2d[waypoints.length + 2];
+094
+095
+// Create an array of all waypoints, including the start and end.
+096
+newWaypts[0] = new Translation2d(xInitial[0], yInitial[0]);
+097
+System.arraycopy(waypoints, 0, newWaypts, 1, waypoints.length);
+098
+newWaypts[newWaypts.length - 1] = new Translation2d(xFinal[0], yFinal[0]);
+099
+100
+// Populate tridiagonal system for clamped cubic
+101
+/* See:
+102
+https://www.uio.no/studier/emner/matnat/ifi/nedlagte-emner/INF-MAT4350/h08
+103
+/undervisningsmateriale/chap7alecture.pdf
+104
+*/
+105
+// Above-diagonal of tridiagonal matrix, zero-padded
+106
+final double[] a = new double[newWaypts.length - 2];
+107
+108
+// Diagonal of tridiagonal matrix
+109
+final double[] b = new double[newWaypts.length - 2];
+110
+Arrays.fill(b, 4.0);
+111
+112
+// Below-diagonal of tridiagonal matrix, zero-padded
+113
+final double[] c = new double[newWaypts.length - 2];
+114
+115
+// rhs vectors
+116
+final double[] dx = new double[newWaypts.length - 2];
+117
+final double[] dy = new double[newWaypts.length - 2];
+118
+119
+// solution vectors
+120
+final double[] fx = new double[newWaypts.length - 2];
+121
+final double[] fy = new double[newWaypts.length - 2];
+122
+123
+// populate above-diagonal and below-diagonal vectors
+124
+a[0] = 0.0;
+125
+for (int i = 0; i < newWaypts.length - 3; i++) {
+126
+a[i + 1] = 1;
+127
+c[i] = 1;
+128
+}
+129
+c[c.length - 1] = 0.0;
+130
+131
+// populate rhs vectors
+132
+dx[0] = 3 * (newWaypts[2].getX() - newWaypts[0].getX()) - xInitial[1];
+133
+dy[0] = 3 * (newWaypts[2].getY() - newWaypts[0].getY()) - yInitial[1];
+134
+135
+if (newWaypts.length > 4) {
+136
+for (int i = 1; i <= newWaypts.length - 4; i++) {
+137
+// dx and dy represent the derivatives of the internal waypoints. The derivative
+138
+// of the second internal waypoint should involve the third and first internal waypoint,
+139
+// which have indices of 1 and 3 in the newWaypts list (which contains ALL waypoints).
+140
+dx[i] = 3 * (newWaypts[i + 2].getX() - newWaypts[i].getX());
+141
+dy[i] = 3 * (newWaypts[i + 2].getY() - newWaypts[i].getY());
+142
+}
+143
+}
+144
+145
+dx[dx.length - 1] =
+146
+3 * (newWaypts[newWaypts.length - 1].getX() - newWaypts[newWaypts.length - 3].getX())
+147
+- xFinal[1];
+148
+dy[dy.length - 1] =
+149
+3 * (newWaypts[newWaypts.length - 1].getY() - newWaypts[newWaypts.length - 3].getY())
+150
+- yFinal[1];
+151
+152
+// Compute solution to tridiagonal system
+153
+thomasAlgorithm(a, b, c, dx, fx);
+154
+thomasAlgorithm(a, b, c, dy, fy);
+155
+156
+double[] newFx = new double[fx.length + 2];
+157
+double[] newFy = new double[fy.length + 2];
+158
+159
+newFx[0] = xInitial[1];
+160
+newFy[0] = yInitial[1];
+161
+System.arraycopy(fx, 0, newFx, 1, fx.length);
+162
+System.arraycopy(fy, 0, newFy, 1, fy.length);
+163
+newFx[newFx.length - 1] = xFinal[1];
+164
+newFy[newFy.length - 1] = yFinal[1];
+165
+166
+for (int i = 0; i < newFx.length - 1; i++) {
+167
+splines[i] =
+168
+new CubicHermiteSpline(
+169
+new double[] {newWaypts[i].getX(), newFx[i]},
+170
+new double[] {newWaypts[i + 1].getX(), newFx[i + 1]},
+171
+new double[] {newWaypts[i].getY(), newFy[i]},
+172
+new double[] {newWaypts[i + 1].getY(), newFy[i + 1]});
+173
+}
+174
+} else if (waypoints.length == 1) {
+175
+final var xDeriv = (3 * (xFinal[0] - xInitial[0]) - xFinal[1] - xInitial[1]) / 4.0;
+176
+final var yDeriv = (3 * (yFinal[0] - yInitial[0]) - yFinal[1] - yInitial[1]) / 4.0;
+177
+178
+double[] midXControlVector = {waypoints[0].getX(), xDeriv};
+179
+double[] midYControlVector = {waypoints[0].getY(), yDeriv};
+180
+181
+splines[0] =
+182
+new CubicHermiteSpline(
+183
+xInitial, midXControlVector,
+184
+yInitial, midYControlVector);
+185
+splines[1] =
+186
+new CubicHermiteSpline(
+187
+midXControlVector, xFinal,
+188
+midYControlVector, yFinal);
+189
+} else {
+190
+splines[0] =
+191
+new CubicHermiteSpline(
+192
+xInitial, xFinal,
+193
+yInitial, yFinal);
+194
+}
+195
+return splines;
+196
+}
+197
+198
+/**
+199
+* Returns a set of quintic splines corresponding to the provided control vectors. The user is
+200
+* free to set the direction of all control vectors. Continuous curvature is guaranteed throughout
+201
+* the path.
+202
+*
+203
+* @param controlVectors The control vectors.
+204
+* @return A vector of quintic hermite splines that interpolate through the provided waypoints.
+205
+*/
+206
+public static QuinticHermiteSpline[] getQuinticSplinesFromControlVectors(
+207
+Spline.ControlVector[] controlVectors) {
+208
+QuinticHermiteSpline[] splines = new QuinticHermiteSpline[controlVectors.length - 1];
+209
+for (int i = 0; i < controlVectors.length - 1; i++) {
+210
+var xInitial = controlVectors[i].x;
+211
+var xFinal = controlVectors[i + 1].x;
+212
+var yInitial = controlVectors[i].y;
+213
+var yFinal = controlVectors[i + 1].y;
+214
+splines[i] =
+215
+new QuinticHermiteSpline(
+216
+xInitial, xFinal,
+217
+yInitial, yFinal);
+218
+}
+219
+return splines;
+220
+}
+221
+222
+/**
+223
+* Optimizes the curvature of 2 or more quintic splines at knot points. Overall, this reduces the
+224
+* integral of the absolute value of the second derivative across the set of splines.
+225
+*
+226
+* @param splines An array of un-optimized quintic splines.
+227
+* @return An array of optimized quintic splines.
+228
+*/
+229
+@SuppressWarnings({"LocalVariableName", "PMD.AvoidInstantiatingObjectsInLoops"})
+230
+public static QuinticHermiteSpline[] optimizeCurvature(QuinticHermiteSpline[] splines) {
+231
+// If there's only spline in the array, we can't optimize anything so just return that.
+232
+if (splines.length < 2) {
+233
+return splines;
+234
+}
+235
+236
+// Implements Section 4.1.2 of
+237
+// http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf.
+238
+239
+// Cubic splines minimize the integral of the second derivative's absolute value. Therefore, we
+240
+// can create cubic splines with the same 0th and 1st derivatives and the provided quintic
+241
+// splines, find the second derivative of those cubic splines and then use a weighted average
+242
+// for the second derivatives of the quintic splines.
+243
+244
+QuinticHermiteSpline[] optimizedSplines = new QuinticHermiteSpline[splines.length];
+245
+for (int i = 0; i < splines.length - 1; ++i) {
+246
+QuinticHermiteSpline a = splines[i];
+247
+QuinticHermiteSpline b = splines[i + 1];
+248
+249
+// Get the control vectors that created the quintic splines above.
+250
+Spline.ControlVector aInitial = a.getInitialControlVector();
+251
+Spline.ControlVector aFinal = a.getFinalControlVector();
+252
+Spline.ControlVector bInitial = b.getInitialControlVector();
+253
+Spline.ControlVector bFinal = b.getFinalControlVector();
+254
+255
+// Create cubic splines with the same control vectors.
+256
+CubicHermiteSpline ca = new CubicHermiteSpline(aInitial.x, aFinal.x, aInitial.y, aFinal.y);
+257
+CubicHermiteSpline cb = new CubicHermiteSpline(bInitial.x, bFinal.x, bInitial.y, bFinal.y);
+258
+259
+// Calculate the second derivatives at the knot points.
+260
+SimpleMatrix bases = new SimpleMatrix(4, 1, true, 1, 1, 1, 1);
+261
+SimpleMatrix combinedA = ca.getCoefficients().mult(bases);
+262
+263
+double ddxA = combinedA.get(4, 0);
+264
+double ddyA = combinedA.get(5, 0);
+265
+double ddxB = cb.getCoefficients().get(4, 1);
+266
+double ddyB = cb.getCoefficients().get(5, 1);
+267
+268
+// Calculate the parameters for the weighted average.
+269
+double dAB = Math.hypot(aFinal.x[0] - aInitial.x[0], aFinal.y[0] - aInitial.y[0]);
+270
+double dBC = Math.hypot(bFinal.x[0] - bInitial.x[0], bFinal.y[0] - bInitial.y[0]);
+271
+double alpha = dBC / (dAB + dBC);
+272
+double beta = dAB / (dAB + dBC);
+273
+274
+// Calculate the weighted average.
+275
+double ddx = alpha * ddxA + beta * ddxB;
+276
+double ddy = alpha * ddyA + beta * ddyB;
+277
+278
+// Create new splines.
+279
+optimizedSplines[i] =
+280
+new QuinticHermiteSpline(
+281
+aInitial.x,
+282
+new double[] {aFinal.x[0], aFinal.x[1], ddx},
+283
+aInitial.y,
+284
+new double[] {aFinal.y[0], aFinal.y[1], ddy});
+285
+optimizedSplines[i + 1] =
+286
+new QuinticHermiteSpline(
+287
+new double[] {bInitial.x[0], bInitial.x[1], ddx},
+288
+bFinal.x,
+289
+new double[] {bInitial.y[0], bInitial.y[1], ddy},
+290
+bFinal.y);
+291
+}
+292
+return optimizedSplines;
+293
+}
+294
+295
+/**
+296
+* Thomas algorithm for solving tridiagonal systems Af = d.
+297
+*
+298
+* @param a the values of A above the diagonal
+299
+* @param b the values of A on the diagonal
+300
+* @param c the values of A below the diagonal
+301
+* @param d the vector on the rhs
+302
+* @param solutionVector the unknown (solution) vector, modified in-place
+303
+*/
+304
+private static void thomasAlgorithm(
+305
+double[] a, double[] b, double[] c, double[] d, double[] solutionVector) {
+306
+int N = d.length;
+307
+308
+double[] cStar = new double[N];
+309
+double[] dStar = new double[N];
+310
+311
+// This updates the coefficients in the first row
+312
+// Note that we should be checking for division by zero here
+313
+cStar[0] = c[0] / b[0];
+314
+dStar[0] = d[0] / b[0];
+315
+316
+// Create the c_star and d_star coefficients in the forward sweep
+317
+for (int i = 1; i < N; i++) {
+318
+double m = 1.0 / (b[i] - a[i] * cStar[i - 1]);
+319
+cStar[i] = c[i] * m;
+320
+dStar[i] = (d[i] - a[i] * dStar[i - 1]) * m;
+321
+}
+322
+solutionVector[N - 1] = dStar[N - 1];
+323
+// This is the reverse sweep, used to update the solution vector f
+324
+for (int i = N - 2; i >= 0; i--) {
+325
+solutionVector[i] = dStar[i] - cStar[i] * solutionVector[i + 1];
+326
+}
+327
+}
+328
+329
+private static Spline.ControlVector getCubicControlVector(double scalar, Pose2d point) {
+330
+return new Spline.ControlVector(
+331
+new double[] {point.getX(), scalar * point.getRotation().getCos()},
+332
+new double[] {point.getY(), scalar * point.getRotation().getSin()});
+333
+}
+334
+335
+private static Spline.ControlVector getQuinticControlVector(double scalar, Pose2d point) {
+336
+return new Spline.ControlVector(
+337
+new double[] {point.getX(), scalar * point.getRotation().getCos(), 0.0},
+338
+new double[] {point.getY(), scalar * point.getRotation().getSin(), 0.0});
+339
+}
+340
+}

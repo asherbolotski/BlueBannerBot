@@ -1,0 +1,247 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units.collections;
+006
+007
+import java.util.Arrays;
+008
+import java.util.Iterator;
+009
+import java.util.NoSuchElementException;
+010
+import java.util.Set;
+011
+import java.util.stream.LongStream;
+012
+013
+/** A read-only set of unique primitive {@code long} values. */
+014
+public class ReadOnlyPrimitiveLongSet implements Iterable<Long> {
+015
+private final long[] m_values;
+016
+017
+/**
+018
+* Creates a new set from the given values. These values do not have to be unique.
+019
+*
+020
+* @param values the values that belong to the set.
+021
+*/
+022
+@SuppressWarnings({"PMD.ForLoopCanBeForeach", "ForLoopReplaceableByForEach"})
+023
+public ReadOnlyPrimitiveLongSet(long... values) {
+024
+// initial size is the upper limit
+025
+long[] uniqueValues = new long[values.length];
+026
+int numUniqueValues = 0;
+027
+boolean seenZero = false;
+028
+029
+// copy the set of unique values to our array
+030
+// using indexed for-loops to avoid allocations
+031
+copyLoop:
+032
+for (int i = 0; i < values.length; i++) {
+033
+long value = values[i];
+034
+if (value == 0 && !seenZero) {
+035
+// special case to support zero
+036
+seenZero = true;
+037
+} else {
+038
+for (int j = 0; j < uniqueValues.length; j++) {
+039
+long uniqueValue = uniqueValues[j];
+040
+if (uniqueValue == value) {
+041
+continue copyLoop;
+042
+}
+043
+}
+044
+}
+045
+uniqueValues[numUniqueValues] = value;
+046
+numUniqueValues++;
+047
+}
+048
+049
+if (numUniqueValues == values.length) {
+050
+// all input values were unique, no need to truncate
+051
+m_values = uniqueValues;
+052
+} else {
+053
+// truncate the array to remove trailing empty space
+054
+m_values = Arrays.copyOf(uniqueValues, numUniqueValues);
+055
+}
+056
+}
+057
+058
+/**
+059
+* Checks if the set contains a particular value.
+060
+*
+061
+* @param value the value to check for
+062
+* @return true if the value is in the set, false if not
+063
+*/
+064
+public boolean contains(long value) {
+065
+for (long mValue : m_values) {
+066
+if (mValue == value) {
+067
+return true;
+068
+}
+069
+}
+070
+return false;
+071
+}
+072
+073
+/**
+074
+* Retrieves the number of elements in the set.
+075
+*
+076
+* @return the number of elements in the set
+077
+*/
+078
+public int size() {
+079
+return m_values.length;
+080
+}
+081
+082
+/**
+083
+* Checks if the set is empty, i.e. contains no values.
+084
+*
+085
+* @return true if there are no values in the set, false otherwise.
+086
+*/
+087
+public boolean isEmpty() {
+088
+return size() == 0;
+089
+}
+090
+091
+/**
+092
+* Creates a stream of primitive long values for the set.
+093
+*
+094
+* @return a sequential Stream over the elements in this collection
+095
+* @see Set#stream()
+096
+*/
+097
+public LongStream stream() {
+098
+return Arrays.stream(m_values);
+099
+}
+100
+101
+/**
+102
+* Creates a new array that contains all of the values in the set.
+103
+*
+104
+* @return an array containing all the values in the set
+105
+*/
+106
+public long[] toArray() {
+107
+return Arrays.copyOf(m_values, m_values.length);
+108
+}
+109
+110
+@Override
+111
+public Iterator<Long> iterator() {
+112
+return new Iterator<>() {
+113
+@SuppressWarnings("PMD.RedundantFieldInitializer")
+114
+private int m_index = 0;
+115
+116
+@Override
+117
+public boolean hasNext() {
+118
+return m_index < ReadOnlyPrimitiveLongSet.this.size();
+119
+}
+120
+121
+@Override
+122
+public Long next() {
+123
+if (!hasNext()) {
+124
+throw new NoSuchElementException();
+125
+}
+126
+127
+return ReadOnlyPrimitiveLongSet.this.m_values[m_index++];
+128
+}
+129
+};
+130
+}
+131
+}

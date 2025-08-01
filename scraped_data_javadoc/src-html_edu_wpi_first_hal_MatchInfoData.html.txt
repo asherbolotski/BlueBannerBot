@@ -1,0 +1,90 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/** Structure for holding the match info data request. */
+008
+@SuppressWarnings("MemberName")
+009
+public class MatchInfoData {
+010
+/** Stores the event name. */
+011
+public String eventName = "";
+012
+013
+/** Stores the game specific message. */
+014
+public String gameSpecificMessage = "";
+015
+016
+/** Stores the match number. */
+017
+public int matchNumber;
+018
+019
+/** Stores the replay number. */
+020
+public int replayNumber;
+021
+022
+/** Stores the match type. */
+023
+public int matchType;
+024
+025
+/** Default constructor. */
+026
+public MatchInfoData() {}
+027
+028
+/**
+029
+* Called from JNI to set the structure data.
+030
+*
+031
+* @param eventName Event name.
+032
+* @param gameSpecificMessage Game-specific message.
+033
+* @param matchNumber Match number.
+034
+* @param replayNumber Replay number.
+035
+* @param matchType Match type.
+036
+*/
+037
+public void setData(
+038
+String eventName,
+039
+String gameSpecificMessage,
+040
+int matchNumber,
+041
+int replayNumber,
+042
+int matchType) {
+043
+this.eventName = eventName;
+044
+this.gameSpecificMessage = gameSpecificMessage;
+045
+this.matchNumber = matchNumber;
+046
+this.replayNumber = replayNumber;
+047
+this.matchType = matchType;
+048
+}
+049
+}

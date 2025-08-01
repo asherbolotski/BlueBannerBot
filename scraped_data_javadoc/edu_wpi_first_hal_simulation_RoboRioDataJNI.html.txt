@@ -1,0 +1,823 @@
+Package
+edu.wpi.first.hal.simulation
+Class RoboRioDataJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.simulation.RoboRioDataJNI
+public class
+RoboRioDataJNI
+extends
+JNIWrapper
+JNI for roboRIO data.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+cancelBrownoutVoltageCallback
+(int uid)
+static void
+cancelCPUTempCallback
+(int uid)
+static void
+cancelFPGAButtonCallback
+(int uid)
+static void
+cancelRadioLEDStateCallback
+(int uid)
+static void
+cancelTeamNumberCallback
+(int uid)
+static void
+cancelUserActive3V3Callback
+(int uid)
+static void
+cancelUserActive5VCallback
+(int uid)
+static void
+cancelUserActive6VCallback
+(int uid)
+static void
+cancelUserCurrent3V3Callback
+(int uid)
+static void
+cancelUserCurrent5VCallback
+(int uid)
+static void
+cancelUserCurrent6VCallback
+(int uid)
+static void
+cancelUserFaults3V3Callback
+(int uid)
+static void
+cancelUserFaults5VCallback
+(int uid)
+static void
+cancelUserFaults6VCallback
+(int uid)
+static void
+cancelUserVoltage3V3Callback
+(int uid)
+static void
+cancelUserVoltage5VCallback
+(int uid)
+static void
+cancelUserVoltage6VCallback
+(int uid)
+static void
+cancelVInCurrentCallback
+(int uid)
+static void
+cancelVInVoltageCallback
+(int uid)
+static double
+getBrownoutVoltage
+()
+static
+String
+getComments
+()
+static double
+getCPUTemp
+()
+static boolean
+getFPGAButton
+()
+static int
+getRadioLEDState
+()
+static
+String
+getSerialNumber
+()
+static int
+getTeamNumber
+()
+static boolean
+getUserActive3V3
+()
+static boolean
+getUserActive5V
+()
+static boolean
+getUserActive6V
+()
+static double
+getUserCurrent3V3
+()
+static double
+getUserCurrent5V
+()
+static double
+getUserCurrent6V
+()
+static int
+getUserFaults3V3
+()
+static int
+getUserFaults5V
+()
+static int
+getUserFaults6V
+()
+static double
+getUserVoltage3V3
+()
+static double
+getUserVoltage5V
+()
+static double
+getUserVoltage6V
+()
+static double
+getVInCurrent
+()
+static double
+getVInVoltage
+()
+static int
+registerBrownoutVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerCPUTempCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerFPGAButtonCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerRadioLEDStateCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerTeamNumberCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserActive3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserActive5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserActive6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserCurrent3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserCurrent5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserCurrent6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserFaults3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserFaults5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserFaults6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserVoltage3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserVoltage5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerUserVoltage6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerVInCurrentCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static int
+registerVInVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+static void
+resetData
+()
+static void
+setBrownoutVoltage
+(double brownoutVoltage)
+static void
+setComments
+(
+String
+comments)
+static void
+setCPUTemp
+(double cpuTemp)
+static void
+setFPGAButton
+(boolean fPGAButton)
+static void
+setRadioLEDState
+(int state)
+static void
+setSerialNumber
+(
+String
+serialNumber)
+static void
+setTeamNumber
+(int teamNumber)
+static void
+setUserActive3V3
+(boolean userActive3V3)
+static void
+setUserActive5V
+(boolean userActive5V)
+static void
+setUserActive6V
+(boolean userActive6V)
+static void
+setUserCurrent3V3
+(double userCurrent3V3)
+static void
+setUserCurrent5V
+(double userCurrent5V)
+static void
+setUserCurrent6V
+(double userCurrent6V)
+static void
+setUserFaults3V3
+(int userFaults3V3)
+static void
+setUserFaults5V
+(int userFaults5V)
+static void
+setUserFaults6V
+(int userFaults6V)
+static void
+setUserVoltage3V3
+(double userVoltage3V3)
+static void
+setUserVoltage5V
+(double userVoltage5V)
+static void
+setUserVoltage6V
+(double userVoltage6V)
+static void
+setVInCurrent
+(double vInCurrent)
+static void
+setVInVoltage
+(double vInVoltage)
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+registerFPGAButtonCallback
+public static
+int
+registerFPGAButtonCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelFPGAButtonCallback
+public static
+void
+cancelFPGAButtonCallback
+(int uid)
+getFPGAButton
+public static
+boolean
+getFPGAButton
+()
+setFPGAButton
+public static
+void
+setFPGAButton
+(boolean fPGAButton)
+registerVInVoltageCallback
+public static
+int
+registerVInVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelVInVoltageCallback
+public static
+void
+cancelVInVoltageCallback
+(int uid)
+getVInVoltage
+public static
+double
+getVInVoltage
+()
+setVInVoltage
+public static
+void
+setVInVoltage
+(double vInVoltage)
+registerVInCurrentCallback
+public static
+int
+registerVInCurrentCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelVInCurrentCallback
+public static
+void
+cancelVInCurrentCallback
+(int uid)
+getVInCurrent
+public static
+double
+getVInCurrent
+()
+setVInCurrent
+public static
+void
+setVInCurrent
+(double vInCurrent)
+registerUserVoltage6VCallback
+public static
+int
+registerUserVoltage6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserVoltage6VCallback
+public static
+void
+cancelUserVoltage6VCallback
+(int uid)
+getUserVoltage6V
+public static
+double
+getUserVoltage6V
+()
+setUserVoltage6V
+public static
+void
+setUserVoltage6V
+(double userVoltage6V)
+registerUserCurrent6VCallback
+public static
+int
+registerUserCurrent6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserCurrent6VCallback
+public static
+void
+cancelUserCurrent6VCallback
+(int uid)
+getUserCurrent6V
+public static
+double
+getUserCurrent6V
+()
+setUserCurrent6V
+public static
+void
+setUserCurrent6V
+(double userCurrent6V)
+registerUserActive6VCallback
+public static
+int
+registerUserActive6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserActive6VCallback
+public static
+void
+cancelUserActive6VCallback
+(int uid)
+getUserActive6V
+public static
+boolean
+getUserActive6V
+()
+setUserActive6V
+public static
+void
+setUserActive6V
+(boolean userActive6V)
+registerUserVoltage5VCallback
+public static
+int
+registerUserVoltage5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserVoltage5VCallback
+public static
+void
+cancelUserVoltage5VCallback
+(int uid)
+getUserVoltage5V
+public static
+double
+getUserVoltage5V
+()
+setUserVoltage5V
+public static
+void
+setUserVoltage5V
+(double userVoltage5V)
+registerUserCurrent5VCallback
+public static
+int
+registerUserCurrent5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserCurrent5VCallback
+public static
+void
+cancelUserCurrent5VCallback
+(int uid)
+getUserCurrent5V
+public static
+double
+getUserCurrent5V
+()
+setUserCurrent5V
+public static
+void
+setUserCurrent5V
+(double userCurrent5V)
+registerUserActive5VCallback
+public static
+int
+registerUserActive5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserActive5VCallback
+public static
+void
+cancelUserActive5VCallback
+(int uid)
+getUserActive5V
+public static
+boolean
+getUserActive5V
+()
+setUserActive5V
+public static
+void
+setUserActive5V
+(boolean userActive5V)
+registerUserVoltage3V3Callback
+public static
+int
+registerUserVoltage3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserVoltage3V3Callback
+public static
+void
+cancelUserVoltage3V3Callback
+(int uid)
+getUserVoltage3V3
+public static
+double
+getUserVoltage3V3
+()
+setUserVoltage3V3
+public static
+void
+setUserVoltage3V3
+(double userVoltage3V3)
+registerUserCurrent3V3Callback
+public static
+int
+registerUserCurrent3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserCurrent3V3Callback
+public static
+void
+cancelUserCurrent3V3Callback
+(int uid)
+getUserCurrent3V3
+public static
+double
+getUserCurrent3V3
+()
+setUserCurrent3V3
+public static
+void
+setUserCurrent3V3
+(double userCurrent3V3)
+registerUserActive3V3Callback
+public static
+int
+registerUserActive3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserActive3V3Callback
+public static
+void
+cancelUserActive3V3Callback
+(int uid)
+getUserActive3V3
+public static
+boolean
+getUserActive3V3
+()
+setUserActive3V3
+public static
+void
+setUserActive3V3
+(boolean userActive3V3)
+registerUserFaults6VCallback
+public static
+int
+registerUserFaults6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserFaults6VCallback
+public static
+void
+cancelUserFaults6VCallback
+(int uid)
+getUserFaults6V
+public static
+int
+getUserFaults6V
+()
+setUserFaults6V
+public static
+void
+setUserFaults6V
+(int userFaults6V)
+registerUserFaults5VCallback
+public static
+int
+registerUserFaults5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserFaults5VCallback
+public static
+void
+cancelUserFaults5VCallback
+(int uid)
+getUserFaults5V
+public static
+int
+getUserFaults5V
+()
+setUserFaults5V
+public static
+void
+setUserFaults5V
+(int userFaults5V)
+registerUserFaults3V3Callback
+public static
+int
+registerUserFaults3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelUserFaults3V3Callback
+public static
+void
+cancelUserFaults3V3Callback
+(int uid)
+getUserFaults3V3
+public static
+int
+getUserFaults3V3
+()
+setUserFaults3V3
+public static
+void
+setUserFaults3V3
+(int userFaults3V3)
+registerBrownoutVoltageCallback
+public static
+int
+registerBrownoutVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelBrownoutVoltageCallback
+public static
+void
+cancelBrownoutVoltageCallback
+(int uid)
+getBrownoutVoltage
+public static
+double
+getBrownoutVoltage
+()
+setBrownoutVoltage
+public static
+void
+setBrownoutVoltage
+(double brownoutVoltage)
+registerCPUTempCallback
+public static
+int
+registerCPUTempCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelCPUTempCallback
+public static
+void
+cancelCPUTempCallback
+(int uid)
+getCPUTemp
+public static
+double
+getCPUTemp
+()
+setCPUTemp
+public static
+void
+setCPUTemp
+(double cpuTemp)
+registerTeamNumberCallback
+public static
+int
+registerTeamNumberCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelTeamNumberCallback
+public static
+void
+cancelTeamNumberCallback
+(int uid)
+getTeamNumber
+public static
+int
+getTeamNumber
+()
+setTeamNumber
+public static
+void
+setTeamNumber
+(int teamNumber)
+getSerialNumber
+public static
+String
+getSerialNumber
+()
+setSerialNumber
+public static
+void
+setSerialNumber
+(
+String
+serialNumber)
+getComments
+public static
+String
+getComments
+()
+setComments
+public static
+void
+setComments
+(
+String
+comments)
+registerRadioLEDStateCallback
+public static
+int
+registerRadioLEDStateCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+cancelRadioLEDStateCallback
+public static
+void
+cancelRadioLEDStateCallback
+(int uid)
+getRadioLEDState
+public static
+int
+getRadioLEDState
+()
+setRadioLEDState
+public static
+void
+setRadioLEDState
+(int state)
+resetData
+public static
+void
+resetData
+()

@@ -1,0 +1,641 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.filter;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+import edu.wpi.first.math.MathUsageId;
+009
+import edu.wpi.first.util.DoubleCircularBuffer;
+010
+import java.util.Arrays;
+011
+import org.ejml.simple.SimpleMatrix;
+012
+013
+/**
+014
+* This class implements a linear, digital filter. All types of FIR and IIR filters are supported.
+015
+* Static factory methods are provided to create commonly used types of filters.
+016
+*
+017
+* <p>Filters are of the form: y[n] = (b0 x[n] + b1 x[n-1] + ... + bP x[n-P]) - (a0 y[n-1] + a2
+018
+* y[n-2] + ... + aQ y[n-Q])
+019
+*
+020
+* <p>Where: y[n] is the output at time "n" x[n] is the input at time "n" y[n-1] is the output from
+021
+* the LAST time step ("n-1") x[n-1] is the input from the LAST time step ("n-1") b0...bP are the
+022
+* "feedforward" (FIR) gains a0...aQ are the "feedback" (IIR) gains IMPORTANT! Note the "-" sign in
+023
+* front of the feedback term! This is a common convention in signal processing.
+024
+*
+025
+* <p>What can linear filters do? Basically, they can filter, or diminish, the effects of
+026
+* undesirable input frequencies. High frequencies, or rapid changes, can be indicative of sensor
+027
+* noise or be otherwise undesirable. A "low pass" filter smooths out the signal, reducing the
+028
+* impact of these high frequency components. Likewise, a "high pass" filter gets rid of slow-moving
+029
+* signal components, letting you detect large changes more easily.
+030
+*
+031
+* <p>Example FRC applications of filters: - Getting rid of noise from an analog sensor input (note:
+032
+* the roboRIO's FPGA can do this faster in hardware) - Smoothing out joystick input to prevent the
+033
+* wheels from slipping or the robot from tipping - Smoothing motor commands so that unnecessary
+034
+* strain isn't put on electrical or mechanical components - If you use clever gains, you can make a
+035
+* PID controller out of this class!
+036
+*
+037
+* <p>For more on filters, we highly recommend the following articles:<br>
+038
+* <a
+039
+* href="https://en.wikipedia.org/wiki/Linear_filter">https://en.wikipedia.org/wiki/Linear_filter</a>
+040
+* <br>
+041
+* <a href="https://en.wikipedia.org/wiki/Iir_filter">https://en.wikipedia.org/wiki/Iir_filter</a>
+042
+* <br>
+043
+* <a href="https://en.wikipedia.org/wiki/Fir_filter">https://en.wikipedia.org/wiki/Fir_filter</a>
+044
+* <br>
+045
+*
+046
+* <p>Note 1: calculate() should be called by the user on a known, regular period. You can use a
+047
+* Notifier for this or do it "inline" with code in a periodic function.
+048
+*
+049
+* <p>Note 2: For ALL filters, gains are necessarily a function of frequency. If you make a filter
+050
+* that works well for you at, say, 100Hz, you will most definitely need to adjust the gains if you
+051
+* then want to run it at 200Hz! Combining this with Note 1 - the impetus is on YOU as a developer
+052
+* to make sure calculate() gets called at the desired, constant frequency!
+053
+*/
+054
+public class LinearFilter {
+055
+private final DoubleCircularBuffer m_inputs;
+056
+private final DoubleCircularBuffer m_outputs;
+057
+private final double[] m_inputGains;
+058
+private final double[] m_outputGains;
+059
+private double m_lastOutput;
+060
+061
+private static int instances;
+062
+063
+/**
+064
+* Create a linear FIR or IIR filter.
+065
+*
+066
+* @param ffGains The "feedforward" or FIR gains.
+067
+* @param fbGains The "feedback" or IIR gains.
+068
+*/
+069
+public LinearFilter(double[] ffGains, double[] fbGains) {
+070
+m_inputs = new DoubleCircularBuffer(ffGains.length);
+071
+m_outputs = new DoubleCircularBuffer(fbGains.length);
+072
+m_inputGains = Arrays.copyOf(ffGains, ffGains.length);
+073
+m_outputGains = Arrays.copyOf(fbGains, fbGains.length);
+074
+075
+instances++;
+076
+MathSharedStore.reportUsage(MathUsageId.kFilter_Linear, instances);
+077
+}
+078
+079
+/**
+080
+* Creates a one-pole IIR low-pass filter of the form: y[n] = (1-gain) x[n] + gain y[n-1] where
+081
+* gain = e<sup>-dt / T</sup>, T is the time constant in seconds.
+082
+*
+083
+* <p>Note: T = 1 / (2πf) where f is the cutoff frequency in Hz, the frequency above which the
+084
+* input starts to attenuate.
+085
+*
+086
+* <p>This filter is stable for time constants greater than zero.
+087
+*
+088
+* @param timeConstant The discrete-time time constant in seconds.
+089
+* @param period The period in seconds between samples taken by the user.
+090
+* @return Linear filter.
+091
+*/
+092
+public static LinearFilter singlePoleIIR(double timeConstant, double period) {
+093
+double gain = Math.exp(-period / timeConstant);
+094
+double[] ffGains = {1.0 - gain};
+095
+double[] fbGains = {-gain};
+096
+097
+return new LinearFilter(ffGains, fbGains);
+098
+}
+099
+100
+/**
+101
+* Creates a first-order high-pass filter of the form: y[n] = gain x[n] + (-gain) x[n-1] + gain
+102
+* y[n-1] where gain = e<sup>-dt / T</sup>, T is the time constant in seconds.
+103
+*
+104
+* <p>Note: T = 1 / (2πf) where f is the cutoff frequency in Hz, the frequency below which the
+105
+* input starts to attenuate.
+106
+*
+107
+* <p>This filter is stable for time constants greater than zero.
+108
+*
+109
+* @param timeConstant The discrete-time time constant in seconds.
+110
+* @param period The period in seconds between samples taken by the user.
+111
+* @return Linear filter.
+112
+*/
+113
+public static LinearFilter highPass(double timeConstant, double period) {
+114
+double gain = Math.exp(-period / timeConstant);
+115
+double[] ffGains = {gain, -gain};
+116
+double[] fbGains = {-gain};
+117
+118
+return new LinearFilter(ffGains, fbGains);
+119
+}
+120
+121
+/**
+122
+* Creates a K-tap FIR moving average filter of the form: y[n] = 1/k (x[k] + x[k-1] + ... + x[0]).
+123
+*
+124
+* <p>This filter is always stable.
+125
+*
+126
+* @param taps The number of samples to average over. Higher = smoother but slower.
+127
+* @return Linear filter.
+128
+* @throws IllegalArgumentException if number of taps is less than 1.
+129
+*/
+130
+public static LinearFilter movingAverage(int taps) {
+131
+if (taps <= 0) {
+132
+throw new IllegalArgumentException("Number of taps was not at least 1");
+133
+}
+134
+135
+double[] ffGains = new double[taps];
+136
+Arrays.fill(ffGains, 1.0 / taps);
+137
+138
+double[] fbGains = new double[0];
+139
+140
+return new LinearFilter(ffGains, fbGains);
+141
+}
+142
+143
+/**
+144
+* Creates a finite difference filter that computes the nth derivative of the input given the
+145
+* specified stencil points.
+146
+*
+147
+* <p>Stencil points are the indices of the samples to use in the finite difference. 0 is the
+148
+* current sample, -1 is the previous sample, -2 is the sample before that, etc. Don't use
+149
+* positive stencil points (samples from the future) if the LinearFilter will be used for
+150
+* stream-based online filtering (e.g., taking derivative of encoder samples in real-time).
+151
+*
+152
+* @param derivative The order of the derivative to compute.
+153
+* @param stencil List of stencil points. Its length is the number of samples to use to compute
+154
+*     the given derivative. This must be one more than the order of the derivative or higher.
+155
+* @param period The period in seconds between samples taken by the user.
+156
+* @return Linear filter.
+157
+* @throws IllegalArgumentException if derivative &lt; 1, samples &lt;= 0, or derivative &gt;=
+158
+*     samples.
+159
+*/
+160
+public static LinearFilter finiteDifference(int derivative, int[] stencil, double period) {
+161
+// See
+162
+// https://en.wikipedia.org/wiki/Finite_difference_coefficient#Arbitrary_stencil_points
+163
+//
+164
+// For a given list of stencil points s of length n and the order of
+165
+// derivative d < n, the finite difference coefficients can be obtained by
+166
+// solving the following linear system for the vector a.
+167
+//
+168
+// [s₁⁰   ⋯  sₙ⁰ ][a₁]      [ δ₀,d ]
+169
+// [ ⋮    ⋱  ⋮   ][⋮ ] = d! [  ⋮   ]
+170
+// [s₁ⁿ⁻¹ ⋯ sₙⁿ⁻¹][aₙ]      [δₙ₋₁,d]
+171
+//
+172
+// where δᵢ,ⱼ are the Kronecker delta. The FIR gains are the elements of the
+173
+// vector 'a' in reverse order divided by hᵈ.
+174
+//
+175
+// The order of accuracy of the approximation is of the form O(hⁿ⁻ᵈ).
+176
+177
+if (derivative < 1) {
+178
+throw new IllegalArgumentException(
+179
+"Order of derivative must be greater than or equal to one.");
+180
+}
+181
+182
+int samples = stencil.length;
+183
+184
+if (samples <= 0) {
+185
+throw new IllegalArgumentException("Number of samples must be greater than zero.");
+186
+}
+187
+188
+if (derivative >= samples) {
+189
+throw new IllegalArgumentException(
+190
+"Order of derivative must be less than number of samples.");
+191
+}
+192
+193
+var S = new SimpleMatrix(samples, samples);
+194
+for (int row = 0; row < samples; ++row) {
+195
+for (int col = 0; col < samples; ++col) {
+196
+S.set(row, col, Math.pow(stencil[col], row));
+197
+}
+198
+}
+199
+200
+// Fill in Kronecker deltas: https://en.wikipedia.org/wiki/Kronecker_delta
+201
+var d = new SimpleMatrix(samples, 1);
+202
+for (int i = 0; i < samples; ++i) {
+203
+d.set(i, 0, (i == derivative) ? factorial(derivative) : 0.0);
+204
+}
+205
+206
+var a = S.solve(d).divide(Math.pow(period, derivative));
+207
+208
+// Reverse gains list
+209
+double[] ffGains = new double[samples];
+210
+for (int i = 0; i < samples; ++i) {
+211
+ffGains[i] = a.get(samples - i - 1, 0);
+212
+}
+213
+214
+return new LinearFilter(ffGains, new double[0]);
+215
+}
+216
+217
+/**
+218
+* Creates a backward finite difference filter that computes the nth derivative of the input given
+219
+* the specified number of samples.
+220
+*
+221
+* <p>For example, a first derivative filter that uses two samples and a sample period of 20 ms
+222
+* would be
+223
+*
+224
+* <pre><code>
+225
+* LinearFilter.backwardFiniteDifference(1, 2, 0.02);
+226
+* </code></pre>
+227
+*
+228
+* @param derivative The order of the derivative to compute.
+229
+* @param samples The number of samples to use to compute the given derivative. This must be one
+230
+*     more than the order of derivative or higher.
+231
+* @param period The period in seconds between samples taken by the user.
+232
+* @return Linear filter.
+233
+*/
+234
+public static LinearFilter backwardFiniteDifference(int derivative, int samples, double period) {
+235
+// Generate stencil points from -(samples - 1) to 0
+236
+int[] stencil = new int[samples];
+237
+for (int i = 0; i < samples; ++i) {
+238
+stencil[i] = -(samples - 1) + i;
+239
+}
+240
+241
+return finiteDifference(derivative, stencil, period);
+242
+}
+243
+244
+/** Reset the filter state. */
+245
+public void reset() {
+246
+m_inputs.clear();
+247
+m_outputs.clear();
+248
+}
+249
+250
+/**
+251
+* Resets the filter state, initializing internal buffers to the provided values.
+252
+*
+253
+* <p>These are the expected lengths of the buffers, depending on what type of linear filter used:
+254
+*
+255
+* <table>
+256
+* <tr><th>Type</th><th>Input Buffer Length</th><th>Output Buffer Length</th></tr>
+257
+* <tr><td>Unspecified</td><td>length of {@code ffGains}</td><td>length of {@code fbGains}</td>
+258
+* </tr>
+259
+* <tr><td>Single Pole IIR</td><td>1</td><td>1</td></tr>
+260
+* <tr><td>High-Pass</td><td>2</td><td>1</td></tr>
+261
+* <tr><td>Moving Average</td><td>{@code taps}</td><td>0</td></tr>
+262
+* <tr><td>Finite Difference</td><td>length of {@code stencil}</td><td>0</td></tr>
+263
+* <tr><td>Backward Finite Difference</td><td>{@code samples}</td><td>0</td></tr>
+264
+* </table>
+265
+*
+266
+* @param inputBuffer Values to initialize input buffer.
+267
+* @param outputBuffer Values to initialize output buffer.
+268
+* @throws IllegalArgumentException if length of inputBuffer or outputBuffer does not match the
+269
+*     length of ffGains and fbGains provided in the constructor.
+270
+*/
+271
+public void reset(double[] inputBuffer, double[] outputBuffer) {
+272
+// Clear buffers
+273
+reset();
+274
+275
+if (inputBuffer.length != m_inputGains.length || outputBuffer.length != m_outputGains.length) {
+276
+throw new IllegalArgumentException("Incorrect length of inputBuffer or outputBuffer");
+277
+}
+278
+279
+for (double input : inputBuffer) {
+280
+m_inputs.addFirst(input);
+281
+}
+282
+for (double output : outputBuffer) {
+283
+m_outputs.addFirst(output);
+284
+}
+285
+}
+286
+287
+/**
+288
+* Calculates the next value of the filter.
+289
+*
+290
+* @param input Current input value.
+291
+* @return The filtered value at this step
+292
+*/
+293
+public double calculate(double input) {
+294
+double retVal = 0.0;
+295
+296
+// Rotate the inputs
+297
+if (m_inputGains.length > 0) {
+298
+m_inputs.addFirst(input);
+299
+}
+300
+301
+// Calculate the new value
+302
+for (int i = 0; i < m_inputGains.length; i++) {
+303
+retVal += m_inputs.get(i) * m_inputGains[i];
+304
+}
+305
+for (int i = 0; i < m_outputGains.length; i++) {
+306
+retVal -= m_outputs.get(i) * m_outputGains[i];
+307
+}
+308
+309
+// Rotate the outputs
+310
+if (m_outputGains.length > 0) {
+311
+m_outputs.addFirst(retVal);
+312
+}
+313
+314
+m_lastOutput = retVal;
+315
+return retVal;
+316
+}
+317
+318
+/**
+319
+* Returns the last value calculated by the LinearFilter.
+320
+*
+321
+* @return The last value.
+322
+*/
+323
+public double lastValue() {
+324
+return m_lastOutput;
+325
+}
+326
+327
+/**
+328
+* Factorial of n.
+329
+*
+330
+* @param n Argument of which to take factorial.
+331
+*/
+332
+private static int factorial(int n) {
+333
+if (n < 2) {
+334
+return 1;
+335
+} else {
+336
+return n * factorial(n - 1);
+337
+}
+338
+}
+339
+}

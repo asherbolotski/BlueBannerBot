@@ -1,0 +1,437 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.util.sendable.Sendable;
+008
+import edu.wpi.first.util.sendable.SendableBuilder;
+009
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+010
+import java.util.Comparator;
+011
+import java.util.HashMap;
+012
+import java.util.Map;
+013
+import java.util.Set;
+014
+import java.util.TreeSet;
+015
+016
+/**
+017
+* Persistent alert to be sent via NetworkTables. Alerts are tagged with a type of {@code kError},
+018
+* {@code kWarning}, or {@code kInfo} to denote urgency. See {@link
+019
+* edu.wpi.first.wpilibj.Alert.AlertType AlertType} for suggested usage of each type. Alerts can be
+020
+* displayed on supported dashboards, and are shown in a priority order based on type and recency of
+021
+* activation, with newly activated alerts first.
+022
+*
+023
+* <p>Alerts should be created once and stored persistently, then updated to "active" or "inactive"
+024
+* as necessary. {@link #set(boolean)} can be safely called periodically.
+025
+*
+026
+* <p><b>This API is new for 2025, but is likely to change in future seasons to facilitate deeper
+027
+* integration with the robot control system.</b>
+028
+*
+029
+* <pre>
+030
+* class Robot {
+031
+*   Alert alert = new Alert("Something went wrong", AlertType.kWarning);
+032
+*
+033
+*   periodic() {
+034
+*     alert.set(...);
+035
+*   }
+036
+* }
+037
+* </pre>
+038
+*
+039
+* <p>Alternatively, alerts which are only used once at startup can be created and activated inline.
+040
+*
+041
+* <pre>
+042
+* public Robot() {
+043
+*   new Alert("Failed to load auto paths", AlertType.kError).set(true);
+044
+* }
+045
+* </pre>
+046
+*/
+047
+public class Alert implements AutoCloseable {
+048
+/** Represents an alert's level of urgency. */
+049
+public enum AlertType {
+050
+/**
+051
+* High priority alert - displayed first on the dashboard with a red "X" symbol. Use this type
+052
+* for problems which will seriously affect the robot's functionality and thus require immediate
+053
+* attention.
+054
+*/
+055
+kError,
+056
+057
+/**
+058
+* Medium priority alert - displayed second on the dashboard with a yellow "!" symbol. Use this
+059
+* type for problems which could affect the robot's functionality but do not necessarily require
+060
+* immediate attention.
+061
+*/
+062
+kWarning,
+063
+064
+/**
+065
+* Low priority alert - displayed last on the dashboard with a green "i" symbol. Use this type
+066
+* for problems which are unlikely to affect the robot's functionality, or any other alerts
+067
+* which do not fall under the other categories.
+068
+*/
+069
+kInfo
+070
+}
+071
+072
+private final AlertType m_type;
+073
+private boolean m_active;
+074
+private long m_activeStartTime;
+075
+private String m_text;
+076
+private Set<PublishedAlert> m_activeAlerts;
+077
+078
+/**
+079
+* Creates a new alert in the default group - "Alerts". If this is the first to be instantiated,
+080
+* the appropriate entries will be added to NetworkTables.
+081
+*
+082
+* @param text Text to be displayed when the alert is active.
+083
+* @param type Alert urgency level.
+084
+*/
+085
+public Alert(String text, AlertType type) {
+086
+this("Alerts", text, type);
+087
+}
+088
+089
+/**
+090
+* Creates a new alert. If this is the first to be instantiated in its group, the appropriate
+091
+* entries will be added to NetworkTables.
+092
+*
+093
+* @param group Group identifier, used as the entry name in NetworkTables.
+094
+* @param text Text to be displayed when the alert is active.
+095
+* @param type Alert urgency level.
+096
+*/
+097
+@SuppressWarnings("this-escape")
+098
+public Alert(String group, String text, AlertType type) {
+099
+m_type = type;
+100
+m_text = text;
+101
+m_activeAlerts = SendableAlerts.forGroup(group).getActiveAlertsStorage(type);
+102
+}
+103
+104
+/**
+105
+* Sets whether the alert should currently be displayed. This method can be safely called
+106
+* periodically.
+107
+*
+108
+* @param active Whether to display the alert.
+109
+*/
+110
+public void set(boolean active) {
+111
+if (active == m_active) {
+112
+return;
+113
+}
+114
+115
+if (active) {
+116
+m_activeStartTime = RobotController.getTime();
+117
+m_activeAlerts.add(new PublishedAlert(m_activeStartTime, m_text));
+118
+} else {
+119
+m_activeAlerts.remove(new PublishedAlert(m_activeStartTime, m_text));
+120
+}
+121
+m_active = active;
+122
+}
+123
+124
+/**
+125
+* Gets whether the alert is active.
+126
+*
+127
+* @return whether the alert is active.
+128
+*/
+129
+public boolean get() {
+130
+return m_active;
+131
+}
+132
+133
+/**
+134
+* Updates current alert text. Use this method to dynamically change the displayed alert, such as
+135
+* including more details about the detected problem.
+136
+*
+137
+* @param text Text to be displayed when the alert is active.
+138
+*/
+139
+public void setText(String text) {
+140
+if (text.equals(m_text)) {
+141
+return;
+142
+}
+143
+var oldText = m_text;
+144
+m_text = text;
+145
+if (m_active) {
+146
+m_activeAlerts.remove(new PublishedAlert(m_activeStartTime, oldText));
+147
+m_activeAlerts.add(new PublishedAlert(m_activeStartTime, m_text));
+148
+}
+149
+}
+150
+151
+/**
+152
+* Gets the current alert text.
+153
+*
+154
+* @return the current text.
+155
+*/
+156
+public String getText() {
+157
+return m_text;
+158
+}
+159
+160
+/**
+161
+* Get the type of this alert.
+162
+*
+163
+* @return the type
+164
+*/
+165
+public AlertType getType() {
+166
+return m_type;
+167
+}
+168
+169
+@Override
+170
+public void close() {
+171
+set(false);
+172
+}
+173
+174
+private record PublishedAlert(long timestamp, String text) implements Comparable<PublishedAlert> {
+175
+private static final Comparator<PublishedAlert> comparator =
+176
+Comparator.comparingLong((PublishedAlert alert) -> alert.timestamp())
+177
+.reversed()
+178
+.thenComparing(Comparator.comparing((PublishedAlert alert) -> alert.text()));
+179
+180
+@Override
+181
+public int compareTo(PublishedAlert o) {
+182
+return comparator.compare(this, o);
+183
+}
+184
+}
+185
+186
+private static final class SendableAlerts implements Sendable {
+187
+private static final Map<String, SendableAlerts> groups = new HashMap<String, SendableAlerts>();
+188
+189
+private final Map<AlertType, Set<PublishedAlert>> m_alerts = new HashMap<>();
+190
+191
+/**
+192
+* Returns a reference to the set of active alerts for the given type.
+193
+*
+194
+* @param type the type
+195
+* @return reference to the set of active alerts for the type
+196
+*/
+197
+public Set<PublishedAlert> getActiveAlertsStorage(AlertType type) {
+198
+return m_alerts.computeIfAbsent(type, _type -> new TreeSet<>());
+199
+}
+200
+201
+private String[] getStrings(AlertType type) {
+202
+return getActiveAlertsStorage(type).stream().map(a -> a.text()).toArray(String[]::new);
+203
+}
+204
+205
+@Override
+206
+public void initSendable(SendableBuilder builder) {
+207
+builder.setSmartDashboardType("Alerts");
+208
+builder.addStringArrayProperty("errors", () -> getStrings(AlertType.kError), null);
+209
+builder.addStringArrayProperty("warnings", () -> getStrings(AlertType.kWarning), null);
+210
+builder.addStringArrayProperty("infos", () -> getStrings(AlertType.kInfo), null);
+211
+}
+212
+213
+/**
+214
+* Returns the SendableAlerts for a given group, initializing and publishing if it does not
+215
+* already exist.
+216
+*
+217
+* @param group the group name
+218
+* @return the SendableAlerts for the group
+219
+*/
+220
+private static SendableAlerts forGroup(String group) {
+221
+return groups.computeIfAbsent(
+222
+group,
+223
+_group -> {
+224
+var sendable = new SendableAlerts();
+225
+SmartDashboard.putData(_group, sendable);
+226
+return sendable;
+227
+});
+228
+}
+229
+}
+230
+}

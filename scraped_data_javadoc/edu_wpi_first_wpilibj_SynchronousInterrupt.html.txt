@@ -1,0 +1,180 @@
+Package
+edu.wpi.first.wpilibj
+Class SynchronousInterrupt
+java.lang.Object
+edu.wpi.first.wpilibj.SynchronousInterrupt
+All Implemented Interfaces:
+AutoCloseable
+public class
+SynchronousInterrupt
+extends
+Object
+implements
+AutoCloseable
+Class for handling synchronous (blocking) interrupts.
+By default, interrupts will occur on rising edge.
+Asynchronous interrupts are handled by the AsynchronousInterrupt class.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+SynchronousInterrupt.WaitResult
+Event trigger combinations for a synchronous interrupt.
+Constructor Summary
+Constructors
+Constructor
+Description
+SynchronousInterrupt
+(
+DigitalSource
+source)
+Constructs a new synchronous interrupt using a DigitalSource.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Closes the interrupt.
+double
+getFallingTimestamp
+()
+Get the timestamp of the last falling edge.
+double
+getRisingTimestamp
+()
+Get the timestamp of the last rising edge.
+void
+setInterruptEdges
+(boolean risingEdge,
+ boolean fallingEdge)
+Set which edges to trigger the interrupt on.
+SynchronousInterrupt.WaitResult
+waitForInterrupt
+(double timeoutSeconds)
+Wait for an interrupt, ignoring any previously occurring interrupts.
+SynchronousInterrupt.WaitResult
+waitForInterrupt
+(double timeoutSeconds,
+ boolean ignorePrevious)
+Wait for an interrupt.
+void
+wakeupWaitingInterrupt
+()
+Force triggering of any waiting interrupt, which will be seen as a timeout.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SynchronousInterrupt
+public
+SynchronousInterrupt
+(
+DigitalSource
+source)
+Constructs a new synchronous interrupt using a DigitalSource.
+At construction, the interrupt will trigger on the rising edge.
+Parameters:
+source
+- The digital source to use.
+Method Details
+close
+public
+void
+close
+()
+Closes the interrupt.
+This does not close the associated digital source.
+Specified by:
+close
+in interface
+AutoCloseable
+waitForInterrupt
+public
+SynchronousInterrupt.WaitResult
+waitForInterrupt
+(double timeoutSeconds,
+ boolean ignorePrevious)
+Wait for an interrupt.
+Parameters:
+timeoutSeconds
+- The timeout in seconds. 0 or less will return immediately.
+ignorePrevious
+- True to ignore if a previous interrupt has occurred, and only wait for a
+     new trigger. False will consider if an interrupt has occurred since the last time the
+     interrupt was read.
+Returns:
+Result of which edges were triggered, or if a timeout occurred.
+waitForInterrupt
+public
+SynchronousInterrupt.WaitResult
+waitForInterrupt
+(double timeoutSeconds)
+Wait for an interrupt, ignoring any previously occurring interrupts.
+Parameters:
+timeoutSeconds
+- The timeout in seconds. 0 or less will return immediately.
+Returns:
+Result of which edges were triggered, or if a timeout occurred.
+setInterruptEdges
+public
+void
+setInterruptEdges
+(boolean risingEdge,
+ boolean fallingEdge)
+Set which edges to trigger the interrupt on.
+Parameters:
+risingEdge
+- Trigger on rising edge
+fallingEdge
+- Trigger on falling edge
+getRisingTimestamp
+public
+double
+getRisingTimestamp
+()
+Get the timestamp of the last rising edge.
+This only works if rising edge was configured using setInterruptEdges.
+Returns:
+the timestamp in seconds relative to getFPGATime
+getFallingTimestamp
+public
+double
+getFallingTimestamp
+()
+Get the timestamp of the last falling edge.
+This only works if falling edge was configured using setInterruptEdges.
+Returns:
+the timestamp in seconds relative to getFPGATime
+wakeupWaitingInterrupt
+public
+void
+wakeupWaitingInterrupt
+()
+Force triggering of any waiting interrupt, which will be seen as a timeout.

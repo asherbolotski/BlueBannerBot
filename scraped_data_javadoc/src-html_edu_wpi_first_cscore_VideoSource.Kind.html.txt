@@ -1,0 +1,764 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cscore;
+006
+007
+import edu.wpi.first.util.PixelFormat;
+008
+009
+/**
+010
+* A source for video that provides a sequence of frames. Each frame may consist of multiple images
+011
+* (e.g. from a stereo or depth camera); these are called channels.
+012
+*/
+013
+public class VideoSource implements AutoCloseable {
+014
+/** Video source kind. */
+015
+public enum Kind {
+016
+/** Unknown video source. */
+017
+kUnknown(0),
+018
+/** USB video source. */
+019
+kUsb(1),
+020
+/** HTTP video source. */
+021
+kHttp(2),
+022
+/** CV video source. */
+023
+kCv(4),
+024
+/** Raw video source. */
+025
+kRaw(8);
+026
+027
+private final int value;
+028
+029
+Kind(int value) {
+030
+this.value = value;
+031
+}
+032
+033
+/**
+034
+* Returns the Kind value.
+035
+*
+036
+* @return The Kind value.
+037
+*/
+038
+public int getValue() {
+039
+return value;
+040
+}
+041
+}
+042
+043
+/** Connection strategy. */
+044
+public enum ConnectionStrategy {
+045
+/**
+046
+* Automatically connect or disconnect based on whether any sinks are connected to this source.
+047
+* This is the default behavior.
+048
+*/
+049
+kAutoManage(0),
+050
+051
+/** Try to keep the connection open regardless of whether any sinks are connected. */
+052
+kKeepOpen(1),
+053
+054
+/**
+055
+* Never open the connection. If this is set when the connection is open, close the connection.
+056
+*/
+057
+kForceClose(2);
+058
+059
+private final int value;
+060
+061
+ConnectionStrategy(int value) {
+062
+this.value = value;
+063
+}
+064
+065
+/**
+066
+* Returns the ConnectionStrategy value.
+067
+*
+068
+* @return The ConnectionStrategy value.
+069
+*/
+070
+public int getValue() {
+071
+return value;
+072
+}
+073
+}
+074
+075
+/**
+076
+* Convert from the numerical representation of kind to an enum type.
+077
+*
+078
+* @param kind The numerical representation of kind
+079
+* @return The kind
+080
+*/
+081
+public static Kind getKindFromInt(int kind) {
+082
+return switch (kind) {
+083
+case 1 -> Kind.kUsb;
+084
+case 2 -> Kind.kHttp;
+085
+case 4 -> Kind.kCv;
+086
+case 8 -> Kind.kRaw;
+087
+default -> Kind.kUnknown;
+088
+};
+089
+}
+090
+091
+/**
+092
+* Constructs a VideoSource.
+093
+*
+094
+* @param handle The video source handle.
+095
+*/
+096
+protected VideoSource(int handle) {
+097
+m_handle = handle;
+098
+}
+099
+100
+@Override
+101
+public synchronized void close() {
+102
+if (m_handle != 0) {
+103
+CameraServerJNI.releaseSource(m_handle);
+104
+}
+105
+m_handle = 0;
+106
+}
+107
+108
+/**
+109
+* Returns true if the VideoSource is valid.
+110
+*
+111
+* @return True if the VideoSource is valid.
+112
+*/
+113
+public boolean isValid() {
+114
+return m_handle != 0;
+115
+}
+116
+117
+/**
+118
+* Returns the video source handle.
+119
+*
+120
+* @return The video source handle.
+121
+*/
+122
+public int getHandle() {
+123
+return m_handle;
+124
+}
+125
+126
+@Override
+127
+public boolean equals(Object other) {
+128
+if (this == other) {
+129
+return true;
+130
+}
+131
+if (other == null) {
+132
+return false;
+133
+}
+134
+return other instanceof VideoSource source && m_handle == source.m_handle;
+135
+}
+136
+137
+@Override
+138
+public int hashCode() {
+139
+return m_handle;
+140
+}
+141
+142
+/**
+143
+* Get the kind of the source.
+144
+*
+145
+* @return The kind of the source.
+146
+*/
+147
+public Kind getKind() {
+148
+return getKindFromInt(CameraServerJNI.getSourceKind(m_handle));
+149
+}
+150
+151
+/**
+152
+* Get the name of the source. The name is an arbitrary identifier provided when the source is
+153
+* created, and should be unique.
+154
+*
+155
+* @return The name of the source.
+156
+*/
+157
+public String getName() {
+158
+return CameraServerJNI.getSourceName(m_handle);
+159
+}
+160
+161
+/**
+162
+* Get the source description. This is source-kind specific.
+163
+*
+164
+* @return The source description.
+165
+*/
+166
+public String getDescription() {
+167
+return CameraServerJNI.getSourceDescription(m_handle);
+168
+}
+169
+170
+/**
+171
+* Get the last time a frame was captured.
+172
+*
+173
+* @return Time in 1 us increments.
+174
+*/
+175
+public long getLastFrameTime() {
+176
+return CameraServerJNI.getSourceLastFrameTime(m_handle);
+177
+}
+178
+179
+/**
+180
+* Sets the connection strategy. By default, the source will automatically connect or disconnect
+181
+* based on whether any sinks are connected.
+182
+*
+183
+* <p>This function is non-blocking; look for either a connection open or close event or call
+184
+* {@link #isConnected()} to determine the connection state.
+185
+*
+186
+* @param strategy connection strategy (auto, keep open, or force close)
+187
+*/
+188
+public void setConnectionStrategy(ConnectionStrategy strategy) {
+189
+CameraServerJNI.setSourceConnectionStrategy(m_handle, strategy.getValue());
+190
+}
+191
+192
+/**
+193
+* Returns true if the source currently connected to whatever is providing the images.
+194
+*
+195
+* @return True if the source currently connected to whatever is providing the images.
+196
+*/
+197
+public boolean isConnected() {
+198
+return CameraServerJNI.isSourceConnected(m_handle);
+199
+}
+200
+201
+/**
+202
+* Gets source enable status. This is determined with a combination of connection strategy and the
+203
+* number of sinks connected.
+204
+*
+205
+* @return True if enabled, false otherwise.
+206
+*/
+207
+public boolean isEnabled() {
+208
+return CameraServerJNI.isSourceEnabled(m_handle);
+209
+}
+210
+211
+/**
+212
+* Get a property.
+213
+*
+214
+* @param name Property name
+215
+* @return Property contents (of kind Property::kNone if no property with the given name exists)
+216
+*/
+217
+public VideoProperty getProperty(String name) {
+218
+return new VideoProperty(CameraServerJNI.getSourceProperty(m_handle, name));
+219
+}
+220
+221
+/**
+222
+* Enumerate all properties of this source.
+223
+*
+224
+* @return Array of video properties.
+225
+*/
+226
+public VideoProperty[] enumerateProperties() {
+227
+int[] handles = CameraServerJNI.enumerateSourceProperties(m_handle);
+228
+VideoProperty[] rv = new VideoProperty[handles.length];
+229
+for (int i = 0; i < handles.length; i++) {
+230
+rv[i] = new VideoProperty(handles[i]);
+231
+}
+232
+return rv;
+233
+}
+234
+235
+/**
+236
+* Get the current video mode.
+237
+*
+238
+* @return The current video mode.
+239
+*/
+240
+public VideoMode getVideoMode() {
+241
+return CameraServerJNI.getSourceVideoMode(m_handle);
+242
+}
+243
+244
+/**
+245
+* Set the video mode.
+246
+*
+247
+* @param mode Video mode
+248
+* @return True if set successfully.
+249
+*/
+250
+public boolean setVideoMode(VideoMode mode) {
+251
+return CameraServerJNI.setSourceVideoMode(
+252
+m_handle, mode.pixelFormat.getValue(), mode.width, mode.height, mode.fps);
+253
+}
+254
+255
+/**
+256
+* Set the video mode.
+257
+*
+258
+* @param pixelFormat desired pixel format
+259
+* @param width desired width
+260
+* @param height desired height
+261
+* @param fps desired FPS
+262
+* @return True if set successfully
+263
+*/
+264
+public boolean setVideoMode(PixelFormat pixelFormat, int width, int height, int fps) {
+265
+return CameraServerJNI.setSourceVideoMode(m_handle, pixelFormat.getValue(), width, height, fps);
+266
+}
+267
+268
+/**
+269
+* Set the pixel format.
+270
+*
+271
+* @param pixelFormat desired pixel format
+272
+* @return True if set successfully
+273
+*/
+274
+public boolean setPixelFormat(PixelFormat pixelFormat) {
+275
+return CameraServerJNI.setSourcePixelFormat(m_handle, pixelFormat.getValue());
+276
+}
+277
+278
+/**
+279
+* Set the resolution.
+280
+*
+281
+* @param width desired width
+282
+* @param height desired height
+283
+* @return True if set successfully
+284
+*/
+285
+public boolean setResolution(int width, int height) {
+286
+return CameraServerJNI.setSourceResolution(m_handle, width, height);
+287
+}
+288
+289
+/**
+290
+* Set the frames per second (FPS).
+291
+*
+292
+* @param fps desired FPS
+293
+* @return True if set successfully
+294
+*/
+295
+public boolean setFPS(int fps) {
+296
+return CameraServerJNI.setSourceFPS(m_handle, fps);
+297
+}
+298
+299
+/**
+300
+* Set video mode and properties from a JSON configuration string.
+301
+*
+302
+* <p>The format of the JSON input is:
+303
+*
+304
+* <pre>
+305
+* {
+306
+*     "pixel format": "MJPEG", "YUYV", etc
+307
+*     "width": video mode width
+308
+*     "height": video mode height
+309
+*     "fps": video mode fps
+310
+*     "brightness": percentage brightness
+311
+*     "white balance": "auto", "hold", or value
+312
+*     "exposure": "auto", "hold", or value
+313
+*     "properties": [
+314
+*         {
+315
+*             "name": property name
+316
+*             "value": property value
+317
+*         }
+318
+*     ]
+319
+* }
+320
+* </pre>
+321
+*
+322
+* @param config configuration
+323
+* @return True if set successfully
+324
+*/
+325
+public boolean setConfigJson(String config) {
+326
+return CameraServerJNI.setSourceConfigJson(m_handle, config);
+327
+}
+328
+329
+/**
+330
+* Get a JSON configuration string.
+331
+*
+332
+* @return JSON configuration string
+333
+*/
+334
+public String getConfigJson() {
+335
+return CameraServerJNI.getSourceConfigJson(m_handle);
+336
+}
+337
+338
+/**
+339
+* Get the actual FPS.
+340
+*
+341
+* <p>CameraServerJNI#setTelemetryPeriod() must be called for this to be valid (throws
+342
+* VisionException if telemetry is not enabled).
+343
+*
+344
+* @return Actual FPS averaged over the telemetry period.
+345
+*/
+346
+public double getActualFPS() {
+347
+return CameraServerJNI.getTelemetryAverageValue(
+348
+m_handle, CameraServerJNI.TelemetryKind.kSourceFramesReceived);
+349
+}
+350
+351
+/**
+352
+* Get the data rate (in bytes per second).
+353
+*
+354
+* <p>CameraServerJNI#setTelemetryPeriod() must be called for this to be valid (throws
+355
+* VisionException if telemetry is not enabled).
+356
+*
+357
+* @return Data rate averaged over the telemetry period.
+358
+*/
+359
+public double getActualDataRate() {
+360
+return CameraServerJNI.getTelemetryAverageValue(
+361
+m_handle, CameraServerJNI.TelemetryKind.kSourceBytesReceived);
+362
+}
+363
+364
+/**
+365
+* Enumerate all known video modes for this source.
+366
+*
+367
+* @return Vector of video modes.
+368
+*/
+369
+public VideoMode[] enumerateVideoModes() {
+370
+return CameraServerJNI.enumerateSourceVideoModes(m_handle);
+371
+}
+372
+373
+/**
+374
+* Enumerate all sinks connected to this source.
+375
+*
+376
+* @return Vector of sinks.
+377
+*/
+378
+public VideoSink[] enumerateSinks() {
+379
+int[] handles = CameraServerJNI.enumerateSourceSinks(m_handle);
+380
+VideoSink[] rv = new VideoSink[handles.length];
+381
+for (int i = 0; i < handles.length; i++) {
+382
+rv[i] = new VideoSink(handles[i]);
+383
+}
+384
+return rv;
+385
+}
+386
+387
+/**
+388
+* Enumerate all existing sources.
+389
+*
+390
+* @return Vector of sources.
+391
+*/
+392
+public static VideoSource[] enumerateSources() {
+393
+int[] handles = CameraServerJNI.enumerateSources();
+394
+VideoSource[] rv = new VideoSource[handles.length];
+395
+for (int i = 0; i < handles.length; i++) {
+396
+rv[i] = new VideoSource(handles[i]);
+397
+}
+398
+return rv;
+399
+}
+400
+401
+/** Video source handle. */
+402
+protected int m_handle;
+403
+}

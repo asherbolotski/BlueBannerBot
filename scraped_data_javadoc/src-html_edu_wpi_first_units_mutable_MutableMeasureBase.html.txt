@@ -1,0 +1,158 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units.mutable;
+006
+007
+import edu.wpi.first.units.Measure;
+008
+import edu.wpi.first.units.MutableMeasure;
+009
+import edu.wpi.first.units.Unit;
+010
+import java.util.Objects;
+011
+012
+/**
+013
+* A partial implementation of {@link MutableMeasure} to handle most of the state and Java object-
+014
+* related implementations.
+015
+*
+016
+* @param <U> The dimension of measurement.
+017
+* @param <Base> The base measure type.
+018
+* @param <MutSelf> The self type. This MUST inherit from the base measure type.
+019
+*/
+020
+public abstract class MutableMeasureBase<
+021
+U extends Unit, Base extends Measure<U>, MutSelf extends MutableMeasure<U, Base, MutSelf>>
+022
+implements Measure<U>, MutableMeasure<U, Base, MutSelf> {
+023
+/** The magnitude of the measurement, in terms of {@link #m_unit}. */
+024
+protected double m_magnitude;
+025
+026
+/** The magnitude of the measurement, in terms of {@link #m_unit}'s base unit. */
+027
+protected double m_baseUnitMagnitude;
+028
+029
+/** The unit of measurement. */
+030
+protected U m_unit;
+031
+032
+/**
+033
+* Initializes the mutable measure with initial conditions. Both relative and base unit magnitudes
+034
+* are required to avoid unnecessary calculations. It is up to the caller to ensure they are
+035
+* correct.
+036
+*
+037
+* @param magnitude the initial magnitude of the measure, in terms of the unit
+038
+* @param baseUnitMagnitude the initial magnitude of the measure, in terms of the base unit
+039
+* @param unit the initial unit of measure
+040
+*/
+041
+protected MutableMeasureBase(double magnitude, double baseUnitMagnitude, U unit) {
+042
+this.m_magnitude = magnitude;
+043
+this.m_baseUnitMagnitude = baseUnitMagnitude;
+044
+this.m_unit = Objects.requireNonNull(unit, "Unit cannot be null");
+045
+}
+046
+047
+@Override
+048
+public double magnitude() {
+049
+return m_magnitude;
+050
+}
+051
+052
+@Override
+053
+public double baseUnitMagnitude() {
+054
+return m_baseUnitMagnitude;
+055
+}
+056
+057
+@Override
+058
+public U unit() {
+059
+return m_unit;
+060
+}
+061
+062
+@Override
+063
+public String toString() {
+064
+return toShortString();
+065
+}
+066
+067
+@Override
+068
+public boolean equals(Object o) {
+069
+return this == o || o instanceof Measure<?> m && isEquivalent(m);
+070
+}
+071
+072
+@Override
+073
+public int hashCode() {
+074
+return Objects.hash(m_magnitude, m_baseUnitMagnitude, m_unit);
+075
+}
+076
+077
+@Override
+078
+@SuppressWarnings("unchecked")
+079
+public MutSelf mut_replace(double magnitude, U newUnit) {
+080
+this.m_unit = Objects.requireNonNull(newUnit, "New unit cannot be null");
+081
+this.m_magnitude = magnitude;
+082
+this.m_baseUnitMagnitude = m_unit.toBaseUnits(magnitude);
+083
+084
+return (MutSelf) this;
+085
+}
+086
+}

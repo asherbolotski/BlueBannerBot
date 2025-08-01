@@ -1,0 +1,498 @@
+Package
+edu.wpi.first.wpilibj
+Class ADIS16448_IMU
+java.lang.Object
+edu.wpi.first.wpilibj.ADIS16448_IMU
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+ADIS16448_IMU
+extends
+Object
+implements
+AutoCloseable
+,
+Sendable
+This class is for the ADIS16448 IMU that connects to the RoboRIO MXP port.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+ADIS16448_IMU.CalibrationTime
+ADIS16448 calibration times.
+static enum
+ADIS16448_IMU.IMUAxis
+IMU axes.
+Constructor Summary
+Constructors
+Constructor
+Description
+ADIS16448_IMU
+()
+Creates a new ADIS16448_IMU object.
+ADIS16448_IMU
+(
+ADIS16448_IMU.IMUAxis
+yaw_axis,
+SPI.Port
+port,
+ADIS16448_IMU.CalibrationTime
+cal_time)
+Creates a new ADIS16448_IMU object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+calibrate
+()
+Calibrate the gyro.
+void
+close
+()
+Delete (free) the spi port used for the IMU.
+final int
+configCalTime
+(
+ADIS16448_IMU.CalibrationTime
+new_cal_time)
+Configures calibration time.
+int
+configDecRate
+(int decimationRate)
+Configures the decimation rate of the IMU.
+double
+getAccelX
+()
+Returns the acceleration in the X axis in meters per second squared.
+double
+getAccelY
+()
+Returns the acceleration in the Y axis in meters per second squared.
+double
+getAccelZ
+()
+Returns the acceleration in the Z axis in meters per second squared.
+double
+getAngle
+()
+Returns the yaw axis angle in degrees (CCW positive).
+double
+getBarometricPressure
+()
+Returns the barometric pressure in PSI.
+double
+getGyroAngleX
+()
+Returns the accumulated gyro angle in the X axis in degrees.
+double
+getGyroAngleY
+()
+Returns the accumulated gyro angle in the Y axis in degrees.
+double
+getGyroAngleZ
+()
+Returns the accumulated gyro angle in the Z axis in degrees.
+double
+getGyroRateX
+()
+Returns the gyro angular rate in the X axis in degrees per second.
+double
+getGyroRateY
+()
+Returns the gyro angular rate in the Y axis in degrees per second.
+double
+getGyroRateZ
+()
+Returns the gyro angular rate in the Z axis in degrees per second.
+double
+getMagneticFieldX
+()
+Returns the magnetic field strength in the X axis in Tesla.
+double
+getMagneticFieldY
+()
+Returns the magnetic field strength in the Y axis in Tesla.
+double
+getMagneticFieldZ
+()
+Returns the magnetic field strength in the Z axis in Tesla.
+int
+getPort
+()
+Get the SPI port number.
+double
+getRate
+()
+Returns the yaw axis angular rate in degrees per second (CCW positive).
+double
+getTemperature
+()
+Returns the temperature in degrees Celsius.
+double
+getXComplementaryAngle
+()
+Returns the complementary angle around the X axis computed from accelerometer and gyro rate
+ measurements.
+double
+getXFilteredAccelAngle
+()
+Returns the X-axis filtered acceleration angle in degrees.
+ADIS16448_IMU.IMUAxis
+getYawAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the yaw axis.
+double
+getYComplementaryAngle
+()
+Returns the complementary angle around the Y axis computed from accelerometer and gyro rate
+ measurements.
+double
+getYFilteredAccelAngle
+()
+Returns the Y-axis filtered acceleration angle in degrees.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isConnected
+()
+Checks the connection status of the IMU.
+void
+reset
+()
+Reset the gyro.
+int
+setYawAxis
+(
+ADIS16448_IMU.IMUAxis
+yaw_axis)
+Sets the yaw axis.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ADIS16448_IMU
+public
+ADIS16448_IMU
+()
+Creates a new ADIS16448_IMU object.
+ADIS16448_IMU
+public
+ADIS16448_IMU
+(
+ADIS16448_IMU.IMUAxis
+yaw_axis,
+SPI.Port
+port,
+ADIS16448_IMU.CalibrationTime
+cal_time)
+Creates a new ADIS16448_IMU object.
+Parameters:
+yaw_axis
+- The axis that measures the yaw
+port
+- The SPI Port the gyro is plugged into
+cal_time
+- Calibration time
+Method Details
+isConnected
+public
+boolean
+isConnected
+()
+Checks the connection status of the IMU.
+Returns:
+True if the IMU is connected, false otherwise.
+configDecRate
+public
+int
+configDecRate
+(int decimationRate)
+Configures the decimation rate of the IMU.
+Parameters:
+decimationRate
+- The new decimation value.
+Returns:
+0 if success, 1 if no change, 2 if error.
+configCalTime
+public final
+int
+configCalTime
+(
+ADIS16448_IMU.CalibrationTime
+new_cal_time)
+Configures calibration time.
+Parameters:
+new_cal_time
+- New calibration time
+Returns:
+1 if the new calibration time is the same as the current one else 0
+calibrate
+public
+void
+calibrate
+()
+Calibrate the gyro. It's important to make sure that the robot is not moving while the
+ calibration is in progress, this is typically done when the robot is first turned on while it's
+ sitting at rest before the match starts.
+setYawAxis
+public
+int
+setYawAxis
+(
+ADIS16448_IMU.IMUAxis
+yaw_axis)
+Sets the yaw axis.
+Parameters:
+yaw_axis
+- The new yaw axis to use
+Returns:
+1 if the new yaw axis is the same as the current one else 0.
+reset
+public
+void
+reset
+()
+Reset the gyro.
+Resets the gyro accumulations to a heading of zero. This can be used if there is significant
+ drift in the gyro and it needs to be recalibrated after running.
+close
+public
+void
+close
+()
+Delete (free) the spi port used for the IMU.
+Specified by:
+close
+in interface
+AutoCloseable
+getAngle
+public
+double
+getAngle
+()
+Returns the yaw axis angle in degrees (CCW positive).
+Returns:
+Yaw axis angle in degrees (CCW positive).
+getRate
+public
+double
+getRate
+()
+Returns the yaw axis angular rate in degrees per second (CCW positive).
+Returns:
+Yaw axis angular rate in degrees per second (CCW positive).
+getYawAxis
+public
+ADIS16448_IMU.IMUAxis
+getYawAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the yaw axis.
+Returns:
+IMUAxis Yaw Axis
+getGyroAngleX
+public
+double
+getGyroAngleX
+()
+Returns the accumulated gyro angle in the X axis in degrees.
+Returns:
+The accumulated gyro angle in the X axis in degrees.
+getGyroAngleY
+public
+double
+getGyroAngleY
+()
+Returns the accumulated gyro angle in the Y axis in degrees.
+Returns:
+The accumulated gyro angle in the Y axis in degrees.
+getGyroAngleZ
+public
+double
+getGyroAngleZ
+()
+Returns the accumulated gyro angle in the Z axis in degrees.
+Returns:
+The accumulated gyro angle in the Z axis in degrees.
+getGyroRateX
+public
+double
+getGyroRateX
+()
+Returns the gyro angular rate in the X axis in degrees per second.
+Returns:
+The gyro angular rate in the X axis in degrees per second.
+getGyroRateY
+public
+double
+getGyroRateY
+()
+Returns the gyro angular rate in the Y axis in degrees per second.
+Returns:
+The gyro angular rate in the Y axis in degrees per second.
+getGyroRateZ
+public
+double
+getGyroRateZ
+()
+Returns the gyro angular rate in the Z axis in degrees per second.
+Returns:
+The gyro angular rate in the Z axis in degrees per second.
+getAccelX
+public
+double
+getAccelX
+()
+Returns the acceleration in the X axis in meters per second squared.
+Returns:
+The acceleration in the X axis in meters per second squared.
+getAccelY
+public
+double
+getAccelY
+()
+Returns the acceleration in the Y axis in meters per second squared.
+Returns:
+The acceleration in the Y axis in meters per second squared.
+getAccelZ
+public
+double
+getAccelZ
+()
+Returns the acceleration in the Z axis in meters per second squared.
+Returns:
+The acceleration in the Z axis in meters per second squared.
+getMagneticFieldX
+public
+double
+getMagneticFieldX
+()
+Returns the magnetic field strength in the X axis in Tesla.
+Returns:
+The magnetic field strength in the X axis in Tesla.
+getMagneticFieldY
+public
+double
+getMagneticFieldY
+()
+Returns the magnetic field strength in the Y axis in Tesla.
+Returns:
+The magnetic field strength in the Y axis in Tesla.
+getMagneticFieldZ
+public
+double
+getMagneticFieldZ
+()
+Returns the magnetic field strength in the Z axis in Tesla.
+Returns:
+The magnetic field strength in the Z axis in Tesla.
+getXComplementaryAngle
+public
+double
+getXComplementaryAngle
+()
+Returns the complementary angle around the X axis computed from accelerometer and gyro rate
+ measurements.
+Returns:
+The X-axis complementary angle in degrees.
+getYComplementaryAngle
+public
+double
+getYComplementaryAngle
+()
+Returns the complementary angle around the Y axis computed from accelerometer and gyro rate
+ measurements.
+Returns:
+The Y-axis complementary angle in degrees.
+getXFilteredAccelAngle
+public
+double
+getXFilteredAccelAngle
+()
+Returns the X-axis filtered acceleration angle in degrees.
+Returns:
+The X-axis filtered acceleration angle in degrees.
+getYFilteredAccelAngle
+public
+double
+getYFilteredAccelAngle
+()
+Returns the Y-axis filtered acceleration angle in degrees.
+Returns:
+The Y-axis filtered acceleration angle in degrees.
+getBarometricPressure
+public
+double
+getBarometricPressure
+()
+Returns the barometric pressure in PSI.
+Returns:
+The barometric pressure in PSI.
+getTemperature
+public
+double
+getTemperature
+()
+Returns the temperature in degrees Celsius.
+Returns:
+The temperature in degrees Celsius.
+getPort
+public
+int
+getPort
+()
+Get the SPI port number.
+Returns:
+The SPI port number.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

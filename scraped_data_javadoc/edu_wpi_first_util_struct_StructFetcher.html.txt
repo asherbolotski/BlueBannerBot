@@ -1,0 +1,125 @@
+Package
+edu.wpi.first.util.struct
+Class StructFetcher
+java.lang.Object
+edu.wpi.first.util.struct.StructFetcher
+public final class
+StructFetcher
+extends
+Object
+A utility class for fetching the assigned struct of existing classes. These are usually public,
+ static, and final properties with the Struct type.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static <T extends
+StructSerializable
+>
+Optional
+<
+Struct
+<T>>
+fetchStruct
+(
+Class
+<? extends T> clazz)
+Returns a
+Struct
+for the given
+StructSerializable
+marked class.
+static
+Optional
+<
+Struct
+<?>>
+fetchStructDynamic
+(
+Class
+<?> clazz)
+Returns a
+Struct
+for the given class.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+fetchStruct
+public static
+<T extends
+StructSerializable
+>
+Optional
+<
+Struct
+<T>>
+fetchStruct
+(
+Class
+<? extends T> clazz)
+Returns a
+Struct
+for the given
+StructSerializable
+marked class. Due to the
+ non-contractual nature of the marker this can fail. If the
+struct
+field could not be
+ accessed for any reason, an empty
+Optional
+is returned.
+Type Parameters:
+T
+- The type of the class.
+Parameters:
+clazz
+- The class object to extract the struct from.
+Returns:
+An optional containing the struct if it could be extracted.
+fetchStructDynamic
+public static
+Optional
+<
+Struct
+<?>>
+fetchStructDynamic
+(
+Class
+<?> clazz)
+Returns a
+Struct
+for the given class. This does not do compile time checking that the
+ class is a
+StructSerializable
+. Whenever possible it is reccomended to use
+fetchStruct(Class)
+.
+Parameters:
+clazz
+- The class object to extract the struct from.
+Returns:
+An optional containing the struct if it could be extracted.

@@ -1,0 +1,290 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import edu.wpi.first.util.sendable.SendableBuilder;
+008
+import java.util.Collections;
+009
+import java.util.LinkedHashMap;
+010
+import java.util.Map;
+011
+012
+/**
+013
+* A command composition that runs a set of commands in parallel, ending only when a specific
+014
+* command (the "deadline") ends, interrupting all other commands that are still running at that
+015
+* point.
+016
+*
+017
+* <p>The rules for command compositions apply: command instances that are passed to it cannot be
+018
+* added to any other composition or scheduled individually, and the composition requires all
+019
+* subsystems its components require.
+020
+*
+021
+* <p>This class is provided by the NewCommands VendorDep
+022
+*/
+023
+public class ParallelDeadlineGroup extends Command {
+024
+// maps commands in this composition to whether they are still running
+025
+// LinkedHashMap guarantees we iterate over commands in the order they were added (Note that
+026
+// changing the value associated with a command does NOT change the order)
+027
+private final Map<Command, Boolean> m_commands = new LinkedHashMap<>();
+028
+private boolean m_runWhenDisabled = true;
+029
+private boolean m_finished = true;
+030
+private Command m_deadline;
+031
+private InterruptionBehavior m_interruptBehavior = InterruptionBehavior.kCancelIncoming;
+032
+033
+/**
+034
+* Creates a new ParallelDeadlineGroup. The given commands, including the deadline, will be
+035
+* executed simultaneously. The composition will finish when the deadline finishes, interrupting
+036
+* all other still-running commands. If the composition is interrupted, only the commands still
+037
+* running will be interrupted.
+038
+*
+039
+* @param deadline the command that determines when the composition ends
+040
+* @param otherCommands the other commands to be executed
+041
+* @throws IllegalArgumentException if the deadline command is also in the otherCommands argument
+042
+*/
+043
+@SuppressWarnings("this-escape")
+044
+public ParallelDeadlineGroup(Command deadline, Command... otherCommands) {
+045
+setDeadline(deadline);
+046
+addCommands(otherCommands);
+047
+}
+048
+049
+/**
+050
+* Sets the deadline to the given command. The deadline is added to the group if it is not already
+051
+* contained.
+052
+*
+053
+* @param deadline the command that determines when the group ends
+054
+* @throws IllegalArgumentException if the deadline command is already in the composition
+055
+*/
+056
+public final void setDeadline(Command deadline) {
+057
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
+058
+boolean isAlreadyDeadline = deadline == m_deadline;
+059
+if (isAlreadyDeadline) {
+060
+return;
+061
+}
+062
+if (m_commands.containsKey(deadline)) {
+063
+throw new IllegalArgumentException(
+064
+"The deadline command cannot also be in the other commands!");
+065
+}
+066
+addCommands(deadline);
+067
+m_deadline = deadline;
+068
+}
+069
+070
+/**
+071
+* Adds the given commands to the group.
+072
+*
+073
+* @param commands Commands to add to the group.
+074
+*/
+075
+public final void addCommands(Command... commands) {
+076
+if (!m_finished) {
+077
+throw new IllegalStateException(
+078
+"Commands cannot be added to a composition while it's running");
+079
+}
+080
+081
+CommandScheduler.getInstance().registerComposedCommands(commands);
+082
+083
+for (Command command : commands) {
+084
+if (!Collections.disjoint(command.getRequirements(), getRequirements())) {
+085
+throw new IllegalArgumentException(
+086
+"Multiple commands in a parallel group cannot require the same subsystems");
+087
+}
+088
+m_commands.put(command, false);
+089
+addRequirements(command.getRequirements());
+090
+m_runWhenDisabled &= command.runsWhenDisabled();
+091
+if (command.getInterruptionBehavior() == InterruptionBehavior.kCancelSelf) {
+092
+m_interruptBehavior = InterruptionBehavior.kCancelSelf;
+093
+}
+094
+}
+095
+}
+096
+097
+@Override
+098
+public final void initialize() {
+099
+for (Map.Entry<Command, Boolean> commandRunning : m_commands.entrySet()) {
+100
+commandRunning.getKey().initialize();
+101
+commandRunning.setValue(true);
+102
+}
+103
+m_finished = false;
+104
+}
+105
+106
+@Override
+107
+public final void execute() {
+108
+for (Map.Entry<Command, Boolean> commandRunning : m_commands.entrySet()) {
+109
+if (!commandRunning.getValue()) {
+110
+continue;
+111
+}
+112
+commandRunning.getKey().execute();
+113
+if (commandRunning.getKey().isFinished()) {
+114
+commandRunning.getKey().end(false);
+115
+commandRunning.setValue(false);
+116
+if (commandRunning.getKey().equals(m_deadline)) {
+117
+m_finished = true;
+118
+}
+119
+}
+120
+}
+121
+}
+122
+123
+@Override
+124
+public final void end(boolean interrupted) {
+125
+for (Map.Entry<Command, Boolean> commandRunning : m_commands.entrySet()) {
+126
+if (commandRunning.getValue()) {
+127
+commandRunning.getKey().end(true);
+128
+}
+129
+}
+130
+}
+131
+132
+@Override
+133
+public final boolean isFinished() {
+134
+return m_finished;
+135
+}
+136
+137
+@Override
+138
+public boolean runsWhenDisabled() {
+139
+return m_runWhenDisabled;
+140
+}
+141
+142
+@Override
+143
+public InterruptionBehavior getInterruptionBehavior() {
+144
+return m_interruptBehavior;
+145
+}
+146
+147
+@Override
+148
+public void initSendable(SendableBuilder builder) {
+149
+super.initSendable(builder);
+150
+151
+builder.addStringProperty("deadline", m_deadline::getName, null);
+152
+}
+153
+}

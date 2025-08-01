@@ -1,0 +1,1067 @@
+Package
+edu.wpi.first.wpilibj
+Class XboxController
+java.lang.Object
+edu.wpi.first.wpilibj.GenericHID
+edu.wpi.first.wpilibj.XboxController
+All Implemented Interfaces:
+Sendable
+public class
+XboxController
+extends
+GenericHID
+implements
+Sendable
+Handle input from Xbox controllers connected to the Driver Station.
+This class handles Xbox input that comes from the Driver Station. Each time a value is
+ requested the most recent value is returned. There is a single class instance for each controller
+ and the mapping of ports to hardware buttons depends on the code in the Driver Station.
+Only first party controllers from Microsoft are guaranteed to have the correct mapping, and
+ only through the official NI DS. Sim is not guaranteed to have the same mapping, as well as any
+ 3rd party controllers.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+XboxController.Axis
+Represents an axis on an XboxController.
+static enum
+XboxController.Button
+Represents a digital button on a XboxController.
+Nested classes/interfaces inherited from class edu.wpi.first.wpilibj.
+GenericHID
+GenericHID.HIDType
+,
+GenericHID.RumbleType
+Constructor Summary
+Constructors
+Constructor
+Description
+XboxController
+(int port)
+Construct an instance of a controller.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+BooleanEvent
+a
+(
+EventLoop
+loop)
+Constructs an event instance around the A button's digital signal.
+BooleanEvent
+b
+(
+EventLoop
+loop)
+Constructs an event instance around the B button's digital signal.
+BooleanEvent
+back
+(
+EventLoop
+loop)
+Constructs an event instance around the back button's digital signal.
+boolean
+getAButton
+()
+Read the value of the A button on the controller.
+boolean
+getAButtonPressed
+()
+Whether the A button was pressed since the last check.
+boolean
+getAButtonReleased
+()
+Whether the A button was released since the last check.
+boolean
+getBackButton
+()
+Read the value of the back button on the controller.
+boolean
+getBackButtonPressed
+()
+Whether the back button was pressed since the last check.
+boolean
+getBackButtonReleased
+()
+Whether the back button was released since the last check.
+boolean
+getBButton
+()
+Read the value of the B button on the controller.
+boolean
+getBButtonPressed
+()
+Whether the B button was pressed since the last check.
+boolean
+getBButtonReleased
+()
+Whether the B button was released since the last check.
+boolean
+getLeftBumper
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getLeftBumperButton()
+instead.
+boolean
+getLeftBumperButton
+()
+Read the value of the left bumper button on the controller.
+boolean
+getLeftBumperButtonPressed
+()
+Whether the left bumper button was pressed since the last check.
+boolean
+getLeftBumperButtonReleased
+()
+Whether the left bumper button was released since the last check.
+boolean
+getLeftBumperPressed
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getLeftBumperButtonPressed()
+instead.
+boolean
+getLeftBumperReleased
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getLeftBumperButtonReleased()
+instead.
+boolean
+getLeftStickButton
+()
+Read the value of the left stick button on the controller.
+boolean
+getLeftStickButtonPressed
+()
+Whether the left stick button was pressed since the last check.
+boolean
+getLeftStickButtonReleased
+()
+Whether the left stick button was released since the last check.
+double
+getLeftTriggerAxis
+()
+Get the left trigger axis value of the controller.
+double
+getLeftX
+()
+Get the X axis value of left side of the controller.
+double
+getLeftY
+()
+Get the Y axis value of left side of the controller.
+boolean
+getRightBumper
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getRightBumperButton()
+instead.
+boolean
+getRightBumperButton
+()
+Read the value of the right bumper button on the controller.
+boolean
+getRightBumperButtonPressed
+()
+Whether the right bumper button was pressed since the last check.
+boolean
+getRightBumperButtonReleased
+()
+Whether the right bumper button was released since the last check.
+boolean
+getRightBumperPressed
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getRightBumperButtonPressed()
+instead.
+boolean
+getRightBumperReleased
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getRightBumperButtonReleased()
+instead.
+boolean
+getRightStickButton
+()
+Read the value of the right stick button on the controller.
+boolean
+getRightStickButtonPressed
+()
+Whether the right stick button was pressed since the last check.
+boolean
+getRightStickButtonReleased
+()
+Whether the right stick button was released since the last check.
+double
+getRightTriggerAxis
+()
+Get the right trigger axis value of the controller.
+double
+getRightX
+()
+Get the X axis value of right side of the controller.
+double
+getRightY
+()
+Get the Y axis value of right side of the controller.
+boolean
+getStartButton
+()
+Read the value of the start button on the controller.
+boolean
+getStartButtonPressed
+()
+Whether the start button was pressed since the last check.
+boolean
+getStartButtonReleased
+()
+Whether the start button was released since the last check.
+boolean
+getXButton
+()
+Read the value of the X button on the controller.
+boolean
+getXButtonPressed
+()
+Whether the X button was pressed since the last check.
+boolean
+getXButtonReleased
+()
+Whether the X button was released since the last check.
+boolean
+getYButton
+()
+Read the value of the Y button on the controller.
+boolean
+getYButtonPressed
+()
+Whether the Y button was pressed since the last check.
+boolean
+getYButtonReleased
+()
+Whether the Y button was released since the last check.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+BooleanEvent
+leftBumper
+(
+EventLoop
+loop)
+Constructs an event instance around the left bumper button's digital signal.
+BooleanEvent
+leftStick
+(
+EventLoop
+loop)
+Constructs an event instance around the left stick button's digital signal.
+BooleanEvent
+leftTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs an event instance around the axis value of the left trigger.
+BooleanEvent
+leftTrigger
+(
+EventLoop
+loop)
+Constructs an event instance around the axis value of the left trigger.
+BooleanEvent
+rightBumper
+(
+EventLoop
+loop)
+Constructs an event instance around the right bumper button's digital signal.
+BooleanEvent
+rightStick
+(
+EventLoop
+loop)
+Constructs an event instance around the right stick button's digital signal.
+BooleanEvent
+rightTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs an event instance around the axis value of the right trigger.
+BooleanEvent
+rightTrigger
+(
+EventLoop
+loop)
+Constructs an event instance around the axis value of the right trigger.
+BooleanEvent
+start
+(
+EventLoop
+loop)
+Constructs an event instance around the start button's digital signal.
+BooleanEvent
+x
+(
+EventLoop
+loop)
+Constructs an event instance around the X button's digital signal.
+BooleanEvent
+y
+(
+EventLoop
+loop)
+Constructs an event instance around the Y button's digital signal.
+Methods inherited from class edu.wpi.first.wpilibj.
+GenericHID
+axisGreaterThan
+,
+axisLessThan
+,
+button
+,
+getAxisCount
+,
+getAxisType
+,
+getButtonCount
+,
+getName
+,
+getPort
+,
+getPOV
+,
+getPOV
+,
+getPOVCount
+,
+getRawAxis
+,
+getRawButton
+,
+getRawButtonPressed
+,
+getRawButtonReleased
+,
+getType
+,
+isConnected
+,
+pov
+,
+pov
+,
+povCenter
+,
+povDown
+,
+povDownLeft
+,
+povDownRight
+,
+povLeft
+,
+povRight
+,
+povUp
+,
+povUpLeft
+,
+povUpRight
+,
+setOutput
+,
+setOutputs
+,
+setRumble
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+XboxController
+public
+XboxController
+(int port)
+Construct an instance of a controller.
+Parameters:
+port
+- The port index on the Driver Station that the controller is plugged into (0-5).
+Method Details
+getLeftX
+public
+double
+getLeftX
+()
+Get the X axis value of left side of the controller. Right is positive.
+Returns:
+The axis value.
+getRightX
+public
+double
+getRightX
+()
+Get the X axis value of right side of the controller. Right is positive.
+Returns:
+The axis value.
+getLeftY
+public
+double
+getLeftY
+()
+Get the Y axis value of left side of the controller. Back is positive.
+Returns:
+The axis value.
+getRightY
+public
+double
+getRightY
+()
+Get the Y axis value of right side of the controller. Back is positive.
+Returns:
+The axis value.
+getLeftTriggerAxis
+public
+double
+getLeftTriggerAxis
+()
+Get the left trigger axis value of the controller. Note that this axis is bound to the
+ range of [0, 1] as opposed to the usual [-1, 1].
+Returns:
+The axis value.
+leftTrigger
+public
+BooleanEvent
+leftTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs an event instance around the axis value of the left trigger. The returned trigger
+ will be true when the axis value is greater than
+threshold
+.
+Parameters:
+threshold
+- the minimum axis value for the returned
+BooleanEvent
+to be true. This
+     value should be in the range [0, 1] where 0 is the unpressed state of the axis.
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance that is true when the left trigger's axis exceeds the provided
+     threshold, attached to the given event loop
+leftTrigger
+public
+BooleanEvent
+leftTrigger
+(
+EventLoop
+loop)
+Constructs an event instance around the axis value of the left trigger. The returned trigger
+ will be true when the axis value is greater than 0.5.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance that is true when the left trigger's axis exceeds the provided
+     threshold, attached to the given event loop
+getRightTriggerAxis
+public
+double
+getRightTriggerAxis
+()
+Get the right trigger axis value of the controller. Note that this axis is bound to the
+ range of [0, 1] as opposed to the usual [-1, 1].
+Returns:
+The axis value.
+rightTrigger
+public
+BooleanEvent
+rightTrigger
+(double threshold,
+EventLoop
+loop)
+Constructs an event instance around the axis value of the right trigger. The returned trigger
+ will be true when the axis value is greater than
+threshold
+.
+Parameters:
+threshold
+- the minimum axis value for the returned
+BooleanEvent
+to be true. This
+     value should be in the range [0, 1] where 0 is the unpressed state of the axis.
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance that is true when the right trigger's axis exceeds the provided
+     threshold, attached to the given event loop
+rightTrigger
+public
+BooleanEvent
+rightTrigger
+(
+EventLoop
+loop)
+Constructs an event instance around the axis value of the right trigger. The returned trigger
+ will be true when the axis value is greater than 0.5.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance that is true when the right trigger's axis exceeds the provided
+     threshold, attached to the given event loop
+getAButton
+public
+boolean
+getAButton
+()
+Read the value of the A button on the controller.
+Returns:
+The state of the button.
+getAButtonPressed
+public
+boolean
+getAButtonPressed
+()
+Whether the A button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getAButtonReleased
+public
+boolean
+getAButtonReleased
+()
+Whether the A button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+a
+public
+BooleanEvent
+a
+(
+EventLoop
+loop)
+Constructs an event instance around the A button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the A button's digital signal
+     attached to the given loop.
+getBButton
+public
+boolean
+getBButton
+()
+Read the value of the B button on the controller.
+Returns:
+The state of the button.
+getBButtonPressed
+public
+boolean
+getBButtonPressed
+()
+Whether the B button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getBButtonReleased
+public
+boolean
+getBButtonReleased
+()
+Whether the B button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+b
+public
+BooleanEvent
+b
+(
+EventLoop
+loop)
+Constructs an event instance around the B button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the B button's digital signal
+     attached to the given loop.
+getXButton
+public
+boolean
+getXButton
+()
+Read the value of the X button on the controller.
+Returns:
+The state of the button.
+getXButtonPressed
+public
+boolean
+getXButtonPressed
+()
+Whether the X button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getXButtonReleased
+public
+boolean
+getXButtonReleased
+()
+Whether the X button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+x
+public
+BooleanEvent
+x
+(
+EventLoop
+loop)
+Constructs an event instance around the X button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the X button's digital signal
+     attached to the given loop.
+getYButton
+public
+boolean
+getYButton
+()
+Read the value of the Y button on the controller.
+Returns:
+The state of the button.
+getYButtonPressed
+public
+boolean
+getYButtonPressed
+()
+Whether the Y button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getYButtonReleased
+public
+boolean
+getYButtonReleased
+()
+Whether the Y button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+y
+public
+BooleanEvent
+y
+(
+EventLoop
+loop)
+Constructs an event instance around the Y button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the Y button's digital signal
+     attached to the given loop.
+getLeftBumperButton
+public
+boolean
+getLeftBumperButton
+()
+Read the value of the left bumper button on the controller.
+Returns:
+The state of the button.
+getLeftBumperButtonPressed
+public
+boolean
+getLeftBumperButtonPressed
+()
+Whether the left bumper button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getLeftBumperButtonReleased
+public
+boolean
+getLeftBumperButtonReleased
+()
+Whether the left bumper button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+leftBumper
+public
+BooleanEvent
+leftBumper
+(
+EventLoop
+loop)
+Constructs an event instance around the left bumper button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the left bumper button's digital signal
+     attached to the given loop.
+getRightBumperButton
+public
+boolean
+getRightBumperButton
+()
+Read the value of the right bumper button on the controller.
+Returns:
+The state of the button.
+getRightBumperButtonPressed
+public
+boolean
+getRightBumperButtonPressed
+()
+Whether the right bumper button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getRightBumperButtonReleased
+public
+boolean
+getRightBumperButtonReleased
+()
+Whether the right bumper button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+rightBumper
+public
+BooleanEvent
+rightBumper
+(
+EventLoop
+loop)
+Constructs an event instance around the right bumper button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the right bumper button's digital signal
+     attached to the given loop.
+getBackButton
+public
+boolean
+getBackButton
+()
+Read the value of the back button on the controller.
+Returns:
+The state of the button.
+getBackButtonPressed
+public
+boolean
+getBackButtonPressed
+()
+Whether the back button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getBackButtonReleased
+public
+boolean
+getBackButtonReleased
+()
+Whether the back button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+back
+public
+BooleanEvent
+back
+(
+EventLoop
+loop)
+Constructs an event instance around the back button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the back button's digital signal
+     attached to the given loop.
+getStartButton
+public
+boolean
+getStartButton
+()
+Read the value of the start button on the controller.
+Returns:
+The state of the button.
+getStartButtonPressed
+public
+boolean
+getStartButtonPressed
+()
+Whether the start button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getStartButtonReleased
+public
+boolean
+getStartButtonReleased
+()
+Whether the start button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+start
+public
+BooleanEvent
+start
+(
+EventLoop
+loop)
+Constructs an event instance around the start button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the start button's digital signal
+     attached to the given loop.
+getLeftStickButton
+public
+boolean
+getLeftStickButton
+()
+Read the value of the left stick button on the controller.
+Returns:
+The state of the button.
+getLeftStickButtonPressed
+public
+boolean
+getLeftStickButtonPressed
+()
+Whether the left stick button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getLeftStickButtonReleased
+public
+boolean
+getLeftStickButtonReleased
+()
+Whether the left stick button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+leftStick
+public
+BooleanEvent
+leftStick
+(
+EventLoop
+loop)
+Constructs an event instance around the left stick button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the left stick button's digital signal
+     attached to the given loop.
+getRightStickButton
+public
+boolean
+getRightStickButton
+()
+Read the value of the right stick button on the controller.
+Returns:
+The state of the button.
+getRightStickButtonPressed
+public
+boolean
+getRightStickButtonPressed
+()
+Whether the right stick button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getRightStickButtonReleased
+public
+boolean
+getRightStickButtonReleased
+()
+Whether the right stick button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+rightStick
+public
+BooleanEvent
+rightStick
+(
+EventLoop
+loop)
+Constructs an event instance around the right stick button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the right stick button's digital signal
+     attached to the given loop.
+getLeftBumper
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+public
+boolean
+getLeftBumper
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getLeftBumperButton()
+instead. This function is deprecated for removal
+     to make function names consistent to allow the HID classes to be automatically generated.
+Read the value of the left bumper (LB) button on the controller.
+Returns:
+The state of the button.
+getRightBumper
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+public
+boolean
+getRightBumper
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getRightBumperButton()
+instead. This function is deprecated for removal
+     to make function names consistent to allow the HID classes to be automatically generated.
+Read the value of the right bumper (RB) button on the controller.
+Returns:
+The state of the button.
+getLeftBumperPressed
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+public
+boolean
+getLeftBumperPressed
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getLeftBumperButtonPressed()
+instead. This function is deprecated for
+     removal to make function names consistent to allow the HID classes to be automatically
+     generated.
+Whether the left bumper (LB) was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getRightBumperPressed
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+public
+boolean
+getRightBumperPressed
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getRightBumperButtonPressed()
+instead. This function is deprecated for
+     removal to make function names consistent to allow the HID classes to be automatically
+     generated.
+Whether the right bumper (RB) was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getLeftBumperReleased
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+public
+boolean
+getLeftBumperReleased
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getLeftBumperButtonReleased()
+instead. This function is deprecated for
+     removal to make function names consistent to allow the HID classes to be automatically
+     generated.
+Whether the left bumper (LB) was released since the last check.
+Returns:
+Whether the button was released since the last check.
+getRightBumperReleased
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+public
+boolean
+getRightBumperReleased
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+getRightBumperButtonReleased()
+instead. This function is deprecated for
+     removal to make function names consistent to allow the HID classes to be automatically
+     generated.
+Whether the right bumper (RB) was released since the last check.
+Returns:
+Whether the button was released since the last check.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

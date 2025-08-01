@@ -1,0 +1,447 @@
+Package
+edu.wpi.first.math.controller
+Class ControlAffinePlantInversionFeedforward<States extends
+Num
+,
+Inputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.controller.ControlAffinePlantInversionFeedforward<States,
+Inputs>
+Type Parameters:
+States
+- Number of states.
+Inputs
+- Number of inputs.
+public class
+ControlAffinePlantInversionFeedforward
+<States extends
+Num
+,
+Inputs extends
+Num
+>
+extends
+Object
+Constructs a control-affine plant inversion model-based feedforward from given model dynamics.
+If given the vector valued function as f(x, u) where x is the state vector and u is the input
+ vector, the B matrix(continuous input matrix) is calculated through a
+NumericalJacobian
+.
+ In this case f has to be control-affine (of the form f(x) + Bu).
+The feedforward is calculated as
+u_ff = B
++
+(rDot - f(x))
+, where
+B
++
+is the pseudoinverse of B.
+This feedforward does not account for a dynamic B matrix, B is either determined or supplied
+ when the feedforward is created and remains constant.
+For more on the underlying math, read
+https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+.
+Constructor Summary
+Constructors
+Constructor
+Description
+ControlAffinePlantInversionFeedforward
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Inputs
+> inputs,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+ double dtSeconds)
+Constructs a feedforward with given model dynamics as a function of state and input.
+ControlAffinePlantInversionFeedforward
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Inputs
+> inputs,
+Function
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+Matrix
+<
+States
+,
+Inputs
+> B,
+ double dtSeconds)
+Constructs a feedforward with given model dynamics as a function of state, and the plant's
+ B(continuous input matrix) matrix.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with only the desired future reference.
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> r,
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with current and future reference vectors.
+Matrix
+<
+States
+,
+N1
+>
+getR
+()
+Returns the current reference vector r.
+double
+getR
+(int row)
+Returns an element of the current reference vector r.
+Matrix
+<
+Inputs
+,
+N1
+>
+getUff
+()
+Returns the previously calculated feedforward as an input vector.
+double
+getUff
+(int row)
+Returns an element of the previously calculated feedforward.
+final void
+reset
+()
+Resets the feedforward with a zero initial state vector.
+final void
+reset
+(
+Matrix
+<
+States
+,
+N1
+> initialState)
+Resets the feedforward with a specified initial state vector.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ControlAffinePlantInversionFeedforward
+public
+ControlAffinePlantInversionFeedforward
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Inputs
+> inputs,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+ double dtSeconds)
+Constructs a feedforward with given model dynamics as a function of state and input.
+Parameters:
+states
+- A
+Nat
+representing the number of states.
+inputs
+- A
+Nat
+representing the number of inputs.
+f
+- A vector-valued function of x, the state, and u, the input, that returns the
+     derivative of the state vector. HAS to be control-affine (of the form f(x) + Bu).
+dtSeconds
+- The timestep between calls of calculate().
+ControlAffinePlantInversionFeedforward
+public
+ControlAffinePlantInversionFeedforward
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Inputs
+> inputs,
+Function
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+Matrix
+<
+States
+,
+Inputs
+> B,
+ double dtSeconds)
+Constructs a feedforward with given model dynamics as a function of state, and the plant's
+ B(continuous input matrix) matrix.
+Parameters:
+states
+- A
+Nat
+representing the number of states.
+inputs
+- A
+Nat
+representing the number of inputs.
+f
+- A vector-valued function of x, the state, that returns the derivative of the state
+     vector.
+B
+- Continuous input matrix of the plant being controlled.
+dtSeconds
+- The timestep between calls of calculate().
+Method Details
+getUff
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+getUff
+()
+Returns the previously calculated feedforward as an input vector.
+Returns:
+The calculated feedforward.
+getUff
+public
+double
+getUff
+(int row)
+Returns an element of the previously calculated feedforward.
+Parameters:
+row
+- Row of uff.
+Returns:
+The row of the calculated feedforward.
+getR
+public
+Matrix
+<
+States
+,
+N1
+>
+getR
+()
+Returns the current reference vector r.
+Returns:
+The current reference vector.
+getR
+public
+double
+getR
+(int row)
+Returns an element of the current reference vector r.
+Parameters:
+row
+- Row of r.
+Returns:
+The row of the current reference vector.
+reset
+public final
+void
+reset
+(
+Matrix
+<
+States
+,
+N1
+> initialState)
+Resets the feedforward with a specified initial state vector.
+Parameters:
+initialState
+- The initial state vector.
+reset
+public final
+void
+reset
+()
+Resets the feedforward with a zero initial state vector.
+calculate
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with only the desired future reference. This uses the internally
+ stored "current" reference.
+If this method is used the initial state of the system is the one set using
+LinearPlantInversionFeedforward.reset(Matrix)
+. If the initial state is not set it defaults to
+ a zero vector.
+Parameters:
+nextR
+- The reference state of the future timestep (k + dt).
+Returns:
+The calculated feedforward.
+calculate
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> r,
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with current and future reference vectors.
+Parameters:
+r
+- The reference state of the current timestep (k).
+nextR
+- The reference state of the future timestep (k + dt).
+Returns:
+The calculated feedforward.

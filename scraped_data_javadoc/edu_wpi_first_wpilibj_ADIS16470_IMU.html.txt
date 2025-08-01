@@ -1,0 +1,519 @@
+Package
+edu.wpi.first.wpilibj
+Class ADIS16470_IMU
+java.lang.Object
+edu.wpi.first.wpilibj.ADIS16470_IMU
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+ADIS16470_IMU
+extends
+Object
+implements
+AutoCloseable
+,
+Sendable
+This class is for the ADIS16470 IMU that connects to the RoboRIO SPI port.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+ADIS16470_IMU.CalibrationTime
+ADIS16470 calibration times.
+static enum
+ADIS16470_IMU.IMUAxis
+IMU axes.
+Constructor Summary
+Constructors
+Constructor
+Description
+ADIS16470_IMU
+()
+Creates a new ADIS16740 IMU object.
+ADIS16470_IMU
+(
+ADIS16470_IMU.IMUAxis
+yaw_axis,
+ADIS16470_IMU.IMUAxis
+pitch_axis,
+ADIS16470_IMU.IMUAxis
+roll_axis)
+Creates a new ADIS16740 IMU object.
+ADIS16470_IMU
+(
+ADIS16470_IMU.IMUAxis
+yaw_axis,
+ADIS16470_IMU.IMUAxis
+pitch_axis,
+ADIS16470_IMU.IMUAxis
+roll_axis,
+SPI.Port
+port,
+ADIS16470_IMU.CalibrationTime
+cal_time)
+Creates a new ADIS16740 IMU object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+calibrate
+()
+Calibrate the gyro.
+void
+close
+()
+Delete (free) the spi port used for the IMU.
+int
+configCalTime
+(
+ADIS16470_IMU.CalibrationTime
+new_cal_time)
+Configures calibration time.
+int
+configDecRate
+(int decimationRate)
+Configures the decimation rate of the IMU.
+double
+getAccelX
+()
+Returns the acceleration in the X axis in meters per second squared.
+double
+getAccelY
+()
+Returns the acceleration in the Y axis in meters per second squared.
+double
+getAccelZ
+()
+Returns the acceleration in the Z axis in meters per second squared.
+double
+getAngle
+()
+Returns the Yaw axis angle in degrees (CCW positive).
+double
+getAngle
+(
+ADIS16470_IMU.IMUAxis
+axis)
+Returns the axis angle in degrees (CCW positive).
+ADIS16470_IMU.IMUAxis
+getPitchAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the pitch axis.
+int
+getPort
+()
+Gets the SPI port number.
+double
+getRate
+()
+Returns the Yaw axis angular rate in degrees per second (CCW positive).
+double
+getRate
+(
+ADIS16470_IMU.IMUAxis
+axis)
+Returns the axis angular rate in degrees per second (CCW positive).
+ADIS16470_IMU.IMUAxis
+getRollAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the roll axis.
+double
+getXComplementaryAngle
+()
+Returns the complementary angle around the X axis computed from accelerometer and gyro rate
+ measurements.
+double
+getXFilteredAccelAngle
+()
+Returns the X-axis filtered acceleration angle in degrees.
+ADIS16470_IMU.IMUAxis
+getYawAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the yaw axis.
+double
+getYComplementaryAngle
+()
+Returns the complementary angle around the Y axis computed from accelerometer and gyro rate
+ measurements.
+double
+getYFilteredAccelAngle
+()
+Returns the Y-axis filtered acceleration angle in degrees.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isConnected
+()
+Checks the connection status of the IMU.
+void
+reset
+()
+Reset the gyro.
+void
+setGyroAngle
+(
+ADIS16470_IMU.IMUAxis
+axis,
+ double angle)
+Allow the designated gyro angle to be set to a given value.
+void
+setGyroAngleX
+(double angle)
+Allow the gyro angle X to be set to a given value.
+void
+setGyroAngleY
+(double angle)
+Allow the gyro angle Y to be set to a given value.
+void
+setGyroAngleZ
+(double angle)
+Allow the gyro angle Z to be set to a given value.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ADIS16470_IMU
+public
+ADIS16470_IMU
+()
+Creates a new ADIS16740 IMU object.
+The default setup is the onboard SPI port with a calibration time of 1 second. Yaw, pitch,
+ and roll are kZ, kX, and kY respectively.
+ADIS16470_IMU
+public
+ADIS16470_IMU
+(
+ADIS16470_IMU.IMUAxis
+yaw_axis,
+ADIS16470_IMU.IMUAxis
+pitch_axis,
+ADIS16470_IMU.IMUAxis
+roll_axis)
+Creates a new ADIS16740 IMU object.
+The default setup is the onboard SPI port with a calibration time of 1 second.
+Input axes limited to kX, kY and kZ. Specifying kYaw, kPitch,or kRoll will result in
+ an error.
+Parameters:
+yaw_axis
+- The axis that measures the yaw
+pitch_axis
+- The axis that measures the pitch
+roll_axis
+- The axis that measures the roll
+ADIS16470_IMU
+public
+ADIS16470_IMU
+(
+ADIS16470_IMU.IMUAxis
+yaw_axis,
+ADIS16470_IMU.IMUAxis
+pitch_axis,
+ADIS16470_IMU.IMUAxis
+roll_axis,
+SPI.Port
+port,
+ADIS16470_IMU.CalibrationTime
+cal_time)
+Creates a new ADIS16740 IMU object.
+Input axes limited to kX, kY and kZ. Specifying kYaw, kPitch,or kRoll will result in
+ an error.
+Parameters:
+yaw_axis
+- The axis that measures the yaw
+pitch_axis
+- The axis that measures the pitch
+roll_axis
+- The axis that measures the roll
+port
+- The SPI Port the gyro is plugged into
+cal_time
+- Calibration time
+Method Details
+isConnected
+public
+boolean
+isConnected
+()
+Checks the connection status of the IMU.
+Returns:
+True if the IMU is connected, false otherwise.
+configCalTime
+public
+int
+configCalTime
+(
+ADIS16470_IMU.CalibrationTime
+new_cal_time)
+Configures calibration time.
+Parameters:
+new_cal_time
+- New calibration time
+Returns:
+0 if success, 1 if no change, 2 if error.
+configDecRate
+public
+int
+configDecRate
+(int decimationRate)
+Configures the decimation rate of the IMU.
+Parameters:
+decimationRate
+- The new decimation value.
+Returns:
+0 if success, 1 if no change, 2 if error.
+calibrate
+public
+void
+calibrate
+()
+Calibrate the gyro. It's important to make sure that the robot is not moving while the
+ calibration is in progress, this is typically done when the robot is first turned on while it's
+ sitting at rest before the match starts.
+close
+public
+void
+close
+()
+Delete (free) the spi port used for the IMU.
+Specified by:
+close
+in interface
+AutoCloseable
+reset
+public
+void
+reset
+()
+Reset the gyro.
+Resets the gyro accumulations to a heading of zero. This can be used if there is significant
+ drift in the gyro and it needs to be recalibrated after running.
+setGyroAngle
+public
+void
+setGyroAngle
+(
+ADIS16470_IMU.IMUAxis
+axis,
+ double angle)
+Allow the designated gyro angle to be set to a given value. This may happen with unread values
+ in the buffer, it is suggested that the IMU is not moving when this method is run.
+Parameters:
+axis
+- IMUAxis that will be changed
+angle
+- A double in degrees (CCW positive)
+setGyroAngleX
+public
+void
+setGyroAngleX
+(double angle)
+Allow the gyro angle X to be set to a given value. This may happen with unread values in the
+ buffer, it is suggested that the IMU is not moving when this method is run.
+Parameters:
+angle
+- A double in degrees (CCW positive)
+setGyroAngleY
+public
+void
+setGyroAngleY
+(double angle)
+Allow the gyro angle Y to be set to a given value. This may happen with unread values in the
+ buffer, it is suggested that the IMU is not moving when this method is run.
+Parameters:
+angle
+- A double in degrees (CCW positive)
+setGyroAngleZ
+public
+void
+setGyroAngleZ
+(double angle)
+Allow the gyro angle Z to be set to a given value. This may happen with unread values in the
+ buffer, it is suggested that the IMU is not moving when this method is run.
+Parameters:
+angle
+- A double in degrees (CCW positive)
+getAngle
+public
+double
+getAngle
+(
+ADIS16470_IMU.IMUAxis
+axis)
+Returns the axis angle in degrees (CCW positive).
+Parameters:
+axis
+- The IMUAxis whose angle to return.
+Returns:
+The axis angle in degrees (CCW positive).
+getAngle
+public
+double
+getAngle
+()
+Returns the Yaw axis angle in degrees (CCW positive).
+Returns:
+The Yaw axis angle in degrees (CCW positive).
+getRate
+public
+double
+getRate
+(
+ADIS16470_IMU.IMUAxis
+axis)
+Returns the axis angular rate in degrees per second (CCW positive).
+Parameters:
+axis
+- The IMUAxis whose rate to return.
+Returns:
+Axis angular rate in degrees per second (CCW positive).
+getRate
+public
+double
+getRate
+()
+Returns the Yaw axis angular rate in degrees per second (CCW positive).
+Returns:
+Yaw axis angular rate in degrees per second (CCW positive).
+getYawAxis
+public
+ADIS16470_IMU.IMUAxis
+getYawAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the yaw axis.
+Returns:
+IMUAxis Yaw Axis
+getPitchAxis
+public
+ADIS16470_IMU.IMUAxis
+getPitchAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the pitch axis.
+Returns:
+IMUAxis Pitch Axis
+getRollAxis
+public
+ADIS16470_IMU.IMUAxis
+getRollAxis
+()
+Returns which axis, kX, kY, or kZ, is set to the roll axis.
+Returns:
+IMUAxis Roll Axis
+getAccelX
+public
+double
+getAccelX
+()
+Returns the acceleration in the X axis in meters per second squared.
+Returns:
+The acceleration in the X axis in meters per second squared.
+getAccelY
+public
+double
+getAccelY
+()
+Returns the acceleration in the Y axis in meters per second squared.
+Returns:
+The acceleration in the Y axis in meters per second squared.
+getAccelZ
+public
+double
+getAccelZ
+()
+Returns the acceleration in the Z axis in meters per second squared.
+Returns:
+The acceleration in the Z axis in meters per second squared.
+getXComplementaryAngle
+public
+double
+getXComplementaryAngle
+()
+Returns the complementary angle around the X axis computed from accelerometer and gyro rate
+ measurements.
+Returns:
+The X-axis complementary angle in degrees.
+getYComplementaryAngle
+public
+double
+getYComplementaryAngle
+()
+Returns the complementary angle around the Y axis computed from accelerometer and gyro rate
+ measurements.
+Returns:
+The Y-axis complementary angle in degrees.
+getXFilteredAccelAngle
+public
+double
+getXFilteredAccelAngle
+()
+Returns the X-axis filtered acceleration angle in degrees.
+Returns:
+The X-axis filtered acceleration angle in degrees.
+getYFilteredAccelAngle
+public
+double
+getYFilteredAccelAngle
+()
+Returns the Y-axis filtered acceleration angle in degrees.
+Returns:
+The Y-axis filtered acceleration angle in degrees.
+getPort
+public
+int
+getPort
+()
+Gets the SPI port number.
+Returns:
+The SPI port number.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

@@ -1,0 +1,688 @@
+Package
+edu.wpi.first.wpilibj
+Class PneumaticsControlModule
+java.lang.Object
+edu.wpi.first.wpilibj.PneumaticsControlModule
+All Implemented Interfaces:
+PneumaticsBase
+,
+AutoCloseable
+public class
+PneumaticsControlModule
+extends
+Object
+implements
+PneumaticsBase
+Module class for controlling a Cross The Road Electronics Pneumatics Control Module.
+Constructor Summary
+Constructors
+Constructor
+Description
+PneumaticsControlModule
+()
+Constructs a PneumaticsControlModule with the default ID (0).
+PneumaticsControlModule
+(int module)
+Constructs a PneumaticsControlModule.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+int
+checkAndReserveSolenoids
+(int mask)
+Check to see if the solenoids marked in the bitmask can be reserved, and if so, reserve them.
+boolean
+checkSolenoidChannel
+(int channel)
+Check if a solenoid channel is valid.
+void
+clearAllStickyFaults
+()
+Clears all sticky faults on this device.
+void
+close
+()
+void
+disableCompressor
+()
+Disables the compressor.
+void
+enableCompressorAnalog
+(double minPressure,
+ double maxPressure)
+Enables the compressor in digital mode.
+void
+enableCompressorDigital
+()
+Enables the compressor in digital mode using the digital pressure switch.
+void
+enableCompressorHybrid
+(double minPressure,
+ double maxPressure)
+Enables the compressor in digital mode.
+void
+fireOneShot
+(int index)
+Fire a single solenoid shot.
+double
+getAnalogVoltage
+(int channel)
+Unsupported by the CTRE PCM.
+boolean
+getCompressor
+()
+Returns whether the compressor is active or not.
+CompressorConfigType
+getCompressorConfigType
+()
+Returns the active compressor configuration.
+double
+getCompressorCurrent
+()
+Returns the current drawn by the compressor in amps.
+boolean
+getCompressorCurrentTooHighFault
+()
+Return whether the compressor current is currently too high.
+boolean
+getCompressorCurrentTooHighStickyFault
+()
+Returns whether the compressor current has been too high since sticky faults were last cleared.
+boolean
+getCompressorNotConnectedFault
+()
+Returns whether the compressor is currently disconnected.
+boolean
+getCompressorNotConnectedStickyFault
+()
+Returns whether the compressor has been disconnected since sticky faults were last cleared.
+boolean
+getCompressorShortedFault
+()
+Returns whether the compressor is currently shorted.
+boolean
+getCompressorShortedStickyFault
+()
+Returns whether the compressor has been shorted since sticky faults were last cleared.
+int
+getModuleNumber
+()
+Get module number for this module.
+double
+getPressure
+(int channel)
+Unsupported by the CTRE PCM.
+boolean
+getPressureSwitch
+()
+Returns the state of the pressure switch.
+int
+getSolenoidDisabledList
+()
+Get a bitmask of disabled solenoids.
+int
+getSolenoids
+()
+Gets a bitmask of solenoid values.
+boolean
+getSolenoidVoltageFault
+()
+Returns whether the solenoid is currently reporting a voltage fault.
+boolean
+getSolenoidVoltageStickyFault
+()
+Returns whether the solenoid has reported a voltage fault since sticky faults were last
+ cleared.
+Compressor
+makeCompressor
+()
+Create a compressor object.
+DoubleSolenoid
+makeDoubleSolenoid
+(int forwardChannel,
+ int reverseChannel)
+Create a double solenoid object for the specified channels.
+Solenoid
+makeSolenoid
+(int channel)
+Create a solenoid object for the specified channel.
+boolean
+reserveCompressor
+()
+Reserve the compressor.
+void
+setOneShotDuration
+(int index,
+ int durMs)
+Set the duration for a single solenoid shot.
+void
+setSolenoids
+(int mask,
+ int values)
+Sets solenoids on a pneumatics module.
+void
+unreserveCompressor
+()
+Unreserve the compressor.
+void
+unreserveSolenoids
+(int mask)
+Unreserve the solenoids marked in the bitmask.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+PneumaticsControlModule
+public
+PneumaticsControlModule
+()
+Constructs a PneumaticsControlModule with the default ID (0).
+PneumaticsControlModule
+public
+PneumaticsControlModule
+(int module)
+Constructs a PneumaticsControlModule.
+Parameters:
+module
+- module number to construct
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+Specified by:
+close
+in interface
+PneumaticsBase
+getCompressor
+public
+boolean
+getCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Returns whether the compressor is active or not.
+Specified by:
+getCompressor
+in interface
+PneumaticsBase
+Returns:
+True if the compressor is on - otherwise false.
+getPressureSwitch
+public
+boolean
+getPressureSwitch
+()
+Description copied from interface:
+PneumaticsBase
+Returns the state of the pressure switch.
+Specified by:
+getPressureSwitch
+in interface
+PneumaticsBase
+Returns:
+True if pressure switch indicates that the system is not full, otherwise false.
+getCompressorCurrent
+public
+double
+getCompressorCurrent
+()
+Description copied from interface:
+PneumaticsBase
+Returns the current drawn by the compressor in amps.
+Specified by:
+getCompressorCurrent
+in interface
+PneumaticsBase
+Returns:
+The current drawn by the compressor.
+getCompressorCurrentTooHighFault
+public
+boolean
+getCompressorCurrentTooHighFault
+()
+Return whether the compressor current is currently too high.
+Returns:
+True if the compressor current is too high, otherwise false.
+See Also:
+getCompressorCurrentTooHighStickyFault()
+getCompressorCurrentTooHighStickyFault
+public
+boolean
+getCompressorCurrentTooHighStickyFault
+()
+Returns whether the compressor current has been too high since sticky faults were last cleared.
+ This fault is persistent and can be cleared by
+clearAllStickyFaults()
+Returns:
+True if the compressor current has been too high since sticky faults were last cleared.
+See Also:
+getCompressorCurrentTooHighFault()
+getCompressorShortedFault
+public
+boolean
+getCompressorShortedFault
+()
+Returns whether the compressor is currently shorted.
+Returns:
+True if the compressor is currently shorted, otherwise false.
+See Also:
+getCompressorShortedStickyFault()
+getCompressorShortedStickyFault
+public
+boolean
+getCompressorShortedStickyFault
+()
+Returns whether the compressor has been shorted since sticky faults were last cleared. This
+ fault is persistent and can be cleared by
+clearAllStickyFaults()
+Returns:
+True if the compressor has been shorted since sticky faults were last cleared,
+     otherwise false.
+See Also:
+getCompressorShortedFault()
+getCompressorNotConnectedFault
+public
+boolean
+getCompressorNotConnectedFault
+()
+Returns whether the compressor is currently disconnected.
+Returns:
+True if compressor is currently disconnected, otherwise false.
+See Also:
+getCompressorNotConnectedStickyFault()
+getCompressorNotConnectedStickyFault
+public
+boolean
+getCompressorNotConnectedStickyFault
+()
+Returns whether the compressor has been disconnected since sticky faults were last cleared.
+ This fault is persistent and can be cleared by
+clearAllStickyFaults()
+Returns:
+True if the compressor has been disconnected since sticky faults were last cleared,
+     otherwise false.
+See Also:
+getCompressorNotConnectedFault()
+setSolenoids
+public
+void
+setSolenoids
+(int mask,
+ int values)
+Description copied from interface:
+PneumaticsBase
+Sets solenoids on a pneumatics module.
+Specified by:
+setSolenoids
+in interface
+PneumaticsBase
+Parameters:
+mask
+- Bitmask indicating which solenoids to set. The LSB represents solenoid 0.
+values
+- Bitmask indicating the desired states of the solenoids. The LSB represents
+     solenoid 0.
+getSolenoids
+public
+int
+getSolenoids
+()
+Description copied from interface:
+PneumaticsBase
+Gets a bitmask of solenoid values.
+Specified by:
+getSolenoids
+in interface
+PneumaticsBase
+Returns:
+Bitmask containing the state of the solenoids. The LSB represents solenoid 0.
+getModuleNumber
+public
+int
+getModuleNumber
+()
+Description copied from interface:
+PneumaticsBase
+Get module number for this module.
+Specified by:
+getModuleNumber
+in interface
+PneumaticsBase
+Returns:
+module number
+getSolenoidDisabledList
+public
+int
+getSolenoidDisabledList
+()
+Description copied from interface:
+PneumaticsBase
+Get a bitmask of disabled solenoids.
+Specified by:
+getSolenoidDisabledList
+in interface
+PneumaticsBase
+Returns:
+Bitmask indicating disabled solenoids. The LSB represents solenoid 0.
+getSolenoidVoltageFault
+public
+boolean
+getSolenoidVoltageFault
+()
+Returns whether the solenoid is currently reporting a voltage fault.
+Returns:
+True if solenoid is reporting a fault, otherwise false.
+See Also:
+getSolenoidVoltageStickyFault()
+getSolenoidVoltageStickyFault
+public
+boolean
+getSolenoidVoltageStickyFault
+()
+Returns whether the solenoid has reported a voltage fault since sticky faults were last
+ cleared. This fault is persistent and can be cleared by ClearAllStickyFaults()
+Returns:
+True if solenoid is reporting a fault, otherwise false.
+See Also:
+getSolenoidVoltageFault()
+clearAllStickyFaults
+public
+void
+clearAllStickyFaults
+()
+Clears all sticky faults on this device.
+fireOneShot
+public
+void
+fireOneShot
+(int index)
+Description copied from interface:
+PneumaticsBase
+Fire a single solenoid shot.
+Specified by:
+fireOneShot
+in interface
+PneumaticsBase
+Parameters:
+index
+- solenoid index
+setOneShotDuration
+public
+void
+setOneShotDuration
+(int index,
+ int durMs)
+Description copied from interface:
+PneumaticsBase
+Set the duration for a single solenoid shot.
+Specified by:
+setOneShotDuration
+in interface
+PneumaticsBase
+Parameters:
+index
+- solenoid index
+durMs
+- shot duration
+checkSolenoidChannel
+public
+boolean
+checkSolenoidChannel
+(int channel)
+Description copied from interface:
+PneumaticsBase
+Check if a solenoid channel is valid.
+Specified by:
+checkSolenoidChannel
+in interface
+PneumaticsBase
+Parameters:
+channel
+- Channel to check
+Returns:
+True if channel exists
+checkAndReserveSolenoids
+public
+int
+checkAndReserveSolenoids
+(int mask)
+Description copied from interface:
+PneumaticsBase
+Check to see if the solenoids marked in the bitmask can be reserved, and if so, reserve them.
+Specified by:
+checkAndReserveSolenoids
+in interface
+PneumaticsBase
+Parameters:
+mask
+- The bitmask of solenoids to reserve. The LSB represents solenoid 0.
+Returns:
+0 if successful; mask of solenoids that couldn't be allocated otherwise
+unreserveSolenoids
+public
+void
+unreserveSolenoids
+(int mask)
+Description copied from interface:
+PneumaticsBase
+Unreserve the solenoids marked in the bitmask.
+Specified by:
+unreserveSolenoids
+in interface
+PneumaticsBase
+Parameters:
+mask
+- The bitmask of solenoids to unreserve. The LSB represents solenoid 0.
+makeSolenoid
+public
+Solenoid
+makeSolenoid
+(int channel)
+Description copied from interface:
+PneumaticsBase
+Create a solenoid object for the specified channel.
+Specified by:
+makeSolenoid
+in interface
+PneumaticsBase
+Parameters:
+channel
+- solenoid channel
+Returns:
+Solenoid object
+makeDoubleSolenoid
+public
+DoubleSolenoid
+makeDoubleSolenoid
+(int forwardChannel,
+ int reverseChannel)
+Description copied from interface:
+PneumaticsBase
+Create a double solenoid object for the specified channels.
+Specified by:
+makeDoubleSolenoid
+in interface
+PneumaticsBase
+Parameters:
+forwardChannel
+- solenoid channel for forward
+reverseChannel
+- solenoid channel for reverse
+Returns:
+DoubleSolenoid object
+makeCompressor
+public
+Compressor
+makeCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Create a compressor object.
+Specified by:
+makeCompressor
+in interface
+PneumaticsBase
+Returns:
+Compressor object
+reserveCompressor
+public
+boolean
+reserveCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Reserve the compressor.
+Specified by:
+reserveCompressor
+in interface
+PneumaticsBase
+Returns:
+true if successful; false if compressor already reserved
+unreserveCompressor
+public
+void
+unreserveCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Unreserve the compressor.
+Specified by:
+unreserveCompressor
+in interface
+PneumaticsBase
+disableCompressor
+public
+void
+disableCompressor
+()
+Disables the compressor. The compressor will not turn on until
+enableCompressorDigital()
+is called.
+Specified by:
+disableCompressor
+in interface
+PneumaticsBase
+enableCompressorDigital
+public
+void
+enableCompressorDigital
+()
+Description copied from interface:
+PneumaticsBase
+Enables the compressor in digital mode using the digital pressure switch. The compressor will
+ turn on when the pressure switch indicates that the system is not full, and will turn off when
+ the pressure switch indicates that the system is full.
+Specified by:
+enableCompressorDigital
+in interface
+PneumaticsBase
+enableCompressorAnalog
+public
+void
+enableCompressorAnalog
+(double minPressure,
+ double maxPressure)
+Enables the compressor in digital mode. Analog mode is unsupported by the CTRE PCM.
+Specified by:
+enableCompressorAnalog
+in interface
+PneumaticsBase
+Parameters:
+minPressure
+- Unsupported.
+maxPressure
+- Unsupported.
+See Also:
+enableCompressorDigital()
+enableCompressorHybrid
+public
+void
+enableCompressorHybrid
+(double minPressure,
+ double maxPressure)
+Enables the compressor in digital mode. Hybrid mode is unsupported by the CTRE PCM.
+Specified by:
+enableCompressorHybrid
+in interface
+PneumaticsBase
+Parameters:
+minPressure
+- Unsupported.
+maxPressure
+- Unsupported.
+See Also:
+enableCompressorDigital()
+getCompressorConfigType
+public
+CompressorConfigType
+getCompressorConfigType
+()
+Description copied from interface:
+PneumaticsBase
+Returns the active compressor configuration.
+Specified by:
+getCompressorConfigType
+in interface
+PneumaticsBase
+Returns:
+The active compressor configuration.
+getAnalogVoltage
+public
+double
+getAnalogVoltage
+(int channel)
+Unsupported by the CTRE PCM.
+Specified by:
+getAnalogVoltage
+in interface
+PneumaticsBase
+Parameters:
+channel
+- Unsupported.
+Returns:
+0
+getPressure
+public
+double
+getPressure
+(int channel)
+Unsupported by the CTRE PCM.
+Specified by:
+getPressure
+in interface
+PneumaticsBase
+Parameters:
+channel
+- Unsupported.
+Returns:
+0

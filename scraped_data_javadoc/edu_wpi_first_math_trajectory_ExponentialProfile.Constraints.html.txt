@@ -1,0 +1,134 @@
+Package
+edu.wpi.first.math.trajectory
+Class ExponentialProfile.Constraints
+java.lang.Object
+edu.wpi.first.math.trajectory.ExponentialProfile.Constraints
+Enclosing class:
+ExponentialProfile
+public static final class
+ExponentialProfile.Constraints
+extends
+Object
+Profile constraints.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final double
+A
+The State-Space 1x1 system matrix.
+final double
+B
+The State-Space 1x1 input matrix.
+final double
+maxInput
+Maximum unsigned input voltage.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+ExponentialProfile.Constraints
+fromCharacteristics
+(double maxInput,
+ double kV,
+ double kA)
+Constructs constraints for an ExponentialProfile from characteristics.
+static
+ExponentialProfile.Constraints
+fromStateSpace
+(double maxInput,
+ double A,
+ double B)
+Constructs constraints for an ExponentialProfile from State-Space parameters.
+double
+maxVelocity
+()
+Computes the max achievable velocity for an Exponential Profile.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+maxInput
+public final
+double
+maxInput
+Maximum unsigned input voltage.
+A
+public final
+double
+A
+The State-Space 1x1 system matrix.
+B
+public final
+double
+B
+The State-Space 1x1 input matrix.
+Method Details
+maxVelocity
+public
+double
+maxVelocity
+()
+Computes the max achievable velocity for an Exponential Profile.
+Returns:
+The steady-state velocity achieved by this profile.
+fromCharacteristics
+public static
+ExponentialProfile.Constraints
+fromCharacteristics
+(double maxInput,
+ double kV,
+ double kA)
+Constructs constraints for an ExponentialProfile from characteristics.
+Parameters:
+maxInput
+- maximum unsigned input voltage
+kV
+- The velocity gain.
+kA
+- The acceleration gain.
+Returns:
+The Constraints object.
+fromStateSpace
+public static
+ExponentialProfile.Constraints
+fromStateSpace
+(double maxInput,
+ double A,
+ double B)
+Constructs constraints for an ExponentialProfile from State-Space parameters.
+Parameters:
+maxInput
+- maximum unsigned input voltage
+A
+- The State-Space 1x1 system matrix.
+B
+- The State-Space 1x1 input matrix.
+Returns:
+The Constraints object.

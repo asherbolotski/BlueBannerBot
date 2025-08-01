@@ -1,0 +1,70 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.HALUtil;
+008
+009
+/** Runtime type. */
+010
+public enum RuntimeType {
+011
+/** roboRIO 1.0. */
+012
+kRoboRIO(HALUtil.RUNTIME_ROBORIO),
+013
+/** roboRIO 2.0. */
+014
+kRoboRIO2(HALUtil.RUNTIME_ROBORIO2),
+015
+/** Simulation runtime. */
+016
+kSimulation(HALUtil.RUNTIME_SIMULATION);
+017
+018
+/** RuntimeType value. */
+019
+public final int value;
+020
+021
+RuntimeType(int value) {
+022
+this.value = value;
+023
+}
+024
+025
+/**
+026
+* Construct a runtime type from an int value.
+027
+*
+028
+* @param type Runtime type as int
+029
+* @return Matching runtime type
+030
+*/
+031
+public static RuntimeType getValue(int type) {
+032
+return switch (type) {
+033
+case HALUtil.RUNTIME_ROBORIO -> RuntimeType.kRoboRIO;
+034
+case HALUtil.RUNTIME_ROBORIO2 -> RuntimeType.kRoboRIO2;
+035
+default -> RuntimeType.kSimulation;
+036
+};
+037
+}
+038
+}

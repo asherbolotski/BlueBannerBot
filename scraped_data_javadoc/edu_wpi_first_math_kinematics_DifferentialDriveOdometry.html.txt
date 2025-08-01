@@ -1,0 +1,282 @@
+Package
+edu.wpi.first.math.kinematics
+Class DifferentialDriveOdometry
+java.lang.Object
+edu.wpi.first.math.kinematics.Odometry
+<
+DifferentialDriveWheelPositions
+>
+edu.wpi.first.math.kinematics.DifferentialDriveOdometry
+public class
+DifferentialDriveOdometry
+extends
+Odometry
+<
+DifferentialDriveWheelPositions
+>
+Class for differential drive odometry. Odometry allows you to track the robot's position on the
+ field over the course of a match using readings from 2 encoders and a gyroscope.
+Teams can use odometry during the autonomous period for complex tasks like path following.
+ Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+It is important that you reset your encoders to zero before using this class. Any subsequent
+ pose resets also require the encoders to be reset to zero.
+Constructor Summary
+Constructors
+Constructor
+Description
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters)
+Constructs a DifferentialDriveOdometry object.
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters,
+Pose2d
+initialPoseMeters)
+Constructs a DifferentialDriveOdometry object.
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+Distance
+leftDistance,
+Distance
+rightDistance)
+Constructs a DifferentialDriveOdometry object.
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+Distance
+leftDistance,
+Distance
+rightDistance,
+Pose2d
+initialPoseMeters)
+Constructs a DifferentialDriveOdometry object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+resetPosition
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters,
+Pose2d
+poseMeters)
+Resets the robot's position on the field.
+void
+resetPosition
+(
+Rotation2d
+gyroAngle,
+Distance
+leftDistance,
+Distance
+rightDistance,
+Pose2d
+poseMeters)
+Resets the robot's position on the field.
+Pose2d
+update
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters)
+Updates the robot position on the field using distance measurements from encoders.
+Methods inherited from class edu.wpi.first.math.kinematics.
+Odometry
+getPoseMeters
+,
+resetPose
+,
+resetPosition
+,
+resetRotation
+,
+resetTranslation
+,
+update
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DifferentialDriveOdometry
+public
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters,
+Pose2d
+initialPoseMeters)
+Constructs a DifferentialDriveOdometry object.
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+leftDistanceMeters
+- The distance traveled by the left encoder.
+rightDistanceMeters
+- The distance traveled by the right encoder.
+initialPoseMeters
+- The starting position of the robot on the field.
+DifferentialDriveOdometry
+public
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+Distance
+leftDistance,
+Distance
+rightDistance,
+Pose2d
+initialPoseMeters)
+Constructs a DifferentialDriveOdometry object.
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+leftDistance
+- The distance traveled by the left encoder.
+rightDistance
+- The distance traveled by the right encoder.
+initialPoseMeters
+- The starting position of the robot on the field.
+DifferentialDriveOdometry
+public
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters)
+Constructs a DifferentialDriveOdometry object.
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+leftDistanceMeters
+- The distance traveled by the left encoder.
+rightDistanceMeters
+- The distance traveled by the right encoder.
+DifferentialDriveOdometry
+public
+DifferentialDriveOdometry
+(
+Rotation2d
+gyroAngle,
+Distance
+leftDistance,
+Distance
+rightDistance)
+Constructs a DifferentialDriveOdometry object.
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+leftDistance
+- The distance traveled by the left encoder.
+rightDistance
+- The distance traveled by the right encoder.
+Method Details
+resetPosition
+public
+void
+resetPosition
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters,
+Pose2d
+poseMeters)
+Resets the robot's position on the field.
+The gyroscope angle does not need to be reset here on the user's robot code. The library
+ automatically takes care of offsetting the gyro angle.
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+leftDistanceMeters
+- The distance traveled by the left encoder.
+rightDistanceMeters
+- The distance traveled by the right encoder.
+poseMeters
+- The position on the field that your robot is at.
+resetPosition
+public
+void
+resetPosition
+(
+Rotation2d
+gyroAngle,
+Distance
+leftDistance,
+Distance
+rightDistance,
+Pose2d
+poseMeters)
+Resets the robot's position on the field.
+The gyroscope angle does not need to be reset here on the user's robot code. The library
+ automatically takes care of offsetting the gyro angle.
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+leftDistance
+- The distance traveled by the left encoder.
+rightDistance
+- The distance traveled by the right encoder.
+poseMeters
+- The position on the field that your robot is at.
+update
+public
+Pose2d
+update
+(
+Rotation2d
+gyroAngle,
+ double leftDistanceMeters,
+ double rightDistanceMeters)
+Updates the robot position on the field using distance measurements from encoders. This method
+ is more numerically accurate than using velocities to integrate the pose and is also
+ advantageous for teams that are using lower CPR encoders.
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+leftDistanceMeters
+- The distance traveled by the left encoder.
+rightDistanceMeters
+- The distance traveled by the right encoder.
+Returns:
+The new pose of the robot.

@@ -1,0 +1,301 @@
+Package
+edu.wpi.first.units
+Class AngleUnit
+java.lang.Object
+edu.wpi.first.units.Unit
+edu.wpi.first.units.AngleUnit
+public final class
+AngleUnit
+extends
+Unit
+Unit of angular dimension.
+This is the base type for units of angular dimension. It is also used to specify the dimension
+ for
+Measure
+:
+Measure<AngleUnit>
+.
+Actual units (such as
+Units.Degrees
+and
+Units.Radians
+) can be found in the
+Units
+class.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+convertFrom
+(double magnitude,
+AngleUnit
+otherUnit)
+Converts a measurement value in terms of another angle unit to this unit.
+AngleUnit
+getBaseUnit
+()
+Gets the base unit of measurement that this unit is derived from.
+MutAngle
+mutable
+(double initialMagnitude)
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit.
+Angle
+of
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+Angle
+ofBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+Angle
+one
+()
+Gets a measure with a magnitude of 1.0 in terms of this unit.
+AngularVelocityUnit
+per
+(
+TimeUnit
+period)
+Combines this unit with a unit of time.
+<U extends
+Unit
+>
+PerUnit
+<
+AngleUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+Angle
+zero
+()
+Gets a measure of zero magnitude in terms of this unit.
+Methods inherited from class edu.wpi.first.units.
+Unit
+equals
+,
+equivalent
+,
+fromBaseUnits
+,
+getConverterFromBase
+,
+getConverterToBase
+,
+hashCode
+,
+isBaseUnit
+,
+name
+,
+symbol
+,
+toBaseUnits
+,
+toString
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getBaseUnit
+public
+AngleUnit
+getBaseUnit
+()
+Description copied from class:
+Unit
+Gets the base unit of measurement that this unit is derived from. If the unit is the base unit,
+ the unit will be returned.
+NOTE:
+Subclasses
+must
+override this method to provide the
+ correct return type. Failing to do say will make unit combinations that use it break at
+ runtime!
+Unit baseUnit = new Unit(null, ...);
+   baseUnit.getBaseUnit(); // returns baseUnit
+
+   Unit derivedUnit = new Unit(baseUnit, ...);
+   derivedUnit.getBaseUnit(); // returns baseUnit
+Overrides:
+getBaseUnit
+in class
+Unit
+Returns:
+the base unit
+of
+public
+Angle
+of
+(double magnitude)
+Description copied from class:
+Unit
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Specified by:
+of
+in class
+Unit
+Parameters:
+magnitude
+- the magnitude of the measurement.
+Returns:
+the measurement object
+ofBaseUnits
+public
+Angle
+ofBaseUnits
+(double baseUnitMagnitude)
+Description copied from class:
+Unit
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Specified by:
+ofBaseUnits
+in class
+Unit
+Parameters:
+baseUnitMagnitude
+- the magnitude in terms of the base unit
+Returns:
+the measurement object
+mutable
+public
+MutAngle
+mutable
+(double initialMagnitude)
+Description copied from class:
+Unit
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit. Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Specified by:
+mutable
+in class
+Unit
+Parameters:
+initialMagnitude
+- the initial magnitude of the mutable measurement
+Returns:
+the mutable measurement object
+per
+public
+AngularVelocityUnit
+per
+(
+TimeUnit
+period)
+Description copied from class:
+Unit
+Combines this unit with a unit of time. This often - but not always - results in a velocity.
+ Subclasses should sharpen the return type to be unit-specific.
+Specified by:
+per
+in class
+Unit
+Parameters:
+period
+- the unit of time
+Returns:
+the combined unit
+per
+public
+<U extends
+Unit
+>
+PerUnit
+<
+AngleUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+Type Parameters:
+U
+- the type of the other unit
+Parameters:
+other
+- the other unit
+Returns:
+the ratio unit
+convertFrom
+public
+double
+convertFrom
+(double magnitude,
+AngleUnit
+otherUnit)
+Converts a measurement value in terms of another angle unit to this unit.
+Parameters:
+magnitude
+- the magnitude of the measurement in terms of the other angle unit
+otherUnit
+- the other angle unit
+Returns:
+the value of the measurement in terms of this unit
+zero
+public
+Angle
+zero
+()
+Description copied from class:
+Unit
+Gets a measure of zero magnitude in terms of this unit. The returned object is guaranteed to be
+ of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override this
+ method to sharpen the return type.
+Overrides:
+zero
+in class
+Unit
+Returns:
+a zero-magnitude measure of this unit
+one
+public
+Angle
+one
+()
+Description copied from class:
+Unit
+Gets a measure with a magnitude of 1.0 in terms of this unit. The returned object is guaranteed
+ to be of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override
+ this method to sharpen the return type.
+Overrides:
+one
+in class
+Unit
+Returns:
+a measure of magnitude 1.0 in terms of this unit

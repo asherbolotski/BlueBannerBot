@@ -1,0 +1,608 @@
+Package
+edu.wpi.first.math.system
+Class LinearSystem<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.system.LinearSystem<States,
+Inputs,
+Outputs>
+Type Parameters:
+States
+- Number of states.
+Inputs
+- Number of inputs.
+Outputs
+- Number of outputs.
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+LinearSystem
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+A plant defined using state-space notation.
+A plant is a mathematical model of a system's dynamics.
+For more on the underlying math, read
+ https://file.tavsys.net/control/controls-engineering-in-frc.pdf.
+Constructor Summary
+Constructors
+Constructor
+Description
+LinearSystem
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+Outputs
+,
+States
+> C,
+Matrix
+<
+Outputs
+,
+Inputs
+> D)
+Construct a new LinearSystem from the four system matrices.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Matrix
+<
+States
+,
+N1
+>
+calculateX
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+Inputs
+,
+N1
+> clampedU,
+ double dtSeconds)
+Computes the new x given the old x and the control input.
+Matrix
+<
+Outputs
+,
+N1
+>
+calculateY
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+Inputs
+,
+N1
+> clampedU)
+Computes the new y given the control input.
+Matrix
+<
+States
+,
+States
+>
+getA
+()
+Returns the system matrix A.
+double
+getA
+(int row,
+ int col)
+Returns an element of the system matrix A.
+Matrix
+<
+States
+,
+Inputs
+>
+getB
+()
+Returns the input matrix B.
+double
+getB
+(int row,
+ int col)
+Returns an element of the input matrix B.
+Matrix
+<
+Outputs
+,
+States
+>
+getC
+()
+Returns the output matrix C.
+double
+getC
+(int row,
+ int col)
+Returns an element of the output matrix C.
+Matrix
+<
+Outputs
+,
+Inputs
+>
+getD
+()
+Returns the feedthrough matrix D.
+double
+getD
+(int row,
+ int col)
+Returns an element of the feedthrough matrix D.
+static <States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+LinearSystemProto
+<States,
+Inputs,
+Outputs>
+getProto
+(
+Nat
+<States> states,
+Nat
+<Inputs> inputs,
+Nat
+<Outputs> outputs)
+Creates an implementation of the
+Protobuf
+interface for linear systems.
+static <States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+LinearSystemStruct
+<States,
+Inputs,
+Outputs>
+getStruct
+(
+Nat
+<States> states,
+Nat
+<Inputs> inputs,
+Nat
+<Outputs> outputs)
+Creates an implementation of the
+Struct
+interface for linear systems.
+LinearSystem
+<
+States
+,
+Inputs
+,
+? extends
+Num
+>
+slice
+(int... outputIndices)
+Returns the LinearSystem with the outputs listed in outputIndices.
+String
+toString
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LinearSystem
+public
+LinearSystem
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+Outputs
+,
+States
+> C,
+Matrix
+<
+Outputs
+,
+Inputs
+> D)
+Construct a new LinearSystem from the four system matrices.
+Parameters:
+A
+- The system matrix A.
+B
+- The input matrix B.
+C
+- The output matrix C.
+D
+- The feedthrough matrix D.
+Throws:
+IllegalArgumentException
+- if any matrix element isn't finite.
+Method Details
+getA
+public
+Matrix
+<
+States
+,
+States
+>
+getA
+()
+Returns the system matrix A.
+Returns:
+the system matrix A.
+getA
+public
+double
+getA
+(int row,
+ int col)
+Returns an element of the system matrix A.
+Parameters:
+row
+- Row of A.
+col
+- Column of A.
+Returns:
+the system matrix A at (i, j).
+getB
+public
+Matrix
+<
+States
+,
+Inputs
+>
+getB
+()
+Returns the input matrix B.
+Returns:
+the input matrix B.
+getB
+public
+double
+getB
+(int row,
+ int col)
+Returns an element of the input matrix B.
+Parameters:
+row
+- Row of B.
+col
+- Column of B.
+Returns:
+The value of the input matrix B at (i, j).
+getC
+public
+Matrix
+<
+Outputs
+,
+States
+>
+getC
+()
+Returns the output matrix C.
+Returns:
+Output matrix C.
+getC
+public
+double
+getC
+(int row,
+ int col)
+Returns an element of the output matrix C.
+Parameters:
+row
+- Row of C.
+col
+- Column of C.
+Returns:
+the double value of C at the given position.
+getD
+public
+Matrix
+<
+Outputs
+,
+Inputs
+>
+getD
+()
+Returns the feedthrough matrix D.
+Returns:
+the feedthrough matrix D.
+getD
+public
+double
+getD
+(int row,
+ int col)
+Returns an element of the feedthrough matrix D.
+Parameters:
+row
+- Row of D.
+col
+- Column of D.
+Returns:
+The feedthrough matrix D at (i, j).
+calculateX
+public
+Matrix
+<
+States
+,
+N1
+>
+calculateX
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+Inputs
+,
+N1
+> clampedU,
+ double dtSeconds)
+Computes the new x given the old x and the control input.
+This is used by state observers directly to run updates based on state estimate.
+Parameters:
+x
+- The current state.
+clampedU
+- The control input.
+dtSeconds
+- Timestep for model update.
+Returns:
+the updated x.
+calculateY
+public
+Matrix
+<
+Outputs
+,
+N1
+>
+calculateY
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+Inputs
+,
+N1
+> clampedU)
+Computes the new y given the control input.
+This is used by state observers directly to run updates based on state estimate.
+Parameters:
+x
+- The current state.
+clampedU
+- The control input.
+Returns:
+the updated output matrix Y.
+slice
+public
+LinearSystem
+<
+States
+,
+Inputs
+,
+? extends
+Num
+>
+slice
+(int... outputIndices)
+Returns the LinearSystem with the outputs listed in outputIndices.
+This is used by state observers such as the Kalman Filter.
+Parameters:
+outputIndices
+- the list of output indices to include in the sliced system.
+Returns:
+the sliced LinearSystem with outputs set to row vectors of LinearSystem.
+Throws:
+IllegalArgumentException
+- if any outputIndices are outside the range of system outputs.
+IllegalArgumentException
+- if number of outputIndices exceeds the number of system
+     outputs.
+IllegalArgumentException
+- if duplication exists in outputIndices.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+getProto
+public static
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+LinearSystemProto
+<States,
+Inputs,
+Outputs>
+getProto
+(
+Nat
+<States> states,
+Nat
+<Inputs> inputs,
+Nat
+<Outputs> outputs)
+Creates an implementation of the
+Protobuf
+interface for linear systems.
+Type Parameters:
+States
+- The number of states of the linear systems this serializer processes.
+Inputs
+- The number of inputs of the linear systems this serializer processes.
+Outputs
+- The number of outputs of the linear systems this serializer processes.
+Parameters:
+states
+- The number of states of the linear systems this serializer processes.
+inputs
+- The number of inputs of the linear systems this serializer processes.
+outputs
+- The number of outputs of the linear systems this serializer processes.
+Returns:
+The protobuf implementation.
+getStruct
+public static
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+LinearSystemStruct
+<States,
+Inputs,
+Outputs>
+getStruct
+(
+Nat
+<States> states,
+Nat
+<Inputs> inputs,
+Nat
+<Outputs> outputs)
+Creates an implementation of the
+Struct
+interface for linear systems.
+Type Parameters:
+States
+- The number of states of the linear systems this serializer processes.
+Inputs
+- The number of inputs of the linear systems this serializer processes.
+Outputs
+- The number of outputs of the linear systems this serializer processes.
+Parameters:
+states
+- The number of states of the linear systems this serializer processes.
+inputs
+- The number of inputs of the linear systems this serializer processes.
+outputs
+- The number of outputs of the linear systems this serializer processes.
+Returns:
+The struct implementation.

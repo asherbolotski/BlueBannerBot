@@ -1,0 +1,555 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry;
+006
+007
+import static edu.wpi.first.units.Units.Meters;
+008
+009
+import edu.wpi.first.math.Pair;
+010
+import edu.wpi.first.math.geometry.proto.Ellipse2dProto;
+011
+import edu.wpi.first.math.geometry.struct.Ellipse2dStruct;
+012
+import edu.wpi.first.math.jni.Ellipse2dJNI;
+013
+import edu.wpi.first.units.measure.Distance;
+014
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+015
+import edu.wpi.first.util.struct.StructSerializable;
+016
+import java.util.Objects;
+017
+018
+/** Represents a 2d ellipse space containing translational, rotational, and scaling components. */
+019
+public class Ellipse2d implements ProtobufSerializable, StructSerializable {
+020
+private final Pose2d m_center;
+021
+private final double m_xSemiAxis;
+022
+private final double m_ySemiAxis;
+023
+024
+/**
+025
+* Constructs an ellipse around a center point and two semi-axes, a horizontal and vertical one.
+026
+*
+027
+* @param center The center of the ellipse.
+028
+* @param xSemiAxis The x semi-axis.
+029
+* @param ySemiAxis The y semi-axis.
+030
+*/
+031
+public Ellipse2d(Pose2d center, double xSemiAxis, double ySemiAxis) {
+032
+if (xSemiAxis <= 0 || ySemiAxis <= 0) {
+033
+throw new IllegalArgumentException("Ellipse2d semi-axes must be positive");
+034
+}
+035
+036
+m_center = center;
+037
+m_xSemiAxis = xSemiAxis;
+038
+m_ySemiAxis = ySemiAxis;
+039
+}
+040
+041
+/**
+042
+* Constructs an ellipse around a center point and two semi-axes, a horizontal and vertical one.
+043
+* The X and Y semi-axis will be converted to and tracked as meters.
+044
+*
+045
+* @param center The center of the ellipse.
+046
+* @param xSemiAxis The x semi-axis.
+047
+* @param ySemiAxis The y semi-axis.
+048
+*/
+049
+public Ellipse2d(Pose2d center, Distance xSemiAxis, Distance ySemiAxis) {
+050
+this(center, xSemiAxis.in(Meters), ySemiAxis.in(Meters));
+051
+}
+052
+053
+/**
+054
+* Constructs a perfectly circular ellipse with the specified radius.
+055
+*
+056
+* @param center The center of the circle.
+057
+* @param radius The radius of the circle.
+058
+*/
+059
+public Ellipse2d(Translation2d center, double radius) {
+060
+this(new Pose2d(center, Rotation2d.kZero), radius, radius);
+061
+}
+062
+063
+/**
+064
+* Constructs a perfectly circular ellipse with the specified radius. The radius will be converted
+065
+* to and tracked as meters.
+066
+*
+067
+* @param center The center of the circle.
+068
+* @param radius The radius of the circle.
+069
+*/
+070
+public Ellipse2d(Translation2d center, Distance radius) {
+071
+this(new Pose2d(center, Rotation2d.kZero), radius, radius);
+072
+}
+073
+074
+/**
+075
+* Returns the center of the ellipse.
+076
+*
+077
+* @return The center of the ellipse.
+078
+*/
+079
+public Pose2d getCenter() {
+080
+return m_center;
+081
+}
+082
+083
+/**
+084
+* Returns the rotational component of the ellipse.
+085
+*
+086
+* @return The rotational component of the ellipse.
+087
+*/
+088
+public Rotation2d getRotation() {
+089
+return m_center.getRotation();
+090
+}
+091
+092
+/**
+093
+* Returns the x semi-axis.
+094
+*
+095
+* @return The x semi-axis.
+096
+*/
+097
+public double getXSemiAxis() {
+098
+return m_xSemiAxis;
+099
+}
+100
+101
+/**
+102
+* Returns the y semi-axis.
+103
+*
+104
+* @return The y semi-axis.
+105
+*/
+106
+public double getYSemiAxis() {
+107
+return m_ySemiAxis;
+108
+}
+109
+110
+/**
+111
+* Returns the x semi-axis in a measure.
+112
+*
+113
+* @return The x semi-axis in a measure.
+114
+*/
+115
+public Distance getMeasureXSemiAxis() {
+116
+return Meters.of(m_xSemiAxis);
+117
+}
+118
+119
+/**
+120
+* Returns the y semi-axis in a measure.
+121
+*
+122
+* @return The y semi-axis in a measure.
+123
+*/
+124
+public Distance getMeasureYSemiAxis() {
+125
+return Meters.of(m_ySemiAxis);
+126
+}
+127
+128
+/**
+129
+* Returns the focal points of the ellipse. In a perfect circle, this will always return the
+130
+* center.
+131
+*
+132
+* @return The focal points.
+133
+*/
+134
+public Pair<Translation2d, Translation2d> getFocalPoints() {
+135
+// Major semi-axis
+136
+double a = Math.max(m_xSemiAxis, m_ySemiAxis);
+137
+138
+// Minor semi-axis
+139
+double b = Math.min(m_xSemiAxis, m_ySemiAxis);
+140
+141
+double c = Math.sqrt(a * a - b * b);
+142
+143
+if (m_xSemiAxis > m_ySemiAxis) {
+144
+return new Pair<>(
+145
+m_center.plus(new Transform2d(-c, 0.0, Rotation2d.kZero)).getTranslation(),
+146
+m_center.plus(new Transform2d(c, 0.0, Rotation2d.kZero)).getTranslation());
+147
+} else {
+148
+return new Pair<>(
+149
+m_center.plus(new Transform2d(0.0, -c, Rotation2d.kZero)).getTranslation(),
+150
+m_center.plus(new Transform2d(0.0, c, Rotation2d.kZero)).getTranslation());
+151
+}
+152
+}
+153
+154
+/**
+155
+* Transforms the center of the ellipse and returns the new ellipse.
+156
+*
+157
+* @param other The transform to transform by.
+158
+* @return The transformed ellipse.
+159
+*/
+160
+public Ellipse2d transformBy(Transform2d other) {
+161
+return new Ellipse2d(m_center.transformBy(other), m_xSemiAxis, m_ySemiAxis);
+162
+}
+163
+164
+/**
+165
+* Rotates the center of the ellipse and returns the new ellipse.
+166
+*
+167
+* @param other The rotation to transform by.
+168
+* @return The rotated ellipse.
+169
+*/
+170
+public Ellipse2d rotateBy(Rotation2d other) {
+171
+return new Ellipse2d(m_center.rotateBy(other), m_xSemiAxis, m_ySemiAxis);
+172
+}
+173
+174
+/**
+175
+* Checks if a point is intersected by this ellipse's circumference.
+176
+*
+177
+* @param point The point to check.
+178
+* @return True, if this ellipse's circumference intersects the point.
+179
+*/
+180
+public boolean intersects(Translation2d point) {
+181
+return Math.abs(1.0 - solveEllipseEquation(point)) <= 1E-9;
+182
+}
+183
+184
+/**
+185
+* Checks if a point is contained within this ellipse. This is inclusive, if the point lies on the
+186
+* circumference this will return {@code true}.
+187
+*
+188
+* @param point The point to check.
+189
+* @return True, if the point is within or on the ellipse.
+190
+*/
+191
+public boolean contains(Translation2d point) {
+192
+return solveEllipseEquation(point) <= 1.0;
+193
+}
+194
+195
+/**
+196
+* Returns the distance between the perimeter of the ellipse and the point.
+197
+*
+198
+* @param point The point to check.
+199
+* @return The distance (0, if the point is contained by the ellipse)
+200
+*/
+201
+public double getDistance(Translation2d point) {
+202
+return nearest(point).getDistance(point);
+203
+}
+204
+205
+/**
+206
+* Returns the distance between the perimeter of the ellipse and the point in a measure.
+207
+*
+208
+* @param point The point to check.
+209
+* @return The distance (0, if the point is contained by the ellipse) in a measure.
+210
+*/
+211
+public Distance getMeasureDistance(Translation2d point) {
+212
+return Meters.of(getDistance(point));
+213
+}
+214
+215
+/**
+216
+* Returns the nearest point that is contained within the ellipse.
+217
+*
+218
+* @param point The point that this will find the nearest point to.
+219
+* @return A new point that is nearest to {@code point} and contained in the ellipse.
+220
+*/
+221
+public Translation2d nearest(Translation2d point) {
+222
+// Check if already in ellipse
+223
+if (contains(point)) {
+224
+return point;
+225
+}
+226
+227
+// Find nearest point
+228
+var nearestPoint = new double[2];
+229
+Ellipse2dJNI.nearest(
+230
+m_center.getX(),
+231
+m_center.getY(),
+232
+m_center.getRotation().getRadians(),
+233
+m_xSemiAxis,
+234
+m_ySemiAxis,
+235
+point.getX(),
+236
+point.getY(),
+237
+nearestPoint);
+238
+return new Translation2d(nearestPoint[0], nearestPoint[1]);
+239
+}
+240
+241
+@Override
+242
+public String toString() {
+243
+return String.format(
+244
+"Ellipse2d(center: %s, x: %.2f, y:%.2f)", m_center, m_xSemiAxis, m_ySemiAxis);
+245
+}
+246
+247
+/**
+248
+* Checks equality between this Ellipse2d and another object.
+249
+*
+250
+* @param obj The other object.
+251
+* @return Whether the two objects are equal or not.
+252
+*/
+253
+@Override
+254
+public boolean equals(Object obj) {
+255
+if (obj instanceof Ellipse2d) {
+256
+return ((Ellipse2d) obj).getCenter().equals(m_center)
+257
+&& ((Ellipse2d) obj).getXSemiAxis() == m_xSemiAxis
+258
+&& ((Ellipse2d) obj).getYSemiAxis() == m_ySemiAxis;
+259
+}
+260
+return false;
+261
+}
+262
+263
+@Override
+264
+public int hashCode() {
+265
+return Objects.hash(m_center, m_xSemiAxis, m_ySemiAxis);
+266
+}
+267
+268
+/**
+269
+* Solves the equation of an ellipse from the given point. This is a helper function used to
+270
+* determine if that point lies inside of or on an ellipse.
+271
+*
+272
+* <pre>
+273
+* (x - h)²/a² + (y - k)²/b² = 1
+274
+* </pre>
+275
+*
+276
+* @param point The point to solve for.
+277
+* @return < 1.0 if the point lies inside the ellipse, == 1.0 if a point lies on the ellipse, and
+278
+*     > 1.0 if the point lies outsides the ellipse.
+279
+*/
+280
+private double solveEllipseEquation(Translation2d point) {
+281
+// Rotate the point by the inverse of the ellipse's rotation
+282
+point = point.rotateAround(m_center.getTranslation(), m_center.getRotation().unaryMinus());
+283
+284
+double x = point.getX() - m_center.getX();
+285
+double y = point.getY() - m_center.getY();
+286
+287
+return (x * x) / (m_xSemiAxis * m_xSemiAxis) + (y * y) / (m_ySemiAxis * m_ySemiAxis);
+288
+}
+289
+290
+/** Ellipse2d protobuf for serialization. */
+291
+public static final Ellipse2dProto proto = new Ellipse2dProto();
+292
+293
+/** Ellipse2d struct for serialization. */
+294
+public static final Ellipse2dStruct struct = new Ellipse2dStruct();
+295
+}

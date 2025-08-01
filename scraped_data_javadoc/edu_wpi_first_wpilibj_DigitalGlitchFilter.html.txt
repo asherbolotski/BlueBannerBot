@@ -1,0 +1,263 @@
+Package
+edu.wpi.first.wpilibj
+Class DigitalGlitchFilter
+java.lang.Object
+edu.wpi.first.wpilibj.DigitalGlitchFilter
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+DigitalGlitchFilter
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Class to enable glitch filtering on a set of digital inputs. This class will manage adding and
+ removing digital inputs from an FPGA glitch filter. The filter lets the user configure the time
+ that an input must remain high or low before it is classified as high or low.
+Constructor Summary
+Constructors
+Constructor
+Description
+DigitalGlitchFilter
+()
+Configures the Digital Glitch Filter to its default settings.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+add
+(
+Counter
+input)
+Assigns the Counter to this glitch filter.
+void
+add
+(
+DigitalSource
+input)
+Assigns the DigitalSource to this glitch filter.
+void
+add
+(
+Encoder
+input)
+Assigns the Encoder to this glitch filter.
+void
+close
+()
+int
+getPeriodCycles
+()
+Gets the number of FPGA cycles that the input must hold steady to pass through this glitch
+ filter.
+long
+getPeriodNanoSeconds
+()
+Gets the number of nanoseconds that the input must hold steady to pass through this glitch
+ filter.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+remove
+(
+Counter
+input)
+Removes this filter from the given Counter.
+void
+remove
+(
+DigitalSource
+input)
+Removes this filter from the given digital input.
+void
+remove
+(
+Encoder
+input)
+Removes this filter from the given Encoder.
+void
+setPeriodCycles
+(int fpgaCycles)
+Sets the number of FPGA cycles that the input must hold steady to pass through this glitch
+ filter.
+void
+setPeriodNanoSeconds
+(long nanoseconds)
+Sets the number of nanoseconds that the input must hold steady to pass through this glitch
+ filter.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DigitalGlitchFilter
+public
+DigitalGlitchFilter
+()
+Configures the Digital Glitch Filter to its default settings.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+add
+public
+void
+add
+(
+DigitalSource
+input)
+Assigns the DigitalSource to this glitch filter.
+Parameters:
+input
+- The DigitalSource to add.
+add
+public
+void
+add
+(
+Encoder
+input)
+Assigns the Encoder to this glitch filter.
+Parameters:
+input
+- The Encoder to add.
+add
+public
+void
+add
+(
+Counter
+input)
+Assigns the Counter to this glitch filter.
+Parameters:
+input
+- The Counter to add.
+remove
+public
+void
+remove
+(
+DigitalSource
+input)
+Removes this filter from the given digital input.
+Parameters:
+input
+- The DigitalSource to stop filtering.
+remove
+public
+void
+remove
+(
+Encoder
+input)
+Removes this filter from the given Encoder.
+Parameters:
+input
+- the Encoder to stop filtering.
+remove
+public
+void
+remove
+(
+Counter
+input)
+Removes this filter from the given Counter.
+Parameters:
+input
+- The Counter to stop filtering.
+setPeriodCycles
+public
+void
+setPeriodCycles
+(int fpgaCycles)
+Sets the number of FPGA cycles that the input must hold steady to pass through this glitch
+ filter.
+Parameters:
+fpgaCycles
+- The number of FPGA cycles.
+setPeriodNanoSeconds
+public
+void
+setPeriodNanoSeconds
+(long nanoseconds)
+Sets the number of nanoseconds that the input must hold steady to pass through this glitch
+ filter.
+Parameters:
+nanoseconds
+- The number of nanoseconds.
+getPeriodCycles
+public
+int
+getPeriodCycles
+()
+Gets the number of FPGA cycles that the input must hold steady to pass through this glitch
+ filter.
+Returns:
+The number of cycles.
+getPeriodNanoSeconds
+public
+long
+getPeriodNanoSeconds
+()
+Gets the number of nanoseconds that the input must hold steady to pass through this glitch
+ filter.
+Returns:
+The number of nanoseconds.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

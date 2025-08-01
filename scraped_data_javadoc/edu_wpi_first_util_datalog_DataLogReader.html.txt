@@ -1,0 +1,169 @@
+Package
+edu.wpi.first.util.datalog
+Class DataLogReader
+java.lang.Object
+edu.wpi.first.util.datalog.DataLogReader
+All Implemented Interfaces:
+Iterable
+<
+DataLogRecord
+>
+public class
+DataLogReader
+extends
+Object
+implements
+Iterable
+<
+DataLogRecord
+>
+Data log reader (reads logs written by the DataLog class).
+Constructor Summary
+Constructors
+Constructor
+Description
+DataLogReader
+(
+String
+filename)
+Constructs from a file.
+DataLogReader
+(
+ByteBuffer
+buffer)
+Constructs from a byte buffer.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+forEach
+(
+Consumer
+<? super
+DataLogRecord
+> action)
+String
+getExtraHeader
+()
+Gets the extra header data.
+short
+getVersion
+()
+Gets the data log version.
+boolean
+isValid
+()
+Returns true if the data log is valid (e.g.
+DataLogIterator
+iterator
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface java.lang.
+Iterable
+spliterator
+Constructor Details
+DataLogReader
+public
+DataLogReader
+(
+ByteBuffer
+buffer)
+Constructs from a byte buffer.
+Parameters:
+buffer
+- byte buffer
+DataLogReader
+public
+DataLogReader
+(
+String
+filename)
+throws
+IOException
+Constructs from a file.
+Parameters:
+filename
+- filename
+Throws:
+IOException
+- if unable to open/read file
+Method Details
+isValid
+public
+boolean
+isValid
+()
+Returns true if the data log is valid (e.g. has a valid header).
+Returns:
+True if valid, false otherwise
+getVersion
+public
+short
+getVersion
+()
+Gets the data log version. Returns 0 if data log is invalid.
+Returns:
+Version number; most significant byte is major, least significant is minor (so version
+     1.0 will be 0x0100)
+getExtraHeader
+public
+String
+getExtraHeader
+()
+Gets the extra header data.
+Returns:
+Extra header data
+forEach
+public
+void
+forEach
+(
+Consumer
+<? super
+DataLogRecord
+> action)
+Specified by:
+forEach
+in interface
+Iterable
+<
+DataLogRecord
+>
+iterator
+public
+DataLogIterator
+iterator
+()
+Specified by:
+iterator
+in interface
+Iterable
+<
+DataLogRecord
+>

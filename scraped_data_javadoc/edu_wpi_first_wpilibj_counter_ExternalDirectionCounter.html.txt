@@ -1,0 +1,168 @@
+Package
+edu.wpi.first.wpilibj.counter
+Class ExternalDirectionCounter
+java.lang.Object
+edu.wpi.first.wpilibj.counter.ExternalDirectionCounter
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+ExternalDirectionCounter
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Counter using external direction.
+This counts on an edge from one digital input and the whether it counts up or down based on
+ the state of a second digital input.
+Constructor Summary
+Constructors
+Constructor
+Description
+ExternalDirectionCounter
+(
+DigitalSource
+countSource,
+DigitalSource
+directionSource)
+Constructs a new ExternalDirectionCounter.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+int
+getCount
+()
+Gets the current count.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+reset
+()
+Resets the current count.
+void
+setEdgeConfiguration
+(
+EdgeConfiguration
+configuration)
+Sets the edge configuration for counting.
+void
+setReverseDirection
+(boolean reverseDirection)
+Sets to reverse the counter direction.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ExternalDirectionCounter
+public
+ExternalDirectionCounter
+(
+DigitalSource
+countSource,
+DigitalSource
+directionSource)
+Constructs a new ExternalDirectionCounter.
+Parameters:
+countSource
+- The source for counting.
+directionSource
+- The source for selecting count direction.
+Method Details
+getCount
+public
+int
+getCount
+()
+Gets the current count.
+Returns:
+The current count.
+setReverseDirection
+public
+void
+setReverseDirection
+(boolean reverseDirection)
+Sets to reverse the counter direction.
+Parameters:
+reverseDirection
+- True to reverse counting direction.
+reset
+public
+void
+reset
+()
+Resets the current count.
+setEdgeConfiguration
+public
+void
+setEdgeConfiguration
+(
+EdgeConfiguration
+configuration)
+Sets the edge configuration for counting.
+Parameters:
+configuration
+- The counting edge configuration.
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

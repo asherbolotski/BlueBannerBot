@@ -1,0 +1,229 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.system;
+006
+007
+import edu.wpi.first.math.Matrix;
+008
+import edu.wpi.first.math.Num;
+009
+import edu.wpi.first.math.Pair;
+010
+import org.ejml.simple.SimpleMatrix;
+011
+012
+/** Discretization helper functions. */
+013
+public final class Discretization {
+014
+private Discretization() {
+015
+// Utility class
+016
+}
+017
+018
+/**
+019
+* Discretizes the given continuous A matrix.
+020
+*
+021
+* @param <States> Num representing the number of states.
+022
+* @param contA Continuous system matrix.
+023
+* @param dtSeconds Discretization timestep.
+024
+* @return the discrete matrix system.
+025
+*/
+026
+public static <States extends Num> Matrix<States, States> discretizeA(
+027
+Matrix<States, States> contA, double dtSeconds) {
+028
+// A_d = eᴬᵀ
+029
+return contA.times(dtSeconds).exp();
+030
+}
+031
+032
+/**
+033
+* Discretizes the given continuous A and B matrices.
+034
+*
+035
+* @param <States> Nat representing the states of the system.
+036
+* @param <Inputs> Nat representing the inputs to the system.
+037
+* @param contA Continuous system matrix.
+038
+* @param contB Continuous input matrix.
+039
+* @param dtSeconds Discretization timestep.
+040
+* @return a Pair representing discA and diskB.
+041
+*/
+042
+public static <States extends Num, Inputs extends Num>
+043
+Pair<Matrix<States, States>, Matrix<States, Inputs>> discretizeAB(
+044
+Matrix<States, States> contA, Matrix<States, Inputs> contB, double dtSeconds) {
+045
+int states = contA.getNumRows();
+046
+int inputs = contB.getNumCols();
+047
+048
+// M = [A  B]
+049
+//     [0  0]
+050
+var M = new Matrix<>(new SimpleMatrix(states + inputs, states + inputs));
+051
+M.assignBlock(0, 0, contA);
+052
+M.assignBlock(0, contA.getNumCols(), contB);
+053
+054
+//  ϕ = eᴹᵀ = [A_d  B_d]
+055
+//            [ 0    I ]
+056
+var phi = M.times(dtSeconds).exp();
+057
+058
+var discA = new Matrix<States, States>(new SimpleMatrix(states, states));
+059
+discA.extractFrom(0, 0, phi);
+060
+061
+var discB = new Matrix<States, Inputs>(new SimpleMatrix(states, inputs));
+062
+discB.extractFrom(0, contB.getNumRows(), phi);
+063
+064
+return new Pair<>(discA, discB);
+065
+}
+066
+067
+/**
+068
+* Discretizes the given continuous A and Q matrices.
+069
+*
+070
+* @param <States> Nat representing the number of states.
+071
+* @param contA Continuous system matrix.
+072
+* @param contQ Continuous process noise covariance matrix.
+073
+* @param dtSeconds Discretization timestep.
+074
+* @return a pair representing the discrete system matrix and process noise covariance matrix.
+075
+*/
+076
+public static <States extends Num>
+077
+Pair<Matrix<States, States>, Matrix<States, States>> discretizeAQ(
+078
+Matrix<States, States> contA, Matrix<States, States> contQ, double dtSeconds) {
+079
+int states = contA.getNumRows();
+080
+081
+// Make continuous Q symmetric if it isn't already
+082
+Matrix<States, States> Q = contQ.plus(contQ.transpose()).div(2.0);
+083
+084
+// M = [−A  Q ]
+085
+//     [ 0  Aᵀ]
+086
+final var M = new Matrix<>(new SimpleMatrix(2 * states, 2 * states));
+087
+M.assignBlock(0, 0, contA.times(-1.0));
+088
+M.assignBlock(0, states, Q);
+089
+M.assignBlock(states, 0, new Matrix<>(new SimpleMatrix(states, states)));
+090
+M.assignBlock(states, states, contA.transpose());
+091
+092
+// ϕ = eᴹᵀ = [−A_d  A_d⁻¹Q_d]
+093
+//           [ 0      A_dᵀ  ]
+094
+final var phi = M.times(dtSeconds).exp();
+095
+096
+// ϕ₁₂ = A_d⁻¹Q_d
+097
+final Matrix<States, States> phi12 = phi.block(states, states, 0, states);
+098
+099
+// ϕ₂₂ = A_dᵀ
+100
+final Matrix<States, States> phi22 = phi.block(states, states, states, states);
+101
+102
+final var discA = phi22.transpose();
+103
+104
+Q = discA.times(phi12);
+105
+106
+// Make discrete Q symmetric if it isn't already
+107
+final var discQ = Q.plus(Q.transpose()).div(2.0);
+108
+109
+return new Pair<>(discA, discQ);
+110
+}
+111
+112
+/**
+113
+* Returns a discretized version of the provided continuous measurement noise covariance matrix.
+114
+* Note that dt=0.0 divides R by zero.
+115
+*
+116
+* @param <O> Nat representing the number of outputs.
+117
+* @param contR Continuous measurement noise covariance matrix.
+118
+* @param dtSeconds Discretization timestep.
+119
+* @return Discretized version of the provided continuous measurement noise covariance matrix.
+120
+*/
+121
+public static <O extends Num> Matrix<O, O> discretizeR(Matrix<O, O> contR, double dtSeconds) {
+122
+// R_d = 1/T R
+123
+return contR.div(dtSeconds);
+124
+}
+125
+}

@@ -1,0 +1,455 @@
+Package
+edu.wpi.first.math.kinematics
+Class MecanumDriveKinematics
+java.lang.Object
+edu.wpi.first.math.kinematics.MecanumDriveKinematics
+All Implemented Interfaces:
+Interpolator
+<
+MecanumDriveWheelPositions
+>
+,
+Kinematics
+<
+MecanumDriveWheelSpeeds
+,
+MecanumDriveWheelPositions
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+MecanumDriveKinematics
+extends
+Object
+implements
+Kinematics
+<
+MecanumDriveWheelSpeeds
+,
+MecanumDriveWheelPositions
+>,
+ProtobufSerializable
+,
+StructSerializable
+Helper class that converts a chassis velocity (dx, dy, and dtheta components) into individual
+ wheel speeds.
+The inverse kinematics (converting from a desired chassis velocity to individual wheel speeds)
+ uses the relative locations of the wheels with respect to the center of rotation. The center of
+ rotation for inverse kinematics is also variable. This means that you can set your center of
+ rotation in a corner of the robot to perform special evasion maneuvers.
+Forward kinematics (converting an array of wheel speeds into the overall chassis motion) is
+ performs the exact opposite of what inverse kinematics does. Since this is an overdetermined
+ system (more equations than variables), we use a least-squares approximation.
+The inverse kinematics: [wheelSpeeds] = [wheelLocations] * [chassisSpeeds] We take the
+ Moore-Penrose pseudoinverse of [wheelLocations] and then multiply by [wheelSpeeds] to get our
+ chassis speeds.
+Forward kinematics is also used for odometry -- determining the position of the robot on the
+ field using encoders and a gyro.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+MecanumDriveKinematicsProto
+proto
+MecanumDriveKinematics protobuf for serialization.
+static final
+MecanumDriveKinematicsStruct
+struct
+MecanumDriveKinematics struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+MecanumDriveKinematics
+(
+Translation2d
+frontLeftWheelMeters,
+Translation2d
+frontRightWheelMeters,
+Translation2d
+rearLeftWheelMeters,
+Translation2d
+rearRightWheelMeters)
+Constructs a mecanum drive kinematics object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+MecanumDriveWheelPositions
+copy
+(
+MecanumDriveWheelPositions
+positions)
+Returns a copy of the wheel positions object.
+void
+copyInto
+(
+MecanumDriveWheelPositions
+positions,
+MecanumDriveWheelPositions
+output)
+Copies the value of the wheel positions object into the output.
+Translation2d
+getFrontLeft
+()
+Returns the front-left wheel translation.
+Translation2d
+getFrontRight
+()
+Returns the front-right wheel translation.
+Translation2d
+getRearLeft
+()
+Returns the rear-left wheel translation.
+Translation2d
+getRearRight
+()
+Returns the rear-right wheel translation.
+MecanumDriveWheelPositions
+interpolate
+(
+MecanumDriveWheelPositions
+startValue,
+MecanumDriveWheelPositions
+endValue,
+ double t)
+Perform interpolation between two values.
+ChassisSpeeds
+toChassisSpeeds
+(
+MecanumDriveWheelSpeeds
+wheelSpeeds)
+Performs forward kinematics to return the resulting chassis state from the given wheel speeds.
+Twist2d
+toTwist2d
+(
+MecanumDriveWheelPositions
+wheelDeltas)
+Performs forward kinematics to return the resulting Twist2d from the given wheel deltas.
+Twist2d
+toTwist2d
+(
+MecanumDriveWheelPositions
+start,
+MecanumDriveWheelPositions
+end)
+Performs forward kinematics to return the resulting Twist2d from the given change in wheel
+ positions.
+MecanumDriveWheelSpeeds
+toWheelSpeeds
+(
+ChassisSpeeds
+chassisSpeeds)
+Performs inverse kinematics.
+MecanumDriveWheelSpeeds
+toWheelSpeeds
+(
+ChassisSpeeds
+chassisSpeeds,
+Translation2d
+centerOfRotationMeters)
+Performs inverse kinematics to return the wheel speeds from a desired chassis velocity.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+proto
+public static final
+MecanumDriveKinematicsProto
+proto
+MecanumDriveKinematics protobuf for serialization.
+struct
+public static final
+MecanumDriveKinematicsStruct
+struct
+MecanumDriveKinematics struct for serialization.
+Constructor Details
+MecanumDriveKinematics
+public
+MecanumDriveKinematics
+(
+Translation2d
+frontLeftWheelMeters,
+Translation2d
+frontRightWheelMeters,
+Translation2d
+rearLeftWheelMeters,
+Translation2d
+rearRightWheelMeters)
+Constructs a mecanum drive kinematics object.
+Parameters:
+frontLeftWheelMeters
+- The location of the front-left wheel relative to the physical
+     center of the robot.
+frontRightWheelMeters
+- The location of the front-right wheel relative to the physical
+     center of the robot.
+rearLeftWheelMeters
+- The location of the rear-left wheel relative to the physical center
+     of the robot.
+rearRightWheelMeters
+- The location of the rear-right wheel relative to the physical
+     center of the robot.
+Method Details
+toWheelSpeeds
+public
+MecanumDriveWheelSpeeds
+toWheelSpeeds
+(
+ChassisSpeeds
+chassisSpeeds,
+Translation2d
+centerOfRotationMeters)
+Performs inverse kinematics to return the wheel speeds from a desired chassis velocity. This
+ method is often used to convert joystick values into wheel speeds.
+This function also supports variable centers of rotation. During normal operations, the
+ center of rotation is usually the same as the physical center of the robot; therefore, the
+ argument is defaulted to that use case. However, if you wish to change the center of rotation
+ for evasive maneuvers, vision alignment, or for any other use case, you can do so.
+Parameters:
+chassisSpeeds
+- The desired chassis speed.
+centerOfRotationMeters
+- The center of rotation. For example, if you set the center of
+     rotation at one corner of the robot and provide a chassis speed that only has a dtheta
+     component, the robot will rotate around that corner.
+Returns:
+The wheel speeds. Use caution because they are not normalized. Sometimes, a user input
+     may cause one of the wheel speeds to go above the attainable max velocity. Use the
+MecanumDriveWheelSpeeds.desaturate(double)
+function to rectify this issue.
+toWheelSpeeds
+public
+MecanumDriveWheelSpeeds
+toWheelSpeeds
+(
+ChassisSpeeds
+chassisSpeeds)
+Performs inverse kinematics. See
+toWheelSpeeds(ChassisSpeeds, Translation2d)
+for more
+ information.
+Specified by:
+toWheelSpeeds
+in interface
+Kinematics
+<
+MecanumDriveWheelSpeeds
+,
+MecanumDriveWheelPositions
+>
+Parameters:
+chassisSpeeds
+- The desired chassis speed.
+Returns:
+The wheel speeds.
+toChassisSpeeds
+public
+ChassisSpeeds
+toChassisSpeeds
+(
+MecanumDriveWheelSpeeds
+wheelSpeeds)
+Performs forward kinematics to return the resulting chassis state from the given wheel speeds.
+ This method is often used for odometry -- determining the robot's position on the field using
+ data from the real-world speed of each wheel on the robot.
+Specified by:
+toChassisSpeeds
+in interface
+Kinematics
+<
+MecanumDriveWheelSpeeds
+,
+MecanumDriveWheelPositions
+>
+Parameters:
+wheelSpeeds
+- The current mecanum drive wheel speeds.
+Returns:
+The resulting chassis speed.
+toTwist2d
+public
+Twist2d
+toTwist2d
+(
+MecanumDriveWheelPositions
+start,
+MecanumDriveWheelPositions
+end)
+Description copied from interface:
+Kinematics
+Performs forward kinematics to return the resulting Twist2d from the given change in wheel
+ positions. This method is often used for odometry -- determining the robot's position on the
+ field using changes in the distance driven by each wheel on the robot.
+Specified by:
+toTwist2d
+in interface
+Kinematics
+<
+MecanumDriveWheelSpeeds
+,
+MecanumDriveWheelPositions
+>
+Parameters:
+start
+- The starting distances driven by the wheels.
+end
+- The ending distances driven by the wheels.
+Returns:
+The resulting Twist2d in the robot's movement.
+toTwist2d
+public
+Twist2d
+toTwist2d
+(
+MecanumDriveWheelPositions
+wheelDeltas)
+Performs forward kinematics to return the resulting Twist2d from the given wheel deltas. This
+ method is often used for odometry -- determining the robot's position on the field using
+ changes in the distance driven by each wheel on the robot.
+Parameters:
+wheelDeltas
+- The distances driven by each wheel.
+Returns:
+The resulting Twist2d.
+getFrontLeft
+public
+Translation2d
+getFrontLeft
+()
+Returns the front-left wheel translation.
+Returns:
+The front-left wheel translation.
+getFrontRight
+public
+Translation2d
+getFrontRight
+()
+Returns the front-right wheel translation.
+Returns:
+The front-right wheel translation.
+getRearLeft
+public
+Translation2d
+getRearLeft
+()
+Returns the rear-left wheel translation.
+Returns:
+The rear-left wheel translation.
+getRearRight
+public
+Translation2d
+getRearRight
+()
+Returns the rear-right wheel translation.
+Returns:
+The rear-right wheel translation.
+copy
+public
+MecanumDriveWheelPositions
+copy
+(
+MecanumDriveWheelPositions
+positions)
+Description copied from interface:
+Kinematics
+Returns a copy of the wheel positions object.
+Specified by:
+copy
+in interface
+Kinematics
+<
+MecanumDriveWheelSpeeds
+,
+MecanumDriveWheelPositions
+>
+Parameters:
+positions
+- The wheel positions object to copy.
+Returns:
+A copy.
+copyInto
+public
+void
+copyInto
+(
+MecanumDriveWheelPositions
+positions,
+MecanumDriveWheelPositions
+output)
+Description copied from interface:
+Kinematics
+Copies the value of the wheel positions object into the output.
+Specified by:
+copyInto
+in interface
+Kinematics
+<
+MecanumDriveWheelSpeeds
+,
+MecanumDriveWheelPositions
+>
+Parameters:
+positions
+- The wheel positions object to copy. Will not be modified.
+output
+- The output variable of the copy operation. Will have the same value as the
+     positions object after the call.
+interpolate
+public
+MecanumDriveWheelPositions
+interpolate
+(
+MecanumDriveWheelPositions
+startValue,
+MecanumDriveWheelPositions
+endValue,
+ double t)
+Description copied from interface:
+Interpolator
+Perform interpolation between two values.
+Specified by:
+interpolate
+in interface
+Interpolator
+<
+MecanumDriveWheelPositions
+>
+Parameters:
+startValue
+- The value to start at.
+endValue
+- The value to end at.
+t
+- How far between the two values to interpolate. This should be bounded to [0, 1].
+Returns:
+The interpolated value.

@@ -1,0 +1,169 @@
+Package
+edu.wpi.first.networktables
+Class PubSubOptions
+java.lang.Object
+edu.wpi.first.networktables.PubSubOptions
+public class
+PubSubOptions
+extends
+Object
+NetworkTables publish/subscribe options.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+boolean
+disableLocal
+For subscriptions, if local value updates should not be queued for readQueue().
+boolean
+disableRemote
+For subscriptions, if remote value updates should not be queued for readQueue().
+int
+excludePublisher
+For subscriptions, if non-zero, value updates for readQueue() are not queued for this
+ publisher.
+boolean
+excludeSelf
+For entries, don't queue (for readQueue) value updates for the entry's internal publisher.
+boolean
+hidden
+For subscriptions, don't share the existence of the subscription with the network.
+static final double
+kDefaultPeriodic
+Default value of periodic.
+boolean
+keepDuplicates
+Preserve duplicate value changes (rather than ignoring them).
+double
+periodic
+How frequently changes will be sent over the network, in seconds.
+int
+pollStorage
+Polling storage size for a subscription.
+boolean
+prefixMatch
+Perform prefix match on subscriber topic names.
+boolean
+sendAll
+Send all value changes over the network.
+boolean
+topicsOnly
+For subscriptions, don't ask for value changes (only topic announcements).
+Constructor Summary
+Constructors
+Constructor
+Description
+PubSubOptions
+(
+PubSubOption
+... options)
+Construct from a list of options.
+Method Summary
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kDefaultPeriodic
+public static final
+double
+kDefaultPeriodic
+Default value of periodic.
+See Also:
+Constant Field Values
+pollStorage
+public
+int
+pollStorage
+Polling storage size for a subscription. Specifies the maximum number of updates NetworkTables
+ should store between calls to the subscriber's readQueue() function. If zero, defaults to 1 if
+ sendAll is false, 20 if sendAll is true.
+periodic
+public
+double
+periodic
+How frequently changes will be sent over the network, in seconds. NetworkTables may send more
+ frequently than this (e.g. use a combined minimum period for all values) or apply a restricted
+ range to this value. The default is 100 ms.
+excludePublisher
+public
+int
+excludePublisher
+For subscriptions, if non-zero, value updates for readQueue() are not queued for this
+ publisher.
+sendAll
+public
+boolean
+sendAll
+Send all value changes over the network.
+topicsOnly
+public
+boolean
+topicsOnly
+For subscriptions, don't ask for value changes (only topic announcements).
+keepDuplicates
+public
+boolean
+keepDuplicates
+Preserve duplicate value changes (rather than ignoring them).
+prefixMatch
+public
+boolean
+prefixMatch
+Perform prefix match on subscriber topic names. Is ignored/overridden by subscribe() functions;
+ only present in struct for the purposes of getting information about subscriptions.
+disableRemote
+public
+boolean
+disableRemote
+For subscriptions, if remote value updates should not be queued for readQueue(). See also
+ disableLocal.
+disableLocal
+public
+boolean
+disableLocal
+For subscriptions, if local value updates should not be queued for readQueue(). See also
+ disableRemote.
+excludeSelf
+public
+boolean
+excludeSelf
+For entries, don't queue (for readQueue) value updates for the entry's internal publisher.
+hidden
+public
+boolean
+hidden
+For subscriptions, don't share the existence of the subscription with the network. Note this
+ means updates will not be received from the network unless another subscription overlaps with
+ this one, and the subscription will not appear in metatopics.
+Constructor Details
+PubSubOptions
+public
+PubSubOptions
+(
+PubSubOption
+... options)
+Construct from a list of options.
+Parameters:
+options
+- options

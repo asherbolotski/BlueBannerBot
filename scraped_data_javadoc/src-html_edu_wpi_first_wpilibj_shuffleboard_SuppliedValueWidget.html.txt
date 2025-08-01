@@ -1,0 +1,135 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.shuffleboard;
+006
+007
+import edu.wpi.first.networktables.BooleanPublisher;
+008
+import edu.wpi.first.networktables.BooleanTopic;
+009
+import edu.wpi.first.networktables.GenericPublisher;
+010
+import edu.wpi.first.networktables.NetworkTable;
+011
+import java.util.function.BiConsumer;
+012
+import java.util.function.Supplier;
+013
+014
+/**
+015
+* A Shuffleboard widget whose value is provided by user code.
+016
+*
+017
+* @param <T> the type of values in the widget
+018
+*/
+019
+public final class SuppliedValueWidget<T> extends ShuffleboardWidget<SuppliedValueWidget<T>>
+020
+implements AutoCloseable {
+021
+private final String m_typeString;
+022
+private final Supplier<T> m_supplier;
+023
+private final BiConsumer<GenericPublisher, T> m_setter;
+024
+private BooleanPublisher m_controllablePub;
+025
+private GenericPublisher m_entry;
+026
+027
+/**
+028
+* Package-private constructor for use by the Shuffleboard API.
+029
+*
+030
+* @param parent the parent container for the widget
+031
+* @param title the title of the widget
+032
+* @param typeString the NetworkTables string type
+033
+* @param supplier the supplier for values to place in the NetworkTable entry
+034
+* @param setter the function for placing values in the NetworkTable entry
+035
+*/
+036
+SuppliedValueWidget(
+037
+ShuffleboardContainer parent,
+038
+String title,
+039
+String typeString,
+040
+Supplier<T> supplier,
+041
+BiConsumer<GenericPublisher, T> setter) {
+042
+super(parent, title);
+043
+m_typeString = typeString;
+044
+m_supplier = supplier;
+045
+m_setter = setter;
+046
+}
+047
+048
+@Override
+049
+public void buildInto(NetworkTable parentTable, NetworkTable metaTable) {
+050
+buildMetadata(metaTable);
+051
+if (m_controllablePub == null) {
+052
+m_controllablePub = new BooleanTopic(metaTable.getTopic("Controllable")).publish();
+053
+m_controllablePub.set(false);
+054
+}
+055
+056
+if (m_entry == null) {
+057
+m_entry = parentTable.getTopic(getTitle()).genericPublish(m_typeString);
+058
+}
+059
+m_setter.accept(m_entry, m_supplier.get());
+060
+}
+061
+062
+@Override
+063
+public void close() {
+064
+if (m_controllablePub != null) {
+065
+m_controllablePub.close();
+066
+}
+067
+if (m_entry != null) {
+068
+m_entry.close();
+069
+}
+070
+}
+071
+}

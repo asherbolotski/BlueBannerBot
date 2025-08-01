@@ -1,0 +1,191 @@
+Package
+edu.wpi.first.wpilibj2.command.sysid
+Class SysIdRoutine.Mechanism
+java.lang.Object
+edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism
+Enclosing class:
+SysIdRoutine
+public static class
+SysIdRoutine.Mechanism
+extends
+Object
+A mechanism to be characterized by a SysId routine. Defines callbacks needed for the SysId test
+ routine to control and record data from the mechanism.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final
+Consumer
+<? super
+Voltage
+>
+m_drive
+Sends the SysId-specified drive signal to the mechanism motors during test routines.
+final
+Consumer
+<
+SysIdRoutineLog
+>
+m_log
+Returns measured data (voltages, positions, velocities) of the mechanism motors during test
+ routines.
+final
+String
+m_name
+The name of the mechanism being tested.
+final
+Subsystem
+m_subsystem
+The subsystem containing the motor(s) that is (or are) being characterized.
+Constructor Summary
+Constructors
+Constructor
+Description
+Mechanism
+(
+Consumer
+<
+Voltage
+> drive,
+Consumer
+<
+SysIdRoutineLog
+> log,
+Subsystem
+subsystem)
+Create a new mechanism specification for a SysId routine.
+Mechanism
+(
+Consumer
+<
+Voltage
+> drive,
+Consumer
+<
+SysIdRoutineLog
+> log,
+Subsystem
+subsystem,
+String
+name)
+Create a new mechanism specification for a SysId routine.
+Method Summary
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_drive
+public final
+Consumer
+<? super
+Voltage
+>
+m_drive
+Sends the SysId-specified drive signal to the mechanism motors during test routines.
+m_log
+public final
+Consumer
+<
+SysIdRoutineLog
+>
+m_log
+Returns measured data (voltages, positions, velocities) of the mechanism motors during test
+ routines.
+m_subsystem
+public final
+Subsystem
+m_subsystem
+The subsystem containing the motor(s) that is (or are) being characterized.
+m_name
+public final
+String
+m_name
+The name of the mechanism being tested.
+Constructor Details
+Mechanism
+public
+Mechanism
+(
+Consumer
+<
+Voltage
+> drive,
+Consumer
+<
+SysIdRoutineLog
+> log,
+Subsystem
+subsystem,
+String
+name)
+Create a new mechanism specification for a SysId routine.
+Parameters:
+drive
+- Sends the SysId-specified drive signal to the mechanism motors during test
+     routines.
+log
+- Returns measured data of the mechanism motors during test routines. To return
+     data, call `motor(string motorName)` on the supplied `SysIdRoutineLog` instance, and then
+     call one or more of the chainable logging handles (e.g. `voltage`) on the returned
+     `MotorLog`. Multiple motors can be logged in a single callback by calling `motor`
+     multiple times.
+subsystem
+- The subsystem containing the motor(s) that is (or are) being characterized.
+     Will be declared as a requirement for the returned test commands.
+name
+- The name of the mechanism being tested. Will be appended to the log entry title
+     for the routine's test state, e.g. "sysid-test-state-mechanism". Defaults to the name of
+     the subsystem if left null.
+Mechanism
+public
+Mechanism
+(
+Consumer
+<
+Voltage
+> drive,
+Consumer
+<
+SysIdRoutineLog
+> log,
+Subsystem
+subsystem)
+Create a new mechanism specification for a SysId routine. Defaults the mechanism name to the
+ subsystem name.
+Parameters:
+drive
+- Sends the SysId-specified drive signal to the mechanism motors during test
+     routines.
+log
+- Returns measured data of the mechanism motors during test routines. To return
+     data, call `motor(string motorName)` on the supplied `SysIdRoutineLog` instance, and then
+     call one or more of the chainable logging handles (e.g. `voltage`) on the returned
+     `MotorLog`. Multiple motors can be logged in a single callback by calling `motor`
+     multiple times.
+subsystem
+- The subsystem containing the motor(s) that is (or are) being characterized.
+     Will be declared as a requirement for the returned test commands. The subsystem's `name`
+     will be appended to the log entry title for the routine's test state, e.g.
+     "sysid-test-state-subsystem".

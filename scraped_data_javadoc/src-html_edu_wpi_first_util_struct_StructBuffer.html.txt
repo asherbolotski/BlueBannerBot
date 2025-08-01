@@ -1,0 +1,442 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.struct;
+006
+007
+import java.lang.reflect.Array;
+008
+import java.nio.ByteBuffer;
+009
+import java.nio.ByteOrder;
+010
+import java.util.Collection;
+011
+012
+/**
+013
+* Reusable buffer for serialization/deserialization to/from a raw struct.
+014
+*
+015
+* @param <T> Object type.
+016
+*/
+017
+public final class StructBuffer<T> {
+018
+private StructBuffer(Struct<T> struct) {
+019
+m_structSize = struct.getSize();
+020
+m_buf = ByteBuffer.allocateDirect(m_structSize).order(ByteOrder.LITTLE_ENDIAN);
+021
+m_struct = struct;
+022
+}
+023
+024
+/**
+025
+* Returns a StructBuffer for the given struct.
+026
+*
+027
+* @param struct A struct.
+028
+* @param <T> Object type.
+029
+* @return A StructBuffer for the given struct.
+030
+*/
+031
+public static <T> StructBuffer<T> create(Struct<T> struct) {
+032
+return new StructBuffer<>(struct);
+033
+}
+034
+035
+/**
+036
+* Gets the struct object of the stored type.
+037
+*
+038
+* @return struct object
+039
+*/
+040
+public Struct<T> getStruct() {
+041
+return m_struct;
+042
+}
+043
+044
+/**
+045
+* Gets the type string.
+046
+*
+047
+* @return type string
+048
+*/
+049
+public String getTypeString() {
+050
+return m_struct.getTypeString();
+051
+}
+052
+053
+/**
+054
+* Ensures sufficient buffer space is available for the given number of elements.
+055
+*
+056
+* @param nelem number of elements
+057
+*/
+058
+public void reserve(int nelem) {
+059
+if ((nelem * m_structSize) > m_buf.capacity()) {
+060
+m_buf = ByteBuffer.allocateDirect(nelem * m_structSize).order(ByteOrder.LITTLE_ENDIAN);
+061
+}
+062
+}
+063
+064
+/**
+065
+* Serializes a value to a ByteBuffer. The returned ByteBuffer is a direct byte buffer with the
+066
+* position set to the end of the serialized data.
+067
+*
+068
+* @param value value
+069
+* @return byte buffer
+070
+*/
+071
+public ByteBuffer write(T value) {
+072
+m_buf.position(0);
+073
+m_struct.pack(m_buf, value);
+074
+return m_buf;
+075
+}
+076
+077
+/**
+078
+* Deserializes a value from a byte array, creating a new object.
+079
+*
+080
+* @param buf byte array
+081
+* @param start starting location within byte array
+082
+* @param len length of serialized data
+083
+* @return new object
+084
+*/
+085
+public T read(byte[] buf, int start, int len) {
+086
+return read(ByteBuffer.wrap(buf, start, len));
+087
+}
+088
+089
+/**
+090
+* Deserializes a value from a byte array, creating a new object.
+091
+*
+092
+* @param buf byte array
+093
+* @return new object
+094
+*/
+095
+public T read(byte[] buf) {
+096
+return read(buf, 0, buf.length);
+097
+}
+098
+099
+/**
+100
+* Deserializes a value from a ByteBuffer, creating a new object.
+101
+*
+102
+* @param buf byte buffer
+103
+* @return new object
+104
+*/
+105
+public T read(ByteBuffer buf) {
+106
+buf.order(ByteOrder.LITTLE_ENDIAN);
+107
+return m_struct.unpack(buf);
+108
+}
+109
+110
+/**
+111
+* Deserializes a value from a byte array into a mutable object.
+112
+*
+113
+* @param out object (will be updated with deserialized contents)
+114
+* @param buf byte array
+115
+* @param start starting location within byte array
+116
+* @param len length of serialized data
+117
+* @throws UnsupportedOperationException if T is immutable
+118
+*/
+119
+public void readInto(T out, byte[] buf, int start, int len) {
+120
+readInto(out, ByteBuffer.wrap(buf, start, len));
+121
+}
+122
+123
+/**
+124
+* Deserializes a value from a byte array into a mutable object.
+125
+*
+126
+* @param out object (will be updated with deserialized contents)
+127
+* @param buf byte array
+128
+* @throws UnsupportedOperationException if T is immutable
+129
+*/
+130
+public void readInto(T out, byte[] buf) {
+131
+readInto(out, buf, 0, buf.length);
+132
+}
+133
+134
+/**
+135
+* Deserializes a value from a ByteBuffer into a mutable object.
+136
+*
+137
+* @param out object (will be updated with deserialized contents)
+138
+* @param buf byte buffer
+139
+* @throws UnsupportedOperationException if T is immutable
+140
+*/
+141
+public void readInto(T out, ByteBuffer buf) {
+142
+m_struct.unpackInto(out, buf);
+143
+}
+144
+145
+/**
+146
+* Serializes a collection of values to a ByteBuffer. The returned ByteBuffer is a direct byte
+147
+* buffer with the position set to the end of the serialized data.
+148
+*
+149
+* @param values values
+150
+* @return byte buffer
+151
+*/
+152
+public ByteBuffer writeArray(Collection<T> values) {
+153
+m_buf.position(0);
+154
+if ((values.size() * m_structSize) > m_buf.capacity()) {
+155
+m_buf =
+156
+ByteBuffer.allocateDirect(values.size() * m_structSize * 2)
+157
+.order(ByteOrder.LITTLE_ENDIAN);
+158
+}
+159
+for (T v : values) {
+160
+m_struct.pack(m_buf, v);
+161
+}
+162
+return m_buf;
+163
+}
+164
+165
+/**
+166
+* Serializes an array of values to a ByteBuffer. The returned ByteBuffer is a direct byte buffer
+167
+* with the position set to the end of the serialized data.
+168
+*
+169
+* @param values values
+170
+* @return byte buffer
+171
+*/
+172
+public ByteBuffer writeArray(T[] values) {
+173
+m_buf.position(0);
+174
+if ((values.length * m_structSize) > m_buf.capacity()) {
+175
+m_buf =
+176
+ByteBuffer.allocateDirect(values.length * m_structSize * 2)
+177
+.order(ByteOrder.LITTLE_ENDIAN);
+178
+}
+179
+for (T v : values) {
+180
+m_struct.pack(m_buf, v);
+181
+}
+182
+return m_buf;
+183
+}
+184
+185
+/**
+186
+* Deserializes an array of values from a byte array, creating an array of new objects.
+187
+*
+188
+* @param buf byte array
+189
+* @param start starting location within byte array
+190
+* @param len length of serialized data
+191
+* @return new object array
+192
+*/
+193
+public T[] readArray(byte[] buf, int start, int len) {
+194
+return readArray(ByteBuffer.wrap(buf, start, len));
+195
+}
+196
+197
+/**
+198
+* Deserializes an array of values from a byte array, creating an array of new objects.
+199
+*
+200
+* @param buf byte array
+201
+* @return new object array
+202
+*/
+203
+public T[] readArray(byte[] buf) {
+204
+return readArray(buf, 0, buf.length);
+205
+}
+206
+207
+/**
+208
+* Deserializes an array of values from a ByteBuffer, creating an array of new objects.
+209
+*
+210
+* @param buf byte buffer
+211
+* @return new object array
+212
+*/
+213
+public T[] readArray(ByteBuffer buf) {
+214
+buf.order(ByteOrder.LITTLE_ENDIAN);
+215
+int len = buf.limit() - buf.position();
+216
+if ((len % m_structSize) != 0) {
+217
+throw new RuntimeException("buffer size not a multiple of struct size");
+218
+}
+219
+int nelem = len / m_structSize;
+220
+@SuppressWarnings("unchecked")
+221
+T[] arr = (T[]) Array.newInstance(m_struct.getTypeClass(), nelem);
+222
+for (int i = 0; i < nelem; i++) {
+223
+arr[i] = m_struct.unpack(buf);
+224
+}
+225
+return arr;
+226
+}
+227
+228
+private ByteBuffer m_buf;
+229
+private final Struct<T> m_struct;
+230
+private final int m_structSize;
+231
+}

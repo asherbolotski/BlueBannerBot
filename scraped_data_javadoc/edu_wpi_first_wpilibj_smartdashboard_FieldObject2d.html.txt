@@ -1,0 +1,182 @@
+Package
+edu.wpi.first.wpilibj.smartdashboard
+Class FieldObject2d
+java.lang.Object
+edu.wpi.first.wpilibj.smartdashboard.FieldObject2d
+All Implemented Interfaces:
+AutoCloseable
+public class
+FieldObject2d
+extends
+Object
+implements
+AutoCloseable
+Game field object on a Field2d.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Pose2d
+getPose
+()
+Get the pose.
+List
+<
+Pose2d
+>
+getPoses
+()
+Get multiple poses.
+void
+setPose
+(double xMeters,
+ double yMeters,
+Rotation2d
+rotation)
+Set the pose from x, y, and rotation.
+void
+setPose
+(
+Pose2d
+pose)
+Set the pose from a Pose object.
+void
+setPoses
+(
+Pose2d
+... poses)
+Set multiple poses from a list of Pose objects.
+void
+setPoses
+(
+List
+<
+Pose2d
+> poses)
+Set multiple poses from a list of Pose objects.
+void
+setTrajectory
+(
+Trajectory
+trajectory)
+Sets poses from a trajectory.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+setPose
+public
+void
+setPose
+(
+Pose2d
+pose)
+Set the pose from a Pose object.
+Parameters:
+pose
+- 2D pose
+setPose
+public
+void
+setPose
+(double xMeters,
+ double yMeters,
+Rotation2d
+rotation)
+Set the pose from x, y, and rotation.
+Parameters:
+xMeters
+- X location, in meters
+yMeters
+- Y location, in meters
+rotation
+- rotation
+getPose
+public
+Pose2d
+getPose
+()
+Get the pose.
+Returns:
+2D pose
+setPoses
+public
+void
+setPoses
+(
+List
+<
+Pose2d
+> poses)
+Set multiple poses from a list of Pose objects. The total number of poses is limited to 85.
+Parameters:
+poses
+- list of 2D poses
+setPoses
+public
+void
+setPoses
+(
+Pose2d
+... poses)
+Set multiple poses from a list of Pose objects. The total number of poses is limited to 85.
+Parameters:
+poses
+- list of 2D poses
+setTrajectory
+public
+void
+setTrajectory
+(
+Trajectory
+trajectory)
+Sets poses from a trajectory.
+Parameters:
+trajectory
+- The trajectory from which the poses should be added.
+getPoses
+public
+List
+<
+Pose2d
+>
+getPoses
+()
+Get multiple poses.
+Returns:
+list of 2D poses

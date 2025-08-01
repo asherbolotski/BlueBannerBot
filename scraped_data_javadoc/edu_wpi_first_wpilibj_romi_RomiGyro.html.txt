@@ -1,0 +1,177 @@
+Package
+edu.wpi.first.wpilibj.romi
+Class RomiGyro
+java.lang.Object
+edu.wpi.first.wpilibj.romi.RomiGyro
+public class
+RomiGyro
+extends
+Object
+Use a rate gyro to return the robots heading relative to a starting position.
+This class is for the Romi onboard gyro, and will only work in simulation/Romi mode. Only one
+ instance of a RomiGyro is supported.
+Constructor Summary
+Constructors
+Constructor
+Description
+RomiGyro
+()
+Create a new RomiGyro.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Close out the SimDevice.
+double
+getAngle
+()
+Return the actual angle in degrees that the robot is currently facing.
+double
+getAngleX
+()
+Get the currently reported angle around the X-axis.
+double
+getAngleY
+()
+Get the currently reported angle around the X-axis.
+double
+getAngleZ
+()
+Get the currently reported angle around the Z-axis.
+double
+getRate
+()
+Return the rate of rotation of the gyro
+double
+getRateX
+()
+Get the rate of turn in degrees-per-second around the X-axis.
+double
+getRateY
+()
+Get the rate of turn in degrees-per-second around the Y-axis.
+double
+getRateZ
+()
+Get the rate of turn in degrees-per-second around the Z-axis.
+void
+reset
+()
+Reset the gyro angles to 0.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+RomiGyro
+public
+RomiGyro
+()
+Create a new RomiGyro.
+Method Details
+getRateX
+public
+double
+getRateX
+()
+Get the rate of turn in degrees-per-second around the X-axis.
+Returns:
+rate of turn in degrees-per-second
+getRateY
+public
+double
+getRateY
+()
+Get the rate of turn in degrees-per-second around the Y-axis.
+Returns:
+rate of turn in degrees-per-second
+getRateZ
+public
+double
+getRateZ
+()
+Get the rate of turn in degrees-per-second around the Z-axis.
+Returns:
+rate of turn in degrees-per-second
+getAngleX
+public
+double
+getAngleX
+()
+Get the currently reported angle around the X-axis.
+Returns:
+current angle around X-axis in degrees
+getAngleY
+public
+double
+getAngleY
+()
+Get the currently reported angle around the X-axis.
+Returns:
+current angle around Y-axis in degrees
+getAngleZ
+public
+double
+getAngleZ
+()
+Get the currently reported angle around the Z-axis.
+Returns:
+current angle around Z-axis in degrees
+reset
+public
+void
+reset
+()
+Reset the gyro angles to 0.
+getAngle
+public
+double
+getAngle
+()
+Return the actual angle in degrees that the robot is currently facing.
+The angle is based on integration of the returned rate form the gyro. The angle is
+ continuous, that is, it will continue from 360->361 degrees. This allows algorithms that
+ wouldn't want to see a discontinuity in the gyro output as it sweeps from 360 to 0 on the
+ second time around.
+Returns:
+the current heading of the robot in degrees.
+getRate
+public
+double
+getRate
+()
+Return the rate of rotation of the gyro
+The rate is based on the most recent reading of the gyro.
+Returns:
+the current rate in degrees per second
+close
+public
+void
+close
+()
+Close out the SimDevice.

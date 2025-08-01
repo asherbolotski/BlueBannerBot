@@ -1,0 +1,788 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.trajectory;
+006
+007
+import com.fasterxml.jackson.annotation.JsonProperty;
+008
+import edu.wpi.first.math.geometry.Pose2d;
+009
+import edu.wpi.first.math.geometry.Transform2d;
+010
+import edu.wpi.first.math.trajectory.proto.TrajectoryProto;
+011
+import edu.wpi.first.math.trajectory.proto.TrajectoryStateProto;
+012
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+013
+import java.util.ArrayList;
+014
+import java.util.List;
+015
+import java.util.Objects;
+016
+import java.util.stream.Collectors;
+017
+018
+/**
+019
+* Represents a time-parameterized trajectory. The trajectory contains of various States that
+020
+* represent the pose, curvature, time elapsed, velocity, and acceleration at that point.
+021
+*/
+022
+public class Trajectory implements ProtobufSerializable {
+023
+/** Trajectory protobuf for serialization. */
+024
+public static final TrajectoryProto proto = new TrajectoryProto();
+025
+026
+private final double m_totalTimeSeconds;
+027
+private final List<State> m_states;
+028
+029
+/** Constructs an empty trajectory. */
+030
+public Trajectory() {
+031
+m_states = new ArrayList<>();
+032
+m_totalTimeSeconds = 0.0;
+033
+}
+034
+035
+/**
+036
+* Constructs a trajectory from a vector of states.
+037
+*
+038
+* @param states A vector of states.
+039
+* @throws IllegalArgumentException if the vector of states is empty.
+040
+*/
+041
+public Trajectory(final List<State> states) {
+042
+m_states = states;
+043
+044
+if (m_states.isEmpty()) {
+045
+throw new IllegalArgumentException("Trajectory manually created with no states.");
+046
+}
+047
+048
+m_totalTimeSeconds = m_states.get(m_states.size() - 1).timeSeconds;
+049
+}
+050
+051
+/**
+052
+* Linearly interpolates between two values.
+053
+*
+054
+* @param startValue The start value.
+055
+* @param endValue The end value.
+056
+* @param t The fraction for interpolation.
+057
+* @return The interpolated value.
+058
+*/
+059
+private static double lerp(double startValue, double endValue, double t) {
+060
+return startValue + (endValue - startValue) * t;
+061
+}
+062
+063
+/**
+064
+* Linearly interpolates between two poses.
+065
+*
+066
+* @param startValue The start pose.
+067
+* @param endValue The end pose.
+068
+* @param t The fraction for interpolation.
+069
+* @return The interpolated pose.
+070
+*/
+071
+private static Pose2d lerp(Pose2d startValue, Pose2d endValue, double t) {
+072
+return startValue.plus((endValue.minus(startValue)).times(t));
+073
+}
+074
+075
+/**
+076
+* Returns the initial pose of the trajectory.
+077
+*
+078
+* @return The initial pose of the trajectory.
+079
+*/
+080
+public Pose2d getInitialPose() {
+081
+return sample(0).poseMeters;
+082
+}
+083
+084
+/**
+085
+* Returns the overall duration of the trajectory.
+086
+*
+087
+* @return The duration of the trajectory.
+088
+*/
+089
+public double getTotalTimeSeconds() {
+090
+return m_totalTimeSeconds;
+091
+}
+092
+093
+/**
+094
+* Return the states of the trajectory.
+095
+*
+096
+* @return The states of the trajectory.
+097
+*/
+098
+public List<State> getStates() {
+099
+return m_states;
+100
+}
+101
+102
+/**
+103
+* Sample the trajectory at a point in time.
+104
+*
+105
+* @param timeSeconds The point in time since the beginning of the trajectory to sample.
+106
+* @return The state at that point in time.
+107
+* @throws IllegalStateException if the trajectory has no states.
+108
+*/
+109
+public State sample(double timeSeconds) {
+110
+if (m_states.isEmpty()) {
+111
+throw new IllegalStateException("Trajectory cannot be sampled if it has no states.");
+112
+}
+113
+114
+if (timeSeconds <= m_states.get(0).timeSeconds) {
+115
+return m_states.get(0);
+116
+}
+117
+if (timeSeconds >= m_totalTimeSeconds) {
+118
+return m_states.get(m_states.size() - 1);
+119
+}
+120
+121
+// To get the element that we want, we will use a binary search algorithm
+122
+// instead of iterating over a for-loop. A binary search is O(std::log(n))
+123
+// whereas searching using a loop is O(n).
+124
+125
+// This starts at 1 because we use the previous state later on for
+126
+// interpolation.
+127
+int low = 1;
+128
+int high = m_states.size() - 1;
+129
+130
+while (low != high) {
+131
+int mid = (low + high) / 2;
+132
+if (m_states.get(mid).timeSeconds < timeSeconds) {
+133
+// This index and everything under it are less than the requested
+134
+// timestamp. Therefore, we can discard them.
+135
+low = mid + 1;
+136
+} else {
+137
+// t is at least as large as the element at this index. This means that
+138
+// anything after it cannot be what we are looking for.
+139
+high = mid;
+140
+}
+141
+}
+142
+143
+// High and Low should be the same.
+144
+145
+// The sample's timestamp is now greater than or equal to the requested
+146
+// timestamp. If it is greater, we need to interpolate between the
+147
+// previous state and the current state to get the exact state that we
+148
+// want.
+149
+final State sample = m_states.get(low);
+150
+final State prevSample = m_states.get(low - 1);
+151
+152
+// If the difference in states is negligible, then we are spot on!
+153
+if (Math.abs(sample.timeSeconds - prevSample.timeSeconds) < 1E-9) {
+154
+return sample;
+155
+}
+156
+// Interpolate between the two states for the state that we want.
+157
+return prevSample.interpolate(
+158
+sample,
+159
+(timeSeconds - prevSample.timeSeconds) / (sample.timeSeconds - prevSample.timeSeconds));
+160
+}
+161
+162
+/**
+163
+* Transforms all poses in the trajectory by the given transform. This is useful for converting a
+164
+* robot-relative trajectory into a field-relative trajectory. This works with respect to the
+165
+* first pose in the trajectory.
+166
+*
+167
+* @param transform The transform to transform the trajectory by.
+168
+* @return The transformed trajectory.
+169
+*/
+170
+public Trajectory transformBy(Transform2d transform) {
+171
+var firstState = m_states.get(0);
+172
+var firstPose = firstState.poseMeters;
+173
+174
+// Calculate the transformed first pose.
+175
+var newFirstPose = firstPose.plus(transform);
+176
+List<State> newStates = new ArrayList<>();
+177
+178
+newStates.add(
+179
+new State(
+180
+firstState.timeSeconds,
+181
+firstState.velocityMetersPerSecond,
+182
+firstState.accelerationMetersPerSecondSq,
+183
+newFirstPose,
+184
+firstState.curvatureRadPerMeter));
+185
+186
+for (int i = 1; i < m_states.size(); i++) {
+187
+var state = m_states.get(i);
+188
+// We are transforming relative to the coordinate frame of the new initial pose.
+189
+newStates.add(
+190
+new State(
+191
+state.timeSeconds,
+192
+state.velocityMetersPerSecond,
+193
+state.accelerationMetersPerSecondSq,
+194
+newFirstPose.plus(state.poseMeters.minus(firstPose)),
+195
+state.curvatureRadPerMeter));
+196
+}
+197
+198
+return new Trajectory(newStates);
+199
+}
+200
+201
+/**
+202
+* Transforms all poses in the trajectory so that they are relative to the given pose. This is
+203
+* useful for converting a field-relative trajectory into a robot-relative trajectory.
+204
+*
+205
+* @param pose The pose that is the origin of the coordinate frame that the current trajectory
+206
+*     will be transformed into.
+207
+* @return The transformed trajectory.
+208
+*/
+209
+public Trajectory relativeTo(Pose2d pose) {
+210
+return new Trajectory(
+211
+m_states.stream()
+212
+.map(
+213
+state ->
+214
+new State(
+215
+state.timeSeconds,
+216
+state.velocityMetersPerSecond,
+217
+state.accelerationMetersPerSecondSq,
+218
+state.poseMeters.relativeTo(pose),
+219
+state.curvatureRadPerMeter))
+220
+.collect(Collectors.toList()));
+221
+}
+222
+223
+/**
+224
+* Concatenates another trajectory to the current trajectory. The user is responsible for making
+225
+* sure that the end pose of this trajectory and the start pose of the other trajectory match (if
+226
+* that is the desired behavior).
+227
+*
+228
+* @param other The trajectory to concatenate.
+229
+* @return The concatenated trajectory.
+230
+*/
+231
+public Trajectory concatenate(Trajectory other) {
+232
+// If this is a default constructed trajectory with no states, then we can
+233
+// simply return the rhs trajectory.
+234
+if (m_states.isEmpty()) {
+235
+return other;
+236
+}
+237
+238
+// Deep copy the current states.
+239
+List<State> states =
+240
+m_states.stream()
+241
+.map(
+242
+state ->
+243
+new State(
+244
+state.timeSeconds,
+245
+state.velocityMetersPerSecond,
+246
+state.accelerationMetersPerSecondSq,
+247
+state.poseMeters,
+248
+state.curvatureRadPerMeter))
+249
+.collect(Collectors.toList());
+250
+251
+// Here we omit the first state of the other trajectory because we don't want
+252
+// two time points with different states. Sample() will automatically
+253
+// interpolate between the end of this trajectory and the second state of the
+254
+// other trajectory.
+255
+for (int i = 1; i < other.getStates().size(); ++i) {
+256
+var s = other.getStates().get(i);
+257
+states.add(
+258
+new State(
+259
+s.timeSeconds + m_totalTimeSeconds,
+260
+s.velocityMetersPerSecond,
+261
+s.accelerationMetersPerSecondSq,
+262
+s.poseMeters,
+263
+s.curvatureRadPerMeter));
+264
+}
+265
+return new Trajectory(states);
+266
+}
+267
+268
+/**
+269
+* Represents a time-parameterized trajectory. The trajectory contains of various States that
+270
+* represent the pose, curvature, time elapsed, velocity, and acceleration at that point.
+271
+*/
+272
+public static class State implements ProtobufSerializable {
+273
+/** Trajectory.State protobuf for serialization. */
+274
+public static final TrajectoryStateProto proto = new TrajectoryStateProto();
+275
+276
+/** The time elapsed since the beginning of the trajectory. */
+277
+@JsonProperty("time")
+278
+public double timeSeconds;
+279
+280
+/** The speed at that point of the trajectory. */
+281
+@JsonProperty("velocity")
+282
+public double velocityMetersPerSecond;
+283
+284
+/** The acceleration at that point of the trajectory. */
+285
+@JsonProperty("acceleration")
+286
+public double accelerationMetersPerSecondSq;
+287
+288
+/** The pose at that point of the trajectory. */
+289
+@JsonProperty("pose")
+290
+public Pose2d poseMeters;
+291
+292
+/** The curvature at that point of the trajectory. */
+293
+@JsonProperty("curvature")
+294
+public double curvatureRadPerMeter;
+295
+296
+/** Default constructor. */
+297
+public State() {
+298
+poseMeters = Pose2d.kZero;
+299
+}
+300
+301
+/**
+302
+* Constructs a State with the specified parameters.
+303
+*
+304
+* @param timeSeconds The time elapsed since the beginning of the trajectory.
+305
+* @param velocityMetersPerSecond The speed at that point of the trajectory.
+306
+* @param accelerationMetersPerSecondSq The acceleration at that point of the trajectory.
+307
+* @param poseMeters The pose at that point of the trajectory.
+308
+* @param curvatureRadPerMeter The curvature at that point of the trajectory.
+309
+*/
+310
+public State(
+311
+double timeSeconds,
+312
+double velocityMetersPerSecond,
+313
+double accelerationMetersPerSecondSq,
+314
+Pose2d poseMeters,
+315
+double curvatureRadPerMeter) {
+316
+this.timeSeconds = timeSeconds;
+317
+this.velocityMetersPerSecond = velocityMetersPerSecond;
+318
+this.accelerationMetersPerSecondSq = accelerationMetersPerSecondSq;
+319
+this.poseMeters = poseMeters;
+320
+this.curvatureRadPerMeter = curvatureRadPerMeter;
+321
+}
+322
+323
+/**
+324
+* Interpolates between two States.
+325
+*
+326
+* @param endValue The end value for the interpolation.
+327
+* @param i The interpolant (fraction).
+328
+* @return The interpolated state.
+329
+*/
+330
+State interpolate(State endValue, double i) {
+331
+// Find the new t value.
+332
+final double newT = lerp(timeSeconds, endValue.timeSeconds, i);
+333
+334
+// Find the delta time between the current state and the interpolated state.
+335
+final double deltaT = newT - timeSeconds;
+336
+337
+// If delta time is negative, flip the order of interpolation.
+338
+if (deltaT < 0) {
+339
+return endValue.interpolate(this, 1 - i);
+340
+}
+341
+342
+// Check whether the robot is reversing at this stage.
+343
+final boolean reversing =
+344
+velocityMetersPerSecond < 0
+345
+|| Math.abs(velocityMetersPerSecond) < 1E-9 && accelerationMetersPerSecondSq < 0;
+346
+347
+// Calculate the new velocity
+348
+// v_f = v_0 + at
+349
+final double newV = velocityMetersPerSecond + (accelerationMetersPerSecondSq * deltaT);
+350
+351
+// Calculate the change in position.
+352
+// delta_s = v_0 t + 0.5at²
+353
+final double newS =
+354
+(velocityMetersPerSecond * deltaT
+355
++ 0.5 * accelerationMetersPerSecondSq * Math.pow(deltaT, 2))
+356
+* (reversing ? -1.0 : 1.0);
+357
+358
+// Return the new state. To find the new position for the new state, we need
+359
+// to interpolate between the two endpoint poses. The fraction for
+360
+// interpolation is the change in position (delta s) divided by the total
+361
+// distance between the two endpoints.
+362
+final double interpolationFrac =
+363
+newS / endValue.poseMeters.getTranslation().getDistance(poseMeters.getTranslation());
+364
+365
+return new State(
+366
+newT,
+367
+newV,
+368
+accelerationMetersPerSecondSq,
+369
+lerp(poseMeters, endValue.poseMeters, interpolationFrac),
+370
+lerp(curvatureRadPerMeter, endValue.curvatureRadPerMeter, interpolationFrac));
+371
+}
+372
+373
+@Override
+374
+public String toString() {
+375
+return String.format(
+376
+"State(Sec: %.2f, Vel m/s: %.2f, Accel m/s/s: %.2f, Pose: %s, Curvature: %.2f)",
+377
+timeSeconds,
+378
+velocityMetersPerSecond,
+379
+accelerationMetersPerSecondSq,
+380
+poseMeters,
+381
+curvatureRadPerMeter);
+382
+}
+383
+384
+@Override
+385
+public boolean equals(Object obj) {
+386
+return obj instanceof State state
+387
+&& Double.compare(state.timeSeconds, timeSeconds) == 0
+388
+&& Double.compare(state.velocityMetersPerSecond, velocityMetersPerSecond) == 0
+389
+&& Double.compare(state.accelerationMetersPerSecondSq, accelerationMetersPerSecondSq) == 0
+390
+&& Double.compare(state.curvatureRadPerMeter, curvatureRadPerMeter) == 0
+391
+&& Objects.equals(poseMeters, state.poseMeters);
+392
+}
+393
+394
+@Override
+395
+public int hashCode() {
+396
+return Objects.hash(
+397
+timeSeconds,
+398
+velocityMetersPerSecond,
+399
+accelerationMetersPerSecondSq,
+400
+poseMeters,
+401
+curvatureRadPerMeter);
+402
+}
+403
+}
+404
+405
+@Override
+406
+public String toString() {
+407
+String stateList = m_states.stream().map(State::toString).collect(Collectors.joining(", \n"));
+408
+return String.format("Trajectory - Seconds: %.2f, States:\n%s", m_totalTimeSeconds, stateList);
+409
+}
+410
+411
+@Override
+412
+public int hashCode() {
+413
+return m_states.hashCode();
+414
+}
+415
+416
+@Override
+417
+public boolean equals(Object obj) {
+418
+return obj instanceof Trajectory other && m_states.equals(other.getStates());
+419
+}
+420
+}

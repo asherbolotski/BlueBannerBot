@@ -1,0 +1,132 @@
+Package
+edu.wpi.first.math.jni
+Class TrajectoryUtilJNI
+java.lang.Object
+edu.wpi.first.math.jni.WPIMathJNI
+edu.wpi.first.math.jni.TrajectoryUtilJNI
+public final class
+TrajectoryUtilJNI
+extends
+WPIMathJNI
+TrajectoryUtil JNI.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.math.jni.
+WPIMathJNI
+WPIMathJNI.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static double[]
+deserializeTrajectory
+(
+String
+json)
+Deserializes a trajectory JSON into a double[] of trajectory elements.
+static double[]
+fromPathweaverJson
+(
+String
+path)
+Loads a Pathweaver JSON.
+static
+String
+serializeTrajectory
+(double[] elements)
+Serializes the trajectory into a JSON string.
+static void
+toPathweaverJson
+(double[] elements,
+String
+path)
+Converts a trajectory into a Pathweaver JSON and saves it.
+Methods inherited from class edu.wpi.first.math.jni.
+WPIMathJNI
+forceLoad
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+fromPathweaverJson
+public static
+double[]
+fromPathweaverJson
+(
+String
+path)
+throws
+IOException
+Loads a Pathweaver JSON.
+Parameters:
+path
+- The path to the JSON.
+Returns:
+A double array with the trajectory states from the JSON.
+Throws:
+IOException
+- if the JSON could not be read.
+toPathweaverJson
+public static
+void
+toPathweaverJson
+(double[] elements,
+String
+path)
+throws
+IOException
+Converts a trajectory into a Pathweaver JSON and saves it.
+Parameters:
+elements
+- The elements of the trajectory.
+path
+- The location to save the JSON to.
+Throws:
+IOException
+- if the JSON could not be written.
+deserializeTrajectory
+public static
+double[]
+deserializeTrajectory
+(
+String
+json)
+Deserializes a trajectory JSON into a double[] of trajectory elements.
+Parameters:
+json
+- The JSON containing the serialized trajectory.
+Returns:
+A double array with the trajectory states.
+serializeTrajectory
+public static
+String
+serializeTrajectory
+(double[] elements)
+Serializes the trajectory into a JSON string.
+Parameters:
+elements
+- The elements of the trajectory.
+Returns:
+A JSON containing the serialized trajectory.

@@ -1,0 +1,128 @@
+Package
+edu.wpi.first.apriltag
+Class AprilTagPoseEstimate
+java.lang.Object
+edu.wpi.first.apriltag.AprilTagPoseEstimate
+public class
+AprilTagPoseEstimate
+extends
+Object
+A pair of AprilTag pose estimates.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final double
+error1
+Object-space error of pose 1.
+final double
+error2
+Object-space error of pose 2.
+final
+Transform3d
+pose1
+Pose 1.
+final
+Transform3d
+pose2
+Pose 2.
+Constructor Summary
+Constructors
+Constructor
+Description
+AprilTagPoseEstimate
+(
+Transform3d
+pose1,
+Transform3d
+pose2,
+ double error1,
+ double error2)
+Constructs a pose estimate.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+getAmbiguity
+()
+Get the ratio of pose reprojection errors, called ambiguity.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+pose1
+public final
+Transform3d
+pose1
+Pose 1.
+pose2
+public final
+Transform3d
+pose2
+Pose 2.
+error1
+public final
+double
+error1
+Object-space error of pose 1.
+error2
+public final
+double
+error2
+Object-space error of pose 2.
+Constructor Details
+AprilTagPoseEstimate
+public
+AprilTagPoseEstimate
+(
+Transform3d
+pose1,
+Transform3d
+pose2,
+ double error1,
+ double error2)
+Constructs a pose estimate.
+Parameters:
+pose1
+- first pose
+pose2
+- second pose
+error1
+- error of first pose
+error2
+- error of second pose
+Method Details
+getAmbiguity
+public
+double
+getAmbiguity
+()
+Get the ratio of pose reprojection errors, called ambiguity. Numbers above 0.2 are likely to be
+ ambiguous.
+Returns:
+The ratio of pose reprojection errors.

@@ -1,0 +1,88 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.spline.struct;
+006
+007
+import edu.wpi.first.math.spline.QuinticHermiteSpline;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public final class QuinticHermiteSplineStruct implements Struct<QuinticHermiteSpline> {
+012
+@Override
+013
+public Class<QuinticHermiteSpline> getTypeClass() {
+014
+return QuinticHermiteSpline.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "QuinticHermiteSpline";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble * 4 * 3;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double xInitial[3];double xFinal[3];double yInitial[3];double yFinal[3]";
+030
+}
+031
+032
+@Override
+033
+public QuinticHermiteSpline unpack(ByteBuffer bb) {
+034
+return new QuinticHermiteSpline(
+035
+Struct.unpackDoubleArray(bb, 3),
+036
+Struct.unpackDoubleArray(bb, 3),
+037
+Struct.unpackDoubleArray(bb, 3),
+038
+Struct.unpackDoubleArray(bb, 3));
+039
+}
+040
+041
+@Override
+042
+public void pack(ByteBuffer bb, QuinticHermiteSpline value) {
+043
+Struct.packArray(bb, value.xInitialControlVector);
+044
+Struct.packArray(bb, value.xFinalControlVector);
+045
+Struct.packArray(bb, value.yInitialControlVector);
+046
+Struct.packArray(bb, value.yFinalControlVector);
+047
+}
+048
+}

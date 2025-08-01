@@ -1,0 +1,381 @@
+Package
+edu.wpi.first.util.struct
+Class StructBuffer<T>
+java.lang.Object
+edu.wpi.first.util.struct.StructBuffer<T>
+Type Parameters:
+T
+- Object type.
+public final class
+StructBuffer
+<T>
+extends
+Object
+Reusable buffer for serialization/deserialization to/from a raw struct.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static <T>
+StructBuffer
+<T>
+create
+(
+Struct
+<T> struct)
+Returns a StructBuffer for the given struct.
+Struct
+<
+T
+>
+getStruct
+()
+Gets the struct object of the stored type.
+String
+getTypeString
+()
+Gets the type string.
+T
+read
+(byte[] buf)
+Deserializes a value from a byte array, creating a new object.
+T
+read
+(byte[] buf,
+ int start,
+ int len)
+Deserializes a value from a byte array, creating a new object.
+T
+read
+(
+ByteBuffer
+buf)
+Deserializes a value from a ByteBuffer, creating a new object.
+T
+[]
+readArray
+(byte[] buf)
+Deserializes an array of values from a byte array, creating an array of new objects.
+T
+[]
+readArray
+(byte[] buf,
+ int start,
+ int len)
+Deserializes an array of values from a byte array, creating an array of new objects.
+T
+[]
+readArray
+(
+ByteBuffer
+buf)
+Deserializes an array of values from a ByteBuffer, creating an array of new objects.
+void
+readInto
+(
+T
+out,
+ byte[] buf)
+Deserializes a value from a byte array into a mutable object.
+void
+readInto
+(
+T
+out,
+ byte[] buf,
+ int start,
+ int len)
+Deserializes a value from a byte array into a mutable object.
+void
+readInto
+(
+T
+out,
+ByteBuffer
+buf)
+Deserializes a value from a ByteBuffer into a mutable object.
+void
+reserve
+(int nelem)
+Ensures sufficient buffer space is available for the given number of elements.
+ByteBuffer
+write
+(
+T
+value)
+Serializes a value to a ByteBuffer.
+ByteBuffer
+writeArray
+(
+Collection
+<
+T
+> values)
+Serializes a collection of values to a ByteBuffer.
+ByteBuffer
+writeArray
+(
+T
+[] values)
+Serializes an array of values to a ByteBuffer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+create
+public static
+<T>
+StructBuffer
+<T>
+create
+(
+Struct
+<T> struct)
+Returns a StructBuffer for the given struct.
+Type Parameters:
+T
+- Object type.
+Parameters:
+struct
+- A struct.
+Returns:
+A StructBuffer for the given struct.
+getStruct
+public
+Struct
+<
+T
+>
+getStruct
+()
+Gets the struct object of the stored type.
+Returns:
+struct object
+getTypeString
+public
+String
+getTypeString
+()
+Gets the type string.
+Returns:
+type string
+reserve
+public
+void
+reserve
+(int nelem)
+Ensures sufficient buffer space is available for the given number of elements.
+Parameters:
+nelem
+- number of elements
+write
+public
+ByteBuffer
+write
+(
+T
+value)
+Serializes a value to a ByteBuffer. The returned ByteBuffer is a direct byte buffer with the
+ position set to the end of the serialized data.
+Parameters:
+value
+- value
+Returns:
+byte buffer
+read
+public
+T
+read
+(byte[] buf,
+ int start,
+ int len)
+Deserializes a value from a byte array, creating a new object.
+Parameters:
+buf
+- byte array
+start
+- starting location within byte array
+len
+- length of serialized data
+Returns:
+new object
+read
+public
+T
+read
+(byte[] buf)
+Deserializes a value from a byte array, creating a new object.
+Parameters:
+buf
+- byte array
+Returns:
+new object
+read
+public
+T
+read
+(
+ByteBuffer
+buf)
+Deserializes a value from a ByteBuffer, creating a new object.
+Parameters:
+buf
+- byte buffer
+Returns:
+new object
+readInto
+public
+void
+readInto
+(
+T
+out,
+ byte[] buf,
+ int start,
+ int len)
+Deserializes a value from a byte array into a mutable object.
+Parameters:
+out
+- object (will be updated with deserialized contents)
+buf
+- byte array
+start
+- starting location within byte array
+len
+- length of serialized data
+Throws:
+UnsupportedOperationException
+- if T is immutable
+readInto
+public
+void
+readInto
+(
+T
+out,
+ byte[] buf)
+Deserializes a value from a byte array into a mutable object.
+Parameters:
+out
+- object (will be updated with deserialized contents)
+buf
+- byte array
+Throws:
+UnsupportedOperationException
+- if T is immutable
+readInto
+public
+void
+readInto
+(
+T
+out,
+ByteBuffer
+buf)
+Deserializes a value from a ByteBuffer into a mutable object.
+Parameters:
+out
+- object (will be updated with deserialized contents)
+buf
+- byte buffer
+Throws:
+UnsupportedOperationException
+- if T is immutable
+writeArray
+public
+ByteBuffer
+writeArray
+(
+Collection
+<
+T
+> values)
+Serializes a collection of values to a ByteBuffer. The returned ByteBuffer is a direct byte
+ buffer with the position set to the end of the serialized data.
+Parameters:
+values
+- values
+Returns:
+byte buffer
+writeArray
+public
+ByteBuffer
+writeArray
+(
+T
+[] values)
+Serializes an array of values to a ByteBuffer. The returned ByteBuffer is a direct byte buffer
+ with the position set to the end of the serialized data.
+Parameters:
+values
+- values
+Returns:
+byte buffer
+readArray
+public
+T
+[]
+readArray
+(byte[] buf,
+ int start,
+ int len)
+Deserializes an array of values from a byte array, creating an array of new objects.
+Parameters:
+buf
+- byte array
+start
+- starting location within byte array
+len
+- length of serialized data
+Returns:
+new object array
+readArray
+public
+T
+[]
+readArray
+(byte[] buf)
+Deserializes an array of values from a byte array, creating an array of new objects.
+Parameters:
+buf
+- byte array
+Returns:
+new object array
+readArray
+public
+T
+[]
+readArray
+(
+ByteBuffer
+buf)
+Deserializes an array of values from a ByteBuffer, creating an array of new objects.
+Parameters:
+buf
+- byte buffer
+Returns:
+new object array

@@ -1,0 +1,213 @@
+Package
+edu.wpi.first.wpilibj.smartdashboard
+Class SendableChooser<V>
+java.lang.Object
+edu.wpi.first.wpilibj.smartdashboard.SendableChooser<V>
+Type Parameters:
+V
+- The type of the values to be stored
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+SendableChooser
+<V>
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+The
+SendableChooser
+class is a useful tool for presenting a selection of options to the
+SmartDashboard
+.
+For instance, you may wish to be able to select between multiple autonomous modes. You can do
+ this by putting every possible Command you want to run as an autonomous into a
+SendableChooser
+and then put it into the
+SmartDashboard
+to have a list of options appear
+ on the laptop. Once autonomous starts, simply ask the
+SendableChooser
+what the selected
+ value is.
+Constructor Summary
+Constructors
+Constructor
+Description
+SendableChooser
+()
+Instantiates a
+SendableChooser
+.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+addOption
+(
+String
+name,
+V
+object)
+Adds the given object to the list of options.
+void
+close
+()
+V
+getSelected
+()
+Returns the selected option.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+onChange
+(
+Consumer
+<
+V
+> listener)
+Bind a listener that's called when the selected value changes.
+void
+setDefaultOption
+(
+String
+name,
+V
+object)
+Adds the given object to the list of options and marks it as the default.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SendableChooser
+public
+SendableChooser
+()
+Instantiates a
+SendableChooser
+.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+addOption
+public
+void
+addOption
+(
+String
+name,
+V
+object)
+Adds the given object to the list of options. On the
+SmartDashboard
+on the desktop, the
+ object will appear as the given name.
+Parameters:
+name
+- the name of the option
+object
+- the option
+setDefaultOption
+public
+void
+setDefaultOption
+(
+String
+name,
+V
+object)
+Adds the given object to the list of options and marks it as the default. Functionally, this is
+ very close to
+addOption(String, Object)
+except that it will use this as the default
+ option if none other is explicitly selected.
+Parameters:
+name
+- the name of the option
+object
+- the option
+getSelected
+public
+V
+getSelected
+()
+Returns the selected option. If there is none selected, it will return the default. If there is
+ none selected and no default, then it will return
+null
+.
+Returns:
+the option selected
+onChange
+public
+void
+onChange
+(
+Consumer
+<
+V
+> listener)
+Bind a listener that's called when the selected value changes. Only one listener can be bound.
+ Calling this function will replace the previous listener.
+Parameters:
+listener
+- The function to call that accepts the new value
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

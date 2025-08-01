@@ -1,0 +1,99 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.networktables.NetworkTableInstance;
+008
+import edu.wpi.first.networktables.StringPublisher;
+009
+import edu.wpi.first.wpilibj.RobotBase;
+010
+011
+/** Class that facilitates control of a SendableChooser's selected option in simulation. */
+012
+public class SendableChooserSim implements AutoCloseable {
+013
+private StringPublisher m_publisher;
+014
+015
+/**
+016
+* Constructs a SendableChooserSim.
+017
+*
+018
+* @param path The path where the SendableChooser is published.
+019
+*/
+020
+public SendableChooserSim(String path) {
+021
+this(NetworkTableInstance.getDefault(), path);
+022
+}
+023
+024
+/**
+025
+* Constructs a SendableChooserSim.
+026
+*
+027
+* @param inst The NetworkTables instance.
+028
+* @param path The path where the SendableChooser is published.
+029
+*/
+030
+public SendableChooserSim(NetworkTableInstance inst, String path) {
+031
+if (RobotBase.isSimulation()) {
+032
+m_publisher = inst.getStringTopic(path + "selected").publish();
+033
+}
+034
+}
+035
+036
+@Override
+037
+public void close() {
+038
+if (RobotBase.isSimulation()) {
+039
+m_publisher.close();
+040
+}
+041
+}
+042
+043
+/**
+044
+* Set the selected option.
+045
+*
+046
+* @param option The option.
+047
+*/
+048
+public void setSelected(String option) {
+049
+if (RobotBase.isSimulation()) {
+050
+m_publisher.set(option);
+051
+}
+052
+}
+053
+}

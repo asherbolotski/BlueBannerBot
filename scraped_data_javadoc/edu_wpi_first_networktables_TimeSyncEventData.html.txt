@@ -1,0 +1,90 @@
+Package
+edu.wpi.first.networktables
+Class TimeSyncEventData
+java.lang.Object
+edu.wpi.first.networktables.TimeSyncEventData
+public final class
+TimeSyncEventData
+extends
+Object
+NetworkTables time sync event data.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final long
+rtt2
+Measured round trip time divided by 2, in microseconds.
+final long
+serverTimeOffset
+Offset between local time and server time, in microseconds.
+final boolean
+valid
+If serverTimeOffset and RTT are valid.
+Constructor Summary
+Constructors
+Constructor
+Description
+TimeSyncEventData
+(long serverTimeOffset,
+ long rtt2,
+ boolean valid)
+Constructor.
+Method Summary
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+serverTimeOffset
+public final
+long
+serverTimeOffset
+Offset between local time and server time, in microseconds. Add this value to local time to get
+ the estimated equivalent server time.
+rtt2
+public final
+long
+rtt2
+Measured round trip time divided by 2, in microseconds.
+valid
+public final
+boolean
+valid
+If serverTimeOffset and RTT are valid. An event with this set to false is sent when the client
+ disconnects.
+Constructor Details
+TimeSyncEventData
+public
+TimeSyncEventData
+(long serverTimeOffset,
+ long rtt2,
+ boolean valid)
+Constructor. This should generally only be used internally to NetworkTables.
+Parameters:
+serverTimeOffset
+- Server time offset
+rtt2
+- Round trip time divided by 2
+valid
+- If other parameters are valid

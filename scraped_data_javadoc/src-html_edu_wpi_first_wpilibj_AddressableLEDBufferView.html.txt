@@ -1,0 +1,307 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.wpilibj.util.Color;
+010
+import edu.wpi.first.wpilibj.util.Color8Bit;
+011
+012
+/**
+013
+* A view of another addressable LED buffer. Views CANNOT be written directly to an LED strip; the
+014
+* backing buffer must be written instead. However, views provide an easy way to split a large LED
+015
+* strip into smaller sections (which may be reversed from the orientation of the LED strip as a
+016
+* whole) that can be animated individually without modifying LEDs outside those sections.
+017
+*/
+018
+public class AddressableLEDBufferView implements LEDReader, LEDWriter {
+019
+private final LEDReader m_backingReader;
+020
+private final LEDWriter m_backingWriter;
+021
+private final int m_startingIndex;
+022
+private final int m_endingIndex;
+023
+private final int m_length;
+024
+025
+/**
+026
+* Creates a new view of a buffer. A view will be reversed if the starting index is after the
+027
+* ending index; writing front-to-back in the view will write in the back-to-front direction on
+028
+* the underlying buffer.
+029
+*
+030
+* @param backingBuffer the backing buffer to view
+031
+* @param startingIndex the index of the LED in the backing buffer that the view should start from
+032
+* @param endingIndex the index of the LED in the backing buffer that the view should end on
+033
+* @param <B> the type of the buffer object to create a view for
+034
+*/
+035
+public <B extends LEDReader & LEDWriter> AddressableLEDBufferView(
+036
+B backingBuffer, int startingIndex, int endingIndex) {
+037
+this(
+038
+requireNonNullParam(backingBuffer, "backingBuffer", "AddressableLEDBufferView"),
+039
+backingBuffer,
+040
+startingIndex,
+041
+endingIndex);
+042
+}
+043
+044
+/**
+045
+* Creates a new view of a buffer. A view will be reversed if the starting index is after the
+046
+* ending index; writing front-to-back in the view will write in the back-to-front direction on
+047
+* the underlying buffer.
+048
+*
+049
+* @param backingReader the backing LED data reader
+050
+* @param backingWriter the backing LED data writer
+051
+* @param startingIndex the index of the LED in the backing buffer that the view should start from
+052
+* @param endingIndex the index of the LED in the backing buffer that the view should end on
+053
+*/
+054
+public AddressableLEDBufferView(
+055
+LEDReader backingReader, LEDWriter backingWriter, int startingIndex, int endingIndex) {
+056
+requireNonNullParam(backingReader, "backingReader", "AddressableLEDBufferView");
+057
+requireNonNullParam(backingWriter, "backingWriter", "AddressableLEDBufferView");
+058
+059
+if (startingIndex < 0 || startingIndex >= backingReader.getLength()) {
+060
+throw new IndexOutOfBoundsException("Start index out of range: " + startingIndex);
+061
+}
+062
+if (endingIndex < 0 || endingIndex >= backingReader.getLength()) {
+063
+throw new IndexOutOfBoundsException("End index out of range: " + endingIndex);
+064
+}
+065
+066
+m_backingReader = backingReader;
+067
+m_backingWriter = backingWriter;
+068
+069
+m_startingIndex = startingIndex;
+070
+m_endingIndex = endingIndex;
+071
+m_length = Math.abs(endingIndex - startingIndex) + 1;
+072
+}
+073
+074
+/**
+075
+* Creates a view that operates on the same range as this one, but goes in reverse order. This is
+076
+* useful for serpentine runs of LED strips connected front-to-end; simply reverse the view for
+077
+* reversed sections and animations will move in the same physical direction along both strips.
+078
+*
+079
+* @return the reversed view
+080
+*/
+081
+public AddressableLEDBufferView reversed() {
+082
+return new AddressableLEDBufferView(this, m_length - 1, 0);
+083
+}
+084
+085
+@Override
+086
+public int getLength() {
+087
+return m_length;
+088
+}
+089
+090
+@Override
+091
+public void setRGB(int index, int r, int g, int b) {
+092
+m_backingWriter.setRGB(nativeIndex(index), r, g, b);
+093
+}
+094
+095
+@Override
+096
+public Color getLED(int index) {
+097
+// override to delegate to the backing buffer to avoid 3x native index lookups & bounds checks
+098
+return m_backingReader.getLED(nativeIndex(index));
+099
+}
+100
+101
+@Override
+102
+public Color8Bit getLED8Bit(int index) {
+103
+// override to delegate to the backing buffer to avoid 3x native index lookups & bounds checks
+104
+return m_backingReader.getLED8Bit(nativeIndex(index));
+105
+}
+106
+107
+@Override
+108
+public int getRed(int index) {
+109
+return m_backingReader.getRed(nativeIndex(index));
+110
+}
+111
+112
+@Override
+113
+public int getGreen(int index) {
+114
+return m_backingReader.getGreen(nativeIndex(index));
+115
+}
+116
+117
+@Override
+118
+public int getBlue(int index) {
+119
+return m_backingReader.getBlue(nativeIndex(index));
+120
+}
+121
+122
+/**
+123
+* Checks if this view is reversed with respect to its backing buffer.
+124
+*
+125
+* @return true if the view is reversed, false otherwise
+126
+*/
+127
+public boolean isReversed() {
+128
+return m_endingIndex < m_startingIndex;
+129
+}
+130
+131
+/**
+132
+* Converts a view-local index in the range [start, end] to a global index in the range [0,
+133
+* length].
+134
+*
+135
+* @param viewIndex the view-local index
+136
+* @return the corresponding global index
+137
+* @throws IndexOutOfBoundsException if the view index is not contained within the bounds of this
+138
+*     view
+139
+*/
+140
+private int nativeIndex(int viewIndex) {
+141
+if (isReversed()) {
+142
+//  0  1  2  3   4  5  6  7   8  9  10
+143
+//  ↓  ↓  ↓  ↓   ↓  ↓  ↓  ↓   ↓  ↓  ↓
+144
+// [_, _, _, _, (d, c, b, a), _, _, _]
+145
+//               ↑  ↑  ↑  ↑
+146
+//               3  2  1  0
+147
+if (viewIndex < 0 || viewIndex > m_startingIndex) {
+148
+throw new IndexOutOfBoundsException(viewIndex);
+149
+}
+150
+return m_startingIndex - viewIndex;
+151
+} else {
+152
+//  0  1  2  3   4  5  6  7   8  9  10
+153
+//  ↓  ↓  ↓  ↓   ↓  ↓  ↓  ↓   ↓  ↓  ↓
+154
+// [_, _, _, _, (a, b, c, d), _, _, _]
+155
+//               ↑  ↑  ↑  ↑
+156
+//               0  1  2  3
+157
+if (viewIndex < 0 || viewIndex > m_endingIndex) {
+158
+throw new IndexOutOfBoundsException(viewIndex);
+159
+}
+160
+return m_startingIndex + viewIndex;
+161
+}
+162
+}
+163
+}

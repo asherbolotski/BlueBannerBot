@@ -1,0 +1,643 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/** NetworkTables Topic. */
+008
+public class Topic {
+009
+/**
+010
+* Constructor; use NetworkTableInstance.getTopic() instead.
+011
+*
+012
+* @param inst Instance
+013
+* @param handle Native handle
+014
+*/
+015
+Topic(NetworkTableInstance inst, int handle) {
+016
+m_inst = inst;
+017
+m_handle = handle;
+018
+}
+019
+020
+/**
+021
+* Determines if the native handle is valid.
+022
+*
+023
+* @return True if the native handle is valid, false otherwise.
+024
+*/
+025
+public boolean isValid() {
+026
+return m_handle != 0;
+027
+}
+028
+029
+/**
+030
+* Gets the native handle for the topic.
+031
+*
+032
+* @return Native handle
+033
+*/
+034
+public int getHandle() {
+035
+return m_handle;
+036
+}
+037
+038
+/**
+039
+* Gets the instance for the topic.
+040
+*
+041
+* @return Instance
+042
+*/
+043
+public NetworkTableInstance getInstance() {
+044
+return m_inst;
+045
+}
+046
+047
+/**
+048
+* Gets the name of the topic.
+049
+*
+050
+* @return the topic's name
+051
+*/
+052
+public String getName() {
+053
+return NetworkTablesJNI.getTopicName(m_handle);
+054
+}
+055
+056
+/**
+057
+* Gets the type of the topic.
+058
+*
+059
+* @return the topic's type
+060
+*/
+061
+public NetworkTableType getType() {
+062
+return NetworkTableType.getFromInt(NetworkTablesJNI.getType(m_handle));
+063
+}
+064
+065
+/**
+066
+* Gets the type string of the topic. This may have more information than the numeric type
+067
+* (especially for raw values).
+068
+*
+069
+* @return the topic's type
+070
+*/
+071
+public String getTypeString() {
+072
+return NetworkTablesJNI.getTopicTypeString(m_handle);
+073
+}
+074
+075
+/**
+076
+* Gets combined information about the topic.
+077
+*
+078
+* @return Topic information
+079
+*/
+080
+public TopicInfo getInfo() {
+081
+return NetworkTablesJNI.getTopicInfo(m_inst, m_handle);
+082
+}
+083
+084
+/**
+085
+* Make value persistent through server restarts.
+086
+*
+087
+* @param persistent True for persistent, false for not persistent.
+088
+*/
+089
+public void setPersistent(boolean persistent) {
+090
+NetworkTablesJNI.setTopicPersistent(m_handle, persistent);
+091
+}
+092
+093
+/**
+094
+* Returns whether the value is persistent through server restarts.
+095
+*
+096
+* @return True if the value is persistent.
+097
+*/
+098
+public boolean isPersistent() {
+099
+return NetworkTablesJNI.getTopicPersistent(m_handle);
+100
+}
+101
+102
+/**
+103
+* Make the server retain the topic even when there are no publishers.
+104
+*
+105
+* @param retained True for retained, false for not retained.
+106
+*/
+107
+public void setRetained(boolean retained) {
+108
+NetworkTablesJNI.setTopicRetained(m_handle, retained);
+109
+}
+110
+111
+/**
+112
+* Returns whether the topic is retained by server when there are no publishers.
+113
+*
+114
+* @return True if the topic is retained.
+115
+*/
+116
+public boolean isRetained() {
+117
+return NetworkTablesJNI.getTopicRetained(m_handle);
+118
+}
+119
+120
+/**
+121
+* Allow storage of the topic's last value, allowing the value to be read (and not just accessed
+122
+* through event queues and listeners).
+123
+*
+124
+* @param cached True for cached, false for not cached.
+125
+*/
+126
+public void setCached(boolean cached) {
+127
+NetworkTablesJNI.setTopicCached(m_handle, cached);
+128
+}
+129
+130
+/**
+131
+* Returns whether the topic's last value is stored.
+132
+*
+133
+* @return True if the topic is cached.
+134
+*/
+135
+public boolean isCached() {
+136
+return NetworkTablesJNI.getTopicCached(m_handle);
+137
+}
+138
+139
+/**
+140
+* Determines if the topic is currently being published.
+141
+*
+142
+* @return True if the topic exists, false otherwise.
+143
+*/
+144
+public boolean exists() {
+145
+return NetworkTablesJNI.getTopicExists(m_handle);
+146
+}
+147
+148
+/**
+149
+* Gets the current value of a property (as a JSON string).
+150
+*
+151
+* @param name property name
+152
+* @return JSON string; "null" if the property does not exist.
+153
+*/
+154
+public String getProperty(String name) {
+155
+return NetworkTablesJNI.getTopicProperty(m_handle, name);
+156
+}
+157
+158
+/**
+159
+* Sets a property value.
+160
+*
+161
+* @param name property name
+162
+* @param value property value (JSON string)
+163
+* @throws IllegalArgumentException if properties is not parseable as JSON
+164
+*/
+165
+public void setProperty(String name, String value) {
+166
+NetworkTablesJNI.setTopicProperty(m_handle, name, value);
+167
+}
+168
+169
+/**
+170
+* Deletes a property. Has no effect if the property does not exist.
+171
+*
+172
+* @param name property name
+173
+*/
+174
+public void deleteProperty(String name) {
+175
+NetworkTablesJNI.deleteTopicProperty(m_handle, name);
+176
+}
+177
+178
+/**
+179
+* Gets all topic properties as a JSON object string. Each key in the object is the property name,
+180
+* and the corresponding value is the property value.
+181
+*
+182
+* @return JSON string
+183
+*/
+184
+public String getProperties() {
+185
+return NetworkTablesJNI.getTopicProperties(m_handle);
+186
+}
+187
+188
+/**
+189
+* Updates multiple topic properties. Each key in the passed-in object is the name of the property
+190
+* to add/update, and the corresponding value is the property value to set for that property. Null
+191
+* values result in deletion of the corresponding property.
+192
+*
+193
+* @param properties JSON object string with keys to add/update/delete
+194
+* @throws IllegalArgumentException if properties is not a JSON object
+195
+*/
+196
+public void setProperties(String properties) {
+197
+NetworkTablesJNI.setTopicProperties(m_handle, properties);
+198
+}
+199
+200
+/**
+201
+* Create a new subscriber to the topic.
+202
+*
+203
+* <p>The subscriber is only active as long as the returned object is not closed.
+204
+*
+205
+* @param options subscribe options
+206
+* @return subscriber
+207
+*/
+208
+public GenericSubscriber genericSubscribe(PubSubOption... options) {
+209
+return genericSubscribe("", options);
+210
+}
+211
+212
+/**
+213
+* Create a new subscriber to the topic.
+214
+*
+215
+* <p>The subscriber is only active as long as the returned object is not closed.
+216
+*
+217
+* <p>Subscribers that do not match the published data type do not return any values. To determine
+218
+* if the data type matches, use the appropriate Topic functions.
+219
+*
+220
+* @param typeString type string
+221
+* @param options subscribe options
+222
+* @return subscriber
+223
+*/
+224
+public GenericSubscriber genericSubscribe(String typeString, PubSubOption... options) {
+225
+return new GenericEntryImpl(
+226
+this,
+227
+NetworkTablesJNI.subscribe(
+228
+m_handle, NetworkTableType.getFromString(typeString).getValue(), typeString, options));
+229
+}
+230
+231
+/**
+232
+* Create a new publisher to the topic.
+233
+*
+234
+* <p>The publisher is only active as long as the returned object is not closed.
+235
+*
+236
+* <p>It is not possible to publish two different data types to the same topic. Conflicts between
+237
+* publishers are typically resolved by the server on a first-come, first-served basis. Any
+238
+* published values that do not match the topic's data type are dropped (ignored). To determine if
+239
+* the data type matches, use the appropriate Topic functions.
+240
+*
+241
+* @param typeString type string
+242
+* @param options publish options
+243
+* @return publisher
+244
+*/
+245
+public GenericPublisher genericPublish(String typeString, PubSubOption... options) {
+246
+return new GenericEntryImpl(
+247
+this,
+248
+NetworkTablesJNI.publish(
+249
+m_handle, NetworkTableType.getFromString(typeString).getValue(), typeString, options));
+250
+}
+251
+252
+/**
+253
+* Create a new publisher to the topic, with type string and initial properties.
+254
+*
+255
+* <p>The publisher is only active as long as the returned object is not closed.
+256
+*
+257
+* <p>It is not possible to publish two different data types to the same topic. Conflicts between
+258
+* publishers are typically resolved by the server on a first-come, first-served basis. Any
+259
+* published values that do not match the topic's data type are dropped (ignored). To determine if
+260
+* the data type matches, use the appropriate Topic functions.
+261
+*
+262
+* @param typeString type string
+263
+* @param properties JSON properties
+264
+* @param options publish options
+265
+* @return publisher
+266
+* @throws IllegalArgumentException if properties is not a JSON object
+267
+*/
+268
+public GenericPublisher genericPublishEx(
+269
+String typeString, String properties, PubSubOption... options) {
+270
+return new GenericEntryImpl(
+271
+this,
+272
+NetworkTablesJNI.publishEx(
+273
+m_handle,
+274
+NetworkTableType.getFromString(typeString).getValue(),
+275
+typeString,
+276
+properties,
+277
+options));
+278
+}
+279
+280
+/**
+281
+* Create a new generic entry for the topic.
+282
+*
+283
+* <p>Entries act as a combination of a subscriber and a weak publisher. The subscriber is active
+284
+* as long as the entry is not closed. The publisher is created when the entry is first written
+285
+* to, and remains active until either unpublish() is called or the entry is closed.
+286
+*
+287
+* <p>It is not possible to publish two different data types to the same topic. Conflicts between
+288
+* publishers are typically resolved by the server on a first-come, first-served basis. Any
+289
+* published values that do not match the topic's data type are dropped (ignored). To determine if
+290
+* the data type matches, use the appropriate Topic functions.
+291
+*
+292
+* @param options publish and/or subscribe options
+293
+* @return entry
+294
+*/
+295
+public GenericEntry getGenericEntry(PubSubOption... options) {
+296
+return getGenericEntry("", options);
+297
+}
+298
+299
+/**
+300
+* Create a new generic entry for the topic.
+301
+*
+302
+* <p>Entries act as a combination of a subscriber and a weak publisher. The subscriber is active
+303
+* as long as the entry is not closed. The publisher is created when the entry is first written
+304
+* to, and remains active until either unpublish() is called or the entry is closed.
+305
+*
+306
+* <p>It is not possible to publish two different data types to the same topic. Conflicts between
+307
+* publishers are typically resolved by the server on a first-come, first-served basis. Any
+308
+* published values that do not match the topic's data type are dropped (ignored). To determine if
+309
+* the data type matches, use the appropriate Topic functions.
+310
+*
+311
+* @param typeString type string
+312
+* @param options publish and/or subscribe options
+313
+* @return entry
+314
+*/
+315
+public GenericEntry getGenericEntry(String typeString, PubSubOption... options) {
+316
+return new GenericEntryImpl(
+317
+this,
+318
+NetworkTablesJNI.getEntry(
+319
+m_handle, NetworkTableType.getFromString(typeString).getValue(), typeString, options));
+320
+}
+321
+322
+@Override
+323
+public boolean equals(Object other) {
+324
+return other instanceof Topic topic && m_handle == topic.m_handle;
+325
+}
+326
+327
+@Override
+328
+public int hashCode() {
+329
+return m_handle;
+330
+}
+331
+332
+/** NetworkTables instance. */
+333
+protected NetworkTableInstance m_inst;
+334
+335
+/** NetworkTables handle. */
+336
+protected int m_handle;
+337
+}

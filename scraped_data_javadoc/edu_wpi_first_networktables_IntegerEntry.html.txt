@@ -1,0 +1,87 @@
+Package
+edu.wpi.first.networktables
+Interface IntegerEntry
+All Superinterfaces:
+AutoCloseable
+,
+IntegerPublisher
+,
+IntegerSubscriber
+,
+LongConsumer
+,
+LongSupplier
+,
+Publisher
+,
+PubSub
+,
+Subscriber
+public interface
+IntegerEntry
+extends
+IntegerSubscriber
+,
+IntegerPublisher
+NetworkTables Integer entry.
+Unlike NetworkTableEntry, the entry goes away when close() is called.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+void
+unpublish
+()
+Stops publishing the entry if it's published.
+Methods inherited from interface edu.wpi.first.networktables.
+IntegerPublisher
+accept
+,
+getTopic
+,
+set
+,
+set
+,
+setDefault
+Methods inherited from interface edu.wpi.first.networktables.
+IntegerSubscriber
+get
+,
+get
+,
+getAsLong
+,
+getAtomic
+,
+getAtomic
+,
+getTopic
+,
+readQueue
+,
+readQueueValues
+Methods inherited from interface java.util.function.
+LongConsumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+unpublish
+void
+unpublish
+()
+Stops publishing the entry if it's published.

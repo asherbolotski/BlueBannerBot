@@ -1,0 +1,361 @@
+Package
+edu.wpi.first.math.kinematics
+Class DifferentialDriveKinematics
+java.lang.Object
+edu.wpi.first.math.kinematics.DifferentialDriveKinematics
+All Implemented Interfaces:
+Interpolator
+<
+DifferentialDriveWheelPositions
+>
+,
+Kinematics
+<
+DifferentialDriveWheelSpeeds
+,
+DifferentialDriveWheelPositions
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+DifferentialDriveKinematics
+extends
+Object
+implements
+Kinematics
+<
+DifferentialDriveWheelSpeeds
+,
+DifferentialDriveWheelPositions
+>,
+ProtobufSerializable
+,
+StructSerializable
+Helper class that converts a chassis velocity (dx and dtheta components) to left and right wheel
+ velocities for a differential drive.
+Inverse kinematics converts a desired chassis speed into left and right velocity components
+ whereas forward kinematics converts left and right component velocities into a linear and angular
+ chassis speed.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+DifferentialDriveKinematicsProto
+proto
+DifferentialDriveKinematics protobuf for serialization.
+static final
+DifferentialDriveKinematicsStruct
+struct
+DifferentialDriveKinematics struct for serialization.
+final double
+trackWidthMeters
+Differential drive trackwidth.
+Constructor Summary
+Constructors
+Constructor
+Description
+DifferentialDriveKinematics
+(double trackWidthMeters)
+Constructs a differential drive kinematics object.
+DifferentialDriveKinematics
+(
+Distance
+trackWidth)
+Constructs a differential drive kinematics object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+DifferentialDriveWheelPositions
+copy
+(
+DifferentialDriveWheelPositions
+positions)
+Returns a copy of the wheel positions object.
+void
+copyInto
+(
+DifferentialDriveWheelPositions
+positions,
+DifferentialDriveWheelPositions
+output)
+Copies the value of the wheel positions object into the output.
+DifferentialDriveWheelPositions
+interpolate
+(
+DifferentialDriveWheelPositions
+startValue,
+DifferentialDriveWheelPositions
+endValue,
+ double t)
+Perform interpolation between two values.
+ChassisSpeeds
+toChassisSpeeds
+(
+DifferentialDriveWheelSpeeds
+wheelSpeeds)
+Returns a chassis speed from left and right component velocities using forward kinematics.
+Twist2d
+toTwist2d
+(double leftDistanceMeters,
+ double rightDistanceMeters)
+Performs forward kinematics to return the resulting Twist2d from the given left and right side
+ distance deltas.
+Twist2d
+toTwist2d
+(
+DifferentialDriveWheelPositions
+start,
+DifferentialDriveWheelPositions
+end)
+Performs forward kinematics to return the resulting Twist2d from the given change in wheel
+ positions.
+DifferentialDriveWheelSpeeds
+toWheelSpeeds
+(
+ChassisSpeeds
+chassisSpeeds)
+Returns left and right component velocities from a chassis speed using inverse kinematics.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+trackWidthMeters
+public final
+double
+trackWidthMeters
+Differential drive trackwidth.
+proto
+public static final
+DifferentialDriveKinematicsProto
+proto
+DifferentialDriveKinematics protobuf for serialization.
+struct
+public static final
+DifferentialDriveKinematicsStruct
+struct
+DifferentialDriveKinematics struct for serialization.
+Constructor Details
+DifferentialDriveKinematics
+public
+DifferentialDriveKinematics
+(double trackWidthMeters)
+Constructs a differential drive kinematics object.
+Parameters:
+trackWidthMeters
+- The track width of the drivetrain. Theoretically, this is the distance
+     between the left wheels and right wheels. However, the empirical value may be larger than
+     the physical measured value due to scrubbing effects.
+DifferentialDriveKinematics
+public
+DifferentialDriveKinematics
+(
+Distance
+trackWidth)
+Constructs a differential drive kinematics object.
+Parameters:
+trackWidth
+- The track width of the drivetrain. Theoretically, this is the distance
+     between the left wheels and right wheels. However, the empirical value may be larger than
+     the physical measured value due to scrubbing effects.
+Method Details
+toChassisSpeeds
+public
+ChassisSpeeds
+toChassisSpeeds
+(
+DifferentialDriveWheelSpeeds
+wheelSpeeds)
+Returns a chassis speed from left and right component velocities using forward kinematics.
+Specified by:
+toChassisSpeeds
+in interface
+Kinematics
+<
+DifferentialDriveWheelSpeeds
+,
+DifferentialDriveWheelPositions
+>
+Parameters:
+wheelSpeeds
+- The left and right velocities.
+Returns:
+The chassis speed.
+toWheelSpeeds
+public
+DifferentialDriveWheelSpeeds
+toWheelSpeeds
+(
+ChassisSpeeds
+chassisSpeeds)
+Returns left and right component velocities from a chassis speed using inverse kinematics.
+Specified by:
+toWheelSpeeds
+in interface
+Kinematics
+<
+DifferentialDriveWheelSpeeds
+,
+DifferentialDriveWheelPositions
+>
+Parameters:
+chassisSpeeds
+- The linear and angular (dx and dtheta) components that represent the
+     chassis' speed.
+Returns:
+The left and right velocities.
+toTwist2d
+public
+Twist2d
+toTwist2d
+(
+DifferentialDriveWheelPositions
+start,
+DifferentialDriveWheelPositions
+end)
+Description copied from interface:
+Kinematics
+Performs forward kinematics to return the resulting Twist2d from the given change in wheel
+ positions. This method is often used for odometry -- determining the robot's position on the
+ field using changes in the distance driven by each wheel on the robot.
+Specified by:
+toTwist2d
+in interface
+Kinematics
+<
+DifferentialDriveWheelSpeeds
+,
+DifferentialDriveWheelPositions
+>
+Parameters:
+start
+- The starting distances driven by the wheels.
+end
+- The ending distances driven by the wheels.
+Returns:
+The resulting Twist2d in the robot's movement.
+toTwist2d
+public
+Twist2d
+toTwist2d
+(double leftDistanceMeters,
+ double rightDistanceMeters)
+Performs forward kinematics to return the resulting Twist2d from the given left and right side
+ distance deltas. This method is often used for odometry -- determining the robot's position on
+ the field using changes in the distance driven by each wheel on the robot.
+Parameters:
+leftDistanceMeters
+- The distance measured by the left side encoder.
+rightDistanceMeters
+- The distance measured by the right side encoder.
+Returns:
+The resulting Twist2d.
+copy
+public
+DifferentialDriveWheelPositions
+copy
+(
+DifferentialDriveWheelPositions
+positions)
+Description copied from interface:
+Kinematics
+Returns a copy of the wheel positions object.
+Specified by:
+copy
+in interface
+Kinematics
+<
+DifferentialDriveWheelSpeeds
+,
+DifferentialDriveWheelPositions
+>
+Parameters:
+positions
+- The wheel positions object to copy.
+Returns:
+A copy.
+copyInto
+public
+void
+copyInto
+(
+DifferentialDriveWheelPositions
+positions,
+DifferentialDriveWheelPositions
+output)
+Description copied from interface:
+Kinematics
+Copies the value of the wheel positions object into the output.
+Specified by:
+copyInto
+in interface
+Kinematics
+<
+DifferentialDriveWheelSpeeds
+,
+DifferentialDriveWheelPositions
+>
+Parameters:
+positions
+- The wheel positions object to copy. Will not be modified.
+output
+- The output variable of the copy operation. Will have the same value as the
+     positions object after the call.
+interpolate
+public
+DifferentialDriveWheelPositions
+interpolate
+(
+DifferentialDriveWheelPositions
+startValue,
+DifferentialDriveWheelPositions
+endValue,
+ double t)
+Description copied from interface:
+Interpolator
+Perform interpolation between two values.
+Specified by:
+interpolate
+in interface
+Interpolator
+<
+DifferentialDriveWheelPositions
+>
+Parameters:
+startValue
+- The value to start at.
+endValue
+- The value to end at.
+t
+- How far between the two values to interpolate. This should be bounded to [0, 1].
+Returns:
+The interpolated value.

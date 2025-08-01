@@ -1,0 +1,330 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.protobuf;
+006
+007
+import java.io.IOException;
+008
+import java.nio.ByteBuffer;
+009
+import us.hebi.quickbuf.ProtoMessage;
+010
+import us.hebi.quickbuf.ProtoSink;
+011
+import us.hebi.quickbuf.ProtoSource;
+012
+013
+/**
+014
+* Reusable buffer for serialization/deserialization to/from a protobuf.
+015
+*
+016
+* @param <T> object type
+017
+* @param <MessageType> protobuf message type
+018
+*/
+019
+public final class ProtobufBuffer<T, MessageType extends ProtoMessage<?>> {
+020
+private ProtobufBuffer(Protobuf<T, MessageType> proto) {
+021
+m_buf = ByteBuffer.allocateDirect(1024);
+022
+m_sink = ProtoSink.newDirectSink();
+023
+m_sink.setOutput(m_buf);
+024
+m_source = ProtoSource.newDirectSource();
+025
+m_msg = proto.createMessage();
+026
+m_proto = proto;
+027
+}
+028
+029
+/**
+030
+* Creates a ProtobufBuffer for the given Protobuf object.
+031
+*
+032
+* @param <T> The type to serialize.
+033
+* @param <MessageType> The Protobuf message type.
+034
+* @param proto The Protobuf object.
+035
+* @return A ProtobufBuffer for the given Protobuf object.
+036
+*/
+037
+public static <T, MessageType extends ProtoMessage<?>> ProtobufBuffer<T, MessageType> create(
+038
+Protobuf<T, MessageType> proto) {
+039
+return new ProtobufBuffer<>(proto);
+040
+}
+041
+042
+/**
+043
+* Gets the protobuf object of the stored type.
+044
+*
+045
+* @return protobuf object
+046
+*/
+047
+public Protobuf<T, MessageType> getProto() {
+048
+return m_proto;
+049
+}
+050
+051
+/**
+052
+* Gets the type string.
+053
+*
+054
+* @return type string
+055
+*/
+056
+public String getTypeString() {
+057
+return m_proto.getTypeString();
+058
+}
+059
+060
+/**
+061
+* Serializes a value to a ByteBuffer. The returned ByteBuffer is a direct byte buffer with the
+062
+* position set to the end of the serialized data.
+063
+*
+064
+* @param value value
+065
+* @return byte buffer
+066
+* @throws IOException if serialization failed
+067
+*/
+068
+public ByteBuffer write(T value) throws IOException {
+069
+m_msg.clearQuick();
+070
+m_proto.pack(m_msg, value);
+071
+int size = m_msg.getSerializedSize();
+072
+if (size > m_buf.capacity()) {
+073
+m_buf = ByteBuffer.allocateDirect(size * 2);
+074
+m_sink.setOutput(m_buf);
+075
+}
+076
+m_sink.reset();
+077
+m_msg.writeTo(m_sink);
+078
+m_buf.position(m_sink.getTotalBytesWritten());
+079
+return m_buf;
+080
+}
+081
+082
+/**
+083
+* Deserializes a value from a byte array, creating a new object.
+084
+*
+085
+* @param buf byte array
+086
+* @param start starting location within byte array
+087
+* @param len length of serialized data
+088
+* @return new object
+089
+* @throws IOException if deserialization failed
+090
+*/
+091
+public T read(byte[] buf, int start, int len) throws IOException {
+092
+m_msg.clearQuick();
+093
+m_source.setInput(buf, start, len);
+094
+m_msg.mergeFrom(m_source);
+095
+return m_proto.unpack(m_msg);
+096
+}
+097
+098
+/**
+099
+* Deserializes a value from a byte array, creating a new object.
+100
+*
+101
+* @param buf byte array
+102
+* @return new object
+103
+* @throws IOException if deserialization failed
+104
+*/
+105
+public T read(byte[] buf) throws IOException {
+106
+return read(buf, 0, buf.length);
+107
+}
+108
+109
+/**
+110
+* Deserializes a value from a ByteBuffer, creating a new object.
+111
+*
+112
+* @param buf byte buffer
+113
+* @return new object
+114
+* @throws IOException if deserialization failed
+115
+*/
+116
+public T read(ByteBuffer buf) throws IOException {
+117
+m_msg.clearQuick();
+118
+m_source.setInput(buf);
+119
+m_msg.mergeFrom(m_source);
+120
+return m_proto.unpack(m_msg);
+121
+}
+122
+123
+/**
+124
+* Deserializes a value from a byte array into a mutable object.
+125
+*
+126
+* @param out object (will be updated with deserialized contents)
+127
+* @param buf byte array
+128
+* @param start starting location within byte array
+129
+* @param len length of serialized data
+130
+* @throws IOException if deserialization failed
+131
+* @throws UnsupportedOperationException if the object is immutable
+132
+*/
+133
+public void readInto(T out, byte[] buf, int start, int len) throws IOException {
+134
+m_msg.clearQuick();
+135
+m_source.setInput(buf, start, len);
+136
+m_msg.mergeFrom(m_source);
+137
+m_proto.unpackInto(out, m_msg);
+138
+}
+139
+140
+/**
+141
+* Deserializes a value from a byte array into a mutable object.
+142
+*
+143
+* @param out object (will be updated with deserialized contents)
+144
+* @param buf byte array
+145
+* @throws IOException if deserialization failed
+146
+* @throws UnsupportedOperationException if the object is immutable
+147
+*/
+148
+public void readInto(T out, byte[] buf) throws IOException {
+149
+readInto(out, buf, 0, buf.length);
+150
+}
+151
+152
+/**
+153
+* Deserializes a value from a ByteBuffer into a mutable object.
+154
+*
+155
+* @param out object (will be updated with deserialized contents)
+156
+* @param buf byte buffer
+157
+* @throws IOException if deserialization failed
+158
+* @throws UnsupportedOperationException if the object is immutable
+159
+*/
+160
+public void readInto(T out, ByteBuffer buf) throws IOException {
+161
+m_msg.clearQuick();
+162
+m_source.setInput(buf);
+163
+m_msg.mergeFrom(m_source);
+164
+m_proto.unpackInto(out, m_msg);
+165
+}
+166
+167
+private ByteBuffer m_buf;
+168
+private final ProtoSink m_sink;
+169
+private final ProtoSource m_source;
+170
+private final MessageType m_msg;
+171
+private final Protobuf<T, MessageType> m_proto;
+172
+}

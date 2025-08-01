@@ -1,0 +1,88 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/** A wrapper around a simulator value handle. */
+008
+public class SimValue {
+009
+/**
+010
+* Wraps a simulated value handle as returned by SimDeviceJNI.createSimValue().
+011
+*
+012
+* @param handle simulated value handle
+013
+*/
+014
+public SimValue(int handle) {
+015
+m_handle = handle;
+016
+}
+017
+018
+/**
+019
+* Get the internal device handle.
+020
+*
+021
+* @return internal handle
+022
+*/
+023
+public int getNativeHandle() {
+024
+return m_handle;
+025
+}
+026
+027
+/**
+028
+* Gets the simulated value.
+029
+*
+030
+* @return The current value
+031
+*/
+032
+public HALValue getValue() {
+033
+return SimDeviceJNI.getSimValue(m_handle);
+034
+}
+035
+036
+/**
+037
+* Sets the simulated value.
+038
+*
+039
+* @param value the value to set
+040
+*/
+041
+public void setValue(HALValue value) {
+042
+SimDeviceJNI.setSimValue(m_handle, value);
+043
+}
+044
+045
+/** The native handle for this SimValue. */
+046
+protected final int m_handle;
+047
+}

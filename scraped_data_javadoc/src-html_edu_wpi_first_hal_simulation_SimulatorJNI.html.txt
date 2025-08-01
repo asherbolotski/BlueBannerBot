@@ -1,0 +1,56 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.JNIWrapper;
+008
+009
+/** JNI for simulator. */
+010
+public class SimulatorJNI extends JNIWrapper {
+011
+public static native void setRuntimeType(int type);
+012
+013
+public static native void waitForProgramStart();
+014
+015
+public static native void setProgramStarted();
+016
+017
+public static native boolean getProgramStarted();
+018
+019
+public static native void restartTiming();
+020
+021
+public static native void pauseTiming();
+022
+023
+public static native void resumeTiming();
+024
+025
+public static native boolean isTimingPaused();
+026
+027
+public static native void stepTiming(long delta);
+028
+029
+public static native void stepTimingAsync(long delta);
+030
+031
+public static native void resetHandles();
+032
+033
+/** Utility class. */
+034
+private SimulatorJNI() {}
+035
+}

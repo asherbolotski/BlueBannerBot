@@ -1,0 +1,237 @@
+Package
+edu.wpi.first.wpilibj
+Class AnalogPotentiometer
+java.lang.Object
+edu.wpi.first.wpilibj.AnalogPotentiometer
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+AnalogPotentiometer
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Class for reading analog potentiometers. Analog potentiometers read in an analog voltage that
+ corresponds to a position. The position is in whichever units you choose, by way of the scaling
+ and offset constants passed to the constructor.
+Constructor Summary
+Constructors
+Constructor
+Description
+AnalogPotentiometer
+(int channel)
+AnalogPotentiometer constructor.
+AnalogPotentiometer
+(int channel,
+ double scale)
+AnalogPotentiometer constructor.
+AnalogPotentiometer
+(int channel,
+ double fullRange,
+ double offset)
+AnalogPotentiometer constructor.
+AnalogPotentiometer
+(
+AnalogInput
+input)
+AnalogPotentiometer constructor.
+AnalogPotentiometer
+(
+AnalogInput
+input,
+ double scale)
+AnalogPotentiometer constructor.
+AnalogPotentiometer
+(
+AnalogInput
+input,
+ double fullRange,
+ double offset)
+AnalogPotentiometer constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+double
+get
+()
+Get the current reading of the potentiometer.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AnalogPotentiometer
+public
+AnalogPotentiometer
+(int channel,
+ double fullRange,
+ double offset)
+AnalogPotentiometer constructor.
+Use the fullRange and offset values so that the output produces meaningful values. I.E: you
+ have a 270 degree potentiometer, and you want the output to be degrees with the halfway point
+ as 0 degrees. The fullRange value is 270.0(degrees) and the offset is -135.0 since the halfway
+ point after scaling is 135 degrees. This will calculate the result from the fullRange times the
+ fraction of the supply voltage, plus the offset.
+Parameters:
+channel
+- The analog input channel this potentiometer is plugged into. 0-3 are on-board
+     and 4-7 are on the MXP port.
+fullRange
+- The scaling to multiply the fraction by to get a meaningful unit.
+offset
+- The offset to add to the scaled value for controlling the zero value
+AnalogPotentiometer
+public
+AnalogPotentiometer
+(
+AnalogInput
+input,
+ double fullRange,
+ double offset)
+AnalogPotentiometer constructor.
+Use the fullRange and offset values so that the output produces meaningful values. I.E: you
+ have a 270 degree potentiometer, and you want the output to be degrees with the halfway point
+ as 0 degrees. The fullRange value is 270.0(degrees) and the offset is -135.0 since the halfway
+ point after scaling is 135 degrees. This will calculate the result from the fullRange times the
+ fraction of the supply voltage, plus the offset.
+Parameters:
+input
+- The
+AnalogInput
+this potentiometer is plugged into.
+fullRange
+- The angular value (in desired units) representing the full 0-5V range of the
+     input.
+offset
+- The angular value (in desired units) representing the angular output at 0V.
+AnalogPotentiometer
+public
+AnalogPotentiometer
+(int channel,
+ double scale)
+AnalogPotentiometer constructor.
+Use the scale value so that the output produces meaningful values. I.E: you have a 270
+ degree potentiometer, and you want the output to be degrees with the starting point as 0
+ degrees. The scale value is 270.0(degrees).
+Parameters:
+channel
+- The analog input channel this potentiometer is plugged into. 0-3 are on-board
+     and 4-7 are on the MXP port.
+scale
+- The scaling to multiply the voltage by to get a meaningful unit.
+AnalogPotentiometer
+public
+AnalogPotentiometer
+(
+AnalogInput
+input,
+ double scale)
+AnalogPotentiometer constructor.
+Use the fullRange and offset values so that the output produces meaningful values. I.E: you
+ have a 270 degree potentiometer, and you want the output to be degrees with the starting point
+ as 0 degrees. The scale value is 270.0(degrees).
+Parameters:
+input
+- The
+AnalogInput
+this potentiometer is plugged into.
+scale
+- The scaling to multiply the voltage by to get a meaningful unit.
+AnalogPotentiometer
+public
+AnalogPotentiometer
+(int channel)
+AnalogPotentiometer constructor.
+The potentiometer will return a value between 0 and 1.0.
+Parameters:
+channel
+- The analog input channel this potentiometer is plugged into. 0-3 are on-board
+     and 4-7 are on the MXP port.
+AnalogPotentiometer
+public
+AnalogPotentiometer
+(
+AnalogInput
+input)
+AnalogPotentiometer constructor.
+The potentiometer will return a value between 0 and 1.0.
+Parameters:
+input
+- The
+AnalogInput
+this potentiometer is plugged into.
+Method Details
+get
+public
+double
+get
+()
+Get the current reading of the potentiometer.
+Returns:
+The current position of the potentiometer.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable

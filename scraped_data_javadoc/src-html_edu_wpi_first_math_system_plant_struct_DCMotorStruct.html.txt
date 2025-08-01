@@ -1,0 +1,94 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.system.plant.struct;
+006
+007
+import edu.wpi.first.math.system.plant.DCMotor;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class DCMotorStruct implements Struct<DCMotor> {
+012
+@Override
+013
+public Class<DCMotor> getTypeClass() {
+014
+return DCMotor.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "DCMotor";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble * 5;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double nominal_voltage;double stall_torque;double stall_current;"
+030
++ "double free_current;double free_speed";
+031
+}
+032
+033
+@Override
+034
+public DCMotor unpack(ByteBuffer bb) {
+035
+double nominalVoltage = bb.getDouble();
+036
+double stallTorque = bb.getDouble();
+037
+double stallCurrent = bb.getDouble();
+038
+double freeCurrent = bb.getDouble();
+039
+double freeSpeed = bb.getDouble();
+040
+return new DCMotor(nominalVoltage, stallTorque, stallCurrent, freeCurrent, freeSpeed, 1);
+041
+}
+042
+043
+@Override
+044
+public void pack(ByteBuffer bb, DCMotor value) {
+045
+bb.putDouble(value.nominalVoltageVolts);
+046
+bb.putDouble(value.stallTorqueNewtonMeters);
+047
+bb.putDouble(value.stallCurrentAmps);
+048
+bb.putDouble(value.freeCurrentAmps);
+049
+bb.putDouble(value.freeSpeedRadPerSec);
+050
+}
+051
+}

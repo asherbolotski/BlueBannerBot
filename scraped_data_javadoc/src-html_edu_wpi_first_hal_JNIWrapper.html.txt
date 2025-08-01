@@ -1,0 +1,139 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+import edu.wpi.first.util.RuntimeLoader;
+008
+import java.io.IOException;
+009
+import java.util.concurrent.atomic.AtomicBoolean;
+010
+011
+/** Base class for all JNI wrappers. */
+012
+public class JNIWrapper {
+013
+static boolean libraryLoaded = false;
+014
+015
+/** Sets whether JNI should be loaded in the static block. */
+016
+public static class Helper {
+017
+private static AtomicBoolean extractOnStaticLoad = new AtomicBoolean(true);
+018
+019
+/**
+020
+* Returns true if the JNI should be loaded in the static block.
+021
+*
+022
+* @return True if the JNI should be loaded in the static block.
+023
+*/
+024
+public static boolean getExtractOnStaticLoad() {
+025
+return extractOnStaticLoad.get();
+026
+}
+027
+028
+/**
+029
+* Sets whether the JNI should be loaded in the static block.
+030
+*
+031
+* @param load Whether the JNI should be loaded in the static block.
+032
+*/
+033
+public static void setExtractOnStaticLoad(boolean load) {
+034
+extractOnStaticLoad.set(load);
+035
+}
+036
+037
+/** Utility class. */
+038
+private Helper() {}
+039
+}
+040
+041
+static {
+042
+if (Helper.getExtractOnStaticLoad()) {
+043
+try {
+044
+RuntimeLoader.loadLibrary("wpiHaljni");
+045
+} catch (Exception ex) {
+046
+ex.printStackTrace();
+047
+System.exit(1);
+048
+}
+049
+libraryLoaded = true;
+050
+}
+051
+}
+052
+053
+/**
+054
+* Force load the library.
+055
+*
+056
+* @throws IOException if the library load failed
+057
+*/
+058
+public static synchronized void forceLoad() throws IOException {
+059
+if (libraryLoaded) {
+060
+return;
+061
+}
+062
+RuntimeLoader.loadLibrary("wpiHaljni");
+063
+libraryLoaded = true;
+064
+}
+065
+066
+/**
+067
+* Dummy function to suppress unused variable warnings.
+068
+*
+069
+* @param object variable to suppress
+070
+*/
+071
+public static void suppressUnused(Object object) {}
+072
+073
+/** Utility class. */
+074
+public JNIWrapper() {}
+075
+}

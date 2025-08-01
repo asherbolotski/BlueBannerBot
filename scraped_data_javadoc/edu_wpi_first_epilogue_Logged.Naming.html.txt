@@ -1,0 +1,176 @@
+Package
+edu.wpi.first.epilogue
+Enum Class Logged.Naming
+java.lang.Object
+java.lang.Enum
+<
+Logged.Naming
+>
+edu.wpi.first.epilogue.Logged.Naming
+All Implemented Interfaces:
+Serializable
+,
+Comparable
+<
+Logged.Naming
+>
+,
+Constable
+Enclosing class:
+Logged
+public static enum
+Logged.Naming
+extends
+Enum
+<
+Logged.Naming
+>
+Different behaviors for how Epilogue will generate the names of logged data points. This only
+ applies to automatically generated names; any specific name provided with
+Enum.name()
+will
+ take precedence over an automatically generated name.
+Nested Class Summary
+Nested classes/interfaces inherited from class java.lang.
+Enum
+Enum.EnumDesc
+<
+E
+extends
+Enum
+<
+E
+>>
+Enum Constant Summary
+Enum Constants
+Enum Constant
+Description
+USE_CODE_NAME
+Sets the default naming strategy to use the name of the element as it appears in source code.
+USE_HUMAN_NAME
+Sets the default naming strategy to use a human-readable name based on the name of the name
+ of the element as it appears in source code.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+Logged.Naming
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+static
+Logged.Naming
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Methods inherited from class java.lang.
+Enum
+clone
+,
+compareTo
+,
+describeConstable
+,
+equals
+,
+finalize
+,
+getDeclaringClass
+,
+hashCode
+,
+name
+,
+ordinal
+,
+toString
+,
+valueOf
+Methods inherited from class java.lang.
+Object
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Enum Constant Details
+USE_CODE_NAME
+public static final
+Logged.Naming
+USE_CODE_NAME
+Sets the default naming strategy to use the name of the element as it appears in source code.
+ For example, a field
+double m_x
+would be labeled as
+"m_x"
+by default, and a
+getX()
+accessor would be labeled as
+"getX"
+.
+USE_HUMAN_NAME
+public static final
+Logged.Naming
+USE_HUMAN_NAME
+Sets the default naming strategy to use a human-readable name based on the name of the name
+ of the element as it appears in source code. For example, a field
+double m_x
+would be
+ labeled as
+"X"
+by default, and a
+getX()
+accessor would also be labeled as
+"X"
+. Because logged names must be unique, this configuration would fail to compile
+ and require either one of the fields to be excluded from logs (which, for simple accessors,
+ would be ideal to avoid duplicate data), or to rename one or both elements so the logged data
+ fields would have unique names.
+Method Details
+values
+public static
+Logged.Naming
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Returns:
+an array containing the constants of this enum class, in the order they are declared
+valueOf
+public static
+Logged.Naming
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+The string must match
+exactly
+an identifier used to declare an
+enum constant in this class.  (Extraneous whitespace characters are 
+not permitted.)
+Parameters:
+name
+- the name of the enum constant to be returned.
+Returns:
+the enum constant with the specified name
+Throws:
+IllegalArgumentException
+- if this enum class has no constant with the specified name
+NullPointerException
+- if the argument is null

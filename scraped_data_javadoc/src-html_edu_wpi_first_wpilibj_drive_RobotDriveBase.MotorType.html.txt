@@ -1,0 +1,218 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.drive;
+006
+007
+import edu.wpi.first.wpilibj.MotorSafety;
+008
+009
+/**
+010
+* Common base class for drive platforms.
+011
+*
+012
+* <p>{@link edu.wpi.first.wpilibj.MotorSafety} is enabled by default.
+013
+*/
+014
+public abstract class RobotDriveBase extends MotorSafety {
+015
+/** Default input deadband. */
+016
+public static final double kDefaultDeadband = 0.02;
+017
+018
+/** Default maximum output. */
+019
+public static final double kDefaultMaxOutput = 1.0;
+020
+021
+/** Input deadband. */
+022
+protected double m_deadband = kDefaultDeadband;
+023
+024
+/** Maximum output. */
+025
+protected double m_maxOutput = kDefaultMaxOutput;
+026
+027
+/** The location of a motor on the robot for the purpose of driving. */
+028
+public enum MotorType {
+029
+/** Front left motor. */
+030
+kFrontLeft(0),
+031
+/** Front right motor. */
+032
+kFrontRight(1),
+033
+/** Rear left motor. */
+034
+kRearLeft(2),
+035
+/** Rear right motor. */
+036
+kRearRight(3),
+037
+/** Left motor. */
+038
+kLeft(0),
+039
+/** Right motor. */
+040
+kRight(1),
+041
+/** Back motor. */
+042
+kBack(2);
+043
+044
+/** MotorType value. */
+045
+public final int value;
+046
+047
+MotorType(int value) {
+048
+this.value = value;
+049
+}
+050
+}
+051
+052
+/** RobotDriveBase constructor. */
+053
+@SuppressWarnings("this-escape")
+054
+public RobotDriveBase() {
+055
+setSafetyEnabled(true);
+056
+}
+057
+058
+/**
+059
+* Sets the deadband applied to the drive inputs (e.g., joystick values).
+060
+*
+061
+* <p>The default value is {@value #kDefaultDeadband}. Inputs smaller than the deadband are set to
+062
+* 0.0 while inputs larger than the deadband are scaled from 0.0 to 1.0. See {@link
+063
+* edu.wpi.first.math.MathUtil#applyDeadband}.
+064
+*
+065
+* @param deadband The deadband to set.
+066
+*/
+067
+public void setDeadband(double deadband) {
+068
+m_deadband = deadband;
+069
+}
+070
+071
+/**
+072
+* Configure the scaling factor for using drive methods with motor controllers in a mode other
+073
+* than PercentVbus or to limit the maximum output.
+074
+*
+075
+* <p>The default value is {@value #kDefaultMaxOutput}.
+076
+*
+077
+* @param maxOutput Multiplied with the output percentage computed by the drive functions.
+078
+*/
+079
+public void setMaxOutput(double maxOutput) {
+080
+m_maxOutput = maxOutput;
+081
+}
+082
+083
+/**
+084
+* Feed the motor safety object. Resets the timer that will stop the motors if it completes.
+085
+*
+086
+* @see MotorSafety#feed()
+087
+*/
+088
+public void feedWatchdog() {
+089
+feed();
+090
+}
+091
+092
+@Override
+093
+public abstract void stopMotor();
+094
+095
+@Override
+096
+public abstract String getDescription();
+097
+098
+/**
+099
+* Normalize all wheel speeds if the magnitude of any wheel is greater than 1.0.
+100
+*
+101
+* @param wheelSpeeds List of wheel speeds to normalize.
+102
+*/
+103
+protected static void normalize(double[] wheelSpeeds) {
+104
+double maxMagnitude = Math.abs(wheelSpeeds[0]);
+105
+for (int i = 1; i < wheelSpeeds.length; i++) {
+106
+double temp = Math.abs(wheelSpeeds[i]);
+107
+if (maxMagnitude < temp) {
+108
+maxMagnitude = temp;
+109
+}
+110
+}
+111
+if (maxMagnitude > 1.0) {
+112
+for (int i = 0; i < wheelSpeeds.length; i++) {
+113
+wheelSpeeds[i] = wheelSpeeds[i] / maxMagnitude;
+114
+}
+115
+}
+116
+}
+117
+}

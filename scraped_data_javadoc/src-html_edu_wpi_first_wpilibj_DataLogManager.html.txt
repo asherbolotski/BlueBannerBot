@@ -1,0 +1,891 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.FRCNetComm.tInstances;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.networktables.NetworkTableInstance;
+011
+import edu.wpi.first.util.FileLogger;
+012
+import edu.wpi.first.util.WPIUtilJNI;
+013
+import edu.wpi.first.util.concurrent.Event;
+014
+import edu.wpi.first.util.datalog.DataLog;
+015
+import edu.wpi.first.util.datalog.DataLogBackgroundWriter;
+016
+import edu.wpi.first.util.datalog.IntegerLogEntry;
+017
+import edu.wpi.first.util.datalog.StringLogEntry;
+018
+import java.io.File;
+019
+import java.io.IOException;
+020
+import java.nio.file.Files;
+021
+import java.nio.file.Path;
+022
+import java.nio.file.Paths;
+023
+import java.time.LocalDateTime;
+024
+import java.time.ZoneId;
+025
+import java.time.format.DateTimeFormatter;
+026
+import java.util.Arrays;
+027
+import java.util.Comparator;
+028
+import java.util.Random;
+029
+030
+/**
+031
+* Centralized data log that provides automatic data log file management. It automatically cleans up
+032
+* old files when disk space is low and renames the file based either on current date/time or (if
+033
+* available) competition match number. The data file will be saved to a USB flash drive in a folder
+034
+* named "logs" if one is attached, or to /home/lvuser/logs otherwise.
+035
+*
+036
+* <p>Log files are initially named "FRC_TBD_{random}.wpilog" until the DS connects. After the DS
+037
+* connects, the log file is renamed to "FRC_yyyyMMdd_HHmmss.wpilog" (where the date/time is UTC).
+038
+* If the FMS is connected and provides a match number, the log file is renamed to
+039
+* "FRC_yyyyMMdd_HHmmss_{event}_{match}.wpilog".
+040
+*
+041
+* <p>On startup, all existing FRC_TBD log files are deleted. If there is less than 50 MB of free
+042
+* space on the target storage, FRC_ log files are deleted (oldest to newest) until there is 50 MB
+043
+* free OR there are 10 files remaining.
+044
+*
+045
+* <p>By default, all NetworkTables value changes are stored to the data log.
+046
+*/
+047
+public final class DataLogManager {
+048
+private static DataLogBackgroundWriter m_log;
+049
+private static boolean m_stopped;
+050
+private static String m_logDir;
+051
+private static boolean m_filenameOverride;
+052
+private static Thread m_thread;
+053
+private static final ZoneId m_utc = ZoneId.of("UTC");
+054
+private static final DateTimeFormatter m_timeFormatter =
+055
+DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").withZone(m_utc);
+056
+private static boolean m_ntLoggerEnabled = true;
+057
+private static int m_ntEntryLogger;
+058
+private static int m_ntConnLogger;
+059
+private static boolean m_consoleLoggerEnabled = true;
+060
+private static FileLogger m_consoleLogger;
+061
+private static StringLogEntry m_messageLog;
+062
+063
+// if less than this much free space, delete log files until there is this much free space
+064
+// OR there are this many files remaining.
+065
+private static final long kFreeSpaceThreshold = 50000000L;
+066
+private static final int kFileCountThreshold = 10;
+067
+068
+private DataLogManager() {}
+069
+070
+/** Start data log manager with default directory location. */
+071
+public static synchronized void start() {
+072
+start("", "", 0.25);
+073
+}
+074
+075
+/**
+076
+* Start data log manager. The parameters have no effect if the data log manager was already
+077
+* started (e.g. by calling another static function).
+078
+*
+079
+* @param dir if not empty, directory to use for data log storage
+080
+*/
+081
+public static synchronized void start(String dir) {
+082
+start(dir, "", 0.25);
+083
+}
+084
+085
+/**
+086
+* Start data log manager. The parameters have no effect if the data log manager was already
+087
+* started (e.g. by calling another static function).
+088
+*
+089
+* @param dir if not empty, directory to use for data log storage
+090
+* @param filename filename to use; if none provided, the filename is automatically generated
+091
+*/
+092
+public static synchronized void start(String dir, String filename) {
+093
+start(dir, filename, 0.25);
+094
+}
+095
+096
+/**
+097
+* Start data log manager. The parameters have no effect if the data log manager was already
+098
+* started (e.g. by calling another static function).
+099
+*
+100
+* @param dir if not empty, directory to use for data log storage
+101
+* @param filename filename to use; if none provided, the filename is automatically generated
+102
+* @param period time between automatic flushes to disk, in seconds; this is a time/storage
+103
+*     tradeoff
+104
+*/
+105
+public static synchronized void start(String dir, String filename, double period) {
+106
+if (m_log == null) {
+107
+m_logDir = makeLogDir(dir);
+108
+m_filenameOverride = !filename.isEmpty();
+109
+110
+// Delete all previously existing FRC_TBD_*.wpilog files. These only exist when the robot
+111
+// never connects to the DS, so they are very unlikely to have useful data and just clutter
+112
+// the filesystem.
+113
+File[] files =
+114
+new File(m_logDir)
+115
+.listFiles((d, name) -> name.startsWith("FRC_TBD_") && name.endsWith(".wpilog"));
+116
+if (files != null) {
+117
+for (File file : files) {
+118
+if (!file.delete()) {
+119
+System.err.println("DataLogManager: could not delete " + file);
+120
+}
+121
+}
+122
+}
+123
+m_log = new DataLogBackgroundWriter(m_logDir, makeLogFilename(filename), period);
+124
+m_messageLog = new StringLogEntry(m_log, "messages");
+125
+126
+// Log all NT entries and connections
+127
+if (m_ntLoggerEnabled) {
+128
+startNtLog();
+129
+}
+130
+// Log console output
+131
+if (m_consoleLoggerEnabled) {
+132
+startConsoleLog();
+133
+}
+134
+} else if (m_stopped) {
+135
+m_log.setFilename(makeLogFilename(filename));
+136
+m_log.resume();
+137
+m_stopped = false;
+138
+}
+139
+140
+if (m_thread == null) {
+141
+m_thread = new Thread(DataLogManager::logMain, "DataLogDS");
+142
+m_thread.setDaemon(true);
+143
+m_thread.start();
+144
+}
+145
+}
+146
+147
+/** Stop data log manager. */
+148
+public static synchronized void stop() {
+149
+if (m_thread != null) {
+150
+m_thread.interrupt();
+151
+m_thread = null;
+152
+}
+153
+if (m_log != null) {
+154
+m_log.stop();
+155
+m_stopped = true;
+156
+}
+157
+}
+158
+159
+/**
+160
+* Log a message to the "messages" entry. The message is also printed to standard output (followed
+161
+* by a newline).
+162
+*
+163
+* @param message message
+164
+*/
+165
+public static synchronized void log(String message) {
+166
+if (m_messageLog == null) {
+167
+start();
+168
+}
+169
+m_messageLog.append(message);
+170
+System.out.println(message);
+171
+}
+172
+173
+/**
+174
+* Get the managed data log (for custom logging). Starts the data log manager if not already
+175
+* started.
+176
+*
+177
+* @return data log
+178
+*/
+179
+public static synchronized DataLog getLog() {
+180
+if (m_log == null) {
+181
+start();
+182
+}
+183
+return m_log;
+184
+}
+185
+186
+/**
+187
+* Get the log directory.
+188
+*
+189
+* @return log directory, or empty string if logging not yet started
+190
+*/
+191
+public static synchronized String getLogDir() {
+192
+if (m_logDir == null) {
+193
+return "";
+194
+}
+195
+return m_logDir;
+196
+}
+197
+198
+/**
+199
+* Enable or disable logging of NetworkTables data. Note that unlike the network interface for
+200
+* NetworkTables, this will capture every value change. Defaults to enabled.
+201
+*
+202
+* @param enabled true to enable, false to disable
+203
+*/
+204
+public static synchronized void logNetworkTables(boolean enabled) {
+205
+boolean wasEnabled = m_ntLoggerEnabled;
+206
+m_ntLoggerEnabled = enabled;
+207
+if (m_log == null) {
+208
+start();
+209
+return;
+210
+}
+211
+if (enabled && !wasEnabled) {
+212
+startNtLog();
+213
+} else if (!enabled && wasEnabled) {
+214
+stopNtLog();
+215
+}
+216
+}
+217
+218
+/**
+219
+* Enable or disable logging of the console output. Defaults to enabled.
+220
+*
+221
+* @param enabled true to enable, false to disable
+222
+*/
+223
+public static synchronized void logConsoleOutput(boolean enabled) {
+224
+boolean wasEnabled = m_consoleLoggerEnabled;
+225
+m_consoleLoggerEnabled = enabled;
+226
+if (m_log == null) {
+227
+start();
+228
+return;
+229
+}
+230
+if (enabled && !wasEnabled) {
+231
+startConsoleLog();
+232
+} else if (!enabled && wasEnabled) {
+233
+stopConsoleLog();
+234
+}
+235
+}
+236
+237
+private static String makeLogDir(String dir) {
+238
+if (!dir.isEmpty()) {
+239
+return dir;
+240
+}
+241
+242
+if (RobotBase.isReal()) {
+243
+try {
+244
+// prefer a mounted USB drive if one is accessible
+245
+Path usbDir = Paths.get("/u").toRealPath();
+246
+if (Files.isWritable(usbDir)) {
+247
+if (!new File("/u/logs").mkdir()) {
+248
+// ignored
+249
+}
+250
+HAL.report(tResourceType.kResourceType_DataLogManager, tInstances.kDataLogLocation_USB);
+251
+return "/u/logs";
+252
+}
+253
+} catch (IOException ex) {
+254
+// ignored
+255
+}
+256
+if (RobotBase.getRuntimeType() == RuntimeType.kRoboRIO) {
+257
+DriverStation.reportWarning(
+258
+"DataLogManager: Logging to RoboRIO 1 internal storage is not recommended!"
+259
++ " Plug in a FAT32 formatted flash drive!",
+260
+false);
+261
+}
+262
+if (!new File("/home/lvuser/logs").mkdir()) {
+263
+// ignored
+264
+}
+265
+HAL.report(tResourceType.kResourceType_DataLogManager, tInstances.kDataLogLocation_Onboard);
+266
+return "/home/lvuser/logs";
+267
+}
+268
+String logDir = Filesystem.getOperatingDirectory().getAbsolutePath() + "/logs";
+269
+if (!new File(logDir).mkdir()) {
+270
+// ignored
+271
+}
+272
+return logDir;
+273
+}
+274
+275
+private static String makeLogFilename(String filenameOverride) {
+276
+if (!filenameOverride.isEmpty()) {
+277
+return filenameOverride;
+278
+}
+279
+Random rnd = new Random();
+280
+StringBuilder filename = new StringBuilder();
+281
+filename.append("FRC_TBD_");
+282
+for (int i = 0; i < 4; i++) {
+283
+filename.append(String.format("%04x", rnd.nextInt(0x10000)));
+284
+}
+285
+filename.append(".wpilog");
+286
+return filename.toString();
+287
+}
+288
+289
+private static void startNtLog() {
+290
+NetworkTableInstance inst = NetworkTableInstance.getDefault();
+291
+m_ntEntryLogger = inst.startEntryDataLog(m_log, "", "NT:");
+292
+m_ntConnLogger = inst.startConnectionDataLog(m_log, "NTConnection");
+293
+}
+294
+295
+private static void stopNtLog() {
+296
+NetworkTableInstance.stopEntryDataLog(m_ntEntryLogger);
+297
+NetworkTableInstance.stopConnectionDataLog(m_ntConnLogger);
+298
+}
+299
+300
+private static void startConsoleLog() {
+301
+if (RobotBase.isReal()) {
+302
+m_consoleLogger = new FileLogger("/home/lvuser/FRC_UserProgram.log", m_log, "console");
+303
+}
+304
+}
+305
+306
+private static void stopConsoleLog() {
+307
+if (RobotBase.isReal()) {
+308
+m_consoleLogger.close();
+309
+}
+310
+}
+311
+312
+private static void logMain() {
+313
+// based on free disk space, scan for "old" FRC_*.wpilog files and remove
+314
+{
+315
+File logDir = new File(m_logDir);
+316
+long freeSpace = logDir.getUsableSpace();
+317
+if (freeSpace < kFreeSpaceThreshold) {
+318
+// Delete oldest FRC_*.wpilog files (ignore FRC_TBD_*.wpilog as we just created one)
+319
+File[] files =
+320
+logDir.listFiles(
+321
+(dir, name) ->
+322
+name.startsWith("FRC_")
+323
+&& name.endsWith(".wpilog")
+324
+&& !name.startsWith("FRC_TBD_"));
+325
+if (files != null) {
+326
+Arrays.sort(files, Comparator.comparingLong(File::lastModified));
+327
+int count = files.length;
+328
+for (File file : files) {
+329
+--count;
+330
+if (count < kFileCountThreshold) {
+331
+break;
+332
+}
+333
+long length = file.length();
+334
+if (file.delete()) {
+335
+DriverStation.reportWarning("DataLogManager: Deleted " + file.getName(), false);
+336
+freeSpace += length;
+337
+if (freeSpace >= kFreeSpaceThreshold) {
+338
+break;
+339
+}
+340
+} else {
+341
+System.err.println("DataLogManager: could not delete " + file);
+342
+}
+343
+}
+344
+}
+345
+} else if (freeSpace < 2 * kFreeSpaceThreshold) {
+346
+DriverStation.reportWarning(
+347
+"DataLogManager: Log storage device has "
+348
++ freeSpace / 1000000
+349
++ " MB of free space remaining! Logs will get deleted below "
+350
++ kFreeSpaceThreshold / 1000000
+351
++ " MB of free space. "
+352
++ "Consider deleting logs off the storage device.",
+353
+false);
+354
+}
+355
+}
+356
+357
+int timeoutCount = 0;
+358
+boolean paused = false;
+359
+int dsAttachCount = 0;
+360
+int fmsAttachCount = 0;
+361
+boolean dsRenamed = m_filenameOverride;
+362
+boolean fmsRenamed = m_filenameOverride;
+363
+int sysTimeCount = 0;
+364
+IntegerLogEntry sysTimeEntry =
+365
+new IntegerLogEntry(
+366
+m_log, "systemTime", "{\"source\":\"DataLogManager\",\"format\":\"time_t_us\"}");
+367
+368
+Event newDataEvent = new Event();
+369
+DriverStation.provideRefreshedDataEventHandle(newDataEvent.getHandle());
+370
+while (!Thread.interrupted()) {
+371
+boolean timedOut;
+372
+try {
+373
+timedOut = WPIUtilJNI.waitForObjectTimeout(newDataEvent.getHandle(), 0.25);
+374
+} catch (InterruptedException e) {
+375
+break;
+376
+}
+377
+if (Thread.interrupted()) {
+378
+break;
+379
+}
+380
+if (timedOut) {
+381
+timeoutCount++;
+382
+// pause logging after being disconnected for 10 seconds
+383
+if (timeoutCount > 40 && !paused) {
+384
+timeoutCount = 0;
+385
+paused = true;
+386
+m_log.pause();
+387
+}
+388
+continue;
+389
+}
+390
+// when we connect to the DS, resume logging
+391
+timeoutCount = 0;
+392
+if (paused) {
+393
+paused = false;
+394
+m_log.resume();
+395
+}
+396
+397
+if (!dsRenamed) {
+398
+// track DS attach
+399
+if (DriverStation.isDSAttached()) {
+400
+dsAttachCount++;
+401
+} else {
+402
+dsAttachCount = 0;
+403
+}
+404
+if (dsAttachCount > 50) { // 1 second
+405
+if (RobotController.isSystemTimeValid()) {
+406
+LocalDateTime now = LocalDateTime.now(m_utc);
+407
+m_log.setFilename("FRC_" + m_timeFormatter.format(now) + ".wpilog");
+408
+dsRenamed = true;
+409
+} else {
+410
+dsAttachCount = 0; // wait a bit and try again
+411
+}
+412
+}
+413
+}
+414
+415
+if (!fmsRenamed) {
+416
+// track FMS attach
+417
+if (DriverStation.isFMSAttached()) {
+418
+fmsAttachCount++;
+419
+} else {
+420
+fmsAttachCount = 0;
+421
+}
+422
+if (fmsAttachCount > 250) { // 5 seconds
+423
+// match info comes through TCP, so we need to double-check we've
+424
+// actually received it
+425
+DriverStation.MatchType matchType = DriverStation.getMatchType();
+426
+if (matchType != DriverStation.MatchType.None) {
+427
+// rename per match info
+428
+char matchTypeChar =
+429
+switch (matchType) {
+430
+case Practice -> 'P';
+431
+case Qualification -> 'Q';
+432
+case Elimination -> 'E';
+433
+default -> '_';
+434
+};
+435
+m_log.setFilename(
+436
+"FRC_"
+437
++ m_timeFormatter.format(LocalDateTime.now(m_utc))
+438
++ "_"
+439
++ DriverStation.getEventName()
+440
++ "_"
+441
++ matchTypeChar
+442
++ DriverStation.getMatchNumber()
+443
++ ".wpilog");
+444
+fmsRenamed = true;
+445
+dsRenamed = true; // don't override FMS rename
+446
+}
+447
+}
+448
+}
+449
+450
+// Write system time every ~5 seconds
+451
+sysTimeCount++;
+452
+if (sysTimeCount >= 250) {
+453
+sysTimeCount = 0;
+454
+if (RobotController.isSystemTimeValid()) {
+455
+sysTimeEntry.append(WPIUtilJNI.getSystemTime(), WPIUtilJNI.now());
+456
+}
+457
+}
+458
+}
+459
+newDataEvent.close();
+460
+}
+461
+}

@@ -1,0 +1,192 @@
+Package
+edu.wpi.first.wpilibj
+Class DutyCycle
+java.lang.Object
+edu.wpi.first.wpilibj.DutyCycle
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+DutyCycle
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Class to read a duty cycle PWM input.
+PWM input signals are specified with a frequency and a ratio of high to low in that frequency.
+ There are 8 of these in the roboRIO, and they can be attached to any
+DigitalSource
+.
+These can be combined as the input of an AnalogTrigger to a Counter in order to implement
+ rollover checking.
+Constructor Summary
+Constructors
+Constructor
+Description
+DutyCycle
+(
+DigitalSource
+digitalSource)
+Constructs a DutyCycle input from a DigitalSource input.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Close the DutyCycle and free all resources.
+final int
+getFPGAIndex
+()
+Get the FPGA index for the DutyCycle.
+int
+getFrequency
+()
+Get the frequency of the duty cycle signal.
+int
+getHighTimeNanoseconds
+()
+Get the raw high time of the duty cycle signal.
+double
+getOutput
+()
+Get the output ratio of the duty cycle signal.
+int
+getOutputScaleFactor
+()
+Get the scale factor of the output.
+int
+getSourceChannel
+()
+Get the channel of the source.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DutyCycle
+public
+DutyCycle
+(
+DigitalSource
+digitalSource)
+Constructs a DutyCycle input from a DigitalSource input.
+This class does not own the inputted source.
+Parameters:
+digitalSource
+- The DigitalSource to use.
+Method Details
+close
+public
+void
+close
+()
+Close the DutyCycle and free all resources.
+Specified by:
+close
+in interface
+AutoCloseable
+getFrequency
+public
+int
+getFrequency
+()
+Get the frequency of the duty cycle signal.
+Returns:
+frequency in Hertz
+getOutput
+public
+double
+getOutput
+()
+Get the output ratio of the duty cycle signal.
+0 means always low, 1 means always high.
+Returns:
+output ratio between 0 and 1
+getHighTimeNanoseconds
+public
+int
+getHighTimeNanoseconds
+()
+Get the raw high time of the duty cycle signal.
+Returns:
+high time of last pulse in nanoseconds
+getOutputScaleFactor
+public
+int
+getOutputScaleFactor
+()
+Get the scale factor of the output.
+An output equal to this value is always high, and then linearly scales down to 0. Divide a
+ raw result by this in order to get the percentage between 0 and 1. Used by DMA.
+Returns:
+the output scale factor
+getFPGAIndex
+public final
+int
+getFPGAIndex
+()
+Get the FPGA index for the DutyCycle.
+Returns:
+the FPGA index
+getSourceChannel
+public
+int
+getSourceChannel
+()
+Get the channel of the source.
+Returns:
+the source channel
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

@@ -1,0 +1,112 @@
+Package
+edu.wpi.first.networktables
+Interface DoubleArrayPublisher
+All Superinterfaces:
+AutoCloseable
+,
+Consumer
+<double[]>
+,
+Publisher
+,
+PubSub
+All Known Subinterfaces:
+DoubleArrayEntry
+public interface
+DoubleArrayPublisher
+extends
+Publisher
+,
+Consumer
+<double[]>
+NetworkTables DoubleArray publisher.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default void
+accept
+(double[] value)
+DoubleArrayTopic
+getTopic
+()
+Get the corresponding topic.
+default void
+set
+(double[] value)
+Publish a new value using current NT time.
+void
+set
+(double[] value,
+ long time)
+Publish a new value.
+void
+setDefault
+(double[] value)
+Publish a default value.
+Methods inherited from interface java.util.function.
+Consumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Method Details
+getTopic
+DoubleArrayTopic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+set
+default
+void
+set
+(double[] value)
+Publish a new value using current NT time.
+Parameters:
+value
+- value to publish
+set
+void
+set
+(double[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+setDefault
+void
+setDefault
+(double[] value)
+Publish a default value.
+ On reconnect, a default value will never be used in preference to a
+ published value.
+Parameters:
+value
+- value
+accept
+default
+void
+accept
+(double[] value)
+Specified by:
+accept
+in interface
+Consumer
+<double[]>

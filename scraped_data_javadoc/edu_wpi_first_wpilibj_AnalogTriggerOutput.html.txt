@@ -1,0 +1,221 @@
+Package
+edu.wpi.first.wpilibj
+Class AnalogTriggerOutput
+java.lang.Object
+edu.wpi.first.wpilibj.DigitalSource
+edu.wpi.first.wpilibj.AnalogTriggerOutput
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+AnalogTriggerOutput
+extends
+DigitalSource
+implements
+Sendable
+Class to represent a specific output from an analog trigger. This class is used to get the
+ current output value and also as a DigitalSource to provide routing of an output to digital
+ subsystems on the FPGA such as Counter, Encoder, and Interrupt.
+The TriggerState output indicates the primary output value of the trigger. If the analog
+ signal is less than the lower limit, the output is false. If the analog value is greater than the
+ upper limit, then the output is true. If the analog value is in between, then the trigger output
+ state maintains its most recent value.
+The InWindow output indicates whether the analog signal is inside the range defined by the
+ limits.
+The RisingPulse and FallingPulse outputs detect an instantaneous transition from above the
+ upper limit to below the lower limit, and vice versa. These pulses represent a rollover condition
+ of a sensor and can be routed to an up / down counter or to interrupts. Because the outputs
+ generate a pulse, they cannot be read directly. To help ensure that a rollover condition is not
+ missed, there is an average rejection filter available that operates on the upper 8 bits of a 12
+ bit number and selects the nearest outlier of 3 samples. This will reject a sample that is (due
+ to averaging or sampling) errantly between the two limits. This filter will fail if more than one
+ sample in a row is errantly in between the two limits. You may see this problem if attempting to
+ use this feature with a mechanical rollover sensor, such as a 360 degree no-stop potentiometer
+ without signal conditioning, because the rollover transition is not sharp / clean enough. Using
+ the averaging engine may help with this, but rotational speeds of the sensor will then be
+ limited.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static class
+AnalogTriggerOutput.AnalogTriggerOutputException
+Exceptions dealing with improper operation of the Analog trigger output.
+static enum
+AnalogTriggerOutput.AnalogTriggerType
+Defines the state in which the AnalogTrigger triggers.
+Constructor Summary
+Constructors
+Constructor
+Description
+AnalogTriggerOutput
+(
+AnalogTrigger
+trigger,
+AnalogTriggerOutput.AnalogTriggerType
+outputType)
+Create an object that represents one of the four outputs from an analog trigger.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+get
+()
+Get the state of the analog trigger output.
+int
+getAnalogTriggerTypeForRouting
+()
+If this is an analog trigger.
+int
+getChannel
+()
+The DigitalSource channel.
+int
+getPortHandleForRouting
+()
+The channel routing number.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isAnalogTrigger
+()
+Returns true if this DigitalSource is an AnalogTrigger.
+Methods inherited from class edu.wpi.first.wpilibj.
+DigitalSource
+close
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AnalogTriggerOutput
+public
+AnalogTriggerOutput
+(
+AnalogTrigger
+trigger,
+AnalogTriggerOutput.AnalogTriggerType
+outputType)
+Create an object that represents one of the four outputs from an analog trigger.
+Because this class derives from DigitalSource, it can be passed into routing functions for
+ Counter, Encoder, etc.
+Parameters:
+trigger
+- The trigger for which this is an output.
+outputType
+- An enum that specifies the output on the trigger to represent.
+Method Details
+get
+public
+boolean
+get
+()
+Get the state of the analog trigger output.
+Returns:
+The state of the analog trigger output.
+getPortHandleForRouting
+public
+int
+getPortHandleForRouting
+()
+Description copied from class:
+DigitalSource
+The channel routing number.
+Specified by:
+getPortHandleForRouting
+in class
+DigitalSource
+Returns:
+channel routing number
+getAnalogTriggerTypeForRouting
+public
+int
+getAnalogTriggerTypeForRouting
+()
+Description copied from class:
+DigitalSource
+If this is an analog trigger.
+Specified by:
+getAnalogTriggerTypeForRouting
+in class
+DigitalSource
+Returns:
+true if this is an analog trigger.
+getChannel
+public
+int
+getChannel
+()
+Description copied from class:
+DigitalSource
+The DigitalSource channel.
+Specified by:
+getChannel
+in class
+DigitalSource
+Returns:
+The DigitalSource channel.
+isAnalogTrigger
+public
+boolean
+isAnalogTrigger
+()
+Description copied from class:
+DigitalSource
+Returns true if this DigitalSource is an AnalogTrigger.
+Specified by:
+isAnalogTrigger
+in class
+DigitalSource
+Returns:
+True if this DigitalSource is an AnalogTrigger.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

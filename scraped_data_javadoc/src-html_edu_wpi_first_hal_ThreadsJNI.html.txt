@@ -1,0 +1,81 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Threads HAL JNI Functions.
+009
+*
+010
+* @see "Threads.h"
+011
+*/
+012
+public class ThreadsJNI extends JNIWrapper {
+013
+/**
+014
+* Gets the thread priority for the current thread.
+015
+*
+016
+* @return The current thread priority. For real-time, this is 1-99 with 99 being highest. For
+017
+*     non-real-time, this is 0. See "man 7 sched" for details.
+018
+* @see "HAL_GetCurrentThreadPriority"
+019
+*/
+020
+public static native int getCurrentThreadPriority();
+021
+022
+/**
+023
+* Gets the real-time status for the current thread.
+024
+*
+025
+* @return Set to true if thread is real-time, otherwise false.
+026
+* @see "HAL_GetCurrentThreadPriority"
+027
+*/
+028
+public static native boolean getCurrentThreadIsRealTime();
+029
+030
+/**
+031
+* Sets the thread priority for the current thread.
+032
+*
+033
+* @param realTime Set to true to set a real-time priority, false for standard priority.
+034
+* @param priority Priority to set the thread to. For real-time, this is 1-99 with 99 being
+035
+*     highest. For non-real-time, this is forced to 0. See "man 7 sched" for more details.
+036
+* @return True on success.
+037
+* @see "HAL_SetCurrentThreadPriority"
+038
+*/
+039
+public static native boolean setCurrentThreadPriority(boolean realTime, int priority);
+040
+041
+/** Utility class. */
+042
+private ThreadsJNI() {}
+043
+}

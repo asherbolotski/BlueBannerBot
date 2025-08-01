@@ -1,0 +1,218 @@
+Package
+edu.wpi.first.wpilibj
+Class AnalogEncoder
+java.lang.Object
+edu.wpi.first.wpilibj.AnalogEncoder
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+AnalogEncoder
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Class for supporting continuous analog encoders, such as the US Digital MA3.
+Constructor Summary
+Constructors
+Constructor
+Description
+AnalogEncoder
+(int channel)
+Construct a new AnalogEncoder attached to a specific AnalogIn channel.
+AnalogEncoder
+(int channel,
+ double fullRange,
+ double expectedZero)
+Construct a new AnalogEncoder attached to a specific AnalogIn channel.
+AnalogEncoder
+(
+AnalogInput
+analogInput)
+Construct a new AnalogEncoder attached to a specific AnalogInput.
+AnalogEncoder
+(
+AnalogInput
+analogInput,
+ double fullRange,
+ double expectedZero)
+Construct a new AnalogEncoder attached to a specific AnalogInput.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+double
+get
+()
+Get the encoder value.
+int
+getChannel
+()
+Get the channel number.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+setInverted
+(boolean inverted)
+Set if this encoder is inverted.
+void
+setVoltagePercentageRange
+(double min,
+ double max)
+Set the encoder voltage percentage range.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AnalogEncoder
+public
+AnalogEncoder
+(int channel,
+ double fullRange,
+ double expectedZero)
+Construct a new AnalogEncoder attached to a specific AnalogIn channel.
+Parameters:
+channel
+- the analog input channel to attach to
+fullRange
+- the value to report at maximum travel
+expectedZero
+- the reading where you would expect a 0 from get()
+AnalogEncoder
+public
+AnalogEncoder
+(
+AnalogInput
+analogInput,
+ double fullRange,
+ double expectedZero)
+Construct a new AnalogEncoder attached to a specific AnalogInput.
+Parameters:
+analogInput
+- the analog input to attach to
+fullRange
+- the value to report at maximum travel
+expectedZero
+- the reading where you would expect a 0 from get()
+AnalogEncoder
+public
+AnalogEncoder
+(int channel)
+Construct a new AnalogEncoder attached to a specific AnalogIn channel.
+This has a fullRange of 1 and an expectedZero of 0.
+Parameters:
+channel
+- the analog input channel to attach to
+AnalogEncoder
+public
+AnalogEncoder
+(
+AnalogInput
+analogInput)
+Construct a new AnalogEncoder attached to a specific AnalogInput.
+This has a fullRange of 1 and an expectedZero of 0.
+Parameters:
+analogInput
+- the analog input to attach to
+Method Details
+get
+public
+double
+get
+()
+Get the encoder value.
+Returns:
+the encoder value scaled by the full range input
+setVoltagePercentageRange
+public
+void
+setVoltagePercentageRange
+(double min,
+ double max)
+Set the encoder voltage percentage range. Analog sensors are not always fully stable at the end
+ of their travel ranges. Shrinking this range down can help mitigate issues with that.
+Parameters:
+min
+- minimum voltage percentage (0-1 range)
+max
+- maximum voltage percentage (0-1 range)
+setInverted
+public
+void
+setInverted
+(boolean inverted)
+Set if this encoder is inverted.
+Parameters:
+inverted
+- true to invert the encoder, false otherwise
+getChannel
+public
+int
+getChannel
+()
+Get the channel number.
+Returns:
+The channel number.
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

@@ -1,0 +1,266 @@
+Package
+edu.wpi.first.wpilibj
+Class Watchdog
+java.lang.Object
+edu.wpi.first.wpilibj.Watchdog
+All Implemented Interfaces:
+Closeable
+,
+AutoCloseable
+,
+Comparable
+<
+Watchdog
+>
+public class
+Watchdog
+extends
+Object
+implements
+Closeable
+,
+Comparable
+<
+Watchdog
+>
+A class that's a wrapper around a watchdog timer.
+When the timer expires, a message is printed to the console and an optional user-provided
+ callback is invoked.
+The watchdog is initialized disabled, so the user needs to call enable() before use.
+Constructor Summary
+Constructors
+Constructor
+Description
+Watchdog
+(double timeoutSeconds,
+Runnable
+callback)
+Watchdog constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+addEpoch
+(
+String
+epochName)
+Adds time since last epoch to the list printed by printEpochs().
+void
+close
+()
+int
+compareTo
+(
+Watchdog
+rhs)
+void
+disable
+()
+Disables the watchdog timer.
+void
+enable
+()
+Enables the watchdog timer.
+boolean
+equals
+(
+Object
+obj)
+double
+getTime
+()
+Returns the time in seconds since the watchdog was last fed.
+double
+getTimeout
+()
+Returns the watchdog's timeout in seconds.
+int
+hashCode
+()
+boolean
+isExpired
+()
+Returns true if the watchdog timer has expired.
+void
+printEpochs
+()
+Prints list of epochs added so far and their times.
+void
+reset
+()
+Resets the watchdog timer.
+void
+setTimeout
+(double timeoutSeconds)
+Sets the watchdog's timeout.
+void
+suppressTimeoutMessage
+(boolean suppress)
+Enable or disable suppression of the generic timeout message.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+Watchdog
+public
+Watchdog
+(double timeoutSeconds,
+Runnable
+callback)
+Watchdog constructor.
+Parameters:
+timeoutSeconds
+- The watchdog's timeout in seconds with microsecond resolution.
+callback
+- This function is called when the timeout expires.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+Specified by:
+close
+in interface
+Closeable
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+compareTo
+public
+int
+compareTo
+(
+Watchdog
+rhs)
+Specified by:
+compareTo
+in interface
+Comparable
+<
+Watchdog
+>
+getTime
+public
+double
+getTime
+()
+Returns the time in seconds since the watchdog was last fed.
+Returns:
+The time in seconds since the watchdog was last fed.
+setTimeout
+public
+void
+setTimeout
+(double timeoutSeconds)
+Sets the watchdog's timeout.
+Parameters:
+timeoutSeconds
+- The watchdog's timeout in seconds with microsecond resolution.
+getTimeout
+public
+double
+getTimeout
+()
+Returns the watchdog's timeout in seconds.
+Returns:
+The watchdog's timeout in seconds.
+isExpired
+public
+boolean
+isExpired
+()
+Returns true if the watchdog timer has expired.
+Returns:
+True if the watchdog timer has expired.
+addEpoch
+public
+void
+addEpoch
+(
+String
+epochName)
+Adds time since last epoch to the list printed by printEpochs().
+Parameters:
+epochName
+- The name to associate with the epoch.
+See Also:
+Tracer.addEpoch(String)
+printEpochs
+public
+void
+printEpochs
+()
+Prints list of epochs added so far and their times.
+See Also:
+Tracer.printEpochs()
+reset
+public
+void
+reset
+()
+Resets the watchdog timer.
+This also enables the timer if it was previously disabled.
+enable
+public
+void
+enable
+()
+Enables the watchdog timer.
+disable
+public
+void
+disable
+()
+Disables the watchdog timer.
+suppressTimeoutMessage
+public
+void
+suppressTimeoutMessage
+(boolean suppress)
+Enable or disable suppression of the generic timeout message.
+This may be desirable if the user-provided callback already prints a more specific message.
+Parameters:
+suppress
+- Whether to suppress generic timeout message.

@@ -1,0 +1,415 @@
+Package
+edu.wpi.first.wpilibj
+Interface PneumaticsBase
+All Superinterfaces:
+AutoCloseable
+All Known Implementing Classes:
+PneumaticHub
+,
+PneumaticsControlModule
+public interface
+PneumaticsBase
+extends
+AutoCloseable
+Interface for pneumatics devices.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+int
+checkAndReserveSolenoids
+(int mask)
+Check to see if the solenoids marked in the bitmask can be reserved, and if so, reserve them.
+boolean
+checkSolenoidChannel
+(int channel)
+Check if a solenoid channel is valid.
+void
+close
+()
+void
+disableCompressor
+()
+Disables the compressor.
+void
+enableCompressorAnalog
+(double minPressure,
+ double maxPressure)
+If supported by the device, enables the compressor in analog mode.
+void
+enableCompressorDigital
+()
+Enables the compressor in digital mode using the digital pressure switch.
+void
+enableCompressorHybrid
+(double minPressure,
+ double maxPressure)
+If supported by the device, enables the compressor in hybrid mode.
+void
+fireOneShot
+(int index)
+Fire a single solenoid shot.
+double
+getAnalogVoltage
+(int channel)
+If supported by the device, returns the raw voltage of the specified analog input channel.
+boolean
+getCompressor
+()
+Returns whether the compressor is active or not.
+CompressorConfigType
+getCompressorConfigType
+()
+Returns the active compressor configuration.
+double
+getCompressorCurrent
+()
+Returns the current drawn by the compressor in amps.
+static int
+getDefaultForType
+(
+PneumaticsModuleType
+type)
+For internal use to get the default for a specific type.
+static
+PneumaticsBase
+getForType
+(int module,
+PneumaticsModuleType
+type)
+For internal use to get a module for a specific type.
+int
+getModuleNumber
+()
+Get module number for this module.
+double
+getPressure
+(int channel)
+If supported by the device, returns the pressure (in PSI) read by an analog pressure sensor on
+ the specified analog input channel.
+boolean
+getPressureSwitch
+()
+Returns the state of the pressure switch.
+int
+getSolenoidDisabledList
+()
+Get a bitmask of disabled solenoids.
+int
+getSolenoids
+()
+Gets a bitmask of solenoid values.
+Compressor
+makeCompressor
+()
+Create a compressor object.
+DoubleSolenoid
+makeDoubleSolenoid
+(int forwardChannel,
+ int reverseChannel)
+Create a double solenoid object for the specified channels.
+Solenoid
+makeSolenoid
+(int channel)
+Create a solenoid object for the specified channel.
+boolean
+reserveCompressor
+()
+Reserve the compressor.
+void
+setOneShotDuration
+(int index,
+ int durMs)
+Set the duration for a single solenoid shot.
+void
+setSolenoids
+(int mask,
+ int values)
+Sets solenoids on a pneumatics module.
+void
+unreserveCompressor
+()
+Unreserve the compressor.
+void
+unreserveSolenoids
+(int mask)
+Unreserve the solenoids marked in the bitmask.
+Method Details
+getForType
+static
+PneumaticsBase
+getForType
+(int module,
+PneumaticsModuleType
+type)
+For internal use to get a module for a specific type.
+Parameters:
+module
+- module number
+type
+- module type
+Returns:
+module
+getDefaultForType
+static
+int
+getDefaultForType
+(
+PneumaticsModuleType
+type)
+For internal use to get the default for a specific type.
+Parameters:
+type
+- module type
+Returns:
+module default
+setSolenoids
+void
+setSolenoids
+(int mask,
+ int values)
+Sets solenoids on a pneumatics module.
+Parameters:
+mask
+- Bitmask indicating which solenoids to set. The LSB represents solenoid 0.
+values
+- Bitmask indicating the desired states of the solenoids. The LSB represents
+     solenoid 0.
+getSolenoids
+int
+getSolenoids
+()
+Gets a bitmask of solenoid values.
+Returns:
+Bitmask containing the state of the solenoids. The LSB represents solenoid 0.
+getModuleNumber
+int
+getModuleNumber
+()
+Get module number for this module.
+Returns:
+module number
+getSolenoidDisabledList
+int
+getSolenoidDisabledList
+()
+Get a bitmask of disabled solenoids.
+Returns:
+Bitmask indicating disabled solenoids. The LSB represents solenoid 0.
+fireOneShot
+void
+fireOneShot
+(int index)
+Fire a single solenoid shot.
+Parameters:
+index
+- solenoid index
+setOneShotDuration
+void
+setOneShotDuration
+(int index,
+ int durMs)
+Set the duration for a single solenoid shot.
+Parameters:
+index
+- solenoid index
+durMs
+- shot duration
+getCompressor
+boolean
+getCompressor
+()
+Returns whether the compressor is active or not.
+Returns:
+True if the compressor is on - otherwise false.
+getPressureSwitch
+boolean
+getPressureSwitch
+()
+Returns the state of the pressure switch.
+Returns:
+True if pressure switch indicates that the system is not full, otherwise false.
+getCompressorCurrent
+double
+getCompressorCurrent
+()
+Returns the current drawn by the compressor in amps.
+Returns:
+The current drawn by the compressor.
+disableCompressor
+void
+disableCompressor
+()
+Disables the compressor.
+enableCompressorDigital
+void
+enableCompressorDigital
+()
+Enables the compressor in digital mode using the digital pressure switch. The compressor will
+ turn on when the pressure switch indicates that the system is not full, and will turn off when
+ the pressure switch indicates that the system is full.
+enableCompressorAnalog
+void
+enableCompressorAnalog
+(double minPressure,
+ double maxPressure)
+If supported by the device, enables the compressor in analog mode. This mode uses an analog
+ pressure sensor connected to analog channel 0 to cycle the compressor. The compressor will turn
+ on when the pressure drops below
+minPressure
+and will turn off when the pressure
+ reaches
+maxPressure
+. This mode is only supported by the REV PH with the REV Analog
+ Pressure Sensor connected to analog channel 0.
+On CTRE PCM, this will enable digital control.
+Parameters:
+minPressure
+- The minimum pressure in PSI. The compressor will turn on when the pressure
+     drops below this value.
+maxPressure
+- The maximum pressure in PSI. The compressor will turn off when the pressure
+     reaches this value.
+enableCompressorHybrid
+void
+enableCompressorHybrid
+(double minPressure,
+ double maxPressure)
+If supported by the device, enables the compressor in hybrid mode. This mode uses both a
+ digital pressure switch and an analog pressure sensor connected to analog channel 0 to cycle
+ the compressor. This mode is only supported by the REV PH with the REV Analog Pressure Sensor
+ connected to analog channel 0.
+The compressor will turn on when
+both
+:
+The digital pressure switch indicates the system is not full AND
+The analog pressure sensor indicates that the pressure in the system is below the
+       specified minimum pressure.
+The compressor will turn off when
+either
+:
+The digital pressure switch is disconnected or indicates that the system is full OR
+The pressure detected by the analog sensor is greater than the specified maximum
+       pressure.
+On CTRE PCM, this will enable digital control.
+Parameters:
+minPressure
+- The minimum pressure in PSI. The compressor will turn on when the pressure
+     drops below this value and the pressure switch indicates that the system is not full.
+maxPressure
+- The maximum pressure in PSI. The compressor will turn off when the pressure
+     reaches this value or the pressure switch is disconnected or indicates that the system is
+     full.
+getAnalogVoltage
+double
+getAnalogVoltage
+(int channel)
+If supported by the device, returns the raw voltage of the specified analog input channel.
+This function is only supported by the REV PH. On CTRE PCM, this will return 0.
+Parameters:
+channel
+- The analog input channel to read voltage from.
+Returns:
+The voltage of the specified analog input channel.
+getPressure
+double
+getPressure
+(int channel)
+If supported by the device, returns the pressure (in PSI) read by an analog pressure sensor on
+ the specified analog input channel.
+This function is only supported by the REV PH. On CTRE PCM, this will return 0.
+Parameters:
+channel
+- The analog input channel to read pressure from.
+Returns:
+The pressure (in PSI) read by an analog pressure sensor on the specified analog input
+     channel.
+getCompressorConfigType
+CompressorConfigType
+getCompressorConfigType
+()
+Returns the active compressor configuration.
+Returns:
+The active compressor configuration.
+checkSolenoidChannel
+boolean
+checkSolenoidChannel
+(int channel)
+Check if a solenoid channel is valid.
+Parameters:
+channel
+- Channel to check
+Returns:
+True if channel exists
+checkAndReserveSolenoids
+int
+checkAndReserveSolenoids
+(int mask)
+Check to see if the solenoids marked in the bitmask can be reserved, and if so, reserve them.
+Parameters:
+mask
+- The bitmask of solenoids to reserve. The LSB represents solenoid 0.
+Returns:
+0 if successful; mask of solenoids that couldn't be allocated otherwise
+unreserveSolenoids
+void
+unreserveSolenoids
+(int mask)
+Unreserve the solenoids marked in the bitmask.
+Parameters:
+mask
+- The bitmask of solenoids to unreserve. The LSB represents solenoid 0.
+reserveCompressor
+boolean
+reserveCompressor
+()
+Reserve the compressor.
+Returns:
+true if successful; false if compressor already reserved
+unreserveCompressor
+void
+unreserveCompressor
+()
+Unreserve the compressor.
+close
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+makeSolenoid
+Solenoid
+makeSolenoid
+(int channel)
+Create a solenoid object for the specified channel.
+Parameters:
+channel
+- solenoid channel
+Returns:
+Solenoid object
+makeDoubleSolenoid
+DoubleSolenoid
+makeDoubleSolenoid
+(int forwardChannel,
+ int reverseChannel)
+Create a double solenoid object for the specified channels.
+Parameters:
+forwardChannel
+- solenoid channel for forward
+reverseChannel
+- solenoid channel for reverse
+Returns:
+DoubleSolenoid object
+makeCompressor
+Compressor
+makeCompressor
+()
+Create a compressor object.
+Returns:
+Compressor object

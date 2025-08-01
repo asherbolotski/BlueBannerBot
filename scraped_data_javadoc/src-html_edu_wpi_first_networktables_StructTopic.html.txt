@@ -1,0 +1,342 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+import edu.wpi.first.util.struct.Struct;
+008
+import edu.wpi.first.util.struct.StructBuffer;
+009
+010
+/**
+011
+* NetworkTables struct-encoded value topic.
+012
+*
+013
+* @param <T> value class
+014
+*/
+015
+public final class StructTopic<T> extends Topic {
+016
+private StructTopic(Topic topic, Struct<T> struct) {
+017
+super(topic.m_inst, topic.m_handle);
+018
+m_struct = struct;
+019
+}
+020
+021
+private StructTopic(NetworkTableInstance inst, int handle, Struct<T> struct) {
+022
+super(inst, handle);
+023
+m_struct = struct;
+024
+}
+025
+026
+/**
+027
+* Create a StructTopic from a generic topic.
+028
+*
+029
+* @param <T> value class (inferred from struct)
+030
+* @param topic generic topic
+031
+* @param struct struct serialization implementation
+032
+* @return StructTopic for value class
+033
+*/
+034
+public static <T> StructTopic<T> wrap(Topic topic, Struct<T> struct) {
+035
+return new StructTopic<>(topic, struct);
+036
+}
+037
+038
+/**
+039
+* Create a StructTopic from a native handle; generally NetworkTableInstance.getStructTopic()
+040
+* should be used instead.
+041
+*
+042
+* @param <T> value class (inferred from struct)
+043
+* @param inst Instance
+044
+* @param handle Native handle
+045
+* @param struct struct serialization implementation
+046
+* @return StructTopic for value class
+047
+*/
+048
+public static <T> StructTopic<T> wrap(NetworkTableInstance inst, int handle, Struct<T> struct) {
+049
+return new StructTopic<>(inst, handle, struct);
+050
+}
+051
+052
+/**
+053
+* Create a new subscriber to the topic.
+054
+*
+055
+* <p>The subscriber is only active as long as the returned object is not closed.
+056
+*
+057
+* <p>Subscribers that do not match the published data type do not return any values. To determine
+058
+* if the data type matches, use the appropriate Topic functions.
+059
+*
+060
+* @param defaultValue default value used when a default is not provided to a getter function
+061
+* @param options subscribe options
+062
+* @return subscriber
+063
+*/
+064
+public StructSubscriber<T> subscribe(T defaultValue, PubSubOption... options) {
+065
+return new StructEntryImpl<>(
+066
+this,
+067
+StructBuffer.create(m_struct),
+068
+NetworkTablesJNI.subscribe(
+069
+m_handle, NetworkTableType.kRaw.getValue(), m_struct.getTypeString(), options),
+070
+defaultValue,
+071
+false);
+072
+}
+073
+074
+/**
+075
+* Create a new publisher to the topic.
+076
+*
+077
+* <p>The publisher is only active as long as the returned object is not closed.
+078
+*
+079
+* <p>It is not possible to publish two different data types to the same topic. Conflicts between
+080
+* publishers are typically resolved by the server on a first-come, first-served basis. Any
+081
+* published values that do not match the topic's data type are dropped (ignored). To determine if
+082
+* the data type matches, use the appropriate Topic functions.
+083
+*
+084
+* @param options publish options
+085
+* @return publisher
+086
+*/
+087
+public StructPublisher<T> publish(PubSubOption... options) {
+088
+m_inst.addSchema(m_struct);
+089
+return new StructEntryImpl<>(
+090
+this,
+091
+StructBuffer.create(m_struct),
+092
+NetworkTablesJNI.publish(
+093
+m_handle, NetworkTableType.kRaw.getValue(), m_struct.getTypeString(), options),
+094
+null,
+095
+true);
+096
+}
+097
+098
+/**
+099
+* Create a new publisher to the topic, with type string and initial properties.
+100
+*
+101
+* <p>The publisher is only active as long as the returned object is not closed.
+102
+*
+103
+* <p>It is not possible to publish two different data types to the same topic. Conflicts between
+104
+* publishers are typically resolved by the server on a first-come, first-served basis. Any
+105
+* published values that do not match the topic's data type are dropped (ignored). To determine if
+106
+* the data type matches, use the appropriate Topic functions.
+107
+*
+108
+* @param properties JSON properties
+109
+* @param options publish options
+110
+* @return publisher
+111
+* @throws IllegalArgumentException if properties is not a JSON object
+112
+*/
+113
+public StructPublisher<T> publishEx(String properties, PubSubOption... options) {
+114
+m_inst.addSchema(m_struct);
+115
+return new StructEntryImpl<>(
+116
+this,
+117
+StructBuffer.create(m_struct),
+118
+NetworkTablesJNI.publishEx(
+119
+m_handle,
+120
+NetworkTableType.kRaw.getValue(),
+121
+m_struct.getTypeString(),
+122
+properties,
+123
+options),
+124
+null,
+125
+true);
+126
+}
+127
+128
+/**
+129
+* Create a new entry for the topic.
+130
+*
+131
+* <p>Entries act as a combination of a subscriber and a weak publisher. The subscriber is active
+132
+* as long as the entry is not closed. The publisher is created when the entry is first written
+133
+* to, and remains active until either unpublish() is called or the entry is closed.
+134
+*
+135
+* <p>It is not possible to use two different data types with the same topic. Conflicts between
+136
+* publishers are typically resolved by the server on a first-come, first-served basis. Any
+137
+* published values that do not match the topic's data type are dropped (ignored), and the entry
+138
+* will show no new values if the data type does not match. To determine if the data type matches,
+139
+* use the appropriate Topic functions.
+140
+*
+141
+* @param defaultValue default value used when a default is not provided to a getter function
+142
+* @param options publish and/or subscribe options
+143
+* @return entry
+144
+*/
+145
+public StructEntry<T> getEntry(T defaultValue, PubSubOption... options) {
+146
+return new StructEntryImpl<>(
+147
+this,
+148
+StructBuffer.create(m_struct),
+149
+NetworkTablesJNI.getEntry(
+150
+m_handle, NetworkTableType.kRaw.getValue(), m_struct.getTypeString(), options),
+151
+defaultValue,
+152
+false);
+153
+}
+154
+155
+/**
+156
+* Returns the struct.
+157
+*
+158
+* @return The struct.
+159
+*/
+160
+public Struct<T> getStruct() {
+161
+return m_struct;
+162
+}
+163
+164
+@Override
+165
+public boolean equals(Object other) {
+166
+return other == this
+167
+|| other instanceof StructTopic<?> topic
+168
+&& super.equals(topic)
+169
+&& m_struct == topic.m_struct;
+170
+}
+171
+172
+@Override
+173
+public int hashCode() {
+174
+return super.hashCode() ^ m_struct.hashCode();
+175
+}
+176
+177
+private final Struct<T> m_struct;
+178
+}

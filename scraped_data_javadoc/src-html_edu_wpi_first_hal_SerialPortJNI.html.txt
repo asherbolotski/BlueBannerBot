@@ -1,0 +1,401 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Serial Port JNI HAL functions.
+009
+*
+010
+* @see "SerialPort.h"
+011
+*/
+012
+public class SerialPortJNI extends JNIWrapper {
+013
+/**
+014
+* Initializes a serial port.
+015
+*
+016
+* <p>The channels are either the onboard RS232, the MXP UART, or 2 USB ports. The top port is
+017
+* USB1, the bottom port is USB2.
+018
+*
+019
+* @param port the serial port to initialize
+020
+* @return Serial Port Handle
+021
+* @see "HAL_InitializeSerialPort"
+022
+*/
+023
+public static native int serialInitializePort(byte port);
+024
+025
+/**
+026
+* Initializes a serial port with a direct name.
+027
+*
+028
+* <p>This name is the /dev name for a specific port. Note these are not always consistent between
+029
+* roboRIO reboots.
+030
+*
+031
+* @param port the serial port to initialize
+032
+* @param portName the dev port name
+033
+* @return Serial Port Handle
+034
+* @see "HAL_InitializeSerialPortDirect"
+035
+*/
+036
+public static native int serialInitializePortDirect(byte port, String portName);
+037
+038
+/**
+039
+* Sets the baud rate of a serial port.
+040
+*
+041
+* <p>Any value between 0 and 0xFFFFFFFF may be used. Default is 9600.
+042
+*
+043
+* @param handle the serial port handle
+044
+* @param baud the baud rate to set
+045
+* @see "HAL_SetSerialBaudRate"
+046
+*/
+047
+public static native void serialSetBaudRate(int handle, int baud);
+048
+049
+/**
+050
+* Sets the number of data bits on a serial port.
+051
+*
+052
+* <p>Defaults to 8.
+053
+*
+054
+* @param handle the serial port handle
+055
+* @param bits the number of data bits (5-8)
+056
+* @see "HAL_SetSerialDataBits"
+057
+*/
+058
+public static native void serialSetDataBits(int handle, byte bits);
+059
+060
+/**
+061
+* Sets the number of parity bits on a serial port.
+062
+*
+063
+* <p>Valid values are: 0: None (default) 1: Odd 2: Even 3: Mark - Means exists and always 1 4:
+064
+* Space - Means exists and always 0
+065
+*
+066
+* @param handle the serial port handle
+067
+* @param parity the parity bit mode (see remarks for valid values)
+068
+* @see "HAL_SetSerialParity"
+069
+*/
+070
+public static native void serialSetParity(int handle, byte parity);
+071
+072
+/**
+073
+* Sets the number of stop bits on a serial port.
+074
+*
+075
+* <p>Valid values are: 10: One stop bit (default) 15: One and a half stop bits 20: Two stop bits
+076
+*
+077
+* @param handle the serial port handle
+078
+* @param stopBits the stop bit value (see remarks for valid values)
+079
+* @see "HAL_SetSerialStopBits"
+080
+*/
+081
+public static native void serialSetStopBits(int handle, byte stopBits);
+082
+083
+/**
+084
+* Sets the write mode on a serial port.
+085
+*
+086
+* <p>Valid values are: 1: Flush on access 2: Flush when full (default)
+087
+*
+088
+* @param handle the serial port handle
+089
+* @param mode the mode to set (see remarks for valid values)
+090
+* @see "HAL_SetSerialWriteMode"
+091
+*/
+092
+public static native void serialSetWriteMode(int handle, byte mode);
+093
+094
+/**
+095
+* Sets the flow control mode of a serial port.
+096
+*
+097
+* <p>Valid values are: 0: None (default) 1: XON-XOFF 2: RTS-CTS 3: DTR-DSR
+098
+*
+099
+* @param handle the serial port handle
+100
+* @param flow the mode to set (see remarks for valid values)
+101
+* @see "HAL_SetSerialFlowControl"
+102
+*/
+103
+public static native void serialSetFlowControl(int handle, byte flow);
+104
+105
+/**
+106
+* Sets the minimum serial read timeout of a port.
+107
+*
+108
+* @param handle the serial port handle
+109
+* @param timeout the timeout in milliseconds
+110
+* @see "HAL_SetSerialTimeout"
+111
+*/
+112
+public static native void serialSetTimeout(int handle, double timeout);
+113
+114
+/**
+115
+* Sets the termination character that terminates a read.
+116
+*
+117
+* <p>By default this is disabled.
+118
+*
+119
+* @param handle the serial port handle
+120
+* @param terminator the termination character to set
+121
+* @see "HAL_EnableSerialTermination"
+122
+*/
+123
+public static native void serialEnableTermination(int handle, char terminator);
+124
+125
+/**
+126
+* Disables a termination character for reads.
+127
+*
+128
+* @param handle the serial port handle
+129
+* @see "HAL_DisableSerialTermination"
+130
+*/
+131
+public static native void serialDisableTermination(int handle);
+132
+133
+/**
+134
+* Sets the size of the read buffer.
+135
+*
+136
+* @param handle the serial port handle
+137
+* @param size the read buffer size
+138
+* @see "HAL_SetSerialReadBufferSize"
+139
+*/
+140
+public static native void serialSetReadBufferSize(int handle, int size);
+141
+142
+/**
+143
+* Sets the size of the write buffer.
+144
+*
+145
+* @param handle the serial port handle
+146
+* @param size the write buffer size
+147
+* @see "HAL_SetSerialWriteBufferSize"
+148
+*/
+149
+public static native void serialSetWriteBufferSize(int handle, int size);
+150
+151
+/**
+152
+* Gets the number of bytes currently in the read buffer.
+153
+*
+154
+* @param handle the serial port handle
+155
+* @return the number of bytes in the read buffer
+156
+* @see "HAL_GetSerialBytesReceived"
+157
+*/
+158
+public static native int serialGetBytesReceived(int handle);
+159
+160
+/**
+161
+* Reads data from the serial port.
+162
+*
+163
+* <p>Will wait for either timeout (if set), the termination char (if set), or the count to be
+164
+* full. Whichever one comes first.
+165
+*
+166
+* @param handle the serial port handle
+167
+* @param buffer the buffer in which to store bytes read
+168
+* @param count the number of bytes maximum to read
+169
+* @return the number of bytes actually read
+170
+* @see "HAL_ReadSerial"
+171
+*/
+172
+public static native int serialRead(int handle, byte[] buffer, int count);
+173
+174
+/**
+175
+* Writes data to the serial port.
+176
+*
+177
+* @param handle the serial port handle
+178
+* @param buffer the buffer to write
+179
+* @param count the number of bytes to write from the buffer
+180
+* @return the number of bytes actually written
+181
+* @see "HAL_WriteSerial"
+182
+*/
+183
+public static native int serialWrite(int handle, byte[] buffer, int count);
+184
+185
+/**
+186
+* Flushes the serial write buffer out to the port.
+187
+*
+188
+* @param handle the serial port handle
+189
+* @see "HAL_FlushSerial"
+190
+*/
+191
+public static native void serialFlush(int handle);
+192
+193
+/**
+194
+* Clears the receive buffer of the serial port.
+195
+*
+196
+* @param handle the serial port handle
+197
+* @see "HAL_ClearSerial"
+198
+*/
+199
+public static native void serialClear(int handle);
+200
+201
+/**
+202
+* Closes a serial port.
+203
+*
+204
+* @param handle the serial port handle to close
+205
+* @see "HAL_CloseSerial"
+206
+*/
+207
+public static native void serialClose(int handle);
+208
+209
+/** Utility class. */
+210
+private SerialPortJNI() {}
+211
+}

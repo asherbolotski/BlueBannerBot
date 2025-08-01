@@ -1,0 +1,538 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command.sysid;
+006
+007
+import static edu.wpi.first.units.Units.Second;
+008
+import static edu.wpi.first.units.Units.Seconds;
+009
+import static edu.wpi.first.units.Units.Volts;
+010
+import static java.util.Map.entry;
+011
+012
+import edu.wpi.first.units.VoltageUnit;
+013
+import edu.wpi.first.units.measure.MutVoltage;
+014
+import edu.wpi.first.units.measure.Time;
+015
+import edu.wpi.first.units.measure.Velocity;
+016
+import edu.wpi.first.units.measure.Voltage;
+017
+import edu.wpi.first.wpilibj.Timer;
+018
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+019
+import edu.wpi.first.wpilibj2.command.Command;
+020
+import edu.wpi.first.wpilibj2.command.Subsystem;
+021
+import java.util.Map;
+022
+import java.util.function.Consumer;
+023
+024
+/**
+025
+* A SysId characterization routine for a single mechanism. Mechanisms may have multiple motors.
+026
+*
+027
+* <p>A single subsystem may have multiple mechanisms, but mechanisms should not share test
+028
+* routines. Each complete test of a mechanism should have its own SysIdRoutine instance, since the
+029
+* log name of the recorded data is determined by the mechanism name.
+030
+*
+031
+* <p>The test state (e.g. "quasistatic-forward") is logged once per iteration during test
+032
+* execution, and once with state "none" when a test ends. Motor frames are logged every iteration
+033
+* during test execution.
+034
+*
+035
+* <p>Timestamps are not coordinated across data, so motor frames and test state tags may be
+036
+* recorded on different log frames. Because frame alignment is not guaranteed, SysId parses the log
+037
+* by using the test state flag to determine the timestamp range for each section of the test, and
+038
+* then extracts the motor frames within the valid timestamp ranges. If a given test was run
+039
+* multiple times in a single logfile, the user will need to select which of the tests to use for
+040
+* the fit in the analysis tool.
+041
+*/
+042
+public class SysIdRoutine extends SysIdRoutineLog {
+043
+private final Config m_config;
+044
+private final Mechanism m_mechanism;
+045
+private final MutVoltage m_outputVolts = Volts.mutable(0);
+046
+private final Consumer<State> m_recordState;
+047
+048
+/**
+049
+* Create a new SysId characterization routine.
+050
+*
+051
+* @param config Hardware-independent parameters for the SysId routine.
+052
+* @param mechanism Hardware interface for the SysId routine.
+053
+*/
+054
+public SysIdRoutine(Config config, Mechanism mechanism) {
+055
+super(mechanism.m_name);
+056
+m_config = config;
+057
+m_mechanism = mechanism;
+058
+m_recordState = config.m_recordState != null ? config.m_recordState : this::recordState;
+059
+}
+060
+061
+/** Hardware-independent configuration for a SysId test routine. */
+062
+public static class Config {
+063
+/** The voltage ramp rate used for quasistatic test routines. */
+064
+public final Velocity<VoltageUnit> m_rampRate;
+065
+066
+/** The step voltage output used for dynamic test routines. */
+067
+public final Voltage m_stepVoltage;
+068
+069
+/** Safety timeout for the test routine commands. */
+070
+public final Time m_timeout;
+071
+072
+/** Optional handle for recording test state in a third-party logging solution. */
+073
+public final Consumer<State> m_recordState;
+074
+075
+/**
+076
+* Create a new configuration for a SysId test routine.
+077
+*
+078
+* @param rampRate The voltage ramp rate used for quasistatic test routines. Defaults to 1 volt
+079
+*     per second if left null.
+080
+* @param stepVoltage The step voltage output used for dynamic test routines. Defaults to 7
+081
+*     volts if left null.
+082
+* @param timeout Safety timeout for the test routine commands. Defaults to 10 seconds if left
+083
+*     null.
+084
+* @param recordState Optional handle for recording test state in a third-party logging
+085
+*     solution. If provided, the test routine state will be passed to this callback instead of
+086
+*     logged in WPILog.
+087
+*/
+088
+public Config(
+089
+Velocity<VoltageUnit> rampRate,
+090
+Voltage stepVoltage,
+091
+Time timeout,
+092
+Consumer<State> recordState) {
+093
+m_rampRate = rampRate != null ? rampRate : Volts.of(1).per(Second);
+094
+m_stepVoltage = stepVoltage != null ? stepVoltage : Volts.of(7);
+095
+m_timeout = timeout != null ? timeout : Seconds.of(10);
+096
+m_recordState = recordState;
+097
+}
+098
+099
+/**
+100
+* Create a new configuration for a SysId test routine.
+101
+*
+102
+* @param rampRate The voltage ramp rate used for quasistatic test routines. Defaults to 1 volt
+103
+*     per second if left null.
+104
+* @param stepVoltage The step voltage output used for dynamic test routines. Defaults to 7
+105
+*     volts if left null.
+106
+* @param timeout Safety timeout for the test routine commands. Defaults to 10 seconds if left
+107
+*     null.
+108
+*/
+109
+public Config(Velocity<VoltageUnit> rampRate, Voltage stepVoltage, Time timeout) {
+110
+this(rampRate, stepVoltage, timeout, null);
+111
+}
+112
+113
+/**
+114
+* Create a default configuration for a SysId test routine with all default settings.
+115
+*
+116
+* <p>rampRate: 1 volt/sec
+117
+*
+118
+* <p>stepVoltage: 7 volts
+119
+*
+120
+* <p>timeout: 10 seconds
+121
+*/
+122
+public Config() {
+123
+this(null, null, null, null);
+124
+}
+125
+}
+126
+127
+/**
+128
+* A mechanism to be characterized by a SysId routine. Defines callbacks needed for the SysId test
+129
+* routine to control and record data from the mechanism.
+130
+*/
+131
+public static class Mechanism {
+132
+/** Sends the SysId-specified drive signal to the mechanism motors during test routines. */
+133
+public final Consumer<? super Voltage> m_drive;
+134
+135
+/**
+136
+* Returns measured data (voltages, positions, velocities) of the mechanism motors during test
+137
+* routines.
+138
+*/
+139
+public final Consumer<SysIdRoutineLog> m_log;
+140
+141
+/** The subsystem containing the motor(s) that is (or are) being characterized. */
+142
+public final Subsystem m_subsystem;
+143
+144
+/** The name of the mechanism being tested. */
+145
+public final String m_name;
+146
+147
+/**
+148
+* Create a new mechanism specification for a SysId routine.
+149
+*
+150
+* @param drive Sends the SysId-specified drive signal to the mechanism motors during test
+151
+*     routines.
+152
+* @param log Returns measured data of the mechanism motors during test routines. To return
+153
+*     data, call `motor(string motorName)` on the supplied `SysIdRoutineLog` instance, and then
+154
+*     call one or more of the chainable logging handles (e.g. `voltage`) on the returned
+155
+*     `MotorLog`. Multiple motors can be logged in a single callback by calling `motor`
+156
+*     multiple times.
+157
+* @param subsystem The subsystem containing the motor(s) that is (or are) being characterized.
+158
+*     Will be declared as a requirement for the returned test commands.
+159
+* @param name The name of the mechanism being tested. Will be appended to the log entry title
+160
+*     for the routine's test state, e.g. "sysid-test-state-mechanism". Defaults to the name of
+161
+*     the subsystem if left null.
+162
+*/
+163
+public Mechanism(
+164
+Consumer<Voltage> drive, Consumer<SysIdRoutineLog> log, Subsystem subsystem, String name) {
+165
+m_drive = drive;
+166
+m_log = log != null ? log : l -> {};
+167
+m_subsystem = subsystem;
+168
+m_name = name != null ? name : subsystem.getName();
+169
+}
+170
+171
+/**
+172
+* Create a new mechanism specification for a SysId routine. Defaults the mechanism name to the
+173
+* subsystem name.
+174
+*
+175
+* @param drive Sends the SysId-specified drive signal to the mechanism motors during test
+176
+*     routines.
+177
+* @param log Returns measured data of the mechanism motors during test routines. To return
+178
+*     data, call `motor(string motorName)` on the supplied `SysIdRoutineLog` instance, and then
+179
+*     call one or more of the chainable logging handles (e.g. `voltage`) on the returned
+180
+*     `MotorLog`. Multiple motors can be logged in a single callback by calling `motor`
+181
+*     multiple times.
+182
+* @param subsystem The subsystem containing the motor(s) that is (or are) being characterized.
+183
+*     Will be declared as a requirement for the returned test commands. The subsystem's `name`
+184
+*     will be appended to the log entry title for the routine's test state, e.g.
+185
+*     "sysid-test-state-subsystem".
+186
+*/
+187
+public Mechanism(Consumer<Voltage> drive, Consumer<SysIdRoutineLog> log, Subsystem subsystem) {
+188
+this(drive, log, subsystem, null);
+189
+}
+190
+}
+191
+192
+/** Motor direction for a SysId test. */
+193
+public enum Direction {
+194
+/** Forward. */
+195
+kForward,
+196
+/** Reverse. */
+197
+kReverse
+198
+}
+199
+200
+/**
+201
+* Returns a command to run a quasistatic test in the specified direction.
+202
+*
+203
+* <p>The command will call the `drive` and `log` callbacks supplied at routine construction once
+204
+* per iteration. Upon command end or interruption, the `drive` callback is called with a value of
+205
+* 0 volts.
+206
+*
+207
+* @param direction The direction in which to run the test.
+208
+* @return A command to run the test.
+209
+*/
+210
+public Command quasistatic(Direction direction) {
+211
+State state;
+212
+if (direction == Direction.kForward) {
+213
+state = State.kQuasistaticForward;
+214
+} else { // if (direction == Direction.kReverse) {
+215
+state = State.kQuasistaticReverse;
+216
+}
+217
+218
+double outputSign = direction == Direction.kForward ? 1.0 : -1.0;
+219
+220
+Timer timer = new Timer();
+221
+return m_mechanism
+222
+.m_subsystem
+223
+.runOnce(timer::restart)
+224
+.andThen(
+225
+m_mechanism.m_subsystem.run(
+226
+() -> {
+227
+m_mechanism.m_drive.accept(
+228
+m_outputVolts.mut_replace(
+229
+outputSign * timer.get() * m_config.m_rampRate.in(Volts.per(Second)),
+230
+Volts));
+231
+m_mechanism.m_log.accept(this);
+232
+m_recordState.accept(state);
+233
+}))
+234
+.finallyDo(
+235
+() -> {
+236
+m_mechanism.m_drive.accept(Volts.of(0));
+237
+m_recordState.accept(State.kNone);
+238
+timer.stop();
+239
+})
+240
+.withName("sysid-" + state.toString() + "-" + m_mechanism.m_name)
+241
+.withTimeout(m_config.m_timeout.in(Seconds));
+242
+}
+243
+244
+/**
+245
+* Returns a command to run a dynamic test in the specified direction.
+246
+*
+247
+* <p>The command will call the `drive` and `log` callbacks supplied at routine construction once
+248
+* per iteration. Upon command end or interruption, the `drive` callback is called with a value of
+249
+* 0 volts.
+250
+*
+251
+* @param direction The direction in which to run the test.
+252
+* @return A command to run the test.
+253
+*/
+254
+public Command dynamic(Direction direction) {
+255
+double outputSign = direction == Direction.kForward ? 1.0 : -1.0;
+256
+State state =
+257
+Map.ofEntries(
+258
+entry(Direction.kForward, State.kDynamicForward),
+259
+entry(Direction.kReverse, State.kDynamicReverse))
+260
+.get(direction);
+261
+262
+return m_mechanism
+263
+.m_subsystem
+264
+.runOnce(
+265
+() -> m_outputVolts.mut_replace(m_config.m_stepVoltage.in(Volts) * outputSign, Volts))
+266
+.andThen(
+267
+m_mechanism.m_subsystem.run(
+268
+() -> {
+269
+m_mechanism.m_drive.accept(m_outputVolts);
+270
+m_mechanism.m_log.accept(this);
+271
+m_recordState.accept(state);
+272
+}))
+273
+.finallyDo(
+274
+() -> {
+275
+m_mechanism.m_drive.accept(Volts.of(0));
+276
+m_recordState.accept(State.kNone);
+277
+})
+278
+.withName("sysid-" + state.toString() + "-" + m_mechanism.m_name)
+279
+.withTimeout(m_config.m_timeout.in(Seconds));
+280
+}
+281
+}

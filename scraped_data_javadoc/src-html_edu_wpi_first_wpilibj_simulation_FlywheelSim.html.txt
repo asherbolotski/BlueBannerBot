@@ -1,0 +1,357 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+008
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
+009
+010
+import edu.wpi.first.math.VecBuilder;
+011
+import edu.wpi.first.math.numbers.N1;
+012
+import edu.wpi.first.math.system.LinearSystem;
+013
+import edu.wpi.first.math.system.plant.DCMotor;
+014
+import edu.wpi.first.math.system.plant.LinearSystemId;
+015
+import edu.wpi.first.math.util.Units;
+016
+import edu.wpi.first.units.measure.AngularAcceleration;
+017
+import edu.wpi.first.units.measure.AngularVelocity;
+018
+import edu.wpi.first.wpilibj.RobotController;
+019
+020
+/** Represents a simulated flywheel mechanism. */
+021
+public class FlywheelSim extends LinearSystemSim<N1, N1, N1> {
+022
+// Gearbox for the flywheel.
+023
+private final DCMotor m_gearbox;
+024
+025
+// The gearing from the motors to the output.
+026
+private final double m_gearing;
+027
+028
+// The moment of inertia for the flywheel mechanism.
+029
+private final double m_jKgMetersSquared;
+030
+031
+/**
+032
+* Creates a simulated flywheel mechanism.
+033
+*
+034
+* @param plant The linear system that represents the flywheel. Use either {@link
+035
+*     LinearSystemId#createFlywheelSystem(DCMotor, double, double)} if using physical constants
+036
+*     or {@link LinearSystemId#identifyVelocitySystem(double, double)} if using system
+037
+*     characterization.
+038
+* @param gearbox The type of and number of motors in the flywheel gearbox.
+039
+* @param measurementStdDevs The standard deviations of the measurements. Can be omitted if no
+040
+*     noise is desired. If present must have 1 element for velocity.
+041
+*/
+042
+public FlywheelSim(
+043
+LinearSystem<N1, N1, N1> plant, DCMotor gearbox, double... measurementStdDevs) {
+044
+super(plant, measurementStdDevs);
+045
+m_gearbox = gearbox;
+046
+047
+// By theorem 6.10.1 of https://file.tavsys.net/control/controls-engineering-in-frc.pdf,
+048
+// the flywheel state-space model is:
+049
+//
+050
+//   dx/dt = -G²Kₜ/(KᵥRJ)x + (GKₜ)/(RJ)u
+051
+//   A = -G²Kₜ/(KᵥRJ)
+052
+//   B = GKₜ/(RJ)
+053
+//
+054
+// Solve for G.
+055
+//
+056
+//   A/B = -G/Kᵥ
+057
+//   G = -KᵥA/B
+058
+//
+059
+// Solve for J.
+060
+//
+061
+//   B = GKₜ/(RJ)
+062
+//   J = GKₜ/(RB)
+063
+m_gearing = -gearbox.KvRadPerSecPerVolt * plant.getA(0, 0) / plant.getB(0, 0);
+064
+m_jKgMetersSquared = m_gearing * gearbox.KtNMPerAmp / (gearbox.rOhms * plant.getB(0, 0));
+065
+}
+066
+067
+/**
+068
+* Sets the flywheel's angular velocity.
+069
+*
+070
+* @param velocityRadPerSec The new velocity in radians per second.
+071
+*/
+072
+public void setAngularVelocity(double velocityRadPerSec) {
+073
+setState(VecBuilder.fill(velocityRadPerSec));
+074
+}
+075
+076
+/**
+077
+* Returns the gear ratio of the flywheel.
+078
+*
+079
+* @return the flywheel's gear ratio.
+080
+*/
+081
+public double getGearing() {
+082
+return m_gearing;
+083
+}
+084
+085
+/**
+086
+* Returns the moment of inertia in kilograms meters squared.
+087
+*
+088
+* @return The flywheel's moment of inertia.
+089
+*/
+090
+public double getJKgMetersSquared() {
+091
+return m_jKgMetersSquared;
+092
+}
+093
+094
+/**
+095
+* Returns the gearbox for the flywheel.
+096
+*
+097
+* @return The flywheel's gearbox.
+098
+*/
+099
+public DCMotor getGearbox() {
+100
+return m_gearbox;
+101
+}
+102
+103
+/**
+104
+* Returns the flywheel's velocity in Radians Per Second.
+105
+*
+106
+* @return The flywheel's velocity in Radians Per Second.
+107
+*/
+108
+public double getAngularVelocityRadPerSec() {
+109
+return getOutput(0);
+110
+}
+111
+112
+/**
+113
+* Returns the flywheel's velocity in RPM.
+114
+*
+115
+* @return The flywheel's velocity in RPM.
+116
+*/
+117
+public double getAngularVelocityRPM() {
+118
+return Units.radiansPerSecondToRotationsPerMinute(getAngularVelocityRadPerSec());
+119
+}
+120
+121
+/**
+122
+* Returns the flywheel's velocity.
+123
+*
+124
+* @return The flywheel's velocity
+125
+*/
+126
+public AngularVelocity getAngularVelocity() {
+127
+return RadiansPerSecond.of(getAngularVelocityRadPerSec());
+128
+}
+129
+130
+/**
+131
+* Returns the flywheel's acceleration in Radians Per Second Squared.
+132
+*
+133
+* @return The flywheel's acceleration in Radians Per Second Squared.
+134
+*/
+135
+public double getAngularAccelerationRadPerSecSq() {
+136
+var acceleration = (m_plant.getA().times(m_x)).plus(m_plant.getB().times(m_u));
+137
+return acceleration.get(0, 0);
+138
+}
+139
+140
+/**
+141
+* Returns the flywheel's acceleration.
+142
+*
+143
+* @return The flywheel's acceleration.
+144
+*/
+145
+public AngularAcceleration getAngularAcceleration() {
+146
+return RadiansPerSecondPerSecond.of(getAngularAccelerationRadPerSecSq());
+147
+}
+148
+149
+/**
+150
+* Returns the flywheel's torque in Newton-Meters.
+151
+*
+152
+* @return The flywheel's torque in Newton-Meters.
+153
+*/
+154
+public double getTorqueNewtonMeters() {
+155
+return getAngularAccelerationRadPerSecSq() * m_jKgMetersSquared;
+156
+}
+157
+158
+/**
+159
+* Returns the flywheel's current draw.
+160
+*
+161
+* @return The flywheel's current draw.
+162
+*/
+163
+public double getCurrentDrawAmps() {
+164
+// I = V / R - omega / (Kv * R)
+165
+// Reductions are output over input, so a reduction of 2:1 means the motor is spinning
+166
+// 2x faster than the flywheel
+167
+return m_gearbox.getCurrent(m_x.get(0, 0) * m_gearing, m_u.get(0, 0))
+168
+* Math.signum(m_u.get(0, 0));
+169
+}
+170
+171
+/**
+172
+* Gets the input voltage for the flywheel.
+173
+*
+174
+* @return The flywheel's input voltage.
+175
+*/
+176
+public double getInputVoltage() {
+177
+return getInput(0);
+178
+}
+179
+180
+/**
+181
+* Sets the input voltage for the flywheel.
+182
+*
+183
+* @param volts The input voltage.
+184
+*/
+185
+public void setInputVoltage(double volts) {
+186
+setInput(volts);
+187
+clampInput(RobotController.getBatteryVoltage());
+188
+}
+189
+}

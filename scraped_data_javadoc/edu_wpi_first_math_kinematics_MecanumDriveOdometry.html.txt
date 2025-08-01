@@ -1,0 +1,122 @@
+Package
+edu.wpi.first.math.kinematics
+Class MecanumDriveOdometry
+java.lang.Object
+edu.wpi.first.math.kinematics.Odometry
+<
+MecanumDriveWheelPositions
+>
+edu.wpi.first.math.kinematics.MecanumDriveOdometry
+public class
+MecanumDriveOdometry
+extends
+Odometry
+<
+MecanumDriveWheelPositions
+>
+Class for mecanum drive odometry. Odometry allows you to track the robot's position on the field
+ over a course of a match using readings from your mecanum wheel encoders.
+Teams can use odometry during the autonomous period for complex tasks like path following.
+ Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+Constructor Summary
+Constructors
+Constructor
+Description
+MecanumDriveOdometry
+(
+MecanumDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions)
+Constructs a MecanumDriveOdometry object with the default pose at the origin.
+MecanumDriveOdometry
+(
+MecanumDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions,
+Pose2d
+initialPoseMeters)
+Constructs a MecanumDriveOdometry object.
+Method Summary
+Methods inherited from class edu.wpi.first.math.kinematics.
+Odometry
+getPoseMeters
+,
+resetPose
+,
+resetPosition
+,
+resetRotation
+,
+resetTranslation
+,
+update
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MecanumDriveOdometry
+public
+MecanumDriveOdometry
+(
+MecanumDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions,
+Pose2d
+initialPoseMeters)
+Constructs a MecanumDriveOdometry object.
+Parameters:
+kinematics
+- The mecanum drive kinematics for your drivetrain.
+gyroAngle
+- The angle reported by the gyroscope.
+wheelPositions
+- The distances driven by each wheel.
+initialPoseMeters
+- The starting position of the robot on the field.
+MecanumDriveOdometry
+public
+MecanumDriveOdometry
+(
+MecanumDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions)
+Constructs a MecanumDriveOdometry object with the default pose at the origin.
+Parameters:
+kinematics
+- The mecanum drive kinematics for your drivetrain.
+gyroAngle
+- The angle reported by the gyroscope.
+wheelPositions
+- The distances driven by each wheel.

@@ -1,0 +1,342 @@
+Package
+edu.wpi.first.cscore
+Class VideoSink
+java.lang.Object
+edu.wpi.first.cscore.VideoSink
+All Implemented Interfaces:
+AutoCloseable
+Direct Known Subclasses:
+ImageSink
+,
+MjpegServer
+public class
+VideoSink
+extends
+Object
+implements
+AutoCloseable
+A sink for video that accepts a sequence of frames. Each frame may consist of multiple images
+ (e.g. from a stereo or depth camera); these are called channels.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+VideoSink.Kind
+Video sink types.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected int
+m_handle
+The VideoSink handle.
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+VideoSink
+(int handle)
+Constructs a VideoSink.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+VideoProperty
+[]
+enumerateProperties
+()
+Enumerate all properties of this sink.
+static
+VideoSink
+[]
+enumerateSinks
+()
+Enumerate all existing sinks.
+boolean
+equals
+(
+Object
+other)
+String
+getConfigJson
+()
+Get a JSON configuration string.
+String
+getDescription
+()
+Get the sink description.
+int
+getHandle
+()
+Returns the video sink handle.
+VideoSink.Kind
+getKind
+()
+Get the kind of the sink.
+static
+VideoSink.Kind
+getKindFromInt
+(int kind)
+Convert from the numerical representation of kind to an enum type.
+String
+getName
+()
+Get the name of the sink.
+VideoProperty
+getProperty
+(
+String
+name)
+Get a property of the sink.
+VideoSource
+getSource
+()
+Get the connected source.
+VideoProperty
+getSourceProperty
+(
+String
+name)
+Get a property of the associated source.
+int
+hashCode
+()
+boolean
+isValid
+()
+Returns true if the VideoSink is valid.
+boolean
+setConfigJson
+(
+String
+config)
+Set properties from a JSON configuration string.
+void
+setSource
+(
+VideoSource
+source)
+Configure which source should provide frames to this sink.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_handle
+protected
+int
+m_handle
+The VideoSink handle.
+Constructor Details
+VideoSink
+protected
+VideoSink
+(int handle)
+Constructs a VideoSink.
+Parameters:
+handle
+- The video sink handle.
+Method Details
+getKindFromInt
+public static
+VideoSink.Kind
+getKindFromInt
+(int kind)
+Convert from the numerical representation of kind to an enum type.
+Parameters:
+kind
+- The numerical representation of kind
+Returns:
+The kind
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+isValid
+public
+boolean
+isValid
+()
+Returns true if the VideoSink is valid.
+Returns:
+True if the VideoSink is valid.
+getHandle
+public
+int
+getHandle
+()
+Returns the video sink handle.
+Returns:
+The video sink handle.
+equals
+public
+boolean
+equals
+(
+Object
+other)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+getKind
+public
+VideoSink.Kind
+getKind
+()
+Get the kind of the sink.
+Returns:
+The kind of the sink.
+getName
+public
+String
+getName
+()
+Get the name of the sink. The name is an arbitrary identifier provided when the sink is
+ created, and should be unique.
+Returns:
+The name of the sink.
+getDescription
+public
+String
+getDescription
+()
+Get the sink description. This is sink-kind specific.
+Returns:
+The sink description.
+getProperty
+public
+VideoProperty
+getProperty
+(
+String
+name)
+Get a property of the sink.
+Parameters:
+name
+- Property name
+Returns:
+Property (kind Property::kNone if no property with the given name exists)
+enumerateProperties
+public
+VideoProperty
+[]
+enumerateProperties
+()
+Enumerate all properties of this sink.
+Returns:
+List of properties.
+setConfigJson
+public
+boolean
+setConfigJson
+(
+String
+config)
+Set properties from a JSON configuration string.
+The format of the JSON input is:
+{
+     "properties": [
+         {
+             "name": property name
+             "value": property value
+         }
+     ]
+ }
+Parameters:
+config
+- configuration
+Returns:
+True if set successfully
+getConfigJson
+public
+String
+getConfigJson
+()
+Get a JSON configuration string.
+Returns:
+JSON configuration string
+setSource
+public
+void
+setSource
+(
+VideoSource
+source)
+Configure which source should provide frames to this sink. Each sink can accept frames from
+ only a single source, but a single source can provide frames to multiple clients.
+Parameters:
+source
+- Source
+getSource
+public
+VideoSource
+getSource
+()
+Get the connected source.
+Returns:
+Connected source; nullptr if no source connected.
+getSourceProperty
+public
+VideoProperty
+getSourceProperty
+(
+String
+name)
+Get a property of the associated source.
+Parameters:
+name
+- Property name
+Returns:
+Property (kind Property::kNone if no property with the given name exists or no source
+     connected)
+enumerateSinks
+public static
+VideoSink
+[]
+enumerateSinks
+()
+Enumerate all existing sinks.
+Returns:
+Vector of sinks.

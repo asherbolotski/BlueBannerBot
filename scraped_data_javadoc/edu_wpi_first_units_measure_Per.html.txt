@@ -1,0 +1,5890 @@
+Package
+edu.wpi.first.units.measure
+Interface Per<Dividend extends
+Unit
+,
+Divisor extends
+Unit
+>
+All Superinterfaces:
+Comparable
+<
+Measure
+<
+PerUnit
+<Dividend,
+Divisor>>>
+,
+Measure
+<
+PerUnit
+<Dividend,
+Divisor>>
+All Known Implementing Classes:
+ImmutablePer
+,
+MutPer
+public interface
+Per
+<Dividend extends
+Unit
+,
+Divisor extends
+Unit
+>
+extends
+Measure
+<
+PerUnit
+<Dividend,
+Divisor>>
+Field Summary
+Fields inherited from interface edu.wpi.first.units.
+Measure
+EQUIVALENCE_THRESHOLD
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+default
+PerUnit
+<
+Dividend
+,
+Divisor
+>
+baseUnit
+()
+A convenience method to get the base unit of the measurement.
+Per
+<
+Dividend
+,
+Divisor
+>
+copy
+()
+Returns an immutable copy of this measure.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+div
+(double divisor)
+Divides this measure by a unitless scalar and returns the result.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+div
+(
+Acceleration
+<?> divisor)
+Divides this measure by a generic acceleration and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+div
+(
+Angle
+divisor)
+Divides this measure by an angle and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+div
+(
+AngularAcceleration
+divisor)
+Divides this measure by an angular acceleration and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+div
+(
+AngularMomentum
+divisor)
+Divides this measure by an angular momentum and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+div
+(
+AngularVelocity
+divisor)
+Divides this measure by an angular velocity and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+div
+(
+Current
+divisor)
+Divides this measure by an electric current and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+div
+(
+Dimensionless
+divisor)
+Divides this measure by a dimensionless scalar and returns the result.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+div
+(
+Distance
+divisor)
+Divides this measure by a distance and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+div
+(
+Energy
+divisor)
+Divides this measure by an energy and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+div
+(
+Force
+divisor)
+Divides this measure by a force and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+div
+(
+Frequency
+divisor)
+Divides this measure by a frequency and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+div
+(
+LinearAcceleration
+divisor)
+Divides this measure by a linear acceleration and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+div
+(
+LinearMomentum
+divisor)
+Divides this measure by a linear momentum and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+div
+(
+LinearVelocity
+divisor)
+Divides this measure by a linear velocity and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+div
+(
+Mass
+divisor)
+Divides this measure by a mass and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+div
+(
+MomentOfInertia
+divisor)
+Divides this measure by a moment of inertia and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+div
+(
+Mult
+<?,
+?> divisor)
+Divides this measure by a generic multiplication and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+div
+(
+Per
+<?,
+?> divisor)
+Divides this measure by a generic ratio and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+div
+(
+Power
+divisor)
+Divides this measure by a power and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+div
+(
+Resistance
+divisor)
+Divides this measure by a resistance and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+div
+(
+Temperature
+divisor)
+Divides this measure by a temperature and returns the result in the most appropriate unit.
+default
+Velocity
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>>
+div
+(
+Time
+divisor)
+Divides this measure by a time and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+div
+(
+Torque
+divisor)
+Divides this measure by a torque and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+div
+(
+Velocity
+<?> divisor)
+Divides this measure by a generic velocity and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+div
+(
+Voltage
+divisor)
+Divides this measure by a voltage and returns the result in the most appropriate unit.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+divide
+(double divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+divide
+(
+Acceleration
+<?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+divide
+(
+Angle
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+divide
+(
+AngularAcceleration
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+divide
+(
+AngularMomentum
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+divide
+(
+AngularVelocity
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+divide
+(
+Current
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+divide
+(
+Dimensionless
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+divide
+(
+Distance
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+divide
+(
+Energy
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+divide
+(
+Force
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+divide
+(
+Frequency
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+divide
+(
+LinearAcceleration
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+divide
+(
+LinearMomentum
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+divide
+(
+LinearVelocity
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+divide
+(
+Mass
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+divide
+(
+MomentOfInertia
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+divide
+(
+Mult
+<?,
+?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+divide
+(
+Per
+<?,
+?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+divide
+(
+Power
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+divide
+(
+Resistance
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+divide
+(
+Temperature
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Velocity
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>>
+divide
+(
+Time
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+divide
+(
+Torque
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+divide
+(
+Velocity
+<?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+divide
+(
+Voltage
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead.
+default double
+in
+(
+PerUnit
+<
+Dividend
+,
+Divisor
+> unit)
+Converts this measure to a measure with a different unit of the same type, eg minutes to
+ seconds.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+minus
+(
+Measure
+<? extends
+PerUnit
+<
+Dividend
+,
+Divisor
+>> other)
+Subtracts another measure of the same unit type from this one.
+default
+MutPer
+<
+Dividend
+,
+Divisor
+>
+mutableCopy
+()
+Returns a mutable copy of this measure.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+negate
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+use unaryMinus() instead.
+static <Dividend extends
+Unit
+,
+Divisor extends
+Unit
+>
+Per
+<Dividend,
+Divisor>
+ofBaseUnits
+(double baseUnitMagnitude,
+PerUnit
+<Dividend,
+Divisor> unit)
+static <Dividend extends
+Unit
+,
+Divisor extends
+Unit
+>
+Per
+<Dividend,
+Divisor>
+ofRelativeUnits
+(double magnitude,
+PerUnit
+<Dividend,
+Divisor> unit)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+per
+(
+AccelerationUnit
+<?> divisorUnit)
+Divides this measure by an acceleration unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+per
+(
+AngleUnit
+divisorUnit)
+Divides this measure by an angle unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+per
+(
+AngularAccelerationUnit
+divisorUnit)
+Divides this measure by an angular acceleration unit and returns the result in the most
+ appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+per
+(
+AngularMomentumUnit
+divisorUnit)
+Divides this measure by an angular momentum unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+per
+(
+AngularVelocityUnit
+divisorUnit)
+Divides this measure by an angular velocity unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+per
+(
+CurrentUnit
+divisorUnit)
+Divides this measure by a unit of electric current and returns the result in the most
+ appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+per
+(
+DistanceUnit
+divisorUnit)
+Divides this measure by a distance unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+per
+(
+EnergyUnit
+divisorUnit)
+Divides this measure by an energy unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+per
+(
+ForceUnit
+divisorUnit)
+Divides this measure by a force unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+per
+(
+FrequencyUnit
+divisorUnit)
+Divides this measure by a frequency unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+per
+(
+LinearAccelerationUnit
+divisorUnit)
+Divides this measure by a linear acceleration unit and returns the result in the most
+ appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+per
+(
+LinearMomentumUnit
+divisorUnit)
+Divides this measure by a linear momentum unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+per
+(
+LinearVelocityUnit
+divisorUnit)
+Divides this measure by a linear velocity unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+per
+(
+MassUnit
+divisorUnit)
+Divides this measure by a mass unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+per
+(
+MomentOfInertiaUnit
+divisorUnit)
+Divides this measure by a moment of inertia unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+per
+(
+MultUnit
+<?,
+?> divisorUnit)
+Divides this measure by a generic compound unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+per
+(
+PerUnit
+<?,
+?> divisorUnit)
+Divides this measure by a generic ratio unit and returns the result in the most appropriate
+ unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+per
+(
+PowerUnit
+divisorUnit)
+Divides this measure by a power unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+per
+(
+ResistanceUnit
+divisorUnit)
+Divides this measure by a resistance unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+per
+(
+TemperatureUnit
+divisorUnit)
+Divides this measure by a temperature unit and returns the result in the most appropriate unit.
+default
+Velocity
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>>
+per
+(
+TimeUnit
+divisorUnit)
+Divides this measure by a time period and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+per
+(
+TorqueUnit
+divisorUnit)
+Divides this measure by a torque unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+per
+(
+VelocityUnit
+<?> divisorUnit)
+Divides this measure by a velocity unit and returns the result in the most appropriate unit.
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+per
+(
+VoltageUnit
+divisorUnit)
+Divides this measure by a voltage unit and returns the result in the most appropriate unit.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+plus
+(
+Measure
+<? extends
+PerUnit
+<
+Dividend
+,
+Divisor
+>> other)
+Adds another measure of the same unit type to this one.
+default
+Measure
+<? extends
+PerUnit
+<
+Divisor
+,
+Dividend
+>>
+reciprocal
+()
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+times
+(double multiplier)
+Multiplies this measure by a scalar unitless multiplier.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+times
+(
+Acceleration
+<?> multiplier)
+Multiplies this measure by an acceleration and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+times
+(
+Angle
+multiplier)
+Multiplies this measure by an angle and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+times
+(
+AngularAcceleration
+multiplier)
+Multiplies this measure by an angular acceleration and returns the resulting measure in the
+ most appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+times
+(
+AngularMomentum
+multiplier)
+Multiplies this measure by an angular momentum and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+times
+(
+AngularVelocity
+multiplier)
+Multiplies this measure by an angular velocity and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+times
+(
+Current
+multiplier)
+Multiplies this measure by an electric current and returns the resulting measure in the most
+ appropriate unit.
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+times
+(
+Dimensionless
+multiplier)
+Multiplies this measure by a scalar dimensionless multiplier.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+times
+(
+Distance
+multiplier)
+Multiplies this measure by a distance and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+times
+(
+Energy
+multiplier)
+Multiplies this measure by an energy and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+times
+(
+Force
+multiplier)
+Multiplies this measure by a force and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+times
+(
+Frequency
+multiplier)
+Multiplies this measure by a frequency and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+times
+(
+LinearAcceleration
+multiplier)
+Multiplies this measure by a linear acceleration and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+times
+(
+LinearMomentum
+multiplier)
+Multiplies this measure by a linear momentum and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+times
+(
+LinearVelocity
+multiplier)
+Multiplies this measure by a linear velocity and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+times
+(
+Mass
+multiplier)
+Multiplies this measure by a mass and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+times
+(
+MomentOfInertia
+multiplier)
+Multiplies this measure by a moment of intertia and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+times
+(
+Mult
+<?,
+?> multiplier)
+Multiplies this measure by a generic multiplied measure and returns the resulting measure in
+ the most appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+times
+(
+Per
+<?,
+?> multiplier)
+Multiplies this measure by a generic ratio measurement and returns the resulting measure in the
+ most appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+times
+(
+Power
+multiplier)
+Multiplies this measure by a power and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+times
+(
+Resistance
+multiplier)
+Multiplies this measure by a resistance and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+times
+(
+Temperature
+multiplier)
+Multiplies this measure by a temperature and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TimeUnit
+>
+times
+(
+Time
+multiplier)
+Multiplies this measure by a time and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+times
+(
+Torque
+multiplier)
+Multiplies this measure by a torque and returns the resulting measure in the most appropriate
+ unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+times
+(
+Velocity
+<?> multiplier)
+Multiplies this measure by a generic velocity and returns the resulting measure in the most
+ appropriate unit.
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+times
+(
+Voltage
+multiplier)
+Multiplies this measure by a voltage and returns the resulting measure in the most appropriate
+ unit.
+default
+Measure
+<
+Dividend
+>
+timesDivisor
+(
+Measure
+<? extends
+Divisor
+> multiplier)
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+unaryMinus
+()
+Returns a measure equivalent to this one equal to zero minus its current value.
+PerUnit
+<
+Dividend
+,
+Divisor
+>
+unit
+()
+Gets the units of this measure.
+Methods inherited from interface edu.wpi.first.units.
+Measure
+abs
+,
+baseUnitMagnitude
+,
+compareTo
+,
+copySign
+,
+div
+,
+divide
+,
+divideRatio
+,
+gt
+,
+gte
+,
+isEquivalent
+,
+isNear
+,
+isNear
+,
+lt
+,
+lte
+,
+magnitude
+,
+times
+,
+timesConversionFactor
+,
+timesInverse
+,
+timesRatio
+,
+toLongString
+,
+toShortString
+Method Details
+ofRelativeUnits
+static
+<Dividend extends
+Unit
+,
+Divisor extends
+Unit
+>
+Per
+<Dividend,
+Divisor>
+ofRelativeUnits
+(double magnitude,
+PerUnit
+<Dividend,
+Divisor> unit)
+ofBaseUnits
+static
+<Dividend extends
+Unit
+,
+Divisor extends
+Unit
+>
+Per
+<Dividend,
+Divisor>
+ofBaseUnits
+(double baseUnitMagnitude,
+PerUnit
+<Dividend,
+Divisor> unit)
+copy
+Per
+<
+Dividend
+,
+Divisor
+>
+copy
+()
+Description copied from interface:
+Measure
+Returns an immutable copy of this measure. The copy can be used freely and is guaranteed never
+ to change.
+Specified by:
+copy
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Returns:
+the copied measure
+mutableCopy
+default
+MutPer
+<
+Dividend
+,
+Divisor
+>
+mutableCopy
+()
+Description copied from interface:
+Measure
+Returns a mutable copy of this measure. It will be initialized to the current state of this
+ measure, but can be changed over time without needing to allocate new measurement objects.
+Specified by:
+mutableCopy
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Returns:
+the copied measure
+unit
+PerUnit
+<
+Dividend
+,
+Divisor
+>
+unit
+()
+Description copied from interface:
+Measure
+Gets the units of this measure.
+Specified by:
+unit
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Returns:
+the unit
+baseUnit
+default
+PerUnit
+<
+Dividend
+,
+Divisor
+>
+baseUnit
+()
+Description copied from interface:
+Measure
+A convenience method to get the base unit of the measurement. Equivalent to
+unit().getBaseUnit()
+.
+Specified by:
+baseUnit
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Returns:
+the base unit of measure.
+in
+default
+double
+in
+(
+PerUnit
+<
+Dividend
+,
+Divisor
+> unit)
+Description copied from interface:
+Measure
+Converts this measure to a measure with a different unit of the same type, eg minutes to
+ seconds. Converting to the same unit is equivalent to calling
+Measure.magnitude()
+.
+Meters.of(12).in(Feet) // 39.3701
+   Seconds.of(15).in(Minutes) // 0.25
+Specified by:
+in
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+unit
+- the unit to convert this measure to
+Returns:
+the value of this measure in the given unit
+unaryMinus
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+unaryMinus
+()
+Description copied from interface:
+Measure
+Returns a measure equivalent to this one equal to zero minus its current value. For non-linear
+ unit types like temperature, the zero point is treated as the zero value of the base unit (eg
+ Kelvin). In effect, this means code like
+Celsius.of(10).unaryMinus()
+returns a value
+ equivalent to -10 Kelvin, and
+not
+-10° Celsius.
+Specified by:
+unaryMinus
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Returns:
+a measure equal to zero minus this measure
+negate
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+negate
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+use unaryMinus() instead. This was renamed for consistency with other WPILib classes like Rotation2d
+Returns a measure equivalent to this one equal to zero minus its current value. For non-linear
+ unit types like temperature, the zero point is treated as the zero value of the base unit (eg
+ Kelvin). In effect, this means code like
+Celsius.of(10).negate()
+returns a value
+ equivalent to -10 Kelvin, and
+not
+-10° Celsius.
+Specified by:
+negate
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Returns:
+a measure equal to zero minus this measure
+plus
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+plus
+(
+Measure
+<? extends
+PerUnit
+<
+Dividend
+,
+Divisor
+>> other)
+Description copied from interface:
+Measure
+Adds another measure of the same unit type to this one.
+Specified by:
+plus
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+other
+- the measurement to add
+Returns:
+a measure of the sum of both measures
+minus
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+minus
+(
+Measure
+<? extends
+PerUnit
+<
+Dividend
+,
+Divisor
+>> other)
+Description copied from interface:
+Measure
+Subtracts another measure of the same unit type from this one.
+Specified by:
+minus
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+other
+- the measurement to subtract
+Returns:
+a measure of the difference between the measures
+times
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+times
+(double multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a scalar unitless multiplier.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the scalar multiplication factor
+Returns:
+the scaled result
+div
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+div
+(double divisor)
+Description copied from interface:
+Measure
+Divides this measure by a unitless scalar and returns the result.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+divide
+(double divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a unitless scalar and returns the result.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+times
+(
+Acceleration
+<?> multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by an acceleration and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+div
+(
+Acceleration
+<?> divisor)
+Description copied from interface:
+Measure
+Divides this measure by a generic acceleration and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+divide
+(
+Acceleration
+<?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a generic acceleration and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AccelerationUnit
+<?>>
+per
+(
+AccelerationUnit
+<?> divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by an acceleration unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+times
+(
+Angle
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by an angle and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+div
+(
+Angle
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by an angle and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+divide
+(
+Angle
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by an angle and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngleUnit
+>
+per
+(
+AngleUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by an angle unit and returns the result in the most appropriate unit. This
+ is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+times
+(
+AngularAcceleration
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by an angular acceleration and returns the resulting measure in the
+ most appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+div
+(
+AngularAcceleration
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by an angular acceleration and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+divide
+(
+AngularAcceleration
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by an angular acceleration and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularAccelerationUnit
+>
+per
+(
+AngularAccelerationUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by an angular acceleration unit and returns the result in the most
+ appropriate unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+times
+(
+AngularMomentum
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by an angular momentum and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+div
+(
+AngularMomentum
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by an angular momentum and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+divide
+(
+AngularMomentum
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by an angular momentum and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularMomentumUnit
+>
+per
+(
+AngularMomentumUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by an angular momentum unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+times
+(
+AngularVelocity
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by an angular velocity and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+div
+(
+AngularVelocity
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by an angular velocity and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+divide
+(
+AngularVelocity
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by an angular velocity and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+AngularVelocityUnit
+>
+per
+(
+AngularVelocityUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by an angular velocity unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+times
+(
+Current
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by an electric current and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+div
+(
+Current
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by an electric current and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+divide
+(
+Current
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by an electric current and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+CurrentUnit
+>
+per
+(
+CurrentUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a unit of electric current and returns the result in the most
+ appropriate unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+div
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+div
+(
+Dimensionless
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a dimensionless scalar and returns the result.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+divide
+(
+Dimensionless
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a dimensionless scalar and returns the result.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+times
+default
+Per
+<
+Dividend
+,
+Divisor
+>
+times
+(
+Dimensionless
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a scalar dimensionless multiplier.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the scalar multiplication factor
+Returns:
+the scaled result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+times
+(
+Distance
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a distance and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+div
+(
+Distance
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a distance and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+divide
+(
+Distance
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a distance and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+DistanceUnit
+>
+per
+(
+DistanceUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a distance unit and returns the result in the most appropriate unit.
+ This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+times
+(
+Energy
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by an energy and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+div
+(
+Energy
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by an energy and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+divide
+(
+Energy
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by an energy and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+EnergyUnit
+>
+per
+(
+EnergyUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by an energy unit and returns the result in the most appropriate unit.
+ This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+times
+(
+Force
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a force and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+div
+(
+Force
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a force and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+divide
+(
+Force
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a force and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ForceUnit
+>
+per
+(
+ForceUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a force unit and returns the result in the most appropriate unit. This
+ is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+times
+(
+Frequency
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a frequency and returns the resulting measure in the most
+ appropriate unit. This often - but not always - means implementations return a variation of a
+Per
+measure.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+div
+(
+Frequency
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a frequency and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+divide
+(
+Frequency
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a frequency and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+FrequencyUnit
+>
+per
+(
+FrequencyUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a frequency unit and returns the result in the most appropriate unit.
+ This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+times
+(
+LinearAcceleration
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a linear acceleration and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+div
+(
+LinearAcceleration
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a linear acceleration and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+divide
+(
+LinearAcceleration
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a linear acceleration and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearAccelerationUnit
+>
+per
+(
+LinearAccelerationUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a linear acceleration unit and returns the result in the most
+ appropriate unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+times
+(
+LinearMomentum
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a linear momentum and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+div
+(
+LinearMomentum
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a linear momentum and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+divide
+(
+LinearMomentum
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a linear momentum and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearMomentumUnit
+>
+per
+(
+LinearMomentumUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a linear momentum unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+times
+(
+LinearVelocity
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a linear velocity and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+div
+(
+LinearVelocity
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a linear velocity and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+divide
+(
+LinearVelocity
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a linear velocity and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+LinearVelocityUnit
+>
+per
+(
+LinearVelocityUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a linear velocity unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+times
+(
+Mass
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a mass and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+div
+(
+Mass
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a mass and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+divide
+(
+Mass
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a mass and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MassUnit
+>
+per
+(
+MassUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a mass unit and returns the result in the most appropriate unit. This
+ is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+times
+(
+MomentOfInertia
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a moment of intertia and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+div
+(
+MomentOfInertia
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a moment of inertia and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+divide
+(
+MomentOfInertia
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a moment of inertia and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MomentOfInertiaUnit
+>
+per
+(
+MomentOfInertiaUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a moment of inertia unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+times
+(
+Mult
+<?,
+?> multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a generic multiplied measure and returns the resulting measure in
+ the most appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+div
+(
+Mult
+<?,
+?> divisor)
+Description copied from interface:
+Measure
+Divides this measure by a generic multiplication and returns the result in the most appropriate
+ unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+divide
+(
+Mult
+<?,
+?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a generic multiplication and returns the result in the most appropriate
+ unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+MultUnit
+<?,
+?>>
+per
+(
+MultUnit
+<?,
+?> divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a generic compound unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+times
+(
+Per
+<?,
+?> multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a generic ratio measurement and returns the resulting measure in the
+ most appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+div
+(
+Per
+<?,
+?> divisor)
+Description copied from interface:
+Measure
+Divides this measure by a generic ratio and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+divide
+(
+Per
+<?,
+?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a generic ratio and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PerUnit
+<?,
+?>>
+per
+(
+PerUnit
+<?,
+?> divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a generic ratio unit and returns the result in the most appropriate
+ unit. This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+times
+(
+Power
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a power and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+div
+(
+Power
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a power and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+divide
+(
+Power
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a power and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+PowerUnit
+>
+per
+(
+PowerUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a power unit and returns the result in the most appropriate unit. This
+ is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+times
+(
+Resistance
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a resistance and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+div
+(
+Resistance
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a resistance and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+divide
+(
+Resistance
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a resistance and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+ResistanceUnit
+>
+per
+(
+ResistanceUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a resistance unit and returns the result in the most appropriate unit.
+ This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+times
+(
+Temperature
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a temperature and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+div
+(
+Temperature
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a temperature and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+divide
+(
+Temperature
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a temperature and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TemperatureUnit
+>
+per
+(
+TemperatureUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a temperature unit and returns the result in the most appropriate unit.
+ This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TimeUnit
+>
+times
+(
+Time
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a time and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Velocity
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>>
+div
+(
+Time
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a time and returns the result in the most appropriate unit. This will
+ often - but not always - result in a
+Per
+type like
+LinearVelocity
+or
+Acceleration
+.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Velocity
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>>
+divide
+(
+Time
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a time and returns the result in the most appropriate unit. This will
+ often - but not always - result in a
+Per
+type like
+LinearVelocity
+or
+Acceleration
+.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Velocity
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>>
+per
+(
+TimeUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a time period and returns the result in the most appropriate unit. This
+ is equivalent to
+div(period.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the time period measurement to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+times
+(
+Torque
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a torque and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+div
+(
+Torque
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a torque and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+divide
+(
+Torque
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a torque and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+TorqueUnit
+>
+per
+(
+TorqueUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a torque unit and returns the result in the most appropriate unit. This
+ is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+times
+(
+Velocity
+<?> multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a generic velocity and returns the resulting measure in the most
+ appropriate unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+div
+(
+Velocity
+<?> divisor)
+Description copied from interface:
+Measure
+Divides this measure by a generic velocity and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+divide
+(
+Velocity
+<?> divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a generic velocity and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VelocityUnit
+<?>>
+per
+(
+VelocityUnit
+<?> divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a velocity unit and returns the result in the most appropriate unit.
+ This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+times
+default
+Mult
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+times
+(
+Voltage
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a voltage and returns the resulting measure in the most appropriate
+ unit.
+Specified by:
+times
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+multiplier
+- the measurement to multiply by.
+Returns:
+the multiplication result
+div
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+div
+(
+Voltage
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a voltage and returns the result in the most appropriate unit.
+Specified by:
+div
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+divide
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+divide
+(
+Voltage
+divisor)
+Deprecated, for removal: This API element is subject to removal in a future version.
+use div instead. This was renamed for consistency with other languages like Kotlin
+Divides this measure by a voltage and returns the result in the most appropriate unit.
+Specified by:
+divide
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+per
+default
+Per
+<
+PerUnit
+<
+Dividend
+,
+Divisor
+>,
+VoltageUnit
+>
+per
+(
+VoltageUnit
+divisorUnit)
+Description copied from interface:
+Measure
+Divides this measure by a voltage unit and returns the result in the most appropriate unit.
+ This is equivalent to
+div(divisorUnit.of(1))
+.
+Specified by:
+per
+in interface
+Measure
+<
+Dividend
+extends
+Unit
+>
+Parameters:
+divisorUnit
+- the unit to divide by.
+Returns:
+the division result
+timesDivisor
+default
+Measure
+<
+Dividend
+>
+timesDivisor
+(
+Measure
+<? extends
+Divisor
+> multiplier)
+reciprocal
+default
+Measure
+<? extends
+PerUnit
+<
+Divisor
+,
+Dividend
+>>
+reciprocal
+()

@@ -1,0 +1,2066 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+/*----------------------------------------------------------------------------*/
+006
+/* Copyright (c) 2016-2020 Analog Devices Inc. All Rights Reserved.           */
+007
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+008
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+009
+/* the project.                                                               */
+010
+/*                                                                            */
+011
+/* Modified by Juan Chong - frcsupport@analog.com                             */
+012
+/*----------------------------------------------------------------------------*/
+013
+014
+package edu.wpi.first.wpilibj;
+015
+016
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+017
+import edu.wpi.first.hal.HAL;
+018
+import edu.wpi.first.hal.SimBoolean;
+019
+import edu.wpi.first.hal.SimDevice;
+020
+import edu.wpi.first.hal.SimDouble;
+021
+import edu.wpi.first.math.MathUtil;
+022
+import edu.wpi.first.util.sendable.Sendable;
+023
+import edu.wpi.first.util.sendable.SendableBuilder;
+024
+025
+// CHECKSTYLE.OFF: TypeName
+026
+// CHECKSTYLE.OFF: MemberName
+027
+// CHECKSTYLE.OFF: LocalVariableName
+028
+// CHECKSTYLE.OFF: ParameterName
+029
+// CHECKSTYLE.OFF: EmptyCatchBlock
+030
+031
+/** This class is for the ADIS16448 IMU that connects to the RoboRIO MXP port. */
+032
+@SuppressWarnings({"PMD.RedundantFieldInitializer", "PMD.ImmutableField"})
+033
+public class ADIS16448_IMU implements AutoCloseable, Sendable {
+034
+// ADIS16448 Register Map Declaration
+035
+private static final int FLASH_CNT = 0x00; // Flash memory write count
+036
+037
+private static final int XGYRO_OUT = 0x04; // X-axis gyroscope output
+038
+private static final int YGYRO_OUT = 0x06; // Y-axis gyroscope output
+039
+private static final int ZGYRO_OUT = 0x08; // Z-axis gyroscope output
+040
+private static final int XACCL_OUT = 0x0A; // X-axis accelerometer output
+041
+private static final int YACCL_OUT = 0x0C; // Y-axis accelerometer output
+042
+private static final int ZACCL_OUT = 0x0E; // Z-axis accelerometer output
+043
+private static final int XMAGN_OUT = 0x10; // X-axis magnetometer output
+044
+private static final int YMAGN_OUT = 0x12; // Y-axis magnetometer output
+045
+private static final int ZMAGN_OUT = 0x14; // Z-axis magnetometer output
+046
+private static final int BARO_OUT = 0x16; // Barometer pressure measurement, high word
+047
+private static final int TEMP_OUT = 0x18; // Temperature output
+048
+private static final int XGYRO_OFF = 0x1A; // X-axis gyroscope bias offset factor
+049
+private static final int YGYRO_OFF = 0x1C; // Y-axis gyroscope bias offset factor
+050
+private static final int ZGYRO_OFF = 0x1E; // Z-axis gyroscope bias offset factor
+051
+private static final int XACCL_OFF = 0x20; // X-axis acceleration bias offset factor
+052
+private static final int YACCL_OFF = 0x22; // Y-axis acceleration bias offset factor
+053
+private static final int ZACCL_OFF = 0x24; // Z-axis acceleration bias offset factor
+054
+private static final int XMAGN_HIC = 0x26; // X-axis magnetometer, hard iron factor
+055
+private static final int YMAGN_HIC = 0x28; // Y-axis magnetometer, hard iron factor
+056
+private static final int ZMAGN_HIC = 0x2A; // Z-axis magnetometer, hard iron factor
+057
+private static final int XMAGN_SIC = 0x2C; // X-axis magnetometer, soft iron factor
+058
+private static final int YMAGN_SIC = 0x2E; // Y-axis magnetometer, soft iron factor
+059
+private static final int ZMAGN_SIC = 0x30; // Z-axis magnetometer, soft iron factor
+060
+private static final int GPIO_CTRL = 0x32; // GPIO control
+061
+private static final int MSC_CTRL = 0x34; // MISC control
+062
+private static final int SMPL_PRD = 0x36; // Sample clock/Decimation filter control
+063
+private static final int SENS_AVG = 0x38; // Digital filter control
+064
+private static final int SEQ_CNT = 0x3A; // MAGN_OUT and BARO_OUT counter
+065
+private static final int DIAG_STAT = 0x3C; // System status
+066
+private static final int GLOB_CMD = 0x3E; // System command
+067
+private static final int ALM_MAG1 = 0x40; // Alarm 1 amplitude threshold
+068
+private static final int ALM_MAG2 = 0x42; // Alarm 2 amplitude threshold
+069
+private static final int ALM_SMPL1 = 0x44; // Alarm 1 sample size
+070
+private static final int ALM_SMPL2 = 0x46; // Alarm 2 sample size
+071
+private static final int ALM_CTRL = 0x48; // Alarm control
+072
+private static final int LOT_ID1 = 0x52; // Lot identification number
+073
+private static final int LOT_ID2 = 0x54; // Lot identification number
+074
+private static final int PROD_ID = 0x56; // Product identifier
+075
+private static final int SERIAL_NUM = 0x58; // Lot-specific serial number
+076
+077
+/** ADIS16448 calibration times. */
+078
+public enum CalibrationTime {
+079
+/** 32 ms calibration time. */
+080
+_32ms(0),
+081
+/** 64 ms calibration time. */
+082
+_64ms(1),
+083
+/** 128 ms calibration time. */
+084
+_128ms(2),
+085
+/** 256 ms calibration time. */
+086
+_256ms(3),
+087
+/** 512 ms calibration time. */
+088
+_512ms(4),
+089
+/** 1 s calibration time. */
+090
+_1s(5),
+091
+/** 2 s calibration time. */
+092
+_2s(6),
+093
+/** 4 s calibration time. */
+094
+_4s(7),
+095
+/** 8 s calibration time. */
+096
+_8s(8),
+097
+/** 16 s calibration time. */
+098
+_16s(9),
+099
+/** 32 s calibration time. */
+100
+_32s(10),
+101
+/** 64 s calibration time. */
+102
+_64s(11);
+103
+104
+private final int value;
+105
+106
+CalibrationTime(int value) {
+107
+this.value = value;
+108
+}
+109
+}
+110
+111
+/** IMU axes. */
+112
+public enum IMUAxis {
+113
+/** The IMU's X axis. */
+114
+kX,
+115
+/** The IMU's Y axis. */
+116
+kY,
+117
+/** The IMU's Z axis. */
+118
+kZ
+119
+}
+120
+121
+private static final double kGrav = 9.81;
+122
+123
+// User-specified yaw axis
+124
+private IMUAxis m_yaw_axis;
+125
+126
+// Offset data storage
+127
+private double[] m_offset_data_gyro_rate_x;
+128
+private double[] m_offset_data_gyro_rate_y;
+129
+private double[] m_offset_data_gyro_rate_z;
+130
+131
+// Instant raw output variables
+132
+private double m_gyro_rate_x = 0.0;
+133
+private double m_gyro_rate_y = 0.0;
+134
+private double m_gyro_rate_z = 0.0;
+135
+private double m_accel_x = 0.0;
+136
+private double m_accel_y = 0.0;
+137
+private double m_accel_z = 0.0;
+138
+private double m_mag_x = 0.0;
+139
+private double m_mag_y = 0.0;
+140
+private double m_mag_z = 0.0;
+141
+private double m_baro = 0.0;
+142
+private double m_temp = 0.0;
+143
+144
+// IMU gyro offset variables
+145
+private double m_gyro_rate_offset_x = 0.0;
+146
+private double m_gyro_rate_offset_y = 0.0;
+147
+private double m_gyro_rate_offset_z = 0.0;
+148
+private int m_avg_size = 0;
+149
+private int m_accum_count = 0;
+150
+151
+// Integrated gyro angle variables
+152
+private double m_integ_gyro_angle_x = 0.0;
+153
+private double m_integ_gyro_angle_y = 0.0;
+154
+private double m_integ_gyro_angle_z = 0.0;
+155
+156
+// Complementary filter variables
+157
+private double m_dt = 0.0;
+158
+private double m_alpha = 0.0;
+159
+private static final double kTau = 1.0;
+160
+private double m_compAngleX = 0.0;
+161
+private double m_compAngleY = 0.0;
+162
+private double m_accelAngleX = 0.0;
+163
+private double m_accelAngleY = 0.0;
+164
+165
+// State variables
+166
+private volatile boolean m_thread_active = false;
+167
+private CalibrationTime m_calibration_time = CalibrationTime._32ms;
+168
+private volatile boolean m_first_run = true;
+169
+private volatile boolean m_thread_idle = false;
+170
+private boolean m_auto_configured = false;
+171
+private boolean m_start_up_mode = true;
+172
+173
+// Resources
+174
+private SPI m_spi;
+175
+private SPI.Port m_spi_port;
+176
+private DigitalInput m_auto_interrupt;
+177
+private DigitalInput m_reset_in;
+178
+private DigitalOutput m_status_led;
+179
+private Thread m_acquire_task;
+180
+private boolean m_connected;
+181
+182
+private SimDevice m_simDevice;
+183
+private SimBoolean m_simConnected;
+184
+private SimDouble m_simGyroAngleX;
+185
+private SimDouble m_simGyroAngleY;
+186
+private SimDouble m_simGyroAngleZ;
+187
+private SimDouble m_simGyroRateX;
+188
+private SimDouble m_simGyroRateY;
+189
+private SimDouble m_simGyroRateZ;
+190
+private SimDouble m_simAccelX;
+191
+private SimDouble m_simAccelY;
+192
+private SimDouble m_simAccelZ;
+193
+194
+// CRC-16 Look-Up Table
+195
+private int[] m_adiscrc = {
+196
+0x0000, 0x17CE, 0x0FDF, 0x1811, 0x1FBE, 0x0870, 0x1061, 0x07AF,
+197
+0x1F3F, 0x08F1, 0x10E0, 0x072E, 0x0081, 0x174F, 0x0F5E, 0x1890,
+198
+0x1E3D, 0x09F3, 0x11E2, 0x062C, 0x0183, 0x164D, 0x0E5C, 0x1992,
+199
+0x0102, 0x16CC, 0x0EDD, 0x1913, 0x1EBC, 0x0972, 0x1163, 0x06AD,
+200
+0x1C39, 0x0BF7, 0x13E6, 0x0428, 0x0387, 0x1449, 0x0C58, 0x1B96,
+201
+0x0306, 0x14C8, 0x0CD9, 0x1B17, 0x1CB8, 0x0B76, 0x1367, 0x04A9,
+202
+0x0204, 0x15CA, 0x0DDB, 0x1A15, 0x1DBA, 0x0A74, 0x1265, 0x05AB,
+203
+0x1D3B, 0x0AF5, 0x12E4, 0x052A, 0x0285, 0x154B, 0x0D5A, 0x1A94,
+204
+0x1831, 0x0FFF, 0x17EE, 0x0020, 0x078F, 0x1041, 0x0850, 0x1F9E,
+205
+0x070E, 0x10C0, 0x08D1, 0x1F1F, 0x18B0, 0x0F7E, 0x176F, 0x00A1,
+206
+0x060C, 0x11C2, 0x09D3, 0x1E1D, 0x19B2, 0x0E7C, 0x166D, 0x01A3,
+207
+0x1933, 0x0EFD, 0x16EC, 0x0122, 0x068D, 0x1143, 0x0952, 0x1E9C,
+208
+0x0408, 0x13C6, 0x0BD7, 0x1C19, 0x1BB6, 0x0C78, 0x1469, 0x03A7,
+209
+0x1B37, 0x0CF9, 0x14E8, 0x0326, 0x0489, 0x1347, 0x0B56, 0x1C98,
+210
+0x1A35, 0x0DFB, 0x15EA, 0x0224, 0x058B, 0x1245, 0x0A54, 0x1D9A,
+211
+0x050A, 0x12C4, 0x0AD5, 0x1D1B, 0x1AB4, 0x0D7A, 0x156B, 0x02A5,
+212
+0x1021, 0x07EF, 0x1FFE, 0x0830, 0x0F9F, 0x1851, 0x0040, 0x178E,
+213
+0x0F1E, 0x18D0, 0x00C1, 0x170F, 0x10A0, 0x076E, 0x1F7F, 0x08B1,
+214
+0x0E1C, 0x19D2, 0x01C3, 0x160D, 0x11A2, 0x066C, 0x1E7D, 0x09B3,
+215
+0x1123, 0x06ED, 0x1EFC, 0x0932, 0x0E9D, 0x1953, 0x0142, 0x168C,
+216
+0x0C18, 0x1BD6, 0x03C7, 0x1409, 0x13A6, 0x0468, 0x1C79, 0x0BB7,
+217
+0x1327, 0x04E9, 0x1CF8, 0x0B36, 0x0C99, 0x1B57, 0x0346, 0x1488,
+218
+0x1225, 0x05EB, 0x1DFA, 0x0A34, 0x0D9B, 0x1A55, 0x0244, 0x158A,
+219
+0x0D1A, 0x1AD4, 0x02C5, 0x150B, 0x12A4, 0x056A, 0x1D7B, 0x0AB5,
+220
+0x0810, 0x1FDE, 0x07CF, 0x1001, 0x17AE, 0x0060, 0x1871, 0x0FBF,
+221
+0x172F, 0x00E1, 0x18F0, 0x0F3E, 0x0891, 0x1F5F, 0x074E, 0x1080,
+222
+0x162D, 0x01E3, 0x19F2, 0x0E3C, 0x0993, 0x1E5D, 0x064C, 0x1182,
+223
+0x0912, 0x1EDC, 0x06CD, 0x1103, 0x16AC, 0x0162, 0x1973, 0x0EBD,
+224
+0x1429, 0x03E7, 0x1BF6, 0x0C38, 0x0B97, 0x1C59, 0x0448, 0x1386,
+225
+0x0B16, 0x1CD8, 0x04C9, 0x1307, 0x14A8, 0x0366, 0x1B77, 0x0CB9,
+226
+0x0A14, 0x1DDA, 0x05CB, 0x1205, 0x15AA, 0x0264, 0x1A75, 0x0DBB,
+227
+0x152B, 0x02E5, 0x1AF4, 0x0D3A, 0x0A95, 0x1D5B, 0x054A, 0x1284
+228
+};
+229
+230
+/** Creates a new ADIS16448_IMU object. */
+231
+public ADIS16448_IMU() {
+232
+this(IMUAxis.kZ, SPI.Port.kMXP, CalibrationTime._512ms);
+233
+}
+234
+235
+/**
+236
+* Creates a new ADIS16448_IMU object.
+237
+*
+238
+* @param yaw_axis The axis that measures the yaw
+239
+* @param port The SPI Port the gyro is plugged into
+240
+* @param cal_time Calibration time
+241
+*/
+242
+@SuppressWarnings("this-escape")
+243
+public ADIS16448_IMU(final IMUAxis yaw_axis, SPI.Port port, CalibrationTime cal_time) {
+244
+m_yaw_axis = yaw_axis;
+245
+m_spi_port = port;
+246
+247
+m_acquire_task = new Thread(this::acquire);
+248
+249
+m_simDevice = SimDevice.create("Gyro:ADIS16448", port.value);
+250
+if (m_simDevice != null) {
+251
+m_simConnected = m_simDevice.createBoolean("connected", SimDevice.Direction.kInput, true);
+252
+m_simGyroAngleX = m_simDevice.createDouble("gyro_angle_x", SimDevice.Direction.kInput, 0.0);
+253
+m_simGyroAngleY = m_simDevice.createDouble("gyro_angle_y", SimDevice.Direction.kInput, 0.0);
+254
+m_simGyroAngleZ = m_simDevice.createDouble("gyro_angle_z", SimDevice.Direction.kInput, 0.0);
+255
+m_simGyroRateX = m_simDevice.createDouble("gyro_rate_x", SimDevice.Direction.kInput, 0.0);
+256
+m_simGyroRateY = m_simDevice.createDouble("gyro_rate_y", SimDevice.Direction.kInput, 0.0);
+257
+m_simGyroRateZ = m_simDevice.createDouble("gyro_rate_z", SimDevice.Direction.kInput, 0.0);
+258
+m_simAccelX = m_simDevice.createDouble("accel_x", SimDevice.Direction.kInput, 0.0);
+259
+m_simAccelY = m_simDevice.createDouble("accel_y", SimDevice.Direction.kInput, 0.0);
+260
+m_simAccelZ = m_simDevice.createDouble("accel_z", SimDevice.Direction.kInput, 0.0);
+261
+}
+262
+263
+if (m_simDevice == null) {
+264
+// Force the IMU reset pin to toggle on startup (doesn't require DS enable)
+265
+var reset_out = new DigitalOutput(18); // Drive MXP DIO8 low
+266
+Timer.delay(0.01);
+267
+reset_out.close();
+268
+m_reset_in = new DigitalInput(18); // Set MXP DIO8 high
+269
+Timer.delay(0.25); // Wait for reset to complete
+270
+271
+configCalTime(cal_time);
+272
+273
+if (!switchToStandardSPI()) {
+274
+return;
+275
+}
+276
+boolean needsFlash = false;
+277
+// Set IMU internal decimation to 1 (ODR = 819.2 SPS / (1 + 1) = 409.6Hz), BW = 204.8Hz
+278
+if (readRegister(SMPL_PRD) != 0x0001) {
+279
+writeRegister(SMPL_PRD, 0x0001);
+280
+needsFlash = true;
+281
+DriverStation.reportWarning(
+282
+"ADIS16448: SMPL_PRD register configuration inconsistent! Scheduling flash update.",
+283
+false);
+284
+}
+285
+286
+// Set data ready polarity (LOW = Good Data) on DIO1 (PWM0 on MXP)
+287
+if (readRegister(MSC_CTRL) != 0x0016) {
+288
+writeRegister(MSC_CTRL, 0x0016);
+289
+needsFlash = true;
+290
+DriverStation.reportWarning(
+291
+"ADIS16448: MSC_CTRL register configuration inconsistent! Scheduling flash update.",
+292
+false);
+293
+}
+294
+295
+// Disable IMU internal Bartlett filter (204Hz BW is sufficient) and set IMU scale factor
+296
+if (readRegister(SENS_AVG) != 0x0400) {
+297
+writeRegister(SENS_AVG, 0x0400);
+298
+needsFlash = true;
+299
+DriverStation.reportWarning(
+300
+"ADIS16448: SENS_AVG register configuration inconsistent! Scheduling flash update.",
+301
+false);
+302
+}
+303
+// Clear offset registers
+304
+if (readRegister(XGYRO_OFF) != 0x0000) {
+305
+writeRegister(XGYRO_OFF, 0x0000);
+306
+needsFlash = true;
+307
+DriverStation.reportWarning(
+308
+"ADIS16448: XGYRO_OFF register configuration inconsistent! Scheduling flash update.",
+309
+false);
+310
+}
+311
+312
+if (readRegister(YGYRO_OFF) != 0x0000) {
+313
+writeRegister(YGYRO_OFF, 0x0000);
+314
+needsFlash = true;
+315
+DriverStation.reportWarning(
+316
+"ADIS16448: YGYRO_OFF register configuration inconsistent! Scheduling flash update.",
+317
+false);
+318
+}
+319
+320
+if (readRegister(ZGYRO_OFF) != 0x0000) {
+321
+writeRegister(ZGYRO_OFF, 0x0000);
+322
+needsFlash = true;
+323
+DriverStation.reportWarning(
+324
+"ADIS16448: ZGYRO_OFF register configuration inconsistent! Scheduling flash update.",
+325
+false);
+326
+}
+327
+328
+// If any registers on the IMU don't match the config, trigger a flash update
+329
+if (needsFlash) {
+330
+DriverStation.reportWarning(
+331
+"ADIS16448: Register configuration changed! Starting IMU flash update.", false);
+332
+writeRegister(GLOB_CMD, 0x0008);
+333
+// Wait long enough for the flash update to finish (75ms minimum as per the datasheet)
+334
+Timer.delay(0.5);
+335
+DriverStation.reportWarning("ADIS16448: Flash update finished!", false);
+336
+} else {
+337
+DriverStation.reportWarning(
+338
+"ADIS16448: Flash and RAM configuration consistent. No flash update required!", false);
+339
+}
+340
+341
+if (!switchToAutoSPI()) {
+342
+return;
+343
+}
+344
+// Notify DS that IMU calibration delay is active
+345
+DriverStation.reportWarning("ADIS16448: Starting initial calibration delay.", false);
+346
+// Wait for whatever time the user set as the start-up delay
+347
+try {
+348
+Thread.sleep((long) (m_calibration_time.value * 1.2 * 1000));
+349
+} catch (InterruptedException e) {
+350
+}
+351
+// Execute calibration routine and reset accumulated offsets
+352
+calibrate();
+353
+// Indicate to the acquire loop that we're done starting up
+354
+m_start_up_mode = false;
+355
+// Let the user know the IMU was initialized successfully
+356
+DriverStation.reportWarning("ADIS16448 IMU Successfully Initialized!", false);
+357
+// Drive MXP PWM5 (IMU ready LED) low (active low)
+358
+m_status_led = new DigitalOutput(19);
+359
+}
+360
+361
+// Report usage and post data to DS
+362
+HAL.report(tResourceType.kResourceType_ADIS16448, 0);
+363
+m_connected = true;
+364
+}
+365
+366
+/**
+367
+* Checks the connection status of the IMU.
+368
+*
+369
+* @return True if the IMU is connected, false otherwise.
+370
+*/
+371
+public boolean isConnected() {
+372
+if (m_simConnected != null) {
+373
+return m_simConnected.get();
+374
+}
+375
+return m_connected;
+376
+}
+377
+378
+private static int toUShort(int upper, int lower) {
+379
+return ((upper & 0xFF) << 8) + (lower & 0xFF);
+380
+}
+381
+382
+private static int toShort(int upper, int lower) {
+383
+return (short) (((upper & 0xFF) << 8) + (lower & 0xFF));
+384
+}
+385
+386
+private boolean switchToStandardSPI() {
+387
+// Check to see whether the acquire thread is active. If so, wait for it to stop
+388
+// producing data.
+389
+if (m_thread_active) {
+390
+m_thread_active = false;
+391
+while (!m_thread_idle) {
+392
+try {
+393
+Thread.sleep(10);
+394
+} catch (InterruptedException e) {
+395
+}
+396
+}
+397
+System.out.println("Paused the IMU processing thread successfully!");
+398
+// Maybe we're in auto SPI mode? If so, kill auto SPI, and then SPI.
+399
+if (m_spi != null && m_auto_configured) {
+400
+m_spi.stopAuto();
+401
+// We need to get rid of all the garbage left in the auto SPI buffer after
+402
+// stopping it.
+403
+// Sometimes data magically reappears, so we have to check the buffer size a
+404
+// couple of times to be sure we got it all. Yuck.
+405
+int[] trashBuffer = new int[200];
+406
+try {
+407
+Thread.sleep(100);
+408
+} catch (InterruptedException e) {
+409
+}
+410
+int data_count = m_spi.readAutoReceivedData(trashBuffer, 0, 0);
+411
+while (data_count > 0) {
+412
+// Dequeue 200 at a time, or the remainder of the buffer if less than 200
+413
+m_spi.readAutoReceivedData(trashBuffer, Math.min(200, data_count), 0);
+414
+// Update remaining buffer count
+415
+data_count = m_spi.readAutoReceivedData(trashBuffer, 0, 0);
+416
+}
+417
+System.out.println("Paused auto SPI successfully.");
+418
+}
+419
+}
+420
+if (m_spi == null) {
+421
+m_spi = new SPI(m_spi_port);
+422
+m_spi.setClockRate(1000000);
+423
+m_spi.setMode(SPI.Mode.kMode3);
+424
+m_spi.setChipSelectActiveLow();
+425
+}
+426
+readRegister(PROD_ID); // Dummy read
+427
+// Validate the product ID
+428
+int prodId = readRegister(PROD_ID);
+429
+if (prodId != 16448) {
+430
+DriverStation.reportError("Could not find ADIS16448; got product ID " + prodId, false);
+431
+close();
+432
+return false;
+433
+}
+434
+return true;
+435
+}
+436
+437
+boolean switchToAutoSPI() {
+438
+// No SPI port has been set up. Go set one up first.
+439
+if (m_spi == null && !switchToStandardSPI()) {
+440
+DriverStation.reportError("Failed to start/restart auto SPI", false);
+441
+return false;
+442
+}
+443
+// Only set up the interrupt if needed.
+444
+if (m_auto_interrupt == null) {
+445
+m_auto_interrupt = new DigitalInput(10); // MXP DIO0
+446
+}
+447
+// The auto SPI controller gets angry if you try to set up two instances on one
+448
+// bus.
+449
+if (!m_auto_configured) {
+450
+m_spi.initAuto(8200);
+451
+m_auto_configured = true;
+452
+}
+453
+// Set auto SPI packet data and size
+454
+m_spi.setAutoTransmitData(new byte[] {GLOB_CMD}, 27);
+455
+// Configure auto stall time
+456
+m_spi.configureAutoStall(100, 1000, 255);
+457
+// Kick off auto SPI (Note: Device configuration impossible after auto SPI is
+458
+// activated)
+459
+m_spi.startAutoTrigger(m_auto_interrupt, true, false);
+460
+// Check to see if the acquire thread is running. If not, kick one off.
+461
+if (!m_acquire_task.isAlive()) {
+462
+m_first_run = true;
+463
+m_thread_active = true;
+464
+m_acquire_task.start();
+465
+System.out.println("New IMU Processing thread activated!");
+466
+} else {
+467
+// The thread was running, re-init run variables and start it up again.
+468
+m_first_run = true;
+469
+m_thread_active = true;
+470
+System.out.println("Old IMU Processing thread re-activated!");
+471
+}
+472
+// Looks like the thread didn't start for some reason. Abort.
+473
+if (!m_acquire_task.isAlive()) {
+474
+DriverStation.reportError("Failed to start/restart the acquire() thread.", false);
+475
+close();
+476
+return false;
+477
+}
+478
+return true;
+479
+}
+480
+481
+/**
+482
+* Configures the decimation rate of the IMU.
+483
+*
+484
+* @param decimationRate The new decimation value.
+485
+* @return 0 if success, 1 if no change, 2 if error.
+486
+*/
+487
+public int configDecRate(int decimationRate) {
+488
+// Switches the active SPI port to standard SPI mode, writes a new value to the DECIMATE
+489
+// register in the IMU, adjusts the sample scale factor, and re-enables auto SPI.
+490
+if (!switchToStandardSPI()) {
+491
+DriverStation.reportError("Failed to configure/reconfigure standard SPI.", false);
+492
+return 2;
+493
+}
+494
+495
+// Check max
+496
+if (decimationRate > 9) {
+497
+DriverStation.reportError(
+498
+"Attempted to write an invalid decimation value. Capping at 9", false);
+499
+decimationRate = 9;
+500
+}
+501
+if (decimationRate < 0) {
+502
+DriverStation.reportError(
+503
+"Attempted to write an invalid decimation value. Capping at 0", false);
+504
+decimationRate = 0;
+505
+}
+506
+507
+// Shift decimation setting to correct position and select internal sync
+508
+int writeValue = (decimationRate << 8) | 0x1;
+509
+510
+// Apply to IMU
+511
+writeRegister(SMPL_PRD, writeValue);
+512
+513
+// Perform read back to verify write
+514
+int readbackValue = readRegister(SMPL_PRD);
+515
+516
+// Throw error for invalid write
+517
+if (readbackValue != writeValue) {
+518
+DriverStation.reportError("ADIS16448 SMPL_PRD write failed.", false);
+519
+}
+520
+521
+if (!switchToAutoSPI()) {
+522
+DriverStation.reportError("Failed to configure/reconfigure auto SPI.", false);
+523
+return 2;
+524
+}
+525
+return 0;
+526
+}
+527
+528
+/**
+529
+* Configures calibration time.
+530
+*
+531
+* @param new_cal_time New calibration time
+532
+* @return 1 if the new calibration time is the same as the current one else 0
+533
+*/
+534
+public final int configCalTime(CalibrationTime new_cal_time) {
+535
+if (m_calibration_time == new_cal_time) {
+536
+return 1;
+537
+} else {
+538
+m_calibration_time = new_cal_time;
+539
+m_avg_size = m_calibration_time.value * 819;
+540
+initOffsetBuffer(m_avg_size);
+541
+return 0;
+542
+}
+543
+}
+544
+545
+private void initOffsetBuffer(int size) {
+546
+// Avoid exceptions in the case of bad arguments
+547
+if (size < 1) {
+548
+size = 1;
+549
+}
+550
+// Set average size to size (correct bad values)
+551
+m_avg_size = size;
+552
+synchronized (this) {
+553
+// Resize vector
+554
+m_offset_data_gyro_rate_x = new double[size];
+555
+m_offset_data_gyro_rate_y = new double[size];
+556
+m_offset_data_gyro_rate_z = new double[size];
+557
+// Set accumulate count to 0
+558
+m_accum_count = 0;
+559
+}
+560
+}
+561
+562
+/**
+563
+* Calibrate the gyro. It's important to make sure that the robot is not moving while the
+564
+* calibration is in progress, this is typically done when the robot is first turned on while it's
+565
+* sitting at rest before the match starts.
+566
+*/
+567
+public void calibrate() {
+568
+synchronized (this) {
+569
+int gyroAverageSize = Math.min(m_accum_count, m_avg_size);
+570
+double accum_gyro_rate_x = 0.0;
+571
+double accum_gyro_rate_y = 0.0;
+572
+double accum_gyro_rate_z = 0.0;
+573
+for (int i = 0; i < gyroAverageSize; i++) {
+574
+accum_gyro_rate_x += m_offset_data_gyro_rate_x[i];
+575
+accum_gyro_rate_y += m_offset_data_gyro_rate_y[i];
+576
+accum_gyro_rate_z += m_offset_data_gyro_rate_z[i];
+577
+}
+578
+m_gyro_rate_offset_x = accum_gyro_rate_x / gyroAverageSize;
+579
+m_gyro_rate_offset_y = accum_gyro_rate_y / gyroAverageSize;
+580
+m_gyro_rate_offset_z = accum_gyro_rate_z / gyroAverageSize;
+581
+reset();
+582
+}
+583
+}
+584
+585
+/**
+586
+* Sets the yaw axis.
+587
+*
+588
+* @param yaw_axis The new yaw axis to use
+589
+* @return 1 if the new yaw axis is the same as the current one else 0.
+590
+*/
+591
+public int setYawAxis(IMUAxis yaw_axis) {
+592
+if (m_yaw_axis == yaw_axis) {
+593
+return 1;
+594
+}
+595
+m_yaw_axis = yaw_axis;
+596
+reset();
+597
+return 0;
+598
+}
+599
+600
+private int readRegister(final int reg) {
+601
+final byte[] buf = {(byte) (reg & 0x7f), 0};
+602
+603
+m_spi.write(buf, 2);
+604
+m_spi.read(false, buf, 2);
+605
+606
+return toUShort(buf[0], buf[1]);
+607
+}
+608
+609
+private void writeRegister(final int reg, final int val) {
+610
+final byte[] buf = new byte[2];
+611
+// low byte
+612
+buf[0] = (byte) (0x80 | reg);
+613
+buf[1] = (byte) (val & 0xff);
+614
+m_spi.write(buf, 2);
+615
+// high byte
+616
+buf[0] = (byte) (0x81 | reg);
+617
+buf[1] = (byte) (val >> 8);
+618
+m_spi.write(buf, 2);
+619
+}
+620
+621
+/**
+622
+* Reset the gyro.
+623
+*
+624
+* <p>Resets the gyro accumulations to a heading of zero. This can be used if there is significant
+625
+* drift in the gyro and it needs to be recalibrated after running.
+626
+*/
+627
+public void reset() {
+628
+synchronized (this) {
+629
+m_integ_gyro_angle_x = 0.0;
+630
+m_integ_gyro_angle_y = 0.0;
+631
+m_integ_gyro_angle_z = 0.0;
+632
+}
+633
+}
+634
+635
+/** Delete (free) the spi port used for the IMU. */
+636
+@Override
+637
+public void close() {
+638
+if (m_thread_active) {
+639
+m_thread_active = false;
+640
+try {
+641
+if (m_acquire_task != null) {
+642
+m_acquire_task.join();
+643
+m_acquire_task = null;
+644
+}
+645
+} catch (InterruptedException e) {
+646
+}
+647
+if (m_spi != null) {
+648
+if (m_auto_configured) {
+649
+m_spi.stopAuto();
+650
+}
+651
+m_spi.close();
+652
+m_auto_configured = false;
+653
+if (m_auto_interrupt != null) {
+654
+m_auto_interrupt.close();
+655
+m_auto_interrupt = null;
+656
+}
+657
+m_spi = null;
+658
+}
+659
+}
+660
+if (m_simDevice != null) {
+661
+m_simDevice.close();
+662
+m_simDevice = null;
+663
+}
+664
+System.out.println("Finished cleaning up after the IMU driver.");
+665
+}
+666
+667
+private void acquire() {
+668
+// Set data packet length
+669
+final int dataset_len = 29; // 18 data points + timestamp
+670
+final int BUFFER_SIZE = 4000;
+671
+672
+// Set up buffers and variables
+673
+int[] buffer = new int[BUFFER_SIZE];
+674
+double previous_timestamp = 0.0;
+675
+double compAngleX = 0.0;
+676
+double compAngleY = 0.0;
+677
+while (true) {
+678
+// Wait for data
+679
+try {
+680
+Thread.sleep(5);
+681
+} catch (InterruptedException e) {
+682
+}
+683
+684
+if (m_thread_active) {
+685
+m_thread_idle = false;
+686
+687
+// Read number of bytes currently stored in the buffer
+688
+int data_count = m_spi.readAutoReceivedData(buffer, 0, 0);
+689
+// Check if frame is incomplete
+690
+int data_remainder = data_count % dataset_len;
+691
+// Remove incomplete data from read count
+692
+int data_to_read = data_count - data_remainder;
+693
+if (data_to_read > BUFFER_SIZE) {
+694
+DriverStation.reportWarning(
+695
+"ADIS16448 data processing thread overrun has occurred!", false);
+696
+data_to_read = BUFFER_SIZE - (BUFFER_SIZE % dataset_len);
+697
+}
+698
+// Read data from DMA buffer (only complete sets)
+699
+m_spi.readAutoReceivedData(buffer, data_to_read, 0);
+700
+701
+// Could be multiple data sets in the buffer. Handle each one.
+702
+for (int i = 0; i < data_to_read; i += dataset_len) {
+703
+// Calculate CRC-16 on each data packet
+704
+int calc_crc = 0xFFFF; // Starting word
+705
+// Cycle through XYZ GYRO, XYZ ACCEL, XYZ MAG, BARO, TEMP (Ignore Status & CRC)
+706
+for (int k = 5; k < 27; k += 2) {
+707
+// Process LSB
+708
+calc_crc = (calc_crc >>> 8) ^ m_adiscrc[(calc_crc & 0xFF) ^ buffer[i + k + 1]];
+709
+// Process MSB
+710
+calc_crc = (calc_crc >>> 8) ^ m_adiscrc[(calc_crc & 0xFF) ^ buffer[i + k]];
+711
+}
+712
+// Complement
+713
+calc_crc = ~calc_crc & 0xFFFF;
+714
+// Flip LSB & MSB
+715
+calc_crc = ((calc_crc << 8) | (calc_crc >> 8)) & 0xFFFF;
+716
+// Extract DUT CRC from data buffer
+717
+int imu_crc = toUShort(buffer[i + 27], buffer[i + 28]);
+718
+719
+if (calc_crc == imu_crc) {
+720
+// Timestamp is at buffer[i]
+721
+m_dt = (buffer[i] - previous_timestamp) / 1000000.0;
+722
+723
+// Scale sensor data
+724
+double gyro_rate_x = toShort(buffer[i + 5], buffer[i + 6]) * 0.04;
+725
+double gyro_rate_y = toShort(buffer[i + 7], buffer[i + 8]) * 0.04;
+726
+double gyro_rate_z = toShort(buffer[i + 9], buffer[i + 10]) * 0.04;
+727
+double accel_x = toShort(buffer[i + 11], buffer[i + 12]) * 0.833;
+728
+double accel_y = toShort(buffer[i + 13], buffer[i + 14]) * 0.833;
+729
+double accel_z = toShort(buffer[i + 15], buffer[i + 16]) * 0.833;
+730
+double mag_x = toShort(buffer[i + 17], buffer[i + 18]) * 0.1429;
+731
+double mag_y = toShort(buffer[i + 19], buffer[i + 20]) * 0.1429;
+732
+double mag_z = toShort(buffer[i + 21], buffer[i + 22]) * 0.1429;
+733
+double baro = toShort(buffer[i + 23], buffer[i + 24]) * 0.02;
+734
+double temp = toShort(buffer[i + 25], buffer[i + 26]) * 0.07386 + 31.0;
+735
+736
+// Convert scaled sensor data to SI units (for tilt calculations)
+737
+// TODO: Should the unit outputs be selectable?
+738
+double gyro_rate_x_si = Math.toRadians(gyro_rate_x);
+739
+double gyro_rate_y_si = Math.toRadians(gyro_rate_y);
+740
+// double gyro_rate_z_si = Math.toRadians(gyro_rate_z);
+741
+double accel_x_si = accel_x * kGrav;
+742
+double accel_y_si = accel_y * kGrav;
+743
+double accel_z_si = accel_z * kGrav;
+744
+// Store timestamp for next iteration
+745
+previous_timestamp = buffer[i];
+746
+// Calculate alpha for use with the complementary filter
+747
+m_alpha = kTau / (kTau + m_dt);
+748
+// Run inclinometer calculations
+749
+double accelAngleX = Math.atan2(-accel_x_si, Math.hypot(accel_y_si, -accel_z_si));
+750
+double accelAngleY = Math.atan2(accel_y_si, Math.hypot(-accel_x_si, -accel_z_si));
+751
+// Calculate complementary filter
+752
+if (m_first_run) {
+753
+compAngleX = accelAngleX;
+754
+compAngleY = accelAngleY;
+755
+} else {
+756
+accelAngleX = formatAccelRange(accelAngleX, -accel_z_si);
+757
+accelAngleY = formatAccelRange(accelAngleY, -accel_z_si);
+758
+compAngleX = compFilterProcess(compAngleX, accelAngleX, -gyro_rate_y_si);
+759
+compAngleY = compFilterProcess(compAngleY, accelAngleY, -gyro_rate_x_si);
+760
+}
+761
+762
+// Update global variables and state
+763
+synchronized (this) {
+764
+// Ignore first, integrated sample
+765
+if (m_first_run) {
+766
+reset();
+767
+} else {
+768
+// Accumulate gyro for offset calibration
+769
+// Add to buffer
+770
+int bufferAvgIndex = m_accum_count % m_avg_size;
+771
+m_offset_data_gyro_rate_x[bufferAvgIndex] = gyro_rate_x;
+772
+m_offset_data_gyro_rate_y[bufferAvgIndex] = gyro_rate_y;
+773
+m_offset_data_gyro_rate_z[bufferAvgIndex] = gyro_rate_z;
+774
+// Increment counter
+775
+m_accum_count++;
+776
+}
+777
+if (!m_start_up_mode) {
+778
+m_gyro_rate_x = gyro_rate_x;
+779
+m_gyro_rate_y = gyro_rate_y;
+780
+m_gyro_rate_z = gyro_rate_z;
+781
+m_accel_x = accel_x;
+782
+m_accel_y = accel_y;
+783
+m_accel_z = accel_z;
+784
+m_mag_x = mag_x;
+785
+m_mag_y = mag_y;
+786
+m_mag_z = mag_z;
+787
+m_baro = baro;
+788
+m_temp = temp;
+789
+m_compAngleX = Math.toDegrees(compAngleX);
+790
+m_compAngleY = Math.toDegrees(compAngleY);
+791
+m_accelAngleX = Math.toDegrees(accelAngleX);
+792
+m_accelAngleY = Math.toDegrees(accelAngleY);
+793
+// Accumulate gyro for angle integration and publish to global variables
+794
+m_integ_gyro_angle_x += (gyro_rate_x - m_gyro_rate_offset_x) * m_dt;
+795
+m_integ_gyro_angle_y += (gyro_rate_y - m_gyro_rate_offset_y) * m_dt;
+796
+m_integ_gyro_angle_z += (gyro_rate_z - m_gyro_rate_offset_z) * m_dt;
+797
+}
+798
+}
+799
+m_first_run = false;
+800
+}
+801
+}
+802
+} else {
+803
+m_thread_idle = true;
+804
+previous_timestamp = 0.0;
+805
+compAngleX = 0.0;
+806
+compAngleY = 0.0;
+807
+}
+808
+}
+809
+}
+810
+811
+private double formatFastConverge(double compAngle, double accAngle) {
+812
+if (compAngle > accAngle + Math.PI) {
+813
+compAngle = compAngle - 2.0 * Math.PI;
+814
+} else if (accAngle > compAngle + Math.PI) {
+815
+compAngle = compAngle + 2.0 * Math.PI;
+816
+}
+817
+return compAngle;
+818
+}
+819
+820
+private double formatAccelRange(double accelAngle, double accelZ) {
+821
+if (accelZ < 0.0) {
+822
+accelAngle = Math.PI - accelAngle;
+823
+} else if (accelZ > 0.0 && accelAngle < 0.0) {
+824
+accelAngle = 2.0 * Math.PI + accelAngle;
+825
+}
+826
+return accelAngle;
+827
+}
+828
+829
+private double compFilterProcess(double compAngle, double accelAngle, double omega) {
+830
+compAngle = formatFastConverge(compAngle, accelAngle);
+831
+compAngle = m_alpha * (compAngle + omega * m_dt) + (1.0 - m_alpha) * accelAngle;
+832
+return MathUtil.angleModulus(compAngle);
+833
+}
+834
+835
+/**
+836
+* Returns the yaw axis angle in degrees (CCW positive).
+837
+*
+838
+* @return Yaw axis angle in degrees (CCW positive).
+839
+*/
+840
+public synchronized double getAngle() {
+841
+return switch (m_yaw_axis) {
+842
+case kX -> getGyroAngleX();
+843
+case kY -> getGyroAngleY();
+844
+case kZ -> getGyroAngleZ();
+845
+};
+846
+}
+847
+848
+/**
+849
+* Returns the yaw axis angular rate in degrees per second (CCW positive).
+850
+*
+851
+* @return Yaw axis angular rate in degrees per second (CCW positive).
+852
+*/
+853
+public synchronized double getRate() {
+854
+return switch (m_yaw_axis) {
+855
+case kX -> getGyroRateX();
+856
+case kY -> getGyroRateY();
+857
+case kZ -> getGyroRateZ();
+858
+};
+859
+}
+860
+861
+/**
+862
+* Returns which axis, kX, kY, or kZ, is set to the yaw axis.
+863
+*
+864
+* @return IMUAxis Yaw Axis
+865
+*/
+866
+public IMUAxis getYawAxis() {
+867
+return m_yaw_axis;
+868
+}
+869
+870
+/**
+871
+* Returns the accumulated gyro angle in the X axis in degrees.
+872
+*
+873
+* @return The accumulated gyro angle in the X axis in degrees.
+874
+*/
+875
+public synchronized double getGyroAngleX() {
+876
+if (m_simGyroAngleX != null) {
+877
+return m_simGyroAngleX.get();
+878
+}
+879
+return m_integ_gyro_angle_x;
+880
+}
+881
+882
+/**
+883
+* Returns the accumulated gyro angle in the Y axis in degrees.
+884
+*
+885
+* @return The accumulated gyro angle in the Y axis in degrees.
+886
+*/
+887
+public synchronized double getGyroAngleY() {
+888
+if (m_simGyroAngleY != null) {
+889
+return m_simGyroAngleY.get();
+890
+}
+891
+return m_integ_gyro_angle_y;
+892
+}
+893
+894
+/**
+895
+* Returns the accumulated gyro angle in the Z axis in degrees.
+896
+*
+897
+* @return The accumulated gyro angle in the Z axis in degrees.
+898
+*/
+899
+public synchronized double getGyroAngleZ() {
+900
+if (m_simGyroAngleZ != null) {
+901
+return m_simGyroAngleZ.get();
+902
+}
+903
+return m_integ_gyro_angle_z;
+904
+}
+905
+906
+/**
+907
+* Returns the gyro angular rate in the X axis in degrees per second.
+908
+*
+909
+* @return The gyro angular rate in the X axis in degrees per second.
+910
+*/
+911
+public synchronized double getGyroRateX() {
+912
+if (m_simGyroRateX != null) {
+913
+return m_simGyroRateX.get();
+914
+}
+915
+return m_gyro_rate_x;
+916
+}
+917
+918
+/**
+919
+* Returns the gyro angular rate in the Y axis in degrees per second.
+920
+*
+921
+* @return The gyro angular rate in the Y axis in degrees per second.
+922
+*/
+923
+public synchronized double getGyroRateY() {
+924
+if (m_simGyroRateY != null) {
+925
+return m_simGyroRateY.get();
+926
+}
+927
+return m_gyro_rate_y;
+928
+}
+929
+930
+/**
+931
+* Returns the gyro angular rate in the Z axis in degrees per second.
+932
+*
+933
+* @return The gyro angular rate in the Z axis in degrees per second.
+934
+*/
+935
+public synchronized double getGyroRateZ() {
+936
+if (m_simGyroRateZ != null) {
+937
+return m_simGyroRateZ.get();
+938
+}
+939
+return m_gyro_rate_z;
+940
+}
+941
+942
+/**
+943
+* Returns the acceleration in the X axis in meters per second squared.
+944
+*
+945
+* @return The acceleration in the X axis in meters per second squared.
+946
+*/
+947
+public synchronized double getAccelX() {
+948
+if (m_simAccelX != null) {
+949
+return m_simAccelX.get();
+950
+}
+951
+return m_accel_x * kGrav;
+952
+}
+953
+954
+/**
+955
+* Returns the acceleration in the Y axis in meters per second squared.
+956
+*
+957
+* @return The acceleration in the Y axis in meters per second squared.
+958
+*/
+959
+public synchronized double getAccelY() {
+960
+if (m_simAccelY != null) {
+961
+return m_simAccelY.get();
+962
+}
+963
+return m_accel_y * kGrav;
+964
+}
+965
+966
+/**
+967
+* Returns the acceleration in the Z axis in meters per second squared.
+968
+*
+969
+* @return The acceleration in the Z axis in meters per second squared.
+970
+*/
+971
+public synchronized double getAccelZ() {
+972
+if (m_simAccelZ != null) {
+973
+return m_simAccelZ.get();
+974
+}
+975
+return m_accel_z * kGrav;
+976
+}
+977
+978
+/**
+979
+* Returns the magnetic field strength in the X axis in Tesla.
+980
+*
+981
+* @return The magnetic field strength in the X axis in Tesla.
+982
+*/
+983
+public synchronized double getMagneticFieldX() {
+984
+// mG to T
+985
+return m_mag_x * 1e-7;
+986
+}
+987
+988
+/**
+989
+* Returns the magnetic field strength in the Y axis in Tesla.
+990
+*
+991
+* @return The magnetic field strength in the Y axis in Tesla.
+992
+*/
+993
+public synchronized double getMagneticFieldY() {
+994
+// mG to T
+995
+return m_mag_y * 1e-7;
+996
+}
+997
+998
+/**
+999
+* Returns the magnetic field strength in the Z axis in Tesla.
+1000
+*
+1001
+* @return The magnetic field strength in the Z axis in Tesla.
+1002
+*/
+1003
+public synchronized double getMagneticFieldZ() {
+1004
+// mG to T
+1005
+return m_mag_z * 1e-7;
+1006
+}
+1007
+1008
+/**
+1009
+* Returns the complementary angle around the X axis computed from accelerometer and gyro rate
+1010
+* measurements.
+1011
+*
+1012
+* @return The X-axis complementary angle in degrees.
+1013
+*/
+1014
+public synchronized double getXComplementaryAngle() {
+1015
+return m_compAngleX;
+1016
+}
+1017
+1018
+/**
+1019
+* Returns the complementary angle around the Y axis computed from accelerometer and gyro rate
+1020
+* measurements.
+1021
+*
+1022
+* @return The Y-axis complementary angle in degrees.
+1023
+*/
+1024
+public synchronized double getYComplementaryAngle() {
+1025
+return m_compAngleY;
+1026
+}
+1027
+1028
+/**
+1029
+* Returns the X-axis filtered acceleration angle in degrees.
+1030
+*
+1031
+* @return The X-axis filtered acceleration angle in degrees.
+1032
+*/
+1033
+public synchronized double getXFilteredAccelAngle() {
+1034
+return m_accelAngleX;
+1035
+}
+1036
+1037
+/**
+1038
+* Returns the Y-axis filtered acceleration angle in degrees.
+1039
+*
+1040
+* @return The Y-axis filtered acceleration angle in degrees.
+1041
+*/
+1042
+public synchronized double getYFilteredAccelAngle() {
+1043
+return m_accelAngleY;
+1044
+}
+1045
+1046
+/**
+1047
+* Returns the barometric pressure in PSI.
+1048
+*
+1049
+* @return The barometric pressure in PSI.
+1050
+*/
+1051
+public synchronized double getBarometricPressure() {
+1052
+// mbar to PSI conversion
+1053
+return m_baro * 0.0145;
+1054
+}
+1055
+1056
+/**
+1057
+* Returns the temperature in degrees Celsius.
+1058
+*
+1059
+* @return The temperature in degrees Celsius.
+1060
+*/
+1061
+public synchronized double getTemperature() {
+1062
+return m_temp;
+1063
+}
+1064
+1065
+/**
+1066
+* Get the SPI port number.
+1067
+*
+1068
+* @return The SPI port number.
+1069
+*/
+1070
+public int getPort() {
+1071
+return m_spi_port.value;
+1072
+}
+1073
+1074
+@Override
+1075
+public void initSendable(SendableBuilder builder) {
+1076
+builder.setSmartDashboardType("Gyro");
+1077
+builder.addDoubleProperty("Value", this::getAngle, null);
+1078
+}
+1079
+}

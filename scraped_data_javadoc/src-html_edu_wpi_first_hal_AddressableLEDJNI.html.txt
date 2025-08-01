@@ -1,0 +1,230 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Addressable LED HAL JNI Methods.
+009
+*
+010
+* @see "hal/AddressableLED.h"
+011
+*/
+012
+public class AddressableLEDJNI extends JNIWrapper {
+013
+public static final int COLOR_ORDER_RGB = 0;
+014
+public static final int COLOR_ORDER_RBG = 1;
+015
+public static final int COLOR_ORDER_BGR = 2;
+016
+public static final int COLOR_ORDER_BRG = 3;
+017
+public static final int COLOR_ORDER_GBR = 4;
+018
+public static final int COLOR_ORDER_GRB = 5;
+019
+020
+/**
+021
+* Initialize Addressable LED using a PWM Digital handle.
+022
+*
+023
+* @param pwmHandle handle of the digital port for PWM
+024
+* @return Addressable LED handle
+025
+* @see "HAL_InitializeAddressableLED"
+026
+*/
+027
+public static native int initialize(int pwmHandle);
+028
+029
+/**
+030
+* Free the Addressable LED Handle.
+031
+*
+032
+* @param handle the Addressable LED handle to free
+033
+* @see "HAL_FreeAddressableLED"
+034
+*/
+035
+public static native void free(int handle);
+036
+037
+/**
+038
+* Sets the color order for the addressable LED output. The default order is GRB.
+039
+*
+040
+* <p>This will take effect on the next call to {@link #setData(int, byte[])}.
+041
+*
+042
+* @param handle the Addressable LED handle
+043
+* @param colorOrder the color order
+044
+*/
+045
+public static native void setColorOrder(int handle, int colorOrder);
+046
+047
+/**
+048
+* Sets the length of the LED strip.
+049
+*
+050
+* <p>The max length is 5460 LEDs.
+051
+*
+052
+* @param handle the Addressable LED handle
+053
+* @param length the strip length
+054
+* @see "HAL_SetAddressableLEDLength"
+055
+*/
+056
+public static native void setLength(int handle, int length);
+057
+058
+/**
+059
+* Sets the led output data.
+060
+*
+061
+* <p>If the output is enabled, this will start writing the next data cycle. It is safe to call,
+062
+* even while output is enabled.
+063
+*
+064
+* @param handle the Addressable LED handle
+065
+* @param data the buffer to write
+066
+* @see "HAL_WriteAddressableLEDData"
+067
+*/
+068
+public static native void setData(int handle, byte[] data);
+069
+070
+/**
+071
+* Sets the bit timing.
+072
+*
+073
+* <p>By default, the driver is set up to drive WS2812B and WS2815, so nothing needs to be set for
+074
+* those.
+075
+*
+076
+* @param handle the Addressable LED handle
+077
+* @param highTime0NanoSeconds high time for 0 bit (default 400ns)
+078
+* @param lowTime0NanoSeconds low time for 0 bit (default 900ns)
+079
+* @param highTime1NanoSeconds high time for 1 bit (default 900ns)
+080
+* @param lowTime1NanoSeconds low time for 1 bit (default 600ns)
+081
+* @see "HAL_SetAddressableLEDBitTiming"
+082
+*/
+083
+public static native void setBitTiming(
+084
+int handle,
+085
+int highTime0NanoSeconds,
+086
+int lowTime0NanoSeconds,
+087
+int highTime1NanoSeconds,
+088
+int lowTime1NanoSeconds);
+089
+090
+/**
+091
+* Sets the sync time.
+092
+*
+093
+* <p>The sync time is the time to hold output so LEDs enable. Default set for WS2812B and WS2815.
+094
+*
+095
+* @param handle the Addressable LED handle
+096
+* @param syncTimeMicroSeconds the sync time (default 280us)
+097
+* @see "HAL_SetAddressableLEDSyncTime"
+098
+*/
+099
+public static native void setSyncTime(int handle, int syncTimeMicroSeconds);
+100
+101
+/**
+102
+* Starts the output.
+103
+*
+104
+* <p>The output writes continuously.
+105
+*
+106
+* @param handle the Addressable LED handle
+107
+* @see "HAL_StartAddressableLEDOutput"
+108
+*/
+109
+public static native void start(int handle);
+110
+111
+/**
+112
+* Stops the output.
+113
+*
+114
+* @param handle the Addressable LED handle
+115
+* @see "HAL_StopAddressableLEDOutput"
+116
+*/
+117
+public static native void stop(int handle);
+118
+119
+/** Utility class. */
+120
+private AddressableLEDJNI() {}
+121
+}

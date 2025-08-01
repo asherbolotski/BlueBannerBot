@@ -1,0 +1,273 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+/*
+006
+* MIT License
+007
+*
+008
+* Copyright (c) 2018 Team 254
+009
+*
+010
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+011
+* of this software and associated documentation files (the "Software"), to deal
+012
+* in the Software without restriction, including without limitation the rights
+013
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+014
+* copies of the Software, and to permit persons to whom the Software is
+015
+* furnished to do so, subject to the following conditions:
+016
+*
+017
+* The above copyright notice and this permission notice shall be included in all
+018
+* copies or substantial portions of the Software.
+019
+*
+020
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+021
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+022
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+023
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+024
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+025
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+026
+* SOFTWARE.
+027
+*/
+028
+029
+package edu.wpi.first.math.spline;
+030
+031
+import java.util.ArrayDeque;
+032
+import java.util.ArrayList;
+033
+import java.util.List;
+034
+035
+/** Class used to parameterize a spline by its arc length. */
+036
+public final class SplineParameterizer {
+037
+private static final double kMaxDx = 0.127;
+038
+private static final double kMaxDy = 0.00127;
+039
+private static final double kMaxDtheta = 0.0872;
+040
+041
+private static final String kMalformedSplineExceptionMsg =
+042
+"Could not parameterize a malformed spline. This means that you probably had two or more "
+043
++ "adjacent waypoints that were very close together with headings in opposing "
+044
++ "directions.";
+045
+046
+/**
+047
+* A malformed spline does not actually explode the LIFO stack size. Instead, the stack size stays
+048
+* at a relatively small number (e.g. 30) and never decreases. Because of this, we must count
+049
+* iterations. Even long, complex paths don't usually go over 300 iterations, so hitting this
+050
+* maximum should definitely indicate something has gone wrong.
+051
+*/
+052
+private static final int kMaxIterations = 5000;
+053
+054
+private static class StackContents {
+055
+final double t1;
+056
+final double t0;
+057
+058
+StackContents(double t0, double t1) {
+059
+this.t0 = t0;
+060
+this.t1 = t1;
+061
+}
+062
+}
+063
+064
+/** Exception for malformed splines. */
+065
+public static final class MalformedSplineException extends RuntimeException {
+066
+/**
+067
+* Create a new exception with the given message.
+068
+*
+069
+* @param message the message to pass with the exception
+070
+*/
+071
+private MalformedSplineException(String message) {
+072
+super(message);
+073
+}
+074
+}
+075
+076
+/** Private constructor because this is a utility class. */
+077
+private SplineParameterizer() {}
+078
+079
+/**
+080
+* Parametrizes the spline. This method breaks up the spline into various arcs until their dx, dy,
+081
+* and dtheta are within specific tolerances.
+082
+*
+083
+* @param spline The spline to parameterize.
+084
+* @return A list of poses and curvatures that represents various points on the spline.
+085
+* @throws MalformedSplineException When the spline is malformed (e.g. has close adjacent points
+086
+*     with approximately opposing headings)
+087
+*/
+088
+public static List<PoseWithCurvature> parameterize(Spline spline) {
+089
+return parameterize(spline, 0.0, 1.0);
+090
+}
+091
+092
+/**
+093
+* Parametrizes the spline. This method breaks up the spline into various arcs until their dx, dy,
+094
+* and dtheta are within specific tolerances.
+095
+*
+096
+* @param spline The spline to parameterize.
+097
+* @param t0 Starting internal spline parameter. It is recommended to use 0.0.
+098
+* @param t1 Ending internal spline parameter. It is recommended to use 1.0.
+099
+* @return A list of poses and curvatures that represents various points on the spline.
+100
+* @throws MalformedSplineException When the spline is malformed (e.g. has close adjacent points
+101
+*     with approximately opposing headings)
+102
+*/
+103
+public static List<PoseWithCurvature> parameterize(Spline spline, double t0, double t1) {
+104
+var splinePoints = new ArrayList<PoseWithCurvature>();
+105
+106
+// The parameterization does not add the initial point. Let's add that.
+107
+splinePoints.add(spline.getPoint(t0).get());
+108
+109
+// We use an "explicit stack" to simulate recursion, instead of a recursive function call
+110
+// This give us greater control, instead of a stack overflow
+111
+var stack = new ArrayDeque<StackContents>();
+112
+stack.push(new StackContents(t0, t1));
+113
+114
+int iterations = 0;
+115
+116
+while (!stack.isEmpty()) {
+117
+var current = stack.removeFirst();
+118
+119
+var start = spline.getPoint(current.t0);
+120
+if (!start.isPresent()) {
+121
+throw new MalformedSplineException(kMalformedSplineExceptionMsg);
+122
+}
+123
+124
+var end = spline.getPoint(current.t1);
+125
+if (!end.isPresent()) {
+126
+throw new MalformedSplineException(kMalformedSplineExceptionMsg);
+127
+}
+128
+129
+final var twist = start.get().poseMeters.log(end.get().poseMeters);
+130
+if (Math.abs(twist.dy) > kMaxDy
+131
+|| Math.abs(twist.dx) > kMaxDx
+132
+|| Math.abs(twist.dtheta) > kMaxDtheta) {
+133
+stack.addFirst(new StackContents((current.t0 + current.t1) / 2, current.t1));
+134
+stack.addFirst(new StackContents(current.t0, (current.t0 + current.t1) / 2));
+135
+} else {
+136
+splinePoints.add(end.get());
+137
+}
+138
+139
+iterations++;
+140
+if (iterations >= kMaxIterations) {
+141
+throw new MalformedSplineException(kMalformedSplineExceptionMsg);
+142
+}
+143
+}
+144
+145
+return splinePoints;
+146
+}
+147
+}

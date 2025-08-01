@@ -1,0 +1,145 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.SimDouble;
+008
+import edu.wpi.first.wpilibj.ADXL345_I2C;
+009
+import edu.wpi.first.wpilibj.ADXL345_SPI;
+010
+import java.util.Objects;
+011
+012
+/** Class to control a simulated ADXL345. */
+013
+public class ADXL345Sim {
+014
+private SimDouble m_simX;
+015
+private SimDouble m_simY;
+016
+private SimDouble m_simZ;
+017
+018
+/**
+019
+* Constructor.
+020
+*
+021
+* @param device The device to simulate
+022
+*/
+023
+public ADXL345Sim(ADXL345_SPI device) {
+024
+SimDeviceSim simDevice = new SimDeviceSim("Accel:ADXL345_SPI" + "[" + device.getPort() + "]");
+025
+initSim(simDevice);
+026
+}
+027
+028
+/**
+029
+* Constructor.
+030
+*
+031
+* @param device The device to simulate
+032
+*/
+033
+public ADXL345Sim(ADXL345_I2C device) {
+034
+SimDeviceSim simDevice =
+035
+new SimDeviceSim(
+036
+"Accel:ADXL345_I2C" + "[" + device.getPort() + "," + device.getDeviceAddress() + "]");
+037
+initSim(simDevice);
+038
+}
+039
+040
+private void initSim(SimDeviceSim simDevice) {
+041
+Objects.requireNonNull(simDevice);
+042
+043
+m_simX = simDevice.getDouble("x");
+044
+m_simY = simDevice.getDouble("y");
+045
+m_simZ = simDevice.getDouble("z");
+046
+047
+Objects.requireNonNull(m_simX);
+048
+Objects.requireNonNull(m_simY);
+049
+Objects.requireNonNull(m_simZ);
+050
+}
+051
+052
+/**
+053
+* Sets the X acceleration.
+054
+*
+055
+* @param accel The X acceleration.
+056
+*/
+057
+public void setX(double accel) {
+058
+m_simX.set(accel);
+059
+}
+060
+061
+/**
+062
+* Sets the Y acceleration.
+063
+*
+064
+* @param accel The Y acceleration.
+065
+*/
+066
+public void setY(double accel) {
+067
+m_simY.set(accel);
+068
+}
+069
+070
+/**
+071
+* Sets the Z acceleration.
+072
+*
+073
+* @param accel The Z acceleration.
+074
+*/
+075
+public void setZ(double accel) {
+076
+m_simZ.set(accel);
+077
+}
+078
+}

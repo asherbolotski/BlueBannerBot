@@ -1,0 +1,208 @@
+Package
+edu.wpi.first.util
+Class CircularBuffer<T>
+java.lang.Object
+edu.wpi.first.util.CircularBuffer<T>
+Type Parameters:
+T
+- Buffer element type.
+public class
+CircularBuffer
+<T>
+extends
+Object
+This is a simple circular buffer so we don't need to "bucket brigade" copy old values.
+Constructor Summary
+Constructors
+Constructor
+Description
+CircularBuffer
+(int size)
+Create a CircularBuffer with the provided size.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+addFirst
+(
+T
+value)
+Push new value onto front of the buffer.
+void
+addLast
+(
+T
+value)
+Push new value onto back of the buffer.
+void
+clear
+()
+Sets internal buffer contents to zero.
+T
+get
+(int index)
+Get the element at the provided index relative to the start of the buffer.
+T
+getFirst
+()
+Get value at front of buffer.
+T
+getLast
+()
+Get value at back of buffer.
+T
+removeFirst
+()
+Pop value at front of buffer.
+T
+removeLast
+()
+Pop value at back of buffer.
+void
+resize
+(int size)
+Resizes internal buffer to given size.
+int
+size
+()
+Returns number of elements in buffer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CircularBuffer
+public
+CircularBuffer
+(int size)
+Create a CircularBuffer with the provided size.
+Parameters:
+size
+- Maximum number of buffer elements.
+Method Details
+size
+public
+int
+size
+()
+Returns number of elements in buffer.
+Returns:
+number of elements in buffer
+getFirst
+public
+T
+getFirst
+()
+Get value at front of buffer.
+Returns:
+value at front of buffer
+getLast
+public
+T
+getLast
+()
+Get value at back of buffer.
+Returns:
+value at back of buffer
+Throws:
+IndexOutOfBoundsException
+- if the index is out of range (index < 0 || index >=
+     size())
+addFirst
+public
+void
+addFirst
+(
+T
+value)
+Push new value onto front of the buffer. The value at the back is overwritten if the buffer is
+ full.
+Parameters:
+value
+- The value to push.
+addLast
+public
+void
+addLast
+(
+T
+value)
+Push new value onto back of the buffer. The value at the front is overwritten if the buffer is
+ full.
+Parameters:
+value
+- The value to push.
+removeFirst
+public
+T
+removeFirst
+()
+Pop value at front of buffer.
+Returns:
+value at front of buffer
+Throws:
+IndexOutOfBoundsException
+- if the index is out of range (index < 0 || index >=
+     size())
+removeLast
+public
+T
+removeLast
+()
+Pop value at back of buffer.
+Returns:
+value at back of buffer
+Throws:
+IndexOutOfBoundsException
+- if the index is out of range (index < 0 || index >=
+     size())
+resize
+public
+void
+resize
+(int size)
+Resizes internal buffer to given size.
+A new buffer is allocated because arrays are not resizable.
+Parameters:
+size
+- New buffer size.
+clear
+public
+void
+clear
+()
+Sets internal buffer contents to zero.
+get
+public
+T
+get
+(int index)
+Get the element at the provided index relative to the start of the buffer.
+Parameters:
+index
+- Index into the buffer.
+Returns:
+Element at index starting from front of buffer.

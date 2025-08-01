@@ -1,0 +1,126 @@
+Package
+edu.wpi.first.math.filter
+Class SlewRateLimiter
+java.lang.Object
+edu.wpi.first.math.filter.SlewRateLimiter
+public class
+SlewRateLimiter
+extends
+Object
+A class that limits the rate of change of an input value. Useful for implementing voltage,
+ setpoint, and/or output ramps. A slew-rate limit is most appropriate when the quantity being
+ controlled is a velocity or a voltage; when controlling a position, consider using a
+TrapezoidProfile
+instead.
+Constructor Summary
+Constructors
+Constructor
+Description
+SlewRateLimiter
+(double rateLimit)
+Creates a new SlewRateLimiter with the given positive rate limit and negative rate limit of
+ -rateLimit.
+SlewRateLimiter
+(double positiveRateLimit,
+ double negativeRateLimit,
+ double initialValue)
+Creates a new SlewRateLimiter with the given positive and negative rate limits and initial
+ value.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+calculate
+(double input)
+Filters the input to limit its slew rate.
+double
+lastValue
+()
+Returns the value last calculated by the SlewRateLimiter.
+void
+reset
+(double value)
+Resets the slew rate limiter to the specified value; ignores the rate limit when doing so.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SlewRateLimiter
+public
+SlewRateLimiter
+(double positiveRateLimit,
+ double negativeRateLimit,
+ double initialValue)
+Creates a new SlewRateLimiter with the given positive and negative rate limits and initial
+ value.
+Parameters:
+positiveRateLimit
+- The rate-of-change limit in the positive direction, in units per
+     second. This is expected to be positive.
+negativeRateLimit
+- The rate-of-change limit in the negative direction, in units per
+     second. This is expected to be negative.
+initialValue
+- The initial value of the input.
+SlewRateLimiter
+public
+SlewRateLimiter
+(double rateLimit)
+Creates a new SlewRateLimiter with the given positive rate limit and negative rate limit of
+ -rateLimit.
+Parameters:
+rateLimit
+- The rate-of-change limit, in units per second.
+Method Details
+calculate
+public
+double
+calculate
+(double input)
+Filters the input to limit its slew rate.
+Parameters:
+input
+- The input value whose slew rate is to be limited.
+Returns:
+The filtered value, which will not change faster than the slew rate.
+lastValue
+public
+double
+lastValue
+()
+Returns the value last calculated by the SlewRateLimiter.
+Returns:
+The last value.
+reset
+public
+void
+reset
+(double value)
+Resets the slew rate limiter to the specified value; ignores the rate limit when doing so.
+Parameters:
+value
+- The value to reset to.

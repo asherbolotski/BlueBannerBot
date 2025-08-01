@@ -1,0 +1,168 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.estimator;
+006
+007
+import edu.wpi.first.math.Matrix;
+008
+import edu.wpi.first.math.Num;
+009
+import edu.wpi.first.math.numbers.N1;
+010
+011
+/**
+012
+* Interface for Kalman filters for use with KalmanFilterLatencyCompensator.
+013
+*
+014
+* @param <States> The number of states.
+015
+* @param <Inputs> The number of inputs.
+016
+* @param <Outputs> The number of outputs.
+017
+*/
+018
+public interface KalmanTypeFilter<States extends Num, Inputs extends Num, Outputs extends Num> {
+019
+/**
+020
+* Returns the error covariance matrix.
+021
+*
+022
+* @return The error covariance matrix.
+023
+*/
+024
+Matrix<States, States> getP();
+025
+026
+/**
+027
+* Returns an element of the error covariance matrix.
+028
+*
+029
+* @param i The row.
+030
+* @param j The column.
+031
+* @return An element of the error covariance matrix.
+032
+*/
+033
+double getP(int i, int j);
+034
+035
+/**
+036
+* Sets the error covariance matrix.
+037
+*
+038
+* @param newP The error covariance matrix.
+039
+*/
+040
+void setP(Matrix<States, States> newP);
+041
+042
+/**
+043
+* Returns the state estimate.
+044
+*
+045
+* @return The state estimate.
+046
+*/
+047
+Matrix<States, N1> getXhat();
+048
+049
+/**
+050
+* Returns an element of the state estimate.
+051
+*
+052
+* @param i The row.
+053
+* @return An element of the state estimate.
+054
+*/
+055
+double getXhat(int i);
+056
+057
+/**
+058
+* Sets the state estimate.
+059
+*
+060
+* @param xHat The state estimate.
+061
+*/
+062
+void setXhat(Matrix<States, N1> xHat);
+063
+064
+/**
+065
+* Sets an element of the state estimate.
+066
+*
+067
+* @param i The row.
+068
+* @param value The value.
+069
+*/
+070
+void setXhat(int i, double value);
+071
+072
+/** Resets the observer. */
+073
+void reset();
+074
+075
+/**
+076
+* Project the model into the future with a new control input u.
+077
+*
+078
+* @param u New control input from controller.
+079
+* @param dtSeconds Timestep for prediction.
+080
+*/
+081
+void predict(Matrix<Inputs, N1> u, double dtSeconds);
+082
+083
+/**
+084
+* Correct the state estimate x-hat using the measurements in y.
+085
+*
+086
+* @param u Same control input used in the predict step.
+087
+* @param y Measurement vector.
+088
+*/
+089
+void correct(Matrix<Inputs, N1> u, Matrix<Outputs, N1> y);
+090
+}

@@ -1,0 +1,228 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.estimator;
+006
+007
+import edu.wpi.first.math.MathUtil;
+008
+import edu.wpi.first.math.Matrix;
+009
+import edu.wpi.first.math.Num;
+010
+import edu.wpi.first.math.numbers.N1;
+011
+import java.util.function.BiFunction;
+012
+import org.ejml.simple.SimpleMatrix;
+013
+014
+/** Angle statistics functions. */
+015
+public final class AngleStatistics {
+016
+/** Utility class. */
+017
+private AngleStatistics() {}
+018
+019
+/**
+020
+* Subtracts a and b while normalizing the resulting value in the selected row as if it were an
+021
+* angle.
+022
+*
+023
+* @param <S> Number of rows in vector.
+024
+* @param a A vector to subtract from.
+025
+* @param b A vector to subtract with.
+026
+* @param angleStateIdx The row containing angles to be normalized.
+027
+* @return Difference of two vectors with angle at the given index normalized.
+028
+*/
+029
+public static <S extends Num> Matrix<S, N1> angleResidual(
+030
+Matrix<S, N1> a, Matrix<S, N1> b, int angleStateIdx) {
+031
+Matrix<S, N1> ret = a.minus(b);
+032
+ret.set(angleStateIdx, 0, MathUtil.angleModulus(ret.get(angleStateIdx, 0)));
+033
+034
+return ret;
+035
+}
+036
+037
+/**
+038
+* Returns a function that subtracts two vectors while normalizing the resulting value in the
+039
+* selected row as if it were an angle.
+040
+*
+041
+* @param <S> Number of rows in vector.
+042
+* @param angleStateIdx The row containing angles to be normalized.
+043
+* @return Function returning difference of two vectors with angle at the given index normalized.
+044
+*/
+045
+public static <S extends Num>
+046
+BiFunction<Matrix<S, N1>, Matrix<S, N1>, Matrix<S, N1>> angleResidual(int angleStateIdx) {
+047
+return (a, b) -> angleResidual(a, b, angleStateIdx);
+048
+}
+049
+050
+/**
+051
+* Adds a and b while normalizing the resulting value in the selected row as an angle.
+052
+*
+053
+* @param <S> Number of rows in vector.
+054
+* @param a A vector to add with.
+055
+* @param b A vector to add with.
+056
+* @param angleStateIdx The row containing angles to be normalized.
+057
+* @return Sum of two vectors with angle at the given index normalized.
+058
+*/
+059
+public static <S extends Num> Matrix<S, N1> angleAdd(
+060
+Matrix<S, N1> a, Matrix<S, N1> b, int angleStateIdx) {
+061
+Matrix<S, N1> ret = a.plus(b);
+062
+ret.set(angleStateIdx, 0, MathUtil.angleModulus(ret.get(angleStateIdx, 0)));
+063
+064
+return ret;
+065
+}
+066
+067
+/**
+068
+* Returns a function that adds two vectors while normalizing the resulting value in the selected
+069
+* row as an angle.
+070
+*
+071
+* @param <S> Number of rows in vector.
+072
+* @param angleStateIdx The row containing angles to be normalized.
+073
+* @return Function returning of two vectors with angle at the given index normalized.
+074
+*/
+075
+public static <S extends Num> BiFunction<Matrix<S, N1>, Matrix<S, N1>, Matrix<S, N1>> angleAdd(
+076
+int angleStateIdx) {
+077
+return (a, b) -> angleAdd(a, b, angleStateIdx);
+078
+}
+079
+080
+/**
+081
+* Computes the mean of sigmas with the weights Wm while computing a special angle mean for a
+082
+* select row.
+083
+*
+084
+* @param <S> Number of rows in sigma point matrix.
+085
+* @param sigmas Sigma points.
+086
+* @param Wm Weights for the mean.
+087
+* @param angleStateIdx The row containing the angles.
+088
+* @return Mean of sigma points.
+089
+*/
+090
+public static <S extends Num> Matrix<S, N1> angleMean(
+091
+Matrix<S, ?> sigmas, Matrix<?, N1> Wm, int angleStateIdx) {
+092
+double[] angleSigmas = sigmas.extractRowVector(angleStateIdx).getData();
+093
+Matrix<N1, ?> sinAngleSigmas = new Matrix<>(new SimpleMatrix(1, sigmas.getNumCols()));
+094
+Matrix<N1, ?> cosAngleSigmas = new Matrix<>(new SimpleMatrix(1, sigmas.getNumCols()));
+095
+for (int i = 0; i < angleSigmas.length; i++) {
+096
+sinAngleSigmas.set(0, i, Math.sin(angleSigmas[i]));
+097
+cosAngleSigmas.set(0, i, Math.cos(angleSigmas[i]));
+098
+}
+099
+100
+double sumSin = sinAngleSigmas.times(Matrix.changeBoundsUnchecked(Wm)).elementSum();
+101
+double sumCos = cosAngleSigmas.times(Matrix.changeBoundsUnchecked(Wm)).elementSum();
+102
+103
+Matrix<S, N1> ret = sigmas.times(Matrix.changeBoundsUnchecked(Wm));
+104
+ret.set(angleStateIdx, 0, Math.atan2(sumSin, sumCos));
+105
+106
+return ret;
+107
+}
+108
+109
+/**
+110
+* Returns a function that computes the mean of sigmas with the weights Wm while computing a
+111
+* special angle mean for a select row.
+112
+*
+113
+* @param <S> Number of rows in sigma point matrix.
+114
+* @param angleStateIdx The row containing the angles.
+115
+* @return Function returning mean of sigma points.
+116
+*/
+117
+public static <S extends Num> BiFunction<Matrix<S, ?>, Matrix<?, N1>, Matrix<S, N1>> angleMean(
+118
+int angleStateIdx) {
+119
+return (sigmas, Wm) -> angleMean(sigmas, Wm, angleStateIdx);
+120
+}
+121
+}

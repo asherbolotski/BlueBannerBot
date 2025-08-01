@@ -1,0 +1,124 @@
+Package
+edu.wpi.first.wpilibj.motorcontrol
+Class Jaguar
+java.lang.Object
+edu.wpi.first.wpilibj.MotorSafety
+edu.wpi.first.wpilibj.motorcontrol.PWMMotorController
+edu.wpi.first.wpilibj.motorcontrol.Jaguar
+All Implemented Interfaces:
+Sendable
+,
+MotorController
+,
+AutoCloseable
+public class
+Jaguar
+extends
+PWMMotorController
+Luminary Micro / Vex Robotics Jaguar Motor Controller.
+Note that the Jaguar uses the following bounds for PWM values. These values should work
+ reasonably well for most controllers, but if users experience issues such as asymmetric behavior
+ around the deadband or inability to saturate the controller in either direction, calibration is
+ recommended. The calibration procedure can be found in the Jaguar User Manual available from
+ Luminary Micro / Vex Robotics.
+2.310ms = full "forward"
+1.550ms = the "high end" of the deadband range
+1.507ms = center of the deadband range (off)
+1.454ms = the "low end" of the deadband range
+0.697ms = full "reverse"
+Field Summary
+Fields inherited from class edu.wpi.first.wpilibj.motorcontrol.
+PWMMotorController
+m_pwm
+Constructor Summary
+Constructors
+Constructor
+Description
+Jaguar
+(int channel)
+Constructor.
+Method Summary
+Methods inherited from class edu.wpi.first.wpilibj.motorcontrol.
+PWMMotorController
+addFollower
+,
+close
+,
+disable
+,
+enableDeadbandElimination
+,
+get
+,
+getChannel
+,
+getDescription
+,
+getInverted
+,
+getPwmHandle
+,
+getVoltage
+,
+initSendable
+,
+set
+,
+setInverted
+,
+stopMotor
+Methods inherited from class edu.wpi.first.wpilibj.
+MotorSafety
+check
+,
+checkMotors
+,
+feed
+,
+getExpiration
+,
+isAlive
+,
+isSafetyEnabled
+,
+setExpiration
+,
+setSafetyEnabled
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.wpilibj.motorcontrol.
+MotorController
+setVoltage
+,
+setVoltage
+Constructor Details
+Jaguar
+public
+Jaguar
+(int channel)
+Constructor.
+Parameters:
+channel
+- The PWM channel that the Jaguar is attached to. 0-9 are on-board, 10-19
+     are on the MXP port

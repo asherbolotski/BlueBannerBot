@@ -1,0 +1,501 @@
+Package
+edu.wpi.first.math
+Class StateSpaceUtil
+java.lang.Object
+edu.wpi.first.math.StateSpaceUtil
+public final class
+StateSpaceUtil
+extends
+Object
+State-space utilities.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+static <I extends
+Num
+>
+Matrix
+<I,
+N1
+>
+clampInputMaxMagnitude
+(
+Matrix
+<I,
+N1
+> u,
+Matrix
+<I,
+N1
+> umin,
+Matrix
+<I,
+N1
+> umax)
+Clamp the input u to the min and max.
+static <I extends
+Num
+>
+Matrix
+<I,
+N1
+>
+desaturateInputVector
+(
+Matrix
+<I,
+N1
+> u,
+ double maxMagnitude)
+Renormalize all inputs if any exceeds the maximum magnitude.
+static <States extends
+Num
+,
+Outputs extends
+Num
+>
+boolean
+isDetectable
+(
+Matrix
+<States,
+States> A,
+Matrix
+<Outputs,
+States> C)
+Returns true if (A, C) is a detectable pair.
+static <States extends
+Num
+,
+Inputs extends
+Num
+>
+boolean
+isStabilizable
+(
+Matrix
+<States,
+States> A,
+Matrix
+<States,
+Inputs> B)
+Returns true if (A, B) is a stabilizable pair.
+static <Elements extends
+Num
+>
+Matrix
+<Elements,
+Elements>
+makeCostMatrix
+(
+Matrix
+<Elements,
+N1
+> tolerances)
+Creates a cost matrix from the given vector for use with LQR.
+static <States extends
+Num
+>
+Matrix
+<States,
+States>
+makeCovarianceMatrix
+(
+Nat
+<States> states,
+Matrix
+<States,
+N1
+> stdDevs)
+Creates a covariance matrix from the given vector for use with Kalman filters.
+static <N extends
+Num
+>
+Matrix
+<N,
+N1
+>
+makeWhiteNoiseVector
+(
+Matrix
+<N,
+N1
+> stdDevs)
+Creates a vector of normally distributed white noise with the given noise intensities for each
+ element.
+static
+Matrix
+<
+N3
+,
+N1
+>
+poseTo3dVector
+(
+Pose2d
+pose)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Create the vector manually instead.
+static
+Matrix
+<
+N4
+,
+N1
+>
+poseTo4dVector
+(
+Pose2d
+pose)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Create the vector manually instead.
+static
+Matrix
+<
+N3
+,
+N1
+>
+poseToVector
+(
+Pose2d
+pose)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Create the vector manually instead.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+makeCovarianceMatrix
+public static
+<States extends
+Num
+>
+Matrix
+<States,
+States>
+makeCovarianceMatrix
+(
+Nat
+<States> states,
+Matrix
+<States,
+N1
+> stdDevs)
+Creates a covariance matrix from the given vector for use with Kalman filters.
+Each element is squared and placed on the covariance matrix diagonal.
+Type Parameters:
+States
+- Num representing the states of the system.
+Parameters:
+states
+- A Nat representing the states of the system.
+stdDevs
+- For a Q matrix, its elements are the standard deviations of each state from how
+     the model behaves. For an R matrix, its elements are the standard deviations for each
+     output measurement.
+Returns:
+Process noise or measurement noise covariance matrix.
+makeWhiteNoiseVector
+public static
+<N extends
+Num
+>
+Matrix
+<N,
+N1
+>
+makeWhiteNoiseVector
+(
+Matrix
+<N,
+N1
+> stdDevs)
+Creates a vector of normally distributed white noise with the given noise intensities for each
+ element.
+Type Parameters:
+N
+- Num representing the dimensionality of the noise vector to create.
+Parameters:
+stdDevs
+- A matrix whose elements are the standard deviations of each element of the noise
+     vector.
+Returns:
+White noise vector.
+makeCostMatrix
+public static
+<Elements extends
+Num
+>
+Matrix
+<Elements,
+Elements>
+makeCostMatrix
+(
+Matrix
+<Elements,
+N1
+> tolerances)
+Creates a cost matrix from the given vector for use with LQR.
+The cost matrix is constructed using Bryson's rule. The inverse square of each tolerance is
+ placed on the cost matrix diagonal. If a tolerance is infinity, its cost matrix entry is set to
+ zero.
+Type Parameters:
+Elements
+- Nat representing the number of system states or inputs.
+Parameters:
+tolerances
+- An array. For a Q matrix, its elements are the maximum allowed excursions of
+     the states from the reference. For an R matrix, its elements are the maximum allowed
+     excursions of the control inputs from no actuation.
+Returns:
+State excursion or control effort cost matrix.
+isStabilizable
+public static
+<States extends
+Num
+,
+Inputs extends
+Num
+>
+boolean
+isStabilizable
+(
+Matrix
+<States,
+States> A,
+Matrix
+<States,
+Inputs> B)
+Returns true if (A, B) is a stabilizable pair.
+(A, B) is stabilizable if and only if the uncontrollable eigenvalues of A, if any, have
+ absolute values less than one, where an eigenvalue is uncontrollable if rank([λI - A, B]) %3C n
+ where n is the number of states.
+Type Parameters:
+States
+- Num representing the size of A.
+Inputs
+- Num representing the columns of B.
+Parameters:
+A
+- System matrix.
+B
+- Input matrix.
+Returns:
+If the system is stabilizable.
+isDetectable
+public static
+<States extends
+Num
+,
+Outputs extends
+Num
+>
+boolean
+isDetectable
+(
+Matrix
+<States,
+States> A,
+Matrix
+<Outputs,
+States> C)
+Returns true if (A, C) is a detectable pair.
+(A, C) is detectable if and only if the unobservable eigenvalues of A, if any, have absolute
+ values less than one, where an eigenvalue is unobservable if rank([λI - A; C]) %3C n where n is
+ the number of states.
+Type Parameters:
+States
+- Num representing the size of A.
+Outputs
+- Num representing the rows of C.
+Parameters:
+A
+- System matrix.
+C
+- Output matrix.
+Returns:
+If the system is detectable.
+poseToVector
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public static
+Matrix
+<
+N3
+,
+N1
+>
+poseToVector
+(
+Pose2d
+pose)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Create the vector manually instead. If you were using this as an intermediate step
+     for constructing affine transformations, use
+Pose2d.toMatrix()
+instead.
+Convert a
+Pose2d
+to a vector of [x, y, theta], where theta is in radians.
+Parameters:
+pose
+- A pose to convert to a vector.
+Returns:
+The given pose in vector form, with the third element, theta, in radians.
+clampInputMaxMagnitude
+public static
+<I extends
+Num
+>
+Matrix
+<I,
+N1
+>
+clampInputMaxMagnitude
+(
+Matrix
+<I,
+N1
+> u,
+Matrix
+<I,
+N1
+> umin,
+Matrix
+<I,
+N1
+> umax)
+Clamp the input u to the min and max.
+Type Parameters:
+I
+- Number of inputs.
+Parameters:
+u
+- The input to clamp.
+umin
+- The minimum input magnitude.
+umax
+- The maximum input magnitude.
+Returns:
+The clamped input.
+desaturateInputVector
+public static
+<I extends
+Num
+>
+Matrix
+<I,
+N1
+>
+desaturateInputVector
+(
+Matrix
+<I,
+N1
+> u,
+ double maxMagnitude)
+Renormalize all inputs if any exceeds the maximum magnitude. Useful for systems such as
+ differential drivetrains.
+Type Parameters:
+I
+- Number of inputs.
+Parameters:
+u
+- The input vector.
+maxMagnitude
+- The maximum magnitude any input can have.
+Returns:
+The normalizedInput
+poseTo4dVector
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public static
+Matrix
+<
+N4
+,
+N1
+>
+poseTo4dVector
+(
+Pose2d
+pose)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Create the vector manually instead. If you were using this as an intermediate step
+     for constructing affine transformations, use
+Pose2d.toMatrix()
+instead.
+Convert a
+Pose2d
+to a vector of [x, y, cos(theta), sin(theta)], where theta is in
+ radians.
+Parameters:
+pose
+- A pose to convert to a vector.
+Returns:
+The given pose in as a 4x1 vector of x, y, cos(theta), and sin(theta).
+poseTo3dVector
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public static
+Matrix
+<
+N3
+,
+N1
+>
+poseTo3dVector
+(
+Pose2d
+pose)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Create the vector manually instead. If you were using this as an intermediate step
+     for constructing affine transformations, use
+Pose2d.toMatrix()
+instead.
+Convert a
+Pose2d
+to a vector of [x, y, theta], where theta is in radians.
+Parameters:
+pose
+- A pose to convert to a vector.
+Returns:
+The given pose in vector form, with the third element, theta, in radians.

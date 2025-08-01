@@ -1,0 +1,299 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class PDPSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.PDPSim
+public class
+PDPSim
+extends
+Object
+Class to control a simulated Power Distribution Panel (PDP).
+Constructor Summary
+Constructors
+Constructor
+Description
+PDPSim
+()
+Constructs for the default PDP.
+PDPSim
+(int module)
+Constructs from a PDP module number (CAN ID).
+PDPSim
+(
+PowerDistribution
+pdp)
+Constructs from a PowerDistribution object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+getCurrent
+(int channel)
+Read the current in one of the PDP channels.
+boolean
+getInitialized
+()
+Check whether the PDP has been initialized.
+double
+getTemperature
+()
+Check the temperature of the PDP.
+double
+getVoltage
+()
+Check the PDP voltage.
+CallbackStore
+registerCurrentCallback
+(int channel,
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the current of a specific channel changes.
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the PDP is initialized.
+CallbackStore
+registerTemperatureCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the PDP temperature changes.
+CallbackStore
+registerVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the PDP voltage changes.
+void
+resetData
+()
+Reset all PDP simulation data.
+void
+setCurrent
+(int channel,
+ double current)
+Change the current in the given channel.
+void
+setInitialized
+(boolean initialized)
+Define whether the PDP has been initialized.
+void
+setTemperature
+(double temperature)
+Define the PDP temperature.
+void
+setVoltage
+(double voltage)
+Set the PDP voltage.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+PDPSim
+public
+PDPSim
+()
+Constructs for the default PDP.
+PDPSim
+public
+PDPSim
+(int module)
+Constructs from a PDP module number (CAN ID).
+Parameters:
+module
+- module number
+PDPSim
+public
+PDPSim
+(
+PowerDistribution
+pdp)
+Constructs from a PowerDistribution object.
+Parameters:
+pdp
+- PowerDistribution to simulate
+Method Details
+registerInitializedCallback
+public
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the PDP is initialized.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getInitialized
+public
+boolean
+getInitialized
+()
+Check whether the PDP has been initialized.
+Returns:
+true if initialized
+setInitialized
+public
+void
+setInitialized
+(boolean initialized)
+Define whether the PDP has been initialized.
+Parameters:
+initialized
+- whether this object is initialized
+registerTemperatureCallback
+public
+CallbackStore
+registerTemperatureCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the PDP temperature changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getTemperature
+public
+double
+getTemperature
+()
+Check the temperature of the PDP.
+Returns:
+the PDP temperature
+setTemperature
+public
+void
+setTemperature
+(double temperature)
+Define the PDP temperature.
+Parameters:
+temperature
+- the new PDP temperature
+registerVoltageCallback
+public
+CallbackStore
+registerVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the PDP voltage changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getVoltage
+public
+double
+getVoltage
+()
+Check the PDP voltage.
+Returns:
+the PDP voltage.
+setVoltage
+public
+void
+setVoltage
+(double voltage)
+Set the PDP voltage.
+Parameters:
+voltage
+- the new PDP voltage
+registerCurrentCallback
+public
+CallbackStore
+registerCurrentCallback
+(int channel,
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the current of a specific channel changes.
+Parameters:
+channel
+- the channel
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getCurrent
+public
+double
+getCurrent
+(int channel)
+Read the current in one of the PDP channels.
+Parameters:
+channel
+- the channel to check
+Returns:
+the current in the given channel
+setCurrent
+public
+void
+setCurrent
+(int channel,
+ double current)
+Change the current in the given channel.
+Parameters:
+channel
+- the channel to edit
+current
+- the new current for the channel
+resetData
+public
+void
+resetData
+()
+Reset all PDP simulation data.

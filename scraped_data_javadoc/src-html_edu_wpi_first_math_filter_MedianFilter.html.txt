@@ -1,0 +1,165 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.filter;
+006
+007
+import edu.wpi.first.util.DoubleCircularBuffer;
+008
+import java.util.ArrayList;
+009
+import java.util.Collections;
+010
+import java.util.List;
+011
+012
+/**
+013
+* A class that implements a moving-window median filter. Useful for reducing measurement noise,
+014
+* especially with processes that generate occasional, extreme outliers (such as values from vision
+015
+* processing, LIDAR, or ultrasonic sensors).
+016
+*/
+017
+public class MedianFilter {
+018
+private final DoubleCircularBuffer m_valueBuffer;
+019
+private final List<Double> m_orderedValues;
+020
+private final int m_size;
+021
+022
+/**
+023
+* Creates a new MedianFilter.
+024
+*
+025
+* @param size The number of samples in the moving window.
+026
+*/
+027
+public MedianFilter(int size) {
+028
+// Circular buffer of values currently in the window, ordered by time
+029
+m_valueBuffer = new DoubleCircularBuffer(size);
+030
+// List of values currently in the window, ordered by value
+031
+m_orderedValues = new ArrayList<>(size);
+032
+// Size of rolling window
+033
+m_size = size;
+034
+}
+035
+036
+/**
+037
+* Calculates the moving-window median for the next value of the input stream.
+038
+*
+039
+* @param next The next input value.
+040
+* @return The median of the moving window, updated to include the next value.
+041
+*/
+042
+public double calculate(double next) {
+043
+// Find insertion point for next value
+044
+int index = Collections.binarySearch(m_orderedValues, next);
+045
+046
+// Deal with binarySearch behavior for element not found
+047
+if (index < 0) {
+048
+index = Math.abs(index + 1);
+049
+}
+050
+051
+// Place value at proper insertion point
+052
+m_orderedValues.add(index, next);
+053
+054
+int curSize = m_orderedValues.size();
+055
+056
+// If buffer is at max size, pop element off of end of circular buffer
+057
+// and remove from ordered list
+058
+if (curSize > m_size) {
+059
+m_orderedValues.remove(m_valueBuffer.removeLast());
+060
+--curSize;
+061
+}
+062
+063
+// Add next value to circular buffer
+064
+m_valueBuffer.addFirst(next);
+065
+066
+if (curSize % 2 != 0) {
+067
+// If size is odd, return middle element of sorted list
+068
+return m_orderedValues.get(curSize / 2);
+069
+} else {
+070
+// If size is even, return average of middle elements
+071
+return (m_orderedValues.get(curSize / 2 - 1) + m_orderedValues.get(curSize / 2)) / 2.0;
+072
+}
+073
+}
+074
+075
+/**
+076
+* Returns the last value calculated by the MedianFilter.
+077
+*
+078
+* @return The last value.
+079
+*/
+080
+public double lastValue() {
+081
+return m_valueBuffer.getFirst();
+082
+}
+083
+084
+/** Resets the filter, clearing the window of all elements. */
+085
+public void reset() {
+086
+m_orderedValues.clear();
+087
+m_valueBuffer.clear();
+088
+}
+089
+}

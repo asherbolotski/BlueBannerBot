@@ -1,0 +1,119 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.SimDouble;
+008
+import edu.wpi.first.wpilibj.ADXL362;
+009
+import java.util.Objects;
+010
+011
+/** Class to control a simulated ADXL362. */
+012
+public class ADXL362Sim {
+013
+private SimDouble m_simX;
+014
+private SimDouble m_simY;
+015
+private SimDouble m_simZ;
+016
+017
+/**
+018
+* Constructor.
+019
+*
+020
+* @param device The device to simulate
+021
+*/
+022
+public ADXL362Sim(ADXL362 device) {
+023
+SimDeviceSim wrappedSimDevice =
+024
+new SimDeviceSim("Accel:ADXL362" + "[" + device.getPort() + "]");
+025
+initSim(wrappedSimDevice);
+026
+}
+027
+028
+private void initSim(SimDeviceSim wrappedSimDevice) {
+029
+m_simX = wrappedSimDevice.getDouble("x");
+030
+m_simY = wrappedSimDevice.getDouble("y");
+031
+m_simZ = wrappedSimDevice.getDouble("z");
+032
+033
+Objects.requireNonNull(m_simX);
+034
+Objects.requireNonNull(m_simY);
+035
+Objects.requireNonNull(m_simZ);
+036
+}
+037
+038
+/**
+039
+* Sets the X acceleration.
+040
+*
+041
+* @param accel The X acceleration.
+042
+*/
+043
+public void setX(double accel) {
+044
+m_simX.set(accel);
+045
+}
+046
+047
+/**
+048
+* Sets the Y acceleration.
+049
+*
+050
+* @param accel The Y acceleration.
+051
+*/
+052
+public void setY(double accel) {
+053
+m_simY.set(accel);
+054
+}
+055
+056
+/**
+057
+* Sets the Z acceleration.
+058
+*
+059
+* @param accel The Z acceleration.
+060
+*/
+061
+public void setZ(double accel) {
+062
+m_simZ.set(accel);
+063
+}
+064
+}

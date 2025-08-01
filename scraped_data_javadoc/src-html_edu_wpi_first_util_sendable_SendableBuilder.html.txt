@@ -1,0 +1,504 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.sendable;
+006
+007
+import edu.wpi.first.util.function.BooleanConsumer;
+008
+import edu.wpi.first.util.function.FloatConsumer;
+009
+import edu.wpi.first.util.function.FloatSupplier;
+010
+import java.util.function.BooleanSupplier;
+011
+import java.util.function.Consumer;
+012
+import java.util.function.DoubleConsumer;
+013
+import java.util.function.DoubleSupplier;
+014
+import java.util.function.LongConsumer;
+015
+import java.util.function.LongSupplier;
+016
+import java.util.function.Supplier;
+017
+018
+/** Helper class for building Sendable dashboard representations. */
+019
+public interface SendableBuilder extends AutoCloseable {
+020
+/** The backend kinds used for the sendable builder. */
+021
+enum BackendKind {
+022
+/** Unknown. */
+023
+kUnknown,
+024
+025
+/** NetworkTables. */
+026
+kNetworkTables
+027
+}
+028
+029
+/**
+030
+* Set the string representation of the named data type that will be used by the smart dashboard
+031
+* for this sendable.
+032
+*
+033
+* @param type data type
+034
+*/
+035
+void setSmartDashboardType(String type);
+036
+037
+/**
+038
+* Set a flag indicating if this Sendable should be treated as an actuator. By default, this flag
+039
+* is false.
+040
+*
+041
+* @param value true if actuator, false if not
+042
+*/
+043
+void setActuator(boolean value);
+044
+045
+/**
+046
+* Set the function that should be called to set the Sendable into a safe state. This is called
+047
+* when entering and exiting Live Window mode.
+048
+*
+049
+* @param func function
+050
+*/
+051
+void setSafeState(Runnable func);
+052
+053
+/**
+054
+* Add a boolean property.
+055
+*
+056
+* @param key property name
+057
+* @param getter getter function (returns current value)
+058
+* @param setter setter function (sets new value)
+059
+*/
+060
+void addBooleanProperty(String key, BooleanSupplier getter, BooleanConsumer setter);
+061
+062
+/**
+063
+* Add a constant boolean property.
+064
+*
+065
+* @param key property name
+066
+* @param value the value
+067
+*/
+068
+void publishConstBoolean(String key, boolean value);
+069
+070
+/**
+071
+* Add an integer property.
+072
+*
+073
+* @param key property name
+074
+* @param getter getter function (returns current value)
+075
+* @param setter setter function (sets new value)
+076
+*/
+077
+void addIntegerProperty(String key, LongSupplier getter, LongConsumer setter);
+078
+079
+/**
+080
+* Add a constant integer property.
+081
+*
+082
+* @param key property name
+083
+* @param value the value
+084
+*/
+085
+void publishConstInteger(String key, long value);
+086
+087
+/**
+088
+* Add a float property.
+089
+*
+090
+* @param key property name
+091
+* @param getter getter function (returns current value)
+092
+* @param setter setter function (sets new value)
+093
+*/
+094
+void addFloatProperty(String key, FloatSupplier getter, FloatConsumer setter);
+095
+096
+/**
+097
+* Add a constant float property.
+098
+*
+099
+* @param key property name
+100
+* @param value the value
+101
+*/
+102
+void publishConstFloat(String key, float value);
+103
+104
+/**
+105
+* Add a double property.
+106
+*
+107
+* @param key property name
+108
+* @param getter getter function (returns current value)
+109
+* @param setter setter function (sets new value)
+110
+*/
+111
+void addDoubleProperty(String key, DoubleSupplier getter, DoubleConsumer setter);
+112
+113
+/**
+114
+* Add a constant double property.
+115
+*
+116
+* @param key property name
+117
+* @param value the value
+118
+*/
+119
+void publishConstDouble(String key, double value);
+120
+121
+/**
+122
+* Add a string property.
+123
+*
+124
+* @param key property name
+125
+* @param getter getter function (returns current value)
+126
+* @param setter setter function (sets new value)
+127
+*/
+128
+void addStringProperty(String key, Supplier<String> getter, Consumer<String> setter);
+129
+130
+/**
+131
+* Add a constant string property.
+132
+*
+133
+* @param key property name
+134
+* @param value the value
+135
+*/
+136
+void publishConstString(String key, String value);
+137
+138
+/**
+139
+* Add a boolean array property.
+140
+*
+141
+* @param key property name
+142
+* @param getter getter function (returns current value)
+143
+* @param setter setter function (sets new value)
+144
+*/
+145
+void addBooleanArrayProperty(String key, Supplier<boolean[]> getter, Consumer<boolean[]> setter);
+146
+147
+/**
+148
+* Add a constant boolean array property.
+149
+*
+150
+* @param key property name
+151
+* @param value the value
+152
+*/
+153
+void publishConstBooleanArray(String key, boolean[] value);
+154
+155
+/**
+156
+* Add an integer array property.
+157
+*
+158
+* @param key property name
+159
+* @param getter getter function (returns current value)
+160
+* @param setter setter function (sets new value)
+161
+*/
+162
+void addIntegerArrayProperty(String key, Supplier<long[]> getter, Consumer<long[]> setter);
+163
+164
+/**
+165
+* Add a constant integer property.
+166
+*
+167
+* @param key property name
+168
+* @param value the value
+169
+*/
+170
+void publishConstIntegerArray(String key, long[] value);
+171
+172
+/**
+173
+* Add a float array property.
+174
+*
+175
+* @param key property name
+176
+* @param getter getter function (returns current value)
+177
+* @param setter setter function (sets new value)
+178
+*/
+179
+void addFloatArrayProperty(String key, Supplier<float[]> getter, Consumer<float[]> setter);
+180
+181
+/**
+182
+* Add a constant float array property.
+183
+*
+184
+* @param key property name
+185
+* @param value the value
+186
+*/
+187
+void publishConstFloatArray(String key, float[] value);
+188
+189
+/**
+190
+* Add a double array property.
+191
+*
+192
+* @param key property name
+193
+* @param getter getter function (returns current value)
+194
+* @param setter setter function (sets new value)
+195
+*/
+196
+void addDoubleArrayProperty(String key, Supplier<double[]> getter, Consumer<double[]> setter);
+197
+198
+/**
+199
+* Add a constant double array property.
+200
+*
+201
+* @param key property name
+202
+* @param value the value
+203
+*/
+204
+void publishConstDoubleArray(String key, double[] value);
+205
+206
+/**
+207
+* Add a string array property.
+208
+*
+209
+* @param key property name
+210
+* @param getter getter function (returns current value)
+211
+* @param setter setter function (sets new value)
+212
+*/
+213
+void addStringArrayProperty(String key, Supplier<String[]> getter, Consumer<String[]> setter);
+214
+215
+/**
+216
+* Add a constant string array property.
+217
+*
+218
+* @param key property name
+219
+* @param value the value
+220
+*/
+221
+void publishConstStringArray(String key, String[] value);
+222
+223
+/**
+224
+* Add a raw property.
+225
+*
+226
+* @param key property name
+227
+* @param typeString type string
+228
+* @param getter getter function (returns current value)
+229
+* @param setter setter function (sets new value)
+230
+*/
+231
+void addRawProperty(
+232
+String key, String typeString, Supplier<byte[]> getter, Consumer<byte[]> setter);
+233
+234
+/**
+235
+* Add a constant raw property.
+236
+*
+237
+* @param key property name
+238
+* @param typeString type string
+239
+* @param value the value
+240
+*/
+241
+void publishConstRaw(String key, String typeString, byte[] value);
+242
+243
+/**
+244
+* Gets the kind of backend being used.
+245
+*
+246
+* @return Backend kind
+247
+*/
+248
+BackendKind getBackendKind();
+249
+250
+/**
+251
+* Return whether this sendable has been published.
+252
+*
+253
+* @return True if it has been published, false if not.
+254
+*/
+255
+boolean isPublished();
+256
+257
+/** Update the published values by calling the getters for all properties. */
+258
+void update();
+259
+260
+/** Clear properties. */
+261
+void clearProperties();
+262
+263
+/**
+264
+* Adds a closeable. The closeable.close() will be called when close() is called.
+265
+*
+266
+* @param closeable closeable object
+267
+*/
+268
+void addCloseable(AutoCloseable closeable);
+269
+}

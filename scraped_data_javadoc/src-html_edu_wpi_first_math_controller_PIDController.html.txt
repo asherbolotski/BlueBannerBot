@@ -1,0 +1,937 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+import edu.wpi.first.math.MathUsageId;
+009
+import edu.wpi.first.math.MathUtil;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import edu.wpi.first.util.sendable.SendableBuilder;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+014
+/** Implements a PID control loop. */
+015
+public class PIDController implements Sendable, AutoCloseable {
+016
+private static int instances;
+017
+018
+// Factor for "proportional" control
+019
+private double m_kp;
+020
+021
+// Factor for "integral" control
+022
+private double m_ki;
+023
+024
+// Factor for "derivative" control
+025
+private double m_kd;
+026
+027
+// The error range where "integral" control applies
+028
+private double m_iZone = Double.POSITIVE_INFINITY;
+029
+030
+// The period (in seconds) of the loop that calls the controller
+031
+private final double m_period;
+032
+033
+private double m_maximumIntegral = 1.0;
+034
+035
+private double m_minimumIntegral = -1.0;
+036
+037
+private double m_maximumInput;
+038
+039
+private double m_minimumInput;
+040
+041
+// Do the endpoints wrap around? e.g. Absolute encoder
+042
+private boolean m_continuous;
+043
+044
+// The error at the time of the most recent call to calculate()
+045
+private double m_error;
+046
+private double m_errorDerivative;
+047
+048
+// The error at the time of the second-most-recent call to calculate() (used to compute velocity)
+049
+private double m_prevError;
+050
+051
+// The sum of the errors for use in the integral calc
+052
+private double m_totalError;
+053
+054
+// The error that is considered at setpoint.
+055
+private double m_errorTolerance = 0.05;
+056
+private double m_errorDerivativeTolerance = Double.POSITIVE_INFINITY;
+057
+058
+private double m_setpoint;
+059
+private double m_measurement;
+060
+061
+private boolean m_haveMeasurement;
+062
+private boolean m_haveSetpoint;
+063
+064
+/**
+065
+* Allocates a PIDController with the given constants for kp, ki, and kd and a default period of
+066
+* 0.02 seconds.
+067
+*
+068
+* @param kp The proportional coefficient.
+069
+* @param ki The integral coefficient.
+070
+* @param kd The derivative coefficient.
+071
+* @throws IllegalArgumentException if kp &lt; 0
+072
+* @throws IllegalArgumentException if ki &lt; 0
+073
+* @throws IllegalArgumentException if kd &lt; 0
+074
+*/
+075
+public PIDController(double kp, double ki, double kd) {
+076
+this(kp, ki, kd, 0.02);
+077
+}
+078
+079
+/**
+080
+* Allocates a PIDController with the given constants for kp, ki, and kd.
+081
+*
+082
+* @param kp The proportional coefficient.
+083
+* @param ki The integral coefficient.
+084
+* @param kd The derivative coefficient.
+085
+* @param period The period between controller updates in seconds.
+086
+* @throws IllegalArgumentException if kp &lt; 0
+087
+* @throws IllegalArgumentException if ki &lt; 0
+088
+* @throws IllegalArgumentException if kd &lt; 0
+089
+* @throws IllegalArgumentException if period &lt;= 0
+090
+*/
+091
+@SuppressWarnings("this-escape")
+092
+public PIDController(double kp, double ki, double kd, double period) {
+093
+m_kp = kp;
+094
+m_ki = ki;
+095
+m_kd = kd;
+096
+097
+if (kp < 0.0) {
+098
+throw new IllegalArgumentException("Kp must be a non-negative number!");
+099
+}
+100
+if (ki < 0.0) {
+101
+throw new IllegalArgumentException("Ki must be a non-negative number!");
+102
+}
+103
+if (kd < 0.0) {
+104
+throw new IllegalArgumentException("Kd must be a non-negative number!");
+105
+}
+106
+if (period <= 0.0) {
+107
+throw new IllegalArgumentException("Controller period must be a positive number!");
+108
+}
+109
+m_period = period;
+110
+111
+instances++;
+112
+SendableRegistry.addLW(this, "PIDController", instances);
+113
+114
+MathSharedStore.reportUsage(MathUsageId.kController_PIDController2, instances);
+115
+}
+116
+117
+@Override
+118
+public void close() {
+119
+SendableRegistry.remove(this);
+120
+}
+121
+122
+/**
+123
+* Sets the PID Controller gain parameters.
+124
+*
+125
+* <p>Set the proportional, integral, and differential coefficients.
+126
+*
+127
+* @param kp The proportional coefficient.
+128
+* @param ki The integral coefficient.
+129
+* @param kd The derivative coefficient.
+130
+*/
+131
+public void setPID(double kp, double ki, double kd) {
+132
+m_kp = kp;
+133
+m_ki = ki;
+134
+m_kd = kd;
+135
+}
+136
+137
+/**
+138
+* Sets the Proportional coefficient of the PID controller gain.
+139
+*
+140
+* @param kp The proportional coefficient. Must be &gt;= 0.
+141
+*/
+142
+public void setP(double kp) {
+143
+m_kp = kp;
+144
+}
+145
+146
+/**
+147
+* Sets the Integral coefficient of the PID controller gain.
+148
+*
+149
+* @param ki The integral coefficient. Must be &gt;= 0.
+150
+*/
+151
+public void setI(double ki) {
+152
+m_ki = ki;
+153
+}
+154
+155
+/**
+156
+* Sets the Differential coefficient of the PID controller gain.
+157
+*
+158
+* @param kd The differential coefficient. Must be &gt;= 0.
+159
+*/
+160
+public void setD(double kd) {
+161
+m_kd = kd;
+162
+}
+163
+164
+/**
+165
+* Sets the IZone range. When the absolute value of the position error is greater than IZone, the
+166
+* total accumulated error will reset to zero, disabling integral gain until the absolute value of
+167
+* the position error is less than IZone. This is used to prevent integral windup. Must be
+168
+* non-negative. Passing a value of zero will effectively disable integral gain. Passing a value
+169
+* of {@link Double#POSITIVE_INFINITY} disables IZone functionality.
+170
+*
+171
+* @param iZone Maximum magnitude of error to allow integral control.
+172
+* @throws IllegalArgumentException if iZone &lt; 0
+173
+*/
+174
+public void setIZone(double iZone) {
+175
+if (iZone < 0) {
+176
+throw new IllegalArgumentException("IZone must be a non-negative number!");
+177
+}
+178
+m_iZone = iZone;
+179
+}
+180
+181
+/**
+182
+* Get the Proportional coefficient.
+183
+*
+184
+* @return proportional coefficient
+185
+*/
+186
+public double getP() {
+187
+return m_kp;
+188
+}
+189
+190
+/**
+191
+* Get the Integral coefficient.
+192
+*
+193
+* @return integral coefficient
+194
+*/
+195
+public double getI() {
+196
+return m_ki;
+197
+}
+198
+199
+/**
+200
+* Get the Differential coefficient.
+201
+*
+202
+* @return differential coefficient
+203
+*/
+204
+public double getD() {
+205
+return m_kd;
+206
+}
+207
+208
+/**
+209
+* Get the IZone range.
+210
+*
+211
+* @return Maximum magnitude of error to allow integral control.
+212
+*/
+213
+public double getIZone() {
+214
+return m_iZone;
+215
+}
+216
+217
+/**
+218
+* Returns the period of this controller.
+219
+*
+220
+* @return the period of the controller.
+221
+*/
+222
+public double getPeriod() {
+223
+return m_period;
+224
+}
+225
+226
+/**
+227
+* Returns the position tolerance of this controller.
+228
+*
+229
+* @return the position tolerance of the controller.
+230
+* @deprecated Use getErrorTolerance() instead.
+231
+*/
+232
+@Deprecated(forRemoval = true, since = "2025")
+233
+public double getPositionTolerance() {
+234
+return m_errorTolerance;
+235
+}
+236
+237
+/**
+238
+* Returns the velocity tolerance of this controller.
+239
+*
+240
+* @return the velocity tolerance of the controller.
+241
+* @deprecated Use getErrorDerivativeTolerance() instead.
+242
+*/
+243
+@Deprecated(forRemoval = true, since = "2025")
+244
+public double getVelocityTolerance() {
+245
+return m_errorDerivativeTolerance;
+246
+}
+247
+248
+/**
+249
+* Returns the error tolerance of this controller. Defaults to 0.05.
+250
+*
+251
+* @return the error tolerance of the controller.
+252
+*/
+253
+public double getErrorTolerance() {
+254
+return m_errorTolerance;
+255
+}
+256
+257
+/**
+258
+* Returns the error derivative tolerance of this controller. Defaults to ∞.
+259
+*
+260
+* @return the error derivative tolerance of the controller.
+261
+*/
+262
+public double getErrorDerivativeTolerance() {
+263
+return m_errorDerivativeTolerance;
+264
+}
+265
+266
+/**
+267
+* Returns the accumulated error used in the integral calculation of this controller.
+268
+*
+269
+* @return The accumulated error of this controller.
+270
+*/
+271
+public double getAccumulatedError() {
+272
+return m_totalError;
+273
+}
+274
+275
+/**
+276
+* Sets the setpoint for the PIDController.
+277
+*
+278
+* @param setpoint The desired setpoint.
+279
+*/
+280
+public void setSetpoint(double setpoint) {
+281
+m_setpoint = setpoint;
+282
+m_haveSetpoint = true;
+283
+284
+if (m_continuous) {
+285
+double errorBound = (m_maximumInput - m_minimumInput) / 2.0;
+286
+m_error = MathUtil.inputModulus(m_setpoint - m_measurement, -errorBound, errorBound);
+287
+} else {
+288
+m_error = m_setpoint - m_measurement;
+289
+}
+290
+291
+m_errorDerivative = (m_error - m_prevError) / m_period;
+292
+}
+293
+294
+/**
+295
+* Returns the current setpoint of the PIDController.
+296
+*
+297
+* @return The current setpoint.
+298
+*/
+299
+public double getSetpoint() {
+300
+return m_setpoint;
+301
+}
+302
+303
+/**
+304
+* Returns true if the error is within the tolerance of the setpoint. The error tolerance defaults
+305
+* to 0.05, and the error derivative tolerance defaults to ∞.
+306
+*
+307
+* <p>This will return false until at least one input value has been computed.
+308
+*
+309
+* @return Whether the error is within the acceptable bounds.
+310
+*/
+311
+public boolean atSetpoint() {
+312
+return m_haveMeasurement
+313
+&& m_haveSetpoint
+314
+&& Math.abs(m_error) < m_errorTolerance
+315
+&& Math.abs(m_errorDerivative) < m_errorDerivativeTolerance;
+316
+}
+317
+318
+/**
+319
+* Enables continuous input.
+320
+*
+321
+* <p>Rather then using the max and min input range as constraints, it considers them to be the
+322
+* same point and automatically calculates the shortest route to the setpoint.
+323
+*
+324
+* @param minimumInput The minimum value expected from the input.
+325
+* @param maximumInput The maximum value expected from the input.
+326
+*/
+327
+public void enableContinuousInput(double minimumInput, double maximumInput) {
+328
+m_continuous = true;
+329
+m_minimumInput = minimumInput;
+330
+m_maximumInput = maximumInput;
+331
+}
+332
+333
+/** Disables continuous input. */
+334
+public void disableContinuousInput() {
+335
+m_continuous = false;
+336
+}
+337
+338
+/**
+339
+* Returns true if continuous input is enabled.
+340
+*
+341
+* @return True if continuous input is enabled.
+342
+*/
+343
+public boolean isContinuousInputEnabled() {
+344
+return m_continuous;
+345
+}
+346
+347
+/**
+348
+* Sets the minimum and maximum contributions of the integral term.
+349
+*
+350
+* <p>The internal integrator is clamped so that the integral term's contribution to the output
+351
+* stays between minimumIntegral and maximumIntegral. This prevents integral windup.
+352
+*
+353
+* @param minimumIntegral The minimum contribution of the integral term.
+354
+* @param maximumIntegral The maximum contribution of the integral term.
+355
+*/
+356
+public void setIntegratorRange(double minimumIntegral, double maximumIntegral) {
+357
+m_minimumIntegral = minimumIntegral;
+358
+m_maximumIntegral = maximumIntegral;
+359
+}
+360
+361
+/**
+362
+* Sets the error which is considered tolerable for use with atSetpoint().
+363
+*
+364
+* @param errorTolerance Error which is tolerable.
+365
+*/
+366
+public void setTolerance(double errorTolerance) {
+367
+setTolerance(errorTolerance, Double.POSITIVE_INFINITY);
+368
+}
+369
+370
+/**
+371
+* Sets the error which is considered tolerable for use with atSetpoint().
+372
+*
+373
+* @param errorTolerance Error which is tolerable.
+374
+* @param errorDerivativeTolerance Error derivative which is tolerable.
+375
+*/
+376
+public void setTolerance(double errorTolerance, double errorDerivativeTolerance) {
+377
+m_errorTolerance = errorTolerance;
+378
+m_errorDerivativeTolerance = errorDerivativeTolerance;
+379
+}
+380
+381
+/**
+382
+* Returns the difference between the setpoint and the measurement.
+383
+*
+384
+* @return The error.
+385
+* @deprecated Use getError() instead.
+386
+*/
+387
+@Deprecated(forRemoval = true, since = "2025")
+388
+public double getPositionError() {
+389
+return m_error;
+390
+}
+391
+392
+/**
+393
+* Returns the velocity error.
+394
+*
+395
+* @return The velocity error.
+396
+* @deprecated Use getErrorDerivative() instead.
+397
+*/
+398
+@Deprecated(forRemoval = true, since = "2025")
+399
+public double getVelocityError() {
+400
+return m_errorDerivative;
+401
+}
+402
+403
+/**
+404
+* Returns the difference between the setpoint and the measurement.
+405
+*
+406
+* @return The error.
+407
+*/
+408
+public double getError() {
+409
+return m_error;
+410
+}
+411
+412
+/**
+413
+* Returns the error derivative.
+414
+*
+415
+* @return The error derivative.
+416
+*/
+417
+public double getErrorDerivative() {
+418
+return m_errorDerivative;
+419
+}
+420
+421
+/**
+422
+* Returns the next output of the PID controller.
+423
+*
+424
+* @param measurement The current measurement of the process variable.
+425
+* @param setpoint The new setpoint of the controller.
+426
+* @return The next controller output.
+427
+*/
+428
+public double calculate(double measurement, double setpoint) {
+429
+m_setpoint = setpoint;
+430
+m_haveSetpoint = true;
+431
+return calculate(measurement);
+432
+}
+433
+434
+/**
+435
+* Returns the next output of the PID controller.
+436
+*
+437
+* @param measurement The current measurement of the process variable.
+438
+* @return The next controller output.
+439
+*/
+440
+public double calculate(double measurement) {
+441
+m_measurement = measurement;
+442
+m_prevError = m_error;
+443
+m_haveMeasurement = true;
+444
+445
+if (m_continuous) {
+446
+double errorBound = (m_maximumInput - m_minimumInput) / 2.0;
+447
+m_error = MathUtil.inputModulus(m_setpoint - m_measurement, -errorBound, errorBound);
+448
+} else {
+449
+m_error = m_setpoint - m_measurement;
+450
+}
+451
+452
+m_errorDerivative = (m_error - m_prevError) / m_period;
+453
+454
+// If the absolute value of the position error is greater than IZone, reset the total error
+455
+if (Math.abs(m_error) > m_iZone) {
+456
+m_totalError = 0;
+457
+} else if (m_ki != 0) {
+458
+m_totalError =
+459
+MathUtil.clamp(
+460
+m_totalError + m_error * m_period,
+461
+m_minimumIntegral / m_ki,
+462
+m_maximumIntegral / m_ki);
+463
+}
+464
+465
+return m_kp * m_error + m_ki * m_totalError + m_kd * m_errorDerivative;
+466
+}
+467
+468
+/** Resets the previous error and the integral term. */
+469
+public void reset() {
+470
+m_error = 0;
+471
+m_prevError = 0;
+472
+m_totalError = 0;
+473
+m_errorDerivative = 0;
+474
+m_haveMeasurement = false;
+475
+}
+476
+477
+@Override
+478
+public void initSendable(SendableBuilder builder) {
+479
+builder.setSmartDashboardType("PIDController");
+480
+builder.addDoubleProperty("p", this::getP, this::setP);
+481
+builder.addDoubleProperty("i", this::getI, this::setI);
+482
+builder.addDoubleProperty("d", this::getD, this::setD);
+483
+builder.addDoubleProperty(
+484
+"izone",
+485
+this::getIZone,
+486
+(double toSet) -> {
+487
+try {
+488
+setIZone(toSet);
+489
+} catch (IllegalArgumentException e) {
+490
+MathSharedStore.reportError("IZone must be a non-negative number!", e.getStackTrace());
+491
+}
+492
+});
+493
+builder.addDoubleProperty("setpoint", this::getSetpoint, this::setSetpoint);
+494
+builder.addDoubleProperty("measurement", () -> m_measurement, null);
+495
+builder.addDoubleProperty("error", this::getError, null);
+496
+builder.addDoubleProperty("error derivative", this::getErrorDerivative, null);
+497
+builder.addDoubleProperty("previous error", () -> this.m_prevError, null);
+498
+builder.addDoubleProperty("total error", this::getAccumulatedError, null);
+499
+}
+500
+}

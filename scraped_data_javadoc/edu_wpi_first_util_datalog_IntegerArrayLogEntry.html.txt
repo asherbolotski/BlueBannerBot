@@ -1,0 +1,274 @@
+Package
+edu.wpi.first.util.datalog
+Class IntegerArrayLogEntry
+java.lang.Object
+edu.wpi.first.util.datalog.DataLogEntry
+edu.wpi.first.util.datalog.IntegerArrayLogEntry
+public class
+IntegerArrayLogEntry
+extends
+DataLogEntry
+Log array of integer values.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+String
+kDataType
+The data type for integer array values.
+Fields inherited from class edu.wpi.first.util.datalog.
+DataLogEntry
+m_entry
+,
+m_log
+Constructor Summary
+Constructors
+Constructor
+Description
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name)
+Constructs a integer array log entry.
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name,
+ long timestamp)
+Constructs a integer array log entry.
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata)
+Constructs a integer array log entry.
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+ long timestamp)
+Constructs a integer array log entry.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+append
+(long[] value)
+Appends a record to the log.
+void
+append
+(long[] value,
+ long timestamp)
+Appends a record to the log.
+long[]
+getLastValue
+()
+Gets the last value.
+boolean
+hasLastValue
+()
+Gets whether there is a last value.
+void
+update
+(long[] value)
+Updates the last value and appends a record to the log if it has changed.
+void
+update
+(long[] value,
+ long timestamp)
+Updates the last value and appends a record to the log if it has changed.
+Methods inherited from class edu.wpi.first.util.datalog.
+DataLogEntry
+finish
+,
+finish
+,
+setMetadata
+,
+setMetadata
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kDataType
+public static final
+String
+kDataType
+The data type for integer array values.
+See Also:
+Constant Field Values
+Constructor Details
+IntegerArrayLogEntry
+public
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+ long timestamp)
+Constructs a integer array log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+metadata
+- metadata
+timestamp
+- entry creation timestamp (0=now)
+IntegerArrayLogEntry
+public
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata)
+Constructs a integer array log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+metadata
+- metadata
+IntegerArrayLogEntry
+public
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name,
+ long timestamp)
+Constructs a integer array log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+timestamp
+- entry creation timestamp (0=now)
+IntegerArrayLogEntry
+public
+IntegerArrayLogEntry
+(
+DataLog
+log,
+String
+name)
+Constructs a integer array log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+Method Details
+append
+public
+void
+append
+(long[] value,
+ long timestamp)
+Appends a record to the log.
+Parameters:
+value
+- Value to record
+timestamp
+- Time stamp (0 to indicate now)
+append
+public
+void
+append
+(long[] value)
+Appends a record to the log.
+Parameters:
+value
+- Value to record
+update
+public
+void
+update
+(long[] value,
+ long timestamp)
+Updates the last value and appends a record to the log if it has changed.
+Note: the last value is local to this class instance; using update() with two instances
+ pointing to the same underlying log entry name will likely result in unexpected results.
+Parameters:
+value
+- Value to record
+timestamp
+- Time stamp (0 to indicate now)
+update
+public
+void
+update
+(long[] value)
+Updates the last value and appends a record to the log if it has changed.
+Note: the last value is local to this class instance; using update() with two instances
+ pointing to the same underlying log entry name will likely result in unexpected results.
+Parameters:
+value
+- Value to record
+hasLastValue
+public
+boolean
+hasLastValue
+()
+Gets whether there is a last value.
+Note: the last value is local to this class instance and updated only with update(), not
+ append().
+Returns:
+True if last value exists, false otherwise.
+getLastValue
+public
+long[]
+getLastValue
+()
+Gets the last value.
+Note: the last value is local to this class instance and updated only with update(), not
+ append().
+Returns:
+Last value, or false if none.

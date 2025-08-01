@@ -1,0 +1,299 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.smartdashboard;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.geometry.Rotation2d;
+009
+import edu.wpi.first.math.geometry.Translation2d;
+010
+import edu.wpi.first.math.trajectory.Trajectory;
+011
+import edu.wpi.first.networktables.DoubleArrayEntry;
+012
+import java.util.ArrayList;
+013
+import java.util.Collections;
+014
+import java.util.List;
+015
+016
+/** Game field object on a Field2d. */
+017
+public class FieldObject2d implements AutoCloseable {
+018
+/**
+019
+* Package-local constructor.
+020
+*
+021
+* @param name name
+022
+*/
+023
+FieldObject2d(String name) {
+024
+m_name = name;
+025
+}
+026
+027
+@Override
+028
+public void close() {
+029
+if (m_entry != null) {
+030
+m_entry.close();
+031
+}
+032
+}
+033
+034
+/**
+035
+* Set the pose from a Pose object.
+036
+*
+037
+* @param pose 2D pose
+038
+*/
+039
+public synchronized void setPose(Pose2d pose) {
+040
+setPoses(pose);
+041
+}
+042
+043
+/**
+044
+* Set the pose from x, y, and rotation.
+045
+*
+046
+* @param xMeters X location, in meters
+047
+* @param yMeters Y location, in meters
+048
+* @param rotation rotation
+049
+*/
+050
+public synchronized void setPose(double xMeters, double yMeters, Rotation2d rotation) {
+051
+setPose(new Pose2d(xMeters, yMeters, rotation));
+052
+}
+053
+054
+/**
+055
+* Get the pose.
+056
+*
+057
+* @return 2D pose
+058
+*/
+059
+public synchronized Pose2d getPose() {
+060
+updateFromEntry();
+061
+if (m_poses.isEmpty()) {
+062
+return Pose2d.kZero;
+063
+}
+064
+return m_poses.get(0);
+065
+}
+066
+067
+/**
+068
+* Set multiple poses from a list of Pose objects. The total number of poses is limited to 85.
+069
+*
+070
+* @param poses list of 2D poses
+071
+*/
+072
+public synchronized void setPoses(List<Pose2d> poses) {
+073
+m_poses.clear();
+074
+m_poses.addAll(poses);
+075
+updateEntry();
+076
+}
+077
+078
+/**
+079
+* Set multiple poses from a list of Pose objects. The total number of poses is limited to 85.
+080
+*
+081
+* @param poses list of 2D poses
+082
+*/
+083
+public synchronized void setPoses(Pose2d... poses) {
+084
+m_poses.clear();
+085
+Collections.addAll(m_poses, poses);
+086
+updateEntry();
+087
+}
+088
+089
+/**
+090
+* Sets poses from a trajectory.
+091
+*
+092
+* @param trajectory The trajectory from which the poses should be added.
+093
+*/
+094
+public synchronized void setTrajectory(Trajectory trajectory) {
+095
+m_poses.clear();
+096
+for (Trajectory.State state : trajectory.getStates()) {
+097
+m_poses.add(state.poseMeters);
+098
+}
+099
+updateEntry();
+100
+}
+101
+102
+/**
+103
+* Get multiple poses.
+104
+*
+105
+* @return list of 2D poses
+106
+*/
+107
+public synchronized List<Pose2d> getPoses() {
+108
+updateFromEntry();
+109
+return new ArrayList<>(m_poses);
+110
+}
+111
+112
+void updateEntry() {
+113
+updateEntry(false);
+114
+}
+115
+116
+synchronized void updateEntry(boolean setDefault) {
+117
+if (m_entry == null) {
+118
+return;
+119
+}
+120
+121
+double[] arr = new double[m_poses.size() * 3];
+122
+int ndx = 0;
+123
+for (Pose2d pose : m_poses) {
+124
+Translation2d translation = pose.getTranslation();
+125
+arr[ndx + 0] = translation.getX();
+126
+arr[ndx + 1] = translation.getY();
+127
+arr[ndx + 2] = pose.getRotation().getDegrees();
+128
+ndx += 3;
+129
+}
+130
+131
+if (setDefault) {
+132
+m_entry.setDefault(arr);
+133
+} else {
+134
+m_entry.set(arr);
+135
+}
+136
+}
+137
+138
+private synchronized void updateFromEntry() {
+139
+if (m_entry == null) {
+140
+return;
+141
+}
+142
+143
+double[] arr = m_entry.get(null);
+144
+if (arr != null) {
+145
+if ((arr.length % 3) != 0) {
+146
+return;
+147
+}
+148
+149
+m_poses.clear();
+150
+for (int i = 0; i < arr.length; i += 3) {
+151
+m_poses.add(new Pose2d(arr[i], arr[i + 1], Rotation2d.fromDegrees(arr[i + 2])));
+152
+}
+153
+}
+154
+}
+155
+156
+String m_name;
+157
+DoubleArrayEntry m_entry;
+158
+private final List<Pose2d> m_poses = new ArrayList<>();
+159
+}

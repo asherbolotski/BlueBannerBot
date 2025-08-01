@@ -1,0 +1,202 @@
+Package
+edu.wpi.first.wpilibj2.command
+Class ScheduleCommand
+java.lang.Object
+edu.wpi.first.wpilibj2.command.Command
+edu.wpi.first.wpilibj2.command.ScheduleCommand
+All Implemented Interfaces:
+Sendable
+public class
+ScheduleCommand
+extends
+Command
+Schedules the given commands when this command is initialized. Useful for forking off from
+ CommandGroups. Note that if run from a composition, the composition will not know about the
+ status of the scheduled commands, and will treat this command as finishing instantly.
+This class is provided by the NewCommands VendorDep
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.wpilibj2.command.
+Command
+Command.InterruptionBehavior
+Constructor Summary
+Constructors
+Constructor
+Description
+ScheduleCommand
+(
+Command
+... toSchedule)
+Creates a new ScheduleCommand that schedules the given commands when initialized.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+initialize
+()
+The initial subroutine of a command.
+boolean
+isFinished
+()
+Whether the command has finished.
+boolean
+runsWhenDisabled
+()
+Whether the given command should run when the robot is disabled.
+Methods inherited from class edu.wpi.first.wpilibj2.command.
+Command
+addRequirements
+,
+addRequirements
+,
+alongWith
+,
+andThen
+,
+andThen
+,
+asProxy
+,
+beforeStarting
+,
+beforeStarting
+,
+cancel
+,
+deadlineFor
+,
+deadlineWith
+,
+end
+,
+execute
+,
+finallyDo
+,
+finallyDo
+,
+getInterruptionBehavior
+,
+getName
+,
+getRequirements
+,
+getSubsystem
+,
+handleInterrupt
+,
+hasRequirement
+,
+ignoringDisable
+,
+initSendable
+,
+isScheduled
+,
+onlyIf
+,
+onlyWhile
+,
+raceWith
+,
+repeatedly
+,
+schedule
+,
+setName
+,
+setSubsystem
+,
+unless
+,
+until
+,
+withDeadline
+,
+withInterruptBehavior
+,
+withName
+,
+withTimeout
+,
+withTimeout
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ScheduleCommand
+public
+ScheduleCommand
+(
+Command
+... toSchedule)
+Creates a new ScheduleCommand that schedules the given commands when initialized.
+Parameters:
+toSchedule
+- the commands to schedule
+Method Details
+initialize
+public
+void
+initialize
+()
+Description copied from class:
+Command
+The initial subroutine of a command. Called once when the command is initially scheduled.
+Overrides:
+initialize
+in class
+Command
+isFinished
+public
+boolean
+isFinished
+()
+Description copied from class:
+Command
+Whether the command has finished. Once a command finishes, the scheduler will call its end()
+ method and un-schedule it.
+Overrides:
+isFinished
+in class
+Command
+Returns:
+whether the command has finished.
+runsWhenDisabled
+public
+boolean
+runsWhenDisabled
+()
+Description copied from class:
+Command
+Whether the given command should run when the robot is disabled. Override to return true if the
+ command should run when disabled.
+Overrides:
+runsWhenDisabled
+in class
+Command
+Returns:
+whether the command should run when the robot is disabled

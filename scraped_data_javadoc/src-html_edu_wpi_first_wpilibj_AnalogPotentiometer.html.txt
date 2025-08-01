@@ -1,0 +1,285 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.util.sendable.Sendable;
+008
+import edu.wpi.first.util.sendable.SendableBuilder;
+009
+import edu.wpi.first.util.sendable.SendableRegistry;
+010
+011
+/**
+012
+* Class for reading analog potentiometers. Analog potentiometers read in an analog voltage that
+013
+* corresponds to a position. The position is in whichever units you choose, by way of the scaling
+014
+* and offset constants passed to the constructor.
+015
+*/
+016
+public class AnalogPotentiometer implements Sendable, AutoCloseable {
+017
+private AnalogInput m_analogInput;
+018
+private boolean m_initAnalogInput;
+019
+private double m_fullRange;
+020
+private double m_offset;
+021
+022
+/**
+023
+* AnalogPotentiometer constructor.
+024
+*
+025
+* <p>Use the fullRange and offset values so that the output produces meaningful values. I.E: you
+026
+* have a 270 degree potentiometer, and you want the output to be degrees with the halfway point
+027
+* as 0 degrees. The fullRange value is 270.0(degrees) and the offset is -135.0 since the halfway
+028
+* point after scaling is 135 degrees. This will calculate the result from the fullRange times the
+029
+* fraction of the supply voltage, plus the offset.
+030
+*
+031
+* @param channel The analog input channel this potentiometer is plugged into. 0-3 are on-board
+032
+*     and 4-7 are on the MXP port.
+033
+* @param fullRange The scaling to multiply the fraction by to get a meaningful unit.
+034
+* @param offset The offset to add to the scaled value for controlling the zero value
+035
+*/
+036
+@SuppressWarnings("this-escape")
+037
+public AnalogPotentiometer(final int channel, double fullRange, double offset) {
+038
+this(new AnalogInput(channel), fullRange, offset);
+039
+m_initAnalogInput = true;
+040
+SendableRegistry.addChild(this, m_analogInput);
+041
+}
+042
+043
+/**
+044
+* AnalogPotentiometer constructor.
+045
+*
+046
+* <p>Use the fullRange and offset values so that the output produces meaningful values. I.E: you
+047
+* have a 270 degree potentiometer, and you want the output to be degrees with the halfway point
+048
+* as 0 degrees. The fullRange value is 270.0(degrees) and the offset is -135.0 since the halfway
+049
+* point after scaling is 135 degrees. This will calculate the result from the fullRange times the
+050
+* fraction of the supply voltage, plus the offset.
+051
+*
+052
+* @param input The {@link AnalogInput} this potentiometer is plugged into.
+053
+* @param fullRange The angular value (in desired units) representing the full 0-5V range of the
+054
+*     input.
+055
+* @param offset The angular value (in desired units) representing the angular output at 0V.
+056
+*/
+057
+@SuppressWarnings("this-escape")
+058
+public AnalogPotentiometer(final AnalogInput input, double fullRange, double offset) {
+059
+SendableRegistry.addLW(this, "AnalogPotentiometer", input.getChannel());
+060
+m_analogInput = input;
+061
+m_initAnalogInput = false;
+062
+063
+m_fullRange = fullRange;
+064
+m_offset = offset;
+065
+}
+066
+067
+/**
+068
+* AnalogPotentiometer constructor.
+069
+*
+070
+* <p>Use the scale value so that the output produces meaningful values. I.E: you have a 270
+071
+* degree potentiometer, and you want the output to be degrees with the starting point as 0
+072
+* degrees. The scale value is 270.0(degrees).
+073
+*
+074
+* @param channel The analog input channel this potentiometer is plugged into. 0-3 are on-board
+075
+*     and 4-7 are on the MXP port.
+076
+* @param scale The scaling to multiply the voltage by to get a meaningful unit.
+077
+*/
+078
+public AnalogPotentiometer(final int channel, double scale) {
+079
+this(channel, scale, 0);
+080
+}
+081
+082
+/**
+083
+* AnalogPotentiometer constructor.
+084
+*
+085
+* <p>Use the fullRange and offset values so that the output produces meaningful values. I.E: you
+086
+* have a 270 degree potentiometer, and you want the output to be degrees with the starting point
+087
+* as 0 degrees. The scale value is 270.0(degrees).
+088
+*
+089
+* @param input The {@link AnalogInput} this potentiometer is plugged into.
+090
+* @param scale The scaling to multiply the voltage by to get a meaningful unit.
+091
+*/
+092
+public AnalogPotentiometer(final AnalogInput input, double scale) {
+093
+this(input, scale, 0);
+094
+}
+095
+096
+/**
+097
+* AnalogPotentiometer constructor.
+098
+*
+099
+* <p>The potentiometer will return a value between 0 and 1.0.
+100
+*
+101
+* @param channel The analog input channel this potentiometer is plugged into. 0-3 are on-board
+102
+*     and 4-7 are on the MXP port.
+103
+*/
+104
+public AnalogPotentiometer(final int channel) {
+105
+this(channel, 1, 0);
+106
+}
+107
+108
+/**
+109
+* AnalogPotentiometer constructor.
+110
+*
+111
+* <p>The potentiometer will return a value between 0 and 1.0.
+112
+*
+113
+* @param input The {@link AnalogInput} this potentiometer is plugged into.
+114
+*/
+115
+public AnalogPotentiometer(final AnalogInput input) {
+116
+this(input, 1, 0);
+117
+}
+118
+119
+/**
+120
+* Get the current reading of the potentiometer.
+121
+*
+122
+* @return The current position of the potentiometer.
+123
+*/
+124
+public double get() {
+125
+if (m_analogInput == null) {
+126
+return m_offset;
+127
+}
+128
+return (m_analogInput.getAverageVoltage() / RobotController.getVoltage5V()) * m_fullRange
+129
++ m_offset;
+130
+}
+131
+132
+@Override
+133
+public void initSendable(SendableBuilder builder) {
+134
+if (m_analogInput != null) {
+135
+builder.setSmartDashboardType("Analog Input");
+136
+builder.addDoubleProperty("Value", this::get, null);
+137
+}
+138
+}
+139
+140
+@Override
+141
+public void close() {
+142
+SendableRegistry.remove(this);
+143
+if (m_initAnalogInput) {
+144
+m_analogInput.close();
+145
+m_analogInput = null;
+146
+m_initAnalogInput = false;
+147
+}
+148
+}
+149
+}

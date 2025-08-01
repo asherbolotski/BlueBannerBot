@@ -1,0 +1,83 @@
+Package
+edu.wpi.first.math
+Class ComputerVisionUtil
+java.lang.Object
+edu.wpi.first.math.ComputerVisionUtil
+public final class
+ComputerVisionUtil
+extends
+Object
+Computer vision utility functions.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+Pose3d
+objectToRobotPose
+(
+Pose3d
+objectInField,
+Transform3d
+cameraToObject,
+Transform3d
+robotToCamera)
+Returns the robot's pose in the field coordinate system given an object's field-relative pose,
+ the transformation from the camera's pose to the object's pose (obtained via computer vision),
+ and the transformation from the robot's pose to the camera's pose.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+objectToRobotPose
+public static
+Pose3d
+objectToRobotPose
+(
+Pose3d
+objectInField,
+Transform3d
+cameraToObject,
+Transform3d
+robotToCamera)
+Returns the robot's pose in the field coordinate system given an object's field-relative pose,
+ the transformation from the camera's pose to the object's pose (obtained via computer vision),
+ and the transformation from the robot's pose to the camera's pose.
+The object could be a target or a fiducial marker.
+Parameters:
+objectInField
+- An object's field-relative pose.
+cameraToObject
+- The transformation from the camera's pose to the object's pose. This
+     comes from computer vision.
+robotToCamera
+- The transformation from the robot's pose to the camera's pose. This can
+     either be a constant for a rigidly mounted camera, or variable if the camera is mounted to
+     a turret. If the camera was mounted 3 inches in front of the "origin" (usually physical
+     center) of the robot, this would be new Transform3d(Units.inchesToMeters(3.0), 0.0, 0.0,
+     Rotation3d.kZero).
+Returns:
+The robot's field-relative pose.

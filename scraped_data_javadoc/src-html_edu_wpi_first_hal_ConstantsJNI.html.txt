@@ -1,0 +1,43 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Constants HAL JNI functions.
+009
+*
+010
+* @see "hal/Constants.h"
+011
+*/
+012
+public class ConstantsJNI extends JNIWrapper {
+013
+/**
+014
+* Gets the number of FPGA system clock ticks per microsecond.
+015
+*
+016
+* @return the number of clock ticks per microsecond
+017
+* @see "HAL_GetSystemClockTicksPerMicrosecond"
+018
+*/
+019
+public static native int getSystemClockTicksPerMicrosecond();
+020
+021
+/** Utility class. */
+022
+private ConstantsJNI() {}
+023
+}

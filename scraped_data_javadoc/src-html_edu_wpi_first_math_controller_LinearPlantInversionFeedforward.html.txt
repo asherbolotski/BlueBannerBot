@@ -1,0 +1,289 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.Matrix;
+008
+import edu.wpi.first.math.Num;
+009
+import edu.wpi.first.math.numbers.N1;
+010
+import edu.wpi.first.math.system.Discretization;
+011
+import edu.wpi.first.math.system.LinearSystem;
+012
+import org.ejml.simple.SimpleMatrix;
+013
+014
+/**
+015
+* Constructs a plant inversion model-based feedforward from a {@link LinearSystem}.
+016
+*
+017
+* <p>The feedforward is calculated as <strong> u_ff = B<sup>+</sup> (r_k+1 - A r_k) </strong>,
+018
+* where <strong> B<sup>+</sup> </strong> is the pseudoinverse of B.
+019
+*
+020
+* <p>For more on the underlying math, read <a
+021
+* href="https://file.tavsys.net/control/controls-engineering-in-frc.pdf">https://file.tavsys.net/control/controls-engineering-in-frc.pdf</a>.
+022
+*
+023
+* @param <States> Number of states.
+024
+* @param <Inputs> Number of inputs.
+025
+* @param <Outputs> Number of outputs.
+026
+*/
+027
+public class LinearPlantInversionFeedforward<
+028
+States extends Num, Inputs extends Num, Outputs extends Num> {
+029
+/** The current reference state. */
+030
+private Matrix<States, N1> m_r;
+031
+032
+/** The computed feedforward. */
+033
+private Matrix<Inputs, N1> m_uff;
+034
+035
+private final Matrix<States, Inputs> m_B;
+036
+037
+private final Matrix<States, States> m_A;
+038
+039
+/**
+040
+* Constructs a feedforward with the given plant.
+041
+*
+042
+* @param plant The plant being controlled.
+043
+* @param dtSeconds Discretization timestep.
+044
+*/
+045
+public LinearPlantInversionFeedforward(
+046
+LinearSystem<States, Inputs, Outputs> plant, double dtSeconds) {
+047
+this(plant.getA(), plant.getB(), dtSeconds);
+048
+}
+049
+050
+/**
+051
+* Constructs a feedforward with the given coefficients.
+052
+*
+053
+* @param A Continuous system matrix of the plant being controlled.
+054
+* @param B Continuous input matrix of the plant being controlled.
+055
+* @param dtSeconds Discretization timestep.
+056
+*/
+057
+public LinearPlantInversionFeedforward(
+058
+Matrix<States, States> A, Matrix<States, Inputs> B, double dtSeconds) {
+059
+var discABPair = Discretization.discretizeAB(A, B, dtSeconds);
+060
+this.m_A = discABPair.getFirst();
+061
+this.m_B = discABPair.getSecond();
+062
+063
+m_r = new Matrix<>(new SimpleMatrix(B.getNumRows(), 1));
+064
+m_uff = new Matrix<>(new SimpleMatrix(B.getNumCols(), 1));
+065
+066
+reset();
+067
+}
+068
+069
+/**
+070
+* Returns the previously calculated feedforward as an input vector.
+071
+*
+072
+* @return The calculated feedforward.
+073
+*/
+074
+public Matrix<Inputs, N1> getUff() {
+075
+return m_uff;
+076
+}
+077
+078
+/**
+079
+* Returns an element of the previously calculated feedforward.
+080
+*
+081
+* @param row Row of uff.
+082
+* @return The row of the calculated feedforward.
+083
+*/
+084
+public double getUff(int row) {
+085
+return m_uff.get(row, 0);
+086
+}
+087
+088
+/**
+089
+* Returns the current reference vector r.
+090
+*
+091
+* @return The current reference vector.
+092
+*/
+093
+public Matrix<States, N1> getR() {
+094
+return m_r;
+095
+}
+096
+097
+/**
+098
+* Returns an element of the current reference vector r.
+099
+*
+100
+* @param row Row of r.
+101
+* @return The row of the current reference vector.
+102
+*/
+103
+public double getR(int row) {
+104
+return m_r.get(row, 0);
+105
+}
+106
+107
+/**
+108
+* Resets the feedforward with a specified initial state vector.
+109
+*
+110
+* @param initialState The initial state vector.
+111
+*/
+112
+public final void reset(Matrix<States, N1> initialState) {
+113
+m_r = initialState;
+114
+m_uff.fill(0.0);
+115
+}
+116
+117
+/** Resets the feedforward with a zero initial state vector. */
+118
+public final void reset() {
+119
+m_r.fill(0.0);
+120
+m_uff.fill(0.0);
+121
+}
+122
+123
+/**
+124
+* Calculate the feedforward with only the desired future reference. This uses the internally
+125
+* stored "current" reference.
+126
+*
+127
+* <p>If this method is used the initial state of the system is the one set using {@link
+128
+* LinearPlantInversionFeedforward#reset(Matrix)}. If the initial state is not set it defaults to
+129
+* a zero vector.
+130
+*
+131
+* @param nextR The reference state of the future timestep (k + dt).
+132
+* @return The calculated feedforward.
+133
+*/
+134
+public Matrix<Inputs, N1> calculate(Matrix<States, N1> nextR) {
+135
+return calculate(m_r, nextR);
+136
+}
+137
+138
+/**
+139
+* Calculate the feedforward with current and future reference vectors.
+140
+*
+141
+* @param r The reference state of the current timestep (k).
+142
+* @param nextR The reference state of the future timestep (k + dt).
+143
+* @return The calculated feedforward.
+144
+*/
+145
+public Matrix<Inputs, N1> calculate(Matrix<States, N1> r, Matrix<States, N1> nextR) {
+146
+// rₖ₊₁ = Arₖ + Buₖ
+147
+// Buₖ = rₖ₊₁ − Arₖ
+148
+// uₖ = B⁺(rₖ₊₁ − Arₖ)
+149
+m_uff = new Matrix<>(m_B.solve(nextR.minus(m_A.times(r))));
+150
+151
+m_r = nextR;
+152
+return m_uff;
+153
+}
+154
+}

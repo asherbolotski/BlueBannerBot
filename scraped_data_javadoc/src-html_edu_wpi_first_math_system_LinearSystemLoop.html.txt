@@ -1,0 +1,671 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.system;
+006
+007
+import edu.wpi.first.math.Matrix;
+008
+import edu.wpi.first.math.Num;
+009
+import edu.wpi.first.math.StateSpaceUtil;
+010
+import edu.wpi.first.math.controller.LinearPlantInversionFeedforward;
+011
+import edu.wpi.first.math.controller.LinearQuadraticRegulator;
+012
+import edu.wpi.first.math.estimator.KalmanFilter;
+013
+import edu.wpi.first.math.numbers.N1;
+014
+import java.util.function.Function;
+015
+import org.ejml.MatrixDimensionException;
+016
+import org.ejml.simple.SimpleMatrix;
+017
+018
+/**
+019
+* Combines a controller, feedforward, and observer for controlling a mechanism with full state
+020
+* feedback.
+021
+*
+022
+* <p>For everything in this file, "inputs" and "outputs" are defined from the perspective of the
+023
+* plant. This means U is an input and Y is an output (because you give the plant U (powers) and it
+024
+* gives you back a Y (sensor values)). This is the opposite of what they mean from the perspective
+025
+* of the controller (U is an output because that's what goes to the motors and Y is an input
+026
+* because that's what comes back from the sensors).
+027
+*
+028
+* <p>For more on the underlying math, read <a
+029
+* href="https://file.tavsys.net/control/controls-engineering-in-frc.pdf">https://file.tavsys.net/control/controls-engineering-in-frc.pdf</a>.
+030
+*
+031
+* @param <States> Number of states.
+032
+* @param <Inputs> Number of inputs.
+033
+* @param <Outputs> Number of outputs.
+034
+*/
+035
+public class LinearSystemLoop<States extends Num, Inputs extends Num, Outputs extends Num> {
+036
+private final LinearQuadraticRegulator<States, Inputs, Outputs> m_controller;
+037
+private final LinearPlantInversionFeedforward<States, Inputs, Outputs> m_feedforward;
+038
+private final KalmanFilter<States, Inputs, Outputs> m_observer;
+039
+private Matrix<States, N1> m_nextR;
+040
+private Function<Matrix<Inputs, N1>, Matrix<Inputs, N1>> m_clampFunction;
+041
+042
+/**
+043
+* Constructs a state-space loop with the given plant, controller, and observer. By default, the
+044
+* initial reference is all zeros. Users should call reset with the initial system state before
+045
+* enabling the loop. This constructor assumes that the input(s) to this system are voltage.
+046
+*
+047
+* @param plant State-space plant.
+048
+* @param controller State-space controller.
+049
+* @param observer State-space observer.
+050
+* @param maxVoltageVolts The maximum voltage that can be applied. Commonly 12.
+051
+* @param dtSeconds The nominal timestep.
+052
+*/
+053
+public LinearSystemLoop(
+054
+LinearSystem<States, Inputs, Outputs> plant,
+055
+LinearQuadraticRegulator<States, Inputs, Outputs> controller,
+056
+KalmanFilter<States, Inputs, Outputs> observer,
+057
+double maxVoltageVolts,
+058
+double dtSeconds) {
+059
+this(
+060
+controller,
+061
+new LinearPlantInversionFeedforward<>(plant, dtSeconds),
+062
+observer,
+063
+u -> StateSpaceUtil.desaturateInputVector(u, maxVoltageVolts));
+064
+}
+065
+066
+/**
+067
+* Constructs a state-space loop with the given plant, controller, and observer. By default, the
+068
+* initial reference is all zeros. Users should call reset with the initial system state before
+069
+* enabling the loop.
+070
+*
+071
+* @param plant State-space plant.
+072
+* @param controller State-space controller.
+073
+* @param observer State-space observer.
+074
+* @param clampFunction The function used to clamp the input U.
+075
+* @param dtSeconds The nominal timestep.
+076
+*/
+077
+public LinearSystemLoop(
+078
+LinearSystem<States, Inputs, Outputs> plant,
+079
+LinearQuadraticRegulator<States, Inputs, Outputs> controller,
+080
+KalmanFilter<States, Inputs, Outputs> observer,
+081
+Function<Matrix<Inputs, N1>, Matrix<Inputs, N1>> clampFunction,
+082
+double dtSeconds) {
+083
+this(
+084
+controller,
+085
+new LinearPlantInversionFeedforward<>(plant, dtSeconds),
+086
+observer,
+087
+clampFunction);
+088
+}
+089
+090
+/**
+091
+* Constructs a state-space loop with the given controller, feedforward and observer. By default,
+092
+* the initial reference is all zeros. Users should call reset with the initial system state
+093
+* before enabling the loop.
+094
+*
+095
+* @param controller State-space controller.
+096
+* @param feedforward Plant inversion feedforward.
+097
+* @param observer State-space observer.
+098
+* @param maxVoltageVolts The maximum voltage that can be applied. Assumes that the inputs are
+099
+*     voltages.
+100
+*/
+101
+public LinearSystemLoop(
+102
+LinearQuadraticRegulator<States, Inputs, Outputs> controller,
+103
+LinearPlantInversionFeedforward<States, Inputs, Outputs> feedforward,
+104
+KalmanFilter<States, Inputs, Outputs> observer,
+105
+double maxVoltageVolts) {
+106
+this(
+107
+controller,
+108
+feedforward,
+109
+observer,
+110
+u -> StateSpaceUtil.desaturateInputVector(u, maxVoltageVolts));
+111
+}
+112
+113
+/**
+114
+* Constructs a state-space loop with the given controller, feedforward, and observer. By default,
+115
+* the initial reference is all zeros. Users should call reset with the initial system state
+116
+* before enabling the loop.
+117
+*
+118
+* @param controller State-space controller.
+119
+* @param feedforward Plant inversion feedforward.
+120
+* @param observer State-space observer.
+121
+* @param clampFunction The function used to clamp the input U.
+122
+*/
+123
+public LinearSystemLoop(
+124
+LinearQuadraticRegulator<States, Inputs, Outputs> controller,
+125
+LinearPlantInversionFeedforward<States, Inputs, Outputs> feedforward,
+126
+KalmanFilter<States, Inputs, Outputs> observer,
+127
+Function<Matrix<Inputs, N1>, Matrix<Inputs, N1>> clampFunction) {
+128
+this.m_controller = controller;
+129
+this.m_feedforward = feedforward;
+130
+this.m_observer = observer;
+131
+this.m_clampFunction = clampFunction;
+132
+133
+m_nextR = new Matrix<>(new SimpleMatrix(controller.getK().getNumCols(), 1));
+134
+reset(m_nextR);
+135
+}
+136
+137
+/**
+138
+* Returns the observer's state estimate x-hat.
+139
+*
+140
+* @return the observer's state estimate x-hat.
+141
+*/
+142
+public Matrix<States, N1> getXHat() {
+143
+return getObserver().getXhat();
+144
+}
+145
+146
+/**
+147
+* Returns an element of the observer's state estimate x-hat.
+148
+*
+149
+* @param row Row of x-hat.
+150
+* @return the i-th element of the observer's state estimate x-hat.
+151
+*/
+152
+public double getXHat(int row) {
+153
+return getObserver().getXhat(row);
+154
+}
+155
+156
+/**
+157
+* Set the initial state estimate x-hat.
+158
+*
+159
+* @param xhat The initial state estimate x-hat.
+160
+*/
+161
+public void setXHat(Matrix<States, N1> xhat) {
+162
+getObserver().setXhat(xhat);
+163
+}
+164
+165
+/**
+166
+* Set an element of the initial state estimate x-hat.
+167
+*
+168
+* @param row Row of x-hat.
+169
+* @param value Value for element of x-hat.
+170
+*/
+171
+public void setXHat(int row, double value) {
+172
+getObserver().setXhat(row, value);
+173
+}
+174
+175
+/**
+176
+* Returns an element of the controller's next reference r.
+177
+*
+178
+* @param row Row of r.
+179
+* @return the element i of the controller's next reference r.
+180
+*/
+181
+public double getNextR(int row) {
+182
+return getNextR().get(row, 0);
+183
+}
+184
+185
+/**
+186
+* Returns the controller's next reference r.
+187
+*
+188
+* @return the controller's next reference r.
+189
+*/
+190
+public Matrix<States, N1> getNextR() {
+191
+return m_nextR;
+192
+}
+193
+194
+/**
+195
+* Set the next reference r.
+196
+*
+197
+* @param nextR Next reference.
+198
+*/
+199
+public void setNextR(Matrix<States, N1> nextR) {
+200
+m_nextR = nextR;
+201
+}
+202
+203
+/**
+204
+* Set the next reference r.
+205
+*
+206
+* @param nextR Next reference.
+207
+*/
+208
+public void setNextR(double... nextR) {
+209
+if (nextR.length != m_nextR.getNumRows()) {
+210
+throw new MatrixDimensionException(
+211
+String.format(
+212
+"The next reference does not have the "
+213
++ "correct number of entries! Expected %s, but got %s.",
+214
+m_nextR.getNumRows(), nextR.length));
+215
+}
+216
+m_nextR = new Matrix<>(new SimpleMatrix(m_nextR.getNumRows(), 1, true, nextR));
+217
+}
+218
+219
+/**
+220
+* Returns the controller's calculated control input u plus the calculated feedforward u_ff.
+221
+*
+222
+* @return the calculated control input u.
+223
+*/
+224
+public Matrix<Inputs, N1> getU() {
+225
+return clampInput(m_controller.getU().plus(m_feedforward.getUff()));
+226
+}
+227
+228
+/**
+229
+* Returns an element of the controller's calculated control input u.
+230
+*
+231
+* @param row Row of u.
+232
+* @return the calculated control input u at the row i.
+233
+*/
+234
+public double getU(int row) {
+235
+return getU().get(row, 0);
+236
+}
+237
+238
+/**
+239
+* Return the controller used internally.
+240
+*
+241
+* @return the controller used internally.
+242
+*/
+243
+public LinearQuadraticRegulator<States, Inputs, Outputs> getController() {
+244
+return m_controller;
+245
+}
+246
+247
+/**
+248
+* Return the feedforward used internally.
+249
+*
+250
+* @return the feedforward used internally.
+251
+*/
+252
+public LinearPlantInversionFeedforward<States, Inputs, Outputs> getFeedforward() {
+253
+return m_feedforward;
+254
+}
+255
+256
+/**
+257
+* Return the observer used internally.
+258
+*
+259
+* @return the observer used internally.
+260
+*/
+261
+public KalmanFilter<States, Inputs, Outputs> getObserver() {
+262
+return m_observer;
+263
+}
+264
+265
+/**
+266
+* Zeroes reference r and controller output u. The previous reference of the
+267
+* PlantInversionFeedforward and the initial state estimate of the KalmanFilter are set to the
+268
+* initial state provided.
+269
+*
+270
+* @param initialState The initial state.
+271
+*/
+272
+public final void reset(Matrix<States, N1> initialState) {
+273
+m_nextR.fill(0.0);
+274
+m_controller.reset();
+275
+m_feedforward.reset(initialState);
+276
+m_observer.setXhat(initialState);
+277
+}
+278
+279
+/**
+280
+* Returns difference between reference r and current state x-hat.
+281
+*
+282
+* @return The state error matrix.
+283
+*/
+284
+public Matrix<States, N1> getError() {
+285
+return getController().getR().minus(m_observer.getXhat());
+286
+}
+287
+288
+/**
+289
+* Returns difference between reference r and current state x-hat.
+290
+*
+291
+* @param index The index of the error matrix to return.
+292
+* @return The error at that index.
+293
+*/
+294
+public double getError(int index) {
+295
+return getController().getR().minus(m_observer.getXhat()).get(index, 0);
+296
+}
+297
+298
+/**
+299
+* Get the function used to clamp the input u.
+300
+*
+301
+* @return The clamping function.
+302
+*/
+303
+public Function<Matrix<Inputs, N1>, Matrix<Inputs, N1>> getClampFunction() {
+304
+return m_clampFunction;
+305
+}
+306
+307
+/**
+308
+* Set the clamping function used to clamp inputs.
+309
+*
+310
+* @param clampFunction The clamping function.
+311
+*/
+312
+public void setClampFunction(Function<Matrix<Inputs, N1>, Matrix<Inputs, N1>> clampFunction) {
+313
+this.m_clampFunction = clampFunction;
+314
+}
+315
+316
+/**
+317
+* Correct the state estimate x-hat using the measurements in y.
+318
+*
+319
+* @param y Measurement vector.
+320
+*/
+321
+public void correct(Matrix<Outputs, N1> y) {
+322
+getObserver().correct(getU(), y);
+323
+}
+324
+325
+/**
+326
+* Sets new controller output, projects model forward, and runs observer prediction.
+327
+*
+328
+* <p>After calling this, the user should send the elements of u to the actuators.
+329
+*
+330
+* @param dtSeconds Timestep for model update.
+331
+*/
+332
+public void predict(double dtSeconds) {
+333
+var u =
+334
+clampInput(
+335
+m_controller
+336
+.calculate(getObserver().getXhat(), m_nextR)
+337
+.plus(m_feedforward.calculate(m_nextR)));
+338
+getObserver().predict(u, dtSeconds);
+339
+}
+340
+341
+/**
+342
+* Clamp the input u to the min and max.
+343
+*
+344
+* @param unclampedU The input to clamp.
+345
+* @return The clamped input.
+346
+*/
+347
+public Matrix<Inputs, N1> clampInput(Matrix<Inputs, N1> unclampedU) {
+348
+return m_clampFunction.apply(unclampedU);
+349
+}
+350
+}

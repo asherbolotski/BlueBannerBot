@@ -1,0 +1,517 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.controller.proto.SimpleMotorFeedforwardProto;
+008
+import edu.wpi.first.math.controller.struct.SimpleMotorFeedforwardStruct;
+009
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+010
+import edu.wpi.first.util.struct.StructSerializable;
+011
+012
+/** A helper class that computes feedforward outputs for a simple permanent-magnet DC motor. */
+013
+public class SimpleMotorFeedforward implements ProtobufSerializable, StructSerializable {
+014
+/** The static gain, in volts. */
+015
+private double ks;
+016
+017
+/** The velocity gain, in V/(units/s). */
+018
+private double kv;
+019
+020
+/** The acceleration gain, in V/(units/s²). */
+021
+private double ka;
+022
+023
+/** The period, in seconds. */
+024
+private final double m_dt;
+025
+026
+/**
+027
+* Creates a new SimpleMotorFeedforward with the specified gains and period.
+028
+*
+029
+* <p>The units should be radians for angular systems and meters for linear systems.
+030
+*
+031
+* @param ks The static gain in volts.
+032
+* @param kv The velocity gain in V/(units/s).
+033
+* @param ka The acceleration gain in V/(units/s²).
+034
+* @param dtSeconds The period in seconds.
+035
+* @throws IllegalArgumentException for kv &lt; zero.
+036
+* @throws IllegalArgumentException for ka &lt; zero.
+037
+* @throws IllegalArgumentException for period &le; zero.
+038
+*/
+039
+public SimpleMotorFeedforward(double ks, double kv, double ka, double dtSeconds) {
+040
+this.ks = ks;
+041
+this.kv = kv;
+042
+this.ka = ka;
+043
+if (kv < 0.0) {
+044
+throw new IllegalArgumentException("kv must be a non-negative number, got " + kv + "!");
+045
+}
+046
+if (ka < 0.0) {
+047
+throw new IllegalArgumentException("ka must be a non-negative number, got " + ka + "!");
+048
+}
+049
+if (dtSeconds <= 0.0) {
+050
+throw new IllegalArgumentException(
+051
+"period must be a positive number, got " + dtSeconds + "!");
+052
+}
+053
+m_dt = dtSeconds;
+054
+}
+055
+056
+/**
+057
+* Creates a new SimpleMotorFeedforward with the specified gains and period. The period is
+058
+* defaulted to 20 ms.
+059
+*
+060
+* <p>The units should be radians for angular systems and meters for linear systems.
+061
+*
+062
+* @param ks The static gain in volts.
+063
+* @param kv The velocity gain in V/(units/s).
+064
+* @param ka The acceleration gain in V/(units/s²).
+065
+* @throws IllegalArgumentException for kv &lt; zero.
+066
+* @throws IllegalArgumentException for ka &lt; zero.
+067
+*/
+068
+public SimpleMotorFeedforward(double ks, double kv, double ka) {
+069
+this(ks, kv, ka, 0.020);
+070
+}
+071
+072
+/**
+073
+* Creates a new SimpleMotorFeedforward with the specified gains. Acceleration gain is defaulted
+074
+* to zero. The period is defaulted to 20 ms.
+075
+*
+076
+* <p>The units should be radians for angular systems and meters for linear systems.
+077
+*
+078
+* @param ks The static gain in volts.
+079
+* @param kv The velocity gain in V/(units/s).
+080
+* @throws IllegalArgumentException for kv &lt; zero.
+081
+*/
+082
+public SimpleMotorFeedforward(double ks, double kv) {
+083
+this(ks, kv, 0);
+084
+}
+085
+086
+/**
+087
+* Sets the static gain.
+088
+*
+089
+* @param ks The static gain in volts.
+090
+*/
+091
+public void setKs(double ks) {
+092
+this.ks = ks;
+093
+}
+094
+095
+/**
+096
+* Sets the velocity gain.
+097
+*
+098
+* @param kv The velocity gain in V/(units/s).
+099
+*/
+100
+public void setKv(double kv) {
+101
+this.kv = kv;
+102
+}
+103
+104
+/**
+105
+* Sets the acceleration gain.
+106
+*
+107
+* @param ka The acceleration gain in V/(units/s²).
+108
+*/
+109
+public void setKa(double ka) {
+110
+this.ka = ka;
+111
+}
+112
+113
+/**
+114
+* Returns the static gain in volts.
+115
+*
+116
+* @return The static gain in volts.
+117
+*/
+118
+public double getKs() {
+119
+return ks;
+120
+}
+121
+122
+/**
+123
+* Returns the velocity gain in V/(units/s).
+124
+*
+125
+* <p>The units should be radians for angular systems and meters for linear systems.
+126
+*
+127
+* @return The velocity gain in V/(units/s).
+128
+*/
+129
+public double getKv() {
+130
+return kv;
+131
+}
+132
+133
+/**
+134
+* Returns the acceleration gain in V/(units/s²).
+135
+*
+136
+* <p>The units should be radians for angular systems and meters for linear systems.
+137
+*
+138
+* @return The acceleration gain in V/(units/s²).
+139
+*/
+140
+public double getKa() {
+141
+return ka;
+142
+}
+143
+144
+/**
+145
+* Returns the period in seconds.
+146
+*
+147
+* @return The period in seconds.
+148
+*/
+149
+public double getDt() {
+150
+return m_dt;
+151
+}
+152
+153
+/**
+154
+* Calculates the feedforward from the gains and setpoints assuming continuous control.
+155
+*
+156
+* @param velocity The velocity setpoint.
+157
+* @param acceleration The acceleration setpoint.
+158
+* @return The computed feedforward.
+159
+* @deprecated Use {@link #calculateWithVelocities(double, double)} instead.
+160
+*/
+161
+@SuppressWarnings("removal")
+162
+@Deprecated(forRemoval = true, since = "2025")
+163
+public double calculate(double velocity, double acceleration) {
+164
+return ks * Math.signum(velocity) + kv * velocity + ka * acceleration;
+165
+}
+166
+167
+/**
+168
+* Calculates the feedforward from the gains and velocity setpoint assuming continuous control
+169
+* (acceleration is assumed to be zero).
+170
+*
+171
+* @param velocity The velocity setpoint.
+172
+* @return The computed feedforward.
+173
+*/
+174
+public double calculate(double velocity) {
+175
+return calculate(velocity, 0);
+176
+}
+177
+178
+/**
+179
+* Calculates the feedforward from the gains and setpoints assuming discrete control.
+180
+*
+181
+* <p>Note this method is inaccurate when the velocity crosses 0.
+182
+*
+183
+* @param currentVelocity The current velocity setpoint.
+184
+* @param nextVelocity The next velocity setpoint.
+185
+* @return The computed feedforward.
+186
+*/
+187
+public double calculateWithVelocities(double currentVelocity, double nextVelocity) {
+188
+// See wpimath/algorithms.md#Simple_motor_feedforward for derivation
+189
+if (ka < 1e-9) {
+190
+return ks * Math.signum(nextVelocity) + kv * nextVelocity;
+191
+} else {
+192
+double A = -kv / ka;
+193
+double B = 1.0 / ka;
+194
+double A_d = Math.exp(A * m_dt);
+195
+double B_d = A > -1e-9 ? B * m_dt : 1.0 / A * (A_d - 1.0) * B;
+196
+return ks * Math.signum(currentVelocity) + 1.0 / B_d * (nextVelocity - A_d * currentVelocity);
+197
+}
+198
+}
+199
+200
+/**
+201
+* Calculates the maximum achievable velocity given a maximum voltage supply and an acceleration.
+202
+* Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+203
+* simultaneously achievable - enter the acceleration constraint, and this will give you a
+204
+* simultaneously-achievable velocity constraint.
+205
+*
+206
+* <p>The units should be radians for angular systems and meters for linear systems.
+207
+*
+208
+* @param maxVoltage The maximum voltage that can be supplied to the motor, in volts.
+209
+* @param acceleration The acceleration of the motor, in (units/s²).
+210
+* @return The maximum possible velocity in (units/s) at the given acceleration.
+211
+*/
+212
+public double maxAchievableVelocity(double maxVoltage, double acceleration) {
+213
+// Assume max velocity is positive
+214
+return (maxVoltage - ks - acceleration * ka) / kv;
+215
+}
+216
+217
+/**
+218
+* Calculates the minimum achievable velocity given a maximum voltage supply and an acceleration.
+219
+* Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+220
+* simultaneously achievable - enter the acceleration constraint, and this will give you a
+221
+* simultaneously-achievable velocity constraint.
+222
+*
+223
+* <p>The units should be radians for angular systems and meters for linear systems.
+224
+*
+225
+* @param maxVoltage The maximum voltage that can be supplied to the motor, in volts.
+226
+* @param acceleration The acceleration of the motor, in (units/s²).
+227
+* @return The maximum possible velocity in (units/s) at the given acceleration.
+228
+*/
+229
+public double minAchievableVelocity(double maxVoltage, double acceleration) {
+230
+// Assume min velocity is negative, ks flips sign
+231
+return (-maxVoltage + ks - acceleration * ka) / kv;
+232
+}
+233
+234
+/**
+235
+* Calculates the maximum achievable acceleration given a maximum voltage supply and a velocity.
+236
+* Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+237
+* simultaneously achievable - enter the velocity constraint, and this will give you a
+238
+* simultaneously-achievable acceleration constraint.
+239
+*
+240
+* <p>The units should be radians for angular systems and meters for linear systems.
+241
+*
+242
+* @param maxVoltage The maximum voltage that can be supplied to the motor, in volts.
+243
+* @param velocity The velocity of the motor, in (units/s).
+244
+* @return The maximum possible acceleration in (units/s²) at the given velocity.
+245
+*/
+246
+public double maxAchievableAcceleration(double maxVoltage, double velocity) {
+247
+return (maxVoltage - ks * Math.signum(velocity) - velocity * kv) / ka;
+248
+}
+249
+250
+/**
+251
+* Calculates the minimum achievable acceleration given a maximum voltage supply and a velocity.
+252
+* Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+253
+* simultaneously achievable - enter the velocity constraint, and this will give you a
+254
+* simultaneously-achievable acceleration constraint.
+255
+*
+256
+* <p>The units should be radians for angular systems and meters for linear systems.
+257
+*
+258
+* @param maxVoltage The maximum voltage that can be supplied to the motor, in volts.
+259
+* @param velocity The velocity of the motor, in (units/s).
+260
+* @return The maximum possible acceleration in (units/s²) at the given velocity.
+261
+*/
+262
+public double minAchievableAcceleration(double maxVoltage, double velocity) {
+263
+return maxAchievableAcceleration(-maxVoltage, velocity);
+264
+}
+265
+266
+/** SimpleMotorFeedforward struct for serialization. */
+267
+public static final SimpleMotorFeedforwardStruct struct = new SimpleMotorFeedforwardStruct();
+268
+269
+/** SimpleMotorFeedforward protobuf for serialization. */
+270
+public static final SimpleMotorFeedforwardProto proto = new SimpleMotorFeedforwardProto();
+271
+}

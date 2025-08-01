@@ -1,0 +1,234 @@
+Package
+edu.wpi.first.math.estimator
+Class KalmanFilterLatencyCompensator<S extends
+Num
+,
+I extends
+Num
+,
+O extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.estimator.KalmanFilterLatencyCompensator<S,
+I,
+O>
+Type Parameters:
+S
+- The number of states.
+I
+- The number of inputs.
+O
+- The number of outputs.
+public class
+KalmanFilterLatencyCompensator
+<S extends
+Num
+,
+I extends
+Num
+,
+O extends
+Num
+>
+extends
+Object
+This class incorporates time-delayed measurements into a Kalman filter's state estimate.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+final class
+KalmanFilterLatencyCompensator.ObserverSnapshot
+This class contains all the information about our observer at a given time.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+addObserverState
+(
+KalmanTypeFilter
+<
+S
+,
+I
+,
+O
+> observer,
+Matrix
+<
+I
+,
+N1
+> u,
+Matrix
+<
+O
+,
+N1
+> localY,
+ double timestampSeconds)
+Add past observer states to the observer snapshots list.
+<R extends
+Num
+>
+void
+applyPastGlobalMeasurement
+(
+Nat
+<R> rows,
+KalmanTypeFilter
+<
+S
+,
+I
+,
+O
+> observer,
+ double nominalDtSeconds,
+Matrix
+<R,
+N1
+> y,
+BiConsumer
+<
+Matrix
+<
+I
+,
+N1
+>,
+Matrix
+<R,
+N1
+>> globalMeasurementCorrect,
+ double timestampSeconds)
+Add past global measurements (such as from vision)to the estimator.
+void
+reset
+()
+Clears the observer snapshot buffer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+reset
+public
+void
+reset
+()
+Clears the observer snapshot buffer.
+addObserverState
+public
+void
+addObserverState
+(
+KalmanTypeFilter
+<
+S
+,
+I
+,
+O
+> observer,
+Matrix
+<
+I
+,
+N1
+> u,
+Matrix
+<
+O
+,
+N1
+> localY,
+ double timestampSeconds)
+Add past observer states to the observer snapshots list.
+Parameters:
+observer
+- The observer.
+u
+- The input at the timestamp.
+localY
+- The local output at the timestamp
+timestampSeconds
+- The timestamp of the state.
+applyPastGlobalMeasurement
+public
+<R extends
+Num
+>
+void
+applyPastGlobalMeasurement
+(
+Nat
+<R> rows,
+KalmanTypeFilter
+<
+S
+,
+I
+,
+O
+> observer,
+ double nominalDtSeconds,
+Matrix
+<R,
+N1
+> y,
+BiConsumer
+<
+Matrix
+<
+I
+,
+N1
+>,
+Matrix
+<R,
+N1
+>> globalMeasurementCorrect,
+ double timestampSeconds)
+Add past global measurements (such as from vision)to the estimator.
+Type Parameters:
+R
+- The rows in the global measurement vector.
+Parameters:
+rows
+- The rows in the global measurement vector.
+observer
+- The observer to apply the past global measurement.
+nominalDtSeconds
+- The nominal timestep.
+y
+- The measurement.
+globalMeasurementCorrect
+- The function take calls correct() on the observer.
+timestampSeconds
+- The timestamp of the measurement.

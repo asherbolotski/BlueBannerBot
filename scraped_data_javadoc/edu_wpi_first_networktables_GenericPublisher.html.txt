@@ -1,0 +1,1178 @@
+Package
+edu.wpi.first.networktables
+Interface GenericPublisher
+All Superinterfaces:
+AutoCloseable
+,
+Consumer
+<
+NetworkTableValue
+>
+,
+Publisher
+,
+PubSub
+All Known Subinterfaces:
+GenericEntry
+public interface
+GenericPublisher
+extends
+Publisher
+,
+Consumer
+<
+NetworkTableValue
+>
+NetworkTables generic publisher.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default void
+accept
+(
+NetworkTableValue
+value)
+Topic
+getTopic
+()
+Get the corresponding topic.
+boolean
+set
+(
+NetworkTableValue
+value)
+Publish a new value.
+default boolean
+setBoolean
+(boolean value)
+Publish a new value.
+boolean
+setBoolean
+(boolean value,
+ long time)
+Publish a new value.
+default boolean
+setBooleanArray
+(boolean[] value)
+Publish a new value.
+boolean
+setBooleanArray
+(boolean[] value,
+ long time)
+Publish a new value.
+default boolean
+setBooleanArray
+(
+Boolean
+[] value)
+Publish a new value.
+boolean
+setBooleanArray
+(
+Boolean
+[] value,
+ long time)
+Publish a new value.
+boolean
+setDefault
+(
+NetworkTableValue
+defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultBoolean
+(boolean defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultBooleanArray
+(boolean[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultBooleanArray
+(
+Boolean
+[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultDouble
+(double defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultDoubleArray
+(double[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultDoubleArray
+(
+Double
+[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultFloat
+(float defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultFloatArray
+(float[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultFloatArray
+(
+Float
+[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultInteger
+(long defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultIntegerArray
+(long[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultIntegerArray
+(
+Long
+[] defaultValue)
+Sets the entry's value if it does not exist.
+default boolean
+setDefaultRaw
+(byte[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultRaw
+(byte[] defaultValue,
+ int start,
+ int len)
+Sets the entry's value if it does not exist.
+default boolean
+setDefaultRaw
+(
+ByteBuffer
+defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultRaw
+(
+ByteBuffer
+defaultValue,
+ int start,
+ int len)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultString
+(
+String
+defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultStringArray
+(
+String
+[] defaultValue)
+Sets the entry's value if it does not exist.
+boolean
+setDefaultValue
+(
+Object
+defaultValue)
+Sets the entry's value if it does not exist.
+default boolean
+setDouble
+(double value)
+Publish a new value.
+boolean
+setDouble
+(double value,
+ long time)
+Publish a new value.
+default boolean
+setDoubleArray
+(double[] value)
+Publish a new value.
+boolean
+setDoubleArray
+(double[] value,
+ long time)
+Publish a new value.
+default boolean
+setDoubleArray
+(
+Double
+[] value)
+Publish a new value.
+boolean
+setDoubleArray
+(
+Double
+[] value,
+ long time)
+Publish a new value.
+default boolean
+setFloat
+(float value)
+Publish a new value.
+boolean
+setFloat
+(float value,
+ long time)
+Publish a new value.
+default boolean
+setFloatArray
+(float[] value)
+Publish a new value.
+boolean
+setFloatArray
+(float[] value,
+ long time)
+Publish a new value.
+default boolean
+setFloatArray
+(
+Float
+[] value)
+Publish a new value.
+boolean
+setFloatArray
+(
+Float
+[] value,
+ long time)
+Publish a new value.
+default boolean
+setInteger
+(long value)
+Publish a new value.
+boolean
+setInteger
+(long value,
+ long time)
+Publish a new value.
+default boolean
+setIntegerArray
+(long[] value)
+Publish a new value.
+boolean
+setIntegerArray
+(long[] value,
+ long time)
+Publish a new value.
+default boolean
+setIntegerArray
+(
+Long
+[] value)
+Publish a new value.
+boolean
+setIntegerArray
+(
+Long
+[] value,
+ long time)
+Publish a new value.
+default boolean
+setRaw
+(byte[] value)
+Publish a new value.
+default boolean
+setRaw
+(byte[] value,
+ int start,
+ int len)
+Publish a new value.
+boolean
+setRaw
+(byte[] value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+default boolean
+setRaw
+(byte[] value,
+ long time)
+Publish a new value.
+default boolean
+setRaw
+(
+ByteBuffer
+value)
+Publish a new value.
+default boolean
+setRaw
+(
+ByteBuffer
+value,
+ int start,
+ int len)
+Publish a new value.
+boolean
+setRaw
+(
+ByteBuffer
+value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+default boolean
+setRaw
+(
+ByteBuffer
+value,
+ long time)
+Publish a new value.
+default boolean
+setString
+(
+String
+value)
+Publish a new value.
+boolean
+setString
+(
+String
+value,
+ long time)
+Publish a new value.
+default boolean
+setStringArray
+(
+String
+[] value)
+Publish a new value.
+boolean
+setStringArray
+(
+String
+[] value,
+ long time)
+Publish a new value.
+default boolean
+setValue
+(
+Object
+value)
+Publish a new value.
+boolean
+setValue
+(
+Object
+value,
+ long time)
+Publish a new value.
+Methods inherited from interface java.util.function.
+Consumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Method Details
+getTopic
+Topic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+set
+boolean
+set
+(
+NetworkTableValue
+value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setValue
+default
+boolean
+setValue
+(
+Object
+value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+Throws:
+IllegalArgumentException
+- if the value is not a known type
+setValue
+boolean
+setValue
+(
+Object
+value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+Throws:
+IllegalArgumentException
+- if the value is not a known type
+setBoolean
+default
+boolean
+setBoolean
+(boolean value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setBoolean
+boolean
+setBoolean
+(boolean value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setInteger
+default
+boolean
+setInteger
+(long value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setInteger
+boolean
+setInteger
+(long value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setFloat
+default
+boolean
+setFloat
+(float value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setFloat
+boolean
+setFloat
+(float value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setDouble
+default
+boolean
+setDouble
+(double value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setDouble
+boolean
+setDouble
+(double value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setString
+default
+boolean
+setString
+(
+String
+value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setString
+boolean
+setString
+(
+String
+value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setRaw
+default
+boolean
+setRaw
+(byte[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setRaw
+default
+boolean
+setRaw
+(
+ByteBuffer
+value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setRaw
+default
+boolean
+setRaw
+(byte[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setRaw
+default
+boolean
+setRaw
+(
+ByteBuffer
+value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish; will send from value.position() to value.limit()
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setRaw
+default
+boolean
+setRaw
+(byte[] value,
+ int start,
+ int len)
+Publish a new value.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.length - start)
+Returns:
+False if the topic already exists with a different type
+setRaw
+boolean
+setRaw
+(byte[] value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.length - start)
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setRaw
+default
+boolean
+setRaw
+(
+ByteBuffer
+value,
+ int start,
+ int len)
+Publish a new value.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.capacity() - start)
+Returns:
+False if the topic already exists with a different type
+setRaw
+boolean
+setRaw
+(
+ByteBuffer
+value,
+ int start,
+ int len,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.capacity() - start)
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setBooleanArray
+default
+boolean
+setBooleanArray
+(boolean[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setBooleanArray
+boolean
+setBooleanArray
+(boolean[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setBooleanArray
+default
+boolean
+setBooleanArray
+(
+Boolean
+[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setBooleanArray
+boolean
+setBooleanArray
+(
+Boolean
+[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setIntegerArray
+default
+boolean
+setIntegerArray
+(long[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setIntegerArray
+boolean
+setIntegerArray
+(long[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setIntegerArray
+default
+boolean
+setIntegerArray
+(
+Long
+[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setIntegerArray
+boolean
+setIntegerArray
+(
+Long
+[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setFloatArray
+default
+boolean
+setFloatArray
+(float[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setFloatArray
+boolean
+setFloatArray
+(float[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setFloatArray
+default
+boolean
+setFloatArray
+(
+Float
+[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setFloatArray
+boolean
+setFloatArray
+(
+Float
+[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setDoubleArray
+default
+boolean
+setDoubleArray
+(double[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setDoubleArray
+boolean
+setDoubleArray
+(double[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setDoubleArray
+default
+boolean
+setDoubleArray
+(
+Double
+[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setDoubleArray
+boolean
+setDoubleArray
+(
+Double
+[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setStringArray
+default
+boolean
+setStringArray
+(
+String
+[] value)
+Publish a new value.
+Parameters:
+value
+- value to publish
+Returns:
+False if the topic already exists with a different type
+setStringArray
+boolean
+setStringArray
+(
+String
+[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+Returns:
+False if the topic already exists with a different type
+setDefault
+boolean
+setDefault
+(
+NetworkTableValue
+defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultValue
+boolean
+setDefaultValue
+(
+Object
+defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+Throws:
+IllegalArgumentException
+- if the value is not a known type
+setDefaultBoolean
+boolean
+setDefaultBoolean
+(boolean defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultInteger
+boolean
+setDefaultInteger
+(long defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultFloat
+boolean
+setDefaultFloat
+(float defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultDouble
+boolean
+setDefaultDouble
+(double defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultString
+boolean
+setDefaultString
+(
+String
+defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultRaw
+default
+boolean
+setDefaultRaw
+(byte[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultRaw
+default
+boolean
+setDefaultRaw
+(
+ByteBuffer
+defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set; will send from defaultValue.position() to
+                     defaultValue.limit()
+Returns:
+False if the entry exists with a different type
+setDefaultRaw
+boolean
+setDefaultRaw
+(byte[] defaultValue,
+ int start,
+ int len)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.length - start)
+Returns:
+False if the entry exists with a different type
+setDefaultRaw
+boolean
+setDefaultRaw
+(
+ByteBuffer
+defaultValue,
+ int start,
+ int len)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+start
+- Start position of data (in buffer)
+len
+- Length of data (must be less than or equal to value.capacity() - start)
+Returns:
+False if the entry exists with a different type
+setDefaultBooleanArray
+boolean
+setDefaultBooleanArray
+(boolean[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultBooleanArray
+boolean
+setDefaultBooleanArray
+(
+Boolean
+[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultIntegerArray
+boolean
+setDefaultIntegerArray
+(long[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultIntegerArray
+boolean
+setDefaultIntegerArray
+(
+Long
+[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultFloatArray
+boolean
+setDefaultFloatArray
+(float[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultFloatArray
+boolean
+setDefaultFloatArray
+(
+Float
+[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultDoubleArray
+boolean
+setDefaultDoubleArray
+(double[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultDoubleArray
+boolean
+setDefaultDoubleArray
+(
+Double
+[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+setDefaultStringArray
+boolean
+setDefaultStringArray
+(
+String
+[] defaultValue)
+Sets the entry's value if it does not exist.
+Parameters:
+defaultValue
+- the default value to set
+Returns:
+False if the entry exists with a different type
+accept
+default
+void
+accept
+(
+NetworkTableValue
+value)
+Specified by:
+accept
+in interface
+Consumer
+<
+NetworkTableValue
+>

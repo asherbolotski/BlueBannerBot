@@ -1,0 +1,607 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+008
+import edu.wpi.first.hal.HAL;
+009
+import edu.wpi.first.hal.SimDevice;
+010
+import edu.wpi.first.hal.SimDouble;
+011
+import edu.wpi.first.hal.SimEnum;
+012
+import edu.wpi.first.networktables.DoublePublisher;
+013
+import edu.wpi.first.networktables.DoubleTopic;
+014
+import edu.wpi.first.networktables.NTSendable;
+015
+import edu.wpi.first.networktables.NTSendableBuilder;
+016
+import edu.wpi.first.util.sendable.SendableRegistry;
+017
+import java.nio.ByteBuffer;
+018
+import java.nio.ByteOrder;
+019
+020
+/**
+021
+* ADXL362 SPI Accelerometer.
+022
+*
+023
+* <p>This class allows access to an Analog Devices ADXL362 3-axis accelerometer.
+024
+*/
+025
+public class ADXL362 implements NTSendable, AutoCloseable {
+026
+private static final byte kRegWrite = 0x0A;
+027
+private static final byte kRegRead = 0x0B;
+028
+029
+private static final byte kPartIdRegister = 0x02;
+030
+private static final byte kDataRegister = 0x0E;
+031
+private static final byte kFilterCtlRegister = 0x2C;
+032
+private static final byte kPowerCtlRegister = 0x2D;
+033
+034
+private static final byte kFilterCtl_Range2G = 0x00;
+035
+private static final byte kFilterCtl_Range4G = 0x40;
+036
+private static final byte kFilterCtl_Range8G = (byte) 0x80;
+037
+private static final byte kFilterCtl_ODR_100Hz = 0x03;
+038
+039
+private static final byte kPowerCtl_UltraLowNoise = 0x20;
+040
+041
+// @SuppressWarnings("PMD.UnusedPrivateField")
+042
+// private static final byte kPowerCtl_AutoSleep = 0x04;
+043
+044
+private static final byte kPowerCtl_Measure = 0x02;
+045
+046
+/** Accelerometer range. */
+047
+public enum Range {
+048
+/** 2 Gs max. */
+049
+k2G,
+050
+/** 4 Gs max. */
+051
+k4G,
+052
+/** 8 Gs max. */
+053
+k8G
+054
+}
+055
+056
+/** Accelerometer axes. */
+057
+public enum Axes {
+058
+/** X axis. */
+059
+kX((byte) 0x00),
+060
+/** Y axis. */
+061
+kY((byte) 0x02),
+062
+/** Z axis. */
+063
+kZ((byte) 0x04);
+064
+065
+/** Axis value. */
+066
+public final byte value;
+067
+068
+Axes(byte value) {
+069
+this.value = value;
+070
+}
+071
+}
+072
+073
+/** Container type for accelerations from all axes. */
+074
+@SuppressWarnings("MemberName")
+075
+public static class AllAxes {
+076
+/** Acceleration along the X axis in g-forces. */
+077
+public double XAxis;
+078
+079
+/** Acceleration along the Y axis in g-forces. */
+080
+public double YAxis;
+081
+082
+/** Acceleration along the Z axis in g-forces. */
+083
+public double ZAxis;
+084
+085
+/** Default constructor. */
+086
+public AllAxes() {}
+087
+}
+088
+089
+private SPI m_spi;
+090
+091
+private SimDevice m_simDevice;
+092
+private SimEnum m_simRange;
+093
+private SimDouble m_simX;
+094
+private SimDouble m_simY;
+095
+private SimDouble m_simZ;
+096
+097
+private double m_gsPerLSB;
+098
+099
+/**
+100
+* Constructor. Uses the onboard CS1.
+101
+*
+102
+* @param range The range (+ or -) that the accelerometer will measure.
+103
+*/
+104
+public ADXL362(Range range) {
+105
+this(SPI.Port.kOnboardCS1, range);
+106
+}
+107
+108
+/**
+109
+* Constructor.
+110
+*
+111
+* @param port The SPI port that the accelerometer is connected to
+112
+* @param range The range (+ or -) that the accelerometer will measure.
+113
+*/
+114
+@SuppressWarnings("this-escape")
+115
+public ADXL362(SPI.Port port, Range range) {
+116
+m_spi = new SPI(port);
+117
+118
+// simulation
+119
+m_simDevice = SimDevice.create("Accel:ADXL362", port.value);
+120
+if (m_simDevice != null) {
+121
+m_simRange =
+122
+m_simDevice.createEnumDouble(
+123
+"range",
+124
+SimDevice.Direction.kOutput,
+125
+new String[] {"2G", "4G", "8G", "16G"},
+126
+new double[] {2.0, 4.0, 8.0, 16.0},
+127
+0);
+128
+m_simX = m_simDevice.createDouble("x", SimDevice.Direction.kInput, 0.0);
+129
+m_simY = m_simDevice.createDouble("y", SimDevice.Direction.kInput, 0.0);
+130
+m_simZ = m_simDevice.createDouble("z", SimDevice.Direction.kInput, 0.0);
+131
+}
+132
+133
+m_spi.setClockRate(3000000);
+134
+m_spi.setMode(SPI.Mode.kMode3);
+135
+m_spi.setChipSelectActiveLow();
+136
+137
+ByteBuffer transferBuffer = ByteBuffer.allocate(3);
+138
+if (m_simDevice == null) {
+139
+// Validate the part ID
+140
+transferBuffer.put(0, kRegRead);
+141
+transferBuffer.put(1, kPartIdRegister);
+142
+m_spi.transaction(transferBuffer, transferBuffer, 3);
+143
+if (transferBuffer.get(2) != (byte) 0xF2) {
+144
+m_spi.close();
+145
+m_spi = null;
+146
+DriverStation.reportError("could not find ADXL362 on SPI port " + port.value, false);
+147
+return;
+148
+}
+149
+}
+150
+151
+setRange(range);
+152
+153
+// Turn on the measurements
+154
+transferBuffer.put(0, kRegWrite);
+155
+transferBuffer.put(1, kPowerCtlRegister);
+156
+transferBuffer.put(2, (byte) (kPowerCtl_Measure | kPowerCtl_UltraLowNoise));
+157
+m_spi.write(transferBuffer, 3);
+158
+159
+HAL.report(tResourceType.kResourceType_ADXL362, port.value + 1);
+160
+SendableRegistry.addLW(this, "ADXL362", port.value);
+161
+}
+162
+163
+/**
+164
+* Returns the SPI port.
+165
+*
+166
+* @return The SPI port.
+167
+*/
+168
+public int getPort() {
+169
+return m_spi.getPort();
+170
+}
+171
+172
+@Override
+173
+public void close() {
+174
+SendableRegistry.remove(this);
+175
+if (m_spi != null) {
+176
+m_spi.close();
+177
+m_spi = null;
+178
+}
+179
+if (m_simDevice != null) {
+180
+m_simDevice.close();
+181
+m_simDevice = null;
+182
+}
+183
+}
+184
+185
+/**
+186
+* Set the measuring range of the accelerometer.
+187
+*
+188
+* @param range The maximum acceleration, positive or negative, that the accelerometer will
+189
+*     measure.
+190
+*/
+191
+public final void setRange(Range range) {
+192
+if (m_spi == null) {
+193
+return;
+194
+}
+195
+196
+final byte value =
+197
+switch (range) {
+198
+case k2G -> {
+199
+m_gsPerLSB = 0.001;
+200
+yield kFilterCtl_Range2G;
+201
+}
+202
+case k4G -> {
+203
+m_gsPerLSB = 0.002;
+204
+yield kFilterCtl_Range4G;
+205
+}
+206
+case k8G -> {
+207
+m_gsPerLSB = 0.004;
+208
+yield kFilterCtl_Range8G;
+209
+}
+210
+};
+211
+212
+// Specify the data format to read
+213
+byte[] commands =
+214
+new byte[] {kRegWrite, kFilterCtlRegister, (byte) (kFilterCtl_ODR_100Hz | value)};
+215
+m_spi.write(commands, commands.length);
+216
+217
+if (m_simRange != null) {
+218
+m_simRange.set(value);
+219
+}
+220
+}
+221
+222
+/**
+223
+* Returns the acceleration along the X axis in g-forces.
+224
+*
+225
+* @return The acceleration along the X axis in g-forces.
+226
+*/
+227
+public double getX() {
+228
+return getAcceleration(Axes.kX);
+229
+}
+230
+231
+/**
+232
+* Returns the acceleration along the Y axis in g-forces.
+233
+*
+234
+* @return The acceleration along the Y axis in g-forces.
+235
+*/
+236
+public double getY() {
+237
+return getAcceleration(Axes.kY);
+238
+}
+239
+240
+/**
+241
+* Returns the acceleration along the Z axis in g-forces.
+242
+*
+243
+* @return The acceleration along the Z axis in g-forces.
+244
+*/
+245
+public double getZ() {
+246
+return getAcceleration(Axes.kZ);
+247
+}
+248
+249
+/**
+250
+* Get the acceleration of one axis in Gs.
+251
+*
+252
+* @param axis The axis to read from.
+253
+* @return Acceleration of the ADXL362 in Gs.
+254
+*/
+255
+public double getAcceleration(ADXL362.Axes axis) {
+256
+if (axis == Axes.kX && m_simX != null) {
+257
+return m_simX.get();
+258
+}
+259
+if (axis == Axes.kY && m_simY != null) {
+260
+return m_simY.get();
+261
+}
+262
+if (axis == Axes.kZ && m_simZ != null) {
+263
+return m_simZ.get();
+264
+}
+265
+if (m_spi == null) {
+266
+return 0.0;
+267
+}
+268
+ByteBuffer transferBuffer = ByteBuffer.allocate(4);
+269
+transferBuffer.put(0, kRegRead);
+270
+transferBuffer.put(1, (byte) (kDataRegister + axis.value));
+271
+m_spi.transaction(transferBuffer, transferBuffer, 4);
+272
+// Sensor is little endian
+273
+transferBuffer.order(ByteOrder.LITTLE_ENDIAN);
+274
+275
+return transferBuffer.getShort(2) * m_gsPerLSB;
+276
+}
+277
+278
+/**
+279
+* Get the acceleration of all axes in Gs.
+280
+*
+281
+* @return An object containing the acceleration measured on each axis of the ADXL362 in Gs.
+282
+*/
+283
+public ADXL362.AllAxes getAccelerations() {
+284
+ADXL362.AllAxes data = new ADXL362.AllAxes();
+285
+if (m_simX != null && m_simY != null && m_simZ != null) {
+286
+data.XAxis = m_simX.get();
+287
+data.YAxis = m_simY.get();
+288
+data.ZAxis = m_simZ.get();
+289
+return data;
+290
+}
+291
+if (m_spi != null) {
+292
+ByteBuffer dataBuffer = ByteBuffer.allocate(8);
+293
+// Select the data address.
+294
+dataBuffer.put(0, kRegRead);
+295
+dataBuffer.put(1, kDataRegister);
+296
+m_spi.transaction(dataBuffer, dataBuffer, 8);
+297
+// Sensor is little endian... swap bytes
+298
+dataBuffer.order(ByteOrder.LITTLE_ENDIAN);
+299
+300
+data.XAxis = dataBuffer.getShort(2) * m_gsPerLSB;
+301
+data.YAxis = dataBuffer.getShort(4) * m_gsPerLSB;
+302
+data.ZAxis = dataBuffer.getShort(6) * m_gsPerLSB;
+303
+}
+304
+return data;
+305
+}
+306
+307
+@Override
+308
+public void initSendable(NTSendableBuilder builder) {
+309
+builder.setSmartDashboardType("3AxisAccelerometer");
+310
+DoublePublisher pubX = new DoubleTopic(builder.getTopic("X")).publish();
+311
+DoublePublisher pubY = new DoubleTopic(builder.getTopic("Y")).publish();
+312
+DoublePublisher pubZ = new DoubleTopic(builder.getTopic("Z")).publish();
+313
+builder.addCloseable(pubX);
+314
+builder.addCloseable(pubY);
+315
+builder.addCloseable(pubZ);
+316
+builder.setUpdateTable(
+317
+() -> {
+318
+AllAxes data = getAccelerations();
+319
+pubX.set(data.XAxis);
+320
+pubY.set(data.YAxis);
+321
+pubZ.set(data.ZAxis);
+322
+});
+323
+}
+324
+}

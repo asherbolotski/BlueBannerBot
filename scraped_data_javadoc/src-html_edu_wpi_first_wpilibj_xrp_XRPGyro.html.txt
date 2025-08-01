@@ -1,0 +1,345 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.xrp;
+006
+007
+import edu.wpi.first.hal.SimDevice;
+008
+import edu.wpi.first.hal.SimDevice.Direction;
+009
+import edu.wpi.first.hal.SimDouble;
+010
+import edu.wpi.first.math.geometry.Rotation2d;
+011
+012
+/**
+013
+* Use a rate gyro to return the robots heading relative to a starting position.
+014
+*
+015
+* <p>This class is for the XRP onboard gyro, and will only work in simulation/XRP mode. Only one
+016
+* instance of a XRPGyro is supported.
+017
+*/
+018
+public class XRPGyro {
+019
+private final SimDevice m_simDevice;
+020
+private final SimDouble m_simRateX;
+021
+private final SimDouble m_simRateY;
+022
+private final SimDouble m_simRateZ;
+023
+private final SimDouble m_simAngleX;
+024
+private final SimDouble m_simAngleY;
+025
+private final SimDouble m_simAngleZ;
+026
+027
+private double m_angleXOffset;
+028
+private double m_angleYOffset;
+029
+private double m_angleZOffset;
+030
+031
+/**
+032
+* Constructs an XRPGyro.
+033
+*
+034
+* <p>Only one instance of a XRPGyro is supported.
+035
+*/
+036
+public XRPGyro() {
+037
+m_simDevice = SimDevice.create("Gyro:XRPGyro");
+038
+if (m_simDevice != null) {
+039
+m_simDevice.createBoolean("init", Direction.kOutput, true);
+040
+m_simRateX = m_simDevice.createDouble("rate_x", Direction.kInput, 0.0);
+041
+m_simRateY = m_simDevice.createDouble("rate_y", Direction.kInput, 0.0);
+042
+m_simRateZ = m_simDevice.createDouble("rate_z", Direction.kInput, 0.0);
+043
+044
+m_simAngleX = m_simDevice.createDouble("angle_x", Direction.kInput, 0.0);
+045
+m_simAngleY = m_simDevice.createDouble("angle_y", Direction.kInput, 0.0);
+046
+m_simAngleZ = m_simDevice.createDouble("angle_z", Direction.kInput, 0.0);
+047
+} else {
+048
+m_simRateX = null;
+049
+m_simRateY = null;
+050
+m_simRateZ = null;
+051
+m_simAngleX = null;
+052
+m_simAngleY = null;
+053
+m_simAngleZ = null;
+054
+}
+055
+}
+056
+057
+/**
+058
+* Get the rate of turn in degrees-per-second around the X-axis.
+059
+*
+060
+* @return rate of turn in degrees-per-second
+061
+*/
+062
+public double getRateX() {
+063
+if (m_simRateX != null) {
+064
+return m_simRateX.get();
+065
+}
+066
+067
+return 0.0;
+068
+}
+069
+070
+/**
+071
+* Get the rate of turn in degrees-per-second around the Y-axis.
+072
+*
+073
+* @return rate of turn in degrees-per-second
+074
+*/
+075
+public double getRateY() {
+076
+if (m_simRateY != null) {
+077
+return m_simRateY.get();
+078
+}
+079
+080
+return 0.0;
+081
+}
+082
+083
+/**
+084
+* Get the rate of turn in degrees-per-second around the Z-axis.
+085
+*
+086
+* @return rate of turn in degrees-per-second
+087
+*/
+088
+public double getRateZ() {
+089
+if (m_simRateZ != null) {
+090
+return m_simRateZ.get();
+091
+}
+092
+093
+return 0.0;
+094
+}
+095
+096
+/**
+097
+* Get the currently reported angle around the X-axis.
+098
+*
+099
+* @return current angle around X-axis in degrees
+100
+*/
+101
+public double getAngleX() {
+102
+if (m_simAngleX != null) {
+103
+return m_simAngleX.get() - m_angleXOffset;
+104
+}
+105
+106
+return 0.0;
+107
+}
+108
+109
+/**
+110
+* Get the currently reported angle around the X-axis.
+111
+*
+112
+* @return current angle around Y-axis in degrees
+113
+*/
+114
+public double getAngleY() {
+115
+if (m_simAngleY != null) {
+116
+return m_simAngleY.get() - m_angleYOffset;
+117
+}
+118
+119
+return 0.0;
+120
+}
+121
+122
+/**
+123
+* Get the currently reported angle around the Z-axis.
+124
+*
+125
+* @return current angle around Z-axis in degrees
+126
+*/
+127
+public double getAngleZ() {
+128
+if (m_simAngleZ != null) {
+129
+return m_simAngleZ.get() - m_angleZOffset;
+130
+}
+131
+132
+return 0.0;
+133
+}
+134
+135
+/** Reset the gyro angles to 0. */
+136
+public void reset() {
+137
+if (m_simAngleX != null) {
+138
+m_angleXOffset = m_simAngleX.get();
+139
+m_angleYOffset = m_simAngleY.get();
+140
+m_angleZOffset = m_simAngleZ.get();
+141
+}
+142
+}
+143
+144
+/**
+145
+* Return the actual angle in degrees that the robot is currently facing.
+146
+*
+147
+* <p>The angle is based on integration of the returned rate form the gyro. The angle is
+148
+* continuous, that is, it will continue from 360->361 degrees. This allows algorithms that
+149
+* wouldn't want to see a discontinuity in the gyro output as it sweeps from 360 to 0 on the
+150
+* second time around.
+151
+*
+152
+* @return the current heading of the robot in degrees.
+153
+*/
+154
+public double getAngle() {
+155
+return getAngleZ();
+156
+}
+157
+158
+/**
+159
+* Gets the angle the robot is facing.
+160
+*
+161
+* @return A Rotation2d with the current heading.
+162
+*/
+163
+public Rotation2d getRotation2d() {
+164
+return Rotation2d.fromDegrees(getAngle());
+165
+}
+166
+167
+/**
+168
+* Return the rate of rotation of the gyro
+169
+*
+170
+* <p>The rate is based on the most recent reading of the gyro.
+171
+*
+172
+* @return the current rate in degrees per second
+173
+*/
+174
+public double getRate() {
+175
+return getRateZ();
+176
+}
+177
+178
+/** Close out the SimDevice. */
+179
+public void close() {
+180
+if (m_simDevice != null) {
+181
+m_simDevice.close();
+182
+}
+183
+}
+184
+}

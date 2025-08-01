@@ -1,0 +1,29 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.JNIWrapper;
+008
+009
+/** JNI for notifier data. */
+010
+public class NotifierDataJNI extends JNIWrapper {
+011
+public static native long getNextTimeout();
+012
+013
+public static native int getNumNotifiers();
+014
+015
+/** Utility class. */
+016
+private NotifierDataJNI() {}
+017
+}

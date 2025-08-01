@@ -1,0 +1,321 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.NotifyCallback;
+008
+import edu.wpi.first.hal.simulation.PowerDistributionDataJNI;
+009
+import edu.wpi.first.wpilibj.PowerDistribution;
+010
+011
+/** Class to control a simulated Power Distribution Panel (PDP). */
+012
+public class PDPSim {
+013
+private final int m_index;
+014
+015
+/** Constructs for the default PDP. */
+016
+public PDPSim() {
+017
+m_index = 0;
+018
+}
+019
+020
+/**
+021
+* Constructs from a PDP module number (CAN ID).
+022
+*
+023
+* @param module module number
+024
+*/
+025
+public PDPSim(int module) {
+026
+m_index = module;
+027
+}
+028
+029
+/**
+030
+* Constructs from a PowerDistribution object.
+031
+*
+032
+* @param pdp PowerDistribution to simulate
+033
+*/
+034
+public PDPSim(PowerDistribution pdp) {
+035
+m_index = pdp.getModule();
+036
+}
+037
+038
+/**
+039
+* Register a callback to be run when the PDP is initialized.
+040
+*
+041
+* @param callback the callback
+042
+* @param initialNotify whether to run the callback with the initial state
+043
+* @return the {@link CallbackStore} object associated with this callback.
+044
+*/
+045
+public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+046
+int uid =
+047
+PowerDistributionDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+048
+return new CallbackStore(m_index, uid, PowerDistributionDataJNI::cancelInitializedCallback);
+049
+}
+050
+051
+/**
+052
+* Check whether the PDP has been initialized.
+053
+*
+054
+* @return true if initialized
+055
+*/
+056
+public boolean getInitialized() {
+057
+return PowerDistributionDataJNI.getInitialized(m_index);
+058
+}
+059
+060
+/**
+061
+* Define whether the PDP has been initialized.
+062
+*
+063
+* @param initialized whether this object is initialized
+064
+*/
+065
+public void setInitialized(boolean initialized) {
+066
+PowerDistributionDataJNI.setInitialized(m_index, initialized);
+067
+}
+068
+069
+/**
+070
+* Register a callback to be run whenever the PDP temperature changes.
+071
+*
+072
+* @param callback the callback
+073
+* @param initialNotify whether to call the callback with the initial state
+074
+* @return the {@link CallbackStore} object associated with this callback.
+075
+*/
+076
+public CallbackStore registerTemperatureCallback(NotifyCallback callback, boolean initialNotify) {
+077
+int uid =
+078
+PowerDistributionDataJNI.registerTemperatureCallback(m_index, callback, initialNotify);
+079
+return new CallbackStore(m_index, uid, PowerDistributionDataJNI::cancelTemperatureCallback);
+080
+}
+081
+082
+/**
+083
+* Check the temperature of the PDP.
+084
+*
+085
+* @return the PDP temperature
+086
+*/
+087
+public double getTemperature() {
+088
+return PowerDistributionDataJNI.getTemperature(m_index);
+089
+}
+090
+091
+/**
+092
+* Define the PDP temperature.
+093
+*
+094
+* @param temperature the new PDP temperature
+095
+*/
+096
+public void setTemperature(double temperature) {
+097
+PowerDistributionDataJNI.setTemperature(m_index, temperature);
+098
+}
+099
+100
+/**
+101
+* Register a callback to be run whenever the PDP voltage changes.
+102
+*
+103
+* @param callback the callback
+104
+* @param initialNotify whether to call the callback with the initial state
+105
+* @return the {@link CallbackStore} object associated with this callback.
+106
+*/
+107
+public CallbackStore registerVoltageCallback(NotifyCallback callback, boolean initialNotify) {
+108
+int uid = PowerDistributionDataJNI.registerVoltageCallback(m_index, callback, initialNotify);
+109
+return new CallbackStore(m_index, uid, PowerDistributionDataJNI::cancelVoltageCallback);
+110
+}
+111
+112
+/**
+113
+* Check the PDP voltage.
+114
+*
+115
+* @return the PDP voltage.
+116
+*/
+117
+public double getVoltage() {
+118
+return PowerDistributionDataJNI.getVoltage(m_index);
+119
+}
+120
+121
+/**
+122
+* Set the PDP voltage.
+123
+*
+124
+* @param voltage the new PDP voltage
+125
+*/
+126
+public void setVoltage(double voltage) {
+127
+PowerDistributionDataJNI.setVoltage(m_index, voltage);
+128
+}
+129
+130
+/**
+131
+* Register a callback to be run whenever the current of a specific channel changes.
+132
+*
+133
+* @param channel the channel
+134
+* @param callback the callback
+135
+* @param initialNotify whether to call the callback with the initial state
+136
+* @return the {@link CallbackStore} object associated with this callback.
+137
+*/
+138
+public CallbackStore registerCurrentCallback(
+139
+int channel, NotifyCallback callback, boolean initialNotify) {
+140
+int uid =
+141
+PowerDistributionDataJNI.registerCurrentCallback(m_index, channel, callback, initialNotify);
+142
+return new CallbackStore(
+143
+m_index, channel, uid, PowerDistributionDataJNI::cancelCurrentCallback);
+144
+}
+145
+146
+/**
+147
+* Read the current in one of the PDP channels.
+148
+*
+149
+* @param channel the channel to check
+150
+* @return the current in the given channel
+151
+*/
+152
+public double getCurrent(int channel) {
+153
+return PowerDistributionDataJNI.getCurrent(m_index, channel);
+154
+}
+155
+156
+/**
+157
+* Change the current in the given channel.
+158
+*
+159
+* @param channel the channel to edit
+160
+* @param current the new current for the channel
+161
+*/
+162
+public void setCurrent(int channel, double current) {
+163
+PowerDistributionDataJNI.setCurrent(m_index, channel, current);
+164
+}
+165
+166
+/** Reset all PDP simulation data. */
+167
+public void resetData() {
+168
+PowerDistributionDataJNI.resetData(m_index);
+169
+}
+170
+}

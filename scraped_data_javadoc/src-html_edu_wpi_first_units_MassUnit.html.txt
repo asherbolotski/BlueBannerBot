@@ -1,0 +1,209 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.ImmutableMass;
+008
+import edu.wpi.first.units.measure.Mass;
+009
+import edu.wpi.first.units.measure.MutMass;
+010
+011
+/**
+012
+* Unit of mass dimension.
+013
+*
+014
+* <p>This is the base type for units of mass dimension. It is also used to specify the dimension
+015
+* for the mass-specific {@link Mass} measurement type.
+016
+*
+017
+* <p>Actual units (such as {@link Units#Grams} and {@link Units#Pounds}) can be found in the {@link
+018
+* Units} class.
+019
+*/
+020
+public final class MassUnit extends Unit {
+021
+/** Creates a new unit with the given name and multiplier to the base unit. */
+022
+MassUnit(MassUnit baseUnit, double baseUnitEquivalent, String name, String symbol) {
+023
+super(baseUnit, baseUnitEquivalent, name, symbol);
+024
+}
+025
+026
+MassUnit(
+027
+MassUnit baseUnit,
+028
+UnaryFunction toBaseConverter,
+029
+UnaryFunction fromBaseConverter,
+030
+String name,
+031
+String symbol) {
+032
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+033
+}
+034
+035
+@Override
+036
+public MassUnit getBaseUnit() {
+037
+return (MassUnit) super.getBaseUnit();
+038
+}
+039
+040
+@Override
+041
+public Mass of(double magnitude) {
+042
+return new ImmutableMass(magnitude, toBaseUnits(magnitude), this);
+043
+}
+044
+045
+@Override
+046
+public Mass ofBaseUnits(double baseUnitMagnitude) {
+047
+return new ImmutableMass(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+048
+}
+049
+050
+@Override
+051
+public Mass zero() {
+052
+return (Mass) super.zero();
+053
+}
+054
+055
+@Override
+056
+public Mass one() {
+057
+return (Mass) super.one();
+058
+}
+059
+060
+@Override
+061
+public MutMass mutable(double initialMagnitude) {
+062
+return new MutMass(initialMagnitude, toBaseUnits(initialMagnitude), this);
+063
+}
+064
+065
+@Override
+066
+public VelocityUnit<MassUnit> per(TimeUnit period) {
+067
+return VelocityUnit.combine(this, period);
+068
+}
+069
+070
+/**
+071
+* Creates a ratio unit between this unit and an arbitrary other unit.
+072
+*
+073
+* @param other the other unit
+074
+* @param <U> the type of the other unit
+075
+* @return the ratio unit
+076
+*/
+077
+public <U extends Unit> PerUnit<MassUnit, U> per(U other) {
+078
+return PerUnit.combine(this, other);
+079
+}
+080
+081
+/**
+082
+* Converts a measurement value in terms of another mass unit to this unit.
+083
+*
+084
+* @param magnitude the magnitude of the measurement in terms of the other mass unit
+085
+* @param otherUnit the other mass unit
+086
+* @return the value of the measurement in terms of this unit
+087
+*/
+088
+public double convertFrom(double magnitude, MassUnit otherUnit) {
+089
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+090
+}
+091
+092
+/**
+093
+* Multiplies this mass unit by a unit of linear velocity to form a combined unit of linear
+094
+* momentum.
+095
+*
+096
+* @param velocity the unit of velocity
+097
+* @return the combined unit of momentum
+098
+*/
+099
+public LinearMomentumUnit mult(LinearVelocityUnit velocity) {
+100
+return LinearMomentumUnit.combine(this, velocity);
+101
+}
+102
+103
+/**
+104
+* Multiplies this mass unit by a unit of linear acceleration to form a combined unit of force.
+105
+*
+106
+* @param acceleration the unit of acceleration
+107
+* @return the combined unit of force
+108
+*/
+109
+public ForceUnit mult(LinearAccelerationUnit acceleration) {
+110
+return ForceUnit.combine(this, acceleration);
+111
+}
+112
+}

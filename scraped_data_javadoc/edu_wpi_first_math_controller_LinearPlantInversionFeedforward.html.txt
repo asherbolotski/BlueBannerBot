@@ -1,0 +1,360 @@
+Package
+edu.wpi.first.math.controller
+Class LinearPlantInversionFeedforward<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.controller.LinearPlantInversionFeedforward<States,
+Inputs,
+Outputs>
+Type Parameters:
+States
+- Number of states.
+Inputs
+- Number of inputs.
+Outputs
+- Number of outputs.
+public class
+LinearPlantInversionFeedforward
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+extends
+Object
+Constructs a plant inversion model-based feedforward from a
+LinearSystem
+.
+The feedforward is calculated as
+u_ff = B
++
+(r_k+1 - A r_k)
+,
+ where
+B
++
+is the pseudoinverse of B.
+For more on the underlying math, read
+https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+.
+Constructor Summary
+Constructors
+Constructor
+Description
+LinearPlantInversionFeedforward
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+ double dtSeconds)
+Constructs a feedforward with the given coefficients.
+LinearPlantInversionFeedforward
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+ double dtSeconds)
+Constructs a feedforward with the given plant.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with only the desired future reference.
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> r,
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with current and future reference vectors.
+Matrix
+<
+States
+,
+N1
+>
+getR
+()
+Returns the current reference vector r.
+double
+getR
+(int row)
+Returns an element of the current reference vector r.
+Matrix
+<
+Inputs
+,
+N1
+>
+getUff
+()
+Returns the previously calculated feedforward as an input vector.
+double
+getUff
+(int row)
+Returns an element of the previously calculated feedforward.
+final void
+reset
+()
+Resets the feedforward with a zero initial state vector.
+final void
+reset
+(
+Matrix
+<
+States
+,
+N1
+> initialState)
+Resets the feedforward with a specified initial state vector.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LinearPlantInversionFeedforward
+public
+LinearPlantInversionFeedforward
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+ double dtSeconds)
+Constructs a feedforward with the given plant.
+Parameters:
+plant
+- The plant being controlled.
+dtSeconds
+- Discretization timestep.
+LinearPlantInversionFeedforward
+public
+LinearPlantInversionFeedforward
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+ double dtSeconds)
+Constructs a feedforward with the given coefficients.
+Parameters:
+A
+- Continuous system matrix of the plant being controlled.
+B
+- Continuous input matrix of the plant being controlled.
+dtSeconds
+- Discretization timestep.
+Method Details
+getUff
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+getUff
+()
+Returns the previously calculated feedforward as an input vector.
+Returns:
+The calculated feedforward.
+getUff
+public
+double
+getUff
+(int row)
+Returns an element of the previously calculated feedforward.
+Parameters:
+row
+- Row of uff.
+Returns:
+The row of the calculated feedforward.
+getR
+public
+Matrix
+<
+States
+,
+N1
+>
+getR
+()
+Returns the current reference vector r.
+Returns:
+The current reference vector.
+getR
+public
+double
+getR
+(int row)
+Returns an element of the current reference vector r.
+Parameters:
+row
+- Row of r.
+Returns:
+The row of the current reference vector.
+reset
+public final
+void
+reset
+(
+Matrix
+<
+States
+,
+N1
+> initialState)
+Resets the feedforward with a specified initial state vector.
+Parameters:
+initialState
+- The initial state vector.
+reset
+public final
+void
+reset
+()
+Resets the feedforward with a zero initial state vector.
+calculate
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with only the desired future reference. This uses the internally
+ stored "current" reference.
+If this method is used the initial state of the system is the one set using
+reset(Matrix)
+. If the initial state is not set it defaults to
+ a zero vector.
+Parameters:
+nextR
+- The reference state of the future timestep (k + dt).
+Returns:
+The calculated feedforward.
+calculate
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> r,
+Matrix
+<
+States
+,
+N1
+> nextR)
+Calculate the feedforward with current and future reference vectors.
+Parameters:
+r
+- The reference state of the current timestep (k).
+nextR
+- The reference state of the future timestep (k + dt).
+Returns:
+The calculated feedforward.

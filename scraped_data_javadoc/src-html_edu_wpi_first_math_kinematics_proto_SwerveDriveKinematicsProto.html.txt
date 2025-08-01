@@ -1,0 +1,71 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics.proto;
+006
+007
+import edu.wpi.first.math.geometry.Translation2d;
+008
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+009
+import edu.wpi.first.math.proto.Kinematics.ProtobufSwerveDriveKinematics;
+010
+import edu.wpi.first.util.protobuf.Protobuf;
+011
+import us.hebi.quickbuf.Descriptors.Descriptor;
+012
+013
+public final class SwerveDriveKinematicsProto
+014
+implements Protobuf<SwerveDriveKinematics, ProtobufSwerveDriveKinematics> {
+015
+@Override
+016
+public Class<SwerveDriveKinematics> getTypeClass() {
+017
+return SwerveDriveKinematics.class;
+018
+}
+019
+020
+@Override
+021
+public Descriptor getDescriptor() {
+022
+return ProtobufSwerveDriveKinematics.getDescriptor();
+023
+}
+024
+025
+@Override
+026
+public ProtobufSwerveDriveKinematics createMessage() {
+027
+return ProtobufSwerveDriveKinematics.newInstance();
+028
+}
+029
+030
+@Override
+031
+public SwerveDriveKinematics unpack(ProtobufSwerveDriveKinematics msg) {
+032
+return new SwerveDriveKinematics(Protobuf.unpackArray(msg.getModules(), Translation2d.proto));
+033
+}
+034
+035
+@Override
+036
+public void pack(ProtobufSwerveDriveKinematics msg, SwerveDriveKinematics value) {
+037
+Protobuf.packArray(msg.getMutableModules(), value.getModules(), Translation2d.proto);
+038
+}
+039
+}

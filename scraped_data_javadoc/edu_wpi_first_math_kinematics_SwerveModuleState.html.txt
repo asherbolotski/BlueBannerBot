@@ -1,0 +1,285 @@
+Package
+edu.wpi.first.math.kinematics
+Class SwerveModuleState
+java.lang.Object
+edu.wpi.first.math.kinematics.SwerveModuleState
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+,
+Comparable
+<
+SwerveModuleState
+>
+public class
+SwerveModuleState
+extends
+Object
+implements
+Comparable
+<
+SwerveModuleState
+>,
+ProtobufSerializable
+,
+StructSerializable
+Represents the state of one swerve module.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+Rotation2d
+angle
+Angle of the module.
+static final
+SwerveModuleStateProto
+proto
+SwerveModuleState protobuf for serialization.
+double
+speedMetersPerSecond
+Speed of the wheel of the module.
+static final
+SwerveModuleStateStruct
+struct
+SwerveModuleState struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+SwerveModuleState
+()
+Constructs a SwerveModuleState with zeros for speed and angle.
+SwerveModuleState
+(double speedMetersPerSecond,
+Rotation2d
+angle)
+Constructs a SwerveModuleState.
+SwerveModuleState
+(
+LinearVelocity
+speed,
+Rotation2d
+angle)
+Constructs a SwerveModuleState.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+int
+compareTo
+(
+SwerveModuleState
+other)
+Compares two swerve module states.
+void
+cosineScale
+(
+Rotation2d
+currentAngle)
+Scales speed by cosine of angle error.
+boolean
+equals
+(
+Object
+obj)
+int
+hashCode
+()
+void
+optimize
+(
+Rotation2d
+currentAngle)
+Minimize the change in heading this swerve module state would require by potentially reversing
+ the direction the wheel spins.
+static
+SwerveModuleState
+optimize
+(
+SwerveModuleState
+desiredState,
+Rotation2d
+currentAngle)
+Deprecated.
+Use the instance method instead.
+String
+toString
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+speedMetersPerSecond
+public
+double
+speedMetersPerSecond
+Speed of the wheel of the module.
+angle
+public
+Rotation2d
+angle
+Angle of the module.
+proto
+public static final
+SwerveModuleStateProto
+proto
+SwerveModuleState protobuf for serialization.
+struct
+public static final
+SwerveModuleStateStruct
+struct
+SwerveModuleState struct for serialization.
+Constructor Details
+SwerveModuleState
+public
+SwerveModuleState
+()
+Constructs a SwerveModuleState with zeros for speed and angle.
+SwerveModuleState
+public
+SwerveModuleState
+(double speedMetersPerSecond,
+Rotation2d
+angle)
+Constructs a SwerveModuleState.
+Parameters:
+speedMetersPerSecond
+- The speed of the wheel of the module.
+angle
+- The angle of the module.
+SwerveModuleState
+public
+SwerveModuleState
+(
+LinearVelocity
+speed,
+Rotation2d
+angle)
+Constructs a SwerveModuleState.
+Parameters:
+speed
+- The speed of the wheel of the module.
+angle
+- The angle of the module.
+Method Details
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+compareTo
+public
+int
+compareTo
+(
+SwerveModuleState
+other)
+Compares two swerve module states. One swerve module is "greater" than the other if its speed
+ is higher than the other.
+Specified by:
+compareTo
+in interface
+Comparable
+<
+SwerveModuleState
+>
+Parameters:
+other
+- The other swerve module.
+Returns:
+1 if this is greater, 0 if both are equal, -1 if other is greater.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+optimize
+public
+void
+optimize
+(
+Rotation2d
+currentAngle)
+Minimize the change in heading this swerve module state would require by potentially reversing
+ the direction the wheel spins. If this is used with the PIDController class's continuous input
+ functionality, the furthest a wheel will ever rotate is 90 degrees.
+Parameters:
+currentAngle
+- The current module angle.
+optimize
+@Deprecated
+public static
+SwerveModuleState
+optimize
+(
+SwerveModuleState
+desiredState,
+Rotation2d
+currentAngle)
+Deprecated.
+Use the instance method instead.
+Minimize the change in heading the desired swerve module state would require by potentially
+ reversing the direction the wheel spins. If this is used with the PIDController class's
+ continuous input functionality, the furthest a wheel will ever rotate is 90 degrees.
+Parameters:
+desiredState
+- The desired state.
+currentAngle
+- The current module angle.
+Returns:
+Optimized swerve module state.
+cosineScale
+public
+void
+cosineScale
+(
+Rotation2d
+currentAngle)
+Scales speed by cosine of angle error. This scales down movement perpendicular to the desired
+ direction of travel that can occur when modules change directions. This results in smoother
+ driving.
+Parameters:
+currentAngle
+- The current module angle.

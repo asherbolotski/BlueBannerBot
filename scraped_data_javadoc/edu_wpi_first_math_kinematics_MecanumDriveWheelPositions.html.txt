@@ -1,0 +1,252 @@
+Package
+edu.wpi.first.math.kinematics
+Class MecanumDriveWheelPositions
+java.lang.Object
+edu.wpi.first.math.kinematics.MecanumDriveWheelPositions
+All Implemented Interfaces:
+Interpolatable
+<
+MecanumDriveWheelPositions
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+MecanumDriveWheelPositions
+extends
+Object
+implements
+Interpolatable
+<
+MecanumDriveWheelPositions
+>,
+ProtobufSerializable
+,
+StructSerializable
+Represents the wheel positions for a mecanum drive drivetrain.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+double
+frontLeftMeters
+Distance measured by the front left wheel.
+double
+frontRightMeters
+Distance measured by the front right wheel.
+static final
+MecanumDriveWheelPositionsProto
+proto
+MecanumDriveWheelPositions protobuf for serialization.
+double
+rearLeftMeters
+Distance measured by the rear left wheel.
+double
+rearRightMeters
+Distance measured by the rear right wheel.
+static final
+MecanumDriveWheelPositionsStruct
+struct
+MecanumDriveWheelPositions struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+MecanumDriveWheelPositions
+()
+Constructs a MecanumDriveWheelPositions with zeros for all member fields.
+MecanumDriveWheelPositions
+(double frontLeftMeters,
+ double frontRightMeters,
+ double rearLeftMeters,
+ double rearRightMeters)
+Constructs a MecanumDriveWheelPositions.
+MecanumDriveWheelPositions
+(
+Distance
+frontLeft,
+Distance
+frontRight,
+Distance
+rearLeft,
+Distance
+rearRight)
+Constructs a MecanumDriveWheelPositions.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+equals
+(
+Object
+obj)
+int
+hashCode
+()
+MecanumDriveWheelPositions
+interpolate
+(
+MecanumDriveWheelPositions
+endValue,
+ double t)
+Return the interpolated value.
+String
+toString
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+frontLeftMeters
+public
+double
+frontLeftMeters
+Distance measured by the front left wheel.
+frontRightMeters
+public
+double
+frontRightMeters
+Distance measured by the front right wheel.
+rearLeftMeters
+public
+double
+rearLeftMeters
+Distance measured by the rear left wheel.
+rearRightMeters
+public
+double
+rearRightMeters
+Distance measured by the rear right wheel.
+proto
+public static final
+MecanumDriveWheelPositionsProto
+proto
+MecanumDriveWheelPositions protobuf for serialization.
+struct
+public static final
+MecanumDriveWheelPositionsStruct
+struct
+MecanumDriveWheelPositions struct for serialization.
+Constructor Details
+MecanumDriveWheelPositions
+public
+MecanumDriveWheelPositions
+()
+Constructs a MecanumDriveWheelPositions with zeros for all member fields.
+MecanumDriveWheelPositions
+public
+MecanumDriveWheelPositions
+(double frontLeftMeters,
+ double frontRightMeters,
+ double rearLeftMeters,
+ double rearRightMeters)
+Constructs a MecanumDriveWheelPositions.
+Parameters:
+frontLeftMeters
+- Distance measured by the front left wheel.
+frontRightMeters
+- Distance measured by the front right wheel.
+rearLeftMeters
+- Distance measured by the rear left wheel.
+rearRightMeters
+- Distance measured by the rear right wheel.
+MecanumDriveWheelPositions
+public
+MecanumDriveWheelPositions
+(
+Distance
+frontLeft,
+Distance
+frontRight,
+Distance
+rearLeft,
+Distance
+rearRight)
+Constructs a MecanumDriveWheelPositions.
+Parameters:
+frontLeft
+- Distance measured by the front left wheel.
+frontRight
+- Distance measured by the front right wheel.
+rearLeft
+- Distance measured by the rear left wheel.
+rearRight
+- Distance measured by the rear right wheel.
+Method Details
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+interpolate
+public
+MecanumDriveWheelPositions
+interpolate
+(
+MecanumDriveWheelPositions
+endValue,
+ double t)
+Description copied from interface:
+Interpolatable
+Return the interpolated value. This object is assumed to be the starting position, or lower
+ bound.
+Specified by:
+interpolate
+in interface
+Interpolatable
+<
+MecanumDriveWheelPositions
+>
+Parameters:
+endValue
+- The upper bound, or end.
+t
+- How far between the lower and upper bound we are. This should be bounded in [0, 1].
+Returns:
+The interpolated value.

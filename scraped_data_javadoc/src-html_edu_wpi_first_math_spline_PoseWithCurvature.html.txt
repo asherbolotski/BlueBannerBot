@@ -1,0 +1,58 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.spline;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+009
+/** Represents a pair of a pose and a curvature. */
+010
+public class PoseWithCurvature {
+011
+/** Represents the pose. */
+012
+public Pose2d poseMeters;
+013
+014
+/** Represents the curvature. */
+015
+public double curvatureRadPerMeter;
+016
+017
+/**
+018
+* Constructs a PoseWithCurvature.
+019
+*
+020
+* @param poseMeters The pose.
+021
+* @param curvatureRadPerMeter The curvature.
+022
+*/
+023
+public PoseWithCurvature(Pose2d poseMeters, double curvatureRadPerMeter) {
+024
+this.poseMeters = poseMeters;
+025
+this.curvatureRadPerMeter = curvatureRadPerMeter;
+026
+}
+027
+028
+/** Constructs a PoseWithCurvature with default values. */
+029
+public PoseWithCurvature() {
+030
+poseMeters = Pose2d.kZero;
+031
+}
+032
+}

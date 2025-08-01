@@ -1,0 +1,96 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.JNIWrapper;
+008
+009
+/** JNI for SPI accelerometer data. */
+010
+public class SPIAccelerometerDataJNI extends JNIWrapper {
+011
+public static native int registerActiveCallback(
+012
+int index, NotifyCallback callback, boolean initialNotify);
+013
+014
+public static native void cancelActiveCallback(int index, int uid);
+015
+016
+public static native boolean getActive(int index);
+017
+018
+public static native void setActive(int index, boolean active);
+019
+020
+public static native int registerRangeCallback(
+021
+int index, NotifyCallback callback, boolean initialNotify);
+022
+023
+public static native void cancelRangeCallback(int index, int uid);
+024
+025
+public static native int getRange(int index);
+026
+027
+public static native void setRange(int index, int range);
+028
+029
+public static native int registerXCallback(
+030
+int index, NotifyCallback callback, boolean initialNotify);
+031
+032
+public static native void cancelXCallback(int index, int uid);
+033
+034
+public static native double getX(int index);
+035
+036
+public static native void setX(int index, double x);
+037
+038
+public static native int registerYCallback(
+039
+int index, NotifyCallback callback, boolean initialNotify);
+040
+041
+public static native void cancelYCallback(int index, int uid);
+042
+043
+public static native double getY(int index);
+044
+045
+public static native void setY(int index, double y);
+046
+047
+public static native int registerZCallback(
+048
+int index, NotifyCallback callback, boolean initialNotify);
+049
+050
+public static native void cancelZCallback(int index, int uid);
+051
+052
+public static native double getZ(int index);
+053
+054
+public static native void setZ(int index, double z);
+055
+056
+public static native void resetData(int index);
+057
+058
+/** Utility class. */
+059
+private SPIAccelerometerDataJNI() {}
+060
+}

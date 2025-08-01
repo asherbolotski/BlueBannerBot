@@ -1,0 +1,608 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry;
+006
+007
+import static edu.wpi.first.units.Units.Meters;
+008
+009
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+010
+import com.fasterxml.jackson.annotation.JsonCreator;
+011
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+012
+import com.fasterxml.jackson.annotation.JsonProperty;
+013
+import edu.wpi.first.math.MathUtil;
+014
+import edu.wpi.first.math.VecBuilder;
+015
+import edu.wpi.first.math.Vector;
+016
+import edu.wpi.first.math.geometry.proto.Translation2dProto;
+017
+import edu.wpi.first.math.geometry.struct.Translation2dStruct;
+018
+import edu.wpi.first.math.interpolation.Interpolatable;
+019
+import edu.wpi.first.math.numbers.N2;
+020
+import edu.wpi.first.units.measure.Distance;
+021
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+022
+import edu.wpi.first.util.struct.StructSerializable;
+023
+import java.util.Collections;
+024
+import java.util.Comparator;
+025
+import java.util.List;
+026
+import java.util.Objects;
+027
+028
+/**
+029
+* Represents a translation in 2D space. This object can be used to represent a point or a vector.
+030
+*
+031
+* <p>This assumes that you are using conventional mathematical axes. When the robot is at the
+032
+* origin facing in the positive X direction, forward is positive X and left is positive Y.
+033
+*/
+034
+@JsonIgnoreProperties(ignoreUnknown = true)
+035
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+036
+public class Translation2d
+037
+implements Interpolatable<Translation2d>, ProtobufSerializable, StructSerializable {
+038
+/**
+039
+* A preallocated Translation2d representing the origin.
+040
+*
+041
+* <p>This exists to avoid allocations for common translations.
+042
+*/
+043
+public static final Translation2d kZero = new Translation2d();
+044
+045
+private final double m_x;
+046
+private final double m_y;
+047
+048
+/** Constructs a Translation2d with X and Y components equal to zero. */
+049
+public Translation2d() {
+050
+this(0.0, 0.0);
+051
+}
+052
+053
+/**
+054
+* Constructs a Translation2d with the X and Y components equal to the provided values.
+055
+*
+056
+* @param x The x component of the translation.
+057
+* @param y The y component of the translation.
+058
+*/
+059
+@JsonCreator
+060
+public Translation2d(
+061
+@JsonProperty(required = true, value = "x") double x,
+062
+@JsonProperty(required = true, value = "y") double y) {
+063
+m_x = x;
+064
+m_y = y;
+065
+}
+066
+067
+/**
+068
+* Constructs a Translation2d with the provided distance and angle. This is essentially converting
+069
+* from polar coordinates to Cartesian coordinates.
+070
+*
+071
+* @param distance The distance from the origin to the end of the translation.
+072
+* @param angle The angle between the x-axis and the translation vector.
+073
+*/
+074
+public Translation2d(double distance, Rotation2d angle) {
+075
+m_x = distance * angle.getCos();
+076
+m_y = distance * angle.getSin();
+077
+}
+078
+079
+/**
+080
+* Constructs a Translation2d with the X and Y components equal to the provided values. The X and
+081
+* Y components will be converted to and tracked as meters.
+082
+*
+083
+* @param x The x component of the translation.
+084
+* @param y The y component of the translation.
+085
+*/
+086
+public Translation2d(Distance x, Distance y) {
+087
+this(x.in(Meters), y.in(Meters));
+088
+}
+089
+090
+/**
+091
+* Constructs a Translation2d from a 2D translation vector. The values are assumed to be in
+092
+* meters.
+093
+*
+094
+* @param vector The translation vector.
+095
+*/
+096
+public Translation2d(Vector<N2> vector) {
+097
+this(vector.get(0), vector.get(1));
+098
+}
+099
+100
+/**
+101
+* Calculates the distance between two translations in 2D space.
+102
+*
+103
+* <p>The distance between translations is defined as √((x₂−x₁)²+(y₂−y₁)²).
+104
+*
+105
+* @param other The translation to compute the distance to.
+106
+* @return The distance between the two translations.
+107
+*/
+108
+public double getDistance(Translation2d other) {
+109
+return Math.hypot(other.m_x - m_x, other.m_y - m_y);
+110
+}
+111
+112
+/**
+113
+* Returns the X component of the translation.
+114
+*
+115
+* @return The X component of the translation.
+116
+*/
+117
+@JsonProperty
+118
+public double getX() {
+119
+return m_x;
+120
+}
+121
+122
+/**
+123
+* Returns the Y component of the translation.
+124
+*
+125
+* @return The Y component of the translation.
+126
+*/
+127
+@JsonProperty
+128
+public double getY() {
+129
+return m_y;
+130
+}
+131
+132
+/**
+133
+* Returns the X component of the translation in a measure.
+134
+*
+135
+* @return The x component of the translation in a measure.
+136
+*/
+137
+public Distance getMeasureX() {
+138
+return Meters.of(m_x);
+139
+}
+140
+141
+/**
+142
+* Returns the Y component of the translation in a measure.
+143
+*
+144
+* @return The y component of the translation in a measure.
+145
+*/
+146
+public Distance getMeasureY() {
+147
+return Meters.of(m_y);
+148
+}
+149
+150
+/**
+151
+* Returns a 2D translation vector representation of this translation.
+152
+*
+153
+* @return A 2D translation vector representation of this translation.
+154
+*/
+155
+public Vector<N2> toVector() {
+156
+return VecBuilder.fill(m_x, m_y);
+157
+}
+158
+159
+/**
+160
+* Returns the norm, or distance from the origin to the translation.
+161
+*
+162
+* @return The norm of the translation.
+163
+*/
+164
+public double getNorm() {
+165
+return Math.hypot(m_x, m_y);
+166
+}
+167
+168
+/**
+169
+* Returns the angle this translation forms with the positive X axis.
+170
+*
+171
+* @return The angle of the translation
+172
+*/
+173
+public Rotation2d getAngle() {
+174
+return new Rotation2d(m_x, m_y);
+175
+}
+176
+177
+/**
+178
+* Applies a rotation to the translation in 2D space.
+179
+*
+180
+* <p>This multiplies the translation vector by a counterclockwise rotation matrix of the given
+181
+* angle.
+182
+*
+183
+* <pre>
+184
+* [x_new]   [other.cos, -other.sin][x]
+185
+* [y_new] = [other.sin,  other.cos][y]
+186
+* </pre>
+187
+*
+188
+* <p>For example, rotating a Translation2d of &lt;2, 0&gt; by 90 degrees will return a
+189
+* Translation2d of &lt;0, 2&gt;.
+190
+*
+191
+* @param other The rotation to rotate the translation by.
+192
+* @return The new rotated translation.
+193
+*/
+194
+public Translation2d rotateBy(Rotation2d other) {
+195
+return new Translation2d(
+196
+m_x * other.getCos() - m_y * other.getSin(), m_x * other.getSin() + m_y * other.getCos());
+197
+}
+198
+199
+/**
+200
+* Rotates this translation around another translation in 2D space.
+201
+*
+202
+* <pre>
+203
+* [x_new]   [rot.cos, -rot.sin][x - other.x]   [other.x]
+204
+* [y_new] = [rot.sin,  rot.cos][y - other.y] + [other.y]
+205
+* </pre>
+206
+*
+207
+* @param other The other translation to rotate around.
+208
+* @param rot The rotation to rotate the translation by.
+209
+* @return The new rotated translation.
+210
+*/
+211
+public Translation2d rotateAround(Translation2d other, Rotation2d rot) {
+212
+return new Translation2d(
+213
+(m_x - other.getX()) * rot.getCos() - (m_y - other.getY()) * rot.getSin() + other.getX(),
+214
+(m_x - other.getX()) * rot.getSin() + (m_y - other.getY()) * rot.getCos() + other.getY());
+215
+}
+216
+217
+/**
+218
+* Returns the sum of two translations in 2D space.
+219
+*
+220
+* <p>For example, Translation3d(1.0, 2.5) + Translation3d(2.0, 5.5) = Translation3d{3.0, 8.0).
+221
+*
+222
+* @param other The translation to add.
+223
+* @return The sum of the translations.
+224
+*/
+225
+public Translation2d plus(Translation2d other) {
+226
+return new Translation2d(m_x + other.m_x, m_y + other.m_y);
+227
+}
+228
+229
+/**
+230
+* Returns the difference between two translations.
+231
+*
+232
+* <p>For example, Translation2d(5.0, 4.0) - Translation2d(1.0, 2.0) = Translation2d(4.0, 2.0).
+233
+*
+234
+* @param other The translation to subtract.
+235
+* @return The difference between the two translations.
+236
+*/
+237
+public Translation2d minus(Translation2d other) {
+238
+return new Translation2d(m_x - other.m_x, m_y - other.m_y);
+239
+}
+240
+241
+/**
+242
+* Returns the inverse of the current translation. This is equivalent to rotating by 180 degrees,
+243
+* flipping the point over both axes, or negating all components of the translation.
+244
+*
+245
+* @return The inverse of the current translation.
+246
+*/
+247
+public Translation2d unaryMinus() {
+248
+return new Translation2d(-m_x, -m_y);
+249
+}
+250
+251
+/**
+252
+* Returns the translation multiplied by a scalar.
+253
+*
+254
+* <p>For example, Translation2d(2.0, 2.5) * 2 = Translation2d(4.0, 5.0).
+255
+*
+256
+* @param scalar The scalar to multiply by.
+257
+* @return The scaled translation.
+258
+*/
+259
+public Translation2d times(double scalar) {
+260
+return new Translation2d(m_x * scalar, m_y * scalar);
+261
+}
+262
+263
+/**
+264
+* Returns the translation divided by a scalar.
+265
+*
+266
+* <p>For example, Translation3d(2.0, 2.5) / 2 = Translation3d(1.0, 1.25).
+267
+*
+268
+* @param scalar The scalar to multiply by.
+269
+* @return The reference to the new mutated object.
+270
+*/
+271
+public Translation2d div(double scalar) {
+272
+return new Translation2d(m_x / scalar, m_y / scalar);
+273
+}
+274
+275
+/**
+276
+* Returns the nearest Translation2d from a list of translations.
+277
+*
+278
+* @param translations The list of translations.
+279
+* @return The nearest Translation2d from the list.
+280
+*/
+281
+public Translation2d nearest(List<Translation2d> translations) {
+282
+return Collections.min(translations, Comparator.comparing(this::getDistance));
+283
+}
+284
+285
+@Override
+286
+public String toString() {
+287
+return String.format("Translation2d(X: %.2f, Y: %.2f)", m_x, m_y);
+288
+}
+289
+290
+/**
+291
+* Checks equality between this Translation2d and another object.
+292
+*
+293
+* @param obj The other object.
+294
+* @return Whether the two objects are equal or not.
+295
+*/
+296
+@Override
+297
+public boolean equals(Object obj) {
+298
+return obj instanceof Translation2d other
+299
+&& Math.abs(other.m_x - m_x) < 1E-9
+300
+&& Math.abs(other.m_y - m_y) < 1E-9;
+301
+}
+302
+303
+@Override
+304
+public int hashCode() {
+305
+return Objects.hash(m_x, m_y);
+306
+}
+307
+308
+@Override
+309
+public Translation2d interpolate(Translation2d endValue, double t) {
+310
+return new Translation2d(
+311
+MathUtil.interpolate(this.getX(), endValue.getX(), t),
+312
+MathUtil.interpolate(this.getY(), endValue.getY(), t));
+313
+}
+314
+315
+/** Translation2d protobuf for serialization. */
+316
+public static final Translation2dProto proto = new Translation2dProto();
+317
+318
+/** Translation2d struct for serialization. */
+319
+public static final Translation2dStruct struct = new Translation2dStruct();
+320
+}

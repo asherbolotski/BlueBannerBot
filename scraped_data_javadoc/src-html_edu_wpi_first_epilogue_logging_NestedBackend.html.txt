@@ -1,0 +1,210 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.epilogue.logging;
+006
+007
+import edu.wpi.first.util.struct.Struct;
+008
+import java.util.HashMap;
+009
+import java.util.Map;
+010
+011
+/**
+012
+* A backend that logs to an underlying backend, prepending all logged data with a specific prefix.
+013
+* Useful for logging nested data structures.
+014
+*/
+015
+public class NestedBackend implements EpilogueBackend {
+016
+private final String m_prefix;
+017
+private final EpilogueBackend m_impl;
+018
+private final Map<String, NestedBackend> m_nestedBackends = new HashMap<>();
+019
+020
+/**
+021
+* Creates a new nested backed underneath another backend.
+022
+*
+023
+* @param prefix the prefix to append to all data logged in the nested backend
+024
+* @param impl the backend to log to
+025
+*/
+026
+public NestedBackend(String prefix, EpilogueBackend impl) {
+027
+// Add a trailing slash if not already present
+028
+if (prefix.endsWith("/")) {
+029
+this.m_prefix = prefix;
+030
+} else {
+031
+this.m_prefix = prefix + "/";
+032
+}
+033
+this.m_impl = impl;
+034
+}
+035
+036
+@Override
+037
+public EpilogueBackend getNested(String path) {
+038
+return m_nestedBackends.computeIfAbsent(path, k -> new NestedBackend(k, this));
+039
+}
+040
+041
+@Override
+042
+public void log(String identifier, int value) {
+043
+m_impl.log(m_prefix + identifier, value);
+044
+}
+045
+046
+@Override
+047
+public void log(String identifier, long value) {
+048
+m_impl.log(m_prefix + identifier, value);
+049
+}
+050
+051
+@Override
+052
+public void log(String identifier, float value) {
+053
+m_impl.log(m_prefix + identifier, value);
+054
+}
+055
+056
+@Override
+057
+public void log(String identifier, double value) {
+058
+m_impl.log(m_prefix + identifier, value);
+059
+}
+060
+061
+@Override
+062
+public void log(String identifier, boolean value) {
+063
+m_impl.log(m_prefix + identifier, value);
+064
+}
+065
+066
+@Override
+067
+public void log(String identifier, byte[] value) {
+068
+m_impl.log(m_prefix + identifier, value);
+069
+}
+070
+071
+@Override
+072
+public void log(String identifier, int[] value) {
+073
+m_impl.log(m_prefix + identifier, value);
+074
+}
+075
+076
+@Override
+077
+public void log(String identifier, long[] value) {
+078
+m_impl.log(m_prefix + identifier, value);
+079
+}
+080
+081
+@Override
+082
+public void log(String identifier, float[] value) {
+083
+m_impl.log(m_prefix + identifier, value);
+084
+}
+085
+086
+@Override
+087
+public void log(String identifier, double[] value) {
+088
+m_impl.log(m_prefix + identifier, value);
+089
+}
+090
+091
+@Override
+092
+public void log(String identifier, boolean[] value) {
+093
+m_impl.log(m_prefix + identifier, value);
+094
+}
+095
+096
+@Override
+097
+public void log(String identifier, String value) {
+098
+m_impl.log(m_prefix + identifier, value);
+099
+}
+100
+101
+@Override
+102
+public void log(String identifier, String[] value) {
+103
+m_impl.log(m_prefix + identifier, value);
+104
+}
+105
+106
+@Override
+107
+public <S> void log(String identifier, S value, Struct<S> struct) {
+108
+m_impl.log(m_prefix + identifier, value, struct);
+109
+}
+110
+111
+@Override
+112
+public <S> void log(String identifier, S[] value, Struct<S> struct) {
+113
+m_impl.log(m_prefix + identifier, value, struct);
+114
+}
+115
+}

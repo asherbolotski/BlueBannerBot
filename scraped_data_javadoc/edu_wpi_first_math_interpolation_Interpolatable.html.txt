@@ -1,0 +1,61 @@
+Package
+edu.wpi.first.math.interpolation
+Interface Interpolatable<T>
+Type Parameters:
+T
+- The class that is interpolatable.
+All Known Implementing Classes:
+DifferentialDriveWheelPositions
+,
+MecanumDriveWheelPositions
+,
+Pose2d
+,
+Pose3d
+,
+Rotation2d
+,
+Rotation3d
+,
+SwerveModulePosition
+,
+Translation2d
+,
+Translation3d
+public interface
+Interpolatable
+<T>
+An object should extend interpolatable if you wish to interpolate between a lower and upper
+ bound, such as a robot position on the field between timesteps. This behavior can be linear or
+ nonlinear.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+T
+interpolate
+(
+T
+endValue,
+ double t)
+Return the interpolated value.
+Method Details
+interpolate
+T
+interpolate
+(
+T
+endValue,
+ double t)
+Return the interpolated value. This object is assumed to be the starting position, or lower
+ bound.
+Parameters:
+endValue
+- The upper bound, or end.
+t
+- How far between the lower and upper bound we are. This should be bounded in [0, 1].
+Returns:
+The interpolated value.

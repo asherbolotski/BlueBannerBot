@@ -1,0 +1,115 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/**
+008
+* Subscribe to multiple topics based on one or more topic name prefixes. Can be used in combination
+009
+* with NetworkTableListenerPoller to listen for value changes across all matching topics.
+010
+*/
+011
+public final class MultiSubscriber implements AutoCloseable {
+012
+/**
+013
+* Create a multiple subscriber.
+014
+*
+015
+* @param inst instance
+016
+* @param prefixes topic name prefixes
+017
+* @param options subscriber options
+018
+*/
+019
+public MultiSubscriber(NetworkTableInstance inst, String[] prefixes, PubSubOption... options) {
+020
+m_inst = inst;
+021
+m_handle = NetworkTablesJNI.subscribeMultiple(inst.getHandle(), prefixes, options);
+022
+}
+023
+024
+@Override
+025
+public synchronized void close() {
+026
+if (m_handle != 0) {
+027
+NetworkTablesJNI.unsubscribeMultiple(m_handle);
+028
+m_handle = 0;
+029
+}
+030
+}
+031
+032
+/**
+033
+* Gets the instance for the subscriber.
+034
+*
+035
+* @return Instance
+036
+*/
+037
+public NetworkTableInstance getInstance() {
+038
+return m_inst;
+039
+}
+040
+041
+/**
+042
+* Determines if the native handle is valid.
+043
+*
+044
+* @return True if the native handle is valid, false otherwise.
+045
+*/
+046
+public boolean isValid() {
+047
+return m_handle != 0;
+048
+}
+049
+050
+/**
+051
+* Gets the native handle.
+052
+*
+053
+* @return Handle
+054
+*/
+055
+public int getHandle() {
+056
+return m_handle;
+057
+}
+058
+059
+private final NetworkTableInstance m_inst;
+060
+private int m_handle;
+061
+}

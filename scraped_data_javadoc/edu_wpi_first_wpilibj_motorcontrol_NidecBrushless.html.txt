@@ -1,0 +1,283 @@
+Package
+edu.wpi.first.wpilibj.motorcontrol
+Class NidecBrushless
+java.lang.Object
+edu.wpi.first.wpilibj.MotorSafety
+edu.wpi.first.wpilibj.motorcontrol.NidecBrushless
+All Implemented Interfaces:
+Sendable
+,
+MotorController
+,
+AutoCloseable
+public class
+NidecBrushless
+extends
+MotorSafety
+implements
+MotorController
+,
+Sendable
+,
+AutoCloseable
+Nidec Brushless Motor.
+Constructor Summary
+Constructors
+Constructor
+Description
+NidecBrushless
+(int pwmChannel,
+ int dioChannel)
+Constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+void
+disable
+()
+Disable the motor.
+void
+enable
+()
+Re-enable the motor after disable() has been called.
+double
+get
+()
+Get the recently set value of the PWM.
+int
+getChannel
+()
+Gets the channel number associated with the object.
+String
+getDescription
+()
+Returns a description to print when an error occurs.
+boolean
+getInverted
+()
+Common interface for returning if a motor controller is in the inverted state or not.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+set
+(double speed)
+Set the PWM value.
+void
+setInverted
+(boolean isInverted)
+Common interface for inverting direction of a motor controller.
+void
+stopMotor
+()
+Stop the motor.
+Methods inherited from class edu.wpi.first.wpilibj.
+MotorSafety
+check
+,
+checkMotors
+,
+feed
+,
+getExpiration
+,
+isAlive
+,
+isSafetyEnabled
+,
+setExpiration
+,
+setSafetyEnabled
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.wpilibj.motorcontrol.
+MotorController
+setVoltage
+,
+setVoltage
+Constructor Details
+NidecBrushless
+public
+NidecBrushless
+(int pwmChannel,
+ int dioChannel)
+Constructor.
+Parameters:
+pwmChannel
+- The PWM channel that the Nidec Brushless controller is attached to. 0-9 are
+     on-board, 10-19 are on the MXP port
+dioChannel
+- The DIO channel that the Nidec Brushless controller is attached to. 0-9 are
+     on-board, 10-25 are on the MXP port
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+set
+public
+void
+set
+(double speed)
+Set the PWM value.
+The PWM value is set using a range of -1.0 to 1.0, appropriately scaling the value for the
+ FPGA.
+Specified by:
+set
+in interface
+MotorController
+Parameters:
+speed
+- The speed value between -1.0 and 1.0 to set.
+get
+public
+double
+get
+()
+Get the recently set value of the PWM.
+Specified by:
+get
+in interface
+MotorController
+Returns:
+The most recently set value for the PWM between -1.0 and 1.0.
+setInverted
+public
+void
+setInverted
+(boolean isInverted)
+Description copied from interface:
+MotorController
+Common interface for inverting direction of a motor controller.
+Specified by:
+setInverted
+in interface
+MotorController
+Parameters:
+isInverted
+- The state of inversion true is inverted.
+getInverted
+public
+boolean
+getInverted
+()
+Description copied from interface:
+MotorController
+Common interface for returning if a motor controller is in the inverted state or not.
+Specified by:
+getInverted
+in interface
+MotorController
+Returns:
+isInverted The state of the inversion true is inverted.
+stopMotor
+public
+void
+stopMotor
+()
+Stop the motor. This is called by the MotorSafety object when it has a timeout for this PWM and
+ needs to stop it from running. Calling set() will re-enable the motor.
+Specified by:
+stopMotor
+in interface
+MotorController
+Specified by:
+stopMotor
+in class
+MotorSafety
+getDescription
+public
+String
+getDescription
+()
+Description copied from class:
+MotorSafety
+Returns a description to print when an error occurs.
+Specified by:
+getDescription
+in class
+MotorSafety
+Returns:
+Description to print when an error occurs.
+disable
+public
+void
+disable
+()
+Disable the motor. The enable() function must be called to re-enable the motor.
+Specified by:
+disable
+in interface
+MotorController
+enable
+public
+void
+enable
+()
+Re-enable the motor after disable() has been called. The set() function must be called to set a
+ new motor speed.
+getChannel
+public
+int
+getChannel
+()
+Gets the channel number associated with the object.
+Returns:
+The channel number.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

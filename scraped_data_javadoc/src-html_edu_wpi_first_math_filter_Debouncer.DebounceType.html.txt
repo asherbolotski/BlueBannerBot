@@ -1,0 +1,237 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.filter;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+009
+/**
+010
+* A simple debounce filter for boolean streams. Requires that the boolean change value from
+011
+* baseline for a specified period of time before the filtered value changes.
+012
+*/
+013
+public class Debouncer {
+014
+/** Type of debouncing to perform. */
+015
+public enum DebounceType {
+016
+/** Rising edge. */
+017
+kRising,
+018
+/** Falling edge. */
+019
+kFalling,
+020
+/** Both rising and falling edges. */
+021
+kBoth
+022
+}
+023
+024
+private double m_debounceTimeSeconds;
+025
+private DebounceType m_debounceType;
+026
+private boolean m_baseline;
+027
+028
+private double m_prevTimeSeconds;
+029
+030
+/**
+031
+* Creates a new Debouncer.
+032
+*
+033
+* @param debounceTime The number of seconds the value must change from baseline for the filtered
+034
+*     value to change.
+035
+* @param type Which type of state change the debouncing will be performed on.
+036
+*/
+037
+public Debouncer(double debounceTime, DebounceType type) {
+038
+m_debounceTimeSeconds = debounceTime;
+039
+m_debounceType = type;
+040
+041
+resetTimer();
+042
+043
+m_baseline =
+044
+switch (m_debounceType) {
+045
+case kBoth, kRising -> false;
+046
+case kFalling -> true;
+047
+};
+048
+}
+049
+050
+/**
+051
+* Creates a new Debouncer. Baseline value defaulted to "false."
+052
+*
+053
+* @param debounceTime The number of seconds the value must change from baseline for the filtered
+054
+*     value to change.
+055
+*/
+056
+public Debouncer(double debounceTime) {
+057
+this(debounceTime, DebounceType.kRising);
+058
+}
+059
+060
+private void resetTimer() {
+061
+m_prevTimeSeconds = MathSharedStore.getTimestamp();
+062
+}
+063
+064
+private boolean hasElapsed() {
+065
+return MathSharedStore.getTimestamp() - m_prevTimeSeconds >= m_debounceTimeSeconds;
+066
+}
+067
+068
+/**
+069
+* Applies the debouncer to the input stream.
+070
+*
+071
+* @param input The current value of the input stream.
+072
+* @return The debounced value of the input stream.
+073
+*/
+074
+public boolean calculate(boolean input) {
+075
+if (input == m_baseline) {
+076
+resetTimer();
+077
+}
+078
+079
+if (hasElapsed()) {
+080
+if (m_debounceType == DebounceType.kBoth) {
+081
+m_baseline = input;
+082
+resetTimer();
+083
+}
+084
+return input;
+085
+} else {
+086
+return m_baseline;
+087
+}
+088
+}
+089
+090
+/**
+091
+* Sets the time to debounce.
+092
+*
+093
+* @param time The number of seconds the value must change from baseline for the filtered value to
+094
+*     change.
+095
+*/
+096
+public void setDebounceTime(double time) {
+097
+m_debounceTimeSeconds = time;
+098
+}
+099
+100
+/**
+101
+* Gets the time to debounce.
+102
+*
+103
+* @return The number of seconds the value must change from baseline for the filtered value to
+104
+*     change.
+105
+*/
+106
+public double getDebounceTime() {
+107
+return m_debounceTimeSeconds;
+108
+}
+109
+110
+/**
+111
+* Sets the debounce type.
+112
+*
+113
+* @param type Which type of state change the debouncing will be performed on.
+114
+*/
+115
+public void setDebounceType(DebounceType type) {
+116
+m_debounceType = type;
+117
+}
+118
+119
+/**
+120
+* Gets the debounce type.
+121
+*
+122
+* @return Which type of state change the debouncing will be performed on.
+123
+*/
+124
+public DebounceType getDebounceType() {
+125
+return m_debounceType;
+126
+}
+127
+}

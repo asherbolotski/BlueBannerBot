@@ -1,0 +1,51 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+import java.lang.ref.Cleaner;
+008
+import java.lang.ref.Cleaner.Cleanable;
+009
+010
+/** Cleaner object for WPILib objects. */
+011
+public final class WPICleaner {
+012
+private WPICleaner() {
+013
+throw new UnsupportedOperationException("This is a utility class!");
+014
+}
+015
+016
+private static final Cleaner instance = Cleaner.create();
+017
+018
+/**
+019
+* Register an object with the cleaner.
+020
+*
+021
+* @param object The object to register.
+022
+* @param runnable The runnable to call on cleanup.
+023
+* @return The registered Cleanable.
+024
+*/
+025
+public static Cleanable register(Object object, Runnable runnable) {
+026
+return instance.register(object, runnable);
+027
+}
+028
+}

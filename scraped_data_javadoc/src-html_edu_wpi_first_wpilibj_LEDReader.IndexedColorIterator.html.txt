@@ -1,0 +1,188 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.wpilibj.util.Color;
+008
+import edu.wpi.first.wpilibj.util.Color8Bit;
+009
+010
+/** Generic interface for reading data from an LED buffer. */
+011
+public interface LEDReader {
+012
+/**
+013
+* Gets the length of the buffer.
+014
+*
+015
+* @return the buffer length
+016
+*/
+017
+int getLength();
+018
+019
+/**
+020
+* Gets the most recently written color for a particular LED in the buffer.
+021
+*
+022
+* @param index the index of the LED
+023
+* @return the LED color
+024
+* @throws IndexOutOfBoundsException if the index is negative or greater than {@link #getLength()}
+025
+*/
+026
+default Color getLED(int index) {
+027
+return new Color(getRed(index) / 255.0, getGreen(index) / 255.0, getBlue(index) / 255.0);
+028
+}
+029
+030
+/**
+031
+* Gets the most recently written color for a particular LED in the buffer.
+032
+*
+033
+* @param index the index of the LED
+034
+* @return the LED color
+035
+* @throws IndexOutOfBoundsException if the index is negative or greater than {@link #getLength()}
+036
+*/
+037
+default Color8Bit getLED8Bit(int index) {
+038
+return new Color8Bit(getRed(index), getGreen(index), getBlue(index));
+039
+}
+040
+041
+/**
+042
+* Gets the red channel of the color at the specified index.
+043
+*
+044
+* @param index the index of the LED to read
+045
+* @return the value of the red channel, from [0, 255]
+046
+*/
+047
+int getRed(int index);
+048
+049
+/**
+050
+* Gets the green channel of the color at the specified index.
+051
+*
+052
+* @param index the index of the LED to read
+053
+* @return the value of the green channel, from [0, 255]
+054
+*/
+055
+int getGreen(int index);
+056
+057
+/**
+058
+* Gets the blue channel of the color at the specified index.
+059
+*
+060
+* @param index the index of the LED to read
+061
+* @return the value of the blue channel, from [0, 255]
+062
+*/
+063
+int getBlue(int index);
+064
+065
+/**
+066
+* A functional interface that allows for iteration over an LED buffer without manually writing an
+067
+* indexed for-loop.
+068
+*/
+069
+@FunctionalInterface
+070
+interface IndexedColorIterator {
+071
+/**
+072
+* Accepts an index of an LED in the buffer and the red, green, and blue components of the
+073
+* currently stored color for that LED.
+074
+*
+075
+* @param index the index of the LED in the buffer that the red, green, and blue channels
+076
+*     corresponds to
+077
+* @param r the value of the red channel of the color currently in the buffer at index {@code i}
+078
+* @param g the value of the green channel of the color currently in the buffer at index {@code
+079
+*     i}
+080
+* @param b the value of the blue channel of the color currently in the buffer at index {@code
+081
+*     i}
+082
+*/
+083
+void accept(int index, int r, int g, int b);
+084
+}
+085
+086
+/**
+087
+* Iterates over the LEDs in the buffer, starting from index 0. The iterator function is passed
+088
+* the current index of iteration, along with the values for the red, green, and blue components
+089
+* of the color written to the LED at that index.
+090
+*
+091
+* @param iterator the iterator function to call for each LED in the buffer.
+092
+*/
+093
+default void forEach(IndexedColorIterator iterator) {
+094
+int bufLen = getLength();
+095
+for (int i = 0; i < bufLen; i++) {
+096
+iterator.accept(i, getRed(i), getGreen(i), getBlue(i));
+097
+}
+098
+}
+099
+}

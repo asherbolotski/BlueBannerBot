@@ -1,0 +1,339 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.util;
+006
+007
+/** Utility class that converts between commonly used units in FRC. */
+008
+public final class Units {
+009
+private static final double kInchesPerFoot = 12.0;
+010
+private static final double kMetersPerInch = 0.0254;
+011
+private static final double kSecondsPerMinute = 60;
+012
+private static final double kMillisecondsPerSecond = 1000;
+013
+private static final double kKilogramsPerLb = 0.453592;
+014
+015
+/** Utility class, so constructor is private. */
+016
+private Units() {
+017
+throw new UnsupportedOperationException("This is a utility class!");
+018
+}
+019
+020
+/**
+021
+* Converts given meters to feet.
+022
+*
+023
+* @param meters The meters to convert to feet.
+024
+* @return Feet converted from meters.
+025
+*/
+026
+public static double metersToFeet(double meters) {
+027
+return metersToInches(meters) / kInchesPerFoot;
+028
+}
+029
+030
+/**
+031
+* Converts given feet to meters.
+032
+*
+033
+* @param feet The feet to convert to meters.
+034
+* @return Meters converted from feet.
+035
+*/
+036
+public static double feetToMeters(double feet) {
+037
+return inchesToMeters(feet * kInchesPerFoot);
+038
+}
+039
+040
+/**
+041
+* Converts given meters to inches.
+042
+*
+043
+* @param meters The meters to convert to inches.
+044
+* @return Inches converted from meters.
+045
+*/
+046
+public static double metersToInches(double meters) {
+047
+return meters / kMetersPerInch;
+048
+}
+049
+050
+/**
+051
+* Converts given inches to meters.
+052
+*
+053
+* @param inches The inches to convert to meters.
+054
+* @return Meters converted from inches.
+055
+*/
+056
+public static double inchesToMeters(double inches) {
+057
+return inches * kMetersPerInch;
+058
+}
+059
+060
+/**
+061
+* Converts given degrees to radians.
+062
+*
+063
+* @param degrees The degrees to convert to radians.
+064
+* @return Radians converted from degrees.
+065
+*/
+066
+public static double degreesToRadians(double degrees) {
+067
+return Math.toRadians(degrees);
+068
+}
+069
+070
+/**
+071
+* Converts given radians to degrees.
+072
+*
+073
+* @param radians The radians to convert to degrees.
+074
+* @return Degrees converted from radians.
+075
+*/
+076
+public static double radiansToDegrees(double radians) {
+077
+return Math.toDegrees(radians);
+078
+}
+079
+080
+/**
+081
+* Converts given radians to rotations.
+082
+*
+083
+* @param radians The radians to convert.
+084
+* @return rotations Converted from radians.
+085
+*/
+086
+public static double radiansToRotations(double radians) {
+087
+return radians / (Math.PI * 2);
+088
+}
+089
+090
+/**
+091
+* Converts given degrees to rotations.
+092
+*
+093
+* @param degrees The degrees to convert.
+094
+* @return rotations Converted from degrees.
+095
+*/
+096
+public static double degreesToRotations(double degrees) {
+097
+return degrees / 360;
+098
+}
+099
+100
+/**
+101
+* Converts given rotations to degrees.
+102
+*
+103
+* @param rotations The rotations to convert.
+104
+* @return degrees Converted from rotations.
+105
+*/
+106
+public static double rotationsToDegrees(double rotations) {
+107
+return rotations * 360;
+108
+}
+109
+110
+/**
+111
+* Converts given rotations to radians.
+112
+*
+113
+* @param rotations The rotations to convert.
+114
+* @return radians Converted from rotations.
+115
+*/
+116
+public static double rotationsToRadians(double rotations) {
+117
+return rotations * 2 * Math.PI;
+118
+}
+119
+120
+/**
+121
+* Converts rotations per minute to radians per second.
+122
+*
+123
+* @param rpm The rotations per minute to convert to radians per second.
+124
+* @return Radians per second converted from rotations per minute.
+125
+*/
+126
+public static double rotationsPerMinuteToRadiansPerSecond(double rpm) {
+127
+return rpm * Math.PI / (kSecondsPerMinute / 2);
+128
+}
+129
+130
+/**
+131
+* Converts radians per second to rotations per minute.
+132
+*
+133
+* @param radiansPerSecond The radians per second to convert to from rotations per minute.
+134
+* @return Rotations per minute converted from radians per second.
+135
+*/
+136
+public static double radiansPerSecondToRotationsPerMinute(double radiansPerSecond) {
+137
+return radiansPerSecond * (kSecondsPerMinute / 2) / Math.PI;
+138
+}
+139
+140
+/**
+141
+* Converts given milliseconds to seconds.
+142
+*
+143
+* @param milliseconds The milliseconds to convert to seconds.
+144
+* @return Seconds converted from milliseconds.
+145
+*/
+146
+public static double millisecondsToSeconds(double milliseconds) {
+147
+return milliseconds / kMillisecondsPerSecond;
+148
+}
+149
+150
+/**
+151
+* Converts given seconds to milliseconds.
+152
+*
+153
+* @param seconds The seconds to convert to milliseconds.
+154
+* @return Milliseconds converted from seconds.
+155
+*/
+156
+public static double secondsToMilliseconds(double seconds) {
+157
+return seconds * kMillisecondsPerSecond;
+158
+}
+159
+160
+/**
+161
+* Converts kilograms into lbs (pound-mass).
+162
+*
+163
+* @param kilograms The kilograms to convert to lbs (pound-mass).
+164
+* @return Lbs (pound-mass) converted from kilograms.
+165
+*/
+166
+public static double kilogramsToLbs(double kilograms) {
+167
+return kilograms / kKilogramsPerLb;
+168
+}
+169
+170
+/**
+171
+* Converts lbs (pound-mass) into kilograms.
+172
+*
+173
+* @param lbs The lbs (pound-mass) to convert to kilograms.
+174
+* @return Kilograms converted from lbs (pound-mass).
+175
+*/
+176
+public static double lbsToKilograms(double lbs) {
+177
+return lbs * kKilogramsPerLb;
+178
+}
+179
+}

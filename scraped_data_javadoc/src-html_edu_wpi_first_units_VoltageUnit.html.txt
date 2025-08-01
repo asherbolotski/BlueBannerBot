@@ -1,0 +1,215 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.ImmutableVoltage;
+008
+import edu.wpi.first.units.measure.MutVoltage;
+009
+import edu.wpi.first.units.measure.Voltage;
+010
+011
+/**
+012
+* Unit of electric voltage dimension.
+013
+*
+014
+* <p>This is the base type for units of voltage dimension. It is also used to specify the dimension
+015
+* for {@link Measure}: <code>Measure&lt;VoltageUnit&gt;</code>.
+016
+*
+017
+* <p>Actual units (such as {@link Units#Volts} and {@link Units#Millivolts}) can be found in the
+018
+* {@link Units} class.
+019
+*/
+020
+public final class VoltageUnit extends Unit {
+021
+VoltageUnit(VoltageUnit baseUnit, double baseUnitEquivalent, String name, String symbol) {
+022
+super(baseUnit, baseUnitEquivalent, name, symbol);
+023
+}
+024
+025
+VoltageUnit(
+026
+VoltageUnit baseUnit,
+027
+UnaryFunction toBaseConverter,
+028
+UnaryFunction fromBaseConverter,
+029
+String name,
+030
+String symbol) {
+031
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+032
+}
+033
+034
+@Override
+035
+public VoltageUnit getBaseUnit() {
+036
+return (VoltageUnit) super.getBaseUnit();
+037
+}
+038
+039
+/**
+040
+* Constructs a unit of power equivalent to this unit of voltage multiplied by another unit of
+041
+* electrical current. For example, {@code Volts.times(Amps)} will return a unit of power
+042
+* equivalent to one Watt; {@code Volts.times(Milliamps)} will return a unit of power equivalent
+043
+* to a milliwatt, and so on.
+044
+*
+045
+* @param current the current unit to multiply by
+046
+* @param name the name of the resulting unit of power
+047
+* @param symbol the symbol used to represent the unit of power
+048
+* @return the power unit
+049
+*/
+050
+public PowerUnit mult(CurrentUnit current, String name, String symbol) {
+051
+return Units.derive(PowerUnit.combine(this, current)).named(name).symbol(symbol).make();
+052
+}
+053
+054
+@Override
+055
+public Voltage of(double magnitude) {
+056
+return new ImmutableVoltage(magnitude, toBaseUnits(magnitude), this);
+057
+}
+058
+059
+@Override
+060
+public Voltage ofBaseUnits(double baseUnitMagnitude) {
+061
+return new ImmutableVoltage(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+062
+}
+063
+064
+@Override
+065
+public Voltage zero() {
+066
+return (Voltage) super.zero();
+067
+}
+068
+069
+@Override
+070
+public Voltage one() {
+071
+return (Voltage) super.one();
+072
+}
+073
+074
+@Override
+075
+public MutVoltage mutable(double magnitude) {
+076
+return new MutVoltage(magnitude, toBaseUnits(magnitude), this);
+077
+}
+078
+079
+@Override
+080
+public VelocityUnit<VoltageUnit> per(TimeUnit period) {
+081
+return VelocityUnit.combine(this, period);
+082
+}
+083
+084
+/**
+085
+* Combines this unit of voltage with a unit of current to form a unit of resistance.
+086
+*
+087
+* @param currentUnit the unit of current
+088
+* @return the combined resistance unit
+089
+*/
+090
+public ResistanceUnit per(CurrentUnit currentUnit) {
+091
+return ResistanceUnit.combine(this, currentUnit);
+092
+}
+093
+094
+/**
+095
+* Creates a generic ratio unit of this voltage to a different unit type.
+096
+*
+097
+* @param other the other unit type
+098
+* @param <U> the type of the other unit
+099
+* @return the combined ratio type
+100
+*/
+101
+public <U extends Unit> PerUnit<VoltageUnit, U> per(U other) {
+102
+return PerUnit.combine(this, other);
+103
+}
+104
+105
+/**
+106
+* Converts a measurement value in terms of another voltage unit to this unit.
+107
+*
+108
+* @param magnitude the magnitude of the measurement in terms of the other voltage unit
+109
+* @param otherUnit the other voltage unit
+110
+* @return the value of the measurement in terms of this unit
+111
+*/
+112
+public double convertFrom(double magnitude, VoltageUnit otherUnit) {
+113
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+114
+}
+115
+}

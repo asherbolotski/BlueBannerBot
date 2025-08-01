@@ -1,0 +1,74 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+import edu.wpi.first.util.sendable.SendableBuilder;
+008
+009
+/** Helper class for building Sendable dashboard representations for NetworkTables. */
+010
+public interface NTSendableBuilder extends SendableBuilder {
+011
+/**
+012
+* Set the function that should be called to update the network table for things other than
+013
+* properties. Note this function is not passed the network table object; instead it should use
+014
+* the entry handles returned by getEntry().
+015
+*
+016
+* @param func function
+017
+*/
+018
+void setUpdateTable(Runnable func);
+019
+020
+/**
+021
+* Add a property without getters or setters. This can be used to get entry handles for the
+022
+* function called by setUpdateTable().
+023
+*
+024
+* @param key property name
+025
+* @return Network table topic
+026
+*/
+027
+Topic getTopic(String key);
+028
+029
+/**
+030
+* Get the network table.
+031
+*
+032
+* @return The network table
+033
+*/
+034
+NetworkTable getTable();
+035
+036
+@Override
+037
+default BackendKind getBackendKind() {
+038
+return BackendKind.kNetworkTables;
+039
+}
+040
+}

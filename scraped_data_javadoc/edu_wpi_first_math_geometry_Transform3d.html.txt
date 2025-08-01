@@ -1,0 +1,464 @@
+Package
+edu.wpi.first.math.geometry
+Class Transform3d
+java.lang.Object
+edu.wpi.first.math.geometry.Transform3d
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Transform3d
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+Represents a transformation for a Pose3d in the pose's frame.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+Transform3d
+kZero
+A preallocated Transform3d representing no transformation.
+static final
+Transform3dProto
+proto
+Transform3d protobuf for serialization.
+static final
+Transform3dStruct
+struct
+Transform3d struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+Transform3d
+()
+Constructs the identity transform -- maps an initial pose to itself.
+Transform3d
+(double x,
+ double y,
+ double z,
+Rotation3d
+rotation)
+Constructs a transform with x, y, and z translations instead of a separate Translation3d.
+Transform3d
+(
+Pose3d
+initial,
+Pose3d
+last)
+Constructs the transform that maps the initial pose to the final pose.
+Transform3d
+(
+Transform2d
+transform)
+Constructs a 3D transform from a 2D transform in the X-Y plane.
+Transform3d
+(
+Translation3d
+translation,
+Rotation3d
+rotation)
+Constructs a transform with the given translation and rotation components.
+Transform3d
+(
+Matrix
+<
+N4
+,
+N4
+> matrix)
+Constructs a transform with the specified affine transformation matrix.
+Transform3d
+(
+Distance
+x,
+Distance
+y,
+Distance
+z,
+Rotation3d
+rotation)
+Constructs a transform with x, y, and z translations instead of a separate Translation3d.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Transform3d
+div
+(double scalar)
+Divides the transform by the scalar.
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Transform3d and another object.
+Distance
+getMeasureX
+()
+Returns the X component of the transformation's translation in a measure.
+Distance
+getMeasureY
+()
+Returns the Y component of the transformation's translation in a measure.
+Distance
+getMeasureZ
+()
+Returns the Z component of the transformation's translation in a measure.
+Rotation3d
+getRotation
+()
+Returns the rotational component of the transformation.
+Translation3d
+getTranslation
+()
+Returns the translation component of the transformation.
+double
+getX
+()
+Returns the X component of the transformation's translation.
+double
+getY
+()
+Returns the Y component of the transformation's translation.
+double
+getZ
+()
+Returns the Z component of the transformation's translation.
+int
+hashCode
+()
+Transform3d
+inverse
+()
+Invert the transformation.
+Transform3d
+plus
+(
+Transform3d
+other)
+Composes two transformations.
+Transform3d
+times
+(double scalar)
+Multiplies the transform by the scalar.
+Matrix
+<
+N4
+,
+N4
+>
+toMatrix
+()
+Returns an affine transformation matrix representation of this transformation.
+String
+toString
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kZero
+public static final
+Transform3d
+kZero
+A preallocated Transform3d representing no transformation.
+This exists to avoid allocations for common transformations.
+proto
+public static final
+Transform3dProto
+proto
+Transform3d protobuf for serialization.
+struct
+public static final
+Transform3dStruct
+struct
+Transform3d struct for serialization.
+Constructor Details
+Transform3d
+public
+Transform3d
+(
+Pose3d
+initial,
+Pose3d
+last)
+Constructs the transform that maps the initial pose to the final pose.
+Parameters:
+initial
+- The initial pose for the transformation.
+last
+- The final pose for the transformation.
+Transform3d
+public
+Transform3d
+(
+Translation3d
+translation,
+Rotation3d
+rotation)
+Constructs a transform with the given translation and rotation components.
+Parameters:
+translation
+- Translational component of the transform.
+rotation
+- Rotational component of the transform.
+Transform3d
+public
+Transform3d
+(double x,
+ double y,
+ double z,
+Rotation3d
+rotation)
+Constructs a transform with x, y, and z translations instead of a separate Translation3d.
+Parameters:
+x
+- The x component of the translational component of the transform.
+y
+- The y component of the translational component of the transform.
+z
+- The z component of the translational component of the transform.
+rotation
+- The rotational component of the transform.
+Transform3d
+public
+Transform3d
+(
+Distance
+x,
+Distance
+y,
+Distance
+z,
+Rotation3d
+rotation)
+Constructs a transform with x, y, and z translations instead of a separate Translation3d. The
+ X, Y, and Z translations will be converted to and tracked as meters.
+Parameters:
+x
+- The x component of the translational component of the transform.
+y
+- The y component of the translational component of the transform.
+z
+- The z component of the translational component of the transform.
+rotation
+- The rotational component of the transform.
+Transform3d
+public
+Transform3d
+(
+Matrix
+<
+N4
+,
+N4
+> matrix)
+Constructs a transform with the specified affine transformation matrix.
+Parameters:
+matrix
+- The affine transformation matrix.
+Throws:
+IllegalArgumentException
+- if the affine transformation matrix is invalid.
+Transform3d
+public
+Transform3d
+()
+Constructs the identity transform -- maps an initial pose to itself.
+Transform3d
+public
+Transform3d
+(
+Transform2d
+transform)
+Constructs a 3D transform from a 2D transform in the X-Y plane.
+Parameters:
+transform
+- The 2D transform.
+See Also:
+Rotation3d(Rotation2d)
+Translation3d(Translation2d)
+Method Details
+times
+public
+Transform3d
+times
+(double scalar)
+Multiplies the transform by the scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The scaled Transform3d.
+div
+public
+Transform3d
+div
+(double scalar)
+Divides the transform by the scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The scaled Transform3d.
+plus
+public
+Transform3d
+plus
+(
+Transform3d
+other)
+Composes two transformations. The second transform is applied relative to the orientation of
+ the first.
+Parameters:
+other
+- The transform to compose with this one.
+Returns:
+The composition of the two transformations.
+getTranslation
+public
+Translation3d
+getTranslation
+()
+Returns the translation component of the transformation.
+Returns:
+The translational component of the transform.
+getX
+public
+double
+getX
+()
+Returns the X component of the transformation's translation.
+Returns:
+The x component of the transformation's translation.
+getY
+public
+double
+getY
+()
+Returns the Y component of the transformation's translation.
+Returns:
+The y component of the transformation's translation.
+getZ
+public
+double
+getZ
+()
+Returns the Z component of the transformation's translation.
+Returns:
+The z component of the transformation's translation.
+getMeasureX
+public
+Distance
+getMeasureX
+()
+Returns the X component of the transformation's translation in a measure.
+Returns:
+The x component of the transformation's translation in a measure.
+getMeasureY
+public
+Distance
+getMeasureY
+()
+Returns the Y component of the transformation's translation in a measure.
+Returns:
+The y component of the transformation's translation in a measure.
+getMeasureZ
+public
+Distance
+getMeasureZ
+()
+Returns the Z component of the transformation's translation in a measure.
+Returns:
+The z component of the transformation's translation in a measure.
+toMatrix
+public
+Matrix
+<
+N4
+,
+N4
+>
+toMatrix
+()
+Returns an affine transformation matrix representation of this transformation.
+Returns:
+An affine transformation matrix representation of this transformation.
+getRotation
+public
+Rotation3d
+getRotation
+()
+Returns the rotational component of the transformation.
+Returns:
+Reference to the rotational component of the transform.
+inverse
+public
+Transform3d
+inverse
+()
+Invert the transformation. This is useful for undoing a transformation.
+Returns:
+The inverted transformation.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Transform3d and another object.
+Overrides:
+equals
+in class
+Object
+Parameters:
+obj
+- The other object.
+Returns:
+Whether the two objects are equal or not.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object

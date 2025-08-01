@@ -1,0 +1,93 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.struct;
+006
+007
+import edu.wpi.first.math.geometry.Translation3d;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class Translation3dStruct implements Struct<Translation3d> {
+012
+@Override
+013
+public Class<Translation3d> getTypeClass() {
+014
+return Translation3d.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "Translation3d";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble * 3;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double x;double y;double z";
+030
+}
+031
+032
+@Override
+033
+public Translation3d unpack(ByteBuffer bb) {
+034
+double x = bb.getDouble();
+035
+double y = bb.getDouble();
+036
+double z = bb.getDouble();
+037
+return new Translation3d(x, y, z);
+038
+}
+039
+040
+@Override
+041
+public void pack(ByteBuffer bb, Translation3d value) {
+042
+bb.putDouble(value.getX());
+043
+bb.putDouble(value.getY());
+044
+bb.putDouble(value.getZ());
+045
+}
+046
+047
+@Override
+048
+public boolean isImmutable() {
+049
+return true;
+050
+}
+051
+}

@@ -1,0 +1,627 @@
+Package
+edu.wpi.first.units.mutable
+Class GenericMutableMeasureImpl<U extends
+Unit
+>
+java.lang.Object
+edu.wpi.first.units.mutable.MutableMeasureBase
+<U,
+Measure
+<U>,
+GenericMutableMeasureImpl
+<U>>
+edu.wpi.first.units.mutable.GenericMutableMeasureImpl<U>
+Type Parameters:
+U
+- the unit of measure
+All Implemented Interfaces:
+Measure
+<U>
+,
+MutableMeasure
+<U,
+Measure
+<U>,
+GenericMutableMeasureImpl
+<U>>
+,
+Comparable
+<
+Measure
+<U>>
+public final class
+GenericMutableMeasureImpl
+<U extends
+Unit
+>
+extends
+MutableMeasureBase
+<U,
+Measure
+<U>,
+GenericMutableMeasureImpl
+<U>>
+A generic implementation of a mutable measure. This is used in scenarios no unit-specific mutable
+ implementation can be determined.
+Field Summary
+Fields inherited from class edu.wpi.first.units.mutable.
+MutableMeasureBase
+m_baseUnitMagnitude
+,
+m_magnitude
+,
+m_unit
+Fields inherited from interface edu.wpi.first.units.
+Measure
+EQUIVALENCE_THRESHOLD
+Constructor Summary
+Constructors
+Constructor
+Description
+GenericMutableMeasureImpl
+(double initialValue,
+ double baseUnitMagnitude,
+U
+unit)
+Initializes the mutable measure with initial conditions.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Measure
+<
+U
+>
+copy
+()
+Returns an immutable copy of this measure.
+Measure
+<
+U
+>
+div
+(double divisor)
+Divides this measure by a unitless scalar and returns the result.
+Measure
+<
+U
+>
+div
+(
+Dimensionless
+divisor)
+Divides this measure by a dimensionless scalar and returns the result.
+Measure
+<
+U
+>
+minus
+(
+Measure
+<? extends
+U
+> other)
+Subtracts another measure of the same unit type from this one.
+MutableMeasure
+<
+U
+,
+?,
+?>
+mutableCopy
+()
+Returns a mutable copy of this measure.
+Measure
+<
+U
+>
+plus
+(
+Measure
+<? extends
+U
+> other)
+Adds another measure of the same unit type to this one.
+Measure
+<
+U
+>
+times
+(double multiplier)
+Multiplies this measure by a scalar unitless multiplier.
+Measure
+<
+U
+>
+times
+(
+Dimensionless
+multiplier)
+Multiplies this measure by a scalar dimensionless multiplier.
+Measure
+<
+U
+>
+unaryMinus
+()
+Returns a measure equivalent to this one equal to zero minus its current value.
+Methods inherited from class edu.wpi.first.units.mutable.
+MutableMeasureBase
+baseUnitMagnitude
+,
+equals
+,
+hashCode
+,
+magnitude
+,
+mut_replace
+,
+toString
+,
+unit
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.units.
+Measure
+abs
+,
+baseUnit
+,
+compareTo
+,
+copySign
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divideRatio
+,
+gt
+,
+gte
+,
+in
+,
+isEquivalent
+,
+isNear
+,
+isNear
+,
+lt
+,
+lte
+,
+negate
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+timesConversionFactor
+,
+timesInverse
+,
+timesRatio
+,
+toLongString
+,
+toShortString
+Methods inherited from interface edu.wpi.first.units.
+MutableMeasure
+mut_acc
+,
+mut_acc
+,
+mut_divide
+,
+mut_divide
+,
+mut_minus
+,
+mut_minus
+,
+mut_plus
+,
+mut_plus
+,
+mut_replace
+,
+mut_setBaseUnitMagnitude
+,
+mut_setMagnitude
+,
+mut_times
+,
+mut_times
+Constructor Details
+GenericMutableMeasureImpl
+public
+GenericMutableMeasureImpl
+(double initialValue,
+ double baseUnitMagnitude,
+U
+unit)
+Initializes the mutable measure with initial conditions. Both relative and base unit magnitudes
+ are required to avoid unnecessary calculations. It is up to the caller to ensure they are
+ correct.
+Parameters:
+initialValue
+- the initial magnitude of the measure, in terms of the unit
+baseUnitMagnitude
+- the initial magnitude of the measure, in terms of the base unit
+unit
+- the initial unit of measure
+Method Details
+copy
+public
+Measure
+<
+U
+>
+copy
+()
+Description copied from interface:
+Measure
+Returns an immutable copy of this measure. The copy can be used freely and is guaranteed never
+ to change.
+Returns:
+the copied measure
+mutableCopy
+public
+MutableMeasure
+<
+U
+,
+?,
+?>
+mutableCopy
+()
+Description copied from interface:
+Measure
+Returns a mutable copy of this measure. It will be initialized to the current state of this
+ measure, but can be changed over time without needing to allocate new measurement objects.
+Returns:
+the copied measure
+unaryMinus
+public
+Measure
+<
+U
+>
+unaryMinus
+()
+Description copied from interface:
+Measure
+Returns a measure equivalent to this one equal to zero minus its current value. For non-linear
+ unit types like temperature, the zero point is treated as the zero value of the base unit (eg
+ Kelvin). In effect, this means code like
+Celsius.of(10).unaryMinus()
+returns a value
+ equivalent to -10 Kelvin, and
+not
+-10° Celsius.
+Returns:
+a measure equal to zero minus this measure
+plus
+public
+Measure
+<
+U
+>
+plus
+(
+Measure
+<? extends
+U
+> other)
+Description copied from interface:
+Measure
+Adds another measure of the same unit type to this one.
+Parameters:
+other
+- the measurement to add
+Returns:
+a measure of the sum of both measures
+minus
+public
+Measure
+<
+U
+>
+minus
+(
+Measure
+<? extends
+U
+> other)
+Description copied from interface:
+Measure
+Subtracts another measure of the same unit type from this one.
+Parameters:
+other
+- the measurement to subtract
+Returns:
+a measure of the difference between the measures
+times
+public
+Measure
+<
+U
+>
+times
+(double multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a scalar unitless multiplier.
+Parameters:
+multiplier
+- the scalar multiplication factor
+Returns:
+the scaled result
+times
+public
+Measure
+<
+U
+>
+times
+(
+Dimensionless
+multiplier)
+Description copied from interface:
+Measure
+Multiplies this measure by a scalar dimensionless multiplier.
+Parameters:
+multiplier
+- the scalar multiplication factor
+Returns:
+the scaled result
+div
+public
+Measure
+<
+U
+>
+div
+(double divisor)
+Description copied from interface:
+Measure
+Divides this measure by a unitless scalar and returns the result.
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result
+div
+public
+Measure
+<
+U
+>
+div
+(
+Dimensionless
+divisor)
+Description copied from interface:
+Measure
+Divides this measure by a dimensionless scalar and returns the result.
+Parameters:
+divisor
+- the measurement to divide by.
+Returns:
+the division result

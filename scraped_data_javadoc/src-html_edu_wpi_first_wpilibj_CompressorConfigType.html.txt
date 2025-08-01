@@ -1,0 +1,93 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.REVPHJNI;
+008
+009
+/** Compressor config type. */
+010
+public enum CompressorConfigType {
+011
+/** Disabled. */
+012
+Disabled(REVPHJNI.COMPRESSOR_CONFIG_TYPE_DISABLED),
+013
+/** Digital. */
+014
+Digital(REVPHJNI.COMPRESSOR_CONFIG_TYPE_DIGITAL),
+015
+/** Analog. */
+016
+Analog(REVPHJNI.COMPRESSOR_CONFIG_TYPE_ANALOG),
+017
+/** Hybrid. */
+018
+Hybrid(REVPHJNI.COMPRESSOR_CONFIG_TYPE_HYBRID);
+019
+020
+/** CompressorConfigType value. */
+021
+public final int value;
+022
+023
+CompressorConfigType(int value) {
+024
+this.value = value;
+025
+}
+026
+027
+/**
+028
+* Gets a type from an int value.
+029
+*
+030
+* @param value int value
+031
+* @return type
+032
+*/
+033
+public static CompressorConfigType fromValue(int value) {
+034
+return switch (value) {
+035
+case REVPHJNI.COMPRESSOR_CONFIG_TYPE_HYBRID -> Hybrid;
+036
+case REVPHJNI.COMPRESSOR_CONFIG_TYPE_ANALOG -> Analog;
+037
+case REVPHJNI.COMPRESSOR_CONFIG_TYPE_DIGITAL -> Digital;
+038
+default -> Disabled;
+039
+};
+040
+}
+041
+042
+/**
+043
+* Returns the CompressorConfigType's value.
+044
+*
+045
+* @return The CompressorConfigType's value.
+046
+*/
+047
+public int getValue() {
+048
+return value;
+049
+}
+050
+}

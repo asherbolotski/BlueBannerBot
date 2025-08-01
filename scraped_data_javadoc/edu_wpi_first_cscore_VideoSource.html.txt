@@ -1,0 +1,531 @@
+Package
+edu.wpi.first.cscore
+Class VideoSource
+java.lang.Object
+edu.wpi.first.cscore.VideoSource
+All Implemented Interfaces:
+AutoCloseable
+Direct Known Subclasses:
+ImageSource
+,
+VideoCamera
+public class
+VideoSource
+extends
+Object
+implements
+AutoCloseable
+A source for video that provides a sequence of frames. Each frame may consist of multiple images
+ (e.g. from a stereo or depth camera); these are called channels.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+VideoSource.ConnectionStrategy
+Connection strategy.
+static enum
+VideoSource.Kind
+Video source kind.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected int
+m_handle
+Video source handle.
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+VideoSource
+(int handle)
+Constructs a VideoSource.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+VideoProperty
+[]
+enumerateProperties
+()
+Enumerate all properties of this source.
+VideoSink
+[]
+enumerateSinks
+()
+Enumerate all sinks connected to this source.
+static
+VideoSource
+[]
+enumerateSources
+()
+Enumerate all existing sources.
+VideoMode
+[]
+enumerateVideoModes
+()
+Enumerate all known video modes for this source.
+boolean
+equals
+(
+Object
+other)
+double
+getActualDataRate
+()
+Get the data rate (in bytes per second).
+double
+getActualFPS
+()
+Get the actual FPS.
+String
+getConfigJson
+()
+Get a JSON configuration string.
+String
+getDescription
+()
+Get the source description.
+int
+getHandle
+()
+Returns the video source handle.
+VideoSource.Kind
+getKind
+()
+Get the kind of the source.
+static
+VideoSource.Kind
+getKindFromInt
+(int kind)
+Convert from the numerical representation of kind to an enum type.
+long
+getLastFrameTime
+()
+Get the last time a frame was captured.
+String
+getName
+()
+Get the name of the source.
+VideoProperty
+getProperty
+(
+String
+name)
+Get a property.
+VideoMode
+getVideoMode
+()
+Get the current video mode.
+int
+hashCode
+()
+boolean
+isConnected
+()
+Returns true if the source currently connected to whatever is providing the images.
+boolean
+isEnabled
+()
+Gets source enable status.
+boolean
+isValid
+()
+Returns true if the VideoSource is valid.
+boolean
+setConfigJson
+(
+String
+config)
+Set video mode and properties from a JSON configuration string.
+void
+setConnectionStrategy
+(
+VideoSource.ConnectionStrategy
+strategy)
+Sets the connection strategy.
+boolean
+setFPS
+(int fps)
+Set the frames per second (FPS).
+boolean
+setPixelFormat
+(
+PixelFormat
+pixelFormat)
+Set the pixel format.
+boolean
+setResolution
+(int width,
+ int height)
+Set the resolution.
+boolean
+setVideoMode
+(
+VideoMode
+mode)
+Set the video mode.
+boolean
+setVideoMode
+(
+PixelFormat
+pixelFormat,
+ int width,
+ int height,
+ int fps)
+Set the video mode.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_handle
+protected
+int
+m_handle
+Video source handle.
+Constructor Details
+VideoSource
+protected
+VideoSource
+(int handle)
+Constructs a VideoSource.
+Parameters:
+handle
+- The video source handle.
+Method Details
+getKindFromInt
+public static
+VideoSource.Kind
+getKindFromInt
+(int kind)
+Convert from the numerical representation of kind to an enum type.
+Parameters:
+kind
+- The numerical representation of kind
+Returns:
+The kind
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+isValid
+public
+boolean
+isValid
+()
+Returns true if the VideoSource is valid.
+Returns:
+True if the VideoSource is valid.
+getHandle
+public
+int
+getHandle
+()
+Returns the video source handle.
+Returns:
+The video source handle.
+equals
+public
+boolean
+equals
+(
+Object
+other)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+getKind
+public
+VideoSource.Kind
+getKind
+()
+Get the kind of the source.
+Returns:
+The kind of the source.
+getName
+public
+String
+getName
+()
+Get the name of the source. The name is an arbitrary identifier provided when the source is
+ created, and should be unique.
+Returns:
+The name of the source.
+getDescription
+public
+String
+getDescription
+()
+Get the source description. This is source-kind specific.
+Returns:
+The source description.
+getLastFrameTime
+public
+long
+getLastFrameTime
+()
+Get the last time a frame was captured.
+Returns:
+Time in 1 us increments.
+setConnectionStrategy
+public
+void
+setConnectionStrategy
+(
+VideoSource.ConnectionStrategy
+strategy)
+Sets the connection strategy. By default, the source will automatically connect or disconnect
+ based on whether any sinks are connected.
+This function is non-blocking; look for either a connection open or close event or call
+isConnected()
+to determine the connection state.
+Parameters:
+strategy
+- connection strategy (auto, keep open, or force close)
+isConnected
+public
+boolean
+isConnected
+()
+Returns true if the source currently connected to whatever is providing the images.
+Returns:
+True if the source currently connected to whatever is providing the images.
+isEnabled
+public
+boolean
+isEnabled
+()
+Gets source enable status. This is determined with a combination of connection strategy and the
+ number of sinks connected.
+Returns:
+True if enabled, false otherwise.
+getProperty
+public
+VideoProperty
+getProperty
+(
+String
+name)
+Get a property.
+Parameters:
+name
+- Property name
+Returns:
+Property contents (of kind Property::kNone if no property with the given name exists)
+enumerateProperties
+public
+VideoProperty
+[]
+enumerateProperties
+()
+Enumerate all properties of this source.
+Returns:
+Array of video properties.
+getVideoMode
+public
+VideoMode
+getVideoMode
+()
+Get the current video mode.
+Returns:
+The current video mode.
+setVideoMode
+public
+boolean
+setVideoMode
+(
+VideoMode
+mode)
+Set the video mode.
+Parameters:
+mode
+- Video mode
+Returns:
+True if set successfully.
+setVideoMode
+public
+boolean
+setVideoMode
+(
+PixelFormat
+pixelFormat,
+ int width,
+ int height,
+ int fps)
+Set the video mode.
+Parameters:
+pixelFormat
+- desired pixel format
+width
+- desired width
+height
+- desired height
+fps
+- desired FPS
+Returns:
+True if set successfully
+setPixelFormat
+public
+boolean
+setPixelFormat
+(
+PixelFormat
+pixelFormat)
+Set the pixel format.
+Parameters:
+pixelFormat
+- desired pixel format
+Returns:
+True if set successfully
+setResolution
+public
+boolean
+setResolution
+(int width,
+ int height)
+Set the resolution.
+Parameters:
+width
+- desired width
+height
+- desired height
+Returns:
+True if set successfully
+setFPS
+public
+boolean
+setFPS
+(int fps)
+Set the frames per second (FPS).
+Parameters:
+fps
+- desired FPS
+Returns:
+True if set successfully
+setConfigJson
+public
+boolean
+setConfigJson
+(
+String
+config)
+Set video mode and properties from a JSON configuration string.
+The format of the JSON input is:
+{
+     "pixel format": "MJPEG", "YUYV", etc
+     "width": video mode width
+     "height": video mode height
+     "fps": video mode fps
+     "brightness": percentage brightness
+     "white balance": "auto", "hold", or value
+     "exposure": "auto", "hold", or value
+     "properties": [
+         {
+             "name": property name
+             "value": property value
+         }
+     ]
+ }
+Parameters:
+config
+- configuration
+Returns:
+True if set successfully
+getConfigJson
+public
+String
+getConfigJson
+()
+Get a JSON configuration string.
+Returns:
+JSON configuration string
+getActualFPS
+public
+double
+getActualFPS
+()
+Get the actual FPS.
+CameraServerJNI#setTelemetryPeriod() must be called for this to be valid (throws
+ VisionException if telemetry is not enabled).
+Returns:
+Actual FPS averaged over the telemetry period.
+getActualDataRate
+public
+double
+getActualDataRate
+()
+Get the data rate (in bytes per second).
+CameraServerJNI#setTelemetryPeriod() must be called for this to be valid (throws
+ VisionException if telemetry is not enabled).
+Returns:
+Data rate averaged over the telemetry period.
+enumerateVideoModes
+public
+VideoMode
+[]
+enumerateVideoModes
+()
+Enumerate all known video modes for this source.
+Returns:
+Vector of video modes.
+enumerateSinks
+public
+VideoSink
+[]
+enumerateSinks
+()
+Enumerate all sinks connected to this source.
+Returns:
+Vector of sinks.
+enumerateSources
+public static
+VideoSource
+[]
+enumerateSources
+()
+Enumerate all existing sources.
+Returns:
+Vector of sources.

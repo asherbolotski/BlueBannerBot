@@ -1,0 +1,675 @@
+Package
+edu.wpi.first.wpilibj
+Class PneumaticHub
+java.lang.Object
+edu.wpi.first.wpilibj.PneumaticHub
+All Implemented Interfaces:
+PneumaticsBase
+,
+AutoCloseable
+public class
+PneumaticHub
+extends
+Object
+implements
+PneumaticsBase
+Module class for controlling a REV Robotics Pneumatic Hub.
+Constructor Summary
+Constructors
+Constructor
+Description
+PneumaticHub
+()
+Constructs a PneumaticHub with the default ID (1).
+PneumaticHub
+(int module)
+Constructs a PneumaticHub.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+int
+checkAndReserveSolenoids
+(int mask)
+Check to see if the solenoids marked in the bitmask can be reserved, and if so, reserve them.
+boolean
+checkSolenoidChannel
+(int channel)
+Check if a solenoid channel is valid.
+void
+clearStickyFaults
+()
+Clears the sticky faults.
+void
+close
+()
+void
+disableCompressor
+()
+Disables the compressor.
+void
+enableCompressorAnalog
+(double minPressure,
+ double maxPressure)
+Enables the compressor in analog mode.
+void
+enableCompressorDigital
+()
+Enables the compressor in digital mode using the digital pressure switch.
+void
+enableCompressorHybrid
+(double minPressure,
+ double maxPressure)
+Enables the compressor in hybrid mode.
+void
+fireOneShot
+(int index)
+Fire a single solenoid shot.
+double
+get5VRegulatedVoltage
+()
+Returns the current voltage of the regulated 5v supply.
+double
+getAnalogVoltage
+(int channel)
+Returns the raw voltage of the specified analog input channel.
+boolean
+getCompressor
+()
+Returns whether the compressor is active or not.
+CompressorConfigType
+getCompressorConfigType
+()
+Returns the active compressor configuration.
+double
+getCompressorCurrent
+()
+Returns the current drawn by the compressor in amps.
+REVPHFaults
+getFaults
+()
+Returns the faults currently active on this device.
+double
+getInputVoltage
+()
+Returns the current input voltage for this device.
+int
+getModuleNumber
+()
+Get module number for this module.
+double
+getPressure
+(int channel)
+Returns the pressure read by an analog pressure sensor on the specified analog input channel.
+boolean
+getPressureSwitch
+()
+Returns the state of the pressure switch.
+int
+getSolenoidDisabledList
+()
+Get a bitmask of disabled solenoids.
+int
+getSolenoids
+()
+Gets a bitmask of solenoid values.
+double
+getSolenoidsTotalCurrent
+()
+Returns the total current (in amps) drawn by all solenoids.
+double
+getSolenoidsVoltage
+()
+Returns the current voltage of the solenoid power supply.
+REVPHStickyFaults
+getStickyFaults
+()
+Returns the sticky faults currently active on this device.
+REVPHVersion
+getVersion
+()
+Returns the hardware and firmware versions of this device.
+Compressor
+makeCompressor
+()
+Create a compressor object.
+DoubleSolenoid
+makeDoubleSolenoid
+(int forwardChannel,
+ int reverseChannel)
+Create a double solenoid object for the specified channels.
+Solenoid
+makeSolenoid
+(int channel)
+Create a solenoid object for the specified channel.
+boolean
+reserveCompressor
+()
+Reserve the compressor.
+void
+setOneShotDuration
+(int index,
+ int durMs)
+Set the duration for a single solenoid shot.
+void
+setSolenoids
+(int mask,
+ int values)
+Sets solenoids on a pneumatics module.
+void
+unreserveCompressor
+()
+Unreserve the compressor.
+void
+unreserveSolenoids
+(int mask)
+Unreserve the solenoids marked in the bitmask.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+PneumaticHub
+public
+PneumaticHub
+()
+Constructs a PneumaticHub with the default ID (1).
+PneumaticHub
+public
+PneumaticHub
+(int module)
+Constructs a PneumaticHub.
+Parameters:
+module
+- module number to construct
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+Specified by:
+close
+in interface
+PneumaticsBase
+getCompressor
+public
+boolean
+getCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Returns whether the compressor is active or not.
+Specified by:
+getCompressor
+in interface
+PneumaticsBase
+Returns:
+True if the compressor is on - otherwise false.
+getCompressorConfigType
+public
+CompressorConfigType
+getCompressorConfigType
+()
+Description copied from interface:
+PneumaticsBase
+Returns the active compressor configuration.
+Specified by:
+getCompressorConfigType
+in interface
+PneumaticsBase
+Returns:
+The active compressor configuration.
+getPressureSwitch
+public
+boolean
+getPressureSwitch
+()
+Description copied from interface:
+PneumaticsBase
+Returns the state of the pressure switch.
+Specified by:
+getPressureSwitch
+in interface
+PneumaticsBase
+Returns:
+True if pressure switch indicates that the system is not full, otherwise false.
+getCompressorCurrent
+public
+double
+getCompressorCurrent
+()
+Description copied from interface:
+PneumaticsBase
+Returns the current drawn by the compressor in amps.
+Specified by:
+getCompressorCurrent
+in interface
+PneumaticsBase
+Returns:
+The current drawn by the compressor.
+setSolenoids
+public
+void
+setSolenoids
+(int mask,
+ int values)
+Description copied from interface:
+PneumaticsBase
+Sets solenoids on a pneumatics module.
+Specified by:
+setSolenoids
+in interface
+PneumaticsBase
+Parameters:
+mask
+- Bitmask indicating which solenoids to set. The LSB represents solenoid 0.
+values
+- Bitmask indicating the desired states of the solenoids. The LSB represents
+     solenoid 0.
+getSolenoids
+public
+int
+getSolenoids
+()
+Description copied from interface:
+PneumaticsBase
+Gets a bitmask of solenoid values.
+Specified by:
+getSolenoids
+in interface
+PneumaticsBase
+Returns:
+Bitmask containing the state of the solenoids. The LSB represents solenoid 0.
+getModuleNumber
+public
+int
+getModuleNumber
+()
+Description copied from interface:
+PneumaticsBase
+Get module number for this module.
+Specified by:
+getModuleNumber
+in interface
+PneumaticsBase
+Returns:
+module number
+fireOneShot
+public
+void
+fireOneShot
+(int index)
+Description copied from interface:
+PneumaticsBase
+Fire a single solenoid shot.
+Specified by:
+fireOneShot
+in interface
+PneumaticsBase
+Parameters:
+index
+- solenoid index
+setOneShotDuration
+public
+void
+setOneShotDuration
+(int index,
+ int durMs)
+Description copied from interface:
+PneumaticsBase
+Set the duration for a single solenoid shot.
+Specified by:
+setOneShotDuration
+in interface
+PneumaticsBase
+Parameters:
+index
+- solenoid index
+durMs
+- shot duration
+checkSolenoidChannel
+public
+boolean
+checkSolenoidChannel
+(int channel)
+Description copied from interface:
+PneumaticsBase
+Check if a solenoid channel is valid.
+Specified by:
+checkSolenoidChannel
+in interface
+PneumaticsBase
+Parameters:
+channel
+- Channel to check
+Returns:
+True if channel exists
+checkAndReserveSolenoids
+public
+int
+checkAndReserveSolenoids
+(int mask)
+Description copied from interface:
+PneumaticsBase
+Check to see if the solenoids marked in the bitmask can be reserved, and if so, reserve them.
+Specified by:
+checkAndReserveSolenoids
+in interface
+PneumaticsBase
+Parameters:
+mask
+- The bitmask of solenoids to reserve. The LSB represents solenoid 0.
+Returns:
+0 if successful; mask of solenoids that couldn't be allocated otherwise
+unreserveSolenoids
+public
+void
+unreserveSolenoids
+(int mask)
+Description copied from interface:
+PneumaticsBase
+Unreserve the solenoids marked in the bitmask.
+Specified by:
+unreserveSolenoids
+in interface
+PneumaticsBase
+Parameters:
+mask
+- The bitmask of solenoids to unreserve. The LSB represents solenoid 0.
+makeSolenoid
+public
+Solenoid
+makeSolenoid
+(int channel)
+Description copied from interface:
+PneumaticsBase
+Create a solenoid object for the specified channel.
+Specified by:
+makeSolenoid
+in interface
+PneumaticsBase
+Parameters:
+channel
+- solenoid channel
+Returns:
+Solenoid object
+makeDoubleSolenoid
+public
+DoubleSolenoid
+makeDoubleSolenoid
+(int forwardChannel,
+ int reverseChannel)
+Description copied from interface:
+PneumaticsBase
+Create a double solenoid object for the specified channels.
+Specified by:
+makeDoubleSolenoid
+in interface
+PneumaticsBase
+Parameters:
+forwardChannel
+- solenoid channel for forward
+reverseChannel
+- solenoid channel for reverse
+Returns:
+DoubleSolenoid object
+makeCompressor
+public
+Compressor
+makeCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Create a compressor object.
+Specified by:
+makeCompressor
+in interface
+PneumaticsBase
+Returns:
+Compressor object
+reserveCompressor
+public
+boolean
+reserveCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Reserve the compressor.
+Specified by:
+reserveCompressor
+in interface
+PneumaticsBase
+Returns:
+true if successful; false if compressor already reserved
+unreserveCompressor
+public
+void
+unreserveCompressor
+()
+Description copied from interface:
+PneumaticsBase
+Unreserve the compressor.
+Specified by:
+unreserveCompressor
+in interface
+PneumaticsBase
+getSolenoidDisabledList
+public
+int
+getSolenoidDisabledList
+()
+Description copied from interface:
+PneumaticsBase
+Get a bitmask of disabled solenoids.
+Specified by:
+getSolenoidDisabledList
+in interface
+PneumaticsBase
+Returns:
+Bitmask indicating disabled solenoids. The LSB represents solenoid 0.
+disableCompressor
+public
+void
+disableCompressor
+()
+Disables the compressor. The compressor will not turn on until
+enableCompressorDigital()
+,
+enableCompressorAnalog(double, double)
+, or
+enableCompressorHybrid(double, double)
+are called.
+Specified by:
+disableCompressor
+in interface
+PneumaticsBase
+enableCompressorDigital
+public
+void
+enableCompressorDigital
+()
+Description copied from interface:
+PneumaticsBase
+Enables the compressor in digital mode using the digital pressure switch. The compressor will
+ turn on when the pressure switch indicates that the system is not full, and will turn off when
+ the pressure switch indicates that the system is full.
+Specified by:
+enableCompressorDigital
+in interface
+PneumaticsBase
+enableCompressorAnalog
+public
+void
+enableCompressorAnalog
+(double minPressure,
+ double maxPressure)
+Enables the compressor in analog mode. This mode uses an analog pressure sensor connected to
+ analog channel 0 to cycle the compressor. The compressor will turn on when the pressure drops
+ below
+minPressure
+and will turn off when the pressure reaches
+maxPressure
+.
+Specified by:
+enableCompressorAnalog
+in interface
+PneumaticsBase
+Parameters:
+minPressure
+- The minimum pressure in PSI. The compressor will turn on when the pressure
+     drops below this value. Range 0-120 PSI.
+maxPressure
+- The maximum pressure in PSI. The compressor will turn off when the pressure
+     reaches this value. Range 0-120 PSI. Must be larger then minPressure.
+enableCompressorHybrid
+public
+void
+enableCompressorHybrid
+(double minPressure,
+ double maxPressure)
+Enables the compressor in hybrid mode. This mode uses both a digital pressure switch and an
+ analog pressure sensor connected to analog channel 0 to cycle the compressor.
+The compressor will turn on when
+both
+:
+The digital pressure switch indicates the system is not full AND
+The analog pressure sensor indicates that the pressure in the system is below the
+       specified minimum pressure.
+The compressor will turn off when
+either
+:
+The digital pressure switch is disconnected or indicates that the system is full OR
+The pressure detected by the analog sensor is greater than the specified maximum
+       pressure.
+Specified by:
+enableCompressorHybrid
+in interface
+PneumaticsBase
+Parameters:
+minPressure
+- The minimum pressure in PSI. The compressor will turn on when the pressure
+     drops below this value and the pressure switch indicates that the system is not full. Range
+     0-120 PSI.
+maxPressure
+- The maximum pressure in PSI. The compressor will turn off when the pressure
+     reaches this value or the pressure switch is disconnected or indicates that the system is
+     full. Range 0-120 PSI. Must be larger then minPressure.
+getAnalogVoltage
+public
+double
+getAnalogVoltage
+(int channel)
+Returns the raw voltage of the specified analog input channel.
+Specified by:
+getAnalogVoltage
+in interface
+PneumaticsBase
+Parameters:
+channel
+- The analog input channel to read voltage from.
+Returns:
+The voltage of the specified analog input channel.
+getPressure
+public
+double
+getPressure
+(int channel)
+Returns the pressure read by an analog pressure sensor on the specified analog input channel.
+Specified by:
+getPressure
+in interface
+PneumaticsBase
+Parameters:
+channel
+- The analog input channel to read pressure from.
+Returns:
+The pressure read by an analog pressure sensor on the specified analog input channel.
+clearStickyFaults
+public
+void
+clearStickyFaults
+()
+Clears the sticky faults.
+getVersion
+public
+REVPHVersion
+getVersion
+()
+Returns the hardware and firmware versions of this device.
+Returns:
+The hardware and firmware versions.
+getFaults
+public
+REVPHFaults
+getFaults
+()
+Returns the faults currently active on this device.
+Returns:
+The faults.
+getStickyFaults
+public
+REVPHStickyFaults
+getStickyFaults
+()
+Returns the sticky faults currently active on this device.
+Returns:
+The sticky faults.
+getInputVoltage
+public
+double
+getInputVoltage
+()
+Returns the current input voltage for this device.
+Returns:
+The input voltage.
+get5VRegulatedVoltage
+public
+double
+get5VRegulatedVoltage
+()
+Returns the current voltage of the regulated 5v supply.
+Returns:
+The current voltage of the 5v supply.
+getSolenoidsTotalCurrent
+public
+double
+getSolenoidsTotalCurrent
+()
+Returns the total current (in amps) drawn by all solenoids.
+Returns:
+Total current drawn by all solenoids in amps.
+getSolenoidsVoltage
+public
+double
+getSolenoidsVoltage
+()
+Returns the current voltage of the solenoid power supply.
+Returns:
+The current voltage of the solenoid power supply.

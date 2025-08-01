@@ -1,0 +1,356 @@
+Package
+edu.wpi.first.networktables
+Interface GenericSubscriber
+All Superinterfaces:
+AutoCloseable
+,
+PubSub
+,
+Subscriber
+,
+Supplier
+<
+NetworkTableValue
+>
+All Known Subinterfaces:
+GenericEntry
+public interface
+GenericSubscriber
+extends
+Subscriber
+,
+Supplier
+<
+NetworkTableValue
+>
+NetworkTables generic subscriber.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+NetworkTableValue
+get
+()
+Get the last published value.
+boolean
+getBoolean
+(boolean defaultValue)
+Gets the entry's value as a boolean.
+boolean[]
+getBooleanArray
+(boolean[] defaultValue)
+Gets the entry's value as a boolean[].
+Boolean
+[]
+getBooleanArray
+(
+Boolean
+[] defaultValue)
+Gets the entry's value as a boolean array.
+double
+getDouble
+(double defaultValue)
+Gets the entry's value as a double.
+double[]
+getDoubleArray
+(double[] defaultValue)
+Gets the entry's value as a double[].
+Double
+[]
+getDoubleArray
+(
+Double
+[] defaultValue)
+Gets the entry's value as a boolean array.
+float
+getFloat
+(float defaultValue)
+Gets the entry's value as a float.
+float[]
+getFloatArray
+(float[] defaultValue)
+Gets the entry's value as a float[].
+Float
+[]
+getFloatArray
+(
+Float
+[] defaultValue)
+Gets the entry's value as a boolean array.
+long
+getInteger
+(long defaultValue)
+Gets the entry's value as a long.
+long[]
+getIntegerArray
+(long[] defaultValue)
+Gets the entry's value as a long[].
+Long
+[]
+getIntegerArray
+(
+Long
+[] defaultValue)
+Gets the entry's value as a boolean array.
+byte[]
+getRaw
+(byte[] defaultValue)
+Gets the entry's value as a byte[].
+String
+getString
+(
+String
+defaultValue)
+Gets the entry's value as a String.
+String
+[]
+getStringArray
+(
+String
+[] defaultValue)
+Gets the entry's value as a String[].
+Topic
+getTopic
+()
+Get the corresponding topic.
+NetworkTableValue
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+getTopic
+Topic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+get
+NetworkTableValue
+get
+()
+Get the last published value.
+ If no value has been published, returns a value with type NetworkTableType.kUnassigned.
+Specified by:
+get
+in interface
+Supplier
+<
+NetworkTableValue
+>
+Returns:
+value
+getBoolean
+boolean
+getBoolean
+(boolean defaultValue)
+Gets the entry's value as a boolean. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getInteger
+long
+getInteger
+(long defaultValue)
+Gets the entry's value as a long. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getFloat
+float
+getFloat
+(float defaultValue)
+Gets the entry's value as a float. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getDouble
+double
+getDouble
+(double defaultValue)
+Gets the entry's value as a double. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getString
+String
+getString
+(
+String
+defaultValue)
+Gets the entry's value as a String. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getRaw
+byte[]
+getRaw
+(byte[] defaultValue)
+Gets the entry's value as a byte[]. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getBooleanArray
+boolean[]
+getBooleanArray
+(boolean[] defaultValue)
+Gets the entry's value as a boolean[]. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getBooleanArray
+Boolean
+[]
+getBooleanArray
+(
+Boolean
+[] defaultValue)
+Gets the entry's value as a boolean array. If the entry does not exist or is of different type,
+ it will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getIntegerArray
+long[]
+getIntegerArray
+(long[] defaultValue)
+Gets the entry's value as a long[]. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getIntegerArray
+Long
+[]
+getIntegerArray
+(
+Long
+[] defaultValue)
+Gets the entry's value as a boolean array. If the entry does not exist or is of different type,
+ it will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getFloatArray
+float[]
+getFloatArray
+(float[] defaultValue)
+Gets the entry's value as a float[]. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getFloatArray
+Float
+[]
+getFloatArray
+(
+Float
+[] defaultValue)
+Gets the entry's value as a boolean array. If the entry does not exist or is of different type,
+ it will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getDoubleArray
+double[]
+getDoubleArray
+(double[] defaultValue)
+Gets the entry's value as a double[]. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getDoubleArray
+Double
+[]
+getDoubleArray
+(
+Double
+[] defaultValue)
+Gets the entry's value as a boolean array. If the entry does not exist or is of different type,
+ it will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+getStringArray
+String
+[]
+getStringArray
+(
+String
+[] defaultValue)
+Gets the entry's value as a String[]. If the entry does not exist or is of different type, it
+ will return the default value.
+Parameters:
+defaultValue
+- the value to be returned if no value is found
+Returns:
+the entry's value or the given default value
+readQueue
+NetworkTableValue
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+ Also provides a timestamp for each value.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of timestamped values; empty array if no new changes have
+     been published since the previous call.

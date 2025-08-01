@@ -1,0 +1,305 @@
+Package
+edu.wpi.first.wpilibj2.command
+Class PIDSubsystem
+java.lang.Object
+edu.wpi.first.wpilibj2.command.SubsystemBase
+edu.wpi.first.wpilibj2.command.PIDSubsystem
+All Implemented Interfaces:
+Sendable
+,
+Subsystem
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public abstract class
+PIDSubsystem
+extends
+SubsystemBase
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use a PIDController instead
+A subsystem that uses a
+PIDController
+to control an output. The controller is run
+ synchronously from the subsystem's periodic() method.
+This class is provided by the NewCommands VendorDep
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final
+PIDController
+m_controller
+Deprecated, for removal: This API element is subject to removal in a future version.
+PID controller.
+protected boolean
+m_enabled
+Deprecated, for removal: This API element is subject to removal in a future version.
+Whether PID controller output is enabled.
+Constructor Summary
+Constructors
+Constructor
+Description
+PIDSubsystem
+(
+PIDController
+controller)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Creates a new PIDSubsystem.
+PIDSubsystem
+(
+PIDController
+controller,
+ double initialPosition)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Creates a new PIDSubsystem.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+void
+disable
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Disables the PID control.
+void
+enable
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Enables the PID control.
+PIDController
+getController
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns the PIDController.
+protected abstract double
+getMeasurement
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns the measurement of the process variable used by the PIDController.
+double
+getSetpoint
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns the current setpoint of the subsystem.
+boolean
+isEnabled
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns whether the controller is enabled.
+void
+periodic
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+This method is called periodically by the
+CommandScheduler
+.
+final void
+setSetpoint
+(double setpoint)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Sets the setpoint for the subsystem.
+protected abstract void
+useOutput
+(double output,
+ double setpoint)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Uses the output from the PIDController.
+Methods inherited from class edu.wpi.first.wpilibj2.command.
+SubsystemBase
+addChild
+,
+getName
+,
+getSubsystem
+,
+initSendable
+,
+setName
+,
+setSubsystem
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.wpilibj2.command.
+Subsystem
+defer
+,
+getCurrentCommand
+,
+getDefaultCommand
+,
+register
+,
+removeDefaultCommand
+,
+run
+,
+runEnd
+,
+runOnce
+,
+setDefaultCommand
+,
+simulationPeriodic
+,
+startEnd
+,
+startRun
+Field Details
+m_controller
+protected final
+PIDController
+m_controller
+Deprecated, for removal: This API element is subject to removal in a future version.
+PID controller.
+m_enabled
+protected
+boolean
+m_enabled
+Deprecated, for removal: This API element is subject to removal in a future version.
+Whether PID controller output is enabled.
+Constructor Details
+PIDSubsystem
+public
+PIDSubsystem
+(
+PIDController
+controller,
+ double initialPosition)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Creates a new PIDSubsystem.
+Parameters:
+controller
+- the PIDController to use
+initialPosition
+- the initial setpoint of the subsystem
+PIDSubsystem
+public
+PIDSubsystem
+(
+PIDController
+controller)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Creates a new PIDSubsystem. Initial setpoint is zero.
+Parameters:
+controller
+- the PIDController to use
+Method Details
+periodic
+public
+void
+periodic
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Description copied from interface:
+Subsystem
+This method is called periodically by the
+CommandScheduler
+. Useful for updating
+ subsystem-specific state that you don't want to offload to a
+Command
+. Teams should try
+ to be consistent within their own codebases about which responsibilities will be handled by
+ Commands, and which will be handled here.
+getController
+public
+PIDController
+getController
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns the PIDController.
+Returns:
+The controller.
+setSetpoint
+public final
+void
+setSetpoint
+(double setpoint)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Sets the setpoint for the subsystem.
+Parameters:
+setpoint
+- the setpoint for the subsystem
+getSetpoint
+public
+double
+getSetpoint
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns the current setpoint of the subsystem.
+Returns:
+The current setpoint
+useOutput
+protected abstract
+void
+useOutput
+(double output,
+ double setpoint)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Uses the output from the PIDController.
+Parameters:
+output
+- the output of the PIDController
+setpoint
+- the setpoint of the PIDController (for feedforward)
+getMeasurement
+protected abstract
+double
+getMeasurement
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns the measurement of the process variable used by the PIDController.
+Returns:
+the measurement of the process variable
+enable
+public
+void
+enable
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Enables the PID control. Resets the controller.
+disable
+public
+void
+disable
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Disables the PID control. Sets output to zero.
+isEnabled
+public
+boolean
+isEnabled
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Returns whether the controller is enabled.
+Returns:
+Whether the controller is enabled.

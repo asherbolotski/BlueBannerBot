@@ -1,0 +1,182 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class AnalogOutputSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.AnalogOutputSim
+public class
+AnalogOutputSim
+extends
+Object
+Class to control a simulated analog output.
+Constructor Summary
+Constructors
+Constructor
+Description
+AnalogOutputSim
+(int channel)
+Constructs from an analog output channel number.
+AnalogOutputSim
+(
+AnalogOutput
+analogOutput)
+Constructs from an AnalogOutput object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+getInitialized
+()
+Check whether this analog output has been initialized.
+double
+getVoltage
+()
+Read the analog output voltage.
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when this analog output is initialized.
+CallbackStore
+registerVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the voltage changes.
+void
+resetData
+()
+Reset all simulation data on this object.
+void
+setInitialized
+(boolean initialized)
+Define whether this analog output has been initialized.
+void
+setVoltage
+(double voltage)
+Set the analog output voltage.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AnalogOutputSim
+public
+AnalogOutputSim
+(
+AnalogOutput
+analogOutput)
+Constructs from an AnalogOutput object.
+Parameters:
+analogOutput
+- AnalogOutput to simulate
+AnalogOutputSim
+public
+AnalogOutputSim
+(int channel)
+Constructs from an analog output channel number.
+Parameters:
+channel
+- Channel number
+Method Details
+registerVoltageCallback
+public
+CallbackStore
+registerVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the voltage changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getVoltage
+public
+double
+getVoltage
+()
+Read the analog output voltage.
+Returns:
+the voltage on this analog output
+setVoltage
+public
+void
+setVoltage
+(double voltage)
+Set the analog output voltage.
+Parameters:
+voltage
+- the new voltage on this analog output
+registerInitializedCallback
+public
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when this analog output is initialized.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getInitialized
+public
+boolean
+getInitialized
+()
+Check whether this analog output has been initialized.
+Returns:
+true if initialized
+setInitialized
+public
+void
+setInitialized
+(boolean initialized)
+Define whether this analog output has been initialized.
+Parameters:
+initialized
+- whether this object is initialized
+resetData
+public
+void
+resetData
+()
+Reset all simulation data on this object.

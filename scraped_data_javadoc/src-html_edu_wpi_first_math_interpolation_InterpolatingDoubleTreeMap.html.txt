@@ -1,0 +1,84 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.interpolation;
+006
+007
+import java.util.Map;
+008
+009
+/**
+010
+* Interpolating Tree Maps are used to get values at points that are not defined by making a guess
+011
+* from points that are defined. This uses linear interpolation.
+012
+*
+013
+* <p>Example of use:
+014
+*
+015
+* <pre><code>
+016
+* InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
+017
+* table.put(0.0, 0.0);
+018
+* table.put(1.0, 10.0);
+019
+* table.put(2.0, 30.0);
+020
+* // ...
+021
+* double result = table.get(1.5); // Returns 20.0
+022
+* </code></pre>
+023
+*/
+024
+public class InterpolatingDoubleTreeMap extends InterpolatingTreeMap<Double, Double> {
+025
+/** Default constructor. */
+026
+public InterpolatingDoubleTreeMap() {
+027
+super(InverseInterpolator.forDouble(), Interpolator.forDouble());
+028
+}
+029
+030
+/**
+031
+* Creates an {@link InterpolatingDoubleTreeMap} from the given entries.
+032
+*
+033
+* @param entries The entries to add to the map.
+034
+* @return The map filled with the {@code entries}.
+035
+*/
+036
+@SafeVarargs
+037
+public static InterpolatingDoubleTreeMap ofEntries(Map.Entry<Double, Double>... entries) {
+038
+InterpolatingDoubleTreeMap map = new InterpolatingDoubleTreeMap();
+039
+for (var entry : entries) {
+040
+map.put(entry.getKey(), entry.getValue());
+041
+}
+042
+return map;
+043
+}
+044
+}

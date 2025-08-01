@@ -1,0 +1,537 @@
+Package
+edu.wpi.first.wpilibj
+Class Joystick
+java.lang.Object
+edu.wpi.first.wpilibj.GenericHID
+edu.wpi.first.wpilibj.Joystick
+public class
+Joystick
+extends
+GenericHID
+Handle input from Flight Joysticks connected to the Driver Station.
+This class handles standard input that comes from the Driver Station. Each time a value is
+ requested the most recent value is returned. There is a single class instance for each joystick
+ and the mapping of ports to hardware buttons depends on the code in the Driver Station.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+Joystick.AxisType
+Represents an analog axis on a joystick.
+static enum
+Joystick.ButtonType
+Represents a digital button on a joystick.
+Nested classes/interfaces inherited from class edu.wpi.first.wpilibj.
+GenericHID
+GenericHID.HIDType
+,
+GenericHID.RumbleType
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final byte
+kDefaultThrottleChannel
+Default throttle axis channel.
+static final byte
+kDefaultTwistChannel
+Default twist axis channel.
+static final byte
+kDefaultXChannel
+Default X axis channel.
+static final byte
+kDefaultYChannel
+Default Y axis channel.
+static final byte
+kDefaultZChannel
+Default Z axis channel.
+Constructor Summary
+Constructors
+Constructor
+Description
+Joystick
+(int port)
+Construct an instance of a joystick.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+getDirectionDegrees
+()
+Get the direction of the vector formed by the joystick and its origin in degrees.
+double
+getDirectionRadians
+()
+Get the direction of the vector formed by the joystick and its origin in radians.
+double
+getMagnitude
+()
+Get the magnitude of the vector formed by the joystick's current position relative to its
+ origin.
+final double
+getThrottle
+()
+Get the throttle value of the current joystick.
+int
+getThrottleChannel
+()
+Get the channel currently associated with the throttle axis.
+boolean
+getTop
+()
+Read the state of the top button on the joystick.
+boolean
+getTopPressed
+()
+Whether the top button was pressed since the last check.
+boolean
+getTopReleased
+()
+Whether the top button was released since the last check.
+boolean
+getTrigger
+()
+Read the state of the trigger on the joystick.
+boolean
+getTriggerPressed
+()
+Whether the trigger was pressed since the last check.
+boolean
+getTriggerReleased
+()
+Whether the trigger was released since the last check.
+final double
+getTwist
+()
+Get the twist value of the current joystick.
+int
+getTwistChannel
+()
+Get the channel currently associated with the twist axis.
+final double
+getX
+()
+Get the X value of the joystick.
+int
+getXChannel
+()
+Get the channel currently associated with the X axis.
+final double
+getY
+()
+Get the Y value of the joystick.
+int
+getYChannel
+()
+Get the channel currently associated with the Y axis.
+final double
+getZ
+()
+Get the z position of the HID.
+int
+getZChannel
+()
+Get the channel currently associated with the Z axis.
+void
+setThrottleChannel
+(int channel)
+Set the channel associated with the throttle axis.
+void
+setTwistChannel
+(int channel)
+Set the channel associated with the twist axis.
+void
+setXChannel
+(int channel)
+Set the channel associated with the X axis.
+void
+setYChannel
+(int channel)
+Set the channel associated with the Y axis.
+void
+setZChannel
+(int channel)
+Set the channel associated with the Z axis.
+BooleanEvent
+top
+(
+EventLoop
+loop)
+Constructs an event instance around the top button's digital signal.
+BooleanEvent
+trigger
+(
+EventLoop
+loop)
+Constructs an event instance around the trigger button's digital signal.
+Methods inherited from class edu.wpi.first.wpilibj.
+GenericHID
+axisGreaterThan
+,
+axisLessThan
+,
+button
+,
+getAxisCount
+,
+getAxisType
+,
+getButtonCount
+,
+getName
+,
+getPort
+,
+getPOV
+,
+getPOV
+,
+getPOVCount
+,
+getRawAxis
+,
+getRawButton
+,
+getRawButtonPressed
+,
+getRawButtonReleased
+,
+getType
+,
+isConnected
+,
+pov
+,
+pov
+,
+povCenter
+,
+povDown
+,
+povDownLeft
+,
+povDownRight
+,
+povLeft
+,
+povRight
+,
+povUp
+,
+povUpLeft
+,
+povUpRight
+,
+setOutput
+,
+setOutputs
+,
+setRumble
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kDefaultXChannel
+public static final
+byte
+kDefaultXChannel
+Default X axis channel.
+See Also:
+Constant Field Values
+kDefaultYChannel
+public static final
+byte
+kDefaultYChannel
+Default Y axis channel.
+See Also:
+Constant Field Values
+kDefaultZChannel
+public static final
+byte
+kDefaultZChannel
+Default Z axis channel.
+See Also:
+Constant Field Values
+kDefaultTwistChannel
+public static final
+byte
+kDefaultTwistChannel
+Default twist axis channel.
+See Also:
+Constant Field Values
+kDefaultThrottleChannel
+public static final
+byte
+kDefaultThrottleChannel
+Default throttle axis channel.
+See Also:
+Constant Field Values
+Constructor Details
+Joystick
+public
+Joystick
+(int port)
+Construct an instance of a joystick.
+Parameters:
+port
+- The port index on the Driver Station that the joystick is plugged into.
+Method Details
+setXChannel
+public
+void
+setXChannel
+(int channel)
+Set the channel associated with the X axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setYChannel
+public
+void
+setYChannel
+(int channel)
+Set the channel associated with the Y axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setZChannel
+public
+void
+setZChannel
+(int channel)
+Set the channel associated with the Z axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setThrottleChannel
+public
+void
+setThrottleChannel
+(int channel)
+Set the channel associated with the throttle axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setTwistChannel
+public
+void
+setTwistChannel
+(int channel)
+Set the channel associated with the twist axis.
+Parameters:
+channel
+- The channel to set the axis to.
+getXChannel
+public
+int
+getXChannel
+()
+Get the channel currently associated with the X axis.
+Returns:
+The channel for the axis.
+getYChannel
+public
+int
+getYChannel
+()
+Get the channel currently associated with the Y axis.
+Returns:
+The channel for the axis.
+getZChannel
+public
+int
+getZChannel
+()
+Get the channel currently associated with the Z axis.
+Returns:
+The channel for the axis.
+getTwistChannel
+public
+int
+getTwistChannel
+()
+Get the channel currently associated with the twist axis.
+Returns:
+The channel for the axis.
+getThrottleChannel
+public
+int
+getThrottleChannel
+()
+Get the channel currently associated with the throttle axis.
+Returns:
+The channel for the axis.
+getX
+public final
+double
+getX
+()
+Get the X value of the joystick. This depends on the mapping of the joystick connected to the
+ current port. On most joysticks, positive is to the right.
+Returns:
+The X value of the joystick.
+getY
+public final
+double
+getY
+()
+Get the Y value of the joystick. This depends on the mapping of the joystick connected to the
+ current port. On most joysticks, positive is to the back.
+Returns:
+The Y value of the joystick.
+getZ
+public final
+double
+getZ
+()
+Get the z position of the HID.
+Returns:
+the z position
+getTwist
+public final
+double
+getTwist
+()
+Get the twist value of the current joystick. This depends on the mapping of the joystick
+ connected to the current port.
+Returns:
+The Twist value of the joystick.
+getThrottle
+public final
+double
+getThrottle
+()
+Get the throttle value of the current joystick. This depends on the mapping of the joystick
+ connected to the current port.
+Returns:
+The Throttle value of the joystick.
+getTrigger
+public
+boolean
+getTrigger
+()
+Read the state of the trigger on the joystick.
+Returns:
+The state of the trigger.
+getTriggerPressed
+public
+boolean
+getTriggerPressed
+()
+Whether the trigger was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getTriggerReleased
+public
+boolean
+getTriggerReleased
+()
+Whether the trigger was released since the last check.
+Returns:
+Whether the button was released since the last check.
+trigger
+public
+BooleanEvent
+trigger
+(
+EventLoop
+loop)
+Constructs an event instance around the trigger button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the trigger button's digital signal attached to the
+     given loop.
+getTop
+public
+boolean
+getTop
+()
+Read the state of the top button on the joystick.
+Returns:
+The state of the top button.
+getTopPressed
+public
+boolean
+getTopPressed
+()
+Whether the top button was pressed since the last check.
+Returns:
+Whether the button was pressed since the last check.
+getTopReleased
+public
+boolean
+getTopReleased
+()
+Whether the top button was released since the last check.
+Returns:
+Whether the button was released since the last check.
+top
+public
+BooleanEvent
+top
+(
+EventLoop
+loop)
+Constructs an event instance around the top button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the top button's digital signal attached to the given
+     loop.
+getMagnitude
+public
+double
+getMagnitude
+()
+Get the magnitude of the vector formed by the joystick's current position relative to its
+ origin.
+Returns:
+The magnitude of the direction vector
+getDirectionRadians
+public
+double
+getDirectionRadians
+()
+Get the direction of the vector formed by the joystick and its origin in radians. 0 is forward
+ and clockwise is positive. (Straight right is π/2.)
+Returns:
+The direction of the vector in radians
+getDirectionDegrees
+public
+double
+getDirectionDegrees
+()
+Get the direction of the vector formed by the joystick and its origin in degrees. 0 is forward
+ and clockwise is positive. (Straight right is 90.)
+Returns:
+The direction of the vector in degrees

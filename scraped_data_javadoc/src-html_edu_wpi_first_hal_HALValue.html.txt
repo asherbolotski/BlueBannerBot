@@ -1,0 +1,324 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/** Represents a HAL entry value. */
+008
+public final class HALValue {
+009
+/** Unassigned type. */
+010
+public static final int kUnassigned = 0;
+011
+012
+/** Boolean. */
+013
+public static final int kBoolean = 0x01;
+014
+015
+/** Double. */
+016
+public static final int kDouble = 0x02;
+017
+018
+/** Enum. */
+019
+public static final int kEnum = 0x04;
+020
+021
+/** Int. */
+022
+public static final int kInt = 0x08;
+023
+024
+/** Long. */
+025
+public static final int kLong = 0x10;
+026
+027
+private int m_type;
+028
+private long m_long;
+029
+private double m_double;
+030
+031
+private HALValue(double value, int type) {
+032
+m_type = type;
+033
+m_double = value;
+034
+}
+035
+036
+private HALValue(long value, int type) {
+037
+m_type = type;
+038
+m_long = value;
+039
+}
+040
+041
+private HALValue() {}
+042
+043
+/**
+044
+* Get the type of the value.
+045
+*
+046
+* @return Type (e.g. kBoolean).
+047
+*/
+048
+public int getType() {
+049
+return m_type;
+050
+}
+051
+052
+/**
+053
+* Get the value as a boolean. Does not perform type checking.
+054
+*
+055
+* @return value contents
+056
+*/
+057
+public boolean getBoolean() {
+058
+return m_long != 0;
+059
+}
+060
+061
+/**
+062
+* Get the value as a long. Does not perform type checking.
+063
+*
+064
+* @return value contents
+065
+*/
+066
+public long getLong() {
+067
+return m_long;
+068
+}
+069
+070
+/**
+071
+* Get the value as a double. Does not perform type checking.
+072
+*
+073
+* @return value contents
+074
+*/
+075
+public double getDouble() {
+076
+return m_double;
+077
+}
+078
+079
+/**
+080
+* Get the native long value. Does not perform type checking.
+081
+*
+082
+* @return value contents
+083
+*/
+084
+public long getNativeLong() {
+085
+return m_long;
+086
+}
+087
+088
+/**
+089
+* Get the native double value. Does not perform type checking.
+090
+*
+091
+* @return value contents
+092
+*/
+093
+public double getNativeDouble() {
+094
+return m_double;
+095
+}
+096
+097
+/**
+098
+* Build a HAL boolean value.
+099
+*
+100
+* @param value value
+101
+* @return HAL value
+102
+*/
+103
+public static HALValue makeBoolean(boolean value) {
+104
+return new HALValue(value ? 1 : 0, kBoolean);
+105
+}
+106
+107
+/**
+108
+* Build a HAL enum value.
+109
+*
+110
+* @param value value
+111
+* @return HAL value
+112
+*/
+113
+public static HALValue makeEnum(int value) {
+114
+return new HALValue(value, kEnum);
+115
+}
+116
+117
+/**
+118
+* Build a HAL integer value.
+119
+*
+120
+* @param value value
+121
+* @return HAL value
+122
+*/
+123
+public static HALValue makeInt(int value) {
+124
+return new HALValue(value, kInt);
+125
+}
+126
+127
+/**
+128
+* Build a HAL long value.
+129
+*
+130
+* @param value value
+131
+* @return HAL value
+132
+*/
+133
+public static HALValue makeLong(long value) {
+134
+return new HALValue(value, kLong);
+135
+}
+136
+137
+/**
+138
+* Build a HAL double value.
+139
+*
+140
+* @param value value
+141
+* @return HAL value
+142
+*/
+143
+public static HALValue makeDouble(double value) {
+144
+return new HALValue(value, kDouble);
+145
+}
+146
+147
+/**
+148
+* Build a HAL unassigned value.
+149
+*
+150
+* @return HAL value
+151
+*/
+152
+public static HALValue makeUnassigned() {
+153
+return new HALValue();
+154
+}
+155
+156
+/**
+157
+* Build a HAL value from its native components.
+158
+*
+159
+* @param type type
+160
+* @param value1 long value (all except double)
+161
+* @param value2 double value (for double only)
+162
+* @return HAL value
+163
+*/
+164
+public static HALValue fromNative(int type, long value1, double value2) {
+165
+return switch (type) {
+166
+case kBoolean -> makeBoolean(value1 != 0);
+167
+case kDouble -> makeDouble(value2);
+168
+case kEnum -> makeEnum((int) value1);
+169
+case kInt -> makeInt((int) value1);
+170
+case kLong -> makeLong(value1);
+171
+default -> makeUnassigned();
+172
+};
+173
+}
+174
+}

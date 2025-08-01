@@ -1,0 +1,106 @@
+Package
+edu.wpi.first.hal
+Class SimLong
+java.lang.Object
+edu.wpi.first.hal.SimValue
+edu.wpi.first.hal.SimLong
+public class
+SimLong
+extends
+SimValue
+A wrapper around a simulator long value handle.
+Field Summary
+Fields inherited from class edu.wpi.first.hal.
+SimValue
+m_handle
+Constructor Summary
+Constructors
+Constructor
+Description
+SimLong
+(int handle)
+Wraps a simulated value handle as returned by SimDeviceJNI.createSimValueLong().
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+long
+get
+()
+Gets the simulated value.
+void
+reset
+()
+Resets the simulated value to 0.
+void
+set
+(long value)
+Sets the simulated value.
+Methods inherited from class edu.wpi.first.hal.
+SimValue
+getNativeHandle
+,
+getValue
+,
+setValue
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SimLong
+public
+SimLong
+(int handle)
+Wraps a simulated value handle as returned by SimDeviceJNI.createSimValueLong().
+Parameters:
+handle
+- simulated value handle
+Method Details
+get
+public
+long
+get
+()
+Gets the simulated value.
+Returns:
+The current value
+set
+public
+void
+set
+(long value)
+Sets the simulated value.
+Parameters:
+value
+- the value to set
+reset
+public
+void
+reset
+()
+Resets the simulated value to 0. Use this instead of Set(0) for resetting incremental sensor
+ values like encoder counts or gyro accumulated angle to ensure correct behavior in a
+ distributed system (e.g. WebSockets).

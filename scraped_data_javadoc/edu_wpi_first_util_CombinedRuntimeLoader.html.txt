@@ -1,0 +1,190 @@
+Package
+edu.wpi.first.util
+Class CombinedRuntimeLoader
+java.lang.Object
+edu.wpi.first.util.CombinedRuntimeLoader
+public final class
+CombinedRuntimeLoader
+extends
+Object
+Loads dynamic libraries for all platforms.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static <T>
+List
+<
+String
+>
+extractLibraries
+(
+Class
+<T> clazz,
+String
+resourceName)
+Extract a list of native libraries.
+static
+String
+getDefaultExtractionRoot
+()
+Gets the default extraction root location (~/.wpilib/nativecache) for use if
+ setExtractionDirectory is not set.
+static
+String
+getExtractionDirectory
+()
+Returns library extraction directory.
+static
+String
+getPlatformPath
+()
+Returns platform path.
+static <T> void
+loadLibraries
+(
+Class
+<T> clazz,
+String
+... librariesToLoad)
+Load a list of native libraries out of a single directory.
+static void
+loadLibrary
+(
+String
+libraryName,
+List
+<
+String
+> extractedFiles)
+Load a single library from a list of extracted files.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getExtractionDirectory
+public static
+String
+getExtractionDirectory
+()
+Returns library extraction directory.
+Returns:
+Library extraction directory.
+getDefaultExtractionRoot
+public static
+String
+getDefaultExtractionRoot
+()
+Gets the default extraction root location (~/.wpilib/nativecache) for use if
+ setExtractionDirectory is not set.
+Returns:
+The default extraction root location.
+getPlatformPath
+public static
+String
+getPlatformPath
+()
+Returns platform path.
+Returns:
+The current platform path.
+Throws:
+IllegalStateException
+- Thrown if the operating system is unknown.
+extractLibraries
+public static
+<T>
+List
+<
+String
+>
+extractLibraries
+(
+Class
+<T> clazz,
+String
+resourceName)
+throws
+IOException
+Extract a list of native libraries.
+Type Parameters:
+T
+- The class where the resources would be located
+Parameters:
+clazz
+- The actual class object
+resourceName
+- The resource name on the classpath to use for file lookup
+Returns:
+List of all libraries that were extracted
+Throws:
+IOException
+- Thrown if resource not found or file could not be extracted
+loadLibrary
+public static
+void
+loadLibrary
+(
+String
+libraryName,
+List
+<
+String
+> extractedFiles)
+throws
+IOException
+Load a single library from a list of extracted files.
+Parameters:
+libraryName
+- The library name to load
+extractedFiles
+- The extracted files to search
+Throws:
+IOException
+- If library was not found
+loadLibraries
+public static
+<T>
+void
+loadLibraries
+(
+Class
+<T> clazz,
+String
+... librariesToLoad)
+throws
+IOException
+Load a list of native libraries out of a single directory.
+Type Parameters:
+T
+- The class where the resources would be located
+Parameters:
+clazz
+- The actual class object
+librariesToLoad
+- List of libraries to load
+Throws:
+IOException
+- Throws an IOException if not found

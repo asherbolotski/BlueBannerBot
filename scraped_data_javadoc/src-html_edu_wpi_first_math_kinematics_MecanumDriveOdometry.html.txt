@@ -1,0 +1,96 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+import edu.wpi.first.math.MathUsageId;
+009
+import edu.wpi.first.math.geometry.Pose2d;
+010
+import edu.wpi.first.math.geometry.Rotation2d;
+011
+012
+/**
+013
+* Class for mecanum drive odometry. Odometry allows you to track the robot's position on the field
+014
+* over a course of a match using readings from your mecanum wheel encoders.
+015
+*
+016
+* <p>Teams can use odometry during the autonomous period for complex tasks like path following.
+017
+* Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+018
+*/
+019
+public class MecanumDriveOdometry extends Odometry<MecanumDriveWheelPositions> {
+020
+/**
+021
+* Constructs a MecanumDriveOdometry object.
+022
+*
+023
+* @param kinematics The mecanum drive kinematics for your drivetrain.
+024
+* @param gyroAngle The angle reported by the gyroscope.
+025
+* @param wheelPositions The distances driven by each wheel.
+026
+* @param initialPoseMeters The starting position of the robot on the field.
+027
+*/
+028
+public MecanumDriveOdometry(
+029
+MecanumDriveKinematics kinematics,
+030
+Rotation2d gyroAngle,
+031
+MecanumDriveWheelPositions wheelPositions,
+032
+Pose2d initialPoseMeters) {
+033
+super(kinematics, gyroAngle, wheelPositions, initialPoseMeters);
+034
+MathSharedStore.reportUsage(MathUsageId.kOdometry_MecanumDrive, 1);
+035
+}
+036
+037
+/**
+038
+* Constructs a MecanumDriveOdometry object with the default pose at the origin.
+039
+*
+040
+* @param kinematics The mecanum drive kinematics for your drivetrain.
+041
+* @param gyroAngle The angle reported by the gyroscope.
+042
+* @param wheelPositions The distances driven by each wheel.
+043
+*/
+044
+public MecanumDriveOdometry(
+045
+MecanumDriveKinematics kinematics,
+046
+Rotation2d gyroAngle,
+047
+MecanumDriveWheelPositions wheelPositions) {
+048
+this(kinematics, gyroAngle, wheelPositions, Pose2d.kZero);
+049
+}
+050
+}

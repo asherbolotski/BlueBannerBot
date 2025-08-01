@@ -1,0 +1,178 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+import java.util.function.Supplier;
+008
+009
+/**
+010
+* NetworkTables protobuf-encoded value subscriber.
+011
+*
+012
+* @param <T> value class
+013
+*/
+014
+@SuppressWarnings("PMD.MissingOverride")
+015
+public interface ProtobufSubscriber<T> extends Subscriber, Supplier<T> {
+016
+/**
+017
+* Get the corresponding topic.
+018
+*
+019
+* @return Topic
+020
+*/
+021
+@Override
+022
+ProtobufTopic<T> getTopic();
+023
+024
+/**
+025
+* Get the last published value. If no value has been published or the value cannot be unpacked,
+026
+* returns the stored default value.
+027
+*
+028
+* @return value
+029
+*/
+030
+T get();
+031
+032
+/**
+033
+* Get the last published value. If no value has been published or the value cannot be unpacked,
+034
+* returns the passed defaultValue.
+035
+*
+036
+* @param defaultValue default value to return if no value has been published
+037
+* @return value
+038
+*/
+039
+T get(T defaultValue);
+040
+041
+/**
+042
+* Get the last published value, replacing the contents in place of an existing object. If no
+043
+* value has been published or the value cannot be unpacked, does not replace the contents and
+044
+* returns false. This function will not work (will throw UnsupportedOperationException) unless T
+045
+* is mutable (and the implementation of Struct implements unpackInto).
+046
+*
+047
+* <p>Note: due to Java language limitations, it's not possible to validate at compile time that
+048
+* the out parameter is mutable.
+049
+*
+050
+* @param out object to replace contents of; must be mutable
+051
+* @return true if successful
+052
+* @throws UnsupportedOperationException if T is immutable
+053
+*/
+054
+boolean getInto(T out);
+055
+056
+/**
+057
+* Get the last published value along with its timestamp. If no value has been published or the
+058
+* value cannot be unpacked, returns the stored default value and a timestamp of 0.
+059
+*
+060
+* @return timestamped value
+061
+*/
+062
+TimestampedObject<T> getAtomic();
+063
+064
+/**
+065
+* Get the last published value along with its timestamp. If no value has been published or the
+066
+* value cannot be unpacked, returns the passed defaultValue and a timestamp of 0.
+067
+*
+068
+* @param defaultValue default value to return if no value has been published
+069
+* @return timestamped value
+070
+*/
+071
+TimestampedObject<T> getAtomic(T defaultValue);
+072
+073
+/**
+074
+* Get an array of all valid value changes since the last call to readQueue. Also provides a
+075
+* timestamp for each value. Values that cannot be unpacked are dropped.
+076
+*
+077
+* <p>The "poll storage" subscribe option can be used to set the queue depth.
+078
+*
+079
+* @return Array of timestamped values; empty array if no valid new changes have been published
+080
+*     since the previous call.
+081
+*/
+082
+TimestampedObject<T>[] readQueue();
+083
+084
+/**
+085
+* Get an array of all valid value changes since the last call to readQueue. Values that cannot be
+086
+* unpacked are dropped.
+087
+*
+088
+* <p>The "poll storage" subscribe option can be used to set the queue depth.
+089
+*
+090
+* @return Array of values; empty array if no valid new changes have been published since the
+091
+*     previous call.
+092
+*/
+093
+T[] readQueueValues();
+094
+}
