@@ -1,138 +1,126 @@
-import time
 import os
-from collections import deque
-from urllib.parse import urljoin, urlparse
+import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium_stealth import stealth
+from urllib.parse import urljoin, urlparse
+import time
 
-# --- Configurations for different sites ---
-SITE_CONFIGS = {
-    'wpilib_docs': {
-        'start_url': 'https://docs.wpilib.org/en/stable/docs/software/basic-programming/introduction-to-robot-programming.html', # NEW, simpler start page
-        'base_domain': 'https://docs.wpilib.org/en/stable/',
-        'output_dir': 'scraped_data_wpilib',
-        'content_selector': ('div', {'class_': 'theme-doc-markdown markdown'})
-    },
-    'javadoc': {
-        'start_url': 'https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/package-summary.html',
-        'base_domain': 'https://github.wpilib.org/allwpilib/docs/release/java/',
-        'output_dir': 'scraped_data_javadoc',
-        'content_selector': ('main', {'role': 'main'})
-    }
-}
+# --- Configuration ---
+# The starting point for the crawl.
+BASE_URL = "https://docs.wpilib.org/en/stable/"
+# The domain to stay within. Prevents the crawler from leaving the docs site.
+ALLOWED_DOMAIN = "docs.wpilib.org"
+# Directory to save the scraped text files.
+OUTPUT_DIR = "wpilib_docs_output"
+# Delay between requests to be respectful to the server.
+REQUEST_DELAY_SECONDS = 1
 
-# --- CHOOSE YOUR TARGET SITE HERE ---
-TARGET_SITE = 'wpilib_docs'
-# ------------------------------------
+def fetch_page_soup(url):
+    """
+    Fetches a page and returns the parsed BeautifulSoup object.
+    This function makes the single network request for a URL.
 
-def get_page_source_with_selenium(url):
-    """Uses a simple, stable Selenium setup to get the page source."""
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
+    Args:
+        url (str): The URL of the page to fetch.
 
-    chrome_options = Options()
-    chrome_options.add_argument("start-maximized")
-    # Headless mode is disabled to prevent crashes. A browser window will appear.
-    # chrome_options.add_argument("--headless")
-
-    webdriver_service = Service('./chromedriver') 
-    driver = webdriver.Chrome(service=webdriver_service, options=chrome_options)
-
-    html_source = None
+    Returns:
+        BeautifulSoup: The soup object if the request is successful, otherwise None.
+    """
+    print(f"  - Fetching: {url}")
     try:
-        print("  -> Getting page in visible browser...")
-        driver.get(url)
-
-        # --- Wait for the single most important element: the sidebar with the links ---
-        print("  -> Waiting for sidebar navigation...")
-        wait = WebDriverWait(driver, 10)
-        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "theme-doc-sidebar-container")))
-        # --------------------------------------------------------------------------
-
-        html_source = driver.page_source
-        print("  -> Page loaded. Grabbing HTML.")
-
-    except Exception as e:
-        print(f"  -> Selenium error: {e}")
-    finally:
-        driver.quit()
-
-    return html_source
-
-def scrape_page(html_source, content_selector):
-    """Parses HTML source to extract text and a BeautifulSoup object."""
-    if not html_source:
-        return None, None
+        # Set a user-agent to identify our bot.
+        headers = {'User-Agent': 'FRC-AI-Scraper/1.0'}
+        response = requests.get(url, headers=headers, timeout=15)
         
-    soup = BeautifulSoup(html_source, 'html.parser')
-    tag_name, attrs = content_selector
-    content_area = soup.find(tag_name, attrs=attrs)
-    if not content_area:
-        # Fallback for pages that might not have the main content div
-        content_area = soup.find('main') or soup.find('body')
+        # Check for a successful request (status code 200)
+        if response.status_code == 200:
+            return BeautifulSoup(response.content, 'html.parser')
+        else:
+            print(f"  - Failed to fetch page {url} with status code: {response.status_code}")
+            return None
 
-    text = content_area.get_text(separator='\n', strip=True)
-    return text, soup
+    except requests.RequestException as e:
+        print(f"  - Error during request for {url}: {e}")
+        return None
 
-def find_doc_links(soup, current_url, base_domain):
-    """Finds all valid, on-domain documentation links on a page."""
-    links = set()
-    for a_tag in soup.find_all('a', href=True):
-        href = a_tag['href']
-        full_url = urljoin(current_url, href).split('#')[0]
-        
-        if full_url.startswith(base_domain) and not full_url.endswith(('.zip', '.pdf', '.jar')):
-            links.add(full_url)
-    return links
+def main():
+    """
+    Main function to crawl the website and save the content.
+    """
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+        print(f"Created output directory: {OUTPUT_DIR}")
 
-def generate_filename(url, base_domain):
-    """Creates a safe filename from a URL."""
-    filename = url.replace(base_domain, '').replace('/', '_').replace('.html', '') + '.txt'
-    return filename
-
-# --- Main script execution ---
-if __name__ == "__main__":
-    config = SITE_CONFIGS[TARGET_SITE]
-    start_url = config['start_url']
-    base_domain = config['base_domain']
-    output_dir = config['output_dir']
-    content_selector = config['content_selector']
-
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    urls_to_visit = deque([start_url])
+    # Using a set to avoid visiting the same URL multiple times
+    urls_to_visit = {BASE_URL}
     visited_urls = set()
 
     while urls_to_visit:
-        current_url = urls_to_visit.popleft()
+        current_url = urls_to_visit.pop()
+        
         if current_url in visited_urls:
             continue
 
-        print(f"Scraping {current_url}...")
+        print(f"\nVisiting: {current_url}")
         visited_urls.add(current_url)
-        
-        html = get_page_source_with_selenium(current_url)
-        scraped_text, soup = scrape_page(html, content_selector)
 
-        if scraped_text and soup:
-            filename = generate_filename(current_url, base_domain)
-            file_path = os.path.join(output_dir, filename)
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(scraped_text)
-            print(f"  -> Saved to {file_path}")
+        # Fetch the page and get the soup object ONCE.
+        soup = fetch_page_soup(current_url)
 
-            new_links = find_doc_links(soup, current_url, base_domain)
-            for link in new_links:
-                if link not in visited_urls:
-                    urls_to_visit.append(link)
-    
-    print("\nCrawling complete!")
-    print(f"Visited and scraped {len(visited_urls)} pages in '{output_dir}'.")
+        # If the fetch was successful (soup is not None)
+        if soup:
+            # --- 1. Extract and save the text content ---
+            # CORRECTED: The main content on WPILib docs is in a div with class="document"
+            main_content = soup.find('div', attrs={'class': 'document'})
+            
+            if main_content:
+                print("  - Found main content section. Preparing to save file.")
+                # Remove script/style tags for cleaner text
+                for element in main_content(["script", "style"]):
+                    element.decompose()
+                
+                content_text = main_content.get_text(separator='\n', strip=True)
+
+                # Create a valid filename from the URL
+                parsed_url = urlparse(current_url)
+                path = parsed_url.path.strip('/')
+                filename = path.replace('/', '_') + ".txt" if path else "index.txt"
+                
+                filepath = os.path.join(OUTPUT_DIR, filename)
+                
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    f.write(content_text)
+                print(f"  - Successfully saved content to {filepath}")
+            else:
+                # Updated diagnostic message for the new selector
+                print("  - WARNING: Main content section with class='document' not found. Skipping file save for this URL.")
+
+
+            # --- 2. Find all new links to visit from the same soup object ---
+            for link in soup.find_all('a', href=True):
+                href = link['href']
+                
+                # Create an absolute URL from a relative one (e.g., "../page.html")
+                absolute_url = urljoin(current_url, href)
+                
+                # Parse the URL to remove fragments (e.g., "#section-name")
+                parsed_absolute_url = urlparse(absolute_url)
+                url_without_fragment = parsed_absolute_url._replace(fragment="").geturl()
+
+                # Check if the link is within our allowed domain and hasn't been seen
+                if (ALLOWED_DOMAIN in url_without_fragment and 
+                    url_without_fragment not in visited_urls and
+                    url_without_fragment not in urls_to_visit):
+                    
+                    # Filter out links to files
+                    if any(ext in url_without_fragment for ext in ['.zip', '.pdf', '.png', '.jpg']):
+                        continue
+
+                    urls_to_visit.add(url_without_fragment)
+
+        # Be a good web citizen!
+        time.sleep(REQUEST_DELAY_SECONDS)
+
+    print("\nCrawling finished!")
+
+if __name__ == "__main__":
+    main()

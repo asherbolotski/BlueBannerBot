@@ -1,0 +1,557 @@
+Physics Simulation with WPILib
+
+Because
+state-space notation
+allows us to compactly represent the
+dynamics
+of
+systems
+, we can leverage it to provide a backend for simulating physical systems on robots. The goal of these simulators is to simulate the motion of robot mechanisms without modifying existing non-simulation user code. The basic flow of such simulators is as follows:
+In normal user code:
+PID or similar control algorithms generate voltage commands from encoder (or other sensor) readings
+Motor outputs are set
+In simulation periodic code:
+The simulation’s
+state
+is updated using
+inputs
+, usually voltages from motors set from a PID loop
+Simulated encoder (or other sensor) readings are set for user code to use in the next timestep
+WPILib’s Simulation Classes
+
+The following physics simulation classes are available in WPILib:
+LinearSystemSim, for modeling systems with linear dynamics
+FlywheelSim
+DifferentialDrivetrainSim
+ElevatorSim, which models gravity in the direction of elevator motion
+SingleJointedArmSim, which models gravity proportional to the arm angle
+BatterySim, which simply estimates battery voltage sag based on drawn currents
+All simulation classes (with the exception of the differential drive simulator) inherit from the
+LinearSystemSim
+class. By default, the dynamics are the linear system dynamics
+\(\mathbf{x}_{k+1} = \mathbf{A}\mathbf{x}_k + \mathbf{B}\mathbf{u}_k\)
+. Subclasses override the
+UpdateX(x,
+u,
+dt)
+method to provide custom, nonlinear dynamics, such as modeling gravity.
+Note
+Swerve support for simulation is in the works, but we cannot provide an ETA. For updates on progress, please follow this
+pull request
+.
+Usage in User Code
+
+The following is available from the WPILib
+elevatorsimulation
+example project
+.
+In addition to standard objects such as motors and encoders, we instantiate our elevator simulator using known constants such as carriage mass and gearing reduction. We also instantiate an
+EncoderSim
+, which sets the distance and rate read by our
+Encoder
+.
+In the following example, we simulate an elevator given the mass of the moving carriage (in kilograms), the radius of the drum driving the elevator (in meters), the gearing reduction between motor and drum as output over input (so usually greater than one), the minimum and maximum height of the elevator (in meters), the starting height of the elevator, and some random noise to add to our position estimate.
+Note
+The elevator and arm simulators will prevent the simulated position from exceeding given minimum or maximum heights or angles. If you wish to simulate a mechanism with infinite rotation or motion,
+LinearSystemSim
+may be a better option.
+Java
+46
+// Simulation classes help us simulate what's going on, including gravity.
+47
+private
+final
+ElevatorSim
+m_elevatorSim
+=
+48
+new
+ElevatorSim
+(
+49
+m_elevatorGearbox
+,
+50
+Constants
+.
+kElevatorGearing
+,
+51
+Constants
+.
+kCarriageMass
+,
+52
+Constants
+.
+kElevatorDrumRadius
+,
+53
+Constants
+.
+kMinElevatorHeightMeters
+,
+54
+Constants
+.
+kMaxElevatorHeightMeters
+,
+55
+true
+,
+56
+0
+,
+57
+0.01
+,
+58
+0.0
+);
+C++
+51
+// Simulation classes help us simulate what's going on, including gravity.
+52
+frc
+::
+sim
+::
+ElevatorSim
+m_elevatorSim
+{
+m_elevatorGearbox
+,
+53
+Constants
+::
+kElevatorGearing
+,
+54
+Constants
+::
+kCarriageMass
+,
+55
+Constants
+::
+kElevatorDrumRadius
+,
+56
+Constants
+::
+kMinElevatorHeight
+,
+57
+Constants
+::
+kMaxElevatorHeight
+,
+58
+true
+,
+59
+0
+_m
+,
+60
+{
+0.01
+}};
+61
+frc
+::
+sim
+::
+EncoderSim
+m_encoderSim
+{
+m_encoder
+};
+Next,
+teleopPeriodic
+/
+TeleopPeriodic
+(Java/C++) uses a simple PID control loop to drive our elevator to a setpoint 30 inches off the ground.
+Java
+30
+@Override
+31
+public
+void
+teleopPeriodic
+()
+{
+32
+if
+(
+m_joystick
+.
+getTrigger
+())
+{
+33
+// Here, we set the constant setpoint of 0.75 meters.
+34
+m_elevator
+.
+reachGoal
+(
+Constants
+.
+kSetpointMeters
+);
+35
+}
+else
+{
+36
+// Otherwise, we update the setpoint to 0.
+37
+m_elevator
+.
+reachGoal
+(
+0.0
+);
+38
+}
+39
+}
+99
+public
+void
+reachGoal
+(
+double
+goal
+)
+{
+100
+m_controller
+.
+setGoal
+(
+goal
+);
+101
+102
+// With the setpoint value we run PID control like normal
+103
+double
+pidOutput
+=
+m_controller
+.
+calculate
+(
+m_encoder
+.
+getDistance
+());
+104
+double
+feedforwardOutput
+=
+m_feedforward
+.
+calculate
+(
+m_controller
+.
+getSetpoint
+().
+velocity
+);
+105
+m_motor
+.
+setVoltage
+(
+pidOutput
++
+feedforwardOutput
+);
+106
+}
+C++
+20
+void
+Robot::TeleopPeriodic
+()
+{
+21
+if
+(
+m_joystick
+.
+GetTrigger
+())
+{
+22
+// Here, we set the constant setpoint of 0.75 meters.
+23
+m_elevator
+.
+ReachGoal
+(
+Constants
+::
+kSetpoint
+);
+24
+}
+else
+{
+25
+// Otherwise, we update the setpoint to 0.
+26
+m_elevator
+.
+ReachGoal
+(
+0.0
+_m
+);
+27
+}
+28
+}
+42
+void
+Elevator::ReachGoal
+(
+units
+::
+meter_t
+goal
+)
+{
+43
+m_controller
+.
+SetGoal
+(
+goal
+);
+44
+// With the setpoint value we run PID control like normal
+45
+double
+pidOutput
+=
+46
+m_controller
+.
+Calculate
+(
+units
+::
+meter_t
+{
+m_encoder
+.
+GetDistance
+()});
+47
+units
+::
+volt_t
+feedforwardOutput
+=
+48
+m_feedforward
+.
+Calculate
+(
+m_controller
+.
+GetSetpoint
+().
+velocity
+);
+49
+m_motor
+.
+SetVoltage
+(
+units
+::
+volt_t
+{
+pidOutput
+}
++
+feedforwardOutput
+);
+50
+}
+Next,
+simulationPeriodic
+/
+SimulationPeriodic
+(Java/C++) uses the voltage applied to the motor to update the simulated position of the elevator. We use
+SimulationPeriodic
+because it runs periodically only for simulated robots. This means that our simulation code will not be run on a real robot.
+Note
+Classes inheriting from command-based’s
+Subsystem
+can override the inherited
+simulationPeriodic()
+method. Other classes will need their simulation update methods called from
+Robot
+’s
+simulationPeriodic
+.
+Finally, the simulated encoder’s distance reading is set using the simulated elevator’s position, and the robot’s battery voltage is set using the estimated current drawn by the elevator.
+Java
+79
+public
+void
+simulationPeriodic
+()
+{
+80
+// In this method, we update our simulation of what our elevator is doing
+81
+// First, we set our "inputs" (voltages)
+82
+m_elevatorSim
+.
+setInput
+(
+m_motorSim
+.
+getSpeed
+()
+*
+RobotController
+.
+getBatteryVoltage
+());
+83
+84
+// Next, we update it. The standard loop time is 20ms.
+85
+m_elevatorSim
+.
+update
+(
+0.020
+);
+86
+87
+// Finally, we set our simulated encoder's readings and simulated battery voltage
+88
+m_encoderSim
+.
+setDistance
+(
+m_elevatorSim
+.
+getPositionMeters
+());
+89
+// SimBattery estimates loaded battery voltages
+90
+RoboRioSim
+.
+setVInVoltage
+(
+91
+BatterySim
+.
+calculateDefaultBatteryLoadedVoltage
+(
+m_elevatorSim
+.
+getCurrentDrawAmps
+()));
+92
+}
+C++
+20
+void
+Elevator::SimulationPeriodic
+()
+{
+21
+// In this method, we update our simulation of what our elevator is doing
+22
+// First, we set our "inputs" (voltages)
+23
+m_elevatorSim
+.
+SetInput
+(
+frc
+::
+Vectord
+<
+1
+>
+{
+24
+m_motorSim
+.
+GetSpeed
+()
+*
+frc
+::
+RobotController
+::
+GetInputVoltage
+()});
+25
+26
+// Next, we update it. The standard loop time is 20ms.
+27
+m_elevatorSim
+.
+Update
+(
+20
+_ms
+);
+28
+29
+// Finally, we set our simulated encoder's readings and simulated battery
+30
+// voltage
+31
+m_encoderSim
+.
+SetDistance
+(
+m_elevatorSim
+.
+GetPosition
+().
+value
+());
+32
+// SimBattery estimates loaded battery voltages
+33
+frc
+::
+sim
+::
+RoboRioSim
+::
+SetVInVoltage
+(
+34
+frc
+::
+sim
+::
+BatterySim
+::
+Calculate
+({
+m_elevatorSim
+.
+GetCurrentDraw
+()}));
+35
+}

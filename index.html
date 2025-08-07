@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRC AI Assistant</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a modern look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the chat interface */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* A subtle gradient background similar to modern chat UIs */
+            background: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+        /* Style for the scrollbar in the chat window */
+        #chat-window::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-window::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #chat-window::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+        .chat-bubble-ai {
+            background-color: #f1f5f9; /* Lighter gray for AI responses */
+            color: #1e293b;
+        }
+        .chat-bubble-user {
+            background-color: #2563eb; /* A slightly softer blue */
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+
+    <div class="flex flex-col w-full max-w-3xl h-full bg-white/70 backdrop-blur-sm border border-slate-200/50 rounded-xl shadow-2xl">
+        <!-- Header Section -->
+        <header class="p-4 border-b border-slate-200/50 flex items-center justify-between">
+            <div class="flex items-center">
+                <div>
+                    <h1 class="text-lg font-semibold text-slate-800">FRC AI Assistant</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- Chat Window -->
+        <main id="chat-window" class="flex-1 p-6 overflow-y-auto">
+            <!-- Initial welcome message from the AI -->
+            <div class="flex mb-4">
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="p-4 bg-white/50">
+            <div class="relative">
+                <input type="text" id="user-input" placeholder="Ask a question about FRC..." class="w-full p-4 pr-14 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition shadow-sm">
+                <button id="send-btn" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-slate-400 transition">
+                    <!-- Send Icon SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // --- JavaScript Logic (Unchanged) ---
+
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const API_URL = "http://127.0.0.1:8000/ask";
+
+        function addMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex mb-4 ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const messageBubble = document.createElement('div');
+            // Use the new CSS classes for styling chat bubbles
+            messageBubble.className = `p-3 rounded-xl max-w-lg shadow-sm ${sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'}`;
+            messageBubble.innerHTML = `<p>${message}</p>`;
+            
+            messageDiv.appendChild(messageBubble);
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function showLoadingIndicator() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.id = 'loading-indicator';
+            loadingDiv.className = 'flex mb-4 justify-start';
+            
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = 'chat-bubble-ai p-3 rounded-xl max-w-lg';
+            loadingBubble.innerHTML = `<div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+                <div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                <div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+            </div>`;
+            
+            loadingDiv.appendChild(loadingBubble);
+            chatWindow.appendChild(loadingDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function hideLoadingIndicator() {
+            const indicator = document.getElementById('loading-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        async function handleSendMessage() {
+            const question = userInput.value.trim();
+            if (!question) return;
+
+            addMessage(question, 'user');
+            userInput.value = '';
+            sendBtn.disabled = true;
+
+            showLoadingIndicator();
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question }),
+                });
+
+                hideLoadingIndicator();
+
+                if (!response.ok) {
+                    addMessage("Sorry, I encountered an error. Please check the backend server's terminal for details.", 'ai');
+                    return;
+                }
+
+                const data = await response.json();
+                const formattedAnswer = data.answer.replace(/\n/g, '<br>');
+                addMessage(formattedAnswer, 'ai');
+
+            } catch (error) {
+                hideLoadingIndicator();
+                addMessage("I couldn't connect to my brain. Is the backend server running?", 'ai');
+                console.error("Error fetching AI response:", error);
+            } finally {
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        sendBtn.addEventListener('click', handleSendMessage);
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

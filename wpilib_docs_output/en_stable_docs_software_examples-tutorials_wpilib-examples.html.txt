@@ -1,0 +1,602 @@
+WPILib Example Projects
+
+Warning
+While every attempt is made to keep WPILib examples functional, they are
+not
+intended to be used “as-is.”  At the very least, robot-specific constants will need to be changed for the code to work on a user robot.  Many empirical constants have their values “faked” for demonstration purposes.  Users are strongly encouraged to write their own code (from scratch or from an existing template) rather than copy example code.
+WPILib example projects demonstrate a large number of library features and use patterns.  Projects range from simple demonstrations of a single functionality to complete, competition-capable robot programs. All of these examples are available in VS Code by entering
+Ctrl
++
+Shift
++
+P
+, then selecting
+WPILib: Create a new project
+and choosing example.
+Basic Examples
+
+These examples demonstrate basic/minimal robot functionality.  They are useful for beginning teams who are gaining initial familiarity with robot programming, but are highly limited in functionality.
+Arcade Drive
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates a simple differential drive implementation using “arcade”-style controls through the
+DifferentialDrive
+class.
+Arcade Drive Xbox Controller
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the same functionality seen in the previous example, except using an
+XboxController
+instead of an ordinary joystick.
+Getting Started
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates a simple autonomous routine that drives forwards for two seconds at half speed.
+Mecanum Drive
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates a simple mecanum drive implementation using the
+MecanumDrive
+class.
+Motor Controller
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates how to control the output of a motor with a joystick with an encoder to read motor position.
+Simple Vision
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates how to stream video from a USB camera to the dashboard.
+Relay
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+Relay
+class to control a relay output with a set of joystick buttons.
+Solenoids
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+Solenoid
+and
+DoubleSolenoid
+classes to control solenoid outputs with a set of joystick buttons.
+TankDrive
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates a simple differential drive implementation using “tank”-style controls through the
+DifferentialDrive
+class.
+Tank Drive Xbox Controller
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the same functionality seen in the previous example, except using an
+XboxController
+instead of an ordinary joystick.
+Control Examples
+
+These examples demonstrate WPILib implementations of common robot controls.  Sensors may be present, but are not the emphasized concept of these examples.
+DifferentialDriveBot
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates an advanced differential drive implementation, including encoder-and-gyro odometry through the
+DifferentialDriveOdometry
+class, and composition with PID velocity control through the
+DifferentialDriveKinematics
+and
+PIDController
+classes.
+DifferentialDrivePoseEstimator
+(
+Java
+,
+C++
+): Demonstrates an advanced differential drive implementation with all the features of
+DifferentialDriveBot
+.  In addition this example uses
+DifferentialDrivePoseEstimator
+to track the robots position on the field.  It demonstrates these features by using WPILib Simulation.
+Elevator with Profiled PID Controller
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+ProfiledPIDController
+class to control the position of an elevator mechanism.
+Elevator with Trapezoid Profiled PID
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+TrapezoidProfile
+class in conjunction with a “smart motor controller” to control the position of an elevator mechanism.
+Elevator with Exponential Profiled PID
+(
+Java
+,
+C++
+): Demonstrates the use of the
+ExponentialProfile
+class in conjunction with a “smart motor controller” to control the position of an elevator mechanism.
+Flywheel Bang-Bang Controller
+(
+Java
+,
+C++
+,
+Python
+): Uses the
+BangBangController
+class to simply yet effectively control a flywheel.
+Gyro Mecanum
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates field-oriented control of a mecanum robot through the
+MecanumDrive
+class in conjunction with a gyro.
+MecanumBot
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates an advanced mecanum drive implementation, including encoder-and-gyro odometry through the
+MecanumDriveOdometry
+class, and composition with PID velocity control through the
+MecanumDriveKinematics
+and
+PIDController
+classes.
+Mecanum Drive PoseEstimator
+(
+Java
+,
+C++
+): Demonstrates an advanced mecanum drive implementation with all the features of
+MecanumBot
+.  In addition this example uses
+MecanumDrivePoseEstimator
+to track the robots position on the field.
+PotentiometerPID
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+PIDController
+class and a potentiometer to control the position of an elevator mechanism.
+SwerveBot
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates an advanced swerve drive implementation, including encoder-and-gyro odometry through the
+SwerveDriveOdometry
+class, and composition with PID position and velocity control through the
+SwerveDriveKinematics
+and
+PIDController
+classes.
+Swerve Drive PoseEstimator
+(
+Java
+,
+C++
+): Demonstrates an advanced swerve drive implementation with all the features of
+SwerveBot
+.  In addition this example uses
+SwerveDrivePoseEstimator
+to track the robots position on the field.
+UltrasonicPID
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+PIDController
+class in conjunction with an ultrasonic sensor to drive to a set distance from an object.
+Sensor Examples
+
+These examples demonstrate sensor reading and data processing using WPILib.  Mechanisms control may be present, but is not the emphasized concept of these examples.
+HTTP Camera
+(
+Java
+,
+C++
+): Demonstrates the use of OpenCV and a HTTP Camera to overlay a rectangle on a captured video feed and stream it to the dashboard.
+Power Distribution CAN Monitoring
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates obtaining sensor information from a Power Distribution module over CAN using the
+PowerDistribution
+class.
+Duty Cycle Encoder
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+DutyCycleEncoder
+class to read values from a PWM-type absolute encoder.
+DutyCycleInput
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+DutyCycleInput
+class to read the frequency and fractional duty cycle of a
+PWM
+input.
+Encoder
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+Encoder
+class to read values from a quadrature encoder.
+Gyro
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+AnalogGyro
+class to measure robot heading and stabilize driving.
+Intermediate Vision
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of OpenCV and a USB camera to overlay a rectangle on a captured video feed and stream it to the dashboard.
+AprilTagsVision
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates on-roboRIO detection of AprilTags using an attached USB camera.
+Ultrasonic
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+Ultrasonic
+class to read data from an ultrasonic sensor in conjunction with the
+MedianFilter
+class to reduce signal noise.
+SysIdRoutine
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the SysIdRoutine API to gather characterization data for a differential drivetrain.
+Command-Based Examples
+
+These examples demonstrate the use of the
+Command-Based framework
+.
+DriveDistanceOffboard
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of a
+TrapezoidProfileCommand
+in conjunction with a “smart motor controller” to drive forward by a set distance with a trapezoidal motion profile.
+Rapid React Command Bot
+(
+Java
+,
+C++
+): This project uses the latest command based best practices and the Epilogue logging system.  It is capable of playing the FRC 2022 game Rapid React.
+Inlined Hatchbot
+(
+Java
+,
+C++
+,
+Python
+): A complete set of robot code for a simple hatch-delivery bot typical of the 2019 FRC game
+Destination: Deep Space
+.  Commands are written in an “inline” style, in which explicit subclassing of
+Command
+is avoided.
+Traditional Hatchbot
+(
+Java
+,
+C++
+,
+Python
+): A complete set of robot code for a simple hatch-delivery bot typical of the 2019 FRC game
+Destination: Deep Space
+.  Commands are written in a “traditional” style, in which subclasses of
+Command
+are written for each robot action.
+MecanumControllerCommand
+(
+Java
+,
+C++
+): Demonstrates trajectory generation and following with a mecanum drive using the
+TrajectoryGenerator
+and
+MecanumControllerCommand
+classes.
+Select Command Example
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+SelectCommand
+class to run one of a selection of commands depending on a runtime-evaluated condition.
+SwerveControllerCommand
+(
+Java
+,
+C++
+): Demonstrates trajectory generation and following with a swerve drive using the
+TrajectoryGenerator
+and
+SwerveControllerCommand
+classes.
+State-Space Examples
+
+These examples demonstrate the use of the
+State-Space Control
+.
+StateSpaceFlywheel
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates state-space control of a flywheel.
+StateSpaceFlywheelSysId
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates state-space control using SysId’s System Identification for controlling a flywheel.
+StateSpaceElevator
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates state-space control of an elevator.
+StateSpaceArm
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates state-space control of an Arm.
+Simulation Physics Examples
+
+These examples demonstrate the use of the physics simulation.
+ElevatorSimulation
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of physics simulation with a simple elevator.
+ElevatorSimulation with Exponential PID
+(
+Java
+,
+C++
+): Demonstrates the use of physics simulation of an elevator being controlled with exponential profiled PID.
+ArmSimulation
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of physics simulation with a simple single-jointed arm.
+SimpleDifferentialDriveSimulation
+(
+Java
+,
+C++
+): A barebones example of a basic drivetrain that can be used in simulation.
+Miscellaneous Examples
+
+These examples demonstrate miscellaneous WPILib functionality that does not fit into any of the above categories.
+Addressable LED
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the
+AddressableLED
+class to control RGB LEDs for robot decoration and/or driver feedback.
+Digital Communication
+(
+Java
+,
+C++
+,
+Python
+): This is a sample program demonstrating how to communicate to a light controller from the robot code using the roboRIO’s DIO ports.
+I2C Communication
+(
+Java
+,
+C++
+,
+Python
+): This is a sample program demonstrating how to communicate to a light controller from the robot code using the roboRIO’s I2C port.
+DMA
+(
+Java
+,
+C++
+): Demonstrates the use of DMA (Direct Memory Access) to read from sensors without using the RoboRIO’s CPU.
+HAL
+(
+C++
+): Demonstrates the use of HAL (Hardware Abstraction Layer) without the use of the rest of WPILib. This example is for advanced users (C++ only).
+HID Rumble
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates the use of the “rumble” functionality for tactile feedback on supported HIDs (such as XboxControllers).
+Shuffleboard
+(
+Java
+,
+C++
+,
+Python
+): Demonstrates configuring tab/widget layouts on the “Shuffleboard” dashboard from robot code through the
+Shuffleboard
+class’s fluent builder API.
+RomiReference
+(
+Java
+,
+C++
+,
+Python
+): A command based example of how to run the
+Romi robot
+.
+XRPReference
+(
+Java
+,
+C++
+): A command based example of how to run the
+XRP robot
+.
+Mechanism2d
+(
+Java
+,
+C++
+,
+Python
+): A simple example of using
+Mechanism2d
+.
+EventLoop
+(
+Java
+,
+C++
+): Demonstrates the use of the
+EventLoop
+class that allows code to be called based on a boolean condition in the event-driven programming style.
+UnitTest
+(
+Java
+,
+C++
+): Shows how to do
+Unit Testing
+.  The test files need to be in a separate Test directory (
+Java
+,
+C++
+).

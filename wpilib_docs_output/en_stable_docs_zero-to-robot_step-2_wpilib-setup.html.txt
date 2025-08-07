@@ -1,0 +1,379 @@
+WPILib Installation Guide
+
+This guide will walk you through installing the WPILib development environment on your computer. This includes the WPILib tools, Visual Studio Code, and all dependencies needed to develop and deploy code to the roboRIO. WPILib Installation is required for Java and C++ teams. LabVIEW teams can skip to
+Installing LabVIEW for FRC (LabVIEW only)
+. Python teams can do a full install per these instructions to get a Visual Studio Code environment with some python extensions, or do a tools only installation to install dashboards such as Shuffleboard and Elastic. Python teams additionally need to follow the
+Python Installation Guide
+.
+Prerequisites
+
+Supported Operating Systems and Architectures:
+Windows 10 & 11, 64 bit only. 32 bit and Arm are not supported
+Ubuntu 22.04 & 24.04, 64 bit. Other Linux distributions with glibc >= 2.34 may work, but are unsupported
+macOS 13.3 or higher, both Intel and Arm.
+Warning
+The following OSes are no longer supported: macOS 12 or earlier, Ubuntu 18.04 & 20.04, Windows 7, Windows 8.1, and any 32-bit Windows.
+Note
+Windows 10 support from Microsoft will end in October 2025
+. We intend to continue supporting Windows 10 through the 2026 season, but may have to drop support in 2027. Teams should start planning their upgrade path to Windows 11, or switch to one of the supported Linux distributions listed.
+Note
+C++ compilation is memory intensive. A minimum of 32 GB of RAM is recommended for C++ teams.
+This tutorial shows Windows 11, but the steps are identical for all operating systems. Notes differentiating operating systems will be shown.
+WPILib is designed to install to different folders for different years, so that it is not necessary to uninstall a previous version before installing this year’s WPILib.
+Downloading
+
+WPILib Installer
+WPILib 2025.3.2 Release - March 18, 2025
+Downloads
+Downloads for other platforms
+Release Notes
+This is an update release of WPILib for the 2025 season. This release fixes an issue with rebooting robot code causing periodic CPU spikes that could cause loop overruns, upgrades Elastic to 2025.2.0 (fixes several camera viewer issues) and AdvantageScope to 4.1.5, and has a number of other quality of life improvements and fixes.  This upgrade is recommended for all teams.
+Upgrading from earlier 2025 releases is easy: simply download and run the new installer and it will update your current installation. If you already have the 2025 WPILib vscode installed, it will detect it and you can simply click "next" for that installation step. After installation, vscode will prompt you when opening your robot project whether you want to upgrade it to this version. Note that using the installer is required to get the new version of desktop tools such as Elastic and AdvantageScope.  This release is compatible with the kickoff release of the RoboRIO image, so there is no need to upgrade the RIO image if you have already done so for 2025.
+The documentation for WPILib is located at https://docs.wpilib.org/ (if you have trouble accessing this location, https://frcdocs.wpi.edu/en/stable/ is an alternate location with the same content).
+If you're new to FRC, start with
+Getting Started
+.
+System Requirements: WPILib requires 64-bit Windows 10 or 11 (Arm and 32-bit are not supported), Ubuntu 22.04 or 24.04, or macOS 13.3 or higher.  C++ teams should note that the latest version of Visual Studio 2022 is required for desktop builds.  Mac users will need to have the Xcode Command Line Tools installed before running the installer. This can be done by running
+xcode-select --install
+in the Terminal.
+If you're returning from a previous season, check out
+what's new for 2025
+. You will need a new RoboRIO image for 2025; this is available via the
+FRC 2025 Game Tools
+. Follow the
+WPILib installation guide
+to install WPILib.
+If you're starting from a 2024 robot project, you will need to
+import your project
+to create a 2025 project.  The import process is important, as it will make a few automated corrections for some breaking changes that happened in 2025.  It is also necessary to import vendor libraries again, since last year’s vendor libraries must be updated to be compatible with this year’s projects.
+A complete list of known issues with this release can be found
+here
+.
+WPILib is
+developed by a small team of volunteers and the FIRST community
+.
+Downloads
+Windows
+(2.4 GB)
+Mac (Arm)
+(2.2 GB)
+Mac (Intel)
+(2.3 GB)
+Linux (x64)
+(2.8 GB)
+Linux (arm64)
+(2.4 GB)
+What's Changed since 2025.3.1
+GradleRIO
+Disable code reboot while killing robot process by @ThadHouse in https://github.com/wpilibsuite/GradleRIO/pull/778
+Elastic
+Upgraded to 2025.2.0 (see https://github.com/Gold872/elastic-dashboard/releases/tag/v2025.2.0)
+AdvantageScope
+Upgraded to 4.1.5 (see https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v4.1.5)
+Math
+Make LinearSystemSim setState() update output by @HarryXChen3 in https://github.com/wpilibsuite/allwpilib/pull/7799
+Fix another infinite loop in ArmFeedforward by @calcmogul in https://github.com/wpilibsuite/allwpilib/pull/7823
+Add Translation2d/Translation3d slew rate limiter by @OhmV-IR in https://github.com/wpilibsuite/allwpilib/pull/7806
+Fix feedforward returning NaN when kᵥ = 0 by @calcmogul in https://github.com/wpilibsuite/allwpilib/pull/7790
+Add Debouncer type and time setters by @crueter in https://github.com/wpilibsuite/allwpilib/pull/7839
+Fix singularities in Ellipse2d::Nearest() by @calcmogul in https://github.com/wpilibsuite/allwpilib/pull/7851
+Fix UnscentedKalmanFilter and improve math docs by @PascalSkylake in https://github.com/wpilibsuite/allwpilib/pull/7850
+Epilogue
+Make nonloggable type warnings configurable by @SamCarlberg in https://github.com/wpilibsuite/allwpilib/pull/7792
+Glass
+Update default field to 2025 for Field2D by @rmheuer in https://github.com/wpilibsuite/allwpilib/pull/7820
+SysId
+Remove extra period from exception messages by @calcmogul in https://github.com/wpilibsuite/allwpilib/pull/7805
+Refactor feedback analysis by @calcmogul in https://github.com/wpilibsuite/allwpilib/pull/7827
+New Contributors
+@OhmV-IR made their first contribution in https://github.com/wpilibsuite/allwpilib/pull/7806
+@arbessette made their first contribution in https://github.com/wpilibsuite/allwpilib/pull/7833
+@crueter made their first contribution in https://github.com/wpilibsuite/allwpilib/pull/7839
+@PascalSkylake made their first contribution in https://github.com/wpilibsuite/allwpilib/pull/7850
+Full Changelog
+: https://github.com/wpilibsuite/allwpilib/compare/v2025.3.1...v2025.3.2
+MD5 Hashes
+a5bee197b217509a3c1fb9098c72fb74  Linux/WPILib_Linux-2025.3.2.tar.gz
+1ce99b1258f91ced62b379c990e412b9  LinuxArm64/WPILib_LinuxArm64-2025.3.2.tar.gz
+bb749ad10e857b904c5fb7780718a778  Win64/WPILib_Windows-2025.3.2.iso
+47b75a1e81fdc4caaff969f5bbc873ae  macOS/WPILib_macOS-Intel-2025.3.2.dmg
+2c1b322e1fcd4b923abf10a819ea19b6  macOSArm/WPILib_macOS-Arm64-2025.3.2.dmg
+SHA256 Hashes
+7f5021590497d0fdb25f49e4761593ebb5bcf04e253ca3093a46f8d04d3394c1  Linux/WPILib_Linux-2025.3.2.tar.gz
+196a6de4ea314bce5670862bdb5a33005cee0ea46e16f0d9149ee498314bd3a7  LinuxArm64/WPILib_LinuxArm64-2025.3.2.tar.gz
+fe101018720dc158b72f8542beb1b44af9996235245b37f98acd8851b375d53c  Win64/WPILib_Windows-2025.3.2.iso
+bef1d56ba5cddbda7dc56c62932ff58e7460129a85e3e2ff3dcac5d9e01a3ff3  macOS/WPILib_macOS-Intel-2025.3.2.dmg
+5d957d12fa3c90ead5d3f6ddb33f951ed75990c1b2db1941f2c0433ffd3a53e3  macOSArm/WPILib_macOS-Arm64-2025.3.2.dmg
+You can download the latest release of the installer from GitHub
+.
+Once on the GitHub releases page, scroll to the Downloads section.
+Then click on the correct binary for your OS and architecture to begin the download.
+Extracting the Installer
+
+When you download the WPILib installer, it is distributed as a disk image file
+.iso
+for Windows,
+.tar.gz
+for Linux, and distributed as a
+DMG
+for MacOS.
+Windows 10+
+Windows 10+ users can right click on the downloaded disk image and select
+Mount
+to open it. Then launch
+WPILibInstaller.exe
+.
+Note
+Other installed programs may associate with iso files and the
+mount
+option may not appear. If that software does not give the option to mount or extract the iso file, then follow the directions below.
+You can use
+7-zip
+to extract the disk image by right-clicking, selecting
+7-Zip
+and selecting
+Extract to…
+. Windows 11 users may need to select
+Show more options
+at the bottom of the context menu.
+After opening the
+.iso
+file, launch the installer by opening
+WPILibInstaller.exe
+.
+Note
+After launching the installer, Windows may display a window titled “Windows protected your PC”. Click
+More info
+, then select
+Run anyway
+to run the installer.
+macOS
+Note
+Ensure you’ve ejected any previous WPILibInstaller images from the desktop before starting installation
+macOS users can double click on the downloaded
+dmg
+and then select
+WPILibInstaller
+to launch the application.
+If a warning is shown about WPILibInstaller being downloaded from the internet, select
+Open
+.
+Linux
+Linux users should extract the downloaded
+.tar.gz
+and then launch
+WPILibInstaller
+. Ubuntu treats executables in the file explorer as shared libraries, so double-clicking won’t run them. Run the following commands in a terminal instead with
+<version>
+replaced with the version you’re installing.
+$
+tar
+-xf
+WPILib_Linux-<version>.tar.gz
+$
+cd
+WPILib_Linux-<version>/
+$
+./WPILibInstaller
+Running the Installer
+
+Upon opening the installer, you’ll be presented with the below screen. Go ahead and press
+Start
+.
+This showcases a list of options included with the WPILib installation.
+Tools Only
+installs just the WPILib tools (
+SmartDashboard
+,
+Shuffleboard
+,
+RobotBuilder
+,
+OutlineViewer
+,
+PathWeaver
+,
+Glass
+,
+SysId
+,
+Data Log Tool
+,
+roboRIO Team Number Setter
+,
+AdvantageScope
+,
+Elastic
+,
+WPIcal
+) and JDK.
+Everything
+installs the full development environment (VS Code, extensions, all dependencies, C++ compiler and JDK), WPILib tools, and documentation
+You will notice two buttons,
+Install for this User
+and
+Install for all Users
+.
+Install for this User
+only installs it on the current user account, and does not require administrator privileges. However,
+Install for all Users
+installs the tools for all system accounts and
+will
+require administrator access.
+Install for all Users
+is not an option for macOS and Linux.
+Note
+If you select Install for all Users, Windows will prompt for administrator access through UAC during installation.
+Select the option that is appropriate for you, and you’ll presented with the following installation screen.
+This next screen involves downloading VS Code. Unfortunately, due to licensing reasons, VS Code can not be bundled with the installer.
+Download for this computer only
+This downloads VS Code only for the current platform, which is also the smallest download.
+Skip and don’t use VS Code
+Skips installing VS Code. Useful for advanced installations or configurations. Generally not recommended.
+Select existing VS Code archive for offline install on this computer
+Selecting this option will bring up a prompt allowing you to select a pre-existing zip file of VS Code that has been downloaded by the installer previously. This option does
+not
+let you select an already installed copy of VS Code on your machine.
+Create VS Code archives to share with other computers/OSes for offline install
+This option downloads and saves a copy of VS Code for all platforms, which is useful for sharing with the installer for future offline installs.
+Go ahead and select
+Download for this computer only
+. This will begin the download process and can take a bit depending on internet connectivity (it’s ~150MB). Once the download is done, select
+Next
+. You should be presented with a screen that looks similar to the one below.
+Note
+teams upgrading from Beta will already have a version of VS Code installed. However, it’s still recommended to select
+Download for this computer only
+to ensure the latest recommended version of VS Code is installed
+After installation is complete, you will be presented with the finished screen.
+Important
+WPILib installs a separate version of VS Code. It does not use an already existing installation. Each year has it’s own copy of the tools appended with the year. IE:
+WPILib
+VS
+Code
+2025
+. Please launch the WPILib VS Code and not a system installed copy!
+Congratulations, the WPILib development environment and tooling is now installed on your computer! Press Finish to exit the installer.
+Post-Installation
+
+Some operating systems require some final action to complete installation.
+macOS
+After installation, the installer opens the WPILib VS Code folder. Drag the VS Code application to the dock.
+Eject WPILibInstaller image from the desktop.
+Linux
+Some versions of Linux (e.g. Ubuntu 22.04 and later) require you to give the desktop shortcut the ability to launch. Right click on the desktop icon and select Allow Launching.
+Ubuntu 23.10 and later
+disable the kernel user namespaces feature for unknown applications
+. This means that the
+sandboxing feature
+won’t work on the WPILib VS Code. To enable sandboxing for the WPILib applications, AppArmor profiles are provided, and can be installed using the command below.
+$
+sudo
+cp
+~/wpilib/YEAR/frccode/AppArmor/*
+/etc/apparmor.d/
+$
+sudo
+systemctl
+reload
+apparmor.service
+The above will fix the following error:
+The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that ~/wpilib/2025/advantagescope/chrome-sandbox is owned by root and has mode 4755.
+Note
+Installing desktop tools and rebooting will create a folder on the desktop called
+YYYY
+WPILib
+Tools
+, where
+YYYY
+is the current year. Desktop tool shortcuts are not available on Linux and macOS.
+Additional C++ Installation for Simulation
+
+C++ robot simulation requires that a native compiler to be installed. For Windows, this would be
+Visual Studio 2022 version 17.9 or later
+(
+not
+VS Code), macOS requires
+Xcode 14 or later
+, and Linux (Ubuntu) requires the
+build-essential
+package.
+Ensure the
+Desktop Development with C++
+option is checked in the Visual Studio installer for simulation support.
+What is Installed?
+
+The Offline Installer installs the following components:
+Visual Studio Code
+- The supported IDE for 2019 and later robot code development. The offline installer sets up a separate copy of VS Code for WPILib development, even if you already have VS Code on your machine. This is done because some of the settings that make the WPILib setup work may break existing workflows if you use VS Code for other projects.
+C++ Compiler
+- The toolchains for building C++ code for the roboRIO
+Gradle
+- The specific version of Gradle used for building/deploying C++ or Java robot code
+Java JDK/JRE
+- A specific version of the Java JDK/JRE that is used to build Java robot code and to run any of the Java based Tools (Dashboards, etc.). This exists side by side with any existing JDK installs and does not overwrite the JAVA_HOME variable
+WPILib Tools
+-
+SmartDashboard
+,
+Shuffleboard
+,
+RobotBuilder
+,
+OutlineViewer
+,
+PathWeaver
+,
+Glass
+,
+SysId
+,
+Data Log Tool
+,
+roboRIO Team Number Setter
+,
+AdvantageScope
+,
+Elastic
+,
+WPIcal
+WPILib Dependencies
+- OpenCV, etc.
+VS Code Extensions
+- WPILib and Java/C++/Python extensions for robot code development in VS Code
+Documentation
+- Offline copies of this frc-docs documentation and Java/C++/Python APIs
+Note
+It’s not recommended to use the VS Code Backup and Settings Sync feature to sync settings between a regular VS Code installation and the FRC VS Code installation. This could lead to either installation being broken.
+Uninstalling
+
+WPILib is designed to install to different folders for different years, so that it is not necessary to uninstall a previous version before installing this year’s WPILib. However, the following instructions can be used to uninstall WPILib if desired.
+Windows
+Delete the appropriate wpilib folder (
+c:\Users\Public\wpilib\YYYY
+where
+YYYY
+is the year to uninstall)
+Delete the desktop icons at
+C:\Users\Public\Public
+Desktop
+macOS
+Delete the appropriate wpilib folder (
+~/wpilib/YYYY
+where
+YYYY
+is the year to uninstall)
+Linux
+Delete the appropriate wpilib folder (
+~/wpilib/YYYY
+where
+YYYY
+is the year to uninstall). eg
+rm
+-rf
+~/wpilib/YYYY
+Troubleshooting
+
+In case the installer fails, please open an issue on the installer repository. A link is available
+here
+. The installer should give a message on the cause of the error, please include this in the description of your issue.

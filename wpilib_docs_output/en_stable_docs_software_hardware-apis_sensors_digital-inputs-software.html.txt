@@ -1,0 +1,217 @@
+Digital Inputs - Software
+
+Note
+This section covers digital inputs in software.  For a hardware guide to digital inputs, see
+Digital Inputs - Hardware
+.
+The roboRIO’s FPGA supports up to 26 digital inputs.  10 of these are made available through the built-in DIO ports on the RIO itself, while the other 16 are available through the
+MXP
+breakout port.
+Digital inputs read one of two states - “high” or “low.”  By default, the built-in ports on the RIO will read “high” due to internal pull-up resistors (for more information, see
+Digital Inputs - Hardware
+).  Accordingly, digital inputs are most-commonly used with switches of some sort.  Support for this usage is provided through the
+DigitalInput
+class (
+Java
+,
+C++
+).
+The DigitalInput class
+
+A
+DigitalInput
+can be initialized as follows:
+JAVA
+// Initializes a DigitalInput on DIO 0
+DigitalInput
+m_input
+=
+new
+DigitalInput
+(
+0
+);
+C++
+// Initializes a DigitalInput on DIO 0
+frc
+::
+DigitalInput
+m_input
+{
+0
+};
+Reading the value of the DigitalInput
+
+The state of the
+DigitalInput
+can be polled with the
+get
+method:
+JAVA
+// Gets the value of the digital input.  Returns true if the circuit is open.
+m_input
+.
+get
+();
+C++
+// Gets the value of the digital input.  Returns true if the circuit is
+// open.
+m_input
+.
+Get
+();
+Creating a DigitalInput from an AnalogInput
+
+Note
+An
+AnalogTrigger
+constructed with a port number argument can share that analog port with a separate
+AnalogInput
+, but two
+AnalogInput
+objects may not share the same port.
+Sometimes, it is desirable to use an analog input as a digital input.  This can be easily achieved using the
+AnalogTrigger
+class (
+Java
+,
+C++
+).
+An
+AnalogTrigger
+may be initialized as follows.  As with
+AnalogPotentiometer
+, an
+AnalogInput
+may be passed explicitly if the user wishes to customize the sampling settings:
+JAVA
+// Initializes an AnalogTrigger on port 0
+AnalogTrigger
+m_trigger0
+=
+new
+AnalogTrigger
+(
+0
+);
+// Initializes an AnalogInput on port 1 and enables 2-bit oversampling
+AnalogInput
+m_input
+=
+new
+AnalogInput
+(
+1
+);
+// Initializes an AnalogTrigger using the above input
+AnalogTrigger
+m_trigger1
+=
+new
+AnalogTrigger
+(
+m_input
+);
+C++
+// Initializes an AnalogTrigger on port 0
+frc
+::
+AnalogTrigger
+trigger0
+{
+0
+};
+// Initializes an AnalogInput on port 1
+frc
+::
+AnalogInput
+input
+{
+1
+};
+// Initializes an AnalogTrigger using the above input
+frc
+::
+AnalogTrigger
+trigger1
+{
+input
+};
+Setting the trigger points
+
+Note
+For details on the scaling of “raw”
+AnalogInput
+values, see
+Analog Inputs - Software
+.
+To convert the analog signal to a digital one, it is necessary to specify at what values the trigger will enable and disable.  These values may be different to avoid “dithering” around the transition point:
+JAVA
+// Enables 2-bit oversampling
+m_input
+.
+setAverageBits
+(
+2
+);
+// Sets the trigger to enable at a raw value of 3500, and disable at a value of 1000
+m_trigger0
+.
+setLimitsRaw
+(
+1000
+,
+3500
+);
+// Sets the trigger to enable at a voltage of 4 volts, and disable at a value of 1.5 volts
+m_trigger0
+.
+setLimitsVoltage
+(
+1.5
+,
+4
+);
+C++
+// Enables 2-bit oversampling
+input
+.
+SetAverageBits
+(
+2
+);
+// Sets the trigger to enable at a raw value of 3500, and disable at a value
+// of 1000
+trigger0
+.
+SetLimitsRaw
+(
+1000
+,
+3500
+);
+// Sets the trigger to enable at a voltage of 4 volts, and disable at a
+// value of 1.5 volts
+trigger0
+.
+SetLimitsVoltage
+(
+1.5
+,
+4
+);
+Using DigitalInputs in code
+
+As almost all switches on the robot will be used through a
+DigitalInput
+. This class is extremely important for effective robot control.
+Limiting the motion of a mechanism
+
+Nearly all motorized mechanisms (such as arms and elevators) in FRC® should be given some form of “limit switch” to prevent them from damaging themselves at the end of their range of motions. For an example of this, see
+Programming Limit Switches
+.
+Homing a mechanism
+
+Limit switches are very important for being able to “home” a mechanism with an encoder.  For an example of this, see
+Homing a Mechanism
+.

@@ -1,0 +1,586 @@
+Structuring a Command-Based Robot Project
+
+While users are free to use the command-based libraries however they like (and advanced users are encouraged to do so), new users may want some guidance on how to structure a basic command-based robot project.
+A standard template for a command-based robot project is included in the WPILib examples repository (
+Java
+,
+C++
+). This section will walk users through the structure of this template.
+The root package/directory generally will contain four classes:
+Main
+, which is the main robot application (Java only). New users
+should not
+touch this class.
+Robot
+, which is responsible for the main control flow of the robot code.
+RobotContainer
+, which holds robot subsystems and commands, and is where most of the declarative robot setup (e.g. button bindings) is performed.
+Constants
+, which holds globally-accessible constants to be used throughout the robot.
+The root directory will also contain two sub-packages/sub-directories:
+Subsystems
+contains all user-defined subsystem classes.
+Commands
+contains all user-defined command classes.
+Robot
+
+As
+Robot
+(
+Java
+,
+C++ (Header)
+,
+C++ (Source)
+) is responsible for the program’s control flow, and command-based is an declarative paradigm designed to minimize the amount of attention the user has to pay to explicit program control flow, the
+Robot
+class of a command-based project should be mostly empty. However, there are a few important things that must be included
+Java
+21
+/**
+22
+* This function is run when the robot is first started up and should be used for any
+23
+* initialization code.
+24
+*/
+25
+public
+Robot
+()
+{
+26
+// Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+27
+// autonomous chooser on the dashboard.
+28
+m_robotContainer
+=
+new
+RobotContainer
+();
+29
+}
+In Java, an instance of
+RobotContainer
+should be constructed during the
+Robot
+constructor - this is important, as most of the declarative robot setup will be called from the
+RobotContainer
+constructor.
+In C++, this is not needed as RobotContainer is a value member and will be constructed during the construction of
+Robot
+.
+Java
+31
+/**
+32
+* This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+33
+* that you want ran during disabled, autonomous, teleoperated and test.
+34
+*
+35
+* <p>This runs after the mode specific periodic functions, but before LiveWindow and
+36
+* SmartDashboard integrated updating.
+37
+*/
+38
+@Override
+39
+public
+void
+robotPeriodic
+()
+{
+40
+// Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+41
+// commands, running already-scheduled commands, removing finished or interrupted commands,
+42
+// and running subsystem periodic() methods.  This must be called from the robot's periodic
+43
+// block in order for anything in the Command-based framework to work.
+44
+CommandScheduler
+.
+getInstance
+().
+run
+();
+45
+}
+C++ (Source)
+11
+/**
+12
+* This function is called every 20 ms, no matter the mode. Use
+13
+* this for items like diagnostics that you want to run during disabled,
+14
+* autonomous, teleoperated and test.
+15
+*
+16
+* <p> This runs after the mode specific periodic functions, but before
+17
+* LiveWindow and SmartDashboard integrated updating.
+18
+*/
+19
+void
+Robot::RobotPeriodic
+()
+{
+20
+frc2
+::
+CommandScheduler
+::
+GetInstance
+().
+Run
+();
+21
+}
+The inclusion of the
+CommandScheduler.getInstance().run()
+call in the
+robotPeriodic()
+method is essential; without this call, the scheduler will not execute any scheduled commands. Since
+TimedRobot
+runs with a default main loop frequency of 50Hz, this is the frequency with which periodic command and subsystem methods will be called. It is not recommended for new users to call this method from anywhere else in their code.
+Java
+54
+/** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+55
+@Override
+56
+public
+void
+autonomousInit
+()
+{
+57
+m_autonomousCommand
+=
+m_robotContainer
+.
+getAutonomousCommand
+();
+58
+59
+// schedule the autonomous command (example)
+60
+if
+(
+m_autonomousCommand
+!=
+null
+)
+{
+61
+m_autonomousCommand
+.
+schedule
+();
+62
+}
+63
+}
+C++ (Source)
+32
+/**
+33
+* This autonomous runs the autonomous command selected by your {@link
+34
+* RobotContainer} class.
+35
+*/
+36
+void
+Robot::AutonomousInit
+()
+{
+37
+m_autonomousCommand
+=
+m_container
+.
+GetAutonomousCommand
+();
+38
+39
+if
+(
+m_autonomousCommand
+)
+{
+40
+m_autonomousCommand
+->
+Schedule
+();
+41
+}
+42
+}
+The
+autonomousInit()
+method schedules an autonomous command returned by the
+RobotContainer
+instance. The logic for selecting which autonomous command to run can be handled inside of
+RobotContainer
+.
+Java
+69
+@Override
+70
+public
+void
+teleopInit
+()
+{
+71
+// This makes sure that the autonomous stops running when
+72
+// teleop starts running. If you want the autonomous to
+73
+// continue until interrupted by another command, remove
+74
+// this line or comment it out.
+75
+if
+(
+m_autonomousCommand
+!=
+null
+)
+{
+76
+m_autonomousCommand
+.
+cancel
+();
+77
+}
+78
+}
+C++ (Source)
+46
+void
+Robot::TeleopInit
+()
+{
+47
+// This makes sure that the autonomous stops running when
+48
+// teleop starts running. If you want the autonomous to
+49
+// continue until interrupted by another command, remove
+50
+// this line or comment it out.
+51
+if
+(
+m_autonomousCommand
+)
+{
+52
+m_autonomousCommand
+->
+Cancel
+();
+53
+}
+54
+}
+The
+teleopInit()
+method cancels any still-running autonomous commands. This is generally good practice.
+Advanced users are free to add additional code to the various init and periodic methods as they see fit; however, it should be noted that including large amounts of imperative robot code in
+Robot.java
+is contrary to the declarative design philosophy of the command-based paradigm, and can result in confusingly-structured/disorganized code.
+RobotContainer
+
+This class (
+Java
+,
+C++ (Header)
+,
+C++ (Source)
+) is where most of the setup for your command-based robot will take place. In this class, you will define your robot’s subsystems and commands, bind those commands to triggering events (such as buttons), and specify which command you will run in your autonomous routine. There are a few aspects of this class new users may want explanations for:
+Java
+23
+private
+final
+ExampleSubsystem
+m_exampleSubsystem
+=
+new
+ExampleSubsystem
+();
+C++ (Header)
+32
+ExampleSubsystem
+m_subsystem
+;
+Notice that subsystems are declared as private fields in
+RobotContainer
+. This is in stark contrast to the previous incarnation of the command-based framework, but is much more-aligned with agreed-upon object-oriented best-practices. If subsystems are declared as global variables, it allows the user to access them from anywhere in the code. While this can make certain things easier (for example, there would be no need to pass subsystems to commands in order for those commands to access them), it makes the control flow of the program much harder to keep track of as it is not immediately obvious which parts of the code can change or be changed by which other parts of the code. This also circumvents the ability of the resource-management system to do its job, as ease-of-access makes it easy for users to accidentally make conflicting calls to subsystem methods outside of the resource-managed commands.
+Java
+61
+return
+Autos
+.
+exampleAuto
+(
+m_exampleSubsystem
+);
+C++ (Source)
+34
+return
+autos
+::
+ExampleAuto
+(
+&
+m_subsystem
+);
+Since subsystems are declared as private members, they must be explicitly passed to commands (a pattern called “dependency injection”) in order for those commands to call methods on them.  This is done here with
+ExampleCommand
+, which is passed a pointer to an
+ExampleSubsystem
+.
+Java
+35
+/**
+36
+* Use this method to define your trigger->command mappings. Triggers can be created via the
+37
+* {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+38
+* predicate, or via the named factories in {@link
+39
+* edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+40
+* CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+41
+* PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+42
+* joysticks}.
+43
+*/
+44
+private
+void
+configureBindings
+()
+{
+45
+// Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+46
+new
+Trigger
+(
+m_exampleSubsystem
+::
+exampleCondition
+)
+47
+.
+onTrue
+(
+new
+ExampleCommand
+(
+m_exampleSubsystem
+));
+48
+49
+// Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+50
+// cancelling on release.
+51
+m_driverController
+.
+b
+().
+whileTrue
+(
+m_exampleSubsystem
+.
+exampleMethodCommand
+());
+52
+}
+C++ (Source)
+19
+void
+RobotContainer::ConfigureBindings
+()
+{
+20
+// Configure your trigger bindings here
+21
+22
+// Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+23
+frc2
+::
+Trigger
+([
+this
+]
+{
+24
+return
+m_subsystem
+.
+ExampleCondition
+();
+25
+}).
+OnTrue
+(
+ExampleCommand
+(
+&
+m_subsystem
+).
+ToPtr
+());
+26
+27
+// Schedule `ExampleMethodCommand` when the Xbox controller's B button is
+28
+// pressed, cancelling on release.
+29
+m_driverController
+.
+B
+().
+WhileTrue
+(
+m_subsystem
+.
+ExampleMethodCommand
+());
+30
+}
+As mentioned before, the
+RobotContainer()
+constructor is where most of the declarative setup for the robot should take place, including button bindings, configuring autonomous selectors, etc. If the constructor gets too “busy,” users are encouraged to migrate code into separate subroutines (such as the
+configureBindings()
+method included by default) which are called from the constructor.
+Java
+54
+/**
+55
+* Use this to pass the autonomous command to the main {@link Robot} class.
+56
+*
+57
+* @return the command to run in autonomous
+58
+*/
+59
+public
+Command
+getAutonomousCommand
+()
+{
+60
+// An example command will be run in autonomous
+61
+return
+Autos
+.
+exampleAuto
+(
+m_exampleSubsystem
+);
+62
+}
+63
+}
+C++ (Source)
+32
+frc2
+::
+CommandPtr
+RobotContainer::GetAutonomousCommand
+()
+{
+33
+// An example command will be run in autonomous
+34
+return
+autos
+::
+ExampleAuto
+(
+&
+m_subsystem
+);
+35
+}
+Finally, the
+getAutonomousCommand()
+method provides a convenient way for users to send their selected autonomous command to the main
+Robot
+class (which needs access to it to schedule it when autonomous starts).
+Constants
+
+The
+Constants
+class (
+Java
+,
+C++ (Header)
+) (in C++ this is not a class, but simply a header file in which several namespaces are defined) is where globally-accessible robot constants (such as speeds, unit conversion factors, PID gains, and sensor/motor ports) can be stored. It is recommended that users separate these constants into individual inner classes corresponding to subsystems or robot modes, to keep variable names shorter.
+In Java, all constants should be declared
+public
+static
+final
+so that they are globally accessible and cannot be changed.  In C++, all constants should be
+constexpr
+.
+For more illustrative examples of what a
+constants
+class should look like in practice, see those of the various command-based example projects:
+Hatchbot (
+Java
+,
+C++
+)
+RapidReactCommandBot (
+Java
+,
+C++
+)
+In Java, it is recommended that the constants be used from other classes by statically importing the necessary inner class. An
+import
+static
+statement imports the static namespace of a class into the class in which you are working, so that any
+static
+constants can be referenced directly as if they had been defined in that class.  In C++, the same effect can be attained with
+using
+namespace
+:
+JAVA
+import static
+edu.wpi.first.wpilibj.templates.commandbased.Constants.OIConstants.*
+;
+C++
+using
+namespace
+OIConstants
+;
+Subsystems
+
+User-defined subsystems should go in this package/directory.
+Commands
+
+User-defined commands should go in this package/directory.
