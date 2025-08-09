@@ -4,9 +4,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from openai import OpenAI
 from pinecone import Pinecone
+# Import the CORS middleware
+from fastapi.middleware.cors import CORSMiddleware
 
 # --- 1. Load Environment Variables and Initialize Clients ---
-# This section is similar to your ingestion script.
 load_dotenv()
 
 # Initialize OpenAI client
@@ -43,6 +44,26 @@ app = FastAPI(
     description="An API to ask questions about FRC documentation.",
     version="1.0.0"
 )
+
+# --- NEW: Add CORS Middleware ---
+# This section allows your frontend (hosted on Netlify) to communicate with your backend (hosted on Render).
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    # Add the URL of your Netlify site here.
+    # For example: "https://your-site-name.netlify.app"
+    # Using "*" allows all origins, which is fine for this project.
+    "*" 
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"], # Allows all headers
+)
+
 
 # This defines the structure of the request body for the /ask endpoint
 class QueryRequest(BaseModel):
@@ -124,4 +145,3 @@ async def ask_question(request: QueryRequest):
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the FRC AI Assistant API"}
-
