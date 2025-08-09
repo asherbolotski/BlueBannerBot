@@ -40,8 +40,8 @@ except Exception as e:
 
 # --- 2. FastAPI App Setup ---
 app = FastAPI(
-    title="FRC AI Assistant API",
-    description="An API to ask questions about FRC documentation.",
+    title="Blue Banner Bot API",
+    description="An API to ask questions about robotics competition documentation.",
     version="1.0.0"
 )
 
@@ -109,7 +109,7 @@ async def ask_question(request: QueryRequest):
         # Step 4: Build the prompt and send it to GPT-4o
         print("Sending request to GPT-4o for final answer...")
         system_prompt = """
-        You are a helpful FRC (FIRST Robotics Competition) technical assistant. 
+        You are a helpful robotics competition technical assistant called Blue Banner Bot. 
         Answer the user's question based ONLY on the context provided below.
         Be concise and clear in your explanation. If the context doesn't contain the answer,
         say that you couldn't find the information in the provided documents.
@@ -144,4 +144,4 @@ async def ask_question(request: QueryRequest):
 # A simple root endpoint to confirm the server is running
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the FRC AI Assistant API"}
+    return {"message": "Welcome to the Blue Banner Bot API"}
