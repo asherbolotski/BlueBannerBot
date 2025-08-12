@@ -6,6 +6,8 @@ from typing import List, Dict
 from openai import OpenAI
 from pinecone import Pinecone
 from fastapi.middleware.cors import CORSMiddleware
+# NEW: Import the library for creating sparse vectors for keyword search
+from pinecone_text.sparse import BM25Encoder
 
 # --- 1. Load Environment Variables and Initialize Clients ---
 load_dotenv()
@@ -38,6 +40,13 @@ except Exception as e:
     print(f"Failed to initialize Pinecone client or connect to index: {e}")
     exit()
 
+# NEW: Initialize the BM25Encoder for creating sparse vectors
+# This encoder is used for the keyword search part of hybrid search.
+# It does not need to be "fit" on data for this general use case.
+bm25_encoder = BM25Encoder.default()
+print("BM25 encoder for sparse vectors initialized.")
+
+
 # --- 2. FastAPI App Setup ---
 app = FastAPI(
     title="Blue Banner Bot API",
@@ -55,10 +64,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- NEW: Updated Request Body to include chat history ---
 class QueryRequest(BaseModel):
     question: str
-    # The history is a list of dictionaries, e.g., [{"role": "user", "content": "Hello"}]
     history: List[Dict[str, str]] = Field(default_factory=list)
 
 EMBEDDING_MODEL = "text-embedding-3-small"
@@ -73,18 +80,24 @@ async def ask_question(request: QueryRequest):
     and uses GPT-4o to generate a conversational answer.
     """
     try:
-        # Step 1: Create an embedding for the user's question
-        print(f"Creating embedding for question: '{request.question}'")
-        query_embedding = openai_client.embeddings.create(
+        # --- NEW: Hybrid Search Logic ---
+        # Step 1: Create the DENSE vector for semantic search
+        print(f"Creating dense vector for question: '{request.question}'")
+        dense_vector = openai_client.embeddings.create(
             input=[request.question],
             model=EMBEDDING_MODEL
         ).data[0].embedding
 
-        # Step 2: Query Pinecone for relevant context
-        print("Querying Pinecone for relevant context...")
+        # Step 2: Create the SPARSE vector for keyword search
+        print(f"Creating sparse vector for question: '{request.question}'")
+        sparse_vector = bm25_encoder.encode_queries(request.question)
+
+        # Step 3: Query Pinecone using both vectors for hybrid search
+        print("Querying Pinecone with hybrid search...")
         query_results = index.query(
-            vector=query_embedding,
-            top_k=5,
+            vector=dense_vector,
+            sparse_vector=sparse_vector,
+            top_k=5, # Retrieve a mix of the best 5 results from both search types
             include_metadata=True
         )
         
@@ -95,7 +108,7 @@ async def ask_question(request: QueryRequest):
             print("No relevant context found in Pinecone.")
             context_string = "No relevant documents found."
 
-        # --- NEW: Combine history and new question for the prompt ---
+        # Step 4: Combine history and new question for the prompt (Memory)
         system_prompt = """
         You are a helpful robotics competition technical assistant called Blue Banner Bot. 
         Answer the user's question based on the provided chat history and the retrieved context documents.
@@ -103,19 +116,12 @@ async def ask_question(request: QueryRequest):
         say that you couldn't find the information in the provided documents.
         """
         
-        # The messages list starts with the system prompt
         messages = [{"role": "system", "content": system_prompt}]
-        
-        # Add the retrieved context as a system message for the AI to reference
         messages.append({"role": "system", "content": f"Retrieved Context:\n{context_string}"})
-        
-        # Add the past conversation history
         messages.extend(request.history)
-        
-        # Add the user's current question
         messages.append({"role": "user", "content": request.question})
 
-        # Step 4: Send the complete conversation to GPT-4o
+        # Step 5: Send the complete conversation to GPT-4o
         print("Sending request to GPT-4o for final answer...")
         completion_response = openai_client.chat.completions.create(
             model=GPT_MODEL,
