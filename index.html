@@ -70,40 +70,39 @@
     </div>
 
     <script>
-        // --- JavaScript Logic (Unchanged) ---
-
+        // --- JavaScript Logic ---
         const chatWindow = document.getElementById('chat-window');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const API_URL = "https://frc-ai.onrender.com/ask";
+
+        // --- NEW: Array to store the conversation history ---
+        let chatHistory = [];
 
         function addMessage(message, sender) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `flex mb-4 ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
             
             const messageBubble = document.createElement('div');
-            // Use the new CSS classes for styling chat bubbles
             messageBubble.className = `p-3 rounded-xl max-w-lg shadow-sm ${sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'}`;
             messageBubble.innerHTML = `<p>${message}</p>`;
             
             messageDiv.appendChild(messageBubble);
             chatWindow.appendChild(messageDiv);
             chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            // --- NEW: Add the message to our history array ---
+            const role = (sender === 'user') ? 'user' : 'assistant';
+            chatHistory.push({ "role": role, "content": message.replace(/<br>/g, '\n') });
         }
 
         function showLoadingIndicator() {
             const loadingDiv = document.createElement('div');
             loadingDiv.id = 'loading-indicator';
             loadingDiv.className = 'flex mb-4 justify-start';
-            
             const loadingBubble = document.createElement('div');
             loadingBubble.className = 'chat-bubble-ai p-3 rounded-xl max-w-lg';
-            loadingBubble.innerHTML = `<div class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
-                <div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
-                <div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
-            </div>`;
-            
+            loadingBubble.innerHTML = `<div class="flex items-center space-x-2"><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0s;"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div><div class="w-2 h-2 bg-slate-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div></div>`;
             loadingDiv.appendChild(loadingBubble);
             chatWindow.appendChild(loadingDiv);
             chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -111,9 +110,7 @@
 
         function hideLoadingIndicator() {
             const indicator = document.getElementById('loading-indicator');
-            if (indicator) {
-                indicator.remove();
-            }
+            if (indicator) indicator.remove();
         }
 
         async function handleSendMessage() {
@@ -127,16 +124,21 @@
             showLoadingIndicator();
 
             try {
+                // --- NEW: Send the question AND the history to the backend ---
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question: question }),
+                    body: JSON.stringify({ 
+                        question: question,
+                        history: chatHistory.slice(0, -1)
+                    }),
                 });
 
                 hideLoadingIndicator();
 
                 if (!response.ok) {
                     addMessage("Sorry, I encountered an error. Please check the backend server's terminal for details.", 'ai');
+                    chatHistory.pop(); 
                     return;
                 }
 
@@ -147,6 +149,7 @@
             } catch (error) {
                 hideLoadingIndicator();
                 addMessage("I couldn't connect to my brain. Is the backend server running?", 'ai');
+                chatHistory.pop();
                 console.error("Error fetching AI response:", error);
             } finally {
                 sendBtn.disabled = false;
@@ -156,9 +159,7 @@
 
         sendBtn.addEventListener('click', handleSendMessage);
         userInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                handleSendMessage();
-            }
+            if (event.key === 'Enter') handleSendMessage();
         });
     </script>
 </body>
