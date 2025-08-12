@@ -6,23 +6,17 @@ from pinecone import Pinecone, ServerlessSpec
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # --- 1. Load Environment Variables and Initialize Clients ---
-# Load variables from the .env file (OPENAI_API_KEY, PINECONE_API_KEY, etc.)
-load_dotenv()
+# Explicitly find the path to the .env file and load it.
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path=dotenv_path)
+
 
 # Initialize the OpenAI client
 try:
-    # Explicitly load the API key from the environment
     openai_api_key = os.getenv("OPENAI_API_KEY")
-    
-    # --- DIAGNOSTIC PRINT STATEMENT ---
-    # This will show us if the key is being loaded correctly from the .env file.
-    print(f"DEBUG: Loaded OPENAI_API_KEY: {openai_api_key}")
-    
     if not openai_api_key:
-        # Provide a clearer error message if the key is not found
         raise ValueError("OPENAI_API_KEY not found in .env file or environment variables.")
-    
-    # Pass the key directly to the client
     openai_client = OpenAI(api_key=openai_api_key)
     print("OpenAI client initialized successfully.")
 except Exception as e:
@@ -41,7 +35,8 @@ except Exception as e:
 
 # --- 2. Configuration and Helper Functions ---
 # Directory containing the scraped text files
-INPUT_DIRECTORY = "wpilib_docs_output"
+# UPDATED: Changed this to your new javadoc folder
+INPUT_DIRECTORY = "scraped_data_javadoc"
 # The name of the Pinecone index we want to upload to
 INDEX_NAME = os.getenv("PINECONE_INDEX_NAME")
 # The OpenAI model to use for creating embeddings
