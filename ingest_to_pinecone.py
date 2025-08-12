@@ -3,7 +3,8 @@ import time
 from dotenv import load_dotenv
 from openai import OpenAI
 from pinecone import Pinecone, ServerlessSpec
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+# UPDATED: Import the necessary components for the code-aware splitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
 
 # --- 1. Load Environment Variables and Initialize Clients ---
 # Explicitly find the path to the .env file and load it.
@@ -35,7 +36,6 @@ except Exception as e:
 
 # --- 2. Configuration and Helper Functions ---
 # Directory containing the scraped text files
-# UPDATED: Changed this to your new javadoc folder
 INPUT_DIRECTORY = "scraped_data_javadoc"
 # The name of the Pinecone index we want to upload to
 INDEX_NAME = os.getenv("PINECONE_INDEX_NAME")
@@ -46,16 +46,20 @@ EMBEDDING_DIMENSIONS = 1536
 
 def chunk_text(text, chunk_size=1000, chunk_overlap=200):
     """
-    (Copied from the previous script)
-    Splits a given text into smaller chunks.
+    Splits a given text into smaller chunks using a code-aware splitter for Java.
     """
     if not text:
         return []
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=chunk_size,
-        chunk_overlap=chunk_overlap,
-        length_function=len,
+    
+    # --- UPDATED: Use a code-aware splitter for Java ---
+    # This splitter understands Java syntax and tries to split along logical
+    # boundaries like classes and methods.
+    text_splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.JAVA, 
+        chunk_size=chunk_size, 
+        chunk_overlap=chunk_overlap
     )
+    
     return text_splitter.split_text(text)
 
 def get_embedding(text):
