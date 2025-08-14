@@ -7,6 +7,7 @@ import time
 # --- 1. Configuration: Add new websites to this list ---
 SITES_TO_SCRAPE = [
     {
+        # CORRECTED: Updated the content selector for REV Robotics
         "base_url": "https://docs.revrobotics.com/",
         "allowed_domain": "docs.revrobotics.com",
         "output_dir": "rev_docs_output",
@@ -22,9 +23,9 @@ SITES_TO_SCRAPE = [
         "base_url": "https://docs.limelightvision.io/docs/v2024/getting-started",
         "allowed_domain": "docs.limelightvision.io",
         "output_dir": "limelight_docs_output",
-        "content_selector": ("main", {}) # Just the <main> tag
+        "content_selector": ("main", {}) 
     },
-    # You can add AndyMark, Playing With Fusion, etc. here following the same pattern
+
 ]
 
 REQUEST_DELAY_SECONDS = 1
