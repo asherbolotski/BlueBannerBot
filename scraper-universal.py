@@ -7,7 +7,7 @@ import time
 # --- 1. Configuration: Add new websites to this list ---
 SITES_TO_SCRAPE = [
     {
-        # CORRECTED: Updated the content selector for REV Robotics
+        # CORRECTED: Using a more specific selector for REV Robotics main content area.
         "base_url": "https://docs.revrobotics.com/",
         "allowed_domain": "docs.revrobotics.com",
         "output_dir": "rev_docs_output",
@@ -25,7 +25,6 @@ SITES_TO_SCRAPE = [
         "output_dir": "limelight_docs_output",
         "content_selector": ("main", {}) 
     },
-
 ]
 
 REQUEST_DELAY_SECONDS = 1
@@ -99,6 +98,10 @@ def crawl_site(config):
                 absolute_url = urljoin(current_url, href)
                 parsed_absolute_url = urlparse(absolute_url)
                 url_without_fragment = parsed_absolute_url._replace(fragment="").geturl()
+
+                # ADDED: Filter to ignore Cloudflare email protection links
+                if "cdn-cgi/l/email-protection" in url_without_fragment:
+                    continue
 
                 if (allowed_domain in url_without_fragment and 
                     url_without_fragment not in visited_urls and
