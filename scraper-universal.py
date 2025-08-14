@@ -7,24 +7,13 @@ import time
 # --- 1. Configuration: Add new websites to this list ---
 SITES_TO_SCRAPE = [
     {
-        # CORRECTED: Using a more specific selector for REV Robotics main content area.
-        "base_url": "https://docs.revrobotics.com/",
-        "allowed_domain": "docs.revrobotics.com",
-        "output_dir": "rev_docs_output",
-        "content_selector": ("div", {"class": "theme-default-content"}) 
-    },
-    {
-        "base_url": "https://api.ctr-electronics.com/phoenix5/api/java/com/ctre/phoenix/package-summary.html",
-        "allowed_domain": "api.ctr-electronics.com",
-        "output_dir": "ctre_docs_output",
-        "content_selector": ("div", {"class": "contentContainer"})
-    },
-    {
-        "base_url": "https://docs.limelightvision.io/docs/v2024/getting-started",
+        # REV and CTRE have been removed.
+        "base_url": "https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary",
         "allowed_domain": "docs.limelightvision.io",
         "output_dir": "limelight_docs_output",
-        "content_selector": ("main", {}) 
+        "content_selector": ("div", {"class": "theme-default-content"}) 
     },
+    # You can add AndyMark, Playing With Fusion, etc. here following the same pattern
 ]
 
 REQUEST_DELAY_SECONDS = 1
