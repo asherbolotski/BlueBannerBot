@@ -1,0 +1,595 @@
+Package
+edu.wpi.first.math.controller
+Class LinearQuadraticRegulator<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.controller.LinearQuadraticRegulator<States,
+Inputs,
+Outputs>
+Type Parameters:
+States
+- Number of states.
+Inputs
+- Number of inputs.
+Outputs
+- Number of outputs.
+public class
+LinearQuadraticRegulator
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+extends
+Object
+Contains the controller coefficients and logic for a linear-quadratic regulator (LQR). LQRs use
+ the control law u = K(r - x).
+For more on the underlying math, read
+https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+.
+Constructor Summary
+Constructors
+Constructor
+Description
+LinearQuadraticRegulator
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+States
+,
+States
+> Q,
+Matrix
+<
+Inputs
+,
+Inputs
+> R,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant.
+LinearQuadraticRegulator
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+States
+,
+States
+> Q,
+Matrix
+<
+Inputs
+,
+Inputs
+> R,
+Matrix
+<
+States
+,
+Inputs
+> N,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant.
+LinearQuadraticRegulator
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Vector
+<
+States
+> qelms,
+Vector
+<
+Inputs
+> relms,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant.
+LinearQuadraticRegulator
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+Vector
+<
+States
+> qelms,
+Vector
+<
+Inputs
+> relms,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> x)
+Returns the next output of the controller.
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+States
+,
+N1
+> nextR)
+Returns the next output of the controller.
+Matrix
+<
+Inputs
+,
+States
+>
+getK
+()
+Returns the controller matrix K.
+Matrix
+<
+States
+,
+N1
+>
+getR
+()
+Returns the reference vector r.
+double
+getR
+(int row)
+Returns an element of the reference vector r.
+Matrix
+<
+Inputs
+,
+N1
+>
+getU
+()
+Returns the control input vector u.
+double
+getU
+(int row)
+Returns an element of the control input vector u.
+void
+latencyCompensate
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+ double dtSeconds,
+ double inputDelaySeconds)
+Adjusts LQR controller gain to compensate for a pure time delay in the input.
+final void
+reset
+()
+Resets the controller.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LinearQuadraticRegulator
+public
+LinearQuadraticRegulator
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+Vector
+<
+States
+> qelms,
+Vector
+<
+Inputs
+> relms,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant. Rho is defaulted to 1.
+See
+https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning
+for how to select the tolerances.
+Parameters:
+plant
+- The plant being controlled.
+qelms
+- The maximum desired error tolerance for each state.
+relms
+- The maximum desired control effort for each input.
+dtSeconds
+- Discretization timestep.
+Throws:
+IllegalArgumentException
+- If the system is unstabilizable.
+LinearQuadraticRegulator
+public
+LinearQuadraticRegulator
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Vector
+<
+States
+> qelms,
+Vector
+<
+Inputs
+> relms,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant.
+See
+https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning
+for how to select the tolerances.
+Parameters:
+A
+- Continuous system matrix of the plant being controlled.
+B
+- Continuous input matrix of the plant being controlled.
+qelms
+- The maximum desired error tolerance for each state.
+relms
+- The maximum desired control effort for each input.
+dtSeconds
+- Discretization timestep.
+Throws:
+IllegalArgumentException
+- If the system is unstabilizable.
+LinearQuadraticRegulator
+public
+LinearQuadraticRegulator
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+States
+,
+States
+> Q,
+Matrix
+<
+Inputs
+,
+Inputs
+> R,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant.
+Parameters:
+A
+- Continuous system matrix of the plant being controlled.
+B
+- Continuous input matrix of the plant being controlled.
+Q
+- The state cost matrix.
+R
+- The input cost matrix.
+dtSeconds
+- Discretization timestep.
+Throws:
+IllegalArgumentException
+- If the system is unstabilizable.
+LinearQuadraticRegulator
+public
+LinearQuadraticRegulator
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+States
+,
+States
+> Q,
+Matrix
+<
+Inputs
+,
+Inputs
+> R,
+Matrix
+<
+States
+,
+Inputs
+> N,
+ double dtSeconds)
+Constructs a controller with the given coefficients and plant.
+Parameters:
+A
+- Continuous system matrix of the plant being controlled.
+B
+- Continuous input matrix of the plant being controlled.
+Q
+- The state cost matrix.
+R
+- The input cost matrix.
+N
+- The state-input cross-term cost matrix.
+dtSeconds
+- Discretization timestep.
+Throws:
+IllegalArgumentException
+- If the system is unstabilizable.
+Method Details
+getU
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+getU
+()
+Returns the control input vector u.
+Returns:
+The control input.
+getU
+public
+double
+getU
+(int row)
+Returns an element of the control input vector u.
+Parameters:
+row
+- Row of u.
+Returns:
+The row of the control input vector.
+getR
+public
+Matrix
+<
+States
+,
+N1
+>
+getR
+()
+Returns the reference vector r.
+Returns:
+The reference vector.
+getR
+public
+double
+getR
+(int row)
+Returns an element of the reference vector r.
+Parameters:
+row
+- Row of r.
+Returns:
+The row of the reference vector.
+getK
+public
+Matrix
+<
+Inputs
+,
+States
+>
+getK
+()
+Returns the controller matrix K.
+Returns:
+the controller matrix K.
+reset
+public final
+void
+reset
+()
+Resets the controller.
+calculate
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> x)
+Returns the next output of the controller.
+Parameters:
+x
+- The current state x.
+Returns:
+The next controller output.
+calculate
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+States
+,
+N1
+> nextR)
+Returns the next output of the controller.
+Parameters:
+x
+- The current state x.
+nextR
+- the next reference vector r.
+Returns:
+The next controller output.
+latencyCompensate
+public
+void
+latencyCompensate
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+ double dtSeconds,
+ double inputDelaySeconds)
+Adjusts LQR controller gain to compensate for a pure time delay in the input.
+Linear-Quadratic regulator controller gains tend to be aggressive. If sensor measurements
+ are time-delayed too long, the LQR may be unstable. However, if we know the amount of delay, we
+ can compute the control based on where the system will be after the time delay.
+See
+https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+appendix C.4 for a derivation.
+Parameters:
+plant
+- The plant being controlled.
+dtSeconds
+- Discretization timestep in seconds.
+inputDelaySeconds
+- Input time delay in seconds.

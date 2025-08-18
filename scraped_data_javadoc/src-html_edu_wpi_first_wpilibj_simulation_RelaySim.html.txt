@@ -1,0 +1,300 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.NotifyCallback;
+008
+import edu.wpi.first.hal.simulation.RelayDataJNI;
+009
+import edu.wpi.first.wpilibj.Relay;
+010
+011
+/** Class to control a simulated relay. */
+012
+public class RelaySim {
+013
+private final int m_index;
+014
+015
+/**
+016
+* Constructs from a Relay object.
+017
+*
+018
+* @param relay Relay to simulate
+019
+*/
+020
+public RelaySim(Relay relay) {
+021
+m_index = relay.getChannel();
+022
+}
+023
+024
+/**
+025
+* Constructs from a relay channel number.
+026
+*
+027
+* @param channel Channel number
+028
+*/
+029
+public RelaySim(int channel) {
+030
+m_index = channel;
+031
+}
+032
+033
+/**
+034
+* Register a callback to be run when the forward direction is initialized.
+035
+*
+036
+* @param callback the callback
+037
+* @param initialNotify whether to run the callback with the initial state
+038
+* @return the {@link CallbackStore} object associated with this callback.
+039
+*/
+040
+public CallbackStore registerInitializedForwardCallback(
+041
+NotifyCallback callback, boolean initialNotify) {
+042
+int uid = RelayDataJNI.registerInitializedForwardCallback(m_index, callback, initialNotify);
+043
+return new CallbackStore(m_index, uid, RelayDataJNI::cancelInitializedForwardCallback);
+044
+}
+045
+046
+/**
+047
+* Check whether the forward direction has been initialized.
+048
+*
+049
+* @return true if initialized
+050
+*/
+051
+public boolean getInitializedForward() {
+052
+return RelayDataJNI.getInitializedForward(m_index);
+053
+}
+054
+055
+/**
+056
+* Define whether the forward direction has been initialized.
+057
+*
+058
+* @param initializedForward whether this object is initialized
+059
+*/
+060
+public void setInitializedForward(boolean initializedForward) {
+061
+RelayDataJNI.setInitializedForward(m_index, initializedForward);
+062
+}
+063
+064
+/**
+065
+* Register a callback to be run when the reverse direction is initialized.
+066
+*
+067
+* @param callback the callback
+068
+* @param initialNotify whether to run the callback with the initial state
+069
+* @return the {@link CallbackStore} object associated with this callback.
+070
+*/
+071
+public CallbackStore registerInitializedReverseCallback(
+072
+NotifyCallback callback, boolean initialNotify) {
+073
+int uid = RelayDataJNI.registerInitializedReverseCallback(m_index, callback, initialNotify);
+074
+return new CallbackStore(m_index, uid, RelayDataJNI::cancelInitializedReverseCallback);
+075
+}
+076
+077
+/**
+078
+* Check whether the reverse direction has been initialized.
+079
+*
+080
+* @return true if initialized
+081
+*/
+082
+public boolean getInitializedReverse() {
+083
+return RelayDataJNI.getInitializedReverse(m_index);
+084
+}
+085
+086
+/**
+087
+* Define whether the reverse direction has been initialized.
+088
+*
+089
+* @param initializedReverse whether this object is initialized
+090
+*/
+091
+public void setInitializedReverse(boolean initializedReverse) {
+092
+RelayDataJNI.setInitializedReverse(m_index, initializedReverse);
+093
+}
+094
+095
+/**
+096
+* Register a callback to be run when the forward direction changes state.
+097
+*
+098
+* @param callback the callback
+099
+* @param initialNotify whether to run the callback with the initial state
+100
+* @return the {@link CallbackStore} object associated with this callback.
+101
+*/
+102
+public CallbackStore registerForwardCallback(NotifyCallback callback, boolean initialNotify) {
+103
+int uid = RelayDataJNI.registerForwardCallback(m_index, callback, initialNotify);
+104
+return new CallbackStore(m_index, uid, RelayDataJNI::cancelForwardCallback);
+105
+}
+106
+107
+/**
+108
+* Check whether the forward direction is active.
+109
+*
+110
+* @return true if active
+111
+*/
+112
+public boolean getForward() {
+113
+return RelayDataJNI.getForward(m_index);
+114
+}
+115
+116
+/**
+117
+* Set whether the forward direction is active.
+118
+*
+119
+* @param forward true to make active
+120
+*/
+121
+public void setForward(boolean forward) {
+122
+RelayDataJNI.setForward(m_index, forward);
+123
+}
+124
+125
+/**
+126
+* Register a callback to be run when the reverse direction changes state.
+127
+*
+128
+* @param callback the callback
+129
+* @param initialNotify whether to run the callback with the initial state
+130
+* @return the {@link CallbackStore} object associated with this callback.
+131
+*/
+132
+public CallbackStore registerReverseCallback(NotifyCallback callback, boolean initialNotify) {
+133
+int uid = RelayDataJNI.registerReverseCallback(m_index, callback, initialNotify);
+134
+return new CallbackStore(m_index, uid, RelayDataJNI::cancelReverseCallback);
+135
+}
+136
+137
+/**
+138
+* Check whether the reverse direction is active.
+139
+*
+140
+* @return true if active
+141
+*/
+142
+public boolean getReverse() {
+143
+return RelayDataJNI.getReverse(m_index);
+144
+}
+145
+146
+/**
+147
+* Set whether the reverse direction is active.
+148
+*
+149
+* @param reverse true to make active
+150
+*/
+151
+public void setReverse(boolean reverse) {
+152
+RelayDataJNI.setReverse(m_index, reverse);
+153
+}
+154
+155
+/** Reset all simulation data. */
+156
+public void resetData() {
+157
+RelayDataJNI.resetData(m_index);
+158
+}
+159
+}

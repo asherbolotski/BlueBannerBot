@@ -1,0 +1,428 @@
+Package
+edu.wpi.first.wpilibj2.command.button
+Class CommandJoystick
+java.lang.Object
+edu.wpi.first.wpilibj2.command.button.CommandGenericHID
+edu.wpi.first.wpilibj2.command.button.CommandJoystick
+public class
+CommandJoystick
+extends
+CommandGenericHID
+A version of
+Joystick
+with
+Trigger
+factories for command-based.
+See Also:
+Joystick
+Constructor Summary
+Constructors
+Constructor
+Description
+CommandJoystick
+(int port)
+Construct an instance of a controller.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+getDirectionDegrees
+()
+Get the direction of the vector formed by the joystick and its origin in degrees.
+double
+getDirectionRadians
+()
+Get the direction of the vector formed by the joystick and its origin in radians.
+Joystick
+getHID
+()
+Get the underlying GenericHID object.
+double
+getMagnitude
+()
+Get the magnitude of the vector formed by the joystick's current position relative to its
+ origin.
+double
+getThrottle
+()
+Get the throttle value of the current joystick.
+int
+getThrottleChannel
+()
+Get the channel currently associated with the throttle axis.
+double
+getTwist
+()
+Get the twist value of the current joystick.
+int
+getTwistChannel
+()
+Get the channel currently associated with the twist axis.
+double
+getX
+()
+Get the x position of the HID.
+int
+getXChannel
+()
+Get the channel currently associated with the X axis.
+double
+getY
+()
+Get the y position of the HID.
+int
+getYChannel
+()
+Get the channel currently associated with the Y axis.
+double
+getZ
+()
+Get the z position of the HID.
+int
+getZChannel
+()
+Get the channel currently associated with the Z axis.
+void
+setThrottleChannel
+(int channel)
+Set the channel associated with the throttle axis.
+void
+setTwistChannel
+(int channel)
+Set the channel associated with the twist axis.
+void
+setXChannel
+(int channel)
+Set the channel associated with the X axis.
+void
+setYChannel
+(int channel)
+Set the channel associated with the Y axis.
+void
+setZChannel
+(int channel)
+Set the channel associated with the Z axis.
+Trigger
+top
+()
+Constructs an event instance around the top button's digital signal.
+Trigger
+top
+(
+EventLoop
+loop)
+Constructs an event instance around the top button's digital signal.
+Trigger
+trigger
+()
+Constructs an event instance around the trigger button's digital signal.
+Trigger
+trigger
+(
+EventLoop
+loop)
+Constructs an event instance around the trigger button's digital signal.
+Methods inherited from class edu.wpi.first.wpilibj2.command.button.
+CommandGenericHID
+axisGreaterThan
+,
+axisGreaterThan
+,
+axisLessThan
+,
+axisLessThan
+,
+axisMagnitudeGreaterThan
+,
+axisMagnitudeGreaterThan
+,
+button
+,
+button
+,
+getRawAxis
+,
+isConnected
+,
+pov
+,
+pov
+,
+povCenter
+,
+povDown
+,
+povDownLeft
+,
+povDownRight
+,
+povLeft
+,
+povRight
+,
+povUp
+,
+povUpLeft
+,
+povUpRight
+,
+setRumble
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CommandJoystick
+public
+CommandJoystick
+(int port)
+Construct an instance of a controller.
+Parameters:
+port
+- The port index on the Driver Station that the controller is plugged into.
+Method Details
+getHID
+public
+Joystick
+getHID
+()
+Get the underlying GenericHID object.
+Overrides:
+getHID
+in class
+CommandGenericHID
+Returns:
+the wrapped GenericHID object
+trigger
+public
+Trigger
+trigger
+()
+Constructs an event instance around the trigger button's digital signal.
+Returns:
+an event instance representing the trigger button's digital signal attached to the
+default scheduler button loop
+.
+See Also:
+trigger(EventLoop)
+trigger
+public
+Trigger
+trigger
+(
+EventLoop
+loop)
+Constructs an event instance around the trigger button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the trigger button's digital signal attached to the
+     given loop.
+top
+public
+Trigger
+top
+()
+Constructs an event instance around the top button's digital signal.
+Returns:
+an event instance representing the top button's digital signal attached to the
+default scheduler button loop
+.
+See Also:
+top(EventLoop)
+top
+public
+Trigger
+top
+(
+EventLoop
+loop)
+Constructs an event instance around the top button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the top button's digital signal attached to the given
+     loop.
+setXChannel
+public
+void
+setXChannel
+(int channel)
+Set the channel associated with the X axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setYChannel
+public
+void
+setYChannel
+(int channel)
+Set the channel associated with the Y axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setZChannel
+public
+void
+setZChannel
+(int channel)
+Set the channel associated with the Z axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setThrottleChannel
+public
+void
+setThrottleChannel
+(int channel)
+Set the channel associated with the throttle axis.
+Parameters:
+channel
+- The channel to set the axis to.
+setTwistChannel
+public
+void
+setTwistChannel
+(int channel)
+Set the channel associated with the twist axis.
+Parameters:
+channel
+- The channel to set the axis to.
+getXChannel
+public
+int
+getXChannel
+()
+Get the channel currently associated with the X axis.
+Returns:
+The channel for the axis.
+getYChannel
+public
+int
+getYChannel
+()
+Get the channel currently associated with the Y axis.
+Returns:
+The channel for the axis.
+getZChannel
+public
+int
+getZChannel
+()
+Get the channel currently associated with the Z axis.
+Returns:
+The channel for the axis.
+getTwistChannel
+public
+int
+getTwistChannel
+()
+Get the channel currently associated with the twist axis.
+Returns:
+The channel for the axis.
+getThrottleChannel
+public
+int
+getThrottleChannel
+()
+Get the channel currently associated with the throttle axis.
+Returns:
+The channel for the axis.
+getX
+public
+double
+getX
+()
+Get the x position of the HID.
+This depends on the mapping of the joystick connected to the current port. On most
+ joysticks, positive is to the right.
+Returns:
+the x position
+getY
+public
+double
+getY
+()
+Get the y position of the HID.
+This depends on the mapping of the joystick connected to the current port. On most
+ joysticks, positive is to the back.
+Returns:
+the y position
+getZ
+public
+double
+getZ
+()
+Get the z position of the HID.
+Returns:
+the z position
+getTwist
+public
+double
+getTwist
+()
+Get the twist value of the current joystick. This depends on the mapping of the joystick
+ connected to the current port.
+Returns:
+The Twist value of the joystick.
+getThrottle
+public
+double
+getThrottle
+()
+Get the throttle value of the current joystick. This depends on the mapping of the joystick
+ connected to the current port.
+Returns:
+The Throttle value of the joystick.
+getMagnitude
+public
+double
+getMagnitude
+()
+Get the magnitude of the vector formed by the joystick's current position relative to its
+ origin.
+Returns:
+The magnitude of the direction vector
+getDirectionRadians
+public
+double
+getDirectionRadians
+()
+Get the direction of the vector formed by the joystick and its origin in radians. 0 is forward
+ and clockwise is positive. (Straight right is π/2.)
+Returns:
+The direction of the vector in radians
+getDirectionDegrees
+public
+double
+getDirectionDegrees
+()
+Get the direction of the vector formed by the joystick and its origin in degrees. 0 is forward
+ and clockwise is positive. (Straight right is 90.)
+Returns:
+The direction of the vector in degrees

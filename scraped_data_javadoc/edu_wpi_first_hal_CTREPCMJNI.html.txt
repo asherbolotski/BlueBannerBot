@@ -1,0 +1,453 @@
+Package
+edu.wpi.first.hal
+Class CTREPCMJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.CTREPCMJNI
+public class
+CTREPCMJNI
+extends
+JNIWrapper
+CTRE Pneumatic Control Module (PCM) Functions.
+See Also:
+"CTREPCM.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static boolean
+checkSolenoidChannel
+(int channel)
+Checks if a solenoid channel number is valid.
+static void
+clearAllStickyFaults
+(int handle)
+Clears all sticky faults on this device.
+static void
+fireOneShot
+(int handle,
+ int index)
+Fire a single solenoid shot.
+static void
+free
+(int handle)
+Frees a PCM handle.
+static boolean
+getClosedLoopControl
+(int handle)
+Get whether the PCM closed loop control is enabled.
+static boolean
+getCompressor
+(int handle)
+Get whether compressor is turned on.
+static double
+getCompressorCurrent
+(int handle)
+Returns the current drawn by the compressor.
+static boolean
+getCompressorCurrentTooHighFault
+(int handle)
+Return whether the compressor current is currently too high.
+static boolean
+getCompressorCurrentTooHighStickyFault
+(int handle)
+Returns whether the compressor current has been too high since sticky faults were last cleared.
+static boolean
+getCompressorNotConnectedFault
+(int handle)
+Returns whether the compressor is currently disconnected.
+static boolean
+getCompressorNotConnectedStickyFault
+(int handle)
+Returns whether the compressor has been disconnected since sticky faults were last cleared.
+static boolean
+getCompressorShortedFault
+(int handle)
+Returns whether the compressor is currently shorted.
+static boolean
+getCompressorShortedStickyFault
+(int handle)
+Returns whether the compressor has been shorted since sticky faults were last cleared.
+static boolean
+getPressureSwitch
+(int handle)
+Returns the state of the pressure switch.
+static int
+getSolenoidDisabledList
+(int handle)
+Get a bitmask of disabled solenoids.
+static int
+getSolenoids
+(int handle)
+Gets a bitmask of solenoid values.
+static boolean
+getSolenoidVoltageFault
+(int handle)
+Returns whether the solenoid is currently reporting a voltage fault.
+static boolean
+getSolenoidVoltageStickyFault
+(int handle)
+Returns whether the solenoid has reported a voltage fault since sticky faults were last
+ cleared.
+static int
+initialize
+(int module)
+Initializes a PCM.
+static void
+setClosedLoopControl
+(int handle,
+ boolean enabled)
+Enables the compressor closed loop control using the digital pressure switch.
+static void
+setOneShotDuration
+(int handle,
+ int index,
+ int durMs)
+Set the duration for a single solenoid shot.
+static void
+setSolenoids
+(int handle,
+ int mask,
+ int values)
+Sets solenoids on a pneumatics module.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+initialize
+public static
+int
+initialize
+(int module)
+Initializes a PCM.
+Parameters:
+module
+- the CAN ID to initialize
+Returns:
+the created PH handle
+See Also:
+"HAL_InitializeCTREPCM"
+free
+public static
+void
+free
+(int handle)
+Frees a PCM handle.
+Parameters:
+handle
+- the PCMhandle
+See Also:
+"HAL_FreeCTREPCM"
+checkSolenoidChannel
+public static
+boolean
+checkSolenoidChannel
+(int channel)
+Checks if a solenoid channel number is valid.
+Parameters:
+channel
+- the channel to check
+Returns:
+true if the channel is valid, otherwise false
+getCompressor
+public static
+boolean
+getCompressor
+(int handle)
+Get whether compressor is turned on.
+Parameters:
+handle
+- the PCM handle
+Returns:
+true if the compressor is turned on
+See Also:
+"HAL_GetCTREPCMCompressor"
+setClosedLoopControl
+public static
+void
+setClosedLoopControl
+(int handle,
+ boolean enabled)
+Enables the compressor closed loop control using the digital pressure switch. The compressor
+ will turn on when the pressure switch indicates that the system is not full, and will turn off
+ when the pressure switch indicates that the system is full.
+Parameters:
+handle
+- the PCM handle
+enabled
+- true to enable closed loop control
+See Also:
+"HAL_SetCTREPCMClosedLoopControl"
+getClosedLoopControl
+public static
+boolean
+getClosedLoopControl
+(int handle)
+Get whether the PCM closed loop control is enabled.
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if closed loop control is enabled, otherwise false.
+getPressureSwitch
+public static
+boolean
+getPressureSwitch
+(int handle)
+Returns the state of the pressure switch.
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if pressure switch indicates that the system is full, otherwise false.
+See Also:
+"HAL_GetCTREPCMPressureSwitch"
+getCompressorCurrent
+public static
+double
+getCompressorCurrent
+(int handle)
+Returns the current drawn by the compressor.
+Parameters:
+handle
+- the PCM handle
+Returns:
+The current drawn by the compressor in amps.
+See Also:
+"HAL_GetCTREPCMCompressorCurrent"
+getCompressorCurrentTooHighFault
+public static
+boolean
+getCompressorCurrentTooHighFault
+(int handle)
+Return whether the compressor current is currently too high.
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if the compressor current is too high, otherwise false.
+See Also:
+getCompressorCurrentTooHighStickyFault(int)
+"HAL_GetCTREPCMCompressorCurrentTooHighFault"
+getCompressorCurrentTooHighStickyFault
+public static
+boolean
+getCompressorCurrentTooHighStickyFault
+(int handle)
+Returns whether the compressor current has been too high since sticky faults were last cleared.
+ This fault is persistent and can be cleared by clearAllStickyFaults()
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if the compressor current has been too high since sticky faults were last cleared.
+See Also:
+getCompressorCurrentTooHighFault(int)
+"HAL_GetCTREPCMCompressorCurrentTooHighStickyFault("
+getCompressorShortedFault
+public static
+boolean
+getCompressorShortedFault
+(int handle)
+Returns whether the compressor is currently shorted.
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if the compressor is currently shorted, otherwise false.
+See Also:
+getCompressorCurrentTooHighStickyFault(int)
+"HAL_GetCTREPCMCompressorShortedStickyFault"
+getCompressorShortedStickyFault
+public static
+boolean
+getCompressorShortedStickyFault
+(int handle)
+Returns whether the compressor has been shorted since sticky faults were last cleared. This
+ fault is persistent and can be cleared by clearAllStickyFaults()
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if the compressor has been shorted since sticky faults were last cleared,
+     otherwise false.
+See Also:
+getCompressorShortedFault(int)
+"HAL_GetCTREPCMCompressorShortedFault"
+getCompressorNotConnectedFault
+public static
+boolean
+getCompressorNotConnectedFault
+(int handle)
+Returns whether the compressor is currently disconnected.
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if compressor is currently disconnected, otherwise false.
+See Also:
+getCompressorShortedStickyFault(int)
+"HAL_GetCTREPCMCompressorNotConnectedFault"
+getCompressorNotConnectedStickyFault
+public static
+boolean
+getCompressorNotConnectedStickyFault
+(int handle)
+Returns whether the compressor has been disconnected since sticky faults were last cleared.
+ This fault is persistent and can be cleared by clearAllStickyFaults()
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if the compressor has been disconnected since sticky faults were last cleared,
+     otherwise false.
+See Also:
+getCompressorNotConnectedFault(int)
+"HAL_GetCTREPCMCompressorNotConnectedStickyFault"
+getSolenoids
+public static
+int
+getSolenoids
+(int handle)
+Gets a bitmask of solenoid values.
+Parameters:
+handle
+- the PCM handle
+Returns:
+Bitmask containing the state of the solenoids. The LSB represents solenoid 0.
+See Also:
+"HAL_GetCTREPCMSolenoids"
+setSolenoids
+public static
+void
+setSolenoids
+(int handle,
+ int mask,
+ int values)
+Sets solenoids on a pneumatics module.
+Parameters:
+handle
+- the PCM handle
+mask
+- Bitmask indicating which solenoids to set. The LSB represents solenoid 0.
+values
+- Bitmask indicating the desired states of the solenoids. The LSB represents
+     solenoid 0.
+See Also:
+"HAL_SetCTREPCMSolenoids"
+getSolenoidDisabledList
+public static
+int
+getSolenoidDisabledList
+(int handle)
+Get a bitmask of disabled solenoids.
+Parameters:
+handle
+- the PCM handle
+Returns:
+Bitmask indicating disabled solenoids. The LSB represents solenoid 0.
+See Also:
+"HAL_GetCTREPCMSolenoidDisabledList"
+getSolenoidVoltageFault
+public static
+boolean
+getSolenoidVoltageFault
+(int handle)
+Returns whether the solenoid is currently reporting a voltage fault.
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if solenoid is reporting a fault, otherwise false.
+See Also:
+getSolenoidVoltageStickyFault(int)
+"HAL_GetCTREPCMSolenoidVoltageFault"
+getSolenoidVoltageStickyFault
+public static
+boolean
+getSolenoidVoltageStickyFault
+(int handle)
+Returns whether the solenoid has reported a voltage fault since sticky faults were last
+ cleared. This fault is persistent and can be cleared by clearAllStickyFaults()
+Parameters:
+handle
+- the PCM handle
+Returns:
+True if solenoid is reporting a fault, otherwise false.
+See Also:
+getSolenoidVoltageFault(int)
+"HAL_GetCTREPCMSolenoidVoltageStickyFault"
+clearAllStickyFaults
+public static
+void
+clearAllStickyFaults
+(int handle)
+Clears all sticky faults on this device.
+Parameters:
+handle
+- the PCM handle
+See Also:
+"HAL_ClearAllCTREPCMStickyFaults"
+fireOneShot
+public static
+void
+fireOneShot
+(int handle,
+ int index)
+Fire a single solenoid shot.
+Parameters:
+handle
+- the PCM handle
+index
+- solenoid index
+See Also:
+"HAL_FireCTREPCMOneShot"
+setOneShotDuration
+public static
+void
+setOneShotDuration
+(int handle,
+ int index,
+ int durMs)
+Set the duration for a single solenoid shot.
+Parameters:
+handle
+- the PCM handle
+index
+- solenoid index
+durMs
+- shot duration in ms
+See Also:
+"HAL_SetCTREPCMOneShotDuration"

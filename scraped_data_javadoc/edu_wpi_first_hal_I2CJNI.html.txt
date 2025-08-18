@@ -1,0 +1,293 @@
+Package
+edu.wpi.first.hal
+Class I2CJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.I2CJNI
+public class
+I2CJNI
+extends
+JNIWrapper
+I2C HAL JNI functions.
+See Also:
+"I2C.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+i2CClose
+(int port)
+Closes an I2C port.
+static void
+i2CInitialize
+(int port)
+Initializes the I2C port.
+static int
+i2CRead
+(int port,
+ byte address,
+ByteBuffer
+dataReceived,
+ byte receiveSize)
+Executes a read transaction with the device.
+static int
+i2CReadB
+(int port,
+ byte address,
+ byte[] dataReceived,
+ byte receiveSize)
+Executes a read transaction with the device.
+static int
+i2CTransaction
+(int port,
+ byte address,
+ByteBuffer
+dataToSend,
+ byte sendSize,
+ByteBuffer
+dataReceived,
+ byte receiveSize)
+Generic I2C read/write transaction.
+static int
+i2CTransactionB
+(int port,
+ byte address,
+ byte[] dataToSend,
+ byte sendSize,
+ byte[] dataReceived,
+ byte receiveSize)
+Generic I2C read/write transaction.
+static int
+i2CWrite
+(int port,
+ byte address,
+ByteBuffer
+dataToSend,
+ byte sendSize)
+Executes a write transaction with the device.
+static int
+i2CWriteB
+(int port,
+ byte address,
+ byte[] dataToSend,
+ byte sendSize)
+Executes a write transaction with the device.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+i2CInitialize
+public static
+void
+i2CInitialize
+(int port)
+Initializes the I2C port.
+Opens the port if necessary and saves the handle. If opening the MXP port, also sets up the
+ channel functions appropriately.
+Parameters:
+port
+- The port to open, 0 for the on-board, 1 for the MXP.
+See Also:
+"HAL_InitializeI2C"
+i2CTransaction
+public static
+int
+i2CTransaction
+(int port,
+ byte address,
+ByteBuffer
+dataToSend,
+ byte sendSize,
+ByteBuffer
+dataReceived,
+ byte receiveSize)
+Generic I2C read/write transaction.
+This is a lower-level interface to the I2C hardware giving you more control over each
+ transaction.
+Parameters:
+port
+- The I2C port, 0 for the on-board, 1 for the MXP.
+address
+- The address of the register on the device to be read/written.
+dataToSend
+- Buffer of data to send as part of the transaction.
+sendSize
+- Number of bytes to send as part of the transaction.
+dataReceived
+- Buffer to read data into.
+receiveSize
+- Number of bytes to read from the device.
+Returns:
+>= 0 on success or -1 on transfer abort.
+See Also:
+"HAL_TransactionI2C"
+i2CTransactionB
+public static
+int
+i2CTransactionB
+(int port,
+ byte address,
+ byte[] dataToSend,
+ byte sendSize,
+ byte[] dataReceived,
+ byte receiveSize)
+Generic I2C read/write transaction.
+This is a lower-level interface to the I2C hardware giving you more control over each
+ transaction.
+Parameters:
+port
+- The I2C port, 0 for the on-board, 1 for the MXP.
+address
+- The address of the register on the device to be read/written.
+dataToSend
+- Buffer of data to send as part of the transaction.
+sendSize
+- Number of bytes to send as part of the transaction.
+dataReceived
+- Buffer to read data into.
+receiveSize
+- Number of bytes to read from the device.
+Returns:
+>= 0 on success or -1 on transfer abort.
+See Also:
+"HAL_TransactionI2C"
+i2CWrite
+public static
+int
+i2CWrite
+(int port,
+ byte address,
+ByteBuffer
+dataToSend,
+ byte sendSize)
+Executes a write transaction with the device.
+Writes a single byte to a register on a device and wait until the transaction is complete.
+Parameters:
+port
+- The I2C port, 0 for the on-board, 1 for the MXP.
+address
+- The address of the register on the device to be written.
+dataToSend
+- The byte to write to the register on the device.
+sendSize
+- Number of bytes to send.
+Returns:
+>= 0 on success or -1 on transfer abort.
+See Also:
+"HAL_WriteI2C"
+i2CWriteB
+public static
+int
+i2CWriteB
+(int port,
+ byte address,
+ byte[] dataToSend,
+ byte sendSize)
+Executes a write transaction with the device.
+Writes a single byte to a register on a device and wait until the transaction is complete.
+Parameters:
+port
+- The I2C port, 0 for the on-board, 1 for the MXP.
+address
+- The address of the register on the device to be written.
+dataToSend
+- The byte to write to the register on the device.
+sendSize
+- Number of bytes to send.
+Returns:
+>= 0 on success or -1 on transfer abort.
+See Also:
+"HAL_WriteI2C"
+i2CRead
+public static
+int
+i2CRead
+(int port,
+ byte address,
+ByteBuffer
+dataReceived,
+ byte receiveSize)
+Executes a read transaction with the device.
+Reads bytes from a device. Most I2C devices will auto-increment the register pointer
+ internally allowing you to read consecutive registers on a device in a single transaction.
+Parameters:
+port
+- The I2C port, 0 for the on-board, 1 for the MXP.
+address
+- The register to read first in the transaction.
+dataReceived
+- A ByteBuffer to store the data read from the device.
+receiveSize
+- The number of bytes to read in the transaction.
+Returns:
+>= 0 on success or -1 on transfer abort.
+See Also:
+"HAL_ReadI2C"
+i2CReadB
+public static
+int
+i2CReadB
+(int port,
+ byte address,
+ byte[] dataReceived,
+ byte receiveSize)
+Executes a read transaction with the device.
+Reads bytes from a device. Most I2C devices will auto-increment the register pointer
+ internally allowing you to read consecutive registers on a device in a single transaction.
+Parameters:
+port
+- The I2C port, 0 for the on-board, 1 for the MXP.
+address
+- The register to read first in the transaction.
+dataReceived
+- A byte array to store the data read from the device.
+receiveSize
+- The number of bytes to read in the transaction.
+Returns:
+>= 0 on success or -1 on transfer abort.
+See Also:
+"HAL_ReadI2C"
+i2CClose
+public static
+void
+i2CClose
+(int port)
+Closes an I2C port.
+Parameters:
+port
+- The I2C port, 0 for the on-board, 1 for the MXP.
+See Also:
+"HAL_CloseI2C"

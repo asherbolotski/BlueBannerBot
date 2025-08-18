@@ -1,0 +1,233 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.vision;
+006
+007
+import edu.wpi.first.cameraserver.CameraServerSharedStore;
+008
+import edu.wpi.first.cscore.CvSink;
+009
+import edu.wpi.first.cscore.VideoSource;
+010
+import org.opencv.core.Mat;
+011
+012
+/**
+013
+* A vision runner is a convenient wrapper object to make it easy to run vision pipelines from robot
+014
+* code. The easiest way to use this is to run it in a {@link VisionThread} and use the listener to
+015
+* take snapshots of the pipeline's outputs.
+016
+*
+017
+* @param <P> Vision pipeline type.
+018
+* @see VisionPipeline
+019
+* @see VisionThread
+020
+* @see <a href="package-summary.html">vision</a>
+021
+*/
+022
+public class VisionRunner<P extends VisionPipeline> {
+023
+private final CvSink m_cvSink = new CvSink("VisionRunner CvSink");
+024
+private final P m_pipeline;
+025
+private final Mat m_image = new Mat();
+026
+private final Listener<? super P> m_listener;
+027
+private volatile boolean m_enabled = true;
+028
+029
+/**
+030
+* Listener interface for a callback that should run after a pipeline has processed its input.
+031
+*
+032
+* @param <P> the type of the pipeline this listener is for
+033
+*/
+034
+@FunctionalInterface
+035
+public interface Listener<P extends VisionPipeline> {
+036
+/**
+037
+* Called when the pipeline has run. This shouldn't take much time to run because it will delay
+038
+* later calls to the pipeline's {@link VisionPipeline#process process} method. Copying the
+039
+* outputs and code that uses the copies should be <i>synchronized</i> on the same mutex to
+040
+* prevent multiple threads from reading and writing to the same memory at the same time.
+041
+*
+042
+* @param pipeline the vision pipeline that ran
+043
+*/
+044
+void copyPipelineOutputs(P pipeline);
+045
+}
+046
+047
+/**
+048
+* Creates a new vision runner. It will take images from the {@code videoSource}, send them to the
+049
+* {@code pipeline}, and call the {@code listener} when the pipeline has finished to alert user
+050
+* code when it is safe to access the pipeline's outputs.
+051
+*
+052
+* @param videoSource the video source to use to supply images for the pipeline
+053
+* @param pipeline the vision pipeline to run
+054
+* @param listener a function to call after the pipeline has finished running
+055
+*/
+056
+public VisionRunner(VideoSource videoSource, P pipeline, Listener<? super P> listener) {
+057
+this.m_pipeline = pipeline;
+058
+this.m_listener = listener;
+059
+m_cvSink.setSource(videoSource);
+060
+}
+061
+062
+/**
+063
+* Runs the pipeline one time, giving it the next image from the video source specified in the
+064
+* constructor. This will block until the source either has an image or throws an error. If the
+065
+* source successfully supplied a frame, the pipeline's image input will be set, the pipeline will
+066
+* run, and the listener specified in the constructor will be called to notify it that the
+067
+* pipeline ran.
+068
+*
+069
+* <p>This method is exposed to allow teams to add additional functionality or have their own ways
+070
+* to run the pipeline. Most teams, however, should just use {@link #runForever} in its own thread
+071
+* using a {@link VisionThread}.
+072
+*/
+073
+public void runOnce() {
+074
+Long id = CameraServerSharedStore.getCameraServerShared().getRobotMainThreadId();
+075
+076
+if (id != null && Thread.currentThread().getId() == id) {
+077
+throw new IllegalStateException(
+078
+"VisionRunner.runOnce() cannot be called from the main robot thread");
+079
+}
+080
+runOnceInternal();
+081
+}
+082
+083
+private void runOnceInternal() {
+084
+long frameTime = m_cvSink.grabFrame(m_image);
+085
+if (frameTime == 0) {
+086
+// There was an error, report it
+087
+String error = m_cvSink.getError();
+088
+CameraServerSharedStore.getCameraServerShared().reportDriverStationError(error);
+089
+} else {
+090
+// No errors, process the image
+091
+m_pipeline.process(m_image);
+092
+m_listener.copyPipelineOutputs(m_pipeline);
+093
+}
+094
+}
+095
+096
+/**
+097
+* A convenience method that calls {@link #runOnce()} in an infinite loop. This must be run in a
+098
+* dedicated thread, and cannot be used in the main robot thread because it will freeze the robot
+099
+* program.
+100
+*
+101
+* <p><strong>Do not call this method directly from the main thread.</strong>
+102
+*
+103
+* @throws IllegalStateException if this is called from the main robot thread
+104
+* @see VisionThread
+105
+*/
+106
+public void runForever() {
+107
+Long id = CameraServerSharedStore.getCameraServerShared().getRobotMainThreadId();
+108
+109
+if (id != null && Thread.currentThread().getId() == id) {
+110
+throw new IllegalStateException(
+111
+"VisionRunner.runForever() cannot be called from the main robot thread");
+112
+}
+113
+while (m_enabled && !Thread.interrupted()) {
+114
+runOnceInternal();
+115
+}
+116
+}
+117
+118
+/** Stop a RunForever() loop. */
+119
+public void stop() {
+120
+m_enabled = false;
+121
+}
+122
+}

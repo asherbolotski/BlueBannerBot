@@ -1,0 +1,1391 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.smartdashboard;
+006
+007
+import edu.wpi.first.networktables.BooleanArrayPublisher;
+008
+import edu.wpi.first.networktables.BooleanArraySubscriber;
+009
+import edu.wpi.first.networktables.BooleanArrayTopic;
+010
+import edu.wpi.first.networktables.BooleanPublisher;
+011
+import edu.wpi.first.networktables.BooleanSubscriber;
+012
+import edu.wpi.first.networktables.BooleanTopic;
+013
+import edu.wpi.first.networktables.DoubleArrayPublisher;
+014
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+015
+import edu.wpi.first.networktables.DoubleArrayTopic;
+016
+import edu.wpi.first.networktables.DoublePublisher;
+017
+import edu.wpi.first.networktables.DoubleSubscriber;
+018
+import edu.wpi.first.networktables.DoubleTopic;
+019
+import edu.wpi.first.networktables.FloatArrayPublisher;
+020
+import edu.wpi.first.networktables.FloatArraySubscriber;
+021
+import edu.wpi.first.networktables.FloatArrayTopic;
+022
+import edu.wpi.first.networktables.FloatPublisher;
+023
+import edu.wpi.first.networktables.FloatSubscriber;
+024
+import edu.wpi.first.networktables.FloatTopic;
+025
+import edu.wpi.first.networktables.IntegerArrayPublisher;
+026
+import edu.wpi.first.networktables.IntegerArraySubscriber;
+027
+import edu.wpi.first.networktables.IntegerArrayTopic;
+028
+import edu.wpi.first.networktables.IntegerPublisher;
+029
+import edu.wpi.first.networktables.IntegerSubscriber;
+030
+import edu.wpi.first.networktables.IntegerTopic;
+031
+import edu.wpi.first.networktables.NTSendableBuilder;
+032
+import edu.wpi.first.networktables.NetworkTable;
+033
+import edu.wpi.first.networktables.PubSubOption;
+034
+import edu.wpi.first.networktables.Publisher;
+035
+import edu.wpi.first.networktables.RawPublisher;
+036
+import edu.wpi.first.networktables.RawSubscriber;
+037
+import edu.wpi.first.networktables.RawTopic;
+038
+import edu.wpi.first.networktables.StringArrayPublisher;
+039
+import edu.wpi.first.networktables.StringArraySubscriber;
+040
+import edu.wpi.first.networktables.StringArrayTopic;
+041
+import edu.wpi.first.networktables.StringPublisher;
+042
+import edu.wpi.first.networktables.StringSubscriber;
+043
+import edu.wpi.first.networktables.StringTopic;
+044
+import edu.wpi.first.networktables.Subscriber;
+045
+import edu.wpi.first.networktables.Topic;
+046
+import edu.wpi.first.util.function.BooleanConsumer;
+047
+import edu.wpi.first.util.function.FloatConsumer;
+048
+import edu.wpi.first.util.function.FloatSupplier;
+049
+import edu.wpi.first.wpilibj.RobotController;
+050
+import java.util.ArrayList;
+051
+import java.util.List;
+052
+import java.util.function.BooleanSupplier;
+053
+import java.util.function.Consumer;
+054
+import java.util.function.DoubleConsumer;
+055
+import java.util.function.DoubleSupplier;
+056
+import java.util.function.LongConsumer;
+057
+import java.util.function.LongSupplier;
+058
+import java.util.function.Supplier;
+059
+060
+/** Implementation detail for SendableBuilder. */
+061
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
+062
+public class SendableBuilderImpl implements NTSendableBuilder {
+063
+@FunctionalInterface
+064
+private interface TimedConsumer<T> {
+065
+void accept(T value, long time);
+066
+}
+067
+068
+private static final class Property<P extends Publisher, S extends Subscriber>
+069
+implements AutoCloseable {
+070
+@Override
+071
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
+072
+public void close() {
+073
+try {
+074
+if (m_pub != null) {
+075
+m_pub.close();
+076
+}
+077
+if (m_sub != null) {
+078
+m_sub.close();
+079
+}
+080
+} catch (Exception e) {
+081
+// ignore
+082
+}
+083
+}
+084
+085
+void update(boolean controllable, long time) {
+086
+if (controllable && m_sub != null && m_updateLocal != null) {
+087
+m_updateLocal.accept(m_sub);
+088
+}
+089
+if (m_pub != null && m_updateNetwork != null) {
+090
+m_updateNetwork.accept(m_pub, time);
+091
+}
+092
+}
+093
+094
+P m_pub;
+095
+S m_sub;
+096
+TimedConsumer<P> m_updateNetwork;
+097
+Consumer<S> m_updateLocal;
+098
+}
+099
+100
+private final List<Property<?, ?>> m_properties = new ArrayList<>();
+101
+private Runnable m_safeState;
+102
+private final List<Runnable> m_updateTables = new ArrayList<>();
+103
+private NetworkTable m_table;
+104
+private boolean m_controllable;
+105
+private boolean m_actuator;
+106
+107
+private BooleanPublisher m_controllablePub;
+108
+private StringPublisher m_typePub;
+109
+private BooleanPublisher m_actuatorPub;
+110
+111
+private final List<AutoCloseable> m_closeables = new ArrayList<>();
+112
+113
+/** Default constructor. */
+114
+public SendableBuilderImpl() {}
+115
+116
+@Override
+117
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
+118
+public void close() {
+119
+if (m_controllablePub != null) {
+120
+m_controllablePub.close();
+121
+}
+122
+if (m_typePub != null) {
+123
+m_typePub.close();
+124
+}
+125
+if (m_actuatorPub != null) {
+126
+m_actuatorPub.close();
+127
+}
+128
+for (Property<?, ?> property : m_properties) {
+129
+property.close();
+130
+}
+131
+for (AutoCloseable closeable : m_closeables) {
+132
+try {
+133
+closeable.close();
+134
+} catch (Exception e) {
+135
+// ignore
+136
+}
+137
+}
+138
+}
+139
+140
+/**
+141
+* Set the network table. Must be called prior to any Add* functions being called.
+142
+*
+143
+* @param table Network table
+144
+*/
+145
+public void setTable(NetworkTable table) {
+146
+m_table = table;
+147
+m_controllablePub = table.getBooleanTopic(".controllable").publish();
+148
+m_controllablePub.setDefault(false);
+149
+}
+150
+151
+/**
+152
+* Get the network table.
+153
+*
+154
+* @return The network table
+155
+*/
+156
+@Override
+157
+public NetworkTable getTable() {
+158
+return m_table;
+159
+}
+160
+161
+/**
+162
+* Return whether this sendable has an associated table.
+163
+*
+164
+* @return True if it has a table, false if not.
+165
+*/
+166
+@Override
+167
+public boolean isPublished() {
+168
+return m_table != null;
+169
+}
+170
+171
+/**
+172
+* Return whether this sendable should be treated as an actuator.
+173
+*
+174
+* @return True if actuator, false if not.
+175
+*/
+176
+public boolean isActuator() {
+177
+return m_actuator;
+178
+}
+179
+180
+/** Update the network table values by calling the getters for all properties. */
+181
+@Override
+182
+public void update() {
+183
+long time = RobotController.getTime();
+184
+for (Property<?, ?> property : m_properties) {
+185
+property.update(m_controllable, time);
+186
+}
+187
+for (Runnable updateTable : m_updateTables) {
+188
+updateTable.run();
+189
+}
+190
+}
+191
+192
+/** Hook setters for all properties. */
+193
+public void startListeners() {
+194
+m_controllable = true;
+195
+if (m_controllablePub != null) {
+196
+m_controllablePub.set(true);
+197
+}
+198
+}
+199
+200
+/** Unhook setters for all properties. */
+201
+public void stopListeners() {
+202
+m_controllable = false;
+203
+if (m_controllablePub != null) {
+204
+m_controllablePub.set(false);
+205
+}
+206
+}
+207
+208
+/**
+209
+* Start LiveWindow mode by hooking the setters for all properties. Also calls the safeState
+210
+* function if one was provided.
+211
+*/
+212
+public void startLiveWindowMode() {
+213
+if (m_safeState != null) {
+214
+m_safeState.run();
+215
+}
+216
+startListeners();
+217
+}
+218
+219
+/**
+220
+* Stop LiveWindow mode by unhooking the setters for all properties. Also calls the safeState
+221
+* function if one was provided.
+222
+*/
+223
+public void stopLiveWindowMode() {
+224
+stopListeners();
+225
+if (m_safeState != null) {
+226
+m_safeState.run();
+227
+}
+228
+}
+229
+230
+/** Clear properties. */
+231
+@Override
+232
+public void clearProperties() {
+233
+stopListeners();
+234
+for (Property<?, ?> property : m_properties) {
+235
+property.close();
+236
+}
+237
+m_properties.clear();
+238
+}
+239
+240
+@Override
+241
+public void addCloseable(AutoCloseable closeable) {
+242
+m_closeables.add(closeable);
+243
+}
+244
+245
+/**
+246
+* Set the string representation of the named data type that will be used by the smart dashboard
+247
+* for this sendable.
+248
+*
+249
+* @param type data type
+250
+*/
+251
+@Override
+252
+public void setSmartDashboardType(String type) {
+253
+if (m_typePub == null) {
+254
+m_typePub =
+255
+m_table
+256
+.getStringTopic(".type")
+257
+.publishEx(StringTopic.kTypeString, "{\"SmartDashboard\":\"" + type + "\"}");
+258
+}
+259
+m_typePub.set(type);
+260
+}
+261
+262
+/**
+263
+* Set a flag indicating if this sendable should be treated as an actuator. By default, this flag
+264
+* is false.
+265
+*
+266
+* @param value true if actuator, false if not
+267
+*/
+268
+@Override
+269
+public void setActuator(boolean value) {
+270
+if (m_actuatorPub == null) {
+271
+m_actuatorPub = m_table.getBooleanTopic(".actuator").publish();
+272
+}
+273
+m_actuatorPub.set(value);
+274
+m_actuator = value;
+275
+}
+276
+277
+/**
+278
+* Set the function that should be called to set the Sendable into a safe state. This is called
+279
+* when entering and exiting Live Window mode.
+280
+*
+281
+* @param func function
+282
+*/
+283
+@Override
+284
+public void setSafeState(Runnable func) {
+285
+m_safeState = func;
+286
+}
+287
+288
+/**
+289
+* Set the function that should be called to update the network table for things other than
+290
+* properties. Note this function is not passed the network table object; instead it should use
+291
+* the topics returned by getTopic().
+292
+*
+293
+* @param func function
+294
+*/
+295
+@Override
+296
+public void setUpdateTable(Runnable func) {
+297
+m_updateTables.add(func);
+298
+}
+299
+300
+/**
+301
+* Add a property without getters or setters. This can be used to get entry handles for the
+302
+* function called by setUpdateTable().
+303
+*
+304
+* @param key property name
+305
+* @return Network table entry
+306
+*/
+307
+@Override
+308
+public Topic getTopic(String key) {
+309
+return m_table.getTopic(key);
+310
+}
+311
+312
+/**
+313
+* Add a boolean property.
+314
+*
+315
+* @param key property name
+316
+* @param getter getter function (returns current value)
+317
+* @param setter setter function (sets new value)
+318
+*/
+319
+@Override
+320
+public void addBooleanProperty(String key, BooleanSupplier getter, BooleanConsumer setter) {
+321
+Property<BooleanPublisher, BooleanSubscriber> property = new Property<>();
+322
+BooleanTopic topic = m_table.getBooleanTopic(key);
+323
+if (getter != null) {
+324
+property.m_pub = topic.publish();
+325
+property.m_updateNetwork = (pub, time) -> pub.set(getter.getAsBoolean(), time);
+326
+}
+327
+if (setter != null) {
+328
+property.m_sub = topic.subscribe(false, PubSubOption.excludePublisher(property.m_pub));
+329
+property.m_updateLocal =
+330
+sub -> {
+331
+for (boolean val : sub.readQueueValues()) {
+332
+setter.accept(val);
+333
+}
+334
+};
+335
+}
+336
+m_properties.add(property);
+337
+}
+338
+339
+@Override
+340
+public void publishConstBoolean(String key, boolean value) {
+341
+Property<BooleanPublisher, BooleanSubscriber> property = new Property<>();
+342
+BooleanTopic topic = m_table.getBooleanTopic(key);
+343
+property.m_pub = topic.publish();
+344
+property.m_pub.set(value);
+345
+m_properties.add(property);
+346
+}
+347
+348
+/**
+349
+* Add an integer property.
+350
+*
+351
+* @param key property name
+352
+* @param getter getter function (returns current value)
+353
+* @param setter setter function (sets new value)
+354
+*/
+355
+@Override
+356
+public void addIntegerProperty(String key, LongSupplier getter, LongConsumer setter) {
+357
+Property<IntegerPublisher, IntegerSubscriber> property = new Property<>();
+358
+IntegerTopic topic = m_table.getIntegerTopic(key);
+359
+if (getter != null) {
+360
+property.m_pub = topic.publish();
+361
+property.m_updateNetwork = (pub, time) -> pub.set(getter.getAsLong(), time);
+362
+}
+363
+if (setter != null) {
+364
+property.m_sub = topic.subscribe(0, PubSubOption.excludePublisher(property.m_pub));
+365
+property.m_updateLocal =
+366
+sub -> {
+367
+for (long val : sub.readQueueValues()) {
+368
+setter.accept(val);
+369
+}
+370
+};
+371
+}
+372
+m_properties.add(property);
+373
+}
+374
+375
+@Override
+376
+public void publishConstInteger(String key, long value) {
+377
+Property<IntegerPublisher, IntegerSubscriber> property = new Property<>();
+378
+IntegerTopic topic = m_table.getIntegerTopic(key);
+379
+property.m_pub = topic.publish();
+380
+property.m_pub.set(value);
+381
+m_properties.add(property);
+382
+}
+383
+384
+/**
+385
+* Add a float property.
+386
+*
+387
+* @param key property name
+388
+* @param getter getter function (returns current value)
+389
+* @param setter setter function (sets new value)
+390
+*/
+391
+@Override
+392
+public void addFloatProperty(String key, FloatSupplier getter, FloatConsumer setter) {
+393
+Property<FloatPublisher, FloatSubscriber> property = new Property<>();
+394
+FloatTopic topic = m_table.getFloatTopic(key);
+395
+if (getter != null) {
+396
+property.m_pub = topic.publish();
+397
+property.m_updateNetwork = (pub, time) -> pub.set(getter.getAsFloat(), time);
+398
+}
+399
+if (setter != null) {
+400
+property.m_sub = topic.subscribe(0.0f, PubSubOption.excludePublisher(property.m_pub));
+401
+property.m_updateLocal =
+402
+sub -> {
+403
+for (float val : sub.readQueueValues()) {
+404
+setter.accept(val);
+405
+}
+406
+};
+407
+}
+408
+m_properties.add(property);
+409
+}
+410
+411
+@Override
+412
+public void publishConstFloat(String key, float value) {
+413
+Property<FloatPublisher, FloatSubscriber> property = new Property<>();
+414
+FloatTopic topic = m_table.getFloatTopic(key);
+415
+property.m_pub = topic.publish();
+416
+property.m_pub.set(value);
+417
+m_properties.add(property);
+418
+}
+419
+420
+/**
+421
+* Add a double property.
+422
+*
+423
+* @param key property name
+424
+* @param getter getter function (returns current value)
+425
+* @param setter setter function (sets new value)
+426
+*/
+427
+@Override
+428
+public void addDoubleProperty(String key, DoubleSupplier getter, DoubleConsumer setter) {
+429
+Property<DoublePublisher, DoubleSubscriber> property = new Property<>();
+430
+DoubleTopic topic = m_table.getDoubleTopic(key);
+431
+if (getter != null) {
+432
+property.m_pub = topic.publish();
+433
+property.m_updateNetwork = (pub, time) -> pub.set(getter.getAsDouble(), time);
+434
+}
+435
+if (setter != null) {
+436
+property.m_sub = topic.subscribe(0.0, PubSubOption.excludePublisher(property.m_pub));
+437
+property.m_updateLocal =
+438
+sub -> {
+439
+for (double val : sub.readQueueValues()) {
+440
+setter.accept(val);
+441
+}
+442
+};
+443
+}
+444
+m_properties.add(property);
+445
+}
+446
+447
+@Override
+448
+public void publishConstDouble(String key, double value) {
+449
+Property<DoublePublisher, DoubleSubscriber> property = new Property<>();
+450
+DoubleTopic topic = m_table.getDoubleTopic(key);
+451
+property.m_pub = topic.publish();
+452
+property.m_pub.set(value);
+453
+m_properties.add(property);
+454
+}
+455
+456
+/**
+457
+* Add a string property.
+458
+*
+459
+* @param key property name
+460
+* @param getter getter function (returns current value)
+461
+* @param setter setter function (sets new value)
+462
+*/
+463
+@Override
+464
+public void addStringProperty(String key, Supplier<String> getter, Consumer<String> setter) {
+465
+Property<StringPublisher, StringSubscriber> property = new Property<>();
+466
+StringTopic topic = m_table.getStringTopic(key);
+467
+if (getter != null) {
+468
+property.m_pub = topic.publish();
+469
+property.m_updateNetwork = (pub, time) -> pub.set(getter.get(), time);
+470
+}
+471
+if (setter != null) {
+472
+property.m_sub = topic.subscribe("", PubSubOption.excludePublisher(property.m_pub));
+473
+property.m_updateLocal =
+474
+sub -> {
+475
+for (String val : sub.readQueueValues()) {
+476
+setter.accept(val);
+477
+}
+478
+};
+479
+}
+480
+m_properties.add(property);
+481
+}
+482
+483
+@Override
+484
+public void publishConstString(String key, String value) {
+485
+Property<StringPublisher, StringSubscriber> property = new Property<>();
+486
+StringTopic topic = m_table.getStringTopic(key);
+487
+property.m_pub = topic.publish();
+488
+property.m_pub.set(value);
+489
+m_properties.add(property);
+490
+}
+491
+492
+/**
+493
+* Add a boolean array property.
+494
+*
+495
+* @param key property name
+496
+* @param getter getter function (returns current value)
+497
+* @param setter setter function (sets new value)
+498
+*/
+499
+@Override
+500
+public void addBooleanArrayProperty(
+501
+String key, Supplier<boolean[]> getter, Consumer<boolean[]> setter) {
+502
+Property<BooleanArrayPublisher, BooleanArraySubscriber> property = new Property<>();
+503
+BooleanArrayTopic topic = m_table.getBooleanArrayTopic(key);
+504
+if (getter != null) {
+505
+property.m_pub = topic.publish();
+506
+property.m_updateNetwork = (pub, time) -> pub.set(getter.get(), time);
+507
+}
+508
+if (setter != null) {
+509
+property.m_sub =
+510
+topic.subscribe(new boolean[] {}, PubSubOption.excludePublisher(property.m_pub));
+511
+property.m_updateLocal =
+512
+sub -> {
+513
+for (boolean[] val : sub.readQueueValues()) {
+514
+setter.accept(val);
+515
+}
+516
+};
+517
+}
+518
+m_properties.add(property);
+519
+}
+520
+521
+@Override
+522
+public void publishConstBooleanArray(String key, boolean[] value) {
+523
+Property<BooleanArrayPublisher, BooleanArraySubscriber> property = new Property<>();
+524
+BooleanArrayTopic topic = m_table.getBooleanArrayTopic(key);
+525
+property.m_pub = topic.publish();
+526
+property.m_pub.set(value);
+527
+m_properties.add(property);
+528
+}
+529
+530
+/**
+531
+* Add an integer array property.
+532
+*
+533
+* @param key property name
+534
+* @param getter getter function (returns current value)
+535
+* @param setter setter function (sets new value)
+536
+*/
+537
+@Override
+538
+public void addIntegerArrayProperty(
+539
+String key, Supplier<long[]> getter, Consumer<long[]> setter) {
+540
+Property<IntegerArrayPublisher, IntegerArraySubscriber> property = new Property<>();
+541
+IntegerArrayTopic topic = m_table.getIntegerArrayTopic(key);
+542
+if (getter != null) {
+543
+property.m_pub = topic.publish();
+544
+property.m_updateNetwork = (pub, time) -> pub.set(getter.get(), time);
+545
+}
+546
+if (setter != null) {
+547
+property.m_sub =
+548
+topic.subscribe(new long[] {}, PubSubOption.excludePublisher(property.m_pub));
+549
+property.m_updateLocal =
+550
+sub -> {
+551
+for (long[] val : sub.readQueueValues()) {
+552
+setter.accept(val);
+553
+}
+554
+};
+555
+}
+556
+m_properties.add(property);
+557
+}
+558
+559
+@Override
+560
+public void publishConstIntegerArray(String key, long[] value) {
+561
+Property<IntegerArrayPublisher, IntegerArraySubscriber> property = new Property<>();
+562
+IntegerArrayTopic topic = m_table.getIntegerArrayTopic(key);
+563
+property.m_pub = topic.publish();
+564
+property.m_pub.set(value);
+565
+m_properties.add(property);
+566
+}
+567
+568
+/**
+569
+* Add a float array property.
+570
+*
+571
+* @param key property name
+572
+* @param getter getter function (returns current value)
+573
+* @param setter setter function (sets new value)
+574
+*/
+575
+@Override
+576
+public void addFloatArrayProperty(
+577
+String key, Supplier<float[]> getter, Consumer<float[]> setter) {
+578
+Property<FloatArrayPublisher, FloatArraySubscriber> property = new Property<>();
+579
+FloatArrayTopic topic = m_table.getFloatArrayTopic(key);
+580
+if (getter != null) {
+581
+property.m_pub = topic.publish();
+582
+property.m_updateNetwork = (pub, time) -> pub.set(getter.get(), time);
+583
+}
+584
+if (setter != null) {
+585
+property.m_sub =
+586
+topic.subscribe(new float[] {}, PubSubOption.excludePublisher(property.m_pub));
+587
+property.m_updateLocal =
+588
+sub -> {
+589
+for (float[] val : sub.readQueueValues()) {
+590
+setter.accept(val);
+591
+}
+592
+};
+593
+}
+594
+m_properties.add(property);
+595
+}
+596
+597
+@Override
+598
+public void publishConstFloatArray(String key, float[] value) {
+599
+Property<FloatArrayPublisher, FloatArraySubscriber> property = new Property<>();
+600
+FloatArrayTopic topic = m_table.getFloatArrayTopic(key);
+601
+property.m_pub = topic.publish();
+602
+property.m_pub.set(value);
+603
+m_properties.add(property);
+604
+}
+605
+606
+/**
+607
+* Add a double array property.
+608
+*
+609
+* @param key property name
+610
+* @param getter getter function (returns current value)
+611
+* @param setter setter function (sets new value)
+612
+*/
+613
+@Override
+614
+public void addDoubleArrayProperty(
+615
+String key, Supplier<double[]> getter, Consumer<double[]> setter) {
+616
+Property<DoubleArrayPublisher, DoubleArraySubscriber> property = new Property<>();
+617
+DoubleArrayTopic topic = m_table.getDoubleArrayTopic(key);
+618
+if (getter != null) {
+619
+property.m_pub = topic.publish();
+620
+property.m_updateNetwork = (pub, time) -> pub.set(getter.get(), time);
+621
+}
+622
+if (setter != null) {
+623
+property.m_sub =
+624
+topic.subscribe(new double[] {}, PubSubOption.excludePublisher(property.m_pub));
+625
+property.m_updateLocal =
+626
+sub -> {
+627
+for (double[] val : sub.readQueueValues()) {
+628
+setter.accept(val);
+629
+}
+630
+};
+631
+}
+632
+m_properties.add(property);
+633
+}
+634
+635
+@Override
+636
+public void publishConstDoubleArray(String key, double[] value) {
+637
+Property<DoubleArrayPublisher, DoubleArraySubscriber> property = new Property<>();
+638
+DoubleArrayTopic topic = m_table.getDoubleArrayTopic(key);
+639
+property.m_pub = topic.publish();
+640
+property.m_pub.set(value);
+641
+m_properties.add(property);
+642
+}
+643
+644
+/**
+645
+* Add a string array property.
+646
+*
+647
+* @param key property name
+648
+* @param getter getter function (returns current value)
+649
+* @param setter setter function (sets new value)
+650
+*/
+651
+@Override
+652
+public void addStringArrayProperty(
+653
+String key, Supplier<String[]> getter, Consumer<String[]> setter) {
+654
+Property<StringArrayPublisher, StringArraySubscriber> property = new Property<>();
+655
+StringArrayTopic topic = m_table.getStringArrayTopic(key);
+656
+if (getter != null) {
+657
+property.m_pub = topic.publish();
+658
+property.m_updateNetwork = (pub, time) -> pub.set(getter.get(), time);
+659
+}
+660
+if (setter != null) {
+661
+property.m_sub =
+662
+topic.subscribe(new String[] {}, PubSubOption.excludePublisher(property.m_pub));
+663
+property.m_updateLocal =
+664
+sub -> {
+665
+for (String[] val : sub.readQueueValues()) {
+666
+setter.accept(val);
+667
+}
+668
+};
+669
+}
+670
+m_properties.add(property);
+671
+}
+672
+673
+@Override
+674
+public void publishConstStringArray(String key, String[] value) {
+675
+Property<StringArrayPublisher, StringArraySubscriber> property = new Property<>();
+676
+StringArrayTopic topic = m_table.getStringArrayTopic(key);
+677
+property.m_pub = topic.publish();
+678
+property.m_pub.set(value);
+679
+m_properties.add(property);
+680
+}
+681
+682
+/**
+683
+* Add a raw property.
+684
+*
+685
+* @param key property name
+686
+* @param typeString type string
+687
+* @param getter getter function (returns current value)
+688
+* @param setter setter function (sets new value)
+689
+*/
+690
+@Override
+691
+public void addRawProperty(
+692
+String key, String typeString, Supplier<byte[]> getter, Consumer<byte[]> setter) {
+693
+Property<RawPublisher, RawSubscriber> property = new Property<>();
+694
+RawTopic topic = m_table.getRawTopic(key);
+695
+if (getter != null) {
+696
+property.m_pub = topic.publish(typeString);
+697
+property.m_updateNetwork = (pub, time) -> pub.set(getter.get(), time);
+698
+}
+699
+if (setter != null) {
+700
+property.m_sub =
+701
+topic.subscribe(typeString, new byte[] {}, PubSubOption.excludePublisher(property.m_pub));
+702
+property.m_updateLocal =
+703
+sub -> {
+704
+for (byte[] val : sub.readQueueValues()) {
+705
+setter.accept(val);
+706
+}
+707
+};
+708
+}
+709
+m_properties.add(property);
+710
+}
+711
+712
+@Override
+713
+public void publishConstRaw(String key, String typestring, byte[] value) {
+714
+Property<RawPublisher, RawSubscriber> property = new Property<>();
+715
+RawTopic topic = m_table.getRawTopic(key);
+716
+property.m_pub = topic.publish(typestring);
+717
+property.m_pub.set(value);
+718
+m_properties.add(property);
+719
+}
+720
+}

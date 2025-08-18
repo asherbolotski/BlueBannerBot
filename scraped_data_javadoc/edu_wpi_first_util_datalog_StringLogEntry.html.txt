@@ -1,0 +1,360 @@
+Package
+edu.wpi.first.util.datalog
+Class StringLogEntry
+java.lang.Object
+edu.wpi.first.util.datalog.DataLogEntry
+edu.wpi.first.util.datalog.StringLogEntry
+public class
+StringLogEntry
+extends
+DataLogEntry
+Log string values.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+String
+kDataType
+The data type for string values.
+Fields inherited from class edu.wpi.first.util.datalog.
+DataLogEntry
+m_entry
+,
+m_log
+Constructor Summary
+Constructors
+Constructor
+Description
+StringLogEntry
+(
+DataLog
+log,
+String
+name)
+Constructs a String log entry.
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+ long timestamp)
+Constructs a String log entry.
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata)
+Constructs a String log entry.
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+ long timestamp)
+Constructs a String log entry.
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+String
+type)
+Constructs a String log entry.
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+String
+type,
+ long timestamp)
+Constructs a String log entry.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+append
+(
+String
+value)
+Appends a record to the log.
+void
+append
+(
+String
+value,
+ long timestamp)
+Appends a record to the log.
+String
+getLastValue
+()
+Gets the last value.
+boolean
+hasLastValue
+()
+Gets whether there is a last value.
+void
+update
+(
+String
+value)
+Updates the last value and appends a record to the log if it has changed.
+void
+update
+(
+String
+value,
+ long timestamp)
+Updates the last value and appends a record to the log if it has changed.
+Methods inherited from class edu.wpi.first.util.datalog.
+DataLogEntry
+finish
+,
+finish
+,
+setMetadata
+,
+setMetadata
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kDataType
+public static final
+String
+kDataType
+The data type for string values.
+See Also:
+Constant Field Values
+Constructor Details
+StringLogEntry
+public
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+String
+type,
+ long timestamp)
+Constructs a String log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+metadata
+- metadata
+type
+- Data type
+timestamp
+- entry creation timestamp (0=now)
+StringLogEntry
+public
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+String
+type)
+Constructs a String log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+metadata
+- metadata
+type
+- Data type
+StringLogEntry
+public
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata,
+ long timestamp)
+Constructs a String log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+metadata
+- metadata
+timestamp
+- entry creation timestamp (0=now)
+StringLogEntry
+public
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+metadata)
+Constructs a String log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+metadata
+- metadata
+StringLogEntry
+public
+StringLogEntry
+(
+DataLog
+log,
+String
+name,
+ long timestamp)
+Constructs a String log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+timestamp
+- entry creation timestamp (0=now)
+StringLogEntry
+public
+StringLogEntry
+(
+DataLog
+log,
+String
+name)
+Constructs a String log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+Method Details
+append
+public
+void
+append
+(
+String
+value,
+ long timestamp)
+Appends a record to the log.
+Parameters:
+value
+- Value to record
+timestamp
+- Time stamp (0 to indicate now)
+append
+public
+void
+append
+(
+String
+value)
+Appends a record to the log.
+Parameters:
+value
+- Value to record
+update
+public
+void
+update
+(
+String
+value,
+ long timestamp)
+Updates the last value and appends a record to the log if it has changed.
+Note: the last value is local to this class instance; using update() with two instances
+ pointing to the same underlying log entry name will likely result in unexpected results.
+Parameters:
+value
+- Value to record
+timestamp
+- Time stamp (0 to indicate now)
+update
+public
+void
+update
+(
+String
+value)
+Updates the last value and appends a record to the log if it has changed.
+Note: the last value is local to this class instance; using update() with two instances
+ pointing to the same underlying log entry name will likely result in unexpected results.
+Parameters:
+value
+- Value to record
+hasLastValue
+public
+boolean
+hasLastValue
+()
+Gets whether there is a last value.
+Note: the last value is local to this class instance and updated only with update(), not
+ append().
+Returns:
+True if last value exists, false otherwise.
+getLastValue
+public
+String
+getLastValue
+()
+Gets the last value.
+Note: the last value is local to this class instance and updated only with update(), not
+ append().
+Returns:
+Last value, or null if none.

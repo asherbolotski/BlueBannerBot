@@ -1,0 +1,391 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class PneumaticsBaseSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.PneumaticsBaseSim
+Direct Known Subclasses:
+CTREPCMSim
+,
+REVPHSim
+public abstract class
+PneumaticsBaseSim
+extends
+Object
+Common base class for pneumatics module simulation classes.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final int
+m_index
+PneumaticsBase index.
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+PneumaticsBaseSim
+(int index)
+Constructs a PneumaticsBaseSim with the given index.
+protected
+PneumaticsBaseSim
+(
+PneumaticsBase
+module)
+Constructs a PneumaticsBaseSim for the given module.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Abstract Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+abstract double
+getCompressorCurrent
+()
+Read the compressor current.
+abstract boolean
+getCompressorOn
+()
+Check if the compressor is on.
+static
+PneumaticsBaseSim
+getForType
+(int module,
+PneumaticsModuleType
+type)
+Get a module sim for a specific type.
+abstract boolean
+getInitialized
+()
+Check whether the PCM/PH has been initialized.
+abstract boolean
+getPressureSwitch
+()
+Check the value of the pressure switch.
+abstract boolean
+getSolenoidOutput
+(int channel)
+Check the solenoid output on a specific channel.
+abstract
+CallbackStore
+registerCompressorCurrentCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the compressor current changes.
+abstract
+CallbackStore
+registerCompressorOnCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the compressor activates.
+abstract
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the PCM/PH is initialized.
+abstract
+CallbackStore
+registerPressureSwitchCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the pressure switch value changes.
+abstract
+CallbackStore
+registerSolenoidOutputCallback
+(int channel,
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the solenoid output on a channel changes.
+abstract void
+resetData
+()
+Reset all simulation data for this object.
+abstract void
+setCompressorCurrent
+(double compressorCurrent)
+Set the compressor current.
+abstract void
+setCompressorOn
+(boolean compressorOn)
+Set whether the compressor is active.
+abstract void
+setInitialized
+(boolean initialized)
+Define whether the PCM/PH has been initialized.
+abstract void
+setPressureSwitch
+(boolean pressureSwitch)
+Set the value of the pressure switch.
+abstract void
+setSolenoidOutput
+(int channel,
+ boolean solenoidOutput)
+Change the solenoid output on a specific channel.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_index
+protected final
+int
+m_index
+PneumaticsBase index.
+Constructor Details
+PneumaticsBaseSim
+protected
+PneumaticsBaseSim
+(int index)
+Constructs a PneumaticsBaseSim with the given index.
+Parameters:
+index
+- The index.
+PneumaticsBaseSim
+protected
+PneumaticsBaseSim
+(
+PneumaticsBase
+module)
+Constructs a PneumaticsBaseSim for the given module.
+Parameters:
+module
+- The module.
+Method Details
+getForType
+public static
+PneumaticsBaseSim
+getForType
+(int module,
+PneumaticsModuleType
+type)
+Get a module sim for a specific type.
+Parameters:
+module
+- the module number / CAN ID.
+type
+- the module type.
+Returns:
+the module object.
+getInitialized
+public abstract
+boolean
+getInitialized
+()
+Check whether the PCM/PH has been initialized.
+Returns:
+true if initialized
+setInitialized
+public abstract
+void
+setInitialized
+(boolean initialized)
+Define whether the PCM/PH has been initialized.
+Parameters:
+initialized
+- true for initialized
+registerInitializedCallback
+public abstract
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the PCM/PH is initialized.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getCompressorOn
+public abstract
+boolean
+getCompressorOn
+()
+Check if the compressor is on.
+Returns:
+true if the compressor is active
+setCompressorOn
+public abstract
+void
+setCompressorOn
+(boolean compressorOn)
+Set whether the compressor is active.
+Parameters:
+compressorOn
+- the new value
+registerCompressorOnCallback
+public abstract
+CallbackStore
+registerCompressorOnCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the compressor activates.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getSolenoidOutput
+public abstract
+boolean
+getSolenoidOutput
+(int channel)
+Check the solenoid output on a specific channel.
+Parameters:
+channel
+- the channel to check
+Returns:
+the solenoid output
+setSolenoidOutput
+public abstract
+void
+setSolenoidOutput
+(int channel,
+ boolean solenoidOutput)
+Change the solenoid output on a specific channel.
+Parameters:
+channel
+- the channel to check
+solenoidOutput
+- the new solenoid output
+registerSolenoidOutputCallback
+public abstract
+CallbackStore
+registerSolenoidOutputCallback
+(int channel,
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the solenoid output on a channel changes.
+Parameters:
+channel
+- the channel to monitor
+callback
+- the callback
+initialNotify
+- should the callback be run with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getPressureSwitch
+public abstract
+boolean
+getPressureSwitch
+()
+Check the value of the pressure switch.
+Returns:
+the pressure switch value
+setPressureSwitch
+public abstract
+void
+setPressureSwitch
+(boolean pressureSwitch)
+Set the value of the pressure switch.
+Parameters:
+pressureSwitch
+- the new value
+registerPressureSwitchCallback
+public abstract
+CallbackStore
+registerPressureSwitchCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the pressure switch value changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getCompressorCurrent
+public abstract
+double
+getCompressorCurrent
+()
+Read the compressor current.
+Returns:
+the current of the compressor connected to this module
+setCompressorCurrent
+public abstract
+void
+setCompressorCurrent
+(double compressorCurrent)
+Set the compressor current.
+Parameters:
+compressorCurrent
+- the new compressor current
+registerCompressorCurrentCallback
+public abstract
+CallbackStore
+registerCompressorCurrentCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the compressor current changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+resetData
+public abstract
+void
+resetData
+()
+Reset all simulation data for this object.

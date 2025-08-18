@@ -1,0 +1,331 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+009
+import edu.wpi.first.math.trajectory.Trajectory;
+010
+011
+/**
+012
+* Ramsete is a nonlinear time-varying feedback controller for unicycle models that drives the model
+013
+* to a desired pose along a two-dimensional trajectory. Why would we need a nonlinear control law
+014
+* in addition to the linear ones we have used so far like PID? If we use the original approach with
+015
+* PID controllers for left and right position and velocity states, the controllers only deal with
+016
+* the local pose. If the robot deviates from the path, there is no way for the controllers to
+017
+* correct and the robot may not reach the desired global pose. This is due to multiple endpoints
+018
+* existing for the robot which have the same encoder path arc lengths.
+019
+*
+020
+* <p>Instead of using wheel path arc lengths (which are in the robot's local coordinate frame),
+021
+* nonlinear controllers like pure pursuit and Ramsete use global pose. The controller uses this
+022
+* extra information to guide a linear reference tracker like the PID controllers back in by
+023
+* adjusting the references of the PID controllers.
+024
+*
+025
+* <p>The paper "Control of Wheeled Mobile Robots: An Experimental Overview" describes a nonlinear
+026
+* controller for a wheeled vehicle with unicycle-like kinematics; a global pose consisting of x, y,
+027
+* and theta; and a desired pose consisting of x_d, y_d, and theta_d. We call it Ramsete because
+028
+* that's the acronym for the title of the book it came from in Italian ("Robotica Articolata e
+029
+* Mobile per i SErvizi e le TEcnologie").
+030
+*
+031
+* <p>See <a href="https://file.tavsys.net/control/controls-engineering-in-frc.pdf">Controls
+032
+* Engineering in the FIRST Robotics Competition</a> section on Ramsete unicycle controller for a
+033
+* derivation and analysis.
+034
+*/
+035
+public class RamseteController {
+036
+private final double m_b;
+037
+038
+private final double m_zeta;
+039
+040
+private Pose2d m_poseError = Pose2d.kZero;
+041
+private Pose2d m_poseTolerance = Pose2d.kZero;
+042
+private boolean m_enabled = true;
+043
+044
+/**
+045
+* Construct a Ramsete unicycle controller.
+046
+*
+047
+* @param b Tuning parameter (b &gt; 0 rad²/m²) for which larger values make convergence more
+048
+*     aggressive like a proportional term.
+049
+* @param zeta Tuning parameter (0 rad⁻¹ &lt; zeta &lt; 1 rad⁻¹) for which larger values provide
+050
+*     more damping in response.
+051
+* @deprecated Use LTVUnicycleController instead.
+052
+*/
+053
+@Deprecated(since = "2025", forRemoval = true)
+054
+public RamseteController(double b, double zeta) {
+055
+m_b = b;
+056
+m_zeta = zeta;
+057
+}
+058
+059
+/**
+060
+* Construct a Ramsete unicycle controller. The default arguments for b and zeta of 2.0 rad²/m²
+061
+* and 0.7 rad⁻¹ have been well-tested to produce desirable results.
+062
+*
+063
+* @deprecated Use LTVUnicycleController instead.
+064
+*/
+065
+@Deprecated(since = "2025", forRemoval = true)
+066
+public RamseteController() {
+067
+this(2.0, 0.7);
+068
+}
+069
+070
+/**
+071
+* Returns true if the pose error is within tolerance of the reference.
+072
+*
+073
+* @return True if the pose error is within tolerance of the reference.
+074
+*/
+075
+public boolean atReference() {
+076
+final var eTranslate = m_poseError.getTranslation();
+077
+final var eRotate = m_poseError.getRotation();
+078
+final var tolTranslate = m_poseTolerance.getTranslation();
+079
+final var tolRotate = m_poseTolerance.getRotation();
+080
+return Math.abs(eTranslate.getX()) < tolTranslate.getX()
+081
+&& Math.abs(eTranslate.getY()) < tolTranslate.getY()
+082
+&& Math.abs(eRotate.getRadians()) < tolRotate.getRadians();
+083
+}
+084
+085
+/**
+086
+* Sets the pose error which is considered tolerable for use with atReference().
+087
+*
+088
+* @param poseTolerance Pose error which is tolerable.
+089
+*/
+090
+public void setTolerance(Pose2d poseTolerance) {
+091
+m_poseTolerance = poseTolerance;
+092
+}
+093
+094
+/**
+095
+* Returns the next output of the Ramsete controller.
+096
+*
+097
+* <p>The reference pose, linear velocity, and angular velocity should come from a drivetrain
+098
+* trajectory.
+099
+*
+100
+* @param currentPose The current pose.
+101
+* @param poseRef The desired pose.
+102
+* @param linearVelocityRefMeters The desired linear velocity in meters per second.
+103
+* @param angularVelocityRefRadiansPerSecond The desired angular velocity in radians per second.
+104
+* @return The next controller output.
+105
+*/
+106
+public ChassisSpeeds calculate(
+107
+Pose2d currentPose,
+108
+Pose2d poseRef,
+109
+double linearVelocityRefMeters,
+110
+double angularVelocityRefRadiansPerSecond) {
+111
+if (!m_enabled) {
+112
+return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
+113
+}
+114
+115
+m_poseError = poseRef.relativeTo(currentPose);
+116
+117
+// Aliases for equation readability
+118
+final double eX = m_poseError.getX();
+119
+final double eY = m_poseError.getY();
+120
+final double eTheta = m_poseError.getRotation().getRadians();
+121
+final double vRef = linearVelocityRefMeters;
+122
+final double omegaRef = angularVelocityRefRadiansPerSecond;
+123
+124
+// k = 2ζ√(ω_ref² + b v_ref²)
+125
+double k = 2.0 * m_zeta * Math.sqrt(Math.pow(omegaRef, 2) + m_b * Math.pow(vRef, 2));
+126
+127
+// v_cmd = v_ref cos(e_θ) + k e_x
+128
+// ω_cmd = ω_ref + k e_θ + b v_ref sinc(e_θ) e_y
+129
+return new ChassisSpeeds(
+130
+vRef * m_poseError.getRotation().getCos() + k * eX,
+131
+0.0,
+132
+omegaRef + k * eTheta + m_b * vRef * sinc(eTheta) * eY);
+133
+}
+134
+135
+/**
+136
+* Returns the next output of the Ramsete controller.
+137
+*
+138
+* <p>The reference pose, linear velocity, and angular velocity should come from a drivetrain
+139
+* trajectory.
+140
+*
+141
+* @param currentPose The current pose.
+142
+* @param desiredState The desired pose, linear velocity, and angular velocity from a trajectory.
+143
+* @return The next controller output.
+144
+*/
+145
+public ChassisSpeeds calculate(Pose2d currentPose, Trajectory.State desiredState) {
+146
+return calculate(
+147
+currentPose,
+148
+desiredState.poseMeters,
+149
+desiredState.velocityMetersPerSecond,
+150
+desiredState.velocityMetersPerSecond * desiredState.curvatureRadPerMeter);
+151
+}
+152
+153
+/**
+154
+* Enables and disables the controller for troubleshooting purposes.
+155
+*
+156
+* @param enabled If the controller is enabled or not.
+157
+*/
+158
+public void setEnabled(boolean enabled) {
+159
+m_enabled = enabled;
+160
+}
+161
+162
+/**
+163
+* Returns sin(x) / x.
+164
+*
+165
+* @param x Value of which to take sinc(x).
+166
+*/
+167
+private static double sinc(double x) {
+168
+if (Math.abs(x) < 1e-9) {
+169
+return 1.0 - 1.0 / 6.0 * x * x;
+170
+} else {
+171
+return Math.sin(x) / x;
+172
+}
+173
+}
+174
+}

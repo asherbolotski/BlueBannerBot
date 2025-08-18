@@ -1,0 +1,108 @@
+Widgets for the Command-Based Framework
+
+Glass also has several widgets that are specific to the
+command-based framework
+. These include widgets to schedule commands, view actively running commands on a specific subsystem, or view the state of the
+command scheduler
+.
+Command Selector Widget
+
+The
+Command Selector
+widget allows you to start and cancel a specific instance of a command (sent over NetworkTables) from Glass. For example, you can create an instance of
+MyCommand
+and send it to SmartDashboard:
+JAVA
+MyCommand
+command
+=
+new
+MyCommand
+(...);
+SmartDashboard
+.
+putData
+(
+"My Command"
+,
+command
+);
+C++
+#include
+<frc/smartdashboard/SmartDashboard.h>
+...
+MyCommand
+command
+{...};
+frc
+::
+SmartDashboard
+::
+PutData
+(
+"My Command"
+,
+&
+command
+);
+PYTHON
+from
+wpilib
+import
+SmartDashboard
+command
+=
+MyCommand
+(
+...
+)
+SmartDashboard
+.
+putData
+(
+"My Command"
+,
+command
+)
+Note
+The
+MyCommand
+instance can also be sent using a lower-level NetworkTables API or using the
+Shuffleboard API
+. In this case, the
+SmartDashboard
+API was used, meaning that the
+Command Selector
+widget will appear under the
+SmartDashboard
+table name.
+The widget has two states. When the command is not running, a
+Run
+button will appear – clicking it will schedule the command. When the command is running, a
+Cancel
+button, accompanied by
+Running…
+text, will appear (as shown above). This will cancel the command.
+Subsystem Widget
+
+The
+Subsystem
+widget can be used to see the default command and the currently scheduled command on a specific subsystem. If you are using the
+SubsystemBase
+base class, your subsystem will be automatically sent to NetworkTables over LiveWindow. To view this widget, look under the
+LiveWindow
+main table name in the
+NetworkTables
+menu.
+Command Scheduler Widget
+
+The
+Command Scheduler
+widget allows you to see all currently scheduled commands. In addition, any of these commands can be canceled from the GUI.
+The
+CommandScheduler
+instance is automatically sent to NetworkTables over LiveWindow. To view this widget, look under the
+LiveWindow
+main table name in the
+NetworkTables
+menu.

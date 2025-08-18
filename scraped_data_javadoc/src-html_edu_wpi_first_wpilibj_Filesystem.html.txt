@@ -1,0 +1,122 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import java.io.File;
+008
+009
+/**
+010
+* Class for interacting with the Filesystem, particularly, interacting with FRC-related paths on
+011
+* the system, such as the launch and deploy directories.
+012
+*
+013
+* <p>This class is primarily used for obtaining resources in src/main/deploy, and the RoboRIO path
+014
+* /home/lvuser in a simulation-compatible way.
+015
+*/
+016
+public final class Filesystem {
+017
+private Filesystem() {}
+018
+019
+/**
+020
+* Obtains the current working path that the program was launched with. This is analogous to the
+021
+* `pwd` command on unix.
+022
+*
+023
+* @return The current working directory (launch directory)
+024
+*/
+025
+public static File getLaunchDirectory() {
+026
+// workaround for
+027
+// https://www.chiefdelphi.com/t/filesystem-getdeploydirectory-returning-wrong-location-how-to-fix/427292
+028
+String path =
+029
+System.getProperty("user.dir")
+030
+.replace(
+031
+File.separator + "build" + File.separator + "jni" + File.separator + "release", "");
+032
+return new File(path).getAbsoluteFile();
+033
+}
+034
+035
+/**
+036
+* Obtains the operating directory of the program. On the roboRIO, this is /home/lvuser. In
+037
+* simulation, it is where the simulation was launched from (`pwd`).
+038
+*
+039
+* @return The operating directory
+040
+*/
+041
+public static File getOperatingDirectory() {
+042
+if (!RobotBase.isSimulation()) {
+043
+return new File("/home/lvuser");
+044
+} else {
+045
+return getLaunchDirectory();
+046
+}
+047
+}
+048
+049
+/**
+050
+* Obtains the 'deploy' directory of the program, located at src/main/deploy, which is deployed by
+051
+* default. On the roboRIO, this is /home/lvuser/deploy. In simulation, it is where the simulation
+052
+* was launched from, in the subdirectory "src/main/deploy" (`pwd`/src/main/deploy).
+053
+*
+054
+* @return The 'deploy' directory
+055
+*/
+056
+public static File getDeployDirectory() {
+057
+if (!RobotBase.isSimulation()) {
+058
+return new File(getOperatingDirectory(), "deploy");
+059
+} else {
+060
+return new File(
+061
+getOperatingDirectory(), "src" + File.separator + "main" + File.separator + "deploy");
+062
+}
+063
+}
+064
+}

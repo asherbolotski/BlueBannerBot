@@ -1,0 +1,454 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+import java.io.IOException;
+008
+import java.nio.ByteBuffer;
+009
+import java.util.concurrent.atomic.AtomicBoolean;
+010
+011
+/** WPIUtil JNI. */
+012
+public class WPIUtilJNI {
+013
+static boolean libraryLoaded = false;
+014
+015
+/** Sets whether JNI should be loaded in the static block. */
+016
+public static class Helper {
+017
+private static AtomicBoolean extractOnStaticLoad = new AtomicBoolean(true);
+018
+019
+/**
+020
+* Returns true if the JNI should be loaded in the static block.
+021
+*
+022
+* @return True if the JNI should be loaded in the static block.
+023
+*/
+024
+public static boolean getExtractOnStaticLoad() {
+025
+return extractOnStaticLoad.get();
+026
+}
+027
+028
+/**
+029
+* Sets whether the JNI should be loaded in the static block.
+030
+*
+031
+* @param load Whether the JNI should be loaded in the static block.
+032
+*/
+033
+public static void setExtractOnStaticLoad(boolean load) {
+034
+extractOnStaticLoad.set(load);
+035
+}
+036
+037
+/** Utility class. */
+038
+private Helper() {}
+039
+}
+040
+041
+static {
+042
+if (Helper.getExtractOnStaticLoad()) {
+043
+try {
+044
+RuntimeLoader.loadLibrary("wpiutiljni");
+045
+} catch (Exception ex) {
+046
+ex.printStackTrace();
+047
+System.exit(1);
+048
+}
+049
+libraryLoaded = true;
+050
+}
+051
+}
+052
+053
+/**
+054
+* Force load the library.
+055
+*
+056
+* @throws IOException if the library failed to load
+057
+*/
+058
+public static synchronized void forceLoad() throws IOException {
+059
+if (libraryLoaded) {
+060
+return;
+061
+}
+062
+RuntimeLoader.loadLibrary("wpiutiljni");
+063
+libraryLoaded = true;
+064
+}
+065
+066
+/** Checks if the MSVC runtime is valid. Throws a runtime exception if not. */
+067
+public static native void checkMsvcRuntime();
+068
+069
+/**
+070
+* Write the given string to stderr.
+071
+*
+072
+* @param str String to write.
+073
+*/
+074
+public static native void writeStderr(String str);
+075
+076
+/** Enable mock time. */
+077
+public static native void enableMockTime();
+078
+079
+/** Disable mock time. */
+080
+public static native void disableMockTime();
+081
+082
+/**
+083
+* Set mock time.
+084
+*
+085
+* @param time The desired time in microseconds.
+086
+*/
+087
+public static native void setMockTime(long time);
+088
+089
+/**
+090
+* Returns the time.
+091
+*
+092
+* @return The time.
+093
+*/
+094
+public static native long now();
+095
+096
+/**
+097
+* Returns the system time.
+098
+*
+099
+* @return The system time.
+100
+*/
+101
+public static native long getSystemTime();
+102
+103
+/**
+104
+* Creates an event. Events have binary state (signaled or not signaled) and may be either
+105
+* automatically reset or manually reset. Automatic-reset events go to non-signaled state when a
+106
+* WaitForObject is woken up by the event; manual-reset events require ResetEvent() to be called
+107
+* to set the event to non-signaled state; if ResetEvent() is not called, any waiter on that event
+108
+* will immediately wake when called.
+109
+*
+110
+* @param manualReset true for manual reset, false for automatic reset
+111
+* @param initialState true to make the event initially in signaled state
+112
+* @return Event handle
+113
+*/
+114
+public static native int createEvent(boolean manualReset, boolean initialState);
+115
+116
+/**
+117
+* Destroys an event. Destruction wakes up any waiters.
+118
+*
+119
+* @param eventHandle event handle
+120
+*/
+121
+public static native void destroyEvent(int eventHandle);
+122
+123
+/**
+124
+* Sets an event to signaled state.
+125
+*
+126
+* @param eventHandle event handle
+127
+*/
+128
+public static native void setEvent(int eventHandle);
+129
+130
+/**
+131
+* Sets an event to non-signaled state.
+132
+*
+133
+* @param eventHandle event handle
+134
+*/
+135
+public static native void resetEvent(int eventHandle);
+136
+137
+/**
+138
+* Creates a semaphore. Semaphores keep an internal counter. Releasing the semaphore increases the
+139
+* count. A semaphore with a non-zero count is considered signaled. When a waiter wakes up it
+140
+* atomically decrements the count by 1. This is generally useful in a single-supplier,
+141
+* multiple-consumer scenario.
+142
+*
+143
+* @param initialCount initial value for the semaphore's internal counter
+144
+* @param maximumCount maximum value for the semaphore's internal counter
+145
+* @return Semaphore handle
+146
+*/
+147
+public static native int createSemaphore(int initialCount, int maximumCount);
+148
+149
+/**
+150
+* Destroys a semaphore. Destruction wakes up any waiters.
+151
+*
+152
+* @param semHandle semaphore handle
+153
+*/
+154
+public static native void destroySemaphore(int semHandle);
+155
+156
+/**
+157
+* Releases N counts of a semaphore.
+158
+*
+159
+* @param semHandle semaphore handle
+160
+* @param releaseCount amount to add to semaphore's internal counter; must be positive
+161
+* @return True on successful release, false on failure (e.g. release count would exceed maximum
+162
+*     value, or handle invalid)
+163
+*/
+164
+public static native boolean releaseSemaphore(int semHandle, int releaseCount);
+165
+166
+static native long allocateRawFrame();
+167
+168
+static native void freeRawFrame(long frame);
+169
+170
+static native long getRawFrameDataPtr(long frame);
+171
+172
+static native void setRawFrameData(
+173
+long frame, ByteBuffer data, int size, int width, int height, int stride, int pixelFormat);
+174
+175
+static native void setRawFrameInfo(
+176
+long frame, int size, int width, int height, int stride, int pixelFormat);
+177
+178
+static native void setRawFrameTime(long frame, long timestamp, int timeSource);
+179
+180
+/**
+181
+* Waits for a handle to be signaled.
+182
+*
+183
+* @param handle handle to wait on
+184
+* @throws InterruptedException on failure (e.g. object was destroyed)
+185
+*/
+186
+public static native void waitForObject(int handle) throws InterruptedException;
+187
+188
+/**
+189
+* Waits for a handle to be signaled, with timeout.
+190
+*
+191
+* @param handle handle to wait on
+192
+* @param timeout timeout in seconds
+193
+* @return True if timeout reached without handle being signaled
+194
+* @throws InterruptedException on failure (e.g. object was destroyed)
+195
+*/
+196
+public static native boolean waitForObjectTimeout(int handle, double timeout)
+197
+throws InterruptedException;
+198
+199
+/**
+200
+* Waits for one or more handles to be signaled.
+201
+*
+202
+* <p>Invalid handles are treated as signaled; the returned array will have the handle error bit
+203
+* set for any invalid handles.
+204
+*
+205
+* @param handles array of handles to wait on
+206
+* @return array of signaled handles
+207
+* @throws InterruptedException on failure (e.g. no objects were signaled)
+208
+*/
+209
+public static native int[] waitForObjects(int[] handles) throws InterruptedException;
+210
+211
+/**
+212
+* Waits for one or more handles to be signaled, with timeout.
+213
+*
+214
+* <p>Invalid handles are treated as signaled; the returned array will have the handle error bit
+215
+* set for any invalid handles.
+216
+*
+217
+* @param handles array of handles to wait on
+218
+* @param timeout timeout in seconds
+219
+* @return array of signaled handles; empty if timeout reached without any handle being signaled
+220
+* @throws InterruptedException on failure (e.g. no objects were signaled and no timeout)
+221
+*/
+222
+public static native int[] waitForObjectsTimeout(int[] handles, double timeout)
+223
+throws InterruptedException;
+224
+225
+/**
+226
+* Create a native FileLogger. When the specified file is modified, appended data will be appended
+227
+* to the specified data log.
+228
+*
+229
+* @param file path to the file
+230
+* @param log data log implementation handle
+231
+* @param key log key to append data to
+232
+* @return The FileLogger handle.
+233
+*/
+234
+public static native long createFileLogger(String file, long log, String key);
+235
+236
+/**
+237
+* Free a native FileLogger. This causes the FileLogger to stop appending data to the log.
+238
+*
+239
+* @param fileTail The FileLogger handle.
+240
+*/
+241
+public static native void freeFileLogger(long fileTail);
+242
+243
+/** Utility class. */
+244
+protected WPIUtilJNI() {}
+245
+}

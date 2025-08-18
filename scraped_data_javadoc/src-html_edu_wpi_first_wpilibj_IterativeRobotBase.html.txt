@@ -1,0 +1,824 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.DriverStationJNI;
+008
+import edu.wpi.first.hal.FRCNetComm.tInstances;
+009
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+010
+import edu.wpi.first.hal.HAL;
+011
+import edu.wpi.first.networktables.NetworkTableInstance;
+012
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+013
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+014
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+015
+import java.util.ConcurrentModificationException;
+016
+017
+/**
+018
+* IterativeRobotBase implements a specific type of robot program framework, extending the RobotBase
+019
+* class.
+020
+*
+021
+* <p>The IterativeRobotBase class does not implement startCompetition(), so it should not be used
+022
+* by teams directly.
+023
+*
+024
+* <p>This class provides the following functions which are called by the main loop,
+025
+* startCompetition(), at the appropriate times:
+026
+*
+027
+* <p>robotInit() -- provide for initialization at robot power-on
+028
+*
+029
+* <p>driverStationConnected() -- provide for initialization the first time the DS is connected
+030
+*
+031
+* <p>init() functions -- each of the following functions is called once when the appropriate mode
+032
+* is entered:
+033
+*
+034
+* <ul>
+035
+*   <li>disabledInit() -- called each and every time disabled is entered from another mode
+036
+*   <li>autonomousInit() -- called each and every time autonomous is entered from another mode
+037
+*   <li>teleopInit() -- called each and every time teleop is entered from another mode
+038
+*   <li>testInit() -- called each and every time test is entered from another mode
+039
+* </ul>
+040
+*
+041
+* <p>periodic() functions -- each of these functions is called on an interval:
+042
+*
+043
+* <ul>
+044
+*   <li>robotPeriodic()
+045
+*   <li>disabledPeriodic()
+046
+*   <li>autonomousPeriodic()
+047
+*   <li>teleopPeriodic()
+048
+*   <li>testPeriodic()
+049
+* </ul>
+050
+*
+051
+* <p>exit() functions -- each of the following functions is called once when the appropriate mode
+052
+* is exited:
+053
+*
+054
+* <ul>
+055
+*   <li>disabledExit() -- called each and every time disabled is exited
+056
+*   <li>autonomousExit() -- called each and every time autonomous is exited
+057
+*   <li>teleopExit() -- called each and every time teleop is exited
+058
+*   <li>testExit() -- called each and every time test is exited
+059
+* </ul>
+060
+*/
+061
+public abstract class IterativeRobotBase extends RobotBase {
+062
+private enum Mode {
+063
+kNone,
+064
+kDisabled,
+065
+kAutonomous,
+066
+kTeleop,
+067
+kTest
+068
+}
+069
+070
+private final DSControlWord m_word = new DSControlWord();
+071
+private Mode m_lastMode = Mode.kNone;
+072
+private final double m_period;
+073
+private final Watchdog m_watchdog;
+074
+private boolean m_ntFlushEnabled = true;
+075
+private boolean m_lwEnabledInTest;
+076
+private boolean m_calledDsConnected;
+077
+078
+/**
+079
+* Constructor for IterativeRobotBase.
+080
+*
+081
+* @param period Period in seconds.
+082
+*/
+083
+protected IterativeRobotBase(double period) {
+084
+m_period = period;
+085
+m_watchdog = new Watchdog(period, this::printLoopOverrunMessage);
+086
+}
+087
+088
+/** Provide an alternate "main loop" via startCompetition(). */
+089
+@Override
+090
+public abstract void startCompetition();
+091
+092
+/* ----------- Overridable initialization code ----------------- */
+093
+094
+/**
+095
+* Robot-wide initialization code should go here.
+096
+*
+097
+* <p>Users should override this method for default Robot-wide initialization which will be called
+098
+* when the robot is first powered on. It will be called exactly one time.
+099
+*
+100
+* <p>Note: This method is functionally identical to the class constructor so that should be used
+101
+* instead.
+102
+*/
+103
+public void robotInit() {}
+104
+105
+/**
+106
+* Code that needs to know the DS state should go here.
+107
+*
+108
+* <p>Users should override this method for initialization that needs to occur after the DS is
+109
+* connected, such as needing the alliance information.
+110
+*/
+111
+public void driverStationConnected() {}
+112
+113
+/**
+114
+* Robot-wide simulation initialization code should go here.
+115
+*
+116
+* <p>Users should override this method for default Robot-wide simulation related initialization
+117
+* which will be called when the robot is first started. It will be called exactly one time after
+118
+* RobotInit is called only when the robot is in simulation.
+119
+*/
+120
+public void simulationInit() {}
+121
+122
+/**
+123
+* Initialization code for disabled mode should go here.
+124
+*
+125
+* <p>Users should override this method for initialization code which will be called each time the
+126
+* robot enters disabled mode.
+127
+*/
+128
+public void disabledInit() {}
+129
+130
+/**
+131
+* Initialization code for autonomous mode should go here.
+132
+*
+133
+* <p>Users should override this method for initialization code which will be called each time the
+134
+* robot enters autonomous mode.
+135
+*/
+136
+public void autonomousInit() {}
+137
+138
+/**
+139
+* Initialization code for teleop mode should go here.
+140
+*
+141
+* <p>Users should override this method for initialization code which will be called each time the
+142
+* robot enters teleop mode.
+143
+*/
+144
+public void teleopInit() {}
+145
+146
+/**
+147
+* Initialization code for test mode should go here.
+148
+*
+149
+* <p>Users should override this method for initialization code which will be called each time the
+150
+* robot enters test mode.
+151
+*/
+152
+public void testInit() {}
+153
+154
+/* ----------- Overridable periodic code ----------------- */
+155
+156
+private boolean m_rpFirstRun = true;
+157
+158
+/** Periodic code for all robot modes should go here. */
+159
+public void robotPeriodic() {
+160
+if (m_rpFirstRun) {
+161
+System.out.println("Default robotPeriodic() method... Override me!");
+162
+m_rpFirstRun = false;
+163
+}
+164
+}
+165
+166
+private boolean m_spFirstRun = true;
+167
+168
+/**
+169
+* Periodic simulation code should go here.
+170
+*
+171
+* <p>This function is called in a simulated robot after user code executes.
+172
+*/
+173
+public void simulationPeriodic() {
+174
+if (m_spFirstRun) {
+175
+System.out.println("Default simulationPeriodic() method... Override me!");
+176
+m_spFirstRun = false;
+177
+}
+178
+}
+179
+180
+private boolean m_dpFirstRun = true;
+181
+182
+/** Periodic code for disabled mode should go here. */
+183
+public void disabledPeriodic() {
+184
+if (m_dpFirstRun) {
+185
+System.out.println("Default disabledPeriodic() method... Override me!");
+186
+m_dpFirstRun = false;
+187
+}
+188
+}
+189
+190
+private boolean m_apFirstRun = true;
+191
+192
+/** Periodic code for autonomous mode should go here. */
+193
+public void autonomousPeriodic() {
+194
+if (m_apFirstRun) {
+195
+System.out.println("Default autonomousPeriodic() method... Override me!");
+196
+m_apFirstRun = false;
+197
+}
+198
+}
+199
+200
+private boolean m_tpFirstRun = true;
+201
+202
+/** Periodic code for teleop mode should go here. */
+203
+public void teleopPeriodic() {
+204
+if (m_tpFirstRun) {
+205
+System.out.println("Default teleopPeriodic() method... Override me!");
+206
+m_tpFirstRun = false;
+207
+}
+208
+}
+209
+210
+private boolean m_tmpFirstRun = true;
+211
+212
+/** Periodic code for test mode should go here. */
+213
+public void testPeriodic() {
+214
+if (m_tmpFirstRun) {
+215
+System.out.println("Default testPeriodic() method... Override me!");
+216
+m_tmpFirstRun = false;
+217
+}
+218
+}
+219
+220
+/**
+221
+* Exit code for disabled mode should go here.
+222
+*
+223
+* <p>Users should override this method for code which will be called each time the robot exits
+224
+* disabled mode.
+225
+*/
+226
+public void disabledExit() {}
+227
+228
+/**
+229
+* Exit code for autonomous mode should go here.
+230
+*
+231
+* <p>Users should override this method for code which will be called each time the robot exits
+232
+* autonomous mode.
+233
+*/
+234
+public void autonomousExit() {}
+235
+236
+/**
+237
+* Exit code for teleop mode should go here.
+238
+*
+239
+* <p>Users should override this method for code which will be called each time the robot exits
+240
+* teleop mode.
+241
+*/
+242
+public void teleopExit() {}
+243
+244
+/**
+245
+* Exit code for test mode should go here.
+246
+*
+247
+* <p>Users should override this method for code which will be called each time the robot exits
+248
+* test mode.
+249
+*/
+250
+public void testExit() {}
+251
+252
+/**
+253
+* Enables or disables flushing NetworkTables every loop iteration. By default, this is enabled.
+254
+*
+255
+* @param enabled True to enable, false to disable
+256
+* @deprecated Deprecated without replacement.
+257
+*/
+258
+@Deprecated(forRemoval = true, since = "2025")
+259
+public void setNetworkTablesFlushEnabled(boolean enabled) {
+260
+m_ntFlushEnabled = enabled;
+261
+}
+262
+263
+private boolean m_reportedLw;
+264
+265
+/**
+266
+* Sets whether LiveWindow operation is enabled during test mode. Calling
+267
+*
+268
+* @param testLW True to enable, false to disable. Defaults to false.
+269
+* @throws ConcurrentModificationException if this is called during test mode.
+270
+*/
+271
+public void enableLiveWindowInTest(boolean testLW) {
+272
+if (isTestEnabled()) {
+273
+throw new ConcurrentModificationException("Can't configure test mode while in test mode!");
+274
+}
+275
+if (!m_reportedLw && testLW) {
+276
+HAL.report(tResourceType.kResourceType_SmartDashboard, tInstances.kSmartDashboard_LiveWindow);
+277
+m_reportedLw = true;
+278
+}
+279
+m_lwEnabledInTest = testLW;
+280
+}
+281
+282
+/**
+283
+* Whether LiveWindow operation is enabled during test mode.
+284
+*
+285
+* @return whether LiveWindow should be enabled in test mode.
+286
+*/
+287
+public boolean isLiveWindowEnabledInTest() {
+288
+return m_lwEnabledInTest;
+289
+}
+290
+291
+/**
+292
+* Gets time period between calls to Periodic() functions.
+293
+*
+294
+* @return The time period between calls to Periodic() functions.
+295
+*/
+296
+public double getPeriod() {
+297
+return m_period;
+298
+}
+299
+300
+/** Loop function. */
+301
+protected void loopFunc() {
+302
+DriverStation.refreshData();
+303
+m_watchdog.reset();
+304
+305
+m_word.refresh();
+306
+307
+// Get current mode
+308
+Mode mode = Mode.kNone;
+309
+if (m_word.isDisabled()) {
+310
+mode = Mode.kDisabled;
+311
+} else if (m_word.isAutonomous()) {
+312
+mode = Mode.kAutonomous;
+313
+} else if (m_word.isTeleop()) {
+314
+mode = Mode.kTeleop;
+315
+} else if (m_word.isTest()) {
+316
+mode = Mode.kTest;
+317
+}
+318
+319
+if (!m_calledDsConnected && m_word.isDSAttached()) {
+320
+m_calledDsConnected = true;
+321
+driverStationConnected();
+322
+}
+323
+324
+// If mode changed, call mode exit and entry functions
+325
+if (m_lastMode != mode) {
+326
+// Call last mode's exit function
+327
+switch (m_lastMode) {
+328
+case kDisabled -> disabledExit();
+329
+case kAutonomous -> autonomousExit();
+330
+case kTeleop -> teleopExit();
+331
+case kTest -> {
+332
+if (m_lwEnabledInTest) {
+333
+LiveWindow.setEnabled(false);
+334
+Shuffleboard.disableActuatorWidgets();
+335
+}
+336
+testExit();
+337
+}
+338
+default -> {
+339
+// NOP
+340
+}
+341
+}
+342
+343
+// Call current mode's entry function
+344
+switch (mode) {
+345
+case kDisabled -> {
+346
+disabledInit();
+347
+m_watchdog.addEpoch("disabledInit()");
+348
+}
+349
+case kAutonomous -> {
+350
+autonomousInit();
+351
+m_watchdog.addEpoch("autonomousInit()");
+352
+}
+353
+case kTeleop -> {
+354
+teleopInit();
+355
+m_watchdog.addEpoch("teleopInit()");
+356
+}
+357
+case kTest -> {
+358
+if (m_lwEnabledInTest) {
+359
+LiveWindow.setEnabled(true);
+360
+Shuffleboard.enableActuatorWidgets();
+361
+}
+362
+testInit();
+363
+m_watchdog.addEpoch("testInit()");
+364
+}
+365
+default -> {
+366
+// NOP
+367
+}
+368
+}
+369
+370
+m_lastMode = mode;
+371
+}
+372
+373
+// Call the appropriate function depending upon the current robot mode
+374
+switch (mode) {
+375
+case kDisabled -> {
+376
+DriverStationJNI.observeUserProgramDisabled();
+377
+disabledPeriodic();
+378
+m_watchdog.addEpoch("disabledPeriodic()");
+379
+}
+380
+case kAutonomous -> {
+381
+DriverStationJNI.observeUserProgramAutonomous();
+382
+autonomousPeriodic();
+383
+m_watchdog.addEpoch("autonomousPeriodic()");
+384
+}
+385
+case kTeleop -> {
+386
+DriverStationJNI.observeUserProgramTeleop();
+387
+teleopPeriodic();
+388
+m_watchdog.addEpoch("teleopPeriodic()");
+389
+}
+390
+case kTest -> {
+391
+DriverStationJNI.observeUserProgramTest();
+392
+testPeriodic();
+393
+m_watchdog.addEpoch("testPeriodic()");
+394
+}
+395
+default -> {
+396
+// NOP
+397
+}
+398
+}
+399
+400
+robotPeriodic();
+401
+m_watchdog.addEpoch("robotPeriodic()");
+402
+403
+SmartDashboard.updateValues();
+404
+m_watchdog.addEpoch("SmartDashboard.updateValues()");
+405
+LiveWindow.updateValues();
+406
+m_watchdog.addEpoch("LiveWindow.updateValues()");
+407
+Shuffleboard.update();
+408
+m_watchdog.addEpoch("Shuffleboard.update()");
+409
+410
+if (isSimulation()) {
+411
+HAL.simPeriodicBefore();
+412
+simulationPeriodic();
+413
+HAL.simPeriodicAfter();
+414
+m_watchdog.addEpoch("simulationPeriodic()");
+415
+}
+416
+417
+m_watchdog.disable();
+418
+419
+// Flush NetworkTables
+420
+if (m_ntFlushEnabled) {
+421
+NetworkTableInstance.getDefault().flushLocal();
+422
+}
+423
+424
+// Warn on loop time overruns
+425
+if (m_watchdog.isExpired()) {
+426
+m_watchdog.printEpochs();
+427
+}
+428
+}
+429
+430
+/** Prints list of epochs added so far and their times. */
+431
+public void printWatchdogEpochs() {
+432
+m_watchdog.printEpochs();
+433
+}
+434
+435
+private void printLoopOverrunMessage() {
+436
+DriverStation.reportWarning("Loop time of " + m_period + "s overrun\n", false);
+437
+}
+438
+}

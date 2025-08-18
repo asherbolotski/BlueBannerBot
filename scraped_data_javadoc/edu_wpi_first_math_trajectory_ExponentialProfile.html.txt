@@ -1,0 +1,199 @@
+Package
+edu.wpi.first.math.trajectory
+Class ExponentialProfile
+java.lang.Object
+edu.wpi.first.math.trajectory.ExponentialProfile
+public class
+ExponentialProfile
+extends
+Object
+A exponential curve-shaped velocity profile.
+While this class can be used for a profiled movement from start to finish, the intended usage
+ is to filter a reference's dynamics based on state-space model dynamics. To compute the reference
+ obeying this constraint, do the following.
+Initialization:
+ExponentialProfile.Constraints constraints =
+   ExponentialProfile.Constraints.fromCharacteristics(kMaxV, kV, kA);
+ ExponentialProfile.State previousProfiledReference =
+   new ExponentialProfile.State(initialReference, 0.0);
+ ExponentialProfile profile = new ExponentialProfile(constraints);
+Run on update:
+previousProfiledReference =
+ profile.calculate(timeSincePreviousUpdate, previousProfiledReference, unprofiledReference);
+where `unprofiledReference` is free to change between calls. Note that when the unprofiled
+ reference is within the constraints, `calculate()` returns the unprofiled reference unchanged.
+Otherwise, a timer can be started to provide monotonic values for `calculate()` and to
+ determine when the profile has completed via `isFinished()`.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static final class
+ExponentialProfile.Constraints
+Profile constraints.
+static class
+ExponentialProfile.ProfileTiming
+Profile timing.
+static class
+ExponentialProfile.State
+Profile state.
+Constructor Summary
+Constructors
+Constructor
+Description
+ExponentialProfile
+(
+ExponentialProfile.Constraints
+constraints)
+Constructs an ExponentialProfile.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+ExponentialProfile.State
+calculate
+(double t,
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the position and velocity for the profile at a time t where the current state is at
+ time t = 0.
+ExponentialProfile.State
+calculateInflectionPoint
+(
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the point after which the fastest way to reach the goal state is to apply input in
+ the opposite direction.
+ExponentialProfile.ProfileTiming
+calculateProfileTiming
+(
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the time it will take for this profile to reach the inflection point, and the time
+ it will take for this profile to reach the goal state.
+double
+timeLeftUntil
+(
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the time it will take for this profile to reach the goal state.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ExponentialProfile
+public
+ExponentialProfile
+(
+ExponentialProfile.Constraints
+constraints)
+Constructs an ExponentialProfile.
+Parameters:
+constraints
+- The constraints on the profile, like maximum input.
+Method Details
+calculate
+public
+ExponentialProfile.State
+calculate
+(double t,
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the position and velocity for the profile at a time t where the current state is at
+ time t = 0.
+Parameters:
+t
+- How long to advance from the current state toward the desired state.
+current
+- The current state.
+goal
+- The desired state when the profile is complete.
+Returns:
+The position and velocity of the profile at time t.
+calculateInflectionPoint
+public
+ExponentialProfile.State
+calculateInflectionPoint
+(
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the point after which the fastest way to reach the goal state is to apply input in
+ the opposite direction.
+Parameters:
+current
+- The current state.
+goal
+- The desired state when the profile is complete.
+Returns:
+The position and velocity of the profile at the inflection point.
+timeLeftUntil
+public
+double
+timeLeftUntil
+(
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the time it will take for this profile to reach the goal state.
+Parameters:
+current
+- The current state.
+goal
+- The desired state when the profile is complete.
+Returns:
+The total duration of this profile.
+calculateProfileTiming
+public
+ExponentialProfile.ProfileTiming
+calculateProfileTiming
+(
+ExponentialProfile.State
+current,
+ExponentialProfile.State
+goal)
+Calculates the time it will take for this profile to reach the inflection point, and the time
+ it will take for this profile to reach the goal state.
+Parameters:
+current
+- The current state.
+goal
+- The desired state when the profile is complete.
+Returns:
+The timing information for this profile.

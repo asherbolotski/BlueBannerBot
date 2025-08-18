@@ -1,0 +1,159 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.datalog;
+006
+007
+import java.io.IOException;
+008
+import java.io.OutputStream;
+009
+010
+/** A data log writer that flushes the data log to a file when flush() is called. */
+011
+public class DataLogWriter extends DataLog {
+012
+/**
+013
+* Construct a new Data Log.
+014
+*
+015
+* @param filename filename to use
+016
+* @param extraHeader extra header data
+017
+* @throws IOException if file cannot be opened
+018
+*/
+019
+public DataLogWriter(String filename, String extraHeader) throws IOException {
+020
+super(DataLogJNI.fgCreate(filename, extraHeader));
+021
+m_os = null;
+022
+m_buf = null;
+023
+}
+024
+025
+/**
+026
+* Construct a new Data Log.
+027
+*
+028
+* @param filename filename to use
+029
+* @throws IOException if file cannot be opened
+030
+*/
+031
+public DataLogWriter(String filename) throws IOException {
+032
+this(filename, "");
+033
+}
+034
+035
+/**
+036
+* Construct a new Data Log with an output stream. Prefer the filename version if possible; this
+037
+* is much slower!
+038
+*
+039
+* @param os output stream
+040
+* @param extraHeader extra header data
+041
+*/
+042
+public DataLogWriter(OutputStream os, String extraHeader) {
+043
+super(DataLogJNI.fgCreateMemory(extraHeader));
+044
+m_os = os;
+045
+m_buf = new byte[kBufferSize];
+046
+}
+047
+048
+/**
+049
+* Construct a new Data Log with an output stream.
+050
+*
+051
+* @param os output stream
+052
+*/
+053
+public DataLogWriter(OutputStream os) {
+054
+this(os, "");
+055
+}
+056
+057
+/** Explicitly flushes the log data to disk. */
+058
+@Override
+059
+public void flush() {
+060
+DataLogJNI.flush(m_impl);
+061
+if (m_os == null) {
+062
+return;
+063
+}
+064
+try {
+065
+int pos = 0;
+066
+for (; ; ) {
+067
+int qty = DataLogJNI.copyWriteBuffer(m_impl, m_buf, pos);
+068
+if (qty == 0) {
+069
+break;
+070
+}
+071
+pos += qty;
+072
+m_os.write(m_buf, 0, qty);
+073
+}
+074
+m_os.flush();
+075
+} catch (IOException e) {
+076
+// ignore
+077
+}
+078
+}
+079
+080
+private static final int kBufferSize = 16 * 1024;
+081
+082
+private final OutputStream m_os;
+083
+private final byte[] m_buf;
+084
+}

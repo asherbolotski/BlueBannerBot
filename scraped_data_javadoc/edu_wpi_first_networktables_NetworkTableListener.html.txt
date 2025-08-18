@@ -1,0 +1,420 @@
+Package
+edu.wpi.first.networktables
+Class NetworkTableListener
+java.lang.Object
+edu.wpi.first.networktables.NetworkTableListener
+All Implemented Interfaces:
+AutoCloseable
+public final class
+NetworkTableListener
+extends
+Object
+implements
+AutoCloseable
+Event listener. This calls back to a callback function when an event matching the specified mask
+ occurs. The callback function is called asynchronously on a separate thread, so it's important to
+ use synchronization or atomics when accessing any shared state from the callback function.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+static
+NetworkTableListener
+createConnectionListener
+(
+NetworkTableInstance
+inst,
+ boolean immediateNotify,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a connection listener.
+static
+NetworkTableListener
+createListener
+(
+MultiSubscriber
+subscriber,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for topic changes on a subscriber.
+static
+NetworkTableListener
+createListener
+(
+NetworkTableEntry
+entry,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for topic changes on an entry.
+static
+NetworkTableListener
+createListener
+(
+NetworkTableInstance
+inst,
+String
+[] prefixes,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for changes to topics with names that start with any of the given prefixes.
+static
+NetworkTableListener
+createListener
+(
+Subscriber
+subscriber,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for topic changes on a subscriber.
+static
+NetworkTableListener
+createListener
+(
+Topic
+topic,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for changes on a particular topic.
+static
+NetworkTableListener
+createLogger
+(
+NetworkTableInstance
+inst,
+ int minLevel,
+ int maxLevel,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for log messages.
+static
+NetworkTableListener
+createTimeSyncListener
+(
+NetworkTableInstance
+inst,
+ boolean immediateNotify,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a time synchronization listener.
+int
+getHandle
+()
+Gets the native handle.
+boolean
+isValid
+()
+Determines if the native handle is valid.
+boolean
+waitForQueue
+(double timeout)
+Wait for the topic listener queue to be empty.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+createListener
+public static
+NetworkTableListener
+createListener
+(
+NetworkTableInstance
+inst,
+String
+[] prefixes,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for changes to topics with names that start with any of the given prefixes.
+ This creates a corresponding internal subscriber with the lifetime of the listener.
+Parameters:
+inst
+- Instance
+prefixes
+- Topic name string prefixes
+eventKinds
+- set of event kinds to listen to
+listener
+- Listener function
+Returns:
+Listener
+createListener
+public static
+NetworkTableListener
+createListener
+(
+Topic
+topic,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for changes on a particular topic. This creates a corresponding internal
+ subscriber with the lifetime of the listener.
+Parameters:
+topic
+- Topic
+eventKinds
+- set of event kinds to listen to
+listener
+- Listener function
+Returns:
+Listener
+createListener
+public static
+NetworkTableListener
+createListener
+(
+Subscriber
+subscriber,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for topic changes on a subscriber. This does NOT keep the subscriber active.
+Parameters:
+subscriber
+- Subscriber
+eventKinds
+- set of event kinds to listen to
+listener
+- Listener function
+Returns:
+Listener
+createListener
+public static
+NetworkTableListener
+createListener
+(
+MultiSubscriber
+subscriber,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for topic changes on a subscriber. This does NOT keep the subscriber active.
+Parameters:
+subscriber
+- Subscriber
+eventKinds
+- set of event kinds to listen to
+listener
+- Listener function
+Returns:
+Listener
+createListener
+public static
+NetworkTableListener
+createListener
+(
+NetworkTableEntry
+entry,
+EnumSet
+<
+NetworkTableEvent.Kind
+> eventKinds,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for topic changes on an entry.
+Parameters:
+entry
+- Entry
+eventKinds
+- set of event kinds to listen to
+listener
+- Listener function
+Returns:
+Listener
+createConnectionListener
+public static
+NetworkTableListener
+createConnectionListener
+(
+NetworkTableInstance
+inst,
+ boolean immediateNotify,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a connection listener.
+Parameters:
+inst
+- instance
+immediateNotify
+- notify listener of all existing connections
+listener
+- listener function
+Returns:
+Listener
+createTimeSyncListener
+public static
+NetworkTableListener
+createTimeSyncListener
+(
+NetworkTableInstance
+inst,
+ boolean immediateNotify,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a time synchronization listener.
+Parameters:
+inst
+- instance
+immediateNotify
+- notify listener of current time synchronization value
+listener
+- listener function
+Returns:
+Listener
+createLogger
+public static
+NetworkTableListener
+createLogger
+(
+NetworkTableInstance
+inst,
+ int minLevel,
+ int maxLevel,
+Consumer
+<
+NetworkTableEvent
+> listener)
+Create a listener for log messages. By default, log messages are sent to stderr; this function
+ sends log messages with the specified levels to the provided callback function instead. The
+ callback function will only be called for log messages with level greater than or equal to
+ minLevel and less than or equal to maxLevel; messages outside this range will be silently
+ ignored.
+Parameters:
+inst
+- instance
+minLevel
+- minimum log level
+maxLevel
+- maximum log level
+listener
+- listener function
+Returns:
+Listener
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+isValid
+public
+boolean
+isValid
+()
+Determines if the native handle is valid.
+Returns:
+True if the native handle is valid, false otherwise.
+getHandle
+public
+int
+getHandle
+()
+Gets the native handle.
+Returns:
+Native handle
+waitForQueue
+public
+boolean
+waitForQueue
+(double timeout)
+Wait for the topic listener queue to be empty. This is primarily useful for deterministic
+ testing. This blocks until either the topic listener queue is empty (e.g. there are no more
+ events that need to be passed along to callbacks or poll queues) or the timeout expires.
+Parameters:
+timeout
+- timeout, in seconds. Set to 0 for non-blocking behavior, or a negative value to
+     block indefinitely
+Returns:
+False if timed out, otherwise true.

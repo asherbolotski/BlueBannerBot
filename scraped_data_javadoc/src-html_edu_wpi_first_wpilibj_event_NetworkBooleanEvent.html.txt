@@ -1,0 +1,134 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.event;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.networktables.BooleanSubscriber;
+010
+import edu.wpi.first.networktables.BooleanTopic;
+011
+import edu.wpi.first.networktables.NetworkTable;
+012
+import edu.wpi.first.networktables.NetworkTableInstance;
+013
+014
+/** This class provides an easy way to link NetworkTables boolean topics to callback actions. */
+015
+public class NetworkBooleanEvent extends BooleanEvent {
+016
+/**
+017
+* Creates a new event with the given boolean topic determining whether it is active.
+018
+*
+019
+* @param loop the loop that polls this event
+020
+* @param topic The boolean topic that contains the value
+021
+*/
+022
+public NetworkBooleanEvent(EventLoop loop, BooleanTopic topic) {
+023
+this(loop, topic.subscribe(false));
+024
+}
+025
+026
+/**
+027
+* Creates a new event with the given boolean subscriber determining whether it is active.
+028
+*
+029
+* @param loop the loop that polls this event
+030
+* @param sub The boolean subscriber that provides the value
+031
+*/
+032
+public NetworkBooleanEvent(EventLoop loop, BooleanSubscriber sub) {
+033
+super(loop, () -> sub.getTopic().getInstance().isConnected() && sub.get());
+034
+requireNonNullParam(sub, "sub", "NetworkBooleanEvent");
+035
+}
+036
+037
+/**
+038
+* Creates a new event with the given boolean topic determining whether it is active.
+039
+*
+040
+* @param loop the loop that polls this event
+041
+* @param table The NetworkTable that contains the topic
+042
+* @param topicName The topic name within the table that contains the value
+043
+*/
+044
+public NetworkBooleanEvent(EventLoop loop, NetworkTable table, String topicName) {
+045
+this(loop, table.getBooleanTopic(topicName));
+046
+}
+047
+048
+/**
+049
+* Creates a new event with the given boolean topic determining whether it is active.
+050
+*
+051
+* @param loop the loop that polls this event
+052
+* @param tableName The NetworkTable name that contains the topic
+053
+* @param topicName The topic name within the table that contains the value
+054
+*/
+055
+public NetworkBooleanEvent(EventLoop loop, String tableName, String topicName) {
+056
+this(loop, NetworkTableInstance.getDefault(), tableName, topicName);
+057
+}
+058
+059
+/**
+060
+* Creates a new event with the given boolean topic determining whether it is active.
+061
+*
+062
+* @param loop the loop that polls this event
+063
+* @param inst The NetworkTable instance to use
+064
+* @param tableName The NetworkTable that contains the topic
+065
+* @param topicName The topic name within the table that contains the value
+066
+*/
+067
+public NetworkBooleanEvent(
+068
+EventLoop loop, NetworkTableInstance inst, String tableName, String topicName) {
+069
+this(loop, inst.getTable(tableName), topicName);
+070
+}
+071
+}

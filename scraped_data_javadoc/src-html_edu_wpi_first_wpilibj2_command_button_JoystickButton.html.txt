@@ -1,0 +1,50 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command.button;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.wpilibj.GenericHID;
+010
+011
+/**
+012
+* A {@link Trigger} that gets its state from a {@link GenericHID}.
+013
+*
+014
+* <p>This class is provided by the NewCommands VendorDep
+015
+*/
+016
+public class JoystickButton extends Trigger {
+017
+/**
+018
+* Creates a joystick button for triggering commands.
+019
+*
+020
+* @param joystick The GenericHID object that has the button (e.g. Joystick, KinectStick, etc)
+021
+* @param buttonNumber The button number (see {@link GenericHID#getRawButton(int) }
+022
+*/
+023
+public JoystickButton(GenericHID joystick, int buttonNumber) {
+024
+super(() -> joystick.getRawButton(buttonNumber));
+025
+requireNonNullParam(joystick, "joystick", "JoystickButton");
+026
+}
+027
+}

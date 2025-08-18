@@ -1,0 +1,88 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.shuffleboard;
+006
+007
+/**
+008
+* The importance of an event marker in Shuffleboard. The exact meaning of each importance level is
+009
+* up for interpretation on a team-to-team basis, but users should follow the general guidelines of
+010
+* the various importance levels. The examples given are for reference and may be ignored or
+011
+* considered to be more or less important from team to team.
+012
+*/
+013
+public enum EventImportance {
+014
+// Maintainer note: this enum is mirrored in WPILibC and in Shuffleboard
+015
+// Modifying the enum or enum strings requires a corresponding change to the C++ enum
+016
+// and the enum in Shuffleboard
+017
+018
+/** A trivial event such as a change in command state. */
+019
+kTrivial("TRIVIAL"),
+020
+021
+/** A low importance event such as acquisition of a game piece. */
+022
+kLow("LOW"),
+023
+024
+/**
+025
+* A "normal" importance event, such as a transition from autonomous mode to teleoperated control.
+026
+*/
+027
+kNormal("NORMAL"),
+028
+029
+/** A high-importance event such as scoring a game piece. */
+030
+kHigh("HIGH"),
+031
+032
+/** A critically important event such as a brownout, component failure, or software deadlock. */
+033
+kCritical("CRITICAL");
+034
+035
+private final String m_simpleName;
+036
+037
+EventImportance(String simpleName) {
+038
+m_simpleName = simpleName;
+039
+}
+040
+041
+/**
+042
+* Returns name of the given enum.
+043
+*
+044
+* @return Name of the given enum.
+045
+*/
+046
+public String getSimpleName() {
+047
+return m_simpleName;
+048
+}
+049
+}

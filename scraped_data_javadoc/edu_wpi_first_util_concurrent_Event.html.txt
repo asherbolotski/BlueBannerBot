@@ -1,0 +1,132 @@
+Package
+edu.wpi.first.util.concurrent
+Class Event
+java.lang.Object
+edu.wpi.first.util.concurrent.Event
+All Implemented Interfaces:
+AutoCloseable
+public final class
+Event
+extends
+Object
+implements
+AutoCloseable
+An atomic signaling event for synchronization.
+Events have binary state (signaled or not signaled) and may be either automatically reset or
+ manually reset. Automatic-reset events go to non-signaled state when a waitForObject is woken up
+ by the event; manual-reset events require reset() to be called to set the event to non-signaled
+ state; if reset() is not called, any waiter on that event will immediately wake when called.
+Constructor Summary
+Constructors
+Constructor
+Description
+Event
+()
+Constructor.
+Event
+(boolean manualReset)
+Constructor.
+Event
+(boolean manualReset,
+ boolean initialState)
+Constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+int
+getHandle
+()
+Gets the event handle (e.g.
+void
+reset
+()
+Sets the event to non-signaled state.
+void
+set
+()
+Sets the event to signaled state.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+Event
+public
+Event
+(boolean manualReset,
+ boolean initialState)
+Constructor.
+Parameters:
+manualReset
+- true for manual reset, false for automatic reset
+initialState
+- true to make the event initially in signaled state
+Event
+public
+Event
+(boolean manualReset)
+Constructor. Initial state is false.
+Parameters:
+manualReset
+- true for manual reset, false for automatic reset
+Event
+public
+Event
+()
+Constructor. Automatic reset, initial state is false.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getHandle
+public
+int
+getHandle
+()
+Gets the event handle (e.g. for waitForObject).
+Returns:
+handle
+set
+public
+void
+set
+()
+Sets the event to signaled state.
+reset
+public
+void
+reset
+()
+Sets the event to non-signaled state.

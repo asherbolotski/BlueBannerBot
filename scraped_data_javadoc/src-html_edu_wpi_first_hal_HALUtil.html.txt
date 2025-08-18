@@ -1,0 +1,289 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Hardware Abstraction Layer (HAL) Utilities JNI Functions.
+009
+*
+010
+* @see "hal/HALBase.h"
+011
+*/
+012
+public final class HALUtil extends JNIWrapper {
+013
+/** A pointer parameter to a method is NULL. */
+014
+public static final int NULL_PARAMETER = -1005;
+015
+016
+/** Analog module sample rate is too high. */
+017
+public static final int SAMPLE_RATE_TOO_HIGH = 1001;
+018
+019
+/** Voltage to convert to raw value is out of range [0; 5]. */
+020
+public static final int VOLTAGE_OUT_OF_RANGE = 1002;
+021
+022
+/** Digital module loop timing is not the expected value. */
+023
+public static final int LOOP_TIMING_ERROR = 1004;
+024
+025
+/** The operation cannot be completed. */
+026
+public static final int INCOMPATIBLE_STATE = 1015;
+027
+028
+/** Attempted to read AnalogTrigger pulse output. */
+029
+public static final int ANALOG_TRIGGER_PULSE_OUTPUT_ERROR = -1011;
+030
+031
+/** No available resources to allocate. */
+032
+public static final int NO_AVAILABLE_RESOURCES = -104;
+033
+034
+/** A parameter is out of range. */
+035
+public static final int PARAMETER_OUT_OF_RANGE = -1028;
+036
+037
+/** roboRIO 1.0. */
+038
+public static final int RUNTIME_ROBORIO = 0;
+039
+040
+/** roboRIO 2.0. */
+041
+public static final int RUNTIME_ROBORIO2 = 1;
+042
+043
+/** Simulation runtime. */
+044
+public static final int RUNTIME_SIMULATION = 2;
+045
+046
+/**
+047
+* Returns the FPGA Version number.
+048
+*
+049
+* <p>For now, expect this to be competition year.
+050
+*
+051
+* @return FPGA Version number.
+052
+* @see "HAL_GetFPGAVersion"
+053
+*/
+054
+public static native short getFPGAVersion();
+055
+056
+/**
+057
+* Returns the FPGA Revision number.
+058
+*
+059
+* <p>The format of the revision is 3 numbers. The 12 most significant bits are the Major
+060
+* Revision. the next 8 bits are the Minor Revision. The 12 least significant bits are the Build
+061
+* Number.
+062
+*
+063
+* @return FPGA Revision number.
+064
+* @see "HAL_GetFPGARevision"
+065
+*/
+066
+public static native int getFPGARevision();
+067
+068
+/**
+069
+* Returns the roboRIO serial number.
+070
+*
+071
+* @return The roboRIO serial number.
+072
+* @see "HAL_GetSerialNumber"
+073
+*/
+074
+public static native String getSerialNumber();
+075
+076
+/**
+077
+* Returns the comments from the roboRIO web interface.
+078
+*
+079
+* @return The comments string.
+080
+* @see "HAL_GetComments"
+081
+*/
+082
+public static native String getComments();
+083
+084
+/**
+085
+* Returns the team number configured for the robot controller.
+086
+*
+087
+* @return team number, or 0 if not found.
+088
+* @see "HAL_GetTeamNumber"
+089
+*/
+090
+public static native int getTeamNumber();
+091
+092
+/**
+093
+* Reads the microsecond-resolution timer on the FPGA.
+094
+*
+095
+* @return The current time in microseconds according to the FPGA (since FPGA reset).
+096
+*/
+097
+public static native long getFPGATime();
+098
+099
+/**
+100
+* Returns the runtime type of the HAL.
+101
+*
+102
+* @return HAL Runtime Type
+103
+* @see RUNTIME_ROBORIO
+104
+* @see RUNTIME_ROBORIO2
+105
+* @see RUNTIME_SIMULATION
+106
+* @see "HAL_GetRuntimeType"
+107
+*/
+108
+public static native int getHALRuntimeType();
+109
+110
+/**
+111
+* Gets the state of the "USER" button on the roboRIO.
+112
+*
+113
+* <p>Warning: the User Button is used to stop user programs from automatically loading if it is
+114
+* held for more then 5 seconds. Because of this, it's not recommended to be used by teams for any
+115
+* other purpose.
+116
+*
+117
+* @return true if the button is currently pressed down
+118
+* @see "HAL_GetFPGAButton"
+119
+*/
+120
+public static native boolean getFPGAButton();
+121
+122
+/**
+123
+* Gets the error message for a specific status code.
+124
+*
+125
+* @param code the status code
+126
+* @return the error message for the code. This does not need to be freed.
+127
+* @see "HAL_GetErrorMessage"
+128
+*/
+129
+public static native String getHALErrorMessage(int code);
+130
+131
+/**
+132
+* Get the last HAL error code.
+133
+*
+134
+* @return error code
+135
+*/
+136
+public static native int getHALErrno();
+137
+138
+/**
+139
+* Returns the textual description of the system error code.
+140
+*
+141
+* @param errno errno to get description of
+142
+* @return description of errno
+143
+* @see "std:strerror"
+144
+*/
+145
+public static native String getHALstrerror(int errno);
+146
+147
+/**
+148
+* Gets the error message for the last HAL error.
+149
+*
+150
+* @return the error message for the code.
+151
+*/
+152
+public static String getHALstrerror() {
+153
+return getHALstrerror(getHALErrno());
+154
+}
+155
+156
+private HALUtil() {}
+157
+}

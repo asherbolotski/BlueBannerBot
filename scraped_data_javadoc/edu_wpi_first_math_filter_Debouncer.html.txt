@@ -1,0 +1,156 @@
+Package
+edu.wpi.first.math.filter
+Class Debouncer
+java.lang.Object
+edu.wpi.first.math.filter.Debouncer
+public class
+Debouncer
+extends
+Object
+A simple debounce filter for boolean streams. Requires that the boolean change value from
+ baseline for a specified period of time before the filtered value changes.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+Debouncer.DebounceType
+Type of debouncing to perform.
+Constructor Summary
+Constructors
+Constructor
+Description
+Debouncer
+(double debounceTime)
+Creates a new Debouncer.
+Debouncer
+(double debounceTime,
+Debouncer.DebounceType
+type)
+Creates a new Debouncer.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+calculate
+(boolean input)
+Applies the debouncer to the input stream.
+double
+getDebounceTime
+()
+Gets the time to debounce.
+Debouncer.DebounceType
+getDebounceType
+()
+Gets the debounce type.
+void
+setDebounceTime
+(double time)
+Sets the time to debounce.
+void
+setDebounceType
+(
+Debouncer.DebounceType
+type)
+Sets the debounce type.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+Debouncer
+public
+Debouncer
+(double debounceTime,
+Debouncer.DebounceType
+type)
+Creates a new Debouncer.
+Parameters:
+debounceTime
+- The number of seconds the value must change from baseline for the filtered
+     value to change.
+type
+- Which type of state change the debouncing will be performed on.
+Debouncer
+public
+Debouncer
+(double debounceTime)
+Creates a new Debouncer. Baseline value defaulted to "false."
+Parameters:
+debounceTime
+- The number of seconds the value must change from baseline for the filtered
+     value to change.
+Method Details
+calculate
+public
+boolean
+calculate
+(boolean input)
+Applies the debouncer to the input stream.
+Parameters:
+input
+- The current value of the input stream.
+Returns:
+The debounced value of the input stream.
+setDebounceTime
+public
+void
+setDebounceTime
+(double time)
+Sets the time to debounce.
+Parameters:
+time
+- The number of seconds the value must change from baseline for the filtered value to
+     change.
+getDebounceTime
+public
+double
+getDebounceTime
+()
+Gets the time to debounce.
+Returns:
+The number of seconds the value must change from baseline for the filtered value to
+     change.
+setDebounceType
+public
+void
+setDebounceType
+(
+Debouncer.DebounceType
+type)
+Sets the debounce type.
+Parameters:
+type
+- Which type of state change the debouncing will be performed on.
+getDebounceType
+public
+Debouncer.DebounceType
+getDebounceType
+()
+Gets the debounce type.
+Returns:
+Which type of state change the debouncing will be performed on.

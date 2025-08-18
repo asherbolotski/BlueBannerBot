@@ -1,0 +1,1118 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.sendable;
+006
+007
+import java.lang.ref.WeakReference;
+008
+import java.util.ArrayList;
+009
+import java.util.Arrays;
+010
+import java.util.List;
+011
+import java.util.Map;
+012
+import java.util.WeakHashMap;
+013
+import java.util.function.Consumer;
+014
+import java.util.function.Supplier;
+015
+016
+/**
+017
+* The SendableRegistry class is the public interface for registering sensors and actuators for use
+018
+* on dashboards and LiveWindow.
+019
+*/
+020
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
+021
+public final class SendableRegistry {
+022
+private static class Component implements AutoCloseable {
+023
+Component() {}
+024
+025
+Component(Sendable sendable) {
+026
+m_sendable = new WeakReference<>(sendable);
+027
+}
+028
+029
+@Override
+030
+public void close() throws Exception {
+031
+m_builder.close();
+032
+for (AutoCloseable data : m_data) {
+033
+if (data != null) {
+034
+data.close();
+035
+}
+036
+}
+037
+}
+038
+039
+WeakReference<Sendable> m_sendable;
+040
+SendableBuilder m_builder;
+041
+String m_name;
+042
+String m_subsystem = "Ungrouped";
+043
+WeakReference<Sendable> m_parent;
+044
+boolean m_liveWindow;
+045
+AutoCloseable[] m_data;
+046
+047
+void setName(String moduleType, int channel) {
+048
+m_name = moduleType + "[" + channel + "]";
+049
+}
+050
+051
+void setName(String moduleType, int moduleNumber, int channel) {
+052
+m_name = moduleType + "[" + moduleNumber + "," + channel + "]";
+053
+}
+054
+}
+055
+056
+private static Supplier<SendableBuilder> liveWindowFactory;
+057
+private static final Map<Object, Component> components = new WeakHashMap<>();
+058
+private static int nextDataHandle;
+059
+060
+private static Component getOrAdd(Sendable sendable) {
+061
+Component comp = components.get(sendable);
+062
+if (comp == null) {
+063
+comp = new Component(sendable);
+064
+components.put(sendable, comp);
+065
+} else {
+066
+if (comp.m_sendable == null) {
+067
+comp.m_sendable = new WeakReference<>(sendable);
+068
+}
+069
+}
+070
+return comp;
+071
+}
+072
+073
+private SendableRegistry() {
+074
+throw new UnsupportedOperationException("This is a utility class!");
+075
+}
+076
+077
+/**
+078
+* Sets the factory for LiveWindow builders.
+079
+*
+080
+* @param factory factory function
+081
+*/
+082
+public static synchronized void setLiveWindowBuilderFactory(Supplier<SendableBuilder> factory) {
+083
+liveWindowFactory = factory;
+084
+}
+085
+086
+/**
+087
+* Adds an object to the registry.
+088
+*
+089
+* @param sendable object to add
+090
+* @param name component name
+091
+*/
+092
+public static synchronized void add(Sendable sendable, String name) {
+093
+Component comp = getOrAdd(sendable);
+094
+comp.m_name = name;
+095
+}
+096
+097
+/**
+098
+* Adds an object to the registry.
+099
+*
+100
+* @param sendable object to add
+101
+* @param moduleType A string that defines the module name in the label for the value
+102
+* @param channel The channel number the device is plugged into
+103
+*/
+104
+public static synchronized void add(Sendable sendable, String moduleType, int channel) {
+105
+Component comp = getOrAdd(sendable);
+106
+comp.setName(moduleType, channel);
+107
+}
+108
+109
+/**
+110
+* Adds an object to the registry.
+111
+*
+112
+* @param sendable object to add
+113
+* @param moduleType A string that defines the module name in the label for the value
+114
+* @param moduleNumber The number of the particular module type
+115
+* @param channel The channel number the device is plugged into
+116
+*/
+117
+public static synchronized void add(
+118
+Sendable sendable, String moduleType, int moduleNumber, int channel) {
+119
+Component comp = getOrAdd(sendable);
+120
+comp.setName(moduleType, moduleNumber, channel);
+121
+}
+122
+123
+/**
+124
+* Adds an object to the registry.
+125
+*
+126
+* @param sendable object to add
+127
+* @param subsystem subsystem name
+128
+* @param name component name
+129
+*/
+130
+public static synchronized void add(Sendable sendable, String subsystem, String name) {
+131
+Component comp = getOrAdd(sendable);
+132
+comp.m_name = name;
+133
+comp.m_subsystem = subsystem;
+134
+}
+135
+136
+/**
+137
+* Adds an object to the registry and LiveWindow.
+138
+*
+139
+* @param sendable object to add
+140
+* @param name component name
+141
+*/
+142
+public static synchronized void addLW(Sendable sendable, String name) {
+143
+Component comp = getOrAdd(sendable);
+144
+if (liveWindowFactory != null) {
+145
+if (comp.m_builder != null) {
+146
+try {
+147
+comp.m_builder.close();
+148
+} catch (Exception e) {
+149
+// ignore
+150
+}
+151
+}
+152
+comp.m_builder = liveWindowFactory.get();
+153
+}
+154
+comp.m_liveWindow = true;
+155
+comp.m_name = name;
+156
+}
+157
+158
+/**
+159
+* Adds an object to the registry and LiveWindow.
+160
+*
+161
+* @param sendable object to add
+162
+* @param moduleType A string that defines the module name in the label for the value
+163
+* @param channel The channel number the device is plugged into
+164
+*/
+165
+public static synchronized void addLW(Sendable sendable, String moduleType, int channel) {
+166
+Component comp = getOrAdd(sendable);
+167
+if (liveWindowFactory != null) {
+168
+if (comp.m_builder != null) {
+169
+try {
+170
+comp.m_builder.close();
+171
+} catch (Exception e) {
+172
+// ignore
+173
+}
+174
+}
+175
+comp.m_builder = liveWindowFactory.get();
+176
+}
+177
+comp.m_liveWindow = true;
+178
+comp.setName(moduleType, channel);
+179
+}
+180
+181
+/**
+182
+* Adds an object to the registry and LiveWindow.
+183
+*
+184
+* @param sendable object to add
+185
+* @param moduleType A string that defines the module name in the label for the value
+186
+* @param moduleNumber The number of the particular module type
+187
+* @param channel The channel number the device is plugged into
+188
+*/
+189
+public static synchronized void addLW(
+190
+Sendable sendable, String moduleType, int moduleNumber, int channel) {
+191
+Component comp = getOrAdd(sendable);
+192
+if (liveWindowFactory != null) {
+193
+if (comp.m_builder != null) {
+194
+try {
+195
+comp.m_builder.close();
+196
+} catch (Exception e) {
+197
+// ignore
+198
+}
+199
+}
+200
+comp.m_builder = liveWindowFactory.get();
+201
+}
+202
+comp.m_liveWindow = true;
+203
+comp.setName(moduleType, moduleNumber, channel);
+204
+}
+205
+206
+/**
+207
+* Adds an object to the registry and LiveWindow.
+208
+*
+209
+* @param sendable object to add
+210
+* @param subsystem subsystem name
+211
+* @param name component name
+212
+*/
+213
+public static synchronized void addLW(Sendable sendable, String subsystem, String name) {
+214
+Component comp = getOrAdd(sendable);
+215
+if (liveWindowFactory != null) {
+216
+if (comp.m_builder != null) {
+217
+try {
+218
+comp.m_builder.close();
+219
+} catch (Exception e) {
+220
+// ignore
+221
+}
+222
+}
+223
+comp.m_builder = liveWindowFactory.get();
+224
+}
+225
+comp.m_liveWindow = true;
+226
+comp.m_name = name;
+227
+comp.m_subsystem = subsystem;
+228
+}
+229
+230
+/**
+231
+* Adds a child object to an object. Adds the child object to the registry if it's not already
+232
+* present.
+233
+*
+234
+* @param parent parent object
+235
+* @param child child object
+236
+*/
+237
+public static synchronized void addChild(Sendable parent, Object child) {
+238
+Component comp = components.get(child);
+239
+if (comp == null) {
+240
+comp = new Component();
+241
+components.put(child, comp);
+242
+}
+243
+comp.m_parent = new WeakReference<>(parent);
+244
+}
+245
+246
+/**
+247
+* Removes an object from the registry.
+248
+*
+249
+* @param sendable object to remove
+250
+* @return true if the object was removed; false if it was not present
+251
+*/
+252
+public static synchronized boolean remove(Sendable sendable) {
+253
+Component comp = components.remove(sendable);
+254
+if (comp != null) {
+255
+try {
+256
+comp.close();
+257
+} catch (Exception e) {
+258
+// ignore
+259
+}
+260
+}
+261
+return comp != null;
+262
+}
+263
+264
+/**
+265
+* Determines if an object is in the registry.
+266
+*
+267
+* @param sendable object to check
+268
+* @return True if in registry, false if not.
+269
+*/
+270
+public static synchronized boolean contains(Sendable sendable) {
+271
+return components.containsKey(sendable);
+272
+}
+273
+274
+/**
+275
+* Gets the name of an object.
+276
+*
+277
+* @param sendable object
+278
+* @return Name (empty if object is not in registry)
+279
+*/
+280
+public static synchronized String getName(Sendable sendable) {
+281
+Component comp = components.get(sendable);
+282
+if (comp == null) {
+283
+return "";
+284
+}
+285
+return comp.m_name;
+286
+}
+287
+288
+/**
+289
+* Sets the name of an object.
+290
+*
+291
+* @param sendable object
+292
+* @param name name
+293
+*/
+294
+public static synchronized void setName(Sendable sendable, String name) {
+295
+Component comp = components.get(sendable);
+296
+if (comp != null) {
+297
+comp.m_name = name;
+298
+}
+299
+}
+300
+301
+/**
+302
+* Sets the name of an object with a channel number.
+303
+*
+304
+* @param sendable object
+305
+* @param moduleType A string that defines the module name in the label for the value
+306
+* @param channel The channel number the device is plugged into
+307
+*/
+308
+public static synchronized void setName(Sendable sendable, String moduleType, int channel) {
+309
+Component comp = components.get(sendable);
+310
+if (comp != null) {
+311
+comp.setName(moduleType, channel);
+312
+}
+313
+}
+314
+315
+/**
+316
+* Sets the name of an object with a module and channel number.
+317
+*
+318
+* @param sendable object
+319
+* @param moduleType A string that defines the module name in the label for the value
+320
+* @param moduleNumber The number of the particular module type
+321
+* @param channel The channel number the device is plugged into
+322
+*/
+323
+public static synchronized void setName(
+324
+Sendable sendable, String moduleType, int moduleNumber, int channel) {
+325
+Component comp = components.get(sendable);
+326
+if (comp != null) {
+327
+comp.setName(moduleType, moduleNumber, channel);
+328
+}
+329
+}
+330
+331
+/**
+332
+* Sets both the subsystem name and device name of an object.
+333
+*
+334
+* @param sendable object
+335
+* @param subsystem subsystem name
+336
+* @param name device name
+337
+*/
+338
+public static synchronized void setName(Sendable sendable, String subsystem, String name) {
+339
+Component comp = components.get(sendable);
+340
+if (comp != null) {
+341
+comp.m_name = name;
+342
+comp.m_subsystem = subsystem;
+343
+}
+344
+}
+345
+346
+/**
+347
+* Gets the subsystem name of an object.
+348
+*
+349
+* @param sendable object
+350
+* @return Subsystem name (empty if object is not in registry)
+351
+*/
+352
+public static synchronized String getSubsystem(Sendable sendable) {
+353
+Component comp = components.get(sendable);
+354
+if (comp == null) {
+355
+return "";
+356
+}
+357
+return comp.m_subsystem;
+358
+}
+359
+360
+/**
+361
+* Sets the subsystem name of an object.
+362
+*
+363
+* @param sendable object
+364
+* @param subsystem subsystem name
+365
+*/
+366
+public static synchronized void setSubsystem(Sendable sendable, String subsystem) {
+367
+Component comp = components.get(sendable);
+368
+if (comp != null) {
+369
+comp.m_subsystem = subsystem;
+370
+}
+371
+}
+372
+373
+/**
+374
+* Gets a unique handle for setting/getting data with setData() and getData().
+375
+*
+376
+* @return Handle
+377
+*/
+378
+public static synchronized int getDataHandle() {
+379
+return nextDataHandle++;
+380
+}
+381
+382
+/**
+383
+* Associates arbitrary data with an object in the registry.
+384
+*
+385
+* @param sendable object
+386
+* @param handle data handle returned by getDataHandle()
+387
+* @param data data to set
+388
+* @return Previous data (may be null). If non-null, caller is responsible for calling close().
+389
+*/
+390
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
+391
+public static synchronized AutoCloseable setData(
+392
+Sendable sendable, int handle, AutoCloseable data) {
+393
+Component comp = components.get(sendable);
+394
+if (comp == null) {
+395
+return null;
+396
+}
+397
+AutoCloseable rv = null;
+398
+if (comp.m_data == null) {
+399
+comp.m_data = new AutoCloseable[handle + 1];
+400
+} else if (handle < comp.m_data.length) {
+401
+rv = comp.m_data[handle];
+402
+} else {
+403
+comp.m_data = Arrays.copyOf(comp.m_data, handle + 1);
+404
+}
+405
+if (comp.m_data[handle] != data) {
+406
+if (comp.m_data[handle] != null) {
+407
+try {
+408
+comp.m_data[handle].close();
+409
+} catch (Exception e) {
+410
+// ignore
+411
+}
+412
+}
+413
+comp.m_data[handle] = data;
+414
+}
+415
+return rv;
+416
+}
+417
+418
+/**
+419
+* Gets arbitrary data associated with an object in the registry.
+420
+*
+421
+* @param sendable object
+422
+* @param handle data handle returned by getDataHandle()
+423
+* @return data (may be null if none associated)
+424
+*/
+425
+public static synchronized Object getData(Sendable sendable, int handle) {
+426
+Component comp = components.get(sendable);
+427
+if (comp == null || comp.m_data == null || handle >= comp.m_data.length) {
+428
+return null;
+429
+}
+430
+return comp.m_data[handle];
+431
+}
+432
+433
+/**
+434
+* Enables LiveWindow for an object.
+435
+*
+436
+* @param sendable object
+437
+*/
+438
+public static synchronized void enableLiveWindow(Sendable sendable) {
+439
+Component comp = components.get(sendable);
+440
+if (comp != null) {
+441
+comp.m_liveWindow = true;
+442
+}
+443
+}
+444
+445
+/**
+446
+* Disables LiveWindow for an object.
+447
+*
+448
+* @param sendable object
+449
+*/
+450
+public static synchronized void disableLiveWindow(Sendable sendable) {
+451
+Component comp = components.get(sendable);
+452
+if (comp != null) {
+453
+comp.m_liveWindow = false;
+454
+}
+455
+}
+456
+457
+/**
+458
+* Publishes an object in the registry to a builder.
+459
+*
+460
+* @param sendable object
+461
+* @param builder sendable builder
+462
+*/
+463
+public static synchronized void publish(Sendable sendable, SendableBuilder builder) {
+464
+Component comp = getOrAdd(sendable);
+465
+if (comp.m_builder != null) {
+466
+try {
+467
+comp.m_builder.close();
+468
+} catch (Exception e) {
+469
+// ignore
+470
+}
+471
+}
+472
+comp.m_builder = builder; // clear any current builder
+473
+sendable.initSendable(comp.m_builder);
+474
+comp.m_builder.update();
+475
+}
+476
+477
+/**
+478
+* Updates network table information from an object.
+479
+*
+480
+* @param sendable object
+481
+*/
+482
+public static synchronized void update(Sendable sendable) {
+483
+Component comp = components.get(sendable);
+484
+if (comp != null && comp.m_builder != null) {
+485
+comp.m_builder.update();
+486
+}
+487
+}
+488
+489
+/** Data passed to foreachLiveWindow() callback function. */
+490
+@SuppressWarnings("MemberName")
+491
+public static class CallbackData {
+492
+/** Sendable object. */
+493
+public Sendable sendable;
+494
+495
+/** Name. */
+496
+public String name;
+497
+498
+/** Subsystem. */
+499
+public String subsystem;
+500
+501
+/** Parent sendable object. */
+502
+public Sendable parent;
+503
+504
+/** Data stored in object with setData(). Update this to change the data. */
+505
+public AutoCloseable data;
+506
+507
+/** Sendable builder for the sendable. */
+508
+public SendableBuilder builder;
+509
+510
+/** Default constructor. */
+511
+public CallbackData() {}
+512
+}
+513
+514
+// As foreachLiveWindow is single threaded, cache the components it
+515
+// iterates over to avoid risk of ConcurrentModificationException
+516
+private static List<Component> foreachComponents = new ArrayList<>();
+517
+518
+/**
+519
+* Iterates over LiveWindow-enabled objects in the registry. It is *not* safe to call other
+520
+* SendableRegistry functions from the callback.
+521
+*
+522
+* @param dataHandle data handle to get data object passed to callback
+523
+* @param callback function to call for each object
+524
+*/
+525
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
+526
+public static synchronized void foreachLiveWindow(
+527
+int dataHandle, Consumer<CallbackData> callback) {
+528
+CallbackData cbdata = new CallbackData();
+529
+foreachComponents.clear();
+530
+foreachComponents.addAll(components.values());
+531
+for (Component comp : foreachComponents) {
+532
+if (comp.m_builder == null || comp.m_sendable == null) {
+533
+continue;
+534
+}
+535
+cbdata.sendable = comp.m_sendable.get();
+536
+if (cbdata.sendable != null && comp.m_liveWindow) {
+537
+cbdata.name = comp.m_name;
+538
+cbdata.subsystem = comp.m_subsystem;
+539
+if (comp.m_parent != null) {
+540
+cbdata.parent = comp.m_parent.get();
+541
+} else {
+542
+cbdata.parent = null;
+543
+}
+544
+if (comp.m_data != null && dataHandle < comp.m_data.length) {
+545
+cbdata.data = comp.m_data[dataHandle];
+546
+} else {
+547
+cbdata.data = null;
+548
+}
+549
+cbdata.builder = comp.m_builder;
+550
+try {
+551
+callback.accept(cbdata);
+552
+} catch (Throwable throwable) {
+553
+Throwable cause = throwable.getCause();
+554
+if (cause != null) {
+555
+throwable = cause;
+556
+}
+557
+System.err.println("Unhandled exception calling LiveWindow for " + comp.m_name + ": ");
+558
+throwable.printStackTrace();
+559
+comp.m_liveWindow = false;
+560
+}
+561
+if (cbdata.data != null) {
+562
+if (comp.m_data == null) {
+563
+comp.m_data = new AutoCloseable[dataHandle + 1];
+564
+} else if (dataHandle >= comp.m_data.length) {
+565
+comp.m_data = Arrays.copyOf(comp.m_data, dataHandle + 1);
+566
+}
+567
+if (comp.m_data[dataHandle] != cbdata.data) {
+568
+if (comp.m_data[dataHandle] != null) {
+569
+try {
+570
+comp.m_data[dataHandle].close();
+571
+} catch (Exception e) {
+572
+// ignore
+573
+}
+574
+}
+575
+comp.m_data[dataHandle] = cbdata.data;
+576
+}
+577
+}
+578
+}
+579
+}
+580
+foreachComponents.clear();
+581
+}
+582
+}

@@ -1,0 +1,1769 @@
+Package
+edu.wpi.first.math
+Class Matrix<R extends
+Num
+,
+C extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.Matrix<R,
+C>
+Type Parameters:
+R
+- The number of rows in this matrix.
+C
+- The number of columns in this matrix.
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+Direct Known Subclasses:
+Vector
+public class
+Matrix
+<R extends
+Num
+,
+C extends
+Num
+>
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+A shape-safe wrapper over Efficient Java Matrix Library (EJML) matrices.
+This class is intended to be used alongside the state space library.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final org.ejml.simple.SimpleMatrix
+m_storage
+Storage for underlying EJML matrix.
+Constructor Summary
+Constructors
+Constructor
+Description
+Matrix
+(
+Matrix
+<
+R
+,
+C
+> other)
+Constructs a new matrix with the storage of the supplied matrix.
+Matrix
+(
+Nat
+<
+R
+> rows,
+Nat
+<
+C
+> columns)
+Constructs an empty zero matrix of the given dimensions.
+Matrix
+(
+Nat
+<
+R
+> rows,
+Nat
+<
+C
+> columns,
+ double[] storage)
+Constructs a new
+Matrix
+with the given storage.
+Matrix
+(org.ejml.simple.SimpleMatrix storage)
+Constructs a new
+Matrix
+with the given storage.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+<R2 extends
+Num
+,
+C2 extends
+Num
+>
+void
+assignBlock
+(int startingRow,
+ int startingCol,
+Matrix
+<R2,
+C2> other)
+Assign a matrix of a given size and start position.
+final <R2 extends
+Num
+,
+C2 extends
+Num
+>
+Matrix
+<R2,
+C2>
+block
+(int height,
+ int width,
+ int startingRow,
+ int startingCol)
+Extracts a matrix of a given size and start position with new underlying storage.
+final <R2 extends
+Num
+,
+C2 extends
+Num
+>
+Matrix
+<R2,
+C2>
+block
+(
+Nat
+<R2> height,
+Nat
+<C2> width,
+ int startingRow,
+ int startingCol)
+Extracts a matrix of a given size and start position with new underlying storage.
+static <R1 extends
+Num
+,
+C1 extends
+Num
+>
+Matrix
+<R1,
+C1>
+changeBoundsUnchecked
+(
+Matrix
+<?,
+?> mat)
+Reassigns dimensions of a
+Matrix
+to allow for operations with other matrices that have
+ wildcard dimensions.
+final
+Matrix
+<
+R
+,
+C
+>
+copy
+()
+Returns a copy of this matrix.
+final double
+det
+()
+Returns the determinant of this matrix.
+final
+Matrix
+<
+R
+,
+C
+>
+diag
+()
+Returns the diagonal elements inside a vector or square matrix.
+Matrix
+<
+R
+,
+C
+>
+div
+(double value)
+Divides all elements of this matrix by the given value.
+Matrix
+<
+R
+,
+C
+>
+div
+(int value)
+Divides all elements of this matrix by the given value.
+final
+Matrix
+<
+R
+,
+C
+>
+elementPower
+(double b)
+Returns a matrix which is the result of an element by element power of "this" and b.
+final
+Matrix
+<
+R
+,
+C
+>
+elementPower
+(int b)
+Returns a matrix which is the result of an element by element power of "this" and b.
+final double
+elementSum
+()
+Computes the sum of all the elements in the matrix.
+final
+Matrix
+<
+R
+,
+C
+>
+elementTimes
+(
+Matrix
+<
+R
+,
+C
+> other)
+Returns a matrix which is the result of an element by element multiplication of "this" and
+ other.
+boolean
+equals
+(
+Object
+other)
+Checks if an object is equal to this
+Matrix
+.
+final
+Matrix
+<
+R
+,
+C
+>
+exp
+()
+Computes the matrix exponential using Eigen's solver.
+final
+Matrix
+<
+R
+,
+N1
+>
+extractColumnVector
+(int column)
+Extracts a given column into a column vector with new underlying storage.
+<R2 extends
+Num
+,
+C2 extends
+Num
+>
+void
+extractFrom
+(int startingRow,
+ int startingCol,
+Matrix
+<R2,
+C2> other)
+Extracts a submatrix from the supplied matrix and inserts it in a submatrix in "this".
+final
+Matrix
+<
+N1
+,
+C
+>
+extractRowVector
+(int row)
+Extracts a given row into a row vector with new underlying storage.
+static <D extends
+Num
+>
+Matrix
+<D,
+D>
+eye
+(D dim)
+Creates the identity matrix of the given dimension.
+static <D extends
+Num
+>
+Matrix
+<D,
+D>
+eye
+(
+Nat
+<D> dim)
+Creates the identity matrix of the given dimension.
+void
+fill
+(double value)
+Sets all the elements in "this" matrix equal to the specified value.
+final double
+get
+(int row,
+ int col)
+Get an element of this matrix.
+double[]
+getData
+()
+Returns the row major data of this matrix as a double array.
+final int
+getNumCols
+()
+Gets the number of columns in this matrix.
+final int
+getNumRows
+()
+Gets the number of rows in this matrix.
+static <R extends
+Num
+,
+C extends
+Num
+>
+MatrixProto
+<R,
+C>
+getProto
+(
+Nat
+<R> rows,
+Nat
+<C> cols)
+Creates an implementation of the
+Protobuf
+interface for matrices.
+org.ejml.simple.SimpleMatrix
+getStorage
+()
+Gets the underlying
+SimpleMatrix
+that this
+Matrix
+wraps.
+static <R extends
+Num
+,
+C extends
+Num
+>
+MatrixStruct
+<R,
+C>
+getStruct
+(
+Nat
+<R> rows,
+Nat
+<C> cols)
+Creates an implementation of the
+Struct
+interfaces for matrices.
+int
+hashCode
+()
+final
+Matrix
+<
+R
+,
+C
+>
+inv
+()
+Returns the inverse matrix of "this" matrix.
+boolean
+isEqual
+(
+Matrix
+<?,
+?> other,
+ double tolerance)
+Checks if another
+Matrix
+is equal to "this" within a specified tolerance.
+boolean
+isIdentical
+(
+Matrix
+<?,
+?> other,
+ double tolerance)
+Checks if another
+Matrix
+is identical to "this" one within a specified tolerance.
+Matrix
+<
+R
+,
+C
+>
+lltDecompose
+(boolean lowerTriangular)
+Decompose "this" matrix using Cholesky Decomposition.
+final double
+max
+()
+Returns the largest element of this matrix.
+final double
+maxAbs
+()
+Returns the absolute value of the element in this matrix with the largest absolute value.
+final double
+mean
+()
+Calculates the mean of the elements in this matrix.
+final double
+minInternal
+()
+Returns the smallest element of this matrix.
+final
+Matrix
+<
+R
+,
+C
+>
+minus
+(double value)
+Subtracts the given value from all the elements of this matrix.
+final
+Matrix
+<
+R
+,
+C
+>
+minus
+(
+Matrix
+<
+R
+,
+C
+> value)
+Subtracts the given matrix from this matrix.
+final double
+normF
+()
+Computes the Frobenius normal of the matrix.
+final double
+normIndP1
+()
+Computes the induced p = 1 matrix norm.
+final
+Matrix
+<
+R
+,
+C
+>
+plus
+(double value)
+Adds the given value to all the elements of this matrix.
+final
+Matrix
+<
+R
+,
+C
+>
+plus
+(
+Matrix
+<
+R
+,
+C
+> value)
+Adds the given matrix to this matrix.
+final
+Matrix
+<
+R
+,
+C
+>
+pow
+(double exponent)
+Computes the matrix power using Eigen's solver.
+void
+rankUpdate
+(
+Matrix
+<
+R
+,
+N1
+> v,
+ double sigma,
+ boolean lowerTriangular)
+Performs an inplace Cholesky rank update (or downdate).
+final void
+set
+(int row,
+ int col,
+ double value)
+Sets the value at the given indices.
+final void
+setColumn
+(int column,
+Matrix
+<
+R
+,
+N1
+> val)
+Sets a column to a given column vector.
+final void
+setRow
+(int row,
+Matrix
+<
+N1
+,
+C
+> val)
+Sets a row to a given row vector.
+final <C2 extends
+Num
+>
+Matrix
+<
+C
+,
+C2>
+solve
+(
+Matrix
+<
+R
+,
+C2> b)
+Returns the solution x to the equation Ax = b, where A is "this" matrix.
+final <R2 extends
+Num
+,
+C2 extends
+Num
+>
+Matrix
+<
+C
+,
+C2>
+solveFullPivHouseholderQr
+(
+Matrix
+<R2,
+C2> other)
+Solves the least-squares problem Ax=B using a QR decomposition with full pivoting, where this
+ matrix is A.
+Matrix
+<
+R
+,
+C
+>
+times
+(double value)
+Multiplies all the elements of this matrix by the given scalar.
+final <C2 extends
+Num
+>
+Matrix
+<
+R
+,
+C2>
+times
+(
+Matrix
+<
+C
+,
+C2> other)
+Multiplies this matrix with another that has C rows.
+String
+toString
+()
+final double
+trace
+()
+Computes the trace of the matrix.
+final
+Matrix
+<
+C
+,
+R
+>
+transpose
+()
+Calculates the transpose, Mᵀ of this matrix.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_storage
+protected final
+org.ejml.simple.SimpleMatrix
+m_storage
+Storage for underlying EJML matrix.
+Constructor Details
+Matrix
+public
+Matrix
+(
+Nat
+<
+R
+> rows,
+Nat
+<
+C
+> columns)
+Constructs an empty zero matrix of the given dimensions.
+Parameters:
+rows
+- The number of rows of the matrix.
+columns
+- The number of columns of the matrix.
+Matrix
+public
+Matrix
+(
+Nat
+<
+R
+> rows,
+Nat
+<
+C
+> columns,
+ double[] storage)
+Constructs a new
+Matrix
+with the given storage. Caller should make sure that the
+ provided generic bounds match the shape of the provided
+Matrix
+.
+Parameters:
+rows
+- The number of rows of the matrix.
+columns
+- The number of columns of the matrix.
+storage
+- The double array to back this value.
+Matrix
+public
+Matrix
+(org.ejml.simple.SimpleMatrix storage)
+Constructs a new
+Matrix
+with the given storage. Caller should make sure that the
+ provided generic bounds match the shape of the provided
+Matrix
+.
+NOTE:It is not recommend to use this constructor unless the
+SimpleMatrix
+API is
+ absolutely necessary due to the desired function not being accessible through the
+Matrix
+wrapper.
+Parameters:
+storage
+- The
+SimpleMatrix
+to back this value.
+Matrix
+public
+Matrix
+(
+Matrix
+<
+R
+,
+C
+> other)
+Constructs a new matrix with the storage of the supplied matrix.
+Parameters:
+other
+- The
+Matrix
+to copy the storage of.
+Method Details
+getStorage
+public
+org.ejml.simple.SimpleMatrix
+getStorage
+()
+Gets the underlying
+SimpleMatrix
+that this
+Matrix
+wraps.
+NOTE:The use of this method is heavily discouraged as this removes any guarantee of type
+ safety. This should only be called if the
+SimpleMatrix
+API is absolutely necessary due
+ to the desired function not being accessible through the
+Matrix
+wrapper.
+Returns:
+The underlying
+SimpleMatrix
+storage.
+getNumCols
+public final
+int
+getNumCols
+()
+Gets the number of columns in this matrix.
+Returns:
+The number of columns, according to the internal storage.
+getNumRows
+public final
+int
+getNumRows
+()
+Gets the number of rows in this matrix.
+Returns:
+The number of rows, according to the internal storage.
+get
+public final
+double
+get
+(int row,
+ int col)
+Get an element of this matrix.
+Parameters:
+row
+- The row of the element.
+col
+- The column of the element.
+Returns:
+The element in this matrix at row,col.
+set
+public final
+void
+set
+(int row,
+ int col,
+ double value)
+Sets the value at the given indices.
+Parameters:
+row
+- The row of the element.
+col
+- The column of the element.
+value
+- The value to insert at the given location.
+setRow
+public final
+void
+setRow
+(int row,
+Matrix
+<
+N1
+,
+C
+> val)
+Sets a row to a given row vector.
+Parameters:
+row
+- The row to set.
+val
+- The row vector to set the given row to.
+setColumn
+public final
+void
+setColumn
+(int column,
+Matrix
+<
+R
+,
+N1
+> val)
+Sets a column to a given column vector.
+Parameters:
+column
+- The column to set.
+val
+- The column vector to set the given row to.
+fill
+public
+void
+fill
+(double value)
+Sets all the elements in "this" matrix equal to the specified value.
+Parameters:
+value
+- The value each element is set to.
+diag
+public final
+Matrix
+<
+R
+,
+C
+>
+diag
+()
+Returns the diagonal elements inside a vector or square matrix.
+If "this"
+Matrix
+is a vector then a square matrix is returned. If a "this"
+Matrix
+is a matrix then a vector of diagonal elements is returned.
+Returns:
+The diagonal elements inside a vector or a square matrix.
+max
+public final
+double
+max
+()
+Returns the largest element of this matrix.
+Returns:
+The largest element of this matrix.
+maxAbs
+public final
+double
+maxAbs
+()
+Returns the absolute value of the element in this matrix with the largest absolute value.
+Returns:
+The absolute value of the element with the largest absolute value.
+minInternal
+public final
+double
+minInternal
+()
+Returns the smallest element of this matrix.
+Returns:
+The smallest element of this matrix.
+mean
+public final
+double
+mean
+()
+Calculates the mean of the elements in this matrix.
+Returns:
+The mean value of this matrix.
+times
+public final
+<C2 extends
+Num
+>
+Matrix
+<
+R
+,
+C2>
+times
+(
+Matrix
+<
+C
+,
+C2> other)
+Multiplies this matrix with another that has C rows.
+As matrix multiplication is only defined if the number of columns in the first matrix
+ matches the number of rows in the second, this operation will fail to compile under any other
+ circumstances.
+Type Parameters:
+C2
+- The number of columns in the second matrix.
+Parameters:
+other
+- The other matrix to multiply by.
+Returns:
+The result of the matrix multiplication between "this" and the given matrix.
+times
+public
+Matrix
+<
+R
+,
+C
+>
+times
+(double value)
+Multiplies all the elements of this matrix by the given scalar.
+Parameters:
+value
+- The scalar value to multiply by.
+Returns:
+A new matrix with all the elements multiplied by the given value.
+elementTimes
+public final
+Matrix
+<
+R
+,
+C
+>
+elementTimes
+(
+Matrix
+<
+R
+,
+C
+> other)
+Returns a matrix which is the result of an element by element multiplication of "this" and
+ other.
+c
+i,j
+= a
+i,j
+*other
+i,j
+Parameters:
+other
+- The other
+Matrix
+to perform element multiplication on.
+Returns:
+The element by element multiplication of "this" and other.
+minus
+public final
+Matrix
+<
+R
+,
+C
+>
+minus
+(double value)
+Subtracts the given value from all the elements of this matrix.
+Parameters:
+value
+- The value to subtract.
+Returns:
+The resultant matrix.
+minus
+public final
+Matrix
+<
+R
+,
+C
+>
+minus
+(
+Matrix
+<
+R
+,
+C
+> value)
+Subtracts the given matrix from this matrix.
+Parameters:
+value
+- The matrix to subtract.
+Returns:
+The resultant matrix.
+plus
+public final
+Matrix
+<
+R
+,
+C
+>
+plus
+(double value)
+Adds the given value to all the elements of this matrix.
+Parameters:
+value
+- The value to add.
+Returns:
+The resultant matrix.
+plus
+public final
+Matrix
+<
+R
+,
+C
+>
+plus
+(
+Matrix
+<
+R
+,
+C
+> value)
+Adds the given matrix to this matrix.
+Parameters:
+value
+- The matrix to add.
+Returns:
+The resultant matrix.
+div
+public
+Matrix
+<
+R
+,
+C
+>
+div
+(int value)
+Divides all elements of this matrix by the given value.
+Parameters:
+value
+- The value to divide by.
+Returns:
+The resultant matrix.
+div
+public
+Matrix
+<
+R
+,
+C
+>
+div
+(double value)
+Divides all elements of this matrix by the given value.
+Parameters:
+value
+- The value to divide by.
+Returns:
+The resultant matrix.
+transpose
+public final
+Matrix
+<
+C
+,
+R
+>
+transpose
+()
+Calculates the transpose, Mᵀ of this matrix.
+Returns:
+The transpose matrix.
+copy
+public final
+Matrix
+<
+R
+,
+C
+>
+copy
+()
+Returns a copy of this matrix.
+Returns:
+A copy of this matrix.
+inv
+public final
+Matrix
+<
+R
+,
+C
+>
+inv
+()
+Returns the inverse matrix of "this" matrix.
+Returns:
+The inverse of "this" matrix.
+Throws:
+org.ejml.data.SingularMatrixException
+- If "this" matrix is non-invertable.
+solve
+public final
+<C2 extends
+Num
+>
+Matrix
+<
+C
+,
+C2>
+solve
+(
+Matrix
+<
+R
+,
+C2> b)
+Returns the solution x to the equation Ax = b, where A is "this" matrix.
+The matrix equation could also be written as x = A
+-1
+b. Where the pseudo inverse
+ is used if A is not square.
+Note that this method does not support solving using a QR decomposition with full-pivoting,
+ as only column-pivoting is supported. For full-pivoting, use
+solveFullPivHouseholderQr(edu.wpi.first.math.Matrix<R2, C2>)
+.
+Type Parameters:
+C2
+- Columns in b.
+Parameters:
+b
+- The right-hand side of the equation to solve.
+Returns:
+The solution to the linear system.
+solveFullPivHouseholderQr
+public final
+<R2 extends
+Num
+,
+C2 extends
+Num
+>
+Matrix
+<
+C
+,
+C2>
+solveFullPivHouseholderQr
+(
+Matrix
+<R2,
+C2> other)
+Solves the least-squares problem Ax=B using a QR decomposition with full pivoting, where this
+ matrix is A.
+Type Parameters:
+R2
+- Number of rows in B.
+C2
+- Number of columns in B.
+Parameters:
+other
+- The B matrix.
+Returns:
+The solution matrix.
+exp
+public final
+Matrix
+<
+R
+,
+C
+>
+exp
+()
+Computes the matrix exponential using Eigen's solver. This method only works for square
+ matrices, and will otherwise throw an
+MatrixDimensionException
+.
+Returns:
+The exponential of A.
+pow
+public final
+Matrix
+<
+R
+,
+C
+>
+pow
+(double exponent)
+Computes the matrix power using Eigen's solver. This method only works for square matrices, and
+ will otherwise throw an
+MatrixDimensionException
+.
+Parameters:
+exponent
+- The exponent.
+Returns:
+The exponential of A.
+det
+public final
+double
+det
+()
+Returns the determinant of this matrix.
+Returns:
+The determinant of this matrix.
+normF
+public final
+double
+normF
+()
+Computes the Frobenius normal of the matrix.
+normF = Sqrt{ ∑
+i=1:m
+∑
+j=1:n
+{ a
+ij
+2
+} }
+Returns:
+The matrix's Frobenius normal.
+normIndP1
+public final
+double
+normIndP1
+()
+Computes the induced p = 1 matrix norm.
+||A||
+1
+= max(j=1 to n; sum(i=1 to m; |a
+ij
+|))
+Returns:
+The norm.
+elementSum
+public final
+double
+elementSum
+()
+Computes the sum of all the elements in the matrix.
+Returns:
+Sum of all the elements.
+trace
+public final
+double
+trace
+()
+Computes the trace of the matrix.
+Returns:
+The trace of the matrix.
+elementPower
+public final
+Matrix
+<
+R
+,
+C
+>
+elementPower
+(double b)
+Returns a matrix which is the result of an element by element power of "this" and b.
+c
+i,j
+= a
+i,j
+^ b
+Parameters:
+b
+- Scalar.
+Returns:
+The element by element power of "this" and b.
+elementPower
+public final
+Matrix
+<
+R
+,
+C
+>
+elementPower
+(int b)
+Returns a matrix which is the result of an element by element power of "this" and b.
+c
+i,j
+= a
+i,j
+^ b
+Parameters:
+b
+- Scalar.
+Returns:
+The element by element power of "this" and b.
+extractRowVector
+public final
+Matrix
+<
+N1
+,
+C
+>
+extractRowVector
+(int row)
+Extracts a given row into a row vector with new underlying storage.
+Parameters:
+row
+- The row to extract a vector from.
+Returns:
+A row vector from the given row.
+extractColumnVector
+public final
+Matrix
+<
+R
+,
+N1
+>
+extractColumnVector
+(int column)
+Extracts a given column into a column vector with new underlying storage.
+Parameters:
+column
+- The column to extract a vector from.
+Returns:
+A column vector from the given column.
+block
+public final
+<R2 extends
+Num
+,
+C2 extends
+Num
+>
+Matrix
+<R2,
+C2>
+block
+(
+Nat
+<R2> height,
+Nat
+<C2> width,
+ int startingRow,
+ int startingCol)
+Extracts a matrix of a given size and start position with new underlying storage.
+Type Parameters:
+R2
+- Number of rows to extract.
+C2
+- Number of columns to extract.
+Parameters:
+height
+- The number of rows of the extracted matrix.
+width
+- The number of columns of the extracted matrix.
+startingRow
+- The starting row of the extracted matrix.
+startingCol
+- The starting column of the extracted matrix.
+Returns:
+The extracted matrix.
+block
+public final
+<R2 extends
+Num
+,
+C2 extends
+Num
+>
+Matrix
+<R2,
+C2>
+block
+(int height,
+ int width,
+ int startingRow,
+ int startingCol)
+Extracts a matrix of a given size and start position with new underlying storage.
+Type Parameters:
+R2
+- Number of rows to extract.
+C2
+- Number of columns to extract.
+Parameters:
+height
+- The number of rows of the extracted matrix.
+width
+- The number of columns of the extracted matrix.
+startingRow
+- The starting row of the extracted matrix.
+startingCol
+- The starting column of the extracted matrix.
+Returns:
+The extracted matrix.
+assignBlock
+public
+<R2 extends
+Num
+,
+C2 extends
+Num
+>
+void
+assignBlock
+(int startingRow,
+ int startingCol,
+Matrix
+<R2,
+C2> other)
+Assign a matrix of a given size and start position.
+Type Parameters:
+R2
+- Rows in block assignment.
+C2
+- Columns in block assignment.
+Parameters:
+startingRow
+- The row to start at.
+startingCol
+- The column to start at.
+other
+- The matrix to assign the block to.
+extractFrom
+public
+<R2 extends
+Num
+,
+C2 extends
+Num
+>
+void
+extractFrom
+(int startingRow,
+ int startingCol,
+Matrix
+<R2,
+C2> other)
+Extracts a submatrix from the supplied matrix and inserts it in a submatrix in "this". The
+ shape of "this" is used to determine the size of the matrix extracted.
+Type Parameters:
+R2
+- Number of rows to extract.
+C2
+- Number of columns to extract.
+Parameters:
+startingRow
+- The starting row in the supplied matrix to extract the submatrix.
+startingCol
+- The starting column in the supplied matrix to extract the submatrix.
+other
+- The matrix to extract the submatrix from.
+lltDecompose
+public
+Matrix
+<
+R
+,
+C
+>
+lltDecompose
+(boolean lowerTriangular)
+Decompose "this" matrix using Cholesky Decomposition. If the "this" matrix is zeros, it will
+ return the zero matrix.
+Parameters:
+lowerTriangular
+- Whether we want to decompose to the lower triangular Cholesky matrix.
+Returns:
+The decomposed matrix.
+Throws:
+RuntimeException
+- if the matrix could not be decomposed(i.e. is not positive
+     semidefinite).
+getData
+public
+double[]
+getData
+()
+Returns the row major data of this matrix as a double array.
+Returns:
+The row major data of this matrix as a double array.
+eye
+public static
+<D extends
+Num
+>
+Matrix
+<D,
+D>
+eye
+(
+Nat
+<D> dim)
+Creates the identity matrix of the given dimension.
+Type Parameters:
+D
+- The dimension of the desired matrix as a generic.
+Parameters:
+dim
+- The dimension of the desired matrix as a
+Nat
+.
+Returns:
+The DxD identity matrix.
+eye
+public static
+<D extends
+Num
+>
+Matrix
+<D,
+D>
+eye
+(D dim)
+Creates the identity matrix of the given dimension.
+Type Parameters:
+D
+- The dimension of the desired matrix as a generic.
+Parameters:
+dim
+- The dimension of the desired matrix as a
+Num
+.
+Returns:
+The DxD identity matrix.
+changeBoundsUnchecked
+public static
+<R1 extends
+Num
+,
+C1 extends
+Num
+>
+Matrix
+<R1,
+C1>
+changeBoundsUnchecked
+(
+Matrix
+<?,
+?> mat)
+Reassigns dimensions of a
+Matrix
+to allow for operations with other matrices that have
+ wildcard dimensions.
+Type Parameters:
+R1
+- Row dimension to assign.
+C1
+- Column dimension to assign.
+Parameters:
+mat
+- The
+Matrix
+to remove the dimensions from.
+Returns:
+The matrix with reassigned dimensions.
+isIdentical
+public
+boolean
+isIdentical
+(
+Matrix
+<?,
+?> other,
+ double tolerance)
+Checks if another
+Matrix
+is identical to "this" one within a specified tolerance.
+This will check if each element is in tolerance of the corresponding element from the other
+Matrix
+or if the elements have the same symbolic meaning. For two elements to have the
+ same symbolic meaning they both must be either Double.NaN, Double.POSITIVE_INFINITY, or
+ Double.NEGATIVE_INFINITY.
+NOTE:It is recommended to use
+isEqual(Matrix, double)
+over this method when
+ checking if two matrices are equal as
+isEqual(Matrix, double)
+will return false
+ if an element is uncountable. This method should only be used when uncountable elements need to
+ be compared.
+Parameters:
+other
+- The
+Matrix
+to check against this one.
+tolerance
+- The tolerance to check equality with.
+Returns:
+true if this matrix is identical to the one supplied.
+isEqual
+public
+boolean
+isEqual
+(
+Matrix
+<?,
+?> other,
+ double tolerance)
+Checks if another
+Matrix
+is equal to "this" within a specified tolerance.
+This will check if each element is in tolerance of the corresponding element from the other
+Matrix
+.
+tol ≥ |a
+ij
+- b
+ij
+|
+Parameters:
+other
+- The
+Matrix
+to check against this one.
+tolerance
+- The tolerance to check equality with.
+Returns:
+true if this matrix is equal to the one supplied.
+rankUpdate
+public
+void
+rankUpdate
+(
+Matrix
+<
+R
+,
+N1
+> v,
+ double sigma,
+ boolean lowerTriangular)
+Performs an inplace Cholesky rank update (or downdate).
+If this matrix contains L where A = LLᵀ before the update, it will contain L where LLᵀ = A +
+ σvvᵀ after the update.
+Parameters:
+v
+- Vector to use for the update.
+sigma
+- Sigma to use for the update.
+lowerTriangular
+- Whether this matrix is lower triangular.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+other)
+Checks if an object is equal to this
+Matrix
+.
+a
+ij
+== b
+ij
+Overrides:
+equals
+in class
+Object
+Parameters:
+other
+- The Object to check against this
+Matrix
+.
+Returns:
+true if the object supplied is a
+Matrix
+and is equal to this matrix.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+getProto
+public static
+<R extends
+Num
+,
+C extends
+Num
+>
+MatrixProto
+<R,
+C>
+getProto
+(
+Nat
+<R> rows,
+Nat
+<C> cols)
+Creates an implementation of the
+Protobuf
+interface for matrices.
+Type Parameters:
+R
+- The number of rows of the matrices this serializer processes.
+C
+- The number of cols of the matrices this serializer processes.
+Parameters:
+rows
+- The number of rows of the matrices this serializer processes.
+cols
+- The number of cols of the matrices this serializer processes.
+Returns:
+The protobuf implementation.
+getStruct
+public static
+<R extends
+Num
+,
+C extends
+Num
+>
+MatrixStruct
+<R,
+C>
+getStruct
+(
+Nat
+<R> rows,
+Nat
+<C> cols)
+Creates an implementation of the
+Struct
+interfaces for matrices.
+Type Parameters:
+R
+- The number of rows of the matrices this serializer processes.
+C
+- The number of cols of the matrices this serializer processes.
+Parameters:
+rows
+- The number of rows of the matrices this serializer processes.
+cols
+- The number of cols of the matrices this serializer processes.
+Returns:
+The struct implementation.

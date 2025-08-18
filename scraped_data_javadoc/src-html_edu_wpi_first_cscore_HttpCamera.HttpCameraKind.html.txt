@@ -1,0 +1,229 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cscore;
+006
+007
+/** A source that represents a MJPEG-over-HTTP (IP) camera. */
+008
+public class HttpCamera extends VideoCamera {
+009
+/** HTTP camera kind. */
+010
+public enum HttpCameraKind {
+011
+/** Unknown camera kind. */
+012
+kUnknown(0),
+013
+/** MJPG Streamer camera. */
+014
+kMJPGStreamer(1),
+015
+/** CS Core camera. */
+016
+kCSCore(2),
+017
+/** Axis camera. */
+018
+kAxis(3);
+019
+020
+private final int value;
+021
+022
+HttpCameraKind(int value) {
+023
+this.value = value;
+024
+}
+025
+026
+/**
+027
+* Returns HttpCameraKind value.
+028
+*
+029
+* @return HttpCameraKind value.
+030
+*/
+031
+public int getValue() {
+032
+return value;
+033
+}
+034
+}
+035
+036
+/**
+037
+* Convert from the numerical representation of kind to an enum type.
+038
+*
+039
+* @param kind The numerical representation of kind
+040
+* @return The kind
+041
+*/
+042
+public static HttpCameraKind getHttpCameraKindFromInt(int kind) {
+043
+return switch (kind) {
+044
+case 1 -> HttpCameraKind.kMJPGStreamer;
+045
+case 2 -> HttpCameraKind.kCSCore;
+046
+case 3 -> HttpCameraKind.kAxis;
+047
+default -> HttpCameraKind.kUnknown;
+048
+};
+049
+}
+050
+051
+/**
+052
+* Create a source for a MJPEG-over-HTTP (IP) camera.
+053
+*
+054
+* @param name Source name (arbitrary unique identifier)
+055
+* @param url Camera URL (e.g. "http://10.x.y.11/video/stream.mjpg")
+056
+*/
+057
+public HttpCamera(String name, String url) {
+058
+super(CameraServerJNI.createHttpCamera(name, url, HttpCameraKind.kUnknown.getValue()));
+059
+}
+060
+061
+/**
+062
+* Create a source for a MJPEG-over-HTTP (IP) camera.
+063
+*
+064
+* @param name Source name (arbitrary unique identifier)
+065
+* @param url Camera URL (e.g. "http://10.x.y.11/video/stream.mjpg")
+066
+* @param kind Camera kind (e.g. kAxis)
+067
+*/
+068
+public HttpCamera(String name, String url, HttpCameraKind kind) {
+069
+super(CameraServerJNI.createHttpCamera(name, url, kind.getValue()));
+070
+}
+071
+072
+/**
+073
+* Create a source for a MJPEG-over-HTTP (IP) camera.
+074
+*
+075
+* @param name Source name (arbitrary unique identifier)
+076
+* @param urls Array of Camera URLs
+077
+*/
+078
+public HttpCamera(String name, String[] urls) {
+079
+super(CameraServerJNI.createHttpCameraMulti(name, urls, HttpCameraKind.kUnknown.getValue()));
+080
+}
+081
+082
+/**
+083
+* Create a source for a MJPEG-over-HTTP (IP) camera.
+084
+*
+085
+* @param name Source name (arbitrary unique identifier)
+086
+* @param urls Array of Camera URLs
+087
+* @param kind Camera kind (e.g. kAxis)
+088
+*/
+089
+public HttpCamera(String name, String[] urls, HttpCameraKind kind) {
+090
+super(CameraServerJNI.createHttpCameraMulti(name, urls, kind.getValue()));
+091
+}
+092
+093
+/**
+094
+* Get the kind of HTTP camera.
+095
+*
+096
+* <p>Autodetection can result in returning a different value than the camera was created with.
+097
+*
+098
+* @return The kind of HTTP camera.
+099
+*/
+100
+public HttpCameraKind getHttpCameraKind() {
+101
+return getHttpCameraKindFromInt(CameraServerJNI.getHttpCameraKind(m_handle));
+102
+}
+103
+104
+/**
+105
+* Change the URLs used to connect to the camera.
+106
+*
+107
+* @param urls Array of Camera URLs
+108
+*/
+109
+public void setUrls(String[] urls) {
+110
+CameraServerJNI.setHttpCameraUrls(m_handle, urls);
+111
+}
+112
+113
+/**
+114
+* Get the URLs used to connect to the camera.
+115
+*
+116
+* @return Array of camera URLs.
+117
+*/
+118
+public String[] getUrls() {
+119
+return CameraServerJNI.getHttpCameraUrls(m_handle);
+120
+}
+121
+}

@@ -1,0 +1,215 @@
+Package
+edu.wpi.first.wpilibj
+Class Alert
+java.lang.Object
+edu.wpi.first.wpilibj.Alert
+All Implemented Interfaces:
+AutoCloseable
+public class
+Alert
+extends
+Object
+implements
+AutoCloseable
+Persistent alert to be sent via NetworkTables. Alerts are tagged with a type of
+kError
+,
+kWarning
+, or
+kInfo
+to denote urgency. See
+AlertType
+for suggested usage of each type. Alerts can be
+ displayed on supported dashboards, and are shown in a priority order based on type and recency of
+ activation, with newly activated alerts first.
+Alerts should be created once and stored persistently, then updated to "active" or "inactive"
+ as necessary.
+set(boolean)
+can be safely called periodically.
+This API is new for 2025, but is likely to change in future seasons to facilitate deeper
+ integration with the robot control system.
+class Robot {
+   Alert alert = new Alert("Something went wrong", AlertType.kWarning);
+
+   periodic() {
+     alert.set(...);
+   }
+ }
+Alternatively, alerts which are only used once at startup can be created and activated inline.
+public Robot() {
+   new Alert("Failed to load auto paths", AlertType.kError).set(true);
+ }
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+Alert.AlertType
+Represents an alert's level of urgency.
+Constructor Summary
+Constructors
+Constructor
+Description
+Alert
+(
+String
+text,
+Alert.AlertType
+type)
+Creates a new alert in the default group - "Alerts".
+Alert
+(
+String
+group,
+String
+text,
+Alert.AlertType
+type)
+Creates a new alert.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+boolean
+get
+()
+Gets whether the alert is active.
+String
+getText
+()
+Gets the current alert text.
+Alert.AlertType
+getType
+()
+Get the type of this alert.
+void
+set
+(boolean active)
+Sets whether the alert should currently be displayed.
+void
+setText
+(
+String
+text)
+Updates current alert text.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+Alert
+public
+Alert
+(
+String
+text,
+Alert.AlertType
+type)
+Creates a new alert in the default group - "Alerts". If this is the first to be instantiated,
+ the appropriate entries will be added to NetworkTables.
+Parameters:
+text
+- Text to be displayed when the alert is active.
+type
+- Alert urgency level.
+Alert
+public
+Alert
+(
+String
+group,
+String
+text,
+Alert.AlertType
+type)
+Creates a new alert. If this is the first to be instantiated in its group, the appropriate
+ entries will be added to NetworkTables.
+Parameters:
+group
+- Group identifier, used as the entry name in NetworkTables.
+text
+- Text to be displayed when the alert is active.
+type
+- Alert urgency level.
+Method Details
+set
+public
+void
+set
+(boolean active)
+Sets whether the alert should currently be displayed. This method can be safely called
+ periodically.
+Parameters:
+active
+- Whether to display the alert.
+get
+public
+boolean
+get
+()
+Gets whether the alert is active.
+Returns:
+whether the alert is active.
+setText
+public
+void
+setText
+(
+String
+text)
+Updates current alert text. Use this method to dynamically change the displayed alert, such as
+ including more details about the detected problem.
+Parameters:
+text
+- Text to be displayed when the alert is active.
+getText
+public
+String
+getText
+()
+Gets the current alert text.
+Returns:
+the current text.
+getType
+public
+Alert.AlertType
+getType
+()
+Get the type of this alert.
+Returns:
+the type
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable

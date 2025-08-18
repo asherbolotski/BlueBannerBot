@@ -1,0 +1,290 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.NotifyCallback;
+008
+import edu.wpi.first.hal.simulation.REVPHDataJNI;
+009
+import edu.wpi.first.wpilibj.PneumaticHub;
+010
+import edu.wpi.first.wpilibj.SensorUtil;
+011
+012
+/** Class to control a simulated PneumaticHub (PH). */
+013
+public class REVPHSim extends PneumaticsBaseSim {
+014
+/** Constructs for the default PH. */
+015
+public REVPHSim() {
+016
+super(SensorUtil.getDefaultREVPHModule());
+017
+}
+018
+019
+/**
+020
+* Constructs from a PH module number (CAN ID).
+021
+*
+022
+* @param module module number
+023
+*/
+024
+public REVPHSim(int module) {
+025
+super(module);
+026
+}
+027
+028
+/**
+029
+* Constructs from a PneumaticHum object.
+030
+*
+031
+* @param module PCM module to simulate
+032
+*/
+033
+public REVPHSim(PneumaticHub module) {
+034
+super(module);
+035
+}
+036
+037
+/**
+038
+* Check whether the closed loop compressor control is active.
+039
+*
+040
+* @return config type
+041
+*/
+042
+public int getCompressorConfigType() {
+043
+return REVPHDataJNI.getCompressorConfigType(m_index);
+044
+}
+045
+046
+/**
+047
+* Turn on/off the closed loop control of the compressor.
+048
+*
+049
+* @param compressorConfigType compressor config type
+050
+*/
+051
+public void setCompressorConfigType(int compressorConfigType) {
+052
+REVPHDataJNI.setCompressorConfigType(m_index, compressorConfigType);
+053
+}
+054
+055
+/**
+056
+* Register a callback to be run whenever the closed loop state changes.
+057
+*
+058
+* @param callback the callback
+059
+* @param initialNotify whether the callback should be called with the initial value
+060
+* @return the {@link CallbackStore} object associated with this callback.
+061
+*/
+062
+public CallbackStore registerCompressorConfigTypeCallback(
+063
+NotifyCallback callback, boolean initialNotify) {
+064
+int uid = REVPHDataJNI.registerCompressorConfigTypeCallback(m_index, callback, initialNotify);
+065
+return new CallbackStore(m_index, uid, REVPHDataJNI::cancelCompressorConfigTypeCallback);
+066
+}
+067
+068
+@Override
+069
+public boolean getInitialized() {
+070
+return REVPHDataJNI.getInitialized(m_index);
+071
+}
+072
+073
+@Override
+074
+public void setInitialized(boolean initialized) {
+075
+REVPHDataJNI.setInitialized(m_index, initialized);
+076
+}
+077
+078
+@Override
+079
+public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+080
+int uid = REVPHDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+081
+return new CallbackStore(m_index, uid, REVPHDataJNI::cancelInitializedCallback);
+082
+}
+083
+084
+@Override
+085
+public boolean getCompressorOn() {
+086
+return REVPHDataJNI.getCompressorOn(m_index);
+087
+}
+088
+089
+@Override
+090
+public void setCompressorOn(boolean compressorOn) {
+091
+REVPHDataJNI.setCompressorOn(m_index, compressorOn);
+092
+}
+093
+094
+@Override
+095
+public CallbackStore registerCompressorOnCallback(
+096
+NotifyCallback callback, boolean initialNotify) {
+097
+int uid = REVPHDataJNI.registerCompressorOnCallback(m_index, callback, initialNotify);
+098
+return new CallbackStore(m_index, uid, REVPHDataJNI::cancelCompressorOnCallback);
+099
+}
+100
+101
+@Override
+102
+public boolean getSolenoidOutput(int channel) {
+103
+return REVPHDataJNI.getSolenoidOutput(m_index, channel);
+104
+}
+105
+106
+@Override
+107
+public void setSolenoidOutput(int channel, boolean solenoidOutput) {
+108
+REVPHDataJNI.setSolenoidOutput(m_index, channel, solenoidOutput);
+109
+}
+110
+111
+@Override
+112
+public CallbackStore registerSolenoidOutputCallback(
+113
+int channel, NotifyCallback callback, boolean initialNotify) {
+114
+int uid =
+115
+REVPHDataJNI.registerSolenoidOutputCallback(m_index, channel, callback, initialNotify);
+116
+return new CallbackStore(m_index, channel, uid, REVPHDataJNI::cancelSolenoidOutputCallback);
+117
+}
+118
+119
+@Override
+120
+public boolean getPressureSwitch() {
+121
+return REVPHDataJNI.getPressureSwitch(m_index);
+122
+}
+123
+124
+@Override
+125
+public void setPressureSwitch(boolean pressureSwitch) {
+126
+REVPHDataJNI.setPressureSwitch(m_index, pressureSwitch);
+127
+}
+128
+129
+@Override
+130
+public CallbackStore registerPressureSwitchCallback(
+131
+NotifyCallback callback, boolean initialNotify) {
+132
+int uid = REVPHDataJNI.registerPressureSwitchCallback(m_index, callback, initialNotify);
+133
+return new CallbackStore(m_index, uid, REVPHDataJNI::cancelPressureSwitchCallback);
+134
+}
+135
+136
+@Override
+137
+public double getCompressorCurrent() {
+138
+return REVPHDataJNI.getCompressorCurrent(m_index);
+139
+}
+140
+141
+@Override
+142
+public void setCompressorCurrent(double compressorCurrent) {
+143
+REVPHDataJNI.setCompressorCurrent(m_index, compressorCurrent);
+144
+}
+145
+146
+@Override
+147
+public CallbackStore registerCompressorCurrentCallback(
+148
+NotifyCallback callback, boolean initialNotify) {
+149
+int uid = REVPHDataJNI.registerCompressorCurrentCallback(m_index, callback, initialNotify);
+150
+return new CallbackStore(m_index, uid, REVPHDataJNI::cancelCompressorCurrentCallback);
+151
+}
+152
+153
+@Override
+154
+public void resetData() {
+155
+REVPHDataJNI.resetData(m_index);
+156
+}
+157
+}

@@ -1,0 +1,430 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+008
+import edu.wpi.first.hal.HAL;
+009
+import edu.wpi.first.hal.util.AllocationException;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import edu.wpi.first.util.sendable.SendableBuilder;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+014
+/**
+015
+* DoubleSolenoid class for running 2 channels of high voltage Digital Output on the pneumatics
+016
+* module.
+017
+*
+018
+* <p>The DoubleSolenoid class is typically used for pneumatics solenoids that have two positions
+019
+* controlled by two separate channels.
+020
+*/
+021
+public class DoubleSolenoid implements Sendable, AutoCloseable {
+022
+/** Possible values for a DoubleSolenoid. */
+023
+public enum Value {
+024
+/** Off position. */
+025
+kOff,
+026
+/** Forward position. */
+027
+kForward,
+028
+/** Reverse position. */
+029
+kReverse
+030
+}
+031
+032
+private final int m_forwardMask; // The mask for the forward channel.
+033
+private final int m_reverseMask; // The mask for the reverse channel.
+034
+private final int m_mask; // The channel mask
+035
+private PneumaticsBase m_module;
+036
+private final int m_forwardChannel;
+037
+private final int m_reverseChannel;
+038
+039
+/**
+040
+* Constructs a double solenoid for a default module of a specific module type.
+041
+*
+042
+* @param moduleType The module type to use.
+043
+* @param forwardChannel The forward channel on the module to control.
+044
+* @param reverseChannel The reverse channel on the module to control.
+045
+*/
+046
+public DoubleSolenoid(
+047
+final PneumaticsModuleType moduleType, final int forwardChannel, final int reverseChannel) {
+048
+this(PneumaticsBase.getDefaultForType(moduleType), moduleType, forwardChannel, reverseChannel);
+049
+}
+050
+051
+/**
+052
+* Constructs a double solenoid for a specified module of a specific module type.
+053
+*
+054
+* @param module The module of the solenoid module to use.
+055
+* @param moduleType The module type to use.
+056
+* @param forwardChannel The forward channel on the module to control.
+057
+* @param reverseChannel The reverse channel on the module to control.
+058
+*/
+059
+@SuppressWarnings({"PMD.UseTryWithResources", "this-escape"})
+060
+public DoubleSolenoid(
+061
+final int module,
+062
+final PneumaticsModuleType moduleType,
+063
+final int forwardChannel,
+064
+final int reverseChannel) {
+065
+m_module = PneumaticsBase.getForType(module, moduleType);
+066
+boolean allocatedSolenoids = false;
+067
+boolean successfulCompletion = false;
+068
+069
+m_forwardChannel = forwardChannel;
+070
+m_reverseChannel = reverseChannel;
+071
+072
+m_forwardMask = 1 << forwardChannel;
+073
+m_reverseMask = 1 << reverseChannel;
+074
+m_mask = m_forwardMask | m_reverseMask;
+075
+076
+try {
+077
+if (!m_module.checkSolenoidChannel(forwardChannel)) {
+078
+throw new IllegalArgumentException("Channel " + forwardChannel + " out of range");
+079
+}
+080
+081
+if (!m_module.checkSolenoidChannel(reverseChannel)) {
+082
+throw new IllegalArgumentException("Channel " + reverseChannel + " out of range");
+083
+}
+084
+085
+int allocMask = m_module.checkAndReserveSolenoids(m_mask);
+086
+if (allocMask != 0) {
+087
+if (allocMask == m_mask) {
+088
+throw new AllocationException(
+089
+"Channels " + forwardChannel + " and " + reverseChannel + " already allocated");
+090
+} else if (allocMask == m_forwardMask) {
+091
+throw new AllocationException("Channel " + forwardChannel + " already allocated");
+092
+} else {
+093
+throw new AllocationException("Channel " + reverseChannel + " already allocated");
+094
+}
+095
+}
+096
+allocatedSolenoids = true;
+097
+098
+HAL.report(
+099
+tResourceType.kResourceType_Solenoid, forwardChannel + 1, m_module.getModuleNumber() + 1);
+100
+HAL.report(
+101
+tResourceType.kResourceType_Solenoid, reverseChannel + 1, m_module.getModuleNumber() + 1);
+102
+SendableRegistry.addLW(this, "DoubleSolenoid", m_module.getModuleNumber(), forwardChannel);
+103
+successfulCompletion = true;
+104
+} finally {
+105
+if (!successfulCompletion) {
+106
+if (allocatedSolenoids) {
+107
+m_module.unreserveSolenoids(m_mask);
+108
+}
+109
+m_module.close();
+110
+}
+111
+}
+112
+}
+113
+114
+@Override
+115
+public synchronized void close() {
+116
+SendableRegistry.remove(this);
+117
+m_module.unreserveSolenoids(m_mask);
+118
+m_module.close();
+119
+m_module = null;
+120
+}
+121
+122
+/**
+123
+* Set the value of a solenoid.
+124
+*
+125
+* @param value The value to set (Off, Forward, Reverse)
+126
+*/
+127
+public void set(final Value value) {
+128
+int setValue =
+129
+switch (value) {
+130
+case kOff -> 0;
+131
+case kForward -> m_forwardMask;
+132
+case kReverse -> m_reverseMask;
+133
+};
+134
+135
+m_module.setSolenoids(m_mask, setValue);
+136
+}
+137
+138
+/**
+139
+* Read the current value of the solenoid.
+140
+*
+141
+* @return The current value of the solenoid.
+142
+*/
+143
+public Value get() {
+144
+int values = m_module.getSolenoids();
+145
+146
+if ((values & m_forwardMask) != 0) {
+147
+return Value.kForward;
+148
+} else if ((values & m_reverseMask) != 0) {
+149
+return Value.kReverse;
+150
+} else {
+151
+return Value.kOff;
+152
+}
+153
+}
+154
+155
+/**
+156
+* Toggle the value of the solenoid.
+157
+*
+158
+* <p>If the solenoid is set to forward, it'll be set to reverse. If the solenoid is set to
+159
+* reverse, it'll be set to forward. If the solenoid is set to off, nothing happens.
+160
+*/
+161
+public void toggle() {
+162
+Value value = get();
+163
+164
+if (value == Value.kForward) {
+165
+set(Value.kReverse);
+166
+} else if (value == Value.kReverse) {
+167
+set(Value.kForward);
+168
+}
+169
+}
+170
+171
+/**
+172
+* Get the forward channel.
+173
+*
+174
+* @return the forward channel.
+175
+*/
+176
+public int getFwdChannel() {
+177
+return m_forwardChannel;
+178
+}
+179
+180
+/**
+181
+* Get the reverse channel.
+182
+*
+183
+* @return the reverse channel.
+184
+*/
+185
+public int getRevChannel() {
+186
+return m_reverseChannel;
+187
+}
+188
+189
+/**
+190
+* Check if the forward solenoid is Disabled. If a solenoid is shorted, it is added to the
+191
+* DisabledList and disabled until power cycle, or until faults are cleared.
+192
+*
+193
+* @return If solenoid is disabled due to short.
+194
+*/
+195
+public boolean isFwdSolenoidDisabled() {
+196
+return (m_module.getSolenoidDisabledList() & m_forwardMask) != 0;
+197
+}
+198
+199
+/**
+200
+* Check if the reverse solenoid is Disabled. If a solenoid is shorted, it is added to the
+201
+* DisabledList and disabled until power cycle, or until faults are cleared.
+202
+*
+203
+* @return If solenoid is disabled due to short.
+204
+*/
+205
+public boolean isRevSolenoidDisabled() {
+206
+return (m_module.getSolenoidDisabledList() & m_reverseMask) != 0;
+207
+}
+208
+209
+@Override
+210
+public void initSendable(SendableBuilder builder) {
+211
+builder.setSmartDashboardType("Double Solenoid");
+212
+builder.setActuator(true);
+213
+builder.setSafeState(() -> set(Value.kOff));
+214
+builder.addStringProperty(
+215
+"Value",
+216
+() -> get().name().substring(1),
+217
+value -> {
+218
+if ("Forward".equals(value)) {
+219
+set(Value.kForward);
+220
+} else if ("Reverse".equals(value)) {
+221
+set(Value.kReverse);
+222
+} else {
+223
+set(Value.kOff);
+224
+}
+225
+});
+226
+}
+227
+}

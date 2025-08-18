@@ -1,0 +1,283 @@
+Package
+edu.wpi.first.math.kinematics
+Class DifferentialDriveWheelSpeeds
+java.lang.Object
+edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+DifferentialDriveWheelSpeeds
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+Represents the wheel speeds for a differential drive drivetrain.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+double
+leftMetersPerSecond
+Speed of the left side of the robot.
+static final
+DifferentialDriveWheelSpeedsProto
+proto
+DifferentialDriveWheelSpeeds protobuf for serialization.
+double
+rightMetersPerSecond
+Speed of the right side of the robot.
+static final
+DifferentialDriveWheelSpeedsStruct
+struct
+DifferentialDriveWheelSpeeds struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+DifferentialDriveWheelSpeeds
+()
+Constructs a DifferentialDriveWheelSpeeds with zeros for left and right speeds.
+DifferentialDriveWheelSpeeds
+(double leftMetersPerSecond,
+ double rightMetersPerSecond)
+Constructs a DifferentialDriveWheelSpeeds.
+DifferentialDriveWheelSpeeds
+(
+LinearVelocity
+left,
+LinearVelocity
+right)
+Constructs a DifferentialDriveWheelSpeeds.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+desaturate
+(double attainableMaxSpeedMetersPerSecond)
+Renormalizes the wheel speeds if any either side is above the specified maximum.
+void
+desaturate
+(
+LinearVelocity
+attainableMaxSpeed)
+Renormalizes the wheel speeds if any either side is above the specified maximum.
+DifferentialDriveWheelSpeeds
+div
+(double scalar)
+Divides the DifferentialDriveWheelSpeeds by a scalar and returns the new
+ DifferentialDriveWheelSpeeds.
+DifferentialDriveWheelSpeeds
+minus
+(
+DifferentialDriveWheelSpeeds
+other)
+Subtracts the other DifferentialDriveWheelSpeeds from the current DifferentialDriveWheelSpeeds
+ and returns the difference.
+DifferentialDriveWheelSpeeds
+plus
+(
+DifferentialDriveWheelSpeeds
+other)
+Adds two DifferentialDriveWheelSpeeds and returns the sum.
+DifferentialDriveWheelSpeeds
+times
+(double scalar)
+Multiplies the DifferentialDriveWheelSpeeds by a scalar and returns the new
+ DifferentialDriveWheelSpeeds.
+String
+toString
+()
+DifferentialDriveWheelSpeeds
+unaryMinus
+()
+Returns the inverse of the current DifferentialDriveWheelSpeeds.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+leftMetersPerSecond
+public
+double
+leftMetersPerSecond
+Speed of the left side of the robot.
+rightMetersPerSecond
+public
+double
+rightMetersPerSecond
+Speed of the right side of the robot.
+proto
+public static final
+DifferentialDriveWheelSpeedsProto
+proto
+DifferentialDriveWheelSpeeds protobuf for serialization.
+struct
+public static final
+DifferentialDriveWheelSpeedsStruct
+struct
+DifferentialDriveWheelSpeeds struct for serialization.
+Constructor Details
+DifferentialDriveWheelSpeeds
+public
+DifferentialDriveWheelSpeeds
+()
+Constructs a DifferentialDriveWheelSpeeds with zeros for left and right speeds.
+DifferentialDriveWheelSpeeds
+public
+DifferentialDriveWheelSpeeds
+(double leftMetersPerSecond,
+ double rightMetersPerSecond)
+Constructs a DifferentialDriveWheelSpeeds.
+Parameters:
+leftMetersPerSecond
+- The left speed.
+rightMetersPerSecond
+- The right speed.
+DifferentialDriveWheelSpeeds
+public
+DifferentialDriveWheelSpeeds
+(
+LinearVelocity
+left,
+LinearVelocity
+right)
+Constructs a DifferentialDriveWheelSpeeds.
+Parameters:
+left
+- The left speed.
+right
+- The right speed.
+Method Details
+desaturate
+public
+void
+desaturate
+(double attainableMaxSpeedMetersPerSecond)
+Renormalizes the wheel speeds if any either side is above the specified maximum.
+Sometimes, after inverse kinematics, the requested speed from one or more wheels may be
+ above the max attainable speed for the driving motor on that wheel. To fix this issue, one can
+ reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+ absolute threshold, while maintaining the ratio of speeds between wheels.
+Parameters:
+attainableMaxSpeedMetersPerSecond
+- The absolute max speed that a wheel can reach.
+desaturate
+public
+void
+desaturate
+(
+LinearVelocity
+attainableMaxSpeed)
+Renormalizes the wheel speeds if any either side is above the specified maximum.
+Sometimes, after inverse kinematics, the requested speed from one or more wheels may be
+ above the max attainable speed for the driving motor on that wheel. To fix this issue, one can
+ reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+ absolute threshold, while maintaining the ratio of speeds between wheels.
+Parameters:
+attainableMaxSpeed
+- The absolute max speed that a wheel can reach.
+plus
+public
+DifferentialDriveWheelSpeeds
+plus
+(
+DifferentialDriveWheelSpeeds
+other)
+Adds two DifferentialDriveWheelSpeeds and returns the sum.
+For example, DifferentialDriveWheelSpeeds{1.0, 0.5} + DifferentialDriveWheelSpeeds{2.0, 1.5}
+ = DifferentialDriveWheelSpeeds{3.0, 2.0}
+Parameters:
+other
+- The DifferentialDriveWheelSpeeds to add.
+Returns:
+The sum of the DifferentialDriveWheelSpeeds.
+minus
+public
+DifferentialDriveWheelSpeeds
+minus
+(
+DifferentialDriveWheelSpeeds
+other)
+Subtracts the other DifferentialDriveWheelSpeeds from the current DifferentialDriveWheelSpeeds
+ and returns the difference.
+For example, DifferentialDriveWheelSpeeds{5.0, 4.0} - DifferentialDriveWheelSpeeds{1.0, 2.0}
+ = DifferentialDriveWheelSpeeds{4.0, 2.0}
+Parameters:
+other
+- The DifferentialDriveWheelSpeeds to subtract.
+Returns:
+The difference between the two DifferentialDriveWheelSpeeds.
+unaryMinus
+public
+DifferentialDriveWheelSpeeds
+unaryMinus
+()
+Returns the inverse of the current DifferentialDriveWheelSpeeds. This is equivalent to negating
+ all components of the DifferentialDriveWheelSpeeds.
+Returns:
+The inverse of the current DifferentialDriveWheelSpeeds.
+times
+public
+DifferentialDriveWheelSpeeds
+times
+(double scalar)
+Multiplies the DifferentialDriveWheelSpeeds by a scalar and returns the new
+ DifferentialDriveWheelSpeeds.
+For example, DifferentialDriveWheelSpeeds{2.0, 2.5} * 2 = DifferentialDriveWheelSpeeds{4.0,
+ 5.0}
+Parameters:
+scalar
+- The scalar to multiply by.
+Returns:
+The scaled DifferentialDriveWheelSpeeds.
+div
+public
+DifferentialDriveWheelSpeeds
+div
+(double scalar)
+Divides the DifferentialDriveWheelSpeeds by a scalar and returns the new
+ DifferentialDriveWheelSpeeds.
+For example, DifferentialDriveWheelSpeeds{2.0, 2.5} / 2 = DifferentialDriveWheelSpeeds{1.0,
+ 1.25}
+Parameters:
+scalar
+- The scalar to divide by.
+Returns:
+The scaled DifferentialDriveWheelSpeeds.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object

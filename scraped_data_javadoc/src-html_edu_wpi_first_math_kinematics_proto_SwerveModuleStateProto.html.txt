@@ -1,0 +1,73 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics.proto;
+006
+007
+import edu.wpi.first.math.geometry.Rotation2d;
+008
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+009
+import edu.wpi.first.math.proto.Kinematics.ProtobufSwerveModuleState;
+010
+import edu.wpi.first.util.protobuf.Protobuf;
+011
+import us.hebi.quickbuf.Descriptors.Descriptor;
+012
+013
+public class SwerveModuleStateProto
+014
+implements Protobuf<SwerveModuleState, ProtobufSwerveModuleState> {
+015
+@Override
+016
+public Class<SwerveModuleState> getTypeClass() {
+017
+return SwerveModuleState.class;
+018
+}
+019
+020
+@Override
+021
+public Descriptor getDescriptor() {
+022
+return ProtobufSwerveModuleState.getDescriptor();
+023
+}
+024
+025
+@Override
+026
+public ProtobufSwerveModuleState createMessage() {
+027
+return ProtobufSwerveModuleState.newInstance();
+028
+}
+029
+030
+@Override
+031
+public SwerveModuleState unpack(ProtobufSwerveModuleState msg) {
+032
+return new SwerveModuleState(msg.getSpeed(), Rotation2d.proto.unpack(msg.getAngle()));
+033
+}
+034
+035
+@Override
+036
+public void pack(ProtobufSwerveModuleState msg, SwerveModuleState value) {
+037
+msg.setSpeed(value.speedMetersPerSecond);
+038
+Rotation2d.proto.pack(msg.getMutableAngle(), value.angle);
+039
+}
+040
+}

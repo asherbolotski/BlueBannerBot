@@ -1,0 +1,221 @@
+Package
+edu.wpi.first.util.datalog
+Class DataLogWriter
+java.lang.Object
+edu.wpi.first.util.datalog.DataLog
+edu.wpi.first.util.datalog.DataLogWriter
+All Implemented Interfaces:
+AutoCloseable
+public class
+DataLogWriter
+extends
+DataLog
+A data log writer that flushes the data log to a file when flush() is called.
+Field Summary
+Fields inherited from class edu.wpi.first.util.datalog.
+DataLog
+m_impl
+Constructor Summary
+Constructors
+Constructor
+Description
+DataLogWriter
+(
+OutputStream
+os)
+Construct a new Data Log with an output stream.
+DataLogWriter
+(
+OutputStream
+os,
+String
+extraHeader)
+Construct a new Data Log with an output stream.
+DataLogWriter
+(
+String
+filename)
+Construct a new Data Log.
+DataLogWriter
+(
+String
+filename,
+String
+extraHeader)
+Construct a new Data Log.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+flush
+()
+Explicitly flushes the log data to disk.
+Methods inherited from class edu.wpi.first.util.datalog.
+DataLog
+addSchema
+,
+addSchema
+,
+addSchema
+,
+addSchema
+,
+addSchema
+,
+addSchema
+,
+addSchema
+,
+addSchema
+,
+appendBoolean
+,
+appendBooleanArray
+,
+appendDouble
+,
+appendDoubleArray
+,
+appendFloat
+,
+appendFloatArray
+,
+appendInteger
+,
+appendIntegerArray
+,
+appendRaw
+,
+appendRaw
+,
+appendRaw
+,
+appendRaw
+,
+appendString
+,
+appendStringArray
+,
+close
+,
+finish
+,
+finish
+,
+getImpl
+,
+hasSchema
+,
+pause
+,
+resume
+,
+setMetadata
+,
+setMetadata
+,
+start
+,
+start
+,
+start
+,
+stop
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DataLogWriter
+public
+DataLogWriter
+(
+String
+filename,
+String
+extraHeader)
+throws
+IOException
+Construct a new Data Log.
+Parameters:
+filename
+- filename to use
+extraHeader
+- extra header data
+Throws:
+IOException
+- if file cannot be opened
+DataLogWriter
+public
+DataLogWriter
+(
+String
+filename)
+throws
+IOException
+Construct a new Data Log.
+Parameters:
+filename
+- filename to use
+Throws:
+IOException
+- if file cannot be opened
+DataLogWriter
+public
+DataLogWriter
+(
+OutputStream
+os,
+String
+extraHeader)
+Construct a new Data Log with an output stream. Prefer the filename version if possible; this
+ is much slower!
+Parameters:
+os
+- output stream
+extraHeader
+- extra header data
+DataLogWriter
+public
+DataLogWriter
+(
+OutputStream
+os)
+Construct a new Data Log with an output stream.
+Parameters:
+os
+- output stream
+Method Details
+flush
+public
+void
+flush
+()
+Explicitly flushes the log data to disk.
+Overrides:
+flush
+in class
+DataLog

@@ -1,0 +1,335 @@
+Package
+edu.wpi.first.net
+Class WPINetJNI
+java.lang.Object
+edu.wpi.first.net.WPINetJNI
+public class
+WPINetJNI
+extends
+Object
+WPINet JNI.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static class
+WPINetJNI.Helper
+Sets whether JNI should be loaded in the static block.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+addPortForwarder
+(int port,
+String
+remoteHost,
+ int remotePort)
+Forward a local TCP port to a remote host and port.
+static int
+createMulticastServiceAnnouncer
+(
+String
+serviceName,
+String
+serviceType,
+ int port,
+String
+[] keys,
+String
+[] values)
+Creates a MulticastServiceAnnouncer.
+static int
+createMulticastServiceResolver
+(
+String
+serviceType)
+Creates a MulticastServiceResolver.
+static void
+forceLoad
+()
+Force load the library.
+static void
+freeMulticastServiceAnnouncer
+(int handle)
+Frees a MulticastServiceAnnouncer.
+static void
+freeMulticastServiceResolver
+(int handle)
+Frees MulticastServiceResolver.
+static boolean
+getMulticastServiceAnnouncerHasImplementation
+(int handle)
+Returns true if MulticastServiceAnnouncer has an implementation.
+static
+ServiceData
+[]
+getMulticastServiceResolverData
+(int handle)
+Returns service data for MulticastServiceResolver.
+static int
+getMulticastServiceResolverEventHandle
+(int handle)
+Returns event handle for MulticastServiceResolver.
+static boolean
+getMulticastServiceResolverHasImplementation
+(int handle)
+Returns true if MulticastServiceResolver has an implementation.
+static void
+removePortForwarder
+(int port)
+Stop TCP forwarding on a port.
+static void
+startMulticastServiceAnnouncer
+(int handle)
+Starts MulticastServiceAnnouncer.
+static void
+startMulticastServiceResolver
+(int handle)
+Starts MulticastServiceResolver.
+static void
+startWebServer
+(int port,
+String
+path)
+Create a web server at the given port.
+static void
+stopMulticastServiceAnnouncer
+(int handle)
+Stops MulticastServiceAnnouncer.
+static void
+stopMulticastServiceResolver
+(int handle)
+Stops MulticastServiceResolver.
+static void
+stopWebServer
+(int port)
+Stop web server running at the given port.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+forceLoad
+public static
+void
+forceLoad
+()
+                      throws
+IOException
+Force load the library.
+Throws:
+IOException
+- if the library failed to load
+addPortForwarder
+public static
+void
+addPortForwarder
+(int port,
+String
+remoteHost,
+ int remotePort)
+Forward a local TCP port to a remote host and port. Note that local ports less than 1024 won't
+ work as a normal user.
+Parameters:
+port
+- local port number
+remoteHost
+- remote IP address / DNS name
+remotePort
+- remote port number
+removePortForwarder
+public static
+void
+removePortForwarder
+(int port)
+Stop TCP forwarding on a port.
+Parameters:
+port
+- local port number
+startWebServer
+public static
+void
+startWebServer
+(int port,
+String
+path)
+Create a web server at the given port. Note that local ports less than 1024 won't work as a
+ normal user.
+Parameters:
+port
+- local port number
+path
+- local path to document root
+stopWebServer
+public static
+void
+stopWebServer
+(int port)
+Stop web server running at the given port.
+Parameters:
+port
+- local port number
+createMulticastServiceAnnouncer
+public static
+int
+createMulticastServiceAnnouncer
+(
+String
+serviceName,
+String
+serviceType,
+ int port,
+String
+[] keys,
+String
+[] values)
+Creates a MulticastServiceAnnouncer.
+Parameters:
+serviceName
+- service name
+serviceType
+- service type
+port
+- port
+keys
+- keys
+values
+- values
+Returns:
+MulticastServiceAnnouncer handle.
+freeMulticastServiceAnnouncer
+public static
+void
+freeMulticastServiceAnnouncer
+(int handle)
+Frees a MulticastServiceAnnouncer.
+Parameters:
+handle
+- MulticastServiceAnnouncer handle.
+startMulticastServiceAnnouncer
+public static
+void
+startMulticastServiceAnnouncer
+(int handle)
+Starts MulticastServiceAnnouncer.
+Parameters:
+handle
+- MulticastServiceAnnouncer handle.
+stopMulticastServiceAnnouncer
+public static
+void
+stopMulticastServiceAnnouncer
+(int handle)
+Stops MulticastServiceAnnouncer.
+Parameters:
+handle
+- MulticastServiceAnnouncer handle.
+getMulticastServiceAnnouncerHasImplementation
+public static
+boolean
+getMulticastServiceAnnouncerHasImplementation
+(int handle)
+Returns true if MulticastServiceAnnouncer has an implementation.
+Parameters:
+handle
+- MulticastServiceAnnouncer handle.
+Returns:
+True if MulticastServiceAnnouncer has an implementation.
+createMulticastServiceResolver
+public static
+int
+createMulticastServiceResolver
+(
+String
+serviceType)
+Creates a MulticastServiceResolver.
+Parameters:
+serviceType
+- Service type.
+Returns:
+MulticastServiceResolver handle.
+freeMulticastServiceResolver
+public static
+void
+freeMulticastServiceResolver
+(int handle)
+Frees MulticastServiceResolver.
+Parameters:
+handle
+- MulticastServiceResolver handle.
+startMulticastServiceResolver
+public static
+void
+startMulticastServiceResolver
+(int handle)
+Starts MulticastServiceResolver.
+Parameters:
+handle
+- MulticastServiceResolver handle.
+stopMulticastServiceResolver
+public static
+void
+stopMulticastServiceResolver
+(int handle)
+Stops MulticastServiceResolver.
+Parameters:
+handle
+- MulticastServiceResolver handle.
+getMulticastServiceResolverHasImplementation
+public static
+boolean
+getMulticastServiceResolverHasImplementation
+(int handle)
+Returns true if MulticastServiceResolver has an implementation.
+Parameters:
+handle
+- MulticastServiceResolver handle.
+Returns:
+True if MulticastServiceResolver has an implementation.
+getMulticastServiceResolverEventHandle
+public static
+int
+getMulticastServiceResolverEventHandle
+(int handle)
+Returns event handle for MulticastServiceResolver.
+Parameters:
+handle
+- MulticastServiceResolver handle.
+Returns:
+Event handle for MulticastServiceResolver.
+getMulticastServiceResolverData
+public static
+ServiceData
+[]
+getMulticastServiceResolverData
+(int handle)
+Returns service data for MulticastServiceResolver.
+Parameters:
+handle
+- MulticastServiceResolver handle.
+Returns:
+Service data for MulticastServiceResolver.

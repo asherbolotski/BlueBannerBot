@@ -1,0 +1,108 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.jni;
+006
+007
+/** Eigen JNI. */
+008
+public final class EigenJNI extends WPIMathJNI {
+009
+/**
+010
+* Computes the matrix exp.
+011
+*
+012
+* @param src Array of elements of the matrix to be exponentiated.
+013
+* @param rows How many rows there are.
+014
+* @param dst Array where the result will be stored.
+015
+*/
+016
+public static native void exp(double[] src, int rows, double[] dst);
+017
+018
+/**
+019
+* Computes the matrix pow.
+020
+*
+021
+* @param src Array of elements of the matrix to be raised to a power.
+022
+* @param rows How many rows there are.
+023
+* @param exponent The exponent.
+024
+* @param dst Array where the result will be stored.
+025
+*/
+026
+public static native void pow(double[] src, int rows, double exponent, double[] dst);
+027
+028
+/**
+029
+* Performs an inplace rank one update (or downdate) of an upper triangular Cholesky decomposition
+030
+* matrix.
+031
+*
+032
+* @param mat Array of elements of the matrix to be updated.
+033
+* @param lowerTriangular Whether mat is lower triangular.
+034
+* @param rows How many rows there are.
+035
+* @param vec Vector to use for the rank update.
+036
+* @param sigma Sigma value to use for the rank update.
+037
+*/
+038
+public static native void rankUpdate(
+039
+double[] mat, int rows, double[] vec, double sigma, boolean lowerTriangular);
+040
+041
+/**
+042
+* Solves the least-squares problem Ax=B using a QR decomposition with full pivoting.
+043
+*
+044
+* @param A Array of elements of the A matrix.
+045
+* @param Arows Number of rows of the A matrix.
+046
+* @param Acols Number of rows of the A matrix.
+047
+* @param B Array of elements of the B matrix.
+048
+* @param Brows Number of rows of the B matrix.
+049
+* @param Bcols Number of rows of the B matrix.
+050
+* @param dst Array to store solution in. If A is m-n and B is m-p, dst is n-p.
+051
+*/
+052
+public static native void solveFullPivHouseholderQr(
+053
+double[] A, int Arows, int Acols, double[] B, int Brows, int Bcols, double[] dst);
+054
+055
+/** Utility class. */
+056
+private EigenJNI() {}
+057
+}

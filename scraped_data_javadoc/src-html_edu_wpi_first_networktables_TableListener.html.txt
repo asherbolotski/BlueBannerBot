@@ -1,0 +1,34 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/** A listener that listens to new tables in a {@link NetworkTable}. */
+008
+@FunctionalInterface
+009
+public interface TableListener {
+010
+/**
+011
+* Called when a new table is created within a {@link NetworkTable}.
+012
+*
+013
+* @param parent the parent of the table
+014
+* @param name the name of the new table
+015
+* @param table the new table
+016
+*/
+017
+void tableCreated(NetworkTable parent, String name, NetworkTable table);
+018
+}

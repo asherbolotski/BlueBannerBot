@@ -1,0 +1,478 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class LinearSystemSim<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.LinearSystemSim<States,
+Inputs,
+Outputs>
+Type Parameters:
+States
+- Number of states of the system.
+Inputs
+- Number of inputs to the system.
+Outputs
+- Number of outputs of the system.
+Direct Known Subclasses:
+DCMotorSim
+,
+ElevatorSim
+,
+FlywheelSim
+,
+SingleJointedArmSim
+public class
+LinearSystemSim
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+extends
+Object
+This class helps simulate linear systems. To use this class, do the following in the
+IterativeRobotBase.simulationPeriodic()
+method.
+Call
+setInput(double...)
+with the inputs to the system (usually voltage).
+Call
+update(double)
+to update the simulation.
+Set simulated sensor readings with the simulated positions in
+getOutput()
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final
+Matrix
+<
+Outputs
+,
+N1
+>
+m_measurementStdDevs
+The standard deviations of measurements, used for adding noise to the measurements.
+protected final
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+>
+m_plant
+The plant that represents the linear system.
+protected
+Matrix
+<
+Inputs
+,
+N1
+>
+m_u
+Input vector.
+protected
+Matrix
+<
+States
+,
+N1
+>
+m_x
+State vector.
+protected
+Matrix
+<
+Outputs
+,
+N1
+>
+m_y
+Output vector.
+Constructor Summary
+Constructors
+Constructor
+Description
+LinearSystemSim
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> system,
+ double... measurementStdDevs)
+Creates a simulated generic linear system with measurement noise.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+protected void
+clampInput
+(double maxInput)
+Clamp the input vector such that no element exceeds the maximum allowed value.
+Matrix
+<
+Inputs
+,
+N1
+>
+getInput
+()
+Returns the current input of the plant.
+double
+getInput
+(int row)
+Returns an element of the current input of the plant.
+Matrix
+<
+Outputs
+,
+N1
+>
+getOutput
+()
+Returns the current output of the plant.
+double
+getOutput
+(int row)
+Returns an element of the current output of the plant.
+void
+setInput
+(double... u)
+Sets the system inputs.
+void
+setInput
+(int row,
+ double value)
+Sets the system inputs.
+void
+setInput
+(
+Matrix
+<
+Inputs
+,
+N1
+> u)
+Sets the system inputs (usually voltages).
+void
+setState
+(
+Matrix
+<
+States
+,
+N1
+> state)
+Sets the system state.
+void
+update
+(double dtSeconds)
+Updates the simulation.
+protected
+Matrix
+<
+States
+,
+N1
+>
+updateX
+(
+Matrix
+<
+States
+,
+N1
+> currentXhat,
+Matrix
+<
+Inputs
+,
+N1
+> u,
+ double dtSeconds)
+Updates the state estimate of the system.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_plant
+protected final
+LinearSystem
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+m_plant
+The plant that represents the linear system.
+m_x
+protected
+Matrix
+<
+States
+extends
+Num
+,
+N1
+>
+m_x
+State vector.
+m_u
+protected
+Matrix
+<
+Inputs
+extends
+Num
+,
+N1
+>
+m_u
+Input vector.
+m_y
+protected
+Matrix
+<
+Outputs
+extends
+Num
+,
+N1
+>
+m_y
+Output vector.
+m_measurementStdDevs
+protected final
+Matrix
+<
+Outputs
+extends
+Num
+,
+N1
+>
+m_measurementStdDevs
+The standard deviations of measurements, used for adding noise to the measurements.
+Constructor Details
+LinearSystemSim
+public
+LinearSystemSim
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> system,
+ double... measurementStdDevs)
+Creates a simulated generic linear system with measurement noise.
+Parameters:
+system
+- The system being controlled.
+measurementStdDevs
+- Standard deviations of measurements. Can be empty if no noise is
+     desired. If present must have same number of items as Outputs
+Method Details
+update
+public
+void
+update
+(double dtSeconds)
+Updates the simulation.
+Parameters:
+dtSeconds
+- The time between updates.
+getOutput
+public
+Matrix
+<
+Outputs
+,
+N1
+>
+getOutput
+()
+Returns the current output of the plant.
+Returns:
+The current output of the plant.
+getOutput
+public
+double
+getOutput
+(int row)
+Returns an element of the current output of the plant.
+Parameters:
+row
+- The row to return.
+Returns:
+An element of the current output of the plant.
+setInput
+public
+void
+setInput
+(
+Matrix
+<
+Inputs
+,
+N1
+> u)
+Sets the system inputs (usually voltages).
+Parameters:
+u
+- The system inputs.
+setInput
+public
+void
+setInput
+(int row,
+ double value)
+Sets the system inputs.
+Parameters:
+row
+- The row in the input matrix to set.
+value
+- The value to set the row to.
+setInput
+public
+void
+setInput
+(double... u)
+Sets the system inputs.
+Parameters:
+u
+- An array of doubles that represent the inputs of the system.
+getInput
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+getInput
+()
+Returns the current input of the plant.
+Returns:
+The current input of the plant.
+getInput
+public
+double
+getInput
+(int row)
+Returns an element of the current input of the plant.
+Parameters:
+row
+- The row to return.
+Returns:
+An element of the current input of the plant.
+setState
+public
+void
+setState
+(
+Matrix
+<
+States
+,
+N1
+> state)
+Sets the system state.
+Parameters:
+state
+- The new state.
+updateX
+protected
+Matrix
+<
+States
+,
+N1
+>
+updateX
+(
+Matrix
+<
+States
+,
+N1
+> currentXhat,
+Matrix
+<
+Inputs
+,
+N1
+> u,
+ double dtSeconds)
+Updates the state estimate of the system.
+Parameters:
+currentXhat
+- The current state estimate.
+u
+- The system inputs (usually voltage).
+dtSeconds
+- The time difference between controller updates.
+Returns:
+The new state.
+clampInput
+protected
+void
+clampInput
+(double maxInput)
+Clamp the input vector such that no element exceeds the maximum allowed value. If any does, the
+ relative magnitudes of the input will be maintained.
+Parameters:
+maxInput
+- The maximum magnitude of the input vector after clamping.

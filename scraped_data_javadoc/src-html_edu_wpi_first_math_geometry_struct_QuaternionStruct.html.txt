@@ -1,0 +1,97 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.struct;
+006
+007
+import edu.wpi.first.math.geometry.Quaternion;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class QuaternionStruct implements Struct<Quaternion> {
+012
+@Override
+013
+public Class<Quaternion> getTypeClass() {
+014
+return Quaternion.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "Quaternion";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble * 4;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double w;double x;double y;double z";
+030
+}
+031
+032
+@Override
+033
+public Quaternion unpack(ByteBuffer bb) {
+034
+double w = bb.getDouble();
+035
+double x = bb.getDouble();
+036
+double y = bb.getDouble();
+037
+double z = bb.getDouble();
+038
+return new Quaternion(w, x, y, z);
+039
+}
+040
+041
+@Override
+042
+public void pack(ByteBuffer bb, Quaternion value) {
+043
+bb.putDouble(value.getW());
+044
+bb.putDouble(value.getX());
+045
+bb.putDouble(value.getY());
+046
+bb.putDouble(value.getZ());
+047
+}
+048
+049
+@Override
+050
+public boolean isImmutable() {
+051
+return true;
+052
+}
+053
+}

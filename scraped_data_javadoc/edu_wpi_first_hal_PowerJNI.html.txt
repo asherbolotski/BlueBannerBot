@@ -1,0 +1,340 @@
+Package
+edu.wpi.first.hal
+Class PowerJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.PowerJNI
+public class
+PowerJNI
+extends
+JNIWrapper
+Power HAL JNI Functions.
+See Also:
+"Power.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static double
+getBrownoutVoltage
+()
+Get the current brownout voltage setting.
+static double
+getCPUTemp
+()
+Get the current CPU temperature in degrees Celsius.
+static boolean
+getUserActive3V3
+()
+Gets the active state of the 3V3 rail.
+static boolean
+getUserActive5V
+()
+Gets the active state of the 5V rail.
+static boolean
+getUserActive6V
+()
+Gets the active state of the 6V rail.
+static double
+getUserCurrent3V3
+()
+Gets the 3V3 rail current.
+static double
+getUserCurrent5V
+()
+Gets the 5V rail current.
+static double
+getUserCurrent6V
+()
+Gets the 6V rail current.
+static int
+getUserCurrentFaults3V3
+()
+Gets the fault count for the 3V3 rail.
+static int
+getUserCurrentFaults5V
+()
+Gets the fault count for the 5V rail.
+static int
+getUserCurrentFaults6V
+()
+Gets the fault count for the 6V rail.
+static double
+getUserVoltage3V3
+()
+Gets the 3V3 rail voltage.
+static double
+getUserVoltage5V
+()
+Gets the 5V rail voltage.
+static double
+getUserVoltage6V
+()
+Gets the 6V rail voltage.
+static double
+getVinCurrent
+()
+Gets the roboRIO input current.
+static double
+getVinVoltage
+()
+Gets the roboRIO input voltage.
+static void
+resetUserCurrentFaults
+()
+Resets the overcurrent fault counters for all user rails to 0.
+static void
+setBrownoutVoltage
+(double voltage)
+Set the voltage the roboRIO will brownout and disable all outputs.
+static void
+setUserEnabled3V3
+(boolean enabled)
+Enables or disables the 3V3 rail.
+static void
+setUserEnabled5V
+(boolean enabled)
+Enables or disables the 5V rail.
+static void
+setUserEnabled6V
+(boolean enabled)
+Enables or disables the 6V rail.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getVinVoltage
+public static
+double
+getVinVoltage
+()
+Gets the roboRIO input voltage.
+Returns:
+the input voltage (volts)
+See Also:
+"HAL_GetVinVoltage"
+getVinCurrent
+public static
+double
+getVinCurrent
+()
+Gets the roboRIO input current.
+Returns:
+the input current (amps)
+See Also:
+"HAL_GetVinCurrent"
+getUserVoltage6V
+public static
+double
+getUserVoltage6V
+()
+Gets the 6V rail voltage.
+Returns:
+the 6V rail voltage (volts)
+See Also:
+"HAL_GetUserVoltage6V"
+getUserCurrent6V
+public static
+double
+getUserCurrent6V
+()
+Gets the 6V rail current.
+Returns:
+the 6V rail current (amps)
+See Also:
+"HAL_GetUserCurrent6V"
+setUserEnabled6V
+public static
+void
+setUserEnabled6V
+(boolean enabled)
+Enables or disables the 6V rail.
+Parameters:
+enabled
+- whether the rail should be enabled
+getUserActive6V
+public static
+boolean
+getUserActive6V
+()
+Gets the active state of the 6V rail.
+Returns:
+true if the rail is active, otherwise false
+See Also:
+"HAL_GetUserActive6V"
+getUserCurrentFaults6V
+public static
+int
+getUserCurrentFaults6V
+()
+Gets the fault count for the 6V rail.
+Returns:
+the number of 6V fault counts
+See Also:
+"HAL_GetUserCurrentFaults6V"
+getUserVoltage5V
+public static
+double
+getUserVoltage5V
+()
+Gets the 5V rail voltage.
+Returns:
+the 5V rail voltage (volts)
+See Also:
+"HAL_GetUserVoltage5V"
+getUserCurrent5V
+public static
+double
+getUserCurrent5V
+()
+Gets the 5V rail current.
+Returns:
+the 5V rail current (amps)
+See Also:
+"HAL_GetUserCurrent5V"
+setUserEnabled5V
+public static
+void
+setUserEnabled5V
+(boolean enabled)
+Enables or disables the 5V rail.
+Parameters:
+enabled
+- whether the rail should be enabled
+getUserActive5V
+public static
+boolean
+getUserActive5V
+()
+Gets the active state of the 5V rail.
+Returns:
+true if the rail is active, otherwise false
+See Also:
+"HAL_GetUserActive5V"
+getUserCurrentFaults5V
+public static
+int
+getUserCurrentFaults5V
+()
+Gets the fault count for the 5V rail.
+Returns:
+the number of 5V fault counts
+See Also:
+"HAL_GetUserCurrentFaults5V"
+getUserVoltage3V3
+public static
+double
+getUserVoltage3V3
+()
+Gets the 3V3 rail voltage.
+Returns:
+the 3V3 rail voltage (volts)
+See Also:
+"HAL_GetUserVoltage3V3"
+getUserCurrent3V3
+public static
+double
+getUserCurrent3V3
+()
+Gets the 3V3 rail current.
+Returns:
+the 3V3 rail current (amps)
+See Also:
+"HAL_GetUserCurrent3V3"
+setUserEnabled3V3
+public static
+void
+setUserEnabled3V3
+(boolean enabled)
+Enables or disables the 3V3 rail.
+Parameters:
+enabled
+- whether the rail should be enabled
+getUserActive3V3
+public static
+boolean
+getUserActive3V3
+()
+Gets the active state of the 3V3 rail.
+Returns:
+true if the rail is active, otherwise false
+See Also:
+"HAL_GetUserActive3V3"
+getUserCurrentFaults3V3
+public static
+int
+getUserCurrentFaults3V3
+()
+Gets the fault count for the 3V3 rail.
+Returns:
+the number of 3V3 fault counts
+See Also:
+"HAL_GetUserCurrentFaults3V3"
+resetUserCurrentFaults
+public static
+void
+resetUserCurrentFaults
+()
+Resets the overcurrent fault counters for all user rails to 0.
+setBrownoutVoltage
+public static
+void
+setBrownoutVoltage
+(double voltage)
+Set the voltage the roboRIO will brownout and disable all outputs.
+Note that this only does anything on the roboRIO 2. On the roboRIO it is a no-op.
+Parameters:
+voltage
+- The brownout voltage
+See Also:
+"HAL_SetBrownoutVoltage"
+getBrownoutVoltage
+public static
+double
+getBrownoutVoltage
+()
+Get the current brownout voltage setting.
+Returns:
+The brownout voltage
+See Also:
+"HAL_GetBrownoutVoltage"
+getCPUTemp
+public static
+double
+getCPUTemp
+()
+Get the current CPU temperature in degrees Celsius.
+Returns:
+current CPU temperature in degrees Celsius

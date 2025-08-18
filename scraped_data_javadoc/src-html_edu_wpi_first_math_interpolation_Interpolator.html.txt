@@ -1,0 +1,66 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.interpolation;
+006
+007
+import edu.wpi.first.math.MathUtil;
+008
+009
+/**
+010
+* An interpolation function that returns a value interpolated between an upper and lower bound.
+011
+* This behavior can be linear or nonlinear.
+012
+*
+013
+* @param <T> The type that the {@link Interpolator} will operate on.
+014
+*/
+015
+@FunctionalInterface
+016
+public interface Interpolator<T> {
+017
+/**
+018
+* Perform interpolation between two values.
+019
+*
+020
+* @param startValue The value to start at.
+021
+* @param endValue The value to end at.
+022
+* @param t How far between the two values to interpolate. This should be bounded to [0, 1].
+023
+* @return The interpolated value.
+024
+*/
+025
+T interpolate(T startValue, T endValue, double t);
+026
+027
+/**
+028
+* Returns interpolator for Double.
+029
+*
+030
+* @return Interpolator for Double.
+031
+*/
+032
+static Interpolator<Double> forDouble() {
+033
+return MathUtil::interpolate;
+034
+}
+035
+}

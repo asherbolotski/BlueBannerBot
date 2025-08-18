@@ -1,0 +1,374 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.event;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.math.filter.Debouncer;
+010
+import java.util.concurrent.atomic.AtomicBoolean;
+011
+import java.util.function.BiFunction;
+012
+import java.util.function.BooleanSupplier;
+013
+014
+/**
+015
+* This class provides an easy way to link actions to active high logic signals. Each object
+016
+* represents a digital signal to which callback actions can be bound using {@link
+017
+* #ifHigh(Runnable)}.
+018
+*
+019
+* <p>BooleanEvents can easily be composed for advanced functionality using {@link
+020
+* #and(BooleanSupplier)}, {@link #or(BooleanSupplier)}, and {@link #negate()}.
+021
+*
+022
+* <p>To get a new BooleanEvent that triggers when this one changes see {@link #falling()} and
+023
+* {@link #rising()}.
+024
+*/
+025
+public class BooleanEvent implements BooleanSupplier {
+026
+/** Poller loop. */
+027
+protected final EventLoop m_loop;
+028
+029
+private final BooleanSupplier m_signal;
+030
+031
+/** The state of the condition in the current loop poll. Nightmare to manage. */
+032
+private final AtomicBoolean m_state = new AtomicBoolean(false);
+033
+034
+/**
+035
+* Creates a new event that is active when the condition is true.
+036
+*
+037
+* @param loop the loop that polls this event.
+038
+* @param signal the digital signal represented by this object.
+039
+*/
+040
+public BooleanEvent(EventLoop loop, BooleanSupplier signal) {
+041
+m_loop = requireNonNullParam(loop, "loop", "BooleanEvent");
+042
+m_signal = requireNonNullParam(signal, "signal", "BooleanEvent");
+043
+m_state.set(m_signal.getAsBoolean());
+044
+m_loop.bind(() -> m_state.set(m_signal.getAsBoolean()));
+045
+}
+046
+047
+/**
+048
+* Returns the state of this signal (high or low) as of the last loop poll.
+049
+*
+050
+* @return true for the high state, false for the low state. If the event was never polled, it
+051
+*     returns the state at event construction.
+052
+*/
+053
+@Override
+054
+public final boolean getAsBoolean() {
+055
+return m_state.get();
+056
+}
+057
+058
+/**
+059
+* Bind an action to this event.
+060
+*
+061
+* @param action the action to run if this event is active.
+062
+*/
+063
+public final void ifHigh(Runnable action) {
+064
+m_loop.bind(
+065
+() -> {
+066
+if (m_state.get()) {
+067
+action.run();
+068
+}
+069
+});
+070
+}
+071
+072
+/**
+073
+* A method to "downcast" a BooleanEvent instance to a subclass (for example, to a command-based
+074
+* version of this class).
+075
+*
+076
+* @param ctor a method reference to the constructor of the subclass that accepts the loop as the
+077
+*     first parameter and the condition/signal as the second.
+078
+* @param <T> the subclass type
+079
+* @return an instance of the subclass.
+080
+*/
+081
+public <T extends BooleanSupplier> T castTo(BiFunction<EventLoop, BooleanSupplier, T> ctor) {
+082
+return ctor.apply(m_loop, m_state::get);
+083
+}
+084
+085
+/**
+086
+* Creates a new event that is active when this event is inactive.
+087
+*
+088
+* @return the new event.
+089
+*/
+090
+public BooleanEvent negate() {
+091
+return new BooleanEvent(m_loop, () -> !m_state.get());
+092
+}
+093
+094
+/**
+095
+* Composes this event with another event, returning a new event that is active when both events
+096
+* are active.
+097
+*
+098
+* <p>The events must use the same event loop. If the events use different event loops, the
+099
+* composed signal won't update until both loops are polled.
+100
+*
+101
+* @param other the event to compose with.
+102
+* @return the new event.
+103
+*/
+104
+public BooleanEvent and(BooleanSupplier other) {
+105
+requireNonNullParam(other, "other", "and");
+106
+return new BooleanEvent(m_loop, () -> m_state.get() && other.getAsBoolean());
+107
+}
+108
+109
+/**
+110
+* Composes this event with another event, returning a new event that is active when either event
+111
+* is active.
+112
+*
+113
+* <p>The events must use the same event loop. If the events use different event loops, the
+114
+* composed signal won't update until both loops are polled.
+115
+*
+116
+* @param other the event to compose with.
+117
+* @return the new event.
+118
+*/
+119
+public BooleanEvent or(BooleanSupplier other) {
+120
+requireNonNullParam(other, "other", "or");
+121
+return new BooleanEvent(m_loop, () -> m_state.get() || other.getAsBoolean());
+122
+}
+123
+124
+/**
+125
+* Creates a new event that triggers when this one changes from false to true.
+126
+*
+127
+* @return the new event.
+128
+*/
+129
+public BooleanEvent rising() {
+130
+return new BooleanEvent(
+131
+m_loop,
+132
+new BooleanSupplier() {
+133
+private boolean m_previous = m_state.get();
+134
+135
+@Override
+136
+public boolean getAsBoolean() {
+137
+boolean present = m_state.get();
+138
+boolean ret = !m_previous && present;
+139
+m_previous = present;
+140
+return ret;
+141
+}
+142
+});
+143
+}
+144
+145
+/**
+146
+* Creates a new event that triggers when this one changes from true to false.
+147
+*
+148
+* @return the event.
+149
+*/
+150
+public BooleanEvent falling() {
+151
+return new BooleanEvent(
+152
+m_loop,
+153
+new BooleanSupplier() {
+154
+private boolean m_previous = m_state.get();
+155
+156
+@Override
+157
+public boolean getAsBoolean() {
+158
+boolean present = m_state.get();
+159
+boolean ret = m_previous && !present;
+160
+m_previous = present;
+161
+return ret;
+162
+}
+163
+});
+164
+}
+165
+166
+/**
+167
+* Creates a new debounced event from this event - it will become active when this event has been
+168
+* active for longer than the specified period.
+169
+*
+170
+* @param seconds The debounce period.
+171
+* @return The debounced event (rising edges debounced only).
+172
+*/
+173
+public BooleanEvent debounce(double seconds) {
+174
+return debounce(seconds, Debouncer.DebounceType.kRising);
+175
+}
+176
+177
+/**
+178
+* Creates a new debounced event from this event - it will become active when this event has been
+179
+* active for longer than the specified period.
+180
+*
+181
+* @param seconds The debounce period.
+182
+* @param type The debounce type.
+183
+* @return The debounced event.
+184
+*/
+185
+public BooleanEvent debounce(double seconds, Debouncer.DebounceType type) {
+186
+return new BooleanEvent(
+187
+m_loop,
+188
+new BooleanSupplier() {
+189
+private final Debouncer m_debouncer = new Debouncer(seconds, type);
+190
+191
+@Override
+192
+public boolean getAsBoolean() {
+193
+return m_debouncer.calculate(m_state.get());
+194
+}
+195
+});
+196
+}
+197
+}

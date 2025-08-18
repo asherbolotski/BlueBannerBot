@@ -1,0 +1,87 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.system.plant.proto;
+006
+007
+import edu.wpi.first.math.proto.Plant.ProtobufDCMotor;
+008
+import edu.wpi.first.math.system.plant.DCMotor;
+009
+import edu.wpi.first.util.protobuf.Protobuf;
+010
+import us.hebi.quickbuf.Descriptors.Descriptor;
+011
+012
+public class DCMotorProto implements Protobuf<DCMotor, ProtobufDCMotor> {
+013
+@Override
+014
+public Class<DCMotor> getTypeClass() {
+015
+return DCMotor.class;
+016
+}
+017
+018
+@Override
+019
+public Descriptor getDescriptor() {
+020
+return ProtobufDCMotor.getDescriptor();
+021
+}
+022
+023
+@Override
+024
+public ProtobufDCMotor createMessage() {
+025
+return ProtobufDCMotor.newInstance();
+026
+}
+027
+028
+@Override
+029
+public DCMotor unpack(ProtobufDCMotor msg) {
+030
+return new DCMotor(
+031
+msg.getNominalVoltage(),
+032
+msg.getStallTorque(),
+033
+msg.getStallCurrent(),
+034
+msg.getFreeCurrent(),
+035
+msg.getFreeSpeed(),
+036
+1);
+037
+}
+038
+039
+@Override
+040
+public void pack(ProtobufDCMotor msg, DCMotor value) {
+041
+msg.setNominalVoltage(value.nominalVoltageVolts);
+042
+msg.setStallTorque(value.stallTorqueNewtonMeters);
+043
+msg.setStallCurrent(value.stallCurrentAmps);
+044
+msg.setFreeCurrent(value.freeCurrentAmps);
+045
+msg.setFreeSpeed(value.freeSpeedRadPerSec);
+046
+}
+047
+}

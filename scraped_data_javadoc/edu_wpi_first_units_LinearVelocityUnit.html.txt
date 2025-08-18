@@ -1,0 +1,414 @@
+Package
+edu.wpi.first.units
+Class LinearVelocityUnit
+java.lang.Object
+edu.wpi.first.units.Unit
+edu.wpi.first.units.PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+edu.wpi.first.units.LinearVelocityUnit
+public final class
+LinearVelocityUnit
+extends
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+A unit of linear velocity like
+Units.MetersPerSecond
+.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+LinearVelocityUnit
+combine
+(
+DistanceUnit
+distance,
+TimeUnit
+period)
+Combines a distance and time unit for form a combined unit of velocity.
+double
+convertFrom
+(double magnitude,
+LinearVelocityUnit
+otherUnit)
+Converts a measurement value in terms of another unit to this unit.
+LinearVelocityUnit
+getBaseUnit
+()
+Gets the base unit of measurement that this unit is derived from.
+MutLinearVelocity
+mutable
+(double value)
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit.
+LinearVelocity
+of
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+LinearVelocity
+ofBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+LinearVelocity
+one
+()
+Gets a measure with a magnitude of 1.0 in terms of this unit.
+LinearAccelerationUnit
+per
+(
+TimeUnit
+period)
+Combines this velocity with a time period of change to form a unit of acceleration.
+<U extends
+Unit
+>
+PerUnit
+<
+LinearVelocityUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+LinearVelocity
+zero
+()
+Gets a measure of zero magnitude in terms of this unit.
+Methods inherited from class edu.wpi.first.units.
+PerUnit
+combine
+,
+convertFrom
+,
+denominator
+,
+equals
+,
+hashCode
+,
+mult
+,
+mutableNative
+,
+numerator
+,
+ofNative
+,
+ofNativeBaseUnits
+,
+reciprocal
+Methods inherited from class edu.wpi.first.units.
+Unit
+equivalent
+,
+fromBaseUnits
+,
+getConverterFromBase
+,
+getConverterToBase
+,
+isBaseUnit
+,
+name
+,
+symbol
+,
+toBaseUnits
+,
+toString
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Method Details
+combine
+public static
+LinearVelocityUnit
+combine
+(
+DistanceUnit
+distance,
+TimeUnit
+period)
+Combines a distance and time unit for form a combined unit of velocity.
+Parameters:
+distance
+- the unit of distance
+period
+- the unit of time
+Returns:
+the combined velocity unit
+getBaseUnit
+public
+LinearVelocityUnit
+getBaseUnit
+()
+Description copied from class:
+Unit
+Gets the base unit of measurement that this unit is derived from. If the unit is the base unit,
+ the unit will be returned.
+NOTE:
+Subclasses
+must
+override this method to provide the
+ correct return type. Failing to do say will make unit combinations that use it break at
+ runtime!
+Unit baseUnit = new Unit(null, ...);
+   baseUnit.getBaseUnit(); // returns baseUnit
+
+   Unit derivedUnit = new Unit(baseUnit, ...);
+   derivedUnit.getBaseUnit(); // returns baseUnit
+Overrides:
+getBaseUnit
+in class
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+Returns:
+the base unit
+of
+public
+LinearVelocity
+of
+(double magnitude)
+Description copied from class:
+PerUnit
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+Per
+instance. If you want to
+ avoid casting, use
+PerUnit.ofNative(double)
+that returns a
+Per
+instance directly.
+Overrides:
+of
+in class
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+Parameters:
+magnitude
+- the magnitude of the measure
+Returns:
+the ratio measure
+ofBaseUnits
+public
+LinearVelocity
+ofBaseUnits
+(double baseUnitMagnitude)
+Description copied from class:
+PerUnit
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+Per
+instance. If you want to
+ avoid casting, use
+PerUnit.ofNativeBaseUnits(double)
+that returns a
+Per
+instance
+ directly.
+Overrides:
+ofBaseUnits
+in class
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+Parameters:
+baseUnitMagnitude
+- the magnitude of the measure in terms of its base units.
+Returns:
+the ratio measure
+zero
+public
+LinearVelocity
+zero
+()
+Description copied from class:
+Unit
+Gets a measure of zero magnitude in terms of this unit. The returned object is guaranteed to be
+ of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override this
+ method to sharpen the return type.
+Overrides:
+zero
+in class
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+Returns:
+a zero-magnitude measure of this unit
+one
+public
+LinearVelocity
+one
+()
+Description copied from class:
+Unit
+Gets a measure with a magnitude of 1.0 in terms of this unit. The returned object is guaranteed
+ to be of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override
+ this method to sharpen the return type.
+Overrides:
+one
+in class
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+Returns:
+a measure of magnitude 1.0 in terms of this unit
+mutable
+public
+MutLinearVelocity
+mutable
+(double value)
+Description copied from class:
+PerUnit
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit. Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Note: When called on an object of type
+PerUnit
+(and
+not
+a subclass!), this
+ method will always return a
+MutPer
+instance.
+Overrides:
+mutable
+in class
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+Parameters:
+value
+- the starting magnitude of the measure
+Returns:
+the ratio measure
+per
+public
+LinearAccelerationUnit
+per
+(
+TimeUnit
+period)
+Combines this velocity with a time period of change to form a unit of acceleration.
+Overrides:
+per
+in class
+PerUnit
+<
+DistanceUnit
+,
+TimeUnit
+>
+Parameters:
+period
+- the period of change in the velocity
+Returns:
+the combined acceleration unit
+per
+public
+<U extends
+Unit
+>
+PerUnit
+<
+LinearVelocityUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+Type Parameters:
+U
+- the type of the other unit
+Parameters:
+other
+- the other unit
+Returns:
+the ratio unit
+convertFrom
+public
+double
+convertFrom
+(double magnitude,
+LinearVelocityUnit
+otherUnit)
+Converts a measurement value in terms of another unit to this unit.
+Parameters:
+magnitude
+- the magnitude of the measurement in terms of the other unit
+otherUnit
+- the other unit
+Returns:
+the value of the measurement in terms of this unit

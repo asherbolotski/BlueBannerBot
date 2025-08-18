@@ -1,0 +1,75 @@
+Package
+edu.wpi.first.net
+Class WebServer
+java.lang.Object
+edu.wpi.first.net.WebServer
+public final class
+WebServer
+extends
+Object
+A web server using the HTTP protocol.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+start
+(int port,
+String
+path)
+Create a web server at the given port.
+static void
+stop
+(int port)
+Stop web server running at the given port.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+start
+public static
+void
+start
+(int port,
+String
+path)
+Create a web server at the given port. Note that local ports less than 1024 won't work as a
+ normal user. Also, many ports are blocked by the FRC robot radio; check the game manual for
+ what is allowed through the radio firewall.
+Parameters:
+port
+- local port number
+path
+- local path to document root
+stop
+public static
+void
+stop
+(int port)
+Stop web server running at the given port.
+Parameters:
+port
+- local port number

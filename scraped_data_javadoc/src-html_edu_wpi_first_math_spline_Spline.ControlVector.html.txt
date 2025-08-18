@@ -1,0 +1,228 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.spline;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.geometry.Rotation2d;
+009
+import java.util.Arrays;
+010
+import java.util.Optional;
+011
+import org.ejml.simple.SimpleMatrix;
+012
+013
+/** Represents a two-dimensional parametric spline that interpolates between two points. */
+014
+public abstract class Spline {
+015
+private final int m_degree;
+016
+017
+/**
+018
+* Constructs a spline with the given degree.
+019
+*
+020
+* @param degree The degree of the spline.
+021
+*/
+022
+Spline(int degree) {
+023
+m_degree = degree;
+024
+}
+025
+026
+/**
+027
+* Returns the coefficients of the spline.
+028
+*
+029
+* @return The coefficients of the spline.
+030
+*/
+031
+public abstract SimpleMatrix getCoefficients();
+032
+033
+/**
+034
+* Returns the initial control vector that created this spline.
+035
+*
+036
+* @return The initial control vector that created this spline.
+037
+*/
+038
+public abstract ControlVector getInitialControlVector();
+039
+040
+/**
+041
+* Returns the final control vector that created this spline.
+042
+*
+043
+* @return The final control vector that created this spline.
+044
+*/
+045
+public abstract ControlVector getFinalControlVector();
+046
+047
+/**
+048
+* Gets the pose and curvature at some point t on the spline.
+049
+*
+050
+* @param t The point t
+051
+* @return The pose and curvature at that point.
+052
+*/
+053
+public Optional<PoseWithCurvature> getPoint(double t) {
+054
+SimpleMatrix polynomialBases = new SimpleMatrix(m_degree + 1, 1);
+055
+final var coefficients = getCoefficients();
+056
+057
+// Populate the polynomial bases.
+058
+for (int i = 0; i <= m_degree; i++) {
+059
+polynomialBases.set(i, 0, Math.pow(t, m_degree - i));
+060
+}
+061
+062
+// This simply multiplies by the coefficients. We need to divide out t some
+063
+// n number of times when n is the derivative we want to take.
+064
+SimpleMatrix combined = coefficients.mult(polynomialBases);
+065
+066
+// Get x and y
+067
+final double x = combined.get(0, 0);
+068
+final double y = combined.get(1, 0);
+069
+070
+double dx;
+071
+double dy;
+072
+double ddx;
+073
+double ddy;
+074
+075
+if (t == 0) {
+076
+dx = coefficients.get(2, m_degree - 1);
+077
+dy = coefficients.get(3, m_degree - 1);
+078
+ddx = coefficients.get(4, m_degree - 2);
+079
+ddy = coefficients.get(5, m_degree - 2);
+080
+} else {
+081
+// Divide out t once for first derivative.
+082
+dx = combined.get(2, 0) / t;
+083
+dy = combined.get(3, 0) / t;
+084
+085
+// Divide out t twice for second derivative.
+086
+ddx = combined.get(4, 0) / t / t;
+087
+ddy = combined.get(5, 0) / t / t;
+088
+}
+089
+090
+if (Math.hypot(dx, dy) < 1e-6) {
+091
+return Optional.empty();
+092
+}
+093
+094
+// Find the curvature.
+095
+final double curvature = (dx * ddy - ddx * dy) / ((dx * dx + dy * dy) * Math.hypot(dx, dy));
+096
+097
+return Optional.of(new PoseWithCurvature(new Pose2d(x, y, new Rotation2d(dx, dy)), curvature));
+098
+}
+099
+100
+/**
+101
+* Represents a control vector for a spline.
+102
+*
+103
+* <p>Each element in each array represents the value of the derivative at the index. For example,
+104
+* the value of x[2] is the second derivative in the x dimension.
+105
+*/
+106
+public static class ControlVector {
+107
+/** The x components of the control vector. */
+108
+public double[] x;
+109
+110
+/** The y components of the control vector. */
+111
+public double[] y;
+112
+113
+/**
+114
+* Instantiates a control vector.
+115
+*
+116
+* @param x The x dimension of the control vector.
+117
+* @param y The y dimension of the control vector.
+118
+*/
+119
+public ControlVector(double[] x, double[] y) {
+120
+this.x = Arrays.copyOf(x, x.length);
+121
+this.y = Arrays.copyOf(y, y.length);
+122
+}
+123
+}
+124
+}

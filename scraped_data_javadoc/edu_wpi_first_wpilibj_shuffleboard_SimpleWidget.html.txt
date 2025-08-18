@@ -1,0 +1,174 @@
+Package
+edu.wpi.first.wpilibj.shuffleboard
+Class SimpleWidget
+java.lang.Object
+edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent
+<W>
+edu.wpi.first.wpilibj.shuffleboard.SimpleWidget
+All Implemented Interfaces:
+AutoCloseable
+public final class
+SimpleWidget
+extends
+ShuffleboardComponent
+<W>
+implements
+AutoCloseable
+A Shuffleboard widget that handles a single data point such as a number or string.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+buildInto
+(
+NetworkTable
+parentTable,
+NetworkTable
+metaTable)
+void
+close
+()
+GenericEntry
+getEntry
+()
+Gets the NetworkTable entry that contains the data for this widget.
+GenericEntry
+getEntry
+(
+String
+typeString)
+Gets the NetworkTable entry that contains the data for this widget.
+final
+SimpleWidget
+withWidget
+(
+WidgetType
+widgetType)
+Sets the type of widget used to display the data.
+final
+SimpleWidget
+withWidget
+(
+String
+widgetType)
+Sets the type of widget used to display the data.
+Methods inherited from class edu.wpi.first.wpilibj.shuffleboard.
+ShuffleboardComponent
+buildMetadata
+,
+getParent
+,
+getTitle
+,
+getType
+,
+setType
+,
+withPosition
+,
+withProperties
+,
+withSize
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getEntry
+public
+GenericEntry
+getEntry
+()
+Gets the NetworkTable entry that contains the data for this widget.
+Returns:
+The NetworkTable entry that contains the data for this widget.
+getEntry
+public
+GenericEntry
+getEntry
+(
+String
+typeString)
+Gets the NetworkTable entry that contains the data for this widget.
+Parameters:
+typeString
+- NetworkTable type string
+Returns:
+The NetworkTable entry that contains the data for this widget.
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+buildInto
+public
+void
+buildInto
+(
+NetworkTable
+parentTable,
+NetworkTable
+metaTable)
+withWidget
+public final
+SimpleWidget
+withWidget
+(
+WidgetType
+widgetType)
+Sets the type of widget used to display the data. If not set, the default widget type will be
+ used.
+Parameters:
+widgetType
+- the type of the widget used to display the data
+Returns:
+this widget object
+See Also:
+BuiltInWidgets
+withWidget
+public final
+SimpleWidget
+withWidget
+(
+String
+widgetType)
+Sets the type of widget used to display the data. If not set, the default widget type will be
+ used. This method should only be used to use a widget that does not come built into
+ Shuffleboard (i.e. one that comes with a custom or third-party plugin). To use a widget that is
+ built into Shuffleboard, use
+withWidget(WidgetType)
+and
+BuiltInWidgets
+.
+Parameters:
+widgetType
+- the type of the widget used to display the data
+Returns:
+this widget object

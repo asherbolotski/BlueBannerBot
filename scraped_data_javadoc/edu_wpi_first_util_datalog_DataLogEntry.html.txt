@@ -1,0 +1,259 @@
+Package
+edu.wpi.first.util.datalog
+Class DataLogEntry
+java.lang.Object
+edu.wpi.first.util.datalog.DataLogEntry
+Direct Known Subclasses:
+BooleanArrayLogEntry
+,
+BooleanLogEntry
+,
+DoubleArrayLogEntry
+,
+DoubleLogEntry
+,
+FloatArrayLogEntry
+,
+FloatLogEntry
+,
+IntegerArrayLogEntry
+,
+IntegerLogEntry
+,
+ProtobufLogEntry
+,
+RawLogEntry
+,
+StringArrayLogEntry
+,
+StringLogEntry
+,
+StructArrayLogEntry
+,
+StructLogEntry
+public class
+DataLogEntry
+extends
+Object
+Log entry base class.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final int
+m_entry
+The data log entry index.
+protected final
+DataLog
+m_log
+The data log instance associated with the entry.
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+DataLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+type)
+Constructs a data log entry.
+protected
+DataLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+type,
+String
+metadata)
+Constructs a data log entry.
+protected
+DataLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+type,
+String
+metadata,
+ long timestamp)
+Constructs a data log entry.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+finish
+()
+Finishes the entry.
+void
+finish
+(long timestamp)
+Finishes the entry.
+void
+setMetadata
+(
+String
+metadata)
+Updates the metadata for the entry.
+void
+setMetadata
+(
+String
+metadata,
+ long timestamp)
+Updates the metadata for the entry.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_log
+protected final
+DataLog
+m_log
+The data log instance associated with the entry.
+m_entry
+protected final
+int
+m_entry
+The data log entry index.
+Constructor Details
+DataLogEntry
+protected
+DataLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+type,
+String
+metadata,
+ long timestamp)
+Constructs a data log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+type
+- Data type
+metadata
+- metadata
+timestamp
+- entry creation timestamp (0=now)
+DataLogEntry
+protected
+DataLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+type,
+String
+metadata)
+Constructs a data log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+type
+- Data type
+metadata
+- metadata
+DataLogEntry
+protected
+DataLogEntry
+(
+DataLog
+log,
+String
+name,
+String
+type)
+Constructs a data log entry.
+Parameters:
+log
+- datalog
+name
+- name of the entry
+type
+- Data type
+Method Details
+setMetadata
+public
+void
+setMetadata
+(
+String
+metadata,
+ long timestamp)
+Updates the metadata for the entry.
+Parameters:
+metadata
+- New metadata for the entry
+timestamp
+- Time stamp (0 to indicate now)
+setMetadata
+public
+void
+setMetadata
+(
+String
+metadata)
+Updates the metadata for the entry.
+Parameters:
+metadata
+- New metadata for the entry
+finish
+public
+void
+finish
+(long timestamp)
+Finishes the entry.
+Parameters:
+timestamp
+- Time stamp (0 to indicate now)
+finish
+public
+void
+finish
+()
+Finishes the entry.

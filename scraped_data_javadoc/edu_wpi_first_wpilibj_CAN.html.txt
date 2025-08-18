@@ -1,0 +1,355 @@
+Package
+edu.wpi.first.wpilibj
+Class CAN
+java.lang.Object
+edu.wpi.first.wpilibj.CAN
+All Implemented Interfaces:
+Closeable
+,
+AutoCloseable
+public class
+CAN
+extends
+Object
+implements
+Closeable
+High level class for interfacing with CAN devices conforming to the standard CAN spec.
+No packets that can be sent gets blocked by the RoboRIO, so all methods work identically in
+ all robot modes.
+All methods are thread safe, however the CANData object passed into the read methods and the
+ byte[] passed into the write methods need to not be modified for the duration of their respective
+ calls.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final int
+kTeamDeviceType
+Team device type.
+static final int
+kTeamManufacturer
+Team manufacturer.
+Constructor Summary
+Constructors
+Constructor
+Description
+CAN
+(int deviceId)
+Create a new CAN communication interface with the specific device ID.
+CAN
+(int deviceId,
+ int deviceManufacturer,
+ int deviceType)
+Create a new CAN communication interface with a specific device ID, manufacturer and device
+ type.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Closes the CAN communication.
+static long
+getTimestampBaseTime
+()
+Reads the current value of the millisecond-resolution timer that
+CANData
+timestamps are
+ based on.
+boolean
+readPacketLatest
+(int apiId,
+CANData
+data)
+Read a CAN packet.
+boolean
+readPacketNew
+(int apiId,
+CANData
+data)
+Read a new CAN packet.
+boolean
+readPacketTimeout
+(int apiId,
+ int timeoutMs,
+CANData
+data)
+Read a CAN packet.
+void
+stopPacketRepeating
+(int apiId)
+Stop a repeating packet with a specific ID.
+void
+writePacket
+(byte[] data,
+ int apiId)
+Write a packet to the CAN device with a specific ID.
+int
+writePacketNoThrow
+(byte[] data,
+ int apiId)
+Write a packet to the CAN device with a specific ID.
+void
+writePacketRepeating
+(byte[] data,
+ int apiId,
+ int repeatMs)
+Write a repeating packet to the CAN device with a specific ID.
+int
+writePacketRepeatingNoThrow
+(byte[] data,
+ int apiId,
+ int repeatMs)
+Write a repeating packet to the CAN device with a specific ID.
+void
+writeRTRFrame
+(int length,
+ int apiId)
+Write an RTR frame to the CAN device with a specific ID.
+int
+writeRTRFrameNoThrow
+(int length,
+ int apiId)
+Write an RTR frame to the CAN device with a specific ID.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kTeamManufacturer
+public static final
+int
+kTeamManufacturer
+Team manufacturer.
+kTeamDeviceType
+public static final
+int
+kTeamDeviceType
+Team device type.
+Constructor Details
+CAN
+public
+CAN
+(int deviceId)
+Create a new CAN communication interface with the specific device ID. This uses the team
+ manufacturer and device types. The device ID is 6 bits (0-63).
+Parameters:
+deviceId
+- The device id
+CAN
+public
+CAN
+(int deviceId,
+ int deviceManufacturer,
+ int deviceType)
+Create a new CAN communication interface with a specific device ID, manufacturer and device
+ type. The device ID is 6 bits, the manufacturer is 8 bits, and the device type is 5 bits.
+Parameters:
+deviceId
+- The device ID
+deviceManufacturer
+- The device manufacturer
+deviceType
+- The device type
+Method Details
+close
+public
+void
+close
+()
+Closes the CAN communication.
+Specified by:
+close
+in interface
+AutoCloseable
+Specified by:
+close
+in interface
+Closeable
+writePacket
+public
+void
+writePacket
+(byte[] data,
+ int apiId)
+Write a packet to the CAN device with a specific ID. This ID is 10 bits.
+Parameters:
+data
+- The data to write (8 bytes max)
+apiId
+- The API ID to write.
+writePacketRepeating
+public
+void
+writePacketRepeating
+(byte[] data,
+ int apiId,
+ int repeatMs)
+Write a repeating packet to the CAN device with a specific ID. This ID is 10 bits. The RoboRIO
+ will automatically repeat the packet at the specified interval
+Parameters:
+data
+- The data to write (8 bytes max)
+apiId
+- The API ID to write.
+repeatMs
+- The period to repeat the packet at.
+writeRTRFrame
+public
+void
+writeRTRFrame
+(int length,
+ int apiId)
+Write an RTR frame to the CAN device with a specific ID. This ID is 10 bits. The length by spec
+ must match what is returned by the responding device
+Parameters:
+length
+- The length to request (0 to 8)
+apiId
+- The API ID to write.
+writePacketNoThrow
+public
+int
+writePacketNoThrow
+(byte[] data,
+ int apiId)
+Write a packet to the CAN device with a specific ID. This ID is 10 bits.
+Parameters:
+data
+- The data to write (8 bytes max)
+apiId
+- The API ID to write.
+Returns:
+TODO
+writePacketRepeatingNoThrow
+public
+int
+writePacketRepeatingNoThrow
+(byte[] data,
+ int apiId,
+ int repeatMs)
+Write a repeating packet to the CAN device with a specific ID. This ID is 10 bits. The RoboRIO
+ will automatically repeat the packet at the specified interval
+Parameters:
+data
+- The data to write (8 bytes max)
+apiId
+- The API ID to write.
+repeatMs
+- The period to repeat the packet at.
+Returns:
+TODO
+writeRTRFrameNoThrow
+public
+int
+writeRTRFrameNoThrow
+(int length,
+ int apiId)
+Write an RTR frame to the CAN device with a specific ID. This ID is 10 bits. The length by spec
+ must match what is returned by the responding device
+Parameters:
+length
+- The length to request (0 to 8)
+apiId
+- The API ID to write.
+Returns:
+TODO
+stopPacketRepeating
+public
+void
+stopPacketRepeating
+(int apiId)
+Stop a repeating packet with a specific ID. This ID is 10 bits.
+Parameters:
+apiId
+- The API ID to stop repeating
+readPacketNew
+public
+boolean
+readPacketNew
+(int apiId,
+CANData
+data)
+Read a new CAN packet. This will only return properly once per packet received. Multiple calls
+ without receiving another packet will return false.
+Parameters:
+apiId
+- The API ID to read.
+data
+- Storage for the received data.
+Returns:
+True if the data is valid, otherwise false.
+readPacketLatest
+public
+boolean
+readPacketLatest
+(int apiId,
+CANData
+data)
+Read a CAN packet. This will continuously return the last packet received, without accounting
+ for packet age.
+Parameters:
+apiId
+- The API ID to read.
+data
+- Storage for the received data.
+Returns:
+True if the data is valid, otherwise false.
+readPacketTimeout
+public
+boolean
+readPacketTimeout
+(int apiId,
+ int timeoutMs,
+CANData
+data)
+Read a CAN packet. This will return the last packet received until the packet is older than the
+ requested timeout. Then it will return false.
+Parameters:
+apiId
+- The API ID to read.
+timeoutMs
+- The timeout time for the packet
+data
+- Storage for the received data.
+Returns:
+True if the data is valid, otherwise false.
+getTimestampBaseTime
+public static
+long
+getTimestampBaseTime
+()
+Reads the current value of the millisecond-resolution timer that
+CANData
+timestamps are
+ based on.
+Returns:
+Current value of timer used as a base time for
+CANData
+timestamps in
+     milliseconds

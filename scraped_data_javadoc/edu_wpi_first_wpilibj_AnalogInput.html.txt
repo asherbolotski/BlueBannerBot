@@ -1,0 +1,436 @@
+Package
+edu.wpi.first.wpilibj
+Class AnalogInput
+java.lang.Object
+edu.wpi.first.wpilibj.AnalogInput
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+AnalogInput
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Analog channel class.
+Each analog channel is read from hardware as a 12-bit number representing 0V to 5V.
+Connected to each analog channel is an averaging and oversampling engine. This engine
+ accumulates the specified ( by setAverageBits() and setOversampleBits() ) number of samples
+ before returning a new value. This is not a sliding window average. The only difference between
+ the oversampled samples and the averaged samples is that the oversampled samples are simply
+ accumulated effectively increasing the resolution, while the averaged samples are divided by the
+ number of samples to retain the resolution, but get more stable values.
+Constructor Summary
+Constructors
+Constructor
+Description
+AnalogInput
+(int channel)
+Construct an analog channel.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+long
+getAccumulatorCount
+()
+Read the number of accumulated values.
+void
+getAccumulatorOutput
+(
+AccumulatorResult
+result)
+Read the accumulated value and the number of accumulated values atomically.
+long
+getAccumulatorValue
+()
+Read the accumulated value.
+int
+getAverageBits
+()
+Get the number of averaging bits.
+int
+getAverageValue
+()
+Get a sample from the output of the oversample and average engine for this channel.
+double
+getAverageVoltage
+()
+Get a scaled sample from the output of the oversample and average engine for this channel.
+int
+getChannel
+()
+Get the channel number.
+static double
+getGlobalSampleRate
+()
+Get the current sample rate.
+long
+getLSBWeight
+()
+Get the factory scaling the least significant bit weight constant.
+int
+getOffset
+()
+Get the factory scaling offset constant.
+int
+getOversampleBits
+()
+Get the number of oversample bits.
+int
+getValue
+()
+Get a sample straight from this channel.
+double
+getVoltage
+()
+Get a scaled sample straight from this channel.
+void
+initAccumulator
+()
+Initialize the accumulator.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isAccumulatorChannel
+()
+Is the channel attached to an accumulator.
+void
+resetAccumulator
+()
+Resets the accumulator to the initial value.
+void
+setAccumulatorCenter
+(int center)
+Set the center value of the accumulator.
+void
+setAccumulatorDeadband
+(int deadband)
+Set the accumulator's deadband.
+void
+setAccumulatorInitialValue
+(long initialValue)
+Set an initial value for the accumulator.
+void
+setAverageBits
+(int bits)
+Set the number of averaging bits.
+static void
+setGlobalSampleRate
+(double samplesPerSecond)
+Set the sample rate per channel.
+void
+setOversampleBits
+(int bits)
+Set the number of oversample bits.
+void
+setSimDevice
+(
+SimDevice
+device)
+Indicates this input is used by a simulated device.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AnalogInput
+public
+AnalogInput
+(int channel)
+Construct an analog channel.
+Parameters:
+channel
+- The channel number to represent. 0-3 are on-board 4-7 are on the MXP port.
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getValue
+public
+int
+getValue
+()
+Get a sample straight from this channel. The sample is a 12-bit value representing the 0V to 5V
+ range of the A/D converter. The units are in A/D converter codes. Use GetVoltage() to get the
+ analog value in calibrated units.
+Returns:
+A sample straight from this channel.
+getAverageValue
+public
+int
+getAverageValue
+()
+Get a sample from the output of the oversample and average engine for this channel. The sample
+ is 12-bit + the bits configured in SetOversampleBits(). The value configured in
+ setAverageBits() will cause this value to be averaged 2^bits number of samples. This is not a
+ sliding window. The sample will not change until 2^(OversampleBits + AverageBits) samples have
+ been acquired from this channel. Use getAverageVoltage() to get the analog value in calibrated
+ units.
+Returns:
+A sample from the oversample and average engine for this channel.
+getVoltage
+public
+double
+getVoltage
+()
+Get a scaled sample straight from this channel. The value is scaled to units of Volts using the
+ calibrated scaling data from getLSBWeight() and getOffset().
+Returns:
+A scaled sample straight from this channel.
+getAverageVoltage
+public
+double
+getAverageVoltage
+()
+Get a scaled sample from the output of the oversample and average engine for this channel. The
+ value is scaled to units of Volts using the calibrated scaling data from getLSBWeight() and
+ getOffset(). Using oversampling will cause this value to be higher resolution, but it will
+ update more slowly. Using averaging will cause this value to be more stable, but it will update
+ more slowly.
+Returns:
+A scaled sample from the output of the oversample and average engine for this channel.
+getLSBWeight
+public
+long
+getLSBWeight
+()
+Get the factory scaling the least significant bit weight constant. The least significant bit
+ weight constant for the channel that was calibrated in manufacturing and stored in an eeprom.
+Volts = ((LSB_Weight * 1e-9) * raw) - (Offset * 1e-9)
+Returns:
+Least significant bit weight.
+getOffset
+public
+int
+getOffset
+()
+Get the factory scaling offset constant. The offset constant for the channel that was
+ calibrated in manufacturing and stored in an eeprom.
+Volts = ((LSB_Weight * 1e-9) * raw) - (Offset * 1e-9)
+Returns:
+Offset constant.
+getChannel
+public
+int
+getChannel
+()
+Get the channel number.
+Returns:
+The channel number.
+setAverageBits
+public
+void
+setAverageBits
+(int bits)
+Set the number of averaging bits. This sets the number of averaging bits. The actual number of
+ averaged samples is 2^bits. The averaging is done automatically in the FPGA.
+Parameters:
+bits
+- The number of averaging bits.
+getAverageBits
+public
+int
+getAverageBits
+()
+Get the number of averaging bits. This gets the number of averaging bits from the FPGA. The
+ actual number of averaged samples is 2^bits. The averaging is done automatically in the FPGA.
+Returns:
+The number of averaging bits.
+setOversampleBits
+public
+void
+setOversampleBits
+(int bits)
+Set the number of oversample bits. This sets the number of oversample bits. The actual number
+ of oversampled values is 2^bits. The oversampling is done automatically in the FPGA.
+Parameters:
+bits
+- The number of oversample bits.
+getOversampleBits
+public
+int
+getOversampleBits
+()
+Get the number of oversample bits. This gets the number of oversample bits from the FPGA. The
+ actual number of oversampled values is 2^bits. The oversampling is done automatically in the
+ FPGA.
+Returns:
+The number of oversample bits.
+initAccumulator
+public
+void
+initAccumulator
+()
+Initialize the accumulator.
+setAccumulatorInitialValue
+public
+void
+setAccumulatorInitialValue
+(long initialValue)
+Set an initial value for the accumulator.
+This will be added to all values returned to the user.
+Parameters:
+initialValue
+- The value that the accumulator should start from when reset.
+resetAccumulator
+public
+void
+resetAccumulator
+()
+Resets the accumulator to the initial value.
+setAccumulatorCenter
+public
+void
+setAccumulatorCenter
+(int center)
+Set the center value of the accumulator.
+The center value is subtracted from each A/D value before it is added to the accumulator.
+ This is used for the center value of devices like gyros and accelerometers to take the device
+ offset into account when integrating.
+This center value is based on the output of the oversampled and averaged source the
+ accumulator channel. Because of this, any non-zero oversample bits will affect the size of the
+ value for this field.
+Parameters:
+center
+- The accumulator's center value.
+setAccumulatorDeadband
+public
+void
+setAccumulatorDeadband
+(int deadband)
+Set the accumulator's deadband.
+Parameters:
+deadband
+- The deadband size in ADC codes (12-bit value)
+getAccumulatorValue
+public
+long
+getAccumulatorValue
+()
+Read the accumulated value.
+Read the value that has been accumulating. The accumulator is attached after the oversample
+ and average engine.
+Returns:
+The 64-bit value accumulated since the last Reset().
+getAccumulatorCount
+public
+long
+getAccumulatorCount
+()
+Read the number of accumulated values.
+Read the count of the accumulated values since the accumulator was last Reset().
+Returns:
+The number of times samples from the channel were accumulated.
+getAccumulatorOutput
+public
+void
+getAccumulatorOutput
+(
+AccumulatorResult
+result)
+Read the accumulated value and the number of accumulated values atomically.
+This function reads the value and count from the FPGA atomically. This can be used for
+ averaging.
+Parameters:
+result
+- AccumulatorResult object to store the results in.
+isAccumulatorChannel
+public
+boolean
+isAccumulatorChannel
+()
+Is the channel attached to an accumulator.
+Returns:
+The analog channel is attached to an accumulator.
+setGlobalSampleRate
+public static
+void
+setGlobalSampleRate
+(double samplesPerSecond)
+Set the sample rate per channel.
+This is a global setting for all channels. The maximum rate is 500kS/s divided by the number
+ of channels in use. This is 62500 samples/s per channel if all 8 channels are used.
+Parameters:
+samplesPerSecond
+- The number of samples per second.
+getGlobalSampleRate
+public static
+double
+getGlobalSampleRate
+()
+Get the current sample rate.
+This assumes one entry in the scan list. This is a global setting for all channels.
+Returns:
+Sample rate.
+setSimDevice
+public
+void
+setSimDevice
+(
+SimDevice
+device)
+Indicates this input is used by a simulated device.
+Parameters:
+device
+- simulated device handle
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

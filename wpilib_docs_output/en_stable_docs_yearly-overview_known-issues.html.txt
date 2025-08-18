@@ -1,0 +1,188 @@
+Known Issues
+
+This article details known issues (and workarounds) for FRC® Control System Software.
+Open Issues
+
+LabVIEW Getting Started page reports 2024
+
+Issue:
+The LabVIEW Getting Started page shows 2024 instead of 2025.
+Workaround:
+This is an issue with the LabVIEW update. You can confirm that the proper version is installed by opening the Driver station and confirming the version in the titlebar is 25.0
+Driver Station randomly disabled
+
+Issue:
+The Driver Station contains tighter safety mechanisms introduced in 2024 to protect against control issues. Some teams have seen this cause the robot to disable.
+Workaround:
+There are multiple potential causes for tripping the safety mechanisms.
+Note
+The new safety mechanisms will
+not
+disable the robot when connected to the
+FMS
+.
+The Driver Station software has new tools for control packet delays that could cause this. The control system team requests that teams that experience this issue post screenshots of the
+Driver Station Timing window
+to
+https://github.com/wpilibsuite/allwpilib/issues/6174
+Some teams have seen this happen only when the robot is operated wirelessly, but not when operated via USB or ethernet tether. Some potential mitigations:
+Try relocating the robot radio to a better location (high in the robot and away from motors or large amounts of metal). Follow the
+manufacturer’s recommended mounting
+Measure your robot’s bandwidth
+and ensure you have margin under the 7 Mbps bandwidth limit
+See if the Wi-Fi environment is congested using a tool like
+WiFi Analyzer
+.
+Utilize the recommended
+2 radio setup
+.
+1. Ensure the DS Radio is mounted high, away from interference and humans walking between the DS radio and the robot.
+2. Use ethernet to connect the DS computer to the DS Radio
+Update the Wi-Fi drivers for the DS computer.
+Some teams have seen this happen due to software that is running on the driver station (such as Autodesk updater or Discord). Some potential mitigations:
+Reboot the driver station computer
+Close software that is running in the background
+Follow the
+Driver Station Best Practices
+While rare, this can be caused by robot code that oversaturates the roboRIO processor or network connection. If all other troubleshooting steps fail, you can try running with one of the WPILib example programs to see if the problem still occurs.
+If you identify software that interferes with driver station, please post it to
+https://github.com/wpilibsuite/allwpilib/issues/6174
+Driver Station Reports Less Free RAM then is Available
+
+Issue:
+The Driver Station diagnostic screen reports free RAM that is misleadingly low. This is due to Linux’s use of memory caches. Linux will cache data in memory, but then relinquish when the robot programs requests more memory. The Driver Station only reports memory that isn’t used by caches.
+Workaround:
+The true memory available to the robot program is available in the file
+/proc/meminfo
+.
+Use ssh to connect to the robot
+, and run
+cat
+/proc/meminfo
+.
+MemTotal:         250152 kB
+MemFree:           46484 kB
+MemAvailable:     126956 kB
+The proper value to look is as MemAvailable, rather then MemFree (which is what the driver station is reporting).
+Driver Station Reporting No Code
+
+Issue:
+There is a rare occurrence in the roboRIO 2.0 that causes the roboRIO to not properly start the robot program. This causes the Driver Station to report a successful connection but no code, even though code is deployed on the roboRIO.
+Workaround:
+We are currently investigating the root cause, but FIRST volunteers have been made aware and the recommendation is to reboot the roboRIO when this occurs.
+Note
+Pressing the physical
+User
+button on the roboRIO for 5 seconds can also cause the robot code to not start, but a reboot will not start the robot code. If the robot code does not start after rebooting, press the
+User
+button. Ensure that nothing on the robot is in contact with the
+User
+button.
+Onboard I2C Causing System Lockups
+
+Issue:
+Use of the onboard I2C port on the roboRIO 1 or 2, in any language, can result in system lockups. The frequency of these lockups appears to be dependent on the specific hardware (i.e. different roboRIOs will behave differently) as well as how the bus is being used.
+Workaround:
+The only surefire mitigation is to use the MXP I2C port or another device to read the I2C data. Accessing the device less frequently and/or using a different roboRIO may significantly reduce the likelihood/frequency of lockups, it will be up to each team to assess their tolerance of the risk of lockup. This lockup can not be definitively identified on the field and a field fault will not be called for a match where this behavior is believed to occur. This lockup is a CPU/kernel hang, the roboRIO will completely stop responding and will not be accessible via the DS, webpage, or SSH. If you can access your roboRIO via any of these methods, you are experiencing a different issue.
+Several alternatives exist for accessing the REV color sensor without using the roboRIO I2C port. A similar approach could be used for other I2C sensors.
+Use a
+Raspberry Pi Pico
+. Supports up to 2 REV color sensors, sends data to the roboRIO via serial. The Pi Pico is low cost (less than $10) and readily available.
+Use a
+Raspberry Pi
+. Supports 1-4 color sensors, sends data to the roboRIO via NetworkTables. Primarily useful for teams already using a Raspberry Pi as a coprocessor.
+Updating Properties on roboRIO 2.0 may be slow or hang
+
+Issue:
+Updating the properties on a roboRIO 2.0 without reformatting using the Imaging Tool (such as setting the team number) may be slow or hang.
+Workaround:
+After a few minutes of the tool waiting the roboRIO should be able to be rebooted and the new properties should be set.
+Simulation crashes on Mac after updating WPILib
+
+Issue:
+On macOS, after updating the project to use a newer version of WPILib, running simulation immediately crashes without the GUI appearing.
+Workaround:
+In VS Code, run WPILib | Run a command in Gradle,
+clean
+. Alternatively, run
+./gradlew
+clean
+in the terminal or delete the build directory.
+Invalid build due to missing GradleRIO
+
+Issue:
+Rarely, a user’s Gradle cache will get broken and they will get shown errors similar to the following:
+Could not apply requested plugin [id: ‘edu.wpi.first.GradleRIO’, version: ‘2020.3.2’] as it does not provide a plugin with id ‘edu.wpi.first.GradleRIO’
+Workaround:
+Delete your Gradle cache located under
+~$USER_HOME/.gradle
+. Windows machines may need to enable the ability to
+view hidden files
+. This issue has only shown up on Windows so far. Please
+report
+this issue if you get it on an alternative OS.
+Chinese characters in Driver Station Log
+
+Issue:
+Rarely, the driver station log will show Chinese characters instead of the English text. This appears to only happen when Windows is set to a language other then English.
+Workaround:
+There are two known workarounds:
+Copy and paste the Chinese characters into notepad, and the English text will be shown.
+Temporarily change the Windows language to English.
+C++ Intellisense - Files Open on Launch Don’t Work Properly
+
+Issue:
+In C++, files open when VS Code launches will have issues with Intellisense showing suggestions from all options from a compilation unit and not just the appropriate ones or not finding header files. This is a bug in VS Code.
+Workaround:
+Close all  files in VS Code, but leave VS Code open
+Delete c_cpp_properties.json file in the .vscode folder, if it exists
+Run the “Refresh C++ Intellisense” command in VS Code.
+In the bottom right you should see something that looks like a platform (linuxathena or windowsx86-64 etc). If it’s not linuxathena click it and set it to linuxathena (release)
+Wait ~1 min
+Open the main cpp file (not a header file). Intellisense should now be working
+Issues with WPILib Dashboards and Simulation on Windows N Editions
+
+Issue:
+WPILib code using CSCore (dashboards and simulated robot code) will have issues on Education N editions of Windows.
+Shuffleboard will run, but not load cameras
+Smartdashbard will crash on start-up
+Robot Simulation will crash on start-up
+Solution:
+Install the
+Media Feature Pack
+Python - CameraServer/cscore runs out of memory on roboRIO 1
+
+Issue:
+When using CameraServer on a roboRIO 1, the image processing program will sometimes exit with a
+SIGABRT
+or “Error code 6” or a
+MemoryError
+.
+Solution:
+You may be able to workaround this issue by disabling the NI webserver using the following robotpy-installer command:
+python
+-m
+robotpy
+installer
+niweb
+disable
+See also
+Github issue
+Fixed by Game Tools 2025 Patch 1
+
+Game Tools install fails due to outdated NI Package Manager
+
+Issue:
+An offiline installation of NI Game Tools may fail due to outdated NI Package Manager
+Workaround:
+Install the latest
+National Instruments Package Manager
+(Note: Click on link for “Install Offline”) and then restart Game Tools installation.
+Fixed by Elastic 2025.0.2 (WPILib Installer 2025.3.1)
+
+Elastic camera streams are very laggy
+
+Issue:
+Camera streams displayed in Elastic are laggy and have low FPS.
+Workaround:
+This is an issue that was fixed in Elastic 2025.0.2. Update Elastic by running the latest WPILib installer or Elastic installer.

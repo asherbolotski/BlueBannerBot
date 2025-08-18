@@ -1,0 +1,150 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.concurrent;
+006
+007
+import edu.wpi.first.util.WPIUtilJNI;
+008
+009
+/**
+010
+* A semaphore for synchronization.
+011
+*
+012
+* <p>Semaphores keep an internal counter. Releasing the semaphore increases the count. A semaphore
+013
+* with a non-zero count is considered signaled. When a waiter wakes up it atomically decrements the
+014
+* count by 1. This is generally useful in a single-supplier, multiple-consumer scenario.
+015
+*/
+016
+public final class Semaphore implements AutoCloseable {
+017
+/**
+018
+* Constructor.
+019
+*
+020
+* @param initialCount initial value for the semaphore's internal counter
+021
+* @param maximumCount maximum value for the semaphore's internal counter
+022
+*/
+023
+public Semaphore(int initialCount, int maximumCount) {
+024
+m_handle = WPIUtilJNI.createSemaphore(initialCount, maximumCount);
+025
+}
+026
+027
+/**
+028
+* Constructor. Maximum count is Integer.MAX_VALUE.
+029
+*
+030
+* @param initialCount initial value for the semaphore's internal counter
+031
+*/
+032
+public Semaphore(int initialCount) {
+033
+this(initialCount, Integer.MAX_VALUE);
+034
+}
+035
+036
+/** Constructor. Initial count is 0, maximum count is Integer.MAX_VALUE. */
+037
+public Semaphore() {
+038
+this(0, Integer.MAX_VALUE);
+039
+}
+040
+041
+@Override
+042
+public void close() {
+043
+if (m_handle != 0) {
+044
+WPIUtilJNI.destroySemaphore(m_handle);
+045
+m_handle = 0;
+046
+}
+047
+}
+048
+049
+/**
+050
+* Gets the semaphore handle (e.g. for waitForObject).
+051
+*
+052
+* @return handle
+053
+*/
+054
+public int getHandle() {
+055
+return m_handle;
+056
+}
+057
+058
+/**
+059
+* Releases N counts of the semaphore.
+060
+*
+061
+* @param releaseCount amount to add to semaphore's internal counter; must be positive
+062
+* @return True on successful release, false on failure (e.g. release count would exceed maximum
+063
+*     value, or handle invalid)
+064
+*/
+065
+public boolean release(int releaseCount) {
+066
+return WPIUtilJNI.releaseSemaphore(m_handle, releaseCount);
+067
+}
+068
+069
+/**
+070
+* Releases 1 count of the semaphore.
+071
+*
+072
+* @return True on successful release, false on failure (e.g. release count would exceed maximum
+073
+*     value, or handle invalid)
+074
+*/
+075
+public boolean release() {
+076
+return release(1);
+077
+}
+078
+079
+private int m_handle;
+080
+}

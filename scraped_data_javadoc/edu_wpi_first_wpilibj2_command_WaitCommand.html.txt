@@ -1,0 +1,276 @@
+Package
+edu.wpi.first.wpilibj2.command
+Class WaitCommand
+java.lang.Object
+edu.wpi.first.wpilibj2.command.Command
+edu.wpi.first.wpilibj2.command.WaitCommand
+All Implemented Interfaces:
+Sendable
+public class
+WaitCommand
+extends
+Command
+A command that does nothing but takes a specified amount of time to finish.
+This class is provided by the NewCommands VendorDep
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.wpilibj2.command.
+Command
+Command.InterruptionBehavior
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected
+Timer
+m_timer
+The timer used for waiting.
+Constructor Summary
+Constructors
+Constructor
+Description
+WaitCommand
+(double seconds)
+Creates a new WaitCommand.
+WaitCommand
+(
+Time
+time)
+Creates a new WaitCommand.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+end
+(boolean interrupted)
+The action to take when the command ends.
+void
+initialize
+()
+The initial subroutine of a command.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isFinished
+()
+Whether the command has finished.
+boolean
+runsWhenDisabled
+()
+Whether the given command should run when the robot is disabled.
+Methods inherited from class edu.wpi.first.wpilibj2.command.
+Command
+addRequirements
+,
+addRequirements
+,
+alongWith
+,
+andThen
+,
+andThen
+,
+asProxy
+,
+beforeStarting
+,
+beforeStarting
+,
+cancel
+,
+deadlineFor
+,
+deadlineWith
+,
+execute
+,
+finallyDo
+,
+finallyDo
+,
+getInterruptionBehavior
+,
+getName
+,
+getRequirements
+,
+getSubsystem
+,
+handleInterrupt
+,
+hasRequirement
+,
+ignoringDisable
+,
+isScheduled
+,
+onlyIf
+,
+onlyWhile
+,
+raceWith
+,
+repeatedly
+,
+schedule
+,
+setName
+,
+setSubsystem
+,
+unless
+,
+until
+,
+withDeadline
+,
+withInterruptBehavior
+,
+withName
+,
+withTimeout
+,
+withTimeout
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+m_timer
+protected
+Timer
+m_timer
+The timer used for waiting.
+Constructor Details
+WaitCommand
+public
+WaitCommand
+(double seconds)
+Creates a new WaitCommand. This command will do nothing, and end after the specified duration.
+Parameters:
+seconds
+- the time to wait, in seconds
+WaitCommand
+public
+WaitCommand
+(
+Time
+time)
+Creates a new WaitCommand. This command will do nothing, and end after the specified duration.
+Parameters:
+time
+- the time to wait
+Method Details
+initialize
+public
+void
+initialize
+()
+Description copied from class:
+Command
+The initial subroutine of a command. Called once when the command is initially scheduled.
+Overrides:
+initialize
+in class
+Command
+end
+public
+void
+end
+(boolean interrupted)
+Description copied from class:
+Command
+The action to take when the command ends. Called when either the command finishes normally, or
+ when it interrupted/canceled.
+Do not schedule commands here that share requirements with this command. Use
+Command.andThen(Command...)
+instead.
+Overrides:
+end
+in class
+Command
+Parameters:
+interrupted
+- whether the command was interrupted/canceled
+isFinished
+public
+boolean
+isFinished
+()
+Description copied from class:
+Command
+Whether the command has finished. Once a command finishes, the scheduler will call its end()
+ method and un-schedule it.
+Overrides:
+isFinished
+in class
+Command
+Returns:
+whether the command has finished.
+runsWhenDisabled
+public
+boolean
+runsWhenDisabled
+()
+Description copied from class:
+Command
+Whether the given command should run when the robot is disabled. Override to return true if the
+ command should run when disabled.
+Overrides:
+runsWhenDisabled
+in class
+Command
+Returns:
+whether the command should run when the robot is disabled
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Overrides:
+initSendable
+in class
+Command
+Parameters:
+builder
+- sendable builder

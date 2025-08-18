@@ -1,0 +1,390 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+008
+import edu.wpi.first.hal.HAL;
+009
+import edu.wpi.first.hal.util.AllocationException;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import edu.wpi.first.util.sendable.SendableBuilder;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+014
+/**
+015
+* Class for operating a compressor connected to a pneumatics module. The module will automatically
+016
+* run in closed loop mode by default whenever a {@link Solenoid} object is created. For most cases,
+017
+* a Compressor object does not need to be instantiated or used in a robot program. This class is
+018
+* only required in cases where the robot program needs a more detailed status of the compressor or
+019
+* to enable/disable closed loop control.
+020
+*
+021
+* <p>Note: you cannot operate the compressor directly from this class as doing so would circumvent
+022
+* the safety provided by using the pressure switch and closed loop control. You can only turn off
+023
+* closed loop control, thereby stopping the compressor from operating.
+024
+*/
+025
+public class Compressor implements Sendable, AutoCloseable {
+026
+private PneumaticsBase m_module;
+027
+private PneumaticsModuleType m_moduleType;
+028
+029
+/**
+030
+* Constructs a compressor for a specified module and type.
+031
+*
+032
+* @param module The module ID to use.
+033
+* @param moduleType The module type to use.
+034
+*/
+035
+@SuppressWarnings("this-escape")
+036
+public Compressor(int module, PneumaticsModuleType moduleType) {
+037
+m_module = PneumaticsBase.getForType(module, moduleType);
+038
+m_moduleType = moduleType;
+039
+040
+if (!m_module.reserveCompressor()) {
+041
+m_module.close();
+042
+throw new AllocationException("Compressor already allocated");
+043
+}
+044
+045
+m_module.enableCompressorDigital();
+046
+047
+HAL.report(tResourceType.kResourceType_Compressor, module + 1);
+048
+SendableRegistry.addLW(this, "Compressor", module);
+049
+}
+050
+051
+/**
+052
+* Constructs a compressor for a default module and specified type.
+053
+*
+054
+* @param moduleType The module type to use.
+055
+*/
+056
+public Compressor(PneumaticsModuleType moduleType) {
+057
+this(PneumaticsBase.getDefaultForType(moduleType), moduleType);
+058
+}
+059
+060
+@Override
+061
+public void close() {
+062
+SendableRegistry.remove(this);
+063
+m_module.unreserveCompressor();
+064
+m_module.close();
+065
+m_module = null;
+066
+}
+067
+068
+/**
+069
+* Returns whether the compressor is active or not.
+070
+*
+071
+* @return true if the compressor is on - otherwise false.
+072
+*/
+073
+public boolean isEnabled() {
+074
+return m_module.getCompressor();
+075
+}
+076
+077
+/**
+078
+* Returns the state of the pressure switch.
+079
+*
+080
+* @return True if pressure switch indicates that the system is not full, otherwise false.
+081
+*/
+082
+public boolean getPressureSwitchValue() {
+083
+return m_module.getPressureSwitch();
+084
+}
+085
+086
+/**
+087
+* Get the current drawn by the compressor.
+088
+*
+089
+* @return Current drawn by the compressor in amps.
+090
+*/
+091
+public double getCurrent() {
+092
+return m_module.getCompressorCurrent();
+093
+}
+094
+095
+/**
+096
+* If supported by the device, returns the analog input voltage (on channel 0).
+097
+*
+098
+* <p>This function is only supported by the REV PH. On CTRE PCM, this will return 0.
+099
+*
+100
+* @return The analog input voltage, in volts.
+101
+*/
+102
+public double getAnalogVoltage() {
+103
+return m_module.getAnalogVoltage(0);
+104
+}
+105
+106
+/**
+107
+* If supported by the device, returns the pressure (in PSI) read by the analog pressure sensor
+108
+* (on channel 0).
+109
+*
+110
+* <p>This function is only supported by the REV PH with the REV Analog Pressure Sensor. On CTRE
+111
+* PCM, this will return 0.
+112
+*
+113
+* @return The pressure (in PSI) read by the analog pressure sensor.
+114
+*/
+115
+public double getPressure() {
+116
+return m_module.getPressure(0);
+117
+}
+118
+119
+/** Disable the compressor. */
+120
+public void disable() {
+121
+m_module.disableCompressor();
+122
+}
+123
+124
+/**
+125
+* Enables the compressor in digital mode using the digital pressure switch. The compressor will
+126
+* turn on when the pressure switch indicates that the system is not full, and will turn off when
+127
+* the pressure switch indicates that the system is full.
+128
+*/
+129
+public void enableDigital() {
+130
+m_module.enableCompressorDigital();
+131
+}
+132
+133
+/**
+134
+* If supported by the device, enables the compressor in analog mode. This mode uses an analog
+135
+* pressure sensor connected to analog channel 0 to cycle the compressor. The compressor will turn
+136
+* on when the pressure drops below {@code minPressure} and will turn off when the pressure
+137
+* reaches {@code maxPressure}. This mode is only supported by the REV PH with the REV Analog
+138
+* Pressure Sensor connected to analog channel 0.
+139
+*
+140
+* <p>On CTRE PCM, this will enable digital control.
+141
+*
+142
+* @param minPressure The minimum pressure in PSI. The compressor will turn on when the pressure
+143
+*     drops below this value.
+144
+* @param maxPressure The maximum pressure in PSI. The compressor will turn off when the pressure
+145
+*     reaches this value.
+146
+*/
+147
+public void enableAnalog(double minPressure, double maxPressure) {
+148
+m_module.enableCompressorAnalog(minPressure, maxPressure);
+149
+}
+150
+151
+/**
+152
+* If supported by the device, enables the compressor in hybrid mode. This mode uses both a
+153
+* digital pressure switch and an analog pressure sensor connected to analog channel 0 to cycle
+154
+* the compressor. This mode is only supported by the REV PH with the REV Analog Pressure Sensor
+155
+* connected to analog channel 0.
+156
+*
+157
+* <p>The compressor will turn on when <i>both</i>:
+158
+*
+159
+* <ul>
+160
+*   <li>The digital pressure switch indicates the system is not full AND
+161
+*   <li>The analog pressure sensor indicates that the pressure in the system is below the
+162
+*       specified minimum pressure.
+163
+* </ul>
+164
+*
+165
+* <p>The compressor will turn off when <i>either</i>:
+166
+*
+167
+* <ul>
+168
+*   <li>The digital pressure switch is disconnected or indicates that the system is full OR
+169
+*   <li>The pressure detected by the analog sensor is greater than the specified maximum
+170
+*       pressure.
+171
+* </ul>
+172
+*
+173
+* <p>On CTRE PCM, this will enable digital control.
+174
+*
+175
+* @param minPressure The minimum pressure in PSI. The compressor will turn on when the pressure
+176
+*     drops below this value and the pressure switch indicates that the system is not full.
+177
+* @param maxPressure The maximum pressure in PSI. The compressor will turn off when the pressure
+178
+*     reaches this value or the pressure switch is disconnected or indicates that the system is
+179
+*     full.
+180
+*/
+181
+public void enableHybrid(double minPressure, double maxPressure) {
+182
+m_module.enableCompressorHybrid(minPressure, maxPressure);
+183
+}
+184
+185
+/**
+186
+* Returns the active compressor configuration.
+187
+*
+188
+* @return The active compressor configuration.
+189
+*/
+190
+public CompressorConfigType getConfigType() {
+191
+return m_module.getCompressorConfigType();
+192
+}
+193
+194
+@Override
+195
+public void initSendable(SendableBuilder builder) {
+196
+builder.setSmartDashboardType("Compressor");
+197
+builder.addBooleanProperty("Enabled", this::isEnabled, null);
+198
+builder.addBooleanProperty("Pressure switch", this::getPressureSwitchValue, null);
+199
+builder.addDoubleProperty("Current (A)", this::getCurrent, null);
+200
+if (m_moduleType == PneumaticsModuleType.REVPH) { // These are not supported by the CTRE PCM
+201
+builder.addDoubleProperty("Analog Voltage", this::getAnalogVoltage, null);
+202
+builder.addDoubleProperty("Pressure (PSI)", this::getPressure, null);
+203
+}
+204
+}
+205
+}

@@ -1,0 +1,383 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.spline;
+006
+007
+import edu.wpi.first.math.spline.proto.QuinticHermiteSplineProto;
+008
+import edu.wpi.first.math.spline.struct.QuinticHermiteSplineStruct;
+009
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+010
+import edu.wpi.first.util.struct.StructSerializable;
+011
+import org.ejml.simple.SimpleMatrix;
+012
+013
+/** Represents a hermite spline of degree 5. */
+014
+public class QuinticHermiteSpline extends Spline
+015
+implements ProtobufSerializable, StructSerializable {
+016
+private static SimpleMatrix hermiteBasis;
+017
+private final SimpleMatrix m_coefficients;
+018
+019
+/** The control vector for the initial point in the x dimension. DO NOT MODIFY THIS ARRAY! */
+020
+public final double[] xInitialControlVector;
+021
+022
+/** The control vector for the final point in the x dimension. DO NOT MODIFY THIS ARRAY! */
+023
+public final double[] xFinalControlVector;
+024
+025
+/** The control vector for the initial point in the y dimension. DO NOT MODIFY THIS ARRAY! */
+026
+public final double[] yInitialControlVector;
+027
+028
+/** The control vector for the final point in the y dimension. DO NOT MODIFY THIS ARRAY! */
+029
+public final double[] yFinalControlVector;
+030
+031
+private final ControlVector m_initialControlVector;
+032
+private final ControlVector m_finalControlVector;
+033
+034
+/**
+035
+* Constructs a quintic hermite spline with the specified control vectors. Each control vector
+036
+* contains into about the location of the point, its first derivative, and its second derivative.
+037
+*
+038
+* @param xInitialControlVector The control vector for the initial point in the x dimension.
+039
+* @param xFinalControlVector The control vector for the final point in the x dimension.
+040
+* @param yInitialControlVector The control vector for the initial point in the y dimension.
+041
+* @param yFinalControlVector The control vector for the final point in the y dimension.
+042
+*/
+043
+@SuppressWarnings("PMD.ArrayIsStoredDirectly")
+044
+public QuinticHermiteSpline(
+045
+double[] xInitialControlVector,
+046
+double[] xFinalControlVector,
+047
+double[] yInitialControlVector,
+048
+double[] yFinalControlVector) {
+049
+super(5);
+050
+this.xInitialControlVector = xInitialControlVector;
+051
+this.yInitialControlVector = yInitialControlVector;
+052
+this.xFinalControlVector = xFinalControlVector;
+053
+this.yFinalControlVector = yFinalControlVector;
+054
+055
+// Populate the coefficients for the actual spline equations.
+056
+// Row 0 is x coefficients
+057
+// Row 1 is y coefficients
+058
+final var hermite = makeHermiteBasis();
+059
+final var x = getControlVectorFromArrays(xInitialControlVector, xFinalControlVector);
+060
+final var y = getControlVectorFromArrays(yInitialControlVector, yFinalControlVector);
+061
+062
+final var xCoeffs = (hermite.mult(x)).transpose();
+063
+final var yCoeffs = (hermite.mult(y)).transpose();
+064
+065
+m_coefficients = new SimpleMatrix(6, 6);
+066
+067
+for (int i = 0; i < 6; i++) {
+068
+m_coefficients.set(0, i, xCoeffs.get(0, i));
+069
+m_coefficients.set(1, i, yCoeffs.get(0, i));
+070
+}
+071
+for (int i = 0; i < 6; i++) {
+072
+// Populate Row 2 and Row 3 with the derivatives of the equations above.
+073
+// Here, we are multiplying by (5 - i) to manually take the derivative. The
+074
+// power of the term in index 0 is 5, index 1 is 4 and so on. To find the
+075
+// coefficient of the derivative, we can use the power rule and multiply
+076
+// the existing coefficient by its power.
+077
+m_coefficients.set(2, i, m_coefficients.get(0, i) * (5 - i));
+078
+m_coefficients.set(3, i, m_coefficients.get(1, i) * (5 - i));
+079
+}
+080
+for (int i = 0; i < 5; i++) {
+081
+// Then populate row 4 and 5 with the second derivatives.
+082
+// Here, we are multiplying by (4 - i) to manually take the derivative. The
+083
+// power of the term in index 0 is 4, index 1 is 3 and so on. To find the
+084
+// coefficient of the derivative, we can use the power rule and multiply
+085
+// the existing coefficient by its power.
+086
+m_coefficients.set(4, i, m_coefficients.get(2, i) * (4 - i));
+087
+m_coefficients.set(5, i, m_coefficients.get(3, i) * (4 - i));
+088
+}
+089
+090
+// Assign member variables.
+091
+m_initialControlVector = new ControlVector(xInitialControlVector, yInitialControlVector);
+092
+m_finalControlVector = new ControlVector(xFinalControlVector, yFinalControlVector);
+093
+}
+094
+095
+/**
+096
+* Returns the coefficients matrix.
+097
+*
+098
+* @return The coefficients matrix.
+099
+*/
+100
+@Override
+101
+public SimpleMatrix getCoefficients() {
+102
+return m_coefficients;
+103
+}
+104
+105
+/**
+106
+* Returns the initial control vector that created this spline.
+107
+*
+108
+* @return The initial control vector that created this spline.
+109
+*/
+110
+@Override
+111
+public ControlVector getInitialControlVector() {
+112
+return m_initialControlVector;
+113
+}
+114
+115
+/**
+116
+* Returns the final control vector that created this spline.
+117
+*
+118
+* @return The final control vector that created this spline.
+119
+*/
+120
+@Override
+121
+public ControlVector getFinalControlVector() {
+122
+return m_finalControlVector;
+123
+}
+124
+125
+/**
+126
+* Returns the hermite basis matrix for quintic hermite spline interpolation.
+127
+*
+128
+* @return The hermite basis matrix for quintic hermite spline interpolation.
+129
+*/
+130
+@SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
+131
+private SimpleMatrix makeHermiteBasis() {
+132
+if (hermiteBasis == null) {
+133
+// Given P(i), P'(i), P"(i), P(i+1), P'(i+1), P"(i+1), the control vectors,
+134
+// we want to find the coefficients of the spline
+135
+// P(t) = a₅t⁵ + a₄t⁴ + a₃t³ + a₂t² + a₁t + a₀.
+136
+//
+137
+// P(i)    = P(0)  = a₀
+138
+// P'(i)   = P'(0) = a₁
+139
+// P''(i)  = P"(0) = 2a₂
+140
+// P(i+1)  = P(1)  = a₅ + a₄ + a₃ + a₂ + a₁ + a₀
+141
+// P'(i+1) = P'(1) = 5a₅ + 4a₄ + 3a₃ + 2a₂ + a₁
+142
+// P"(i+1) = P"(1) = 20a₅ + 12a₄ + 6a₃ + 2a₂
+143
+//
+144
+// [P(i)   ] = [ 0  0  0  0  0  1][a₅]
+145
+// [P'(i)  ] = [ 0  0  0  0  1  0][a₄]
+146
+// [P"(i)  ] = [ 0  0  0  2  0  0][a₃]
+147
+// [P(i+1) ] = [ 1  1  1  1  1  1][a₂]
+148
+// [P'(i+1)] = [ 5  4  3  2  1  0][a₁]
+149
+// [P"(i+1)] = [20 12  6  2  0  0][a₀]
+150
+//
+151
+// To solve for the coefficients, we can invert the 6x6 matrix and move it
+152
+// to the other side of the equation.
+153
+//
+154
+// [a₅] = [ -6.0  -3.0  -0.5   6.0  -3.0   0.5][P(i)   ]
+155
+// [a₄] = [ 15.0   8.0   1.5 -15.0   7.0  -1.0][P'(i)  ]
+156
+// [a₃] = [-10.0  -6.0  -1.5  10.0  -4.0   0.5][P"(i)  ]
+157
+// [a₂] = [  0.0   0.0   0.5   0.0   0.0   0.0][P(i+1) ]
+158
+// [a₁] = [  0.0   1.0   0.0   0.0   0.0   0.0][P'(i+1)]
+159
+// [a₀] = [  1.0   0.0   0.0   0.0   0.0   0.0][P"(i+1)]
+160
+hermiteBasis =
+161
+new SimpleMatrix(
+162
+6,
+163
+6,
+164
+true,
+165
+new double[] {
+166
+-06.0, -03.0, -00.5, +06.0, -03.0, +00.5, +15.0, +08.0, +01.5, -15.0, +07.0, -01.0,
+167
+-10.0, -06.0, -01.5, +10.0, -04.0, +00.5, +00.0, +00.0, +00.5, +00.0, +00.0, +00.0,
+168
++00.0, +01.0, +00.0, +00.0, +00.0, +00.0, +01.0, +00.0, +00.0, +00.0, +00.0, +00.0
+169
+});
+170
+}
+171
+return hermiteBasis;
+172
+}
+173
+174
+/**
+175
+* Returns the control vector for each dimension as a matrix from the user-provided arrays in the
+176
+* constructor.
+177
+*
+178
+* @param initialVector The control vector for the initial point.
+179
+* @param finalVector The control vector for the final point.
+180
+* @return The control vector matrix for a dimension.
+181
+*/
+182
+@SuppressWarnings("PMD.UnnecessaryVarargsArrayCreation")
+183
+private SimpleMatrix getControlVectorFromArrays(double[] initialVector, double[] finalVector) {
+184
+if (initialVector.length != 3 || finalVector.length != 3) {
+185
+throw new IllegalArgumentException("Size of vectors must be 3");
+186
+}
+187
+return new SimpleMatrix(
+188
+6,
+189
+1,
+190
+true,
+191
+new double[] {
+192
+initialVector[0], initialVector[1], initialVector[2],
+193
+finalVector[0], finalVector[1], finalVector[2]
+194
+});
+195
+}
+196
+197
+/** QuinticHermiteSpline struct for serialization. */
+198
+public static final QuinticHermiteSplineProto proto = new QuinticHermiteSplineProto();
+199
+200
+/** QuinticHermiteSpline protobuf for serialization. */
+201
+public static final QuinticHermiteSplineStruct struct = new QuinticHermiteSplineStruct();
+202
+}

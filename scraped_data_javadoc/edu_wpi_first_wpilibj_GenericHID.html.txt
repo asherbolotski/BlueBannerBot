@@ -1,0 +1,654 @@
+Package
+edu.wpi.first.wpilibj
+Class GenericHID
+java.lang.Object
+edu.wpi.first.wpilibj.GenericHID
+Direct Known Subclasses:
+Joystick
+,
+PS4Controller
+,
+PS5Controller
+,
+StadiaController
+,
+XboxController
+public class
+GenericHID
+extends
+Object
+Handle input from standard HID devices connected to the Driver Station.
+This class handles standard input that comes from the Driver Station. Each time a value is
+ requested the most recent value is returned. There is a single class instance for each device and
+ the mapping of ports to hardware buttons depends on the code in the Driver Station.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+GenericHID.HIDType
+USB HID interface type.
+static enum
+GenericHID.RumbleType
+Represents a rumble output on the Joystick.
+Constructor Summary
+Constructors
+Constructor
+Description
+GenericHID
+(int port)
+Construct an instance of a device.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+BooleanEvent
+axisGreaterThan
+(int axis,
+ double threshold,
+EventLoop
+loop)
+Constructs an event instance that is true when the axis value is greater than
+threshold
+, attached to the given loop.
+BooleanEvent
+axisLessThan
+(int axis,
+ double threshold,
+EventLoop
+loop)
+Constructs an event instance that is true when the axis value is less than
+threshold
+,
+ attached to the given loop.
+BooleanEvent
+button
+(int button,
+EventLoop
+loop)
+Constructs an event instance around this button's digital signal.
+int
+getAxisCount
+()
+Get the number of axes for the HID.
+int
+getAxisType
+(int axis)
+Get the axis type of the provided joystick axis.
+int
+getButtonCount
+()
+For the current HID, return the number of buttons.
+String
+getName
+()
+Get the name of the HID.
+int
+getPort
+()
+Get the port number of the HID.
+int
+getPOV
+()
+Get the angle in degrees of the default POV (index 0) on the HID.
+int
+getPOV
+(int pov)
+Get the angle in degrees of a POV on the HID.
+int
+getPOVCount
+()
+For the current HID, return the number of POVs.
+double
+getRawAxis
+(int axis)
+Get the value of the axis.
+boolean
+getRawButton
+(int button)
+Get the button value (starting at button 1).
+boolean
+getRawButtonPressed
+(int button)
+Whether the button was pressed since the last check.
+boolean
+getRawButtonReleased
+(int button)
+Whether the button was released since the last check.
+GenericHID.HIDType
+getType
+()
+Get the type of the HID.
+boolean
+isConnected
+()
+Get if the HID is connected.
+BooleanEvent
+pov
+(int pov,
+ int angle,
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around this angle of a POV on the HID.
+BooleanEvent
+pov
+(int angle,
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around this angle of a POV on the HID.
+BooleanEvent
+povCenter
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the center (not pressed) of the default (index
+ 0) POV on the HID.
+BooleanEvent
+povDown
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 180 degree angle (down) of the default
+ (index 0) POV on the HID.
+BooleanEvent
+povDownLeft
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 225 degree angle (down left) of the default
+ (index 0) POV on the HID.
+BooleanEvent
+povDownRight
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 135 degree angle (right down) of the
+ default (index 0) POV on the HID.
+BooleanEvent
+povLeft
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 270 degree angle (left) of the default
+ (index 0) POV on the HID.
+BooleanEvent
+povRight
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 90 degree angle (right) of the default
+ (index 0) POV on the HID.
+BooleanEvent
+povUp
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 0 degree angle (up) of the default (index
+ 0) POV on the HID.
+BooleanEvent
+povUpLeft
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 315 degree angle (left up) of the default
+ (index 0) POV on the HID.
+BooleanEvent
+povUpRight
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 45 degree angle (right up) of the default
+ (index 0) POV on the HID.
+void
+setOutput
+(int outputNumber,
+ boolean value)
+Set a single HID output value for the HID.
+void
+setOutputs
+(int value)
+Set all HID output values for the HID.
+void
+setRumble
+(
+GenericHID.RumbleType
+type,
+ double value)
+Set the rumble output for the HID.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+GenericHID
+public
+GenericHID
+(int port)
+Construct an instance of a device.
+Parameters:
+port
+- The port index on the Driver Station that the device is plugged into.
+Method Details
+getRawButton
+public
+boolean
+getRawButton
+(int button)
+Get the button value (starting at button 1).
+The buttons are returned in a single 16 bit value with one bit representing the state of
+ each button. The appropriate button is returned as a boolean value.
+This method returns true if the button is being held down at the time that this method is
+ being called.
+Parameters:
+button
+- The button number to be read (starting at 1)
+Returns:
+The state of the button.
+getRawButtonPressed
+public
+boolean
+getRawButtonPressed
+(int button)
+Whether the button was pressed since the last check. Button indexes begin at 1.
+This method returns true if the button went from not pressed to held down since the last
+ time this method was called. This is useful if you only want to call a function once when you
+ press the button.
+Parameters:
+button
+- The button index, beginning at 1.
+Returns:
+Whether the button was pressed since the last check.
+getRawButtonReleased
+public
+boolean
+getRawButtonReleased
+(int button)
+Whether the button was released since the last check. Button indexes begin at 1.
+This method returns true if the button went from held down to not pressed since the last
+ time this method was called. This is useful if you only want to call a function once when you
+ release the button.
+Parameters:
+button
+- The button index, beginning at 1.
+Returns:
+Whether the button was released since the last check.
+button
+public
+BooleanEvent
+button
+(int button,
+EventLoop
+loop)
+Constructs an event instance around this button's digital signal.
+Parameters:
+button
+- the button index
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance representing the button's digital signal attached to the given loop.
+getRawAxis
+public
+double
+getRawAxis
+(int axis)
+Get the value of the axis.
+Parameters:
+axis
+- The axis to read, starting at 0.
+Returns:
+The value of the axis.
+getPOV
+public
+int
+getPOV
+(int pov)
+Get the angle in degrees of a POV on the HID.
+The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90,
+ upper-left is 315).
+Parameters:
+pov
+- The index of the POV to read (starting at 0). Defaults to 0.
+Returns:
+the angle of the POV in degrees, or -1 if the POV is not pressed.
+getPOV
+public
+int
+getPOV
+()
+Get the angle in degrees of the default POV (index 0) on the HID.
+The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90,
+ upper-left is 315).
+Returns:
+the angle of the POV in degrees, or -1 if the POV is not pressed.
+pov
+public
+BooleanEvent
+pov
+(int angle,
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around this angle of a POV on the HID.
+The POV angles start at 0 in the up direction, and increase clockwise (eg right is 90,
+ upper-left is 315).
+Parameters:
+angle
+- POV angle in degrees, or -1 for the center / not pressed.
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around this angle of a POV on the HID.
+pov
+public
+BooleanEvent
+pov
+(int pov,
+ int angle,
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around this angle of a POV on the HID.
+The POV angles start at 0 in the up direction, and increase clockwise (e.g. right is 90,
+ upper-left is 315).
+Parameters:
+pov
+- index of the POV to read (starting at 0). Defaults to 0.
+angle
+- POV angle in degrees, or -1 for the center / not pressed.
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around this angle of a POV on the HID.
+povUp
+public
+BooleanEvent
+povUp
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 0 degree angle (up) of the default (index
+ 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 0 degree angle of a POV on the HID.
+povUpRight
+public
+BooleanEvent
+povUpRight
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 45 degree angle (right up) of the default
+ (index 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 45 degree angle of a POV on the HID.
+povRight
+public
+BooleanEvent
+povRight
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 90 degree angle (right) of the default
+ (index 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 90 degree angle of a POV on the HID.
+povDownRight
+public
+BooleanEvent
+povDownRight
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 135 degree angle (right down) of the
+ default (index 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 135 degree angle of a POV on the HID.
+povDown
+public
+BooleanEvent
+povDown
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 180 degree angle (down) of the default
+ (index 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 180 degree angle of a POV on the HID.
+povDownLeft
+public
+BooleanEvent
+povDownLeft
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 225 degree angle (down left) of the default
+ (index 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 225 degree angle of a POV on the HID.
+povLeft
+public
+BooleanEvent
+povLeft
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 270 degree angle (left) of the default
+ (index 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 270 degree angle of a POV on the HID.
+povUpLeft
+public
+BooleanEvent
+povUpLeft
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the 315 degree angle (left up) of the default
+ (index 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the 315 degree angle of a POV on the HID.
+povCenter
+public
+BooleanEvent
+povCenter
+(
+EventLoop
+loop)
+Constructs a BooleanEvent instance based around the center (not pressed) of the default (index
+ 0) POV on the HID.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a BooleanEvent instance based around the center of a POV on the HID.
+axisLessThan
+public
+BooleanEvent
+axisLessThan
+(int axis,
+ double threshold,
+EventLoop
+loop)
+Constructs an event instance that is true when the axis value is less than
+threshold
+,
+ attached to the given loop.
+Parameters:
+axis
+- The axis to read, starting at 0
+threshold
+- The value below which this event should return true.
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance that is true when the axis value is less than the provided threshold.
+axisGreaterThan
+public
+BooleanEvent
+axisGreaterThan
+(int axis,
+ double threshold,
+EventLoop
+loop)
+Constructs an event instance that is true when the axis value is greater than
+threshold
+, attached to the given loop.
+Parameters:
+axis
+- The axis to read, starting at 0
+threshold
+- The value above which this event should return true.
+loop
+- the event loop instance to attach the event to.
+Returns:
+an event instance that is true when the axis value is greater than the provided
+     threshold.
+getAxisCount
+public
+int
+getAxisCount
+()
+Get the number of axes for the HID.
+Returns:
+the number of axis for the current HID
+getPOVCount
+public
+int
+getPOVCount
+()
+For the current HID, return the number of POVs.
+Returns:
+the number of POVs for the current HID
+getButtonCount
+public
+int
+getButtonCount
+()
+For the current HID, return the number of buttons.
+Returns:
+the number of buttons for the current HID
+isConnected
+public
+boolean
+isConnected
+()
+Get if the HID is connected.
+Returns:
+true if the HID is connected
+getType
+public
+GenericHID.HIDType
+getType
+()
+Get the type of the HID.
+Returns:
+the type of the HID.
+getName
+public
+String
+getName
+()
+Get the name of the HID.
+Returns:
+the name of the HID.
+getAxisType
+public
+int
+getAxisType
+(int axis)
+Get the axis type of the provided joystick axis.
+Parameters:
+axis
+- The axis to read, starting at 0.
+Returns:
+the axis type of the given joystick axis
+getPort
+public
+int
+getPort
+()
+Get the port number of the HID.
+Returns:
+The port number of the HID.
+setOutput
+public
+void
+setOutput
+(int outputNumber,
+ boolean value)
+Set a single HID output value for the HID.
+Parameters:
+outputNumber
+- The index of the output to set (1-32)
+value
+- The value to set the output to
+setOutputs
+public
+void
+setOutputs
+(int value)
+Set all HID output values for the HID.
+Parameters:
+value
+- The 32 bit output value (1 bit for each output)
+setRumble
+public
+void
+setRumble
+(
+GenericHID.RumbleType
+type,
+ double value)
+Set the rumble output for the HID. The DS currently supports 2 rumble values, left rumble and
+ right rumble.
+Parameters:
+type
+- Which rumble value to set
+value
+- The normalized value (0 to 1) to set the rumble to

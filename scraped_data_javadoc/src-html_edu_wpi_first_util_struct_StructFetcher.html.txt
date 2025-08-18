@@ -1,0 +1,125 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.struct;
+006
+007
+import java.util.Optional;
+008
+009
+/**
+010
+* A utility class for fetching the assigned struct of existing classes. These are usually public,
+011
+* static, and final properties with the Struct type.
+012
+*/
+013
+public final class StructFetcher {
+014
+private StructFetcher() {
+015
+throw new UnsupportedOperationException("This is a utility class!");
+016
+}
+017
+018
+/**
+019
+* Returns a {@link Struct} for the given {@link StructSerializable} marked class. Due to the
+020
+* non-contractual nature of the marker this can fail. If the {@code struct} field could not be
+021
+* accessed for any reason, an empty {@link Optional} is returned.
+022
+*
+023
+* @param <T> The type of the class.
+024
+* @param clazz The class object to extract the struct from.
+025
+* @return An optional containing the struct if it could be extracted.
+026
+*/
+027
+@SuppressWarnings("unchecked")
+028
+public static <T extends StructSerializable> Optional<Struct<T>> fetchStruct(
+029
+Class<? extends T> clazz) {
+030
+try {
+031
+var possibleField = Optional.ofNullable(clazz.getDeclaredField("struct"));
+032
+return possibleField.flatMap(
+033
+field -> {
+034
+if (Struct.class.isAssignableFrom(field.getType())) {
+035
+try {
+036
+return Optional.ofNullable((Struct<T>) field.get(null));
+037
+} catch (IllegalAccessException e) {
+038
+return Optional.empty();
+039
+}
+040
+} else {
+041
+return Optional.empty();
+042
+}
+043
+});
+044
+} catch (NoSuchFieldException e) {
+045
+return Optional.empty();
+046
+}
+047
+}
+048
+049
+/**
+050
+* Returns a {@link Struct} for the given class. This does not do compile time checking that the
+051
+* class is a {@link StructSerializable}. Whenever possible it is reccomended to use {@link
+052
+* #fetchStruct(Class)}.
+053
+*
+054
+* @param clazz The class object to extract the struct from.
+055
+* @return An optional containing the struct if it could be extracted.
+056
+*/
+057
+@SuppressWarnings("unchecked")
+058
+public static Optional<Struct<?>> fetchStructDynamic(Class<?> clazz) {
+059
+if (StructSerializable.class.isAssignableFrom(clazz)) {
+060
+return fetchStruct((Class<? extends StructSerializable>) clazz).map(struct -> struct);
+061
+} else {
+062
+return Optional.empty();
+063
+}
+064
+}
+065
+}

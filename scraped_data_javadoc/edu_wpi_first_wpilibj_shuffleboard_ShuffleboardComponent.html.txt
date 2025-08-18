@@ -1,0 +1,282 @@
+Package
+edu.wpi.first.wpilibj.shuffleboard
+Class ShuffleboardComponent<C extends ShuffleboardComponent<C>>
+java.lang.Object
+edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent<C>
+Type Parameters:
+C
+- the self type
+Direct Known Subclasses:
+ComplexWidget
+,
+ShuffleboardLayout
+,
+SimpleWidget
+,
+SuppliedValueWidget
+public abstract class
+ShuffleboardComponent
+<C extends ShuffleboardComponent<C>>
+extends
+Object
+A generic component in Shuffleboard.
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+ShuffleboardComponent
+(
+ShuffleboardContainer
+parent,
+String
+title)
+Constructs a ShuffleboardComponent.
+protected
+ShuffleboardComponent
+(
+ShuffleboardContainer
+parent,
+String
+title,
+String
+type)
+Constructs a ShuffleboardComponent.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+buildInto
+(
+NetworkTable
+parentTable,
+NetworkTable
+metaTable)
+Builds the entries for this value.
+protected final void
+buildMetadata
+(
+NetworkTable
+metaTable)
+Builds NT metadata.
+final
+ShuffleboardContainer
+getParent
+()
+Returns the parent container.
+final
+String
+getTitle
+()
+final
+String
+getType
+()
+Returns the component type.
+protected final void
+setType
+(
+String
+type)
+Sets the component type.
+final
+C
+withPosition
+(int columnIndex,
+ int rowIndex)
+Sets the position of this component in the tab.
+final
+C
+withProperties
+(
+Map
+<
+String
+,
+Object
+> properties)
+Sets custom properties for this component.
+final
+C
+withSize
+(int width,
+ int height)
+Sets the size of this component in the tab.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ShuffleboardComponent
+protected
+ShuffleboardComponent
+(
+ShuffleboardContainer
+parent,
+String
+title,
+String
+type)
+Constructs a ShuffleboardComponent.
+Parameters:
+parent
+- The parent container.
+title
+- The component title.
+type
+- The component type.
+ShuffleboardComponent
+protected
+ShuffleboardComponent
+(
+ShuffleboardContainer
+parent,
+String
+title)
+Constructs a ShuffleboardComponent.
+Parameters:
+parent
+- The parent container.
+title
+- The component title.
+Method Details
+getParent
+public final
+ShuffleboardContainer
+getParent
+()
+Returns the parent container.
+Returns:
+The parent container.
+setType
+protected final
+void
+setType
+(
+String
+type)
+Sets the component type.
+Parameters:
+type
+- The component type.
+getType
+public final
+String
+getType
+()
+Returns the component type.
+Returns:
+The component type.
+getTitle
+public final
+String
+getTitle
+()
+withProperties
+public final
+C
+withProperties
+(
+Map
+<
+String
+,
+Object
+> properties)
+Sets custom properties for this component. Property names are case- and whitespace-insensitive
+ (capitalization and spaces do not matter).
+Parameters:
+properties
+- the properties for this component
+Returns:
+this component
+withPosition
+public final
+C
+withPosition
+(int columnIndex,
+ int rowIndex)
+Sets the position of this component in the tab. This has no effect if this component is inside
+ a layout.
+If the position of a single component is set, it is recommended to set the positions of
+all
+components inside a tab to prevent Shuffleboard from automatically placing another
+ component there before the one with the specific position is sent.
+Parameters:
+columnIndex
+- the column in the tab to place this component
+rowIndex
+- the row in the tab to place this component
+Returns:
+this component
+withSize
+public final
+C
+withSize
+(int width,
+ int height)
+Sets the size of this component in the tab. This has no effect if this component is inside a
+ layout.
+Parameters:
+width
+- how many columns wide the component should be
+height
+- how many rows high the component should be
+Returns:
+this component
+buildMetadata
+protected final
+void
+buildMetadata
+(
+NetworkTable
+metaTable)
+Builds NT metadata.
+Parameters:
+metaTable
+- The NT metadata table.
+buildInto
+void
+buildInto
+(
+NetworkTable
+parentTable,
+NetworkTable
+metaTable)
+Builds the entries for this value.
+Parameters:
+parentTable
+- the table containing all the data for the parent. Values that require a
+     complex entry or table structure should call
+parentTable.getSubTable(getTitle())
+to
+     get the table to put data into. Values that only use a single entry should call
+parentTable.getEntry(getTitle())
+to get that entry.
+metaTable
+- the table containing all the metadata for this value and its sub-values

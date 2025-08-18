@@ -1,0 +1,610 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class DifferentialDrivetrainSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim
+public class
+DifferentialDrivetrainSim
+extends
+Object
+This class simulates the state of the drivetrain. In simulationPeriodic, users should first set
+ inputs from motors with
+setInputs(double, double)
+, call
+update(double)
+to
+ update the simulation, and set estimated encoder and gyro positions, as well as estimated
+ odometry pose. Teams can use
+Field2d
+to visualize
+ their robot on the Sim GUI's field.
+Our state-space system is:
+x = [[x, y, theta, vel_l, vel_r, dist_l, dist_r]]ᵀ in the field coordinate system (dist_* are
+ wheel distances.)
+u = [[voltage_l, voltage_r]]ᵀ This is typically the control input of the last timestep from a
+ LTVDiffDriveController.
+y = x
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+DifferentialDrivetrainSim.KitbotGearing
+Represents a gearing option of the Toughbox mini.
+static enum
+DifferentialDrivetrainSim.KitbotMotor
+Represents common motor layouts of the kit drivetrain.
+static enum
+DifferentialDrivetrainSim.KitbotWheelSize
+Represents common wheel sizes of the kit drivetrain.
+Constructor Summary
+Constructors
+Constructor
+Description
+DifferentialDrivetrainSim
+(
+LinearSystem
+<
+N2
+,
+N2
+,
+N2
+> plant,
+DCMotor
+driveMotor,
+ double gearing,
+ double trackWidthMeters,
+ double wheelRadiusMeters,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Creates a simulated differential drivetrain.
+DifferentialDrivetrainSim
+(
+DCMotor
+driveMotor,
+ double gearing,
+ double jKgMetersSquared,
+ double massKg,
+ double wheelRadiusMeters,
+ double trackWidthMeters,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Creates a simulated differential drivetrain.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+protected
+Matrix
+<
+N2
+,
+N1
+>
+clampInput
+(
+Matrix
+<
+N2
+,
+N1
+> u)
+Clamp the input vector such that no element exceeds the battery voltage.
+static
+DifferentialDrivetrainSim
+createKitbotSim
+(
+DifferentialDrivetrainSim.KitbotMotor
+motor,
+DifferentialDrivetrainSim.KitbotGearing
+gearing,
+DifferentialDrivetrainSim.KitbotWheelSize
+wheelSize,
+ double jKgMetersSquared,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Create a sim for the standard FRC kitbot.
+static
+DifferentialDrivetrainSim
+createKitbotSim
+(
+DifferentialDrivetrainSim.KitbotMotor
+motor,
+DifferentialDrivetrainSim.KitbotGearing
+gearing,
+DifferentialDrivetrainSim.KitbotWheelSize
+wheelSize,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Create a sim for the standard FRC kitbot.
+double
+getCurrentDrawAmps
+()
+Get the current draw of the drivetrain.
+double
+getCurrentGearing
+()
+Get the drivetrain gearing.
+protected
+Matrix
+<
+N7
+,
+N1
+>
+getDynamics
+(
+Matrix
+<
+N7
+,
+N1
+> x,
+Matrix
+<
+N2
+,
+N1
+> u)
+The differential drive dynamics function.
+Rotation2d
+getHeading
+()
+Returns the direction the robot is pointing.
+double
+getLeftCurrentDrawAmps
+()
+Get the current draw of the left side of the drivetrain.
+double
+getLeftPositionMeters
+()
+Get the left encoder position in meters.
+double
+getLeftVelocityMetersPerSecond
+()
+Get the left encoder velocity in meters per second.
+Pose2d
+getPose
+()
+Returns the current pose.
+double
+getRightCurrentDrawAmps
+()
+Get the current draw of the right side of the drivetrain.
+double
+getRightPositionMeters
+()
+Get the right encoder position in meters.
+double
+getRightVelocityMetersPerSecond
+()
+Get the right encoder velocity in meters per second.
+void
+setCurrentGearing
+(double newGearRatio)
+Sets the gearing reduction on the drivetrain.
+void
+setInputs
+(double leftVoltageVolts,
+ double rightVoltageVolts)
+Sets the applied voltage to the drivetrain.
+void
+setPose
+(
+Pose2d
+pose)
+Sets the system pose.
+void
+setState
+(
+Matrix
+<
+N7
+,
+N1
+> state)
+Sets the system state.
+void
+update
+(double dtSeconds)
+Update the drivetrain states with the current time difference.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DifferentialDrivetrainSim
+public
+DifferentialDrivetrainSim
+(
+DCMotor
+driveMotor,
+ double gearing,
+ double jKgMetersSquared,
+ double massKg,
+ double wheelRadiusMeters,
+ double trackWidthMeters,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Creates a simulated differential drivetrain.
+Parameters:
+driveMotor
+- A
+DCMotor
+representing the left side of the drivetrain.
+gearing
+- The gearing ratio between motor and wheel, as output over input. This must be
+     the same ratio as the ratio used to identify or create the drivetrainPlant.
+jKgMetersSquared
+- The moment of inertia of the drivetrain about its center.
+massKg
+- The mass of the drivebase.
+wheelRadiusMeters
+- The radius of the wheels on the drivetrain.
+trackWidthMeters
+- The robot's track width, or distance between left and right wheels.
+measurementStdDevs
+- Standard deviations for measurements, in the form [x, y, heading,
+     left velocity, right velocity, left distance, right distance]ᵀ. Can be null if no noise is
+     desired. Gyro standard deviations of 0.0001 radians, velocity standard deviations of 0.05
+     m/s, and position measurement standard deviations of 0.005 meters are a reasonable starting
+     point.
+DifferentialDrivetrainSim
+public
+DifferentialDrivetrainSim
+(
+LinearSystem
+<
+N2
+,
+N2
+,
+N2
+> plant,
+DCMotor
+driveMotor,
+ double gearing,
+ double trackWidthMeters,
+ double wheelRadiusMeters,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Creates a simulated differential drivetrain.
+Parameters:
+plant
+- The
+LinearSystem
+representing the robot's drivetrain. This system can be
+     created with
+LinearSystemId.createDrivetrainVelocitySystem(DCMotor, double, double, double, double, double)
+or
+LinearSystemId.identifyDrivetrainSystem(double, double, double, double)
+.
+driveMotor
+- A
+DCMotor
+representing the drivetrain.
+gearing
+- The gearingRatio ratio of the robot, as output over input. This must be the same
+     ratio as the ratio used to identify or create the drivetrainPlant.
+trackWidthMeters
+- The distance between the two sides of the drivetrain. Can be found with
+     SysId.
+wheelRadiusMeters
+- The radius of the wheels on the drivetrain, in meters.
+measurementStdDevs
+- Standard deviations for measurements, in the form [x, y, heading,
+     left velocity, right velocity, left distance, right distance]ᵀ. Can be null if no noise is
+     desired. Gyro standard deviations of 0.0001 radians, velocity standard deviations of 0.05
+     m/s, and position measurement standard deviations of 0.005 meters are a reasonable starting
+     point.
+Method Details
+setInputs
+public
+void
+setInputs
+(double leftVoltageVolts,
+ double rightVoltageVolts)
+Sets the applied voltage to the drivetrain. Note that positive voltage must make that side of
+ the drivetrain travel forward (+X).
+Parameters:
+leftVoltageVolts
+- The left voltage.
+rightVoltageVolts
+- The right voltage.
+update
+public
+void
+update
+(double dtSeconds)
+Update the drivetrain states with the current time difference.
+Parameters:
+dtSeconds
+- the time difference
+getHeading
+public
+Rotation2d
+getHeading
+()
+Returns the direction the robot is pointing.
+Note that this angle is counterclockwise-positive, while most gyros are clockwise positive.
+Returns:
+The direction the robot is pointing.
+getPose
+public
+Pose2d
+getPose
+()
+Returns the current pose.
+Returns:
+The current pose.
+getRightPositionMeters
+public
+double
+getRightPositionMeters
+()
+Get the right encoder position in meters.
+Returns:
+The encoder position.
+getRightVelocityMetersPerSecond
+public
+double
+getRightVelocityMetersPerSecond
+()
+Get the right encoder velocity in meters per second.
+Returns:
+The encoder velocity.
+getLeftPositionMeters
+public
+double
+getLeftPositionMeters
+()
+Get the left encoder position in meters.
+Returns:
+The encoder position.
+getLeftVelocityMetersPerSecond
+public
+double
+getLeftVelocityMetersPerSecond
+()
+Get the left encoder velocity in meters per second.
+Returns:
+The encoder velocity.
+getLeftCurrentDrawAmps
+public
+double
+getLeftCurrentDrawAmps
+()
+Get the current draw of the left side of the drivetrain.
+Returns:
+the drivetrain's left side current draw, in amps
+getRightCurrentDrawAmps
+public
+double
+getRightCurrentDrawAmps
+()
+Get the current draw of the right side of the drivetrain.
+Returns:
+the drivetrain's right side current draw, in amps
+getCurrentDrawAmps
+public
+double
+getCurrentDrawAmps
+()
+Get the current draw of the drivetrain.
+Returns:
+the current draw, in amps
+getCurrentGearing
+public
+double
+getCurrentGearing
+()
+Get the drivetrain gearing.
+Returns:
+the gearing ration
+setCurrentGearing
+public
+void
+setCurrentGearing
+(double newGearRatio)
+Sets the gearing reduction on the drivetrain. This is commonly used for shifting drivetrains.
+Parameters:
+newGearRatio
+- The new gear ratio, as output over input.
+setState
+public
+void
+setState
+(
+Matrix
+<
+N7
+,
+N1
+> state)
+Sets the system state.
+Parameters:
+state
+- The state.
+setPose
+public
+void
+setPose
+(
+Pose2d
+pose)
+Sets the system pose.
+Parameters:
+pose
+- The pose.
+getDynamics
+protected
+Matrix
+<
+N7
+,
+N1
+>
+getDynamics
+(
+Matrix
+<
+N7
+,
+N1
+> x,
+Matrix
+<
+N2
+,
+N1
+> u)
+The differential drive dynamics function.
+Parameters:
+x
+- The state.
+u
+- The input.
+Returns:
+The state derivative with respect to time.
+clampInput
+protected
+Matrix
+<
+N2
+,
+N1
+>
+clampInput
+(
+Matrix
+<
+N2
+,
+N1
+> u)
+Clamp the input vector such that no element exceeds the battery voltage. If any does, the
+ relative magnitudes of the input will be maintained.
+Parameters:
+u
+- The input vector.
+Returns:
+The normalized input.
+createKitbotSim
+public static
+DifferentialDrivetrainSim
+createKitbotSim
+(
+DifferentialDrivetrainSim.KitbotMotor
+motor,
+DifferentialDrivetrainSim.KitbotGearing
+gearing,
+DifferentialDrivetrainSim.KitbotWheelSize
+wheelSize,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Create a sim for the standard FRC kitbot.
+Parameters:
+motor
+- The motors installed in the bot.
+gearing
+- The gearing reduction used.
+wheelSize
+- The wheel size.
+measurementStdDevs
+- Standard deviations for measurements, in the form [x, y, heading,
+     left velocity, right velocity, left distance, right distance]ᵀ. Can be null if no noise is
+     desired. Gyro standard deviations of 0.0001 radians, velocity standard deviations of 0.05
+     m/s, and position measurement standard deviations of 0.005 meters are a reasonable starting
+     point.
+Returns:
+A sim for the standard FRC kitbot.
+createKitbotSim
+public static
+DifferentialDrivetrainSim
+createKitbotSim
+(
+DifferentialDrivetrainSim.KitbotMotor
+motor,
+DifferentialDrivetrainSim.KitbotGearing
+gearing,
+DifferentialDrivetrainSim.KitbotWheelSize
+wheelSize,
+ double jKgMetersSquared,
+Matrix
+<
+N7
+,
+N1
+> measurementStdDevs)
+Create a sim for the standard FRC kitbot.
+Parameters:
+motor
+- The motors installed in the bot.
+gearing
+- The gearing reduction used.
+wheelSize
+- The wheel size.
+jKgMetersSquared
+- The moment of inertia of the drivebase. This can be calculated using
+     SysId.
+measurementStdDevs
+- Standard deviations for measurements, in the form [x, y, heading,
+     left velocity, right velocity, left distance, right distance]ᵀ. Can be null if no noise is
+     desired. Gyro standard deviations of 0.0001 radians, velocity standard deviations of 0.05
+     m/s, and position measurement standard deviations of 0.005 meters are a reasonable starting
+     point.
+Returns:
+A sim for the standard FRC kitbot.

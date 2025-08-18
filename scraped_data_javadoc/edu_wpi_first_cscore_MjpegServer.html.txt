@@ -1,0 +1,221 @@
+Package
+edu.wpi.first.cscore
+Class MjpegServer
+java.lang.Object
+edu.wpi.first.cscore.VideoSink
+edu.wpi.first.cscore.MjpegServer
+All Implemented Interfaces:
+AutoCloseable
+public class
+MjpegServer
+extends
+VideoSink
+A sink that acts as a MJPEG-over-HTTP network server.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.cscore.
+VideoSink
+VideoSink.Kind
+Field Summary
+Fields inherited from class edu.wpi.first.cscore.
+VideoSink
+m_handle
+Constructor Summary
+Constructors
+Constructor
+Description
+MjpegServer
+(
+String
+name,
+ int port)
+Create a MJPEG-over-HTTP server sink.
+MjpegServer
+(
+String
+name,
+String
+listenAddress,
+ int port)
+Create a MJPEG-over-HTTP server sink.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+String
+getListenAddress
+()
+Get the listen address of the server.
+int
+getPort
+()
+Get the port number of the server.
+void
+setCompression
+(int quality)
+Set the compression for clients that don't specify it.
+void
+setDefaultCompression
+(int quality)
+Set the default compression used for non-MJPEG sources.
+void
+setFPS
+(int fps)
+Set the stream frames per second (FPS) for clients that don't specify it.
+void
+setResolution
+(int width,
+ int height)
+Set the stream resolution for clients that don't specify it.
+Methods inherited from class edu.wpi.first.cscore.
+VideoSink
+close
+,
+enumerateProperties
+,
+enumerateSinks
+,
+equals
+,
+getConfigJson
+,
+getDescription
+,
+getHandle
+,
+getKind
+,
+getKindFromInt
+,
+getName
+,
+getProperty
+,
+getSource
+,
+getSourceProperty
+,
+hashCode
+,
+isValid
+,
+setConfigJson
+,
+setSource
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MjpegServer
+public
+MjpegServer
+(
+String
+name,
+String
+listenAddress,
+ int port)
+Create a MJPEG-over-HTTP server sink.
+Parameters:
+name
+- Sink name (arbitrary unique identifier)
+listenAddress
+- TCP listen address (empty string for all addresses)
+port
+- TCP port number
+MjpegServer
+public
+MjpegServer
+(
+String
+name,
+ int port)
+Create a MJPEG-over-HTTP server sink.
+Parameters:
+name
+- Sink name (arbitrary unique identifier)
+port
+- TCP port number
+Method Details
+getListenAddress
+public
+String
+getListenAddress
+()
+Get the listen address of the server.
+Returns:
+The listen address.
+getPort
+public
+int
+getPort
+()
+Get the port number of the server.
+Returns:
+The port number.
+setResolution
+public
+void
+setResolution
+(int width,
+ int height)
+Set the stream resolution for clients that don't specify it.
+It is not necessary to set this if it is the same as the source resolution.
+Setting this different than the source resolution will result in increased CPU usage,
+ particularly for MJPEG source cameras, as it will decompress, resize, and recompress the image,
+ instead of using the camera's MJPEG image directly.
+Parameters:
+width
+- width, 0 for unspecified
+height
+- height, 0 for unspecified
+setFPS
+public
+void
+setFPS
+(int fps)
+Set the stream frames per second (FPS) for clients that don't specify it.
+It is not necessary to set this if it is the same as the source FPS.
+Parameters:
+fps
+- FPS, 0 for unspecified
+setCompression
+public
+void
+setCompression
+(int quality)
+Set the compression for clients that don't specify it.
+Setting this will result in increased CPU usage for MJPEG source cameras as it will
+ decompress and recompress the image instead of using the camera's MJPEG image directly.
+Parameters:
+quality
+- JPEG compression quality (0-100), -1 for unspecified
+setDefaultCompression
+public
+void
+setDefaultCompression
+(int quality)
+Set the default compression used for non-MJPEG sources. If not set, 80 is used. This function
+ has no effect on MJPEG source cameras; use SetCompression() instead to force recompression of
+ MJPEG source images.
+Parameters:
+quality
+- JPEG compression quality (0-100)

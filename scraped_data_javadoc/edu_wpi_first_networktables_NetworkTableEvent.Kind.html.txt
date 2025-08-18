@@ -1,0 +1,240 @@
+Package
+edu.wpi.first.networktables
+Enum Class NetworkTableEvent.Kind
+java.lang.Object
+java.lang.Enum
+<
+NetworkTableEvent.Kind
+>
+edu.wpi.first.networktables.NetworkTableEvent.Kind
+All Implemented Interfaces:
+Serializable
+,
+Comparable
+<
+NetworkTableEvent.Kind
+>
+,
+Constable
+Enclosing class:
+NetworkTableEvent
+public static enum
+NetworkTableEvent.Kind
+extends
+Enum
+<
+NetworkTableEvent.Kind
+>
+NetworkTable event kind.
+Nested Class Summary
+Nested classes/interfaces inherited from class java.lang.
+Enum
+Enum.EnumDesc
+<
+E
+extends
+Enum
+<
+E
+>>
+Enum Constant Summary
+Enum Constants
+Enum Constant
+Description
+kConnected
+Client connected (on server, any client connected).
+kConnection
+Any connection event (connect or disconnect).
+kDisconnected
+Client disconnected (on server, any client disconnected).
+kImmediate
+Initial listener addition.
+kLogMessage
+Log message.
+kProperties
+Topic properties changed.
+kPublish
+New topic published.
+kTimeSync
+Time synchronized with server.
+kTopic
+Any topic event (publish, unpublish, or properties changed).
+kUnpublish
+Topic unpublished.
+kValueAll
+Topic value updated (network or local).
+kValueLocal
+Topic value updated (local).
+kValueRemote
+Topic value updated (via network).
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+int
+getValue
+()
+Returns the NetworkTable event kind value.
+static
+NetworkTableEvent.Kind
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+static
+NetworkTableEvent.Kind
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Methods inherited from class java.lang.
+Enum
+clone
+,
+compareTo
+,
+describeConstable
+,
+equals
+,
+finalize
+,
+getDeclaringClass
+,
+hashCode
+,
+name
+,
+ordinal
+,
+toString
+,
+valueOf
+Methods inherited from class java.lang.
+Object
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Enum Constant Details
+kImmediate
+public static final
+NetworkTableEvent.Kind
+kImmediate
+Initial listener addition. Set this to receive immediate notification of matches to other
+ criteria.
+kConnected
+public static final
+NetworkTableEvent.Kind
+kConnected
+Client connected (on server, any client connected).
+kDisconnected
+public static final
+NetworkTableEvent.Kind
+kDisconnected
+Client disconnected (on server, any client disconnected).
+kConnection
+public static final
+NetworkTableEvent.Kind
+kConnection
+Any connection event (connect or disconnect).
+kPublish
+public static final
+NetworkTableEvent.Kind
+kPublish
+New topic published.
+kUnpublish
+public static final
+NetworkTableEvent.Kind
+kUnpublish
+Topic unpublished.
+kProperties
+public static final
+NetworkTableEvent.Kind
+kProperties
+Topic properties changed.
+kTopic
+public static final
+NetworkTableEvent.Kind
+kTopic
+Any topic event (publish, unpublish, or properties changed).
+kValueRemote
+public static final
+NetworkTableEvent.Kind
+kValueRemote
+Topic value updated (via network).
+kValueLocal
+public static final
+NetworkTableEvent.Kind
+kValueLocal
+Topic value updated (local).
+kValueAll
+public static final
+NetworkTableEvent.Kind
+kValueAll
+Topic value updated (network or local).
+kLogMessage
+public static final
+NetworkTableEvent.Kind
+kLogMessage
+Log message.
+kTimeSync
+public static final
+NetworkTableEvent.Kind
+kTimeSync
+Time synchronized with server.
+Method Details
+values
+public static
+NetworkTableEvent.Kind
+[]
+values
+()
+Returns an array containing the constants of this enum class, in
+the order they are declared.
+Returns:
+an array containing the constants of this enum class, in the order they are declared
+valueOf
+public static
+NetworkTableEvent.Kind
+valueOf
+(
+String
+name)
+Returns the enum constant of this class with the specified name.
+The string must match
+exactly
+an identifier used to declare an
+enum constant in this class.  (Extraneous whitespace characters are 
+not permitted.)
+Parameters:
+name
+- the name of the enum constant to be returned.
+Returns:
+the enum constant with the specified name
+Throws:
+IllegalArgumentException
+- if this enum class has no constant with the specified name
+NullPointerException
+- if the argument is null
+getValue
+public
+int
+getValue
+()
+Returns the NetworkTable event kind value.
+Returns:
+The NetworkTable event kind value.

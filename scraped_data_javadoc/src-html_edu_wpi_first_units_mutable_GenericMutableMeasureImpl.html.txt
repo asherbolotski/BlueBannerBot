@@ -1,0 +1,146 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units.mutable;
+006
+007
+import edu.wpi.first.units.ImmutableMeasure;
+008
+import edu.wpi.first.units.Measure;
+009
+import edu.wpi.first.units.MutableMeasure;
+010
+import edu.wpi.first.units.Unit;
+011
+import edu.wpi.first.units.measure.Dimensionless;
+012
+013
+/**
+014
+* A generic implementation of a mutable measure. This is used in scenarios no unit-specific mutable
+015
+* implementation can be determined.
+016
+*
+017
+* @param <U> the unit of measure
+018
+*/
+019
+public final class GenericMutableMeasureImpl<U extends Unit>
+020
+extends MutableMeasureBase<U, Measure<U>, GenericMutableMeasureImpl<U>> {
+021
+/**
+022
+* Initializes the mutable measure with initial conditions. Both relative and base unit magnitudes
+023
+* are required to avoid unnecessary calculations. It is up to the caller to ensure they are
+024
+* correct.
+025
+*
+026
+* @param initialValue the initial magnitude of the measure, in terms of the unit
+027
+* @param baseUnitMagnitude the initial magnitude of the measure, in terms of the base unit
+028
+* @param unit the initial unit of measure
+029
+*/
+030
+public GenericMutableMeasureImpl(double initialValue, double baseUnitMagnitude, U unit) {
+031
+super(initialValue, baseUnitMagnitude, unit);
+032
+}
+033
+034
+@Override
+035
+public Measure<U> copy() {
+036
+return ImmutableMeasure.ofBaseUnits(m_baseUnitMagnitude, m_unit);
+037
+}
+038
+039
+@Override
+040
+public MutableMeasure<U, ?, ?> mutableCopy() {
+041
+return new GenericMutableMeasureImpl<>(m_magnitude, m_baseUnitMagnitude, m_unit);
+042
+}
+043
+044
+@Override
+045
+public Measure<U> unaryMinus() {
+046
+return ImmutableMeasure.ofBaseUnits(0 - m_baseUnitMagnitude, m_unit);
+047
+}
+048
+049
+@Override
+050
+public Measure<U> plus(Measure<? extends U> other) {
+051
+return ImmutableMeasure.ofBaseUnits(m_baseUnitMagnitude + other.baseUnitMagnitude(), m_unit);
+052
+}
+053
+054
+@Override
+055
+public Measure<U> minus(Measure<? extends U> other) {
+056
+return ImmutableMeasure.ofBaseUnits(m_baseUnitMagnitude - other.baseUnitMagnitude(), m_unit);
+057
+}
+058
+059
+@Override
+060
+public Measure<U> times(double multiplier) {
+061
+return ImmutableMeasure.ofBaseUnits(m_baseUnitMagnitude * multiplier, m_unit);
+062
+}
+063
+064
+@Override
+065
+public Measure<U> times(Dimensionless multiplier) {
+066
+return ImmutableMeasure.ofBaseUnits(
+067
+m_baseUnitMagnitude * multiplier.baseUnitMagnitude(), m_unit);
+068
+}
+069
+070
+@Override
+071
+public Measure<U> div(double divisor) {
+072
+return ImmutableMeasure.ofBaseUnits(m_baseUnitMagnitude / divisor, m_unit);
+073
+}
+074
+075
+@Override
+076
+public Measure<U> div(Dimensionless divisor) {
+077
+return ImmutableMeasure.ofBaseUnits(m_baseUnitMagnitude / divisor.baseUnitMagnitude(), m_unit);
+078
+}
+079
+}

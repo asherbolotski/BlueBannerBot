@@ -1,0 +1,93 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cameraserver;
+006
+007
+/** Storage for CameraServerShared instance. */
+008
+public final class CameraServerSharedStore {
+009
+private static CameraServerShared cameraServerShared;
+010
+011
+private CameraServerSharedStore() {}
+012
+013
+/**
+014
+* Get the CameraServerShared object.
+015
+*
+016
+* @return The CameraServerSharedObject
+017
+*/
+018
+public static synchronized CameraServerShared getCameraServerShared() {
+019
+if (cameraServerShared == null) {
+020
+cameraServerShared =
+021
+new CameraServerShared() {
+022
+@Override
+023
+public void reportVideoServer(int id) {}
+024
+025
+@Override
+026
+public void reportUsbCamera(int id) {}
+027
+028
+@Override
+029
+public void reportDriverStationError(String error) {}
+030
+031
+@Override
+032
+public void reportAxisCamera(int id) {}
+033
+034
+@Override
+035
+public Long getRobotMainThreadId() {
+036
+return null;
+037
+}
+038
+};
+039
+}
+040
+return cameraServerShared;
+041
+}
+042
+043
+/**
+044
+* Set the CameraServerShared object.
+045
+*
+046
+* @param shared The CameraServerShared object.
+047
+*/
+048
+public static synchronized void setCameraServerShared(CameraServerShared shared) {
+049
+cameraServerShared = shared;
+050
+}
+051
+}

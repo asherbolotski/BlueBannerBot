@@ -1,0 +1,428 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.epilogue.logging;
+006
+007
+import edu.wpi.first.util.struct.Struct;
+008
+import java.util.Arrays;
+009
+import java.util.HashMap;
+010
+import java.util.Map;
+011
+import java.util.Objects;
+012
+013
+/**
+014
+* A backend implementation that only logs data when it changes. Useful for keeping bandwidth and
+015
+* file sizes down. However, because it still needs to check that data has changed, it cannot avoid
+016
+* expensive sensor reads.
+017
+*/
+018
+public class LazyBackend implements EpilogueBackend {
+019
+private final EpilogueBackend m_backend;
+020
+021
+// Keep a record of the most recent value written to each entry
+022
+// Note that this may duplicate a lot of data, and will box primitives.
+023
+private final Map<String, Object> m_previousValues = new HashMap<>();
+024
+private final Map<String, NestedBackend> m_subLoggers = new HashMap<>();
+025
+026
+/**
+027
+* Creates a new lazy backend wrapper around another backend.
+028
+*
+029
+* @param backend the backend to delegate to
+030
+*/
+031
+public LazyBackend(EpilogueBackend backend) {
+032
+this.m_backend = backend;
+033
+}
+034
+035
+@Override
+036
+public EpilogueBackend lazy() {
+037
+// Already lazy, don't need to wrap it again
+038
+return this;
+039
+}
+040
+041
+@Override
+042
+public EpilogueBackend getNested(String path) {
+043
+return m_subLoggers.computeIfAbsent(path, k -> new NestedBackend(k, this));
+044
+}
+045
+046
+@Override
+047
+public void log(String identifier, int value) {
+048
+var previous = m_previousValues.get(identifier);
+049
+050
+if (previous instanceof Integer oldValue && oldValue == value) {
+051
+// no change
+052
+return;
+053
+}
+054
+055
+m_previousValues.put(identifier, value);
+056
+m_backend.log(identifier, value);
+057
+}
+058
+059
+@Override
+060
+public void log(String identifier, long value) {
+061
+var previous = m_previousValues.get(identifier);
+062
+063
+if (previous instanceof Long oldValue && oldValue == value) {
+064
+// no change
+065
+return;
+066
+}
+067
+068
+m_previousValues.put(identifier, value);
+069
+m_backend.log(identifier, value);
+070
+}
+071
+072
+@Override
+073
+public void log(String identifier, float value) {
+074
+var previous = m_previousValues.get(identifier);
+075
+076
+if (previous instanceof Float oldValue && oldValue == value) {
+077
+// no change
+078
+return;
+079
+}
+080
+081
+m_previousValues.put(identifier, value);
+082
+m_backend.log(identifier, value);
+083
+}
+084
+085
+@Override
+086
+public void log(String identifier, double value) {
+087
+var previous = m_previousValues.get(identifier);
+088
+089
+if (previous instanceof Double oldValue && oldValue == value) {
+090
+// no change
+091
+return;
+092
+}
+093
+094
+m_previousValues.put(identifier, value);
+095
+m_backend.log(identifier, value);
+096
+}
+097
+098
+@Override
+099
+public void log(String identifier, boolean value) {
+100
+var previous = m_previousValues.get(identifier);
+101
+102
+if (previous instanceof Boolean oldValue && oldValue == value) {
+103
+// no change
+104
+return;
+105
+}
+106
+107
+m_previousValues.put(identifier, value);
+108
+m_backend.log(identifier, value);
+109
+}
+110
+111
+@Override
+112
+public void log(String identifier, byte[] value) {
+113
+var previous = m_previousValues.get(identifier);
+114
+115
+if (previous instanceof byte[] oldValue && Arrays.equals(oldValue, value)) {
+116
+// no change
+117
+return;
+118
+}
+119
+120
+m_previousValues.put(identifier, value.clone());
+121
+m_backend.log(identifier, value);
+122
+}
+123
+124
+@Override
+125
+public void log(String identifier, int[] value) {
+126
+var previous = m_previousValues.get(identifier);
+127
+128
+if (previous instanceof int[] oldValue && Arrays.equals(oldValue, value)) {
+129
+// no change
+130
+return;
+131
+}
+132
+133
+m_previousValues.put(identifier, value.clone());
+134
+m_backend.log(identifier, value);
+135
+}
+136
+137
+@Override
+138
+public void log(String identifier, long[] value) {
+139
+var previous = m_previousValues.get(identifier);
+140
+141
+if (previous instanceof long[] oldValue && Arrays.equals(oldValue, value)) {
+142
+// no change
+143
+return;
+144
+}
+145
+146
+m_previousValues.put(identifier, value.clone());
+147
+m_backend.log(identifier, value);
+148
+}
+149
+150
+@Override
+151
+public void log(String identifier, float[] value) {
+152
+var previous = m_previousValues.get(identifier);
+153
+154
+if (previous instanceof float[] oldValue && Arrays.equals(oldValue, value)) {
+155
+// no change
+156
+return;
+157
+}
+158
+159
+m_previousValues.put(identifier, value.clone());
+160
+m_backend.log(identifier, value);
+161
+}
+162
+163
+@Override
+164
+public void log(String identifier, double[] value) {
+165
+var previous = m_previousValues.get(identifier);
+166
+167
+if (previous instanceof double[] oldValue && Arrays.equals(oldValue, value)) {
+168
+// no change
+169
+return;
+170
+}
+171
+172
+m_previousValues.put(identifier, value.clone());
+173
+m_backend.log(identifier, value);
+174
+}
+175
+176
+@Override
+177
+public void log(String identifier, boolean[] value) {
+178
+var previous = m_previousValues.get(identifier);
+179
+180
+if (previous instanceof boolean[] oldValue && Arrays.equals(oldValue, value)) {
+181
+// no change
+182
+return;
+183
+}
+184
+185
+m_previousValues.put(identifier, value.clone());
+186
+m_backend.log(identifier, value);
+187
+}
+188
+189
+@Override
+190
+public void log(String identifier, String value) {
+191
+var previous = m_previousValues.get(identifier);
+192
+193
+if (previous instanceof String oldValue && oldValue.equals(value)) {
+194
+// no change
+195
+return;
+196
+}
+197
+198
+m_previousValues.put(identifier, value);
+199
+m_backend.log(identifier, value);
+200
+}
+201
+202
+@Override
+203
+public void log(String identifier, String[] value) {
+204
+var previous = m_previousValues.get(identifier);
+205
+206
+if (previous instanceof String[] oldValue && Arrays.equals(oldValue, value)) {
+207
+// no change
+208
+return;
+209
+}
+210
+211
+m_previousValues.put(identifier, value.clone());
+212
+m_backend.log(identifier, value);
+213
+}
+214
+215
+@Override
+216
+public <S> void log(String identifier, S value, Struct<S> struct) {
+217
+var previous = m_previousValues.get(identifier);
+218
+219
+if (Objects.equals(previous, value)) {
+220
+// no change
+221
+return;
+222
+}
+223
+224
+m_previousValues.put(identifier, value);
+225
+m_backend.log(identifier, value, struct);
+226
+}
+227
+228
+@Override
+229
+public <S> void log(String identifier, S[] value, Struct<S> struct) {
+230
+var previous = m_previousValues.get(identifier);
+231
+232
+if (previous instanceof Object[] oldValue && Arrays.equals(oldValue, value)) {
+233
+// no change
+234
+return;
+235
+}
+236
+237
+m_previousValues.put(identifier, value.clone());
+238
+m_backend.log(identifier, value, struct);
+239
+}
+240
+}

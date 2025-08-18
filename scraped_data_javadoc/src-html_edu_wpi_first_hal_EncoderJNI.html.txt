@@ -1,0 +1,536 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Encoder JNI Functions.
+009
+*
+010
+* @see "hal/Encoder.h"
+011
+*/
+012
+public class EncoderJNI extends JNIWrapper {
+013
+/**
+014
+* Initializes an encoder.
+015
+*
+016
+* @param digitalSourceHandleA the A source handle (either a digital or analog trigger)
+017
+* @param analogTriggerTypeA the analog trigger type of the A source if it is an analog trigger
+018
+* @param digitalSourceHandleB the B source handle (either a digital or analog trigger)
+019
+* @param analogTriggerTypeB the analog trigger type of the B source if it is an analog trigger
+020
+* @param reverseDirection true to reverse the counting direction from standard, otherwise false
+021
+* @param encodingType the encoding type
+022
+* @return the created encoder handle
+023
+* @see "HAL_InitializeEncoder"
+024
+*/
+025
+public static native int initializeEncoder(
+026
+int digitalSourceHandleA,
+027
+int analogTriggerTypeA,
+028
+int digitalSourceHandleB,
+029
+int analogTriggerTypeB,
+030
+boolean reverseDirection,
+031
+int encodingType);
+032
+033
+/**
+034
+* Frees an encoder.
+035
+*
+036
+* @param encoderHandle the encoder handle
+037
+* @see "HAL_FreeEncoder"
+038
+*/
+039
+public static native void freeEncoder(int encoderHandle);
+040
+041
+/**
+042
+* Indicates the encoder is used by a simulated device.
+043
+*
+044
+* @param handle the encoder handle
+045
+* @param device simulated device handle
+046
+* @see "HAL_SetEncoderSimDevice"
+047
+*/
+048
+public static native void setEncoderSimDevice(int handle, int device);
+049
+050
+/**
+051
+* Gets the current counts of the encoder after encoding type scaling.
+052
+*
+053
+* <p>This is scaled by the value passed during initialization to encodingType.
+054
+*
+055
+* @param encoderHandle the encoder handle
+056
+* @return the current scaled count
+057
+* @see "HAL_GetEncoder"
+058
+*/
+059
+public static native int getEncoder(int encoderHandle);
+060
+061
+/**
+062
+* Gets the raw counts of the encoder.
+063
+*
+064
+* <p>This is not scaled by any values.
+065
+*
+066
+* @param encoderHandle the encoder handle
+067
+* @return the raw encoder count
+068
+* @see "HAL_GetEncoderRaw"
+069
+*/
+070
+public static native int getEncoderRaw(int encoderHandle);
+071
+072
+/**
+073
+* Gets the encoder scale value.
+074
+*
+075
+* <p>This is set by the value passed during initialization to encodingType.
+076
+*
+077
+* @param encoderHandle the encoder handle
+078
+* @return the encoder scale value
+079
+* @see "HAL_GetEncoderEncodingScale"
+080
+*/
+081
+public static native int getEncodingScaleFactor(int encoderHandle);
+082
+083
+/**
+084
+* Reads the current encoder value.
+085
+*
+086
+* <p>Read the value at this instant. It may still be running, so it reflects the current value.
+087
+* Next time it is read, it might have a different value.
+088
+*
+089
+* @param encoderHandle the encoder handle
+090
+* @see "HAL_ResetEncoder"
+091
+*/
+092
+public static native void resetEncoder(int encoderHandle);
+093
+094
+/**
+095
+* Gets the Period of the most recent count.
+096
+*
+097
+* <p>Returns the time interval of the most recent count. This can be used for velocity
+098
+* calculations to determine shaft speed.
+099
+*
+100
+* @param encoderHandle the encoder handle
+101
+* @return the period of the last two pulses in units of seconds
+102
+* @see "HAL_GetEncoderPeriod"
+103
+*/
+104
+public static native double getEncoderPeriod(int encoderHandle);
+105
+106
+/**
+107
+* Sets the maximum period where the device is still considered "moving".
+108
+*
+109
+* <p>Sets the maximum period where the device is considered moving. This value is used to
+110
+* determine the "stopped" state of the encoder using the getEncoderStopped method.
+111
+*
+112
+* @param encoderHandle the encoder handle
+113
+* @param maxPeriod the maximum period where the counted device is considered moving in seconds
+114
+* @see "HAL_SetEncoderMaxPeriod"
+115
+*/
+116
+public static native void setEncoderMaxPeriod(int encoderHandle, double maxPeriod);
+117
+118
+/**
+119
+* Determines if the clock is stopped.
+120
+*
+121
+* <p>Determines if the clocked input is stopped based on the MaxPeriod value set using the
+122
+* SetMaxPeriod method. If the clock exceeds the MaxPeriod, then the device (and encoder) are
+123
+* assumed to be stopped and it returns true.
+124
+*
+125
+* @param encoderHandle the encoder handle
+126
+* @return true if the most recent encoder period exceeds the MaxPeriod value set by SetMaxPeriod
+127
+* @see "HAL_GetEncoderStopped"
+128
+*/
+129
+public static native boolean getEncoderStopped(int encoderHandle);
+130
+131
+/**
+132
+* Gets the last direction the encoder value changed.
+133
+*
+134
+* @param encoderHandle the encoder handle
+135
+* @return the last direction the encoder value changed
+136
+* @see "HAL_GetEncoderDirection"
+137
+*/
+138
+public static native boolean getEncoderDirection(int encoderHandle);
+139
+140
+/**
+141
+* Gets the current distance traveled by the encoder.
+142
+*
+143
+* <p>This is the encoder count scaled by the distance per pulse set for the encoder.
+144
+*
+145
+* @param encoderHandle the encoder handle
+146
+* @return the encoder distance (units are determined by the units passed to
+147
+*     setEncoderDistancePerPulse)
+148
+* @see "HAL_GetEncoderDistance"
+149
+*/
+150
+public static native double getEncoderDistance(int encoderHandle);
+151
+152
+/**
+153
+* Gets the current rate of the encoder.
+154
+*
+155
+* <p>This is the encoder period scaled by the distance per pulse set for the encoder.
+156
+*
+157
+* @param encoderHandle the encoder handle
+158
+* @return the encoder rate (units are determined by the units passed to
+159
+*     setEncoderDistancePerPulse, time value is seconds)
+160
+* @see "HAL_GetEncoderRate"
+161
+*/
+162
+public static native double getEncoderRate(int encoderHandle);
+163
+164
+/**
+165
+* Sets the minimum rate to be considered moving by the encoder.
+166
+*
+167
+* <p>Units need to match what is set by setEncoderDistancePerPulse, with time as seconds.
+168
+*
+169
+* @param encoderHandle the encoder handle
+170
+* @param minRate the minimum rate to be considered moving (units are determined by the units
+171
+*     passed to setEncoderDistancePerPulse, time value is seconds)
+172
+* @see "HAL_SetEncoderMinRate"
+173
+*/
+174
+public static native void setEncoderMinRate(int encoderHandle, double minRate);
+175
+176
+/**
+177
+* Sets the distance traveled per encoder pulse. This is used as a scaling factor for the rate and
+178
+* distance calls.
+179
+*
+180
+* @param encoderHandle the encoder handle
+181
+* @param distancePerPulse the distance traveled per encoder pulse (units user defined)
+182
+* @see "HAL_SetEncoderDistancePerPulse"
+183
+*/
+184
+public static native void setEncoderDistancePerPulse(int encoderHandle, double distancePerPulse);
+185
+186
+/**
+187
+* Sets if to reverse the direction of the encoder.
+188
+*
+189
+* <p>Note that this is not a toggle. It is an absolute set.
+190
+*
+191
+* @param encoderHandle the encoder handle
+192
+* @param reverseDirection true to reverse the direction, false to not.
+193
+* @see "HAL_SetEncoderReverseDirection"
+194
+*/
+195
+public static native void setEncoderReverseDirection(int encoderHandle, boolean reverseDirection);
+196
+197
+/**
+198
+* Sets the number of encoder samples to average when calculating encoder rate.
+199
+*
+200
+* @param encoderHandle the encoder handle
+201
+* @param samplesToAverage the number of samples to average
+202
+* @see "HAL_SetEncoderSamplesToAverage"
+203
+*/
+204
+public static native void setEncoderSamplesToAverage(int encoderHandle, int samplesToAverage);
+205
+206
+/**
+207
+* Gets the current samples to average value.
+208
+*
+209
+* @param encoderHandle the encoder handle
+210
+* @return the current samples to average value
+211
+* @see "HAL_GetEncoderSamplesToAverage"
+212
+*/
+213
+public static native int getEncoderSamplesToAverage(int encoderHandle);
+214
+215
+/**
+216
+* Sets the source for an index pulse on the encoder.
+217
+*
+218
+* <p>The index pulse can be used to cause an encoder to reset based on an external input.
+219
+*
+220
+* @param encoderHandle the encoder handle
+221
+* @param digitalSourceHandle the index source handle (either a HAL_AnalogTriggerHandle or a
+222
+*     HAL_DigitalHandle)
+223
+* @param analogTriggerType the analog trigger type if the source is an analog trigger
+224
+* @param indexingType the index triggering type
+225
+* @see "HAL_SetEncoderIndexSource"
+226
+*/
+227
+public static native void setEncoderIndexSource(
+228
+int encoderHandle, int digitalSourceHandle, int analogTriggerType, int indexingType);
+229
+230
+/**
+231
+* Gets the FPGA index of the encoder.
+232
+*
+233
+* @param encoderHandle the encoder handle
+234
+* @return the FPGA index of the encoder
+235
+* @see "HAL_GetEncoderFPGAIndex"
+236
+*/
+237
+public static native int getEncoderFPGAIndex(int encoderHandle);
+238
+239
+/**
+240
+* Gets the encoder scale value.
+241
+*
+242
+* <p>This is set by the value passed during initialization to encodingType.
+243
+*
+244
+* @param encoderHandle the encoder handle
+245
+* @return the encoder scale value
+246
+* @see "HAL_GetEncoderEncodingScale"
+247
+*/
+248
+public static native int getEncoderEncodingScale(int encoderHandle);
+249
+250
+/**
+251
+* Gets the decoding scale factor of the encoder.
+252
+*
+253
+* <p>This is used to perform the scaling from raw to type scaled values.
+254
+*
+255
+* @param encoderHandle the encoder handle
+256
+* @return the scale value for the encoder
+257
+* @see "HAL_GetEncoderDecodingScaleFactor"
+258
+*/
+259
+public static native double getEncoderDecodingScaleFactor(int encoderHandle);
+260
+261
+/**
+262
+* Gets the user set distance per pulse of the encoder.
+263
+*
+264
+* @param encoderHandle the encoder handle
+265
+* @return the set distance per pulse
+266
+* @see "HAL_GetEncoderDistancePerPulse"
+267
+*/
+268
+public static native double getEncoderDistancePerPulse(int encoderHandle);
+269
+270
+/**
+271
+* Gets the encoding type of the encoder.
+272
+*
+273
+* @param encoderHandle the encoder handle
+274
+* @return the encoding type
+275
+* @see "HAL_GetEncoderEncodingType"
+276
+*/
+277
+public static native int getEncoderEncodingType(int encoderHandle);
+278
+279
+/** Utility class. */
+280
+private EncoderJNI() {}
+281
+}

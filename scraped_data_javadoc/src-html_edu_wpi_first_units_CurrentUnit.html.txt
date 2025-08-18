@@ -1,0 +1,196 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.Current;
+008
+import edu.wpi.first.units.measure.ImmutableCurrent;
+009
+import edu.wpi.first.units.measure.MutCurrent;
+010
+011
+/**
+012
+* Unit of electric current dimension.
+013
+*
+014
+* <p>This is the base type for units of current dimension. It is also used to specify the dimension
+015
+* for {@link Measure}: <code>Measure&lt;CurrentUnit&gt;</code>.
+016
+*
+017
+* <p>Actual units (such as {@link Units#Amps} and {@link Units#Milliamps}) can be found in the
+018
+* {@link Units} class.
+019
+*/
+020
+public final class CurrentUnit extends Unit {
+021
+CurrentUnit(CurrentUnit baseUnit, double baseUnitEquivalent, String name, String symbol) {
+022
+super(baseUnit, baseUnitEquivalent, name, symbol);
+023
+}
+024
+025
+CurrentUnit(
+026
+CurrentUnit baseUnit,
+027
+UnaryFunction toBaseConverter,
+028
+UnaryFunction fromBaseConverter,
+029
+String name,
+030
+String symbol) {
+031
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+032
+}
+033
+034
+@Override
+035
+public CurrentUnit getBaseUnit() {
+036
+return (CurrentUnit) super.getBaseUnit();
+037
+}
+038
+039
+/**
+040
+* Constructs a unit of power equivalent to this unit of electrical current multiplied by another
+041
+* unit of voltage. For example, {@code Amps.times(Volts)} will return a unit of power equivalent
+042
+* to one Watt; {@code Amps.times(Millivolts)} will return a unit of power equivalent to a
+043
+* milliwatt, and so on.
+044
+*
+045
+* @param voltage the voltage unit to multiply by
+046
+* @param name the name of the resulting unit of power
+047
+* @param symbol the symbol used to represent the unit of power
+048
+* @return the power unit
+049
+*/
+050
+public PowerUnit mult(VoltageUnit voltage, String name, String symbol) {
+051
+return Units.derive(PowerUnit.combine(voltage, this)).named(name).symbol(symbol).make();
+052
+}
+053
+054
+@Override
+055
+public Current of(double magnitude) {
+056
+return new ImmutableCurrent(magnitude, toBaseUnits(magnitude), this);
+057
+}
+058
+059
+@Override
+060
+public Current ofBaseUnits(double baseUnitMagnitude) {
+061
+return new ImmutableCurrent(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+062
+}
+063
+064
+@Override
+065
+public Current zero() {
+066
+return (Current) super.zero();
+067
+}
+068
+069
+@Override
+070
+public Current one() {
+071
+return (Current) super.one();
+072
+}
+073
+074
+@Override
+075
+public MutCurrent mutable(double initialMagnitude) {
+076
+return new MutCurrent(initialMagnitude, toBaseUnits(initialMagnitude), this);
+077
+}
+078
+079
+@Override
+080
+public VelocityUnit<CurrentUnit> per(TimeUnit time) {
+081
+return VelocityUnit.combine(this, time);
+082
+}
+083
+084
+/**
+085
+* Creates a ratio unit between this unit and an arbitrary other unit.
+086
+*
+087
+* @param other the other unit
+088
+* @param <U> the type of the other unit
+089
+* @return the ratio unit
+090
+*/
+091
+public <U extends Unit> PerUnit<CurrentUnit, U> per(U other) {
+092
+return PerUnit.combine(this, other);
+093
+}
+094
+095
+/**
+096
+* Converts a measurement value in terms of another current unit to this unit.
+097
+*
+098
+* @param magnitude the magnitude of the measurement in terms of the other current unit
+099
+* @param otherUnit the other current unit
+100
+* @return the value of the measurement in terms of this unit
+101
+*/
+102
+public double convertFrom(double magnitude, CurrentUnit otherUnit) {
+103
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+104
+}
+105
+}

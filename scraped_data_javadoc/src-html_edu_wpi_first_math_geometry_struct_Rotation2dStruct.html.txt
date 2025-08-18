@@ -1,0 +1,85 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.struct;
+006
+007
+import edu.wpi.first.math.geometry.Rotation2d;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class Rotation2dStruct implements Struct<Rotation2d> {
+012
+@Override
+013
+public Class<Rotation2d> getTypeClass() {
+014
+return Rotation2d.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "Rotation2d";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double value";
+030
+}
+031
+032
+@Override
+033
+public Rotation2d unpack(ByteBuffer bb) {
+034
+double value = bb.getDouble();
+035
+return new Rotation2d(value);
+036
+}
+037
+038
+@Override
+039
+public void pack(ByteBuffer bb, Rotation2d value) {
+040
+bb.putDouble(value.getRadians());
+041
+}
+042
+043
+@Override
+044
+public boolean isImmutable() {
+045
+return true;
+046
+}
+047
+}

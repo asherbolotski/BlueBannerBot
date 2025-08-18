@@ -1,0 +1,281 @@
+Package
+edu.wpi.first.math.controller
+Class LTVUnicycleController
+java.lang.Object
+edu.wpi.first.math.controller.LTVUnicycleController
+public class
+LTVUnicycleController
+extends
+Object
+The linear time-varying unicycle controller has a similar form to the LQR, but the model used to
+ compute the controller gain is the nonlinear unicycle model linearized around the drivetrain's
+ current state.
+This controller is a roughly drop-in replacement for
+RamseteController
+with more
+ optimal feedback gains in the "least-squares error" sense.
+See section 8.9 in Controls Engineering in FRC for a derivation of the control law we used
+ shown in theorem 8.9.1.
+Constructor Summary
+Constructors
+Constructor
+Description
+LTVUnicycleController
+(double dt)
+Constructs a linear time-varying unicycle controller with default maximum desired error
+ tolerances of (x = 0.0625 m, y = 0.125 m, heading = 2 rad), default maximum desired control
+ effort of (linear velocity = 1 m/s, angular velocity = 2 rad/s), and default maximum Velocity
+ of 9 m/s.
+LTVUnicycleController
+(double dt,
+ double maxVelocity)
+Constructs a linear time-varying unicycle controller with default maximum desired error
+ tolerances of (x = 0.0625 m, y = 0.125 m, heading = 2 rad), default maximum desired control
+ effort of (1 m/s, 2 rad/s).
+LTVUnicycleController
+(
+Vector
+<
+N3
+> qelems,
+Vector
+<
+N2
+> relems,
+ double dt)
+Constructs a linear time-varying unicycle controller.
+LTVUnicycleController
+(
+Vector
+<
+N3
+> qelems,
+Vector
+<
+N2
+> relems,
+ double dt,
+ double maxVelocity)
+Constructs a linear time-varying unicycle controller.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+atReference
+()
+Returns true if the pose error is within tolerance of the reference.
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Pose2d
+poseRef,
+ double linearVelocityRef,
+ double angularVelocityRef)
+Returns the linear and angular velocity outputs of the LTV controller.
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Trajectory.State
+desiredState)
+Returns the next output of the LTV controller.
+void
+setEnabled
+(boolean enabled)
+Enables and disables the controller for troubleshooting purposes.
+void
+setTolerance
+(
+Pose2d
+poseTolerance)
+Sets the pose error which is considered tolerable for use with atReference().
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LTVUnicycleController
+public
+LTVUnicycleController
+(double dt)
+Constructs a linear time-varying unicycle controller with default maximum desired error
+ tolerances of (x = 0.0625 m, y = 0.125 m, heading = 2 rad), default maximum desired control
+ effort of (linear velocity = 1 m/s, angular velocity = 2 rad/s), and default maximum Velocity
+ of 9 m/s.
+Parameters:
+dt
+- Discretization timestep in seconds.
+LTVUnicycleController
+public
+LTVUnicycleController
+(double dt,
+ double maxVelocity)
+Constructs a linear time-varying unicycle controller with default maximum desired error
+ tolerances of (x = 0.0625 m, y = 0.125 m, heading = 2 rad), default maximum desired control
+ effort of (1 m/s, 2 rad/s).
+Parameters:
+dt
+- Discretization timestep in seconds.
+maxVelocity
+- The maximum velocity in meters per second for the controller gain lookup
+     table. The default is 9 m/s.
+Throws:
+IllegalArgumentException
+- if maxVelocity <= 0 m/s or >= 15 m/s.
+LTVUnicycleController
+public
+LTVUnicycleController
+(
+Vector
+<
+N3
+> qelems,
+Vector
+<
+N2
+> relems,
+ double dt)
+Constructs a linear time-varying unicycle controller.
+See
+https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning
+for how to select the tolerances.
+The default maximum Velocity is 9 m/s.
+Parameters:
+qelems
+- The maximum desired error tolerance for each state (x, y, heading).
+relems
+- The maximum desired control effort for each input (linear velocity, angular
+     velocity).
+dt
+- Discretization timestep in seconds.
+LTVUnicycleController
+public
+LTVUnicycleController
+(
+Vector
+<
+N3
+> qelems,
+Vector
+<
+N2
+> relems,
+ double dt,
+ double maxVelocity)
+Constructs a linear time-varying unicycle controller.
+See
+https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning
+for how to select the tolerances.
+Parameters:
+qelems
+- The maximum desired error tolerance for each state (x, y, heading).
+relems
+- The maximum desired control effort for each input (linear velocity, angular
+     velocity).
+dt
+- Discretization timestep in seconds.
+maxVelocity
+- The maximum velocity in meters per second for the controller gain lookup
+     table. The default is 9 m/s.
+Throws:
+IllegalArgumentException
+- if maxVelocity <= 0 m/s or >= 15 m/s.
+Method Details
+atReference
+public
+boolean
+atReference
+()
+Returns true if the pose error is within tolerance of the reference.
+Returns:
+True if the pose error is within tolerance of the reference.
+setTolerance
+public
+void
+setTolerance
+(
+Pose2d
+poseTolerance)
+Sets the pose error which is considered tolerable for use with atReference().
+Parameters:
+poseTolerance
+- Pose error which is tolerable.
+calculate
+public
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Pose2d
+poseRef,
+ double linearVelocityRef,
+ double angularVelocityRef)
+Returns the linear and angular velocity outputs of the LTV controller.
+The reference pose, linear velocity, and angular velocity should come from a drivetrain
+ trajectory.
+Parameters:
+currentPose
+- The current pose.
+poseRef
+- The desired pose.
+linearVelocityRef
+- The desired linear velocity in meters per second.
+angularVelocityRef
+- The desired angular velocity in radians per second.
+Returns:
+The linear and angular velocity outputs of the LTV controller.
+calculate
+public
+ChassisSpeeds
+calculate
+(
+Pose2d
+currentPose,
+Trajectory.State
+desiredState)
+Returns the next output of the LTV controller.
+The reference pose, linear velocity, and angular velocity should come from a drivetrain
+ trajectory.
+Parameters:
+currentPose
+- The current pose.
+desiredState
+- The desired pose, linear velocity, and angular velocity from a trajectory.
+Returns:
+The linear and angular velocity outputs of the LTV controller.
+setEnabled
+public
+void
+setEnabled
+(boolean enabled)
+Enables and disables the controller for troubleshooting purposes.
+Parameters:
+enabled
+- If the controller is enabled or not.

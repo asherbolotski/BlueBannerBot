@@ -1,0 +1,82 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller.struct;
+006
+007
+import edu.wpi.first.math.controller.DifferentialDriveWheelVoltages;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class DifferentialDriveWheelVoltagesStruct
+012
+implements Struct<DifferentialDriveWheelVoltages> {
+013
+@Override
+014
+public Class<DifferentialDriveWheelVoltages> getTypeClass() {
+015
+return DifferentialDriveWheelVoltages.class;
+016
+}
+017
+018
+@Override
+019
+public String getTypeName() {
+020
+return "DifferentialDriveWheelVoltages";
+021
+}
+022
+023
+@Override
+024
+public int getSize() {
+025
+return kSizeDouble * 2;
+026
+}
+027
+028
+@Override
+029
+public String getSchema() {
+030
+return "double left;double right";
+031
+}
+032
+033
+@Override
+034
+public DifferentialDriveWheelVoltages unpack(ByteBuffer bb) {
+035
+double left = bb.getDouble();
+036
+double right = bb.getDouble();
+037
+return new DifferentialDriveWheelVoltages(left, right);
+038
+}
+039
+040
+@Override
+041
+public void pack(ByteBuffer bb, DifferentialDriveWheelVoltages value) {
+042
+bb.putDouble(value.left);
+043
+bb.putDouble(value.right);
+044
+}
+045
+}

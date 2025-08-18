@@ -1,0 +1,1456 @@
+Package
+edu.wpi.first.math.estimator
+Class UnscentedKalmanFilter<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.estimator.UnscentedKalmanFilter<States,
+Inputs,
+Outputs>
+Type Parameters:
+States
+- Number of states.
+Inputs
+- Number of inputs.
+Outputs
+- Number of outputs.
+All Implemented Interfaces:
+KalmanTypeFilter
+<States,
+Inputs,
+Outputs>
+public class
+UnscentedKalmanFilter
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+extends
+Object
+implements
+KalmanTypeFilter
+<States,
+Inputs,
+Outputs>
+A Kalman filter combines predictions from a model and measurements to give an estimate of the
+ true system state. This is useful because many states cannot be measured directly as a result of
+ sensor noise, or because the state is "hidden".
+Kalman filters use a K gain matrix to determine whether to trust the model or measurements
+ more. Kalman filter theory uses statistics to compute an optimal K gain which minimizes the sum
+ of squares error in the state estimate. This K gain is used to correct the state estimate by some
+ amount of the difference between the actual measurements and the measurements predicted by the
+ model.
+An unscented Kalman filter uses nonlinear state and measurement models. It propagates the
+ error covariance using sigma points chosen to approximate the true probability distribution.
+For more on the underlying math, read
+https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+chapter 9 "Stochastic control theory".
+This class implements a square-root-form unscented Kalman filter (SR-UKF). The main reason for
+ this is to guarantee that the covariance matrix remains positive definite. For more information
+ about the SR-UKF, see https://www.researchgate.net/publication/3908304.
+Constructor Summary
+Constructors
+Constructor
+Description
+UnscentedKalmanFilter
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Outputs
+> outputs,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> h,
+Matrix
+<
+States
+,
+N1
+> stateStdDevs,
+Matrix
+<
+Outputs
+,
+N1
+> measurementStdDevs,
+ double nominalDtSeconds)
+Constructs an Unscented Kalman Filter.
+UnscentedKalmanFilter
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Outputs
+> outputs,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> h,
+Matrix
+<
+States
+,
+N1
+> stateStdDevs,
+Matrix
+<
+Outputs
+,
+N1
+> measurementStdDevs,
+BiFunction
+<
+Matrix
+<
+States
+,
+?>,
+Matrix
+<?,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> meanFuncX,
+BiFunction
+<
+Matrix
+<
+Outputs
+,
+?>,
+Matrix
+<?,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> meanFuncY,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> residualFuncX,
+BiFunction
+<
+Matrix
+<
+Outputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> residualFuncY,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> addFuncX,
+ double nominalDtSeconds)
+Constructs an Unscented Kalman filter with custom mean, residual, and addition functions.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+correct
+(
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<
+Outputs
+,
+N1
+> y)
+Correct the state estimate x-hat using the measurements in y.
+void
+correct
+(
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<
+Outputs
+,
+N1
+> y,
+Matrix
+<
+Outputs
+,
+Outputs
+> R)
+Correct the state estimate x-hat using the measurements in y.
+<R extends
+Num
+>
+void
+correct
+(
+Nat
+<R> rows,
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<R,
+N1
+> y,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<R,
+N1
+>> h,
+Matrix
+<R,
+R> R)
+Correct the state estimate x-hat using the measurements in y.
+<R extends
+Num
+>
+void
+correct
+(
+Nat
+<R> rows,
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<R,
+N1
+> y,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<R,
+N1
+>> h,
+Matrix
+<R,
+R> R,
+BiFunction
+<
+Matrix
+<R,
+?>,
+Matrix
+<?,
+N1
+>,
+Matrix
+<R,
+N1
+>> meanFuncY,
+BiFunction
+<
+Matrix
+<R,
+N1
+>,
+Matrix
+<R,
+N1
+>,
+Matrix
+<R,
+N1
+>> residualFuncY,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> residualFuncX,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> addFuncX)
+Correct the state estimate x-hat using the measurements in y.
+Matrix
+<
+States
+,
+States
+>
+getP
+()
+Returns the reconstructed error covariance matrix P.
+double
+getP
+(int row,
+ int col)
+Returns an element of the error covariance matrix P.
+Matrix
+<
+States
+,
+States
+>
+getS
+()
+Returns the square-root error covariance matrix S.
+double
+getS
+(int row,
+ int col)
+Returns an element of the square-root error covariance matrix S.
+Matrix
+<
+States
+,
+N1
+>
+getXhat
+()
+Returns the state estimate x-hat.
+double
+getXhat
+(int row)
+Returns an element of the state estimate x-hat.
+void
+predict
+(
+Matrix
+<
+Inputs
+,
+N1
+> u,
+ double dtSeconds)
+Project the model into the future with a new control input u.
+final void
+reset
+()
+Resets the observer.
+void
+setP
+(
+Matrix
+<
+States
+,
+States
+> newP)
+Sets the entire error covariance matrix P.
+void
+setS
+(
+Matrix
+<
+States
+,
+States
+> newS)
+Sets the entire square-root error covariance matrix S.
+void
+setXhat
+(int row,
+ double value)
+Set an element of the initial state estimate x-hat.
+void
+setXhat
+(
+Matrix
+<
+States
+,
+N1
+> xHat)
+Set initial state estimate x-hat.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+UnscentedKalmanFilter
+public
+UnscentedKalmanFilter
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Outputs
+> outputs,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> h,
+Matrix
+<
+States
+,
+N1
+> stateStdDevs,
+Matrix
+<
+Outputs
+,
+N1
+> measurementStdDevs,
+ double nominalDtSeconds)
+Constructs an Unscented Kalman Filter.
+See
+https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-observers.html#process-and-measurement-noise-covariance-matrices
+for how to select the standard deviations.
+Parameters:
+states
+- A Nat representing the number of states.
+outputs
+- A Nat representing the number of outputs.
+f
+- A vector-valued function of x and u that returns the derivative of the state vector.
+h
+- A vector-valued function of x and u that returns the measurement vector.
+stateStdDevs
+- Standard deviations of model states.
+measurementStdDevs
+- Standard deviations of measurements.
+nominalDtSeconds
+- Nominal discretization timestep.
+UnscentedKalmanFilter
+public
+UnscentedKalmanFilter
+(
+Nat
+<
+States
+> states,
+Nat
+<
+Outputs
+> outputs,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> f,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> h,
+Matrix
+<
+States
+,
+N1
+> stateStdDevs,
+Matrix
+<
+Outputs
+,
+N1
+> measurementStdDevs,
+BiFunction
+<
+Matrix
+<
+States
+,
+?>,
+Matrix
+<?,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> meanFuncX,
+BiFunction
+<
+Matrix
+<
+Outputs
+,
+?>,
+Matrix
+<?,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> meanFuncY,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> residualFuncX,
+BiFunction
+<
+Matrix
+<
+Outputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>,
+Matrix
+<
+Outputs
+,
+N1
+>> residualFuncY,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> addFuncX,
+ double nominalDtSeconds)
+Constructs an Unscented Kalman filter with custom mean, residual, and addition functions. Using
+ custom functions for arithmetic can be useful if you have angles in the state or measurements,
+ because they allow you to correctly account for the modular nature of angle arithmetic.
+See
+https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-observers.html#process-and-measurement-noise-covariance-matrices
+for how to select the standard deviations.
+Parameters:
+states
+- A Nat representing the number of states.
+outputs
+- A Nat representing the number of outputs.
+f
+- A vector-valued function of x and u that returns the derivative of the state vector.
+h
+- A vector-valued function of x and u that returns the measurement vector.
+stateStdDevs
+- Standard deviations of model states.
+measurementStdDevs
+- Standard deviations of measurements.
+meanFuncX
+- A function that computes the mean of 2 * States + 1 state vectors using a
+     given set of weights.
+meanFuncY
+- A function that computes the mean of 2 * States + 1 measurement vectors using
+     a given set of weights.
+residualFuncX
+- A function that computes the residual of two state vectors (i.e. it
+     subtracts them.)
+residualFuncY
+- A function that computes the residual of two measurement vectors (i.e. it
+     subtracts them.)
+addFuncX
+- A function that adds two state vectors.
+nominalDtSeconds
+- Nominal discretization timestep.
+Method Details
+getS
+public
+Matrix
+<
+States
+,
+States
+>
+getS
+()
+Returns the square-root error covariance matrix S.
+Returns:
+the square-root error covariance matrix S.
+getS
+public
+double
+getS
+(int row,
+ int col)
+Returns an element of the square-root error covariance matrix S.
+Parameters:
+row
+- Row of S.
+col
+- Column of S.
+Returns:
+the value of the square-root error covariance matrix S at (i, j).
+setS
+public
+void
+setS
+(
+Matrix
+<
+States
+,
+States
+> newS)
+Sets the entire square-root error covariance matrix S.
+Parameters:
+newS
+- The new value of S to use.
+getP
+public
+Matrix
+<
+States
+,
+States
+>
+getP
+()
+Returns the reconstructed error covariance matrix P.
+Specified by:
+getP
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Returns:
+the error covariance matrix P.
+getP
+public
+double
+getP
+(int row,
+ int col)
+Returns an element of the error covariance matrix P.
+Specified by:
+getP
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Parameters:
+row
+- Row of P.
+col
+- Column of P.
+Returns:
+the value of the error covariance matrix P at (i, j).
+Throws:
+UnsupportedOperationException
+- indexing into the reconstructed P matrix is not supported
+setP
+public
+void
+setP
+(
+Matrix
+<
+States
+,
+States
+> newP)
+Sets the entire error covariance matrix P.
+Specified by:
+setP
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Parameters:
+newP
+- The new value of P to use.
+getXhat
+public
+Matrix
+<
+States
+,
+N1
+>
+getXhat
+()
+Returns the state estimate x-hat.
+Specified by:
+getXhat
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Returns:
+the state estimate x-hat.
+getXhat
+public
+double
+getXhat
+(int row)
+Returns an element of the state estimate x-hat.
+Specified by:
+getXhat
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Parameters:
+row
+- Row of x-hat.
+Returns:
+the value of the state estimate x-hat at 'i'.
+setXhat
+public
+void
+setXhat
+(
+Matrix
+<
+States
+,
+N1
+> xHat)
+Set initial state estimate x-hat.
+Specified by:
+setXhat
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Parameters:
+xHat
+- The state estimate x-hat.
+setXhat
+public
+void
+setXhat
+(int row,
+ double value)
+Set an element of the initial state estimate x-hat.
+Specified by:
+setXhat
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Parameters:
+row
+- Row of x-hat.
+value
+- Value for element of x-hat.
+reset
+public final
+void
+reset
+()
+Resets the observer.
+Specified by:
+reset
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+predict
+public
+void
+predict
+(
+Matrix
+<
+Inputs
+,
+N1
+> u,
+ double dtSeconds)
+Project the model into the future with a new control input u.
+Specified by:
+predict
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Parameters:
+u
+- New control input from controller.
+dtSeconds
+- Timestep for prediction.
+correct
+public
+void
+correct
+(
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<
+Outputs
+,
+N1
+> y)
+Correct the state estimate x-hat using the measurements in y.
+Specified by:
+correct
+in interface
+KalmanTypeFilter
+<
+States
+extends
+Num
+,
+Inputs
+extends
+Num
+,
+Outputs
+extends
+Num
+>
+Parameters:
+u
+- Same control input used in the predict step.
+y
+- Measurement vector.
+correct
+public
+void
+correct
+(
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<
+Outputs
+,
+N1
+> y,
+Matrix
+<
+Outputs
+,
+Outputs
+> R)
+Correct the state estimate x-hat using the measurements in y.
+This is useful for when the measurement noise covariances vary.
+Parameters:
+u
+- Same control input used in the predict step.
+y
+- Measurement vector.
+R
+- Continuous measurement noise covariance matrix.
+correct
+public
+<R extends
+Num
+>
+void
+correct
+(
+Nat
+<R> rows,
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<R,
+N1
+> y,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<R,
+N1
+>> h,
+Matrix
+<R,
+R> R)
+Correct the state estimate x-hat using the measurements in y.
+This is useful for when the measurements available during a timestep's Correct() call vary.
+ The h(x, u) passed to the constructor is used if one is not provided (the two-argument version
+ of this function).
+Type Parameters:
+R
+- Number of measurements in y.
+Parameters:
+rows
+- Number of rows in y.
+u
+- Same control input used in the predict step.
+y
+- Measurement vector.
+h
+- A vector-valued function of x and u that returns the measurement vector.
+R
+- Continuous measurement noise covariance matrix.
+correct
+public
+<R extends
+Num
+>
+void
+correct
+(
+Nat
+<R> rows,
+Matrix
+<
+Inputs
+,
+N1
+> u,
+Matrix
+<R,
+N1
+> y,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<R,
+N1
+>> h,
+Matrix
+<R,
+R> R,
+BiFunction
+<
+Matrix
+<R,
+?>,
+Matrix
+<?,
+N1
+>,
+Matrix
+<R,
+N1
+>> meanFuncY,
+BiFunction
+<
+Matrix
+<R,
+N1
+>,
+Matrix
+<R,
+N1
+>,
+Matrix
+<R,
+N1
+>> residualFuncY,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> residualFuncX,
+BiFunction
+<
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>,
+Matrix
+<
+States
+,
+N1
+>> addFuncX)
+Correct the state estimate x-hat using the measurements in y.
+This is useful for when the measurements available during a timestep's Correct() call vary.
+ The h(x, u) passed to the constructor is used if one is not provided (the two-argument version
+ of this function).
+Type Parameters:
+R
+- Number of measurements in y.
+Parameters:
+rows
+- Number of rows in y.
+u
+- Same control input used in the predict step.
+y
+- Measurement vector.
+h
+- A vector-valued function of x and u that returns the measurement vector.
+R
+- Continuous measurement noise covariance matrix.
+meanFuncY
+- A function that computes the mean of 2 * States + 1 measurement vectors using
+     a given set of weights.
+residualFuncY
+- A function that computes the residual of two measurement vectors (i.e. it
+     subtracts them.)
+residualFuncX
+- A function that computes the residual of two state vectors (i.e. it
+     subtracts them.)
+addFuncX
+- A function that adds two state vectors.

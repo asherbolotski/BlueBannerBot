@@ -1,0 +1,441 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.DIOJNI;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.hal.SimDevice;
+011
+import edu.wpi.first.util.sendable.Sendable;
+012
+import edu.wpi.first.util.sendable.SendableBuilder;
+013
+import edu.wpi.first.util.sendable.SendableRegistry;
+014
+015
+/**
+016
+* Class to write digital outputs. This class will write digital outputs. Other devices that are
+017
+* implemented elsewhere will automatically allocate digital inputs and outputs as required.
+018
+*/
+019
+public class DigitalOutput extends DigitalSource implements Sendable {
+020
+private static final int invalidPwmGenerator = 0;
+021
+private int m_pwmGenerator = invalidPwmGenerator;
+022
+023
+private final int m_channel;
+024
+private int m_handle;
+025
+026
+/**
+027
+* Create an instance of a digital output. Create an instance of a digital output given a channel.
+028
+*
+029
+* @param channel the DIO channel to use for the digital output. 0-9 are on-board, 10-25 are on
+030
+*     the MXP
+031
+*/
+032
+@SuppressWarnings("this-escape")
+033
+public DigitalOutput(int channel) {
+034
+SensorUtil.checkDigitalChannel(channel);
+035
+m_channel = channel;
+036
+037
+m_handle = DIOJNI.initializeDIOPort(HAL.getPort((byte) channel), false);
+038
+039
+HAL.report(tResourceType.kResourceType_DigitalOutput, channel + 1);
+040
+SendableRegistry.addLW(this, "DigitalOutput", channel);
+041
+}
+042
+043
+@Override
+044
+public void close() {
+045
+super.close();
+046
+SendableRegistry.remove(this);
+047
+// Disable the pwm only if we have allocated it
+048
+if (m_pwmGenerator != invalidPwmGenerator) {
+049
+disablePWM();
+050
+}
+051
+DIOJNI.freeDIOPort(m_handle);
+052
+m_handle = 0;
+053
+}
+054
+055
+/**
+056
+* Set the value of a digital output.
+057
+*
+058
+* @param value true is on, off is false
+059
+*/
+060
+public void set(boolean value) {
+061
+DIOJNI.setDIO(m_handle, value);
+062
+}
+063
+064
+/**
+065
+* Gets the value being output from the Digital Output.
+066
+*
+067
+* @return the state of the digital output.
+068
+*/
+069
+public boolean get() {
+070
+return DIOJNI.getDIO(m_handle);
+071
+}
+072
+073
+/**
+074
+* Get the GPIO channel number that this object represents.
+075
+*
+076
+* @return The GPIO channel number.
+077
+*/
+078
+@Override
+079
+public int getChannel() {
+080
+return m_channel;
+081
+}
+082
+083
+/**
+084
+* Output a single pulse on the digital output line.
+085
+*
+086
+* <p>Send a single pulse on the digital output line where the pulse duration is specified in
+087
+* seconds. Maximum of 65535 microseconds.
+088
+*
+089
+* @param pulseLengthSeconds The pulse length in seconds
+090
+*/
+091
+public void pulse(final double pulseLengthSeconds) {
+092
+DIOJNI.pulse(m_handle, pulseLengthSeconds);
+093
+}
+094
+095
+/**
+096
+* Determine if the pulse is still going. Determine if a previously started pulse is still going.
+097
+*
+098
+* @return true if pulsing
+099
+*/
+100
+public boolean isPulsing() {
+101
+return DIOJNI.isPulsing(m_handle);
+102
+}
+103
+104
+/**
+105
+* Change the PWM frequency of the PWM output on a Digital Output line.
+106
+*
+107
+* <p>The valid range is from 0.6 Hz to 19 kHz. The frequency resolution is logarithmic.
+108
+*
+109
+* <p>There is only one PWM frequency for all channels.
+110
+*
+111
+* @param rate The frequency to output all digital output PWM signals.
+112
+*/
+113
+public void setPWMRate(double rate) {
+114
+DIOJNI.setDigitalPWMRate(rate);
+115
+}
+116
+117
+/**
+118
+* Enable a PWM PPS (Pulse Per Second) Output on this line.
+119
+*
+120
+* <p>Allocate one of the 6 DO PWM generator resources.
+121
+*
+122
+* <p>Supply the duty-cycle to output.
+123
+*
+124
+* <p>The resolution of the duty cycle is 8-bit.
+125
+*
+126
+* @param dutyCycle The duty-cycle to start generating. [0..1]
+127
+*/
+128
+public void enablePPS(double dutyCycle) {
+129
+if (m_pwmGenerator != invalidPwmGenerator) {
+130
+return;
+131
+}
+132
+m_pwmGenerator = DIOJNI.allocateDigitalPWM();
+133
+DIOJNI.setDigitalPWMPPS(m_pwmGenerator, dutyCycle);
+134
+DIOJNI.setDigitalPWMOutputChannel(m_pwmGenerator, m_channel);
+135
+}
+136
+137
+/**
+138
+* Enable a PWM Output on this line.
+139
+*
+140
+* <p>Allocate one of the 6 DO PWM generator resources.
+141
+*
+142
+* <p>Supply the initial duty-cycle to output in order to avoid a glitch when first starting.
+143
+*
+144
+* <p>The resolution of the duty cycle is 8-bit for low frequencies (1kHz or less) but is reduced
+145
+* the higher the frequency of the PWM signal is.
+146
+*
+147
+* @param initialDutyCycle The duty-cycle to start generating. [0..1]
+148
+*/
+149
+public void enablePWM(double initialDutyCycle) {
+150
+if (m_pwmGenerator != invalidPwmGenerator) {
+151
+return;
+152
+}
+153
+m_pwmGenerator = DIOJNI.allocateDigitalPWM();
+154
+DIOJNI.setDigitalPWMDutyCycle(m_pwmGenerator, initialDutyCycle);
+155
+DIOJNI.setDigitalPWMOutputChannel(m_pwmGenerator, m_channel);
+156
+}
+157
+158
+/**
+159
+* Change this line from a PWM output back to a static Digital Output line.
+160
+*
+161
+* <p>Free up one of the 6 DO PWM generator resources that were in use.
+162
+*/
+163
+public void disablePWM() {
+164
+if (m_pwmGenerator == invalidPwmGenerator) {
+165
+return;
+166
+}
+167
+// Disable the output by routing to a dead bit.
+168
+DIOJNI.setDigitalPWMOutputChannel(m_pwmGenerator, SensorUtil.kDigitalChannels);
+169
+DIOJNI.freeDigitalPWM(m_pwmGenerator);
+170
+m_pwmGenerator = invalidPwmGenerator;
+171
+}
+172
+173
+/**
+174
+* Change the duty-cycle that is being generated on the line.
+175
+*
+176
+* <p>The resolution of the duty cycle is 8-bit for low frequencies (1kHz or less) but is reduced
+177
+* the higher the frequency of the PWM signal is.
+178
+*
+179
+* @param dutyCycle The duty-cycle to change to. [0..1]
+180
+*/
+181
+public void updateDutyCycle(double dutyCycle) {
+182
+if (m_pwmGenerator == invalidPwmGenerator) {
+183
+return;
+184
+}
+185
+DIOJNI.setDigitalPWMDutyCycle(m_pwmGenerator, dutyCycle);
+186
+}
+187
+188
+/**
+189
+* Indicates this input is used by a simulated device.
+190
+*
+191
+* @param device simulated device handle
+192
+*/
+193
+public void setSimDevice(SimDevice device) {
+194
+DIOJNI.setDIOSimDevice(m_handle, device.getNativeHandle());
+195
+}
+196
+197
+@Override
+198
+public void initSendable(SendableBuilder builder) {
+199
+builder.setSmartDashboardType("Digital Output");
+200
+builder.addBooleanProperty("Value", this::get, this::set);
+201
+}
+202
+203
+/**
+204
+* Is this an analog trigger.
+205
+*
+206
+* @return true if this is an analog trigger
+207
+*/
+208
+@Override
+209
+public boolean isAnalogTrigger() {
+210
+return false;
+211
+}
+212
+213
+/**
+214
+* Get the analog trigger type.
+215
+*
+216
+* @return false
+217
+*/
+218
+@Override
+219
+public int getAnalogTriggerTypeForRouting() {
+220
+return 0;
+221
+}
+222
+223
+/**
+224
+* Get the HAL Port Handle.
+225
+*
+226
+* @return The HAL Handle to the specified source.
+227
+*/
+228
+@Override
+229
+public int getPortHandleForRouting() {
+230
+return m_handle;
+231
+}
+232
+}

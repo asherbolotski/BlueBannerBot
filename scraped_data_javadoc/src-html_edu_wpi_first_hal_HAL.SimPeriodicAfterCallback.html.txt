@@ -1,0 +1,545 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+import java.util.ArrayList;
+008
+import java.util.List;
+009
+010
+/**
+011
+* JNI Wrapper for Hardware Abstraction Layer (HAL).
+012
+*
+013
+* @see "hal/HALBase.h"
+014
+* @see "hal/Main.h"
+015
+* @see "hal/FRCUsageReporting.h"
+016
+*/
+017
+public final class HAL extends JNIWrapper {
+018
+/**
+019
+* Call this to start up HAL. This is required for robot programs.
+020
+*
+021
+* <p>This must be called before any other HAL functions. Failure to do so will result in
+022
+* undefined behavior, and likely segmentation faults. This means that any statically initialized
+023
+* variables in a program MUST call this function in their constructors if they want to use other
+024
+* HAL calls.
+025
+*
+026
+* <p>The common parameters are 500 for timeout and 0 for mode.
+027
+*
+028
+* <p>This function is safe to call from any thread, and as many times as you wish. It internally
+029
+* guards from any reentrancy.
+030
+*
+031
+* <p>The applicable modes are: 0: Try to kill an existing HAL from another program, if not
+032
+* successful, error. 1: Force kill a HAL from another program. 2: Just warn if another hal exists
+033
+* and cannot be killed. Will likely result in undefined behavior.
+034
+*
+035
+* @param timeout the initialization timeout (ms)
+036
+* @param mode the initialization mode (see remarks)
+037
+* @return true if initialization was successful, otherwise false.
+038
+* @see "HAL_Initialize"
+039
+*/
+040
+public static native boolean initialize(int timeout, int mode);
+041
+042
+/**
+043
+* Call this to shut down HAL.
+044
+*
+045
+* <p>This must be called at termination of the robot program to avoid potential segmentation
+046
+* faults with simulation extensions at exit.
+047
+*
+048
+* @see "HAL_Shutdown"
+049
+*/
+050
+public static native void shutdown();
+051
+052
+/**
+053
+* Returns true if HAL_SetMain() has been called.
+054
+*
+055
+* @return True if HAL_SetMain() has been called, false otherwise.
+056
+* @see "HAL_HasMain"
+057
+*/
+058
+public static native boolean hasMain();
+059
+060
+/**
+061
+* Runs the main function provided to HAL_SetMain().
+062
+*
+063
+* <p>If HAL_SetMain() has not been called, simply sleeps until exitMain() is called.
+064
+*
+065
+* @see "HAL_RunMain"
+066
+*/
+067
+public static native void runMain();
+068
+069
+/**
+070
+* Causes HAL_RunMain() to exit.
+071
+*
+072
+* <p>If HAL_SetMain() has been called, this calls the exit function provided to that function.
+073
+*
+074
+* @see "HAL_ExitMain"
+075
+*/
+076
+public static native void exitMain();
+077
+078
+/** Terminates the executable (at the native level). Does nothing in simulation. */
+079
+public static native void terminate();
+080
+081
+private static native void simPeriodicBeforeNative();
+082
+083
+private static final List<Runnable> s_simPeriodicBefore = new ArrayList<>();
+084
+085
+/** A callback to be run by IterativeRobotBase prior to the user's simulationPeriodic code. */
+086
+public static final class SimPeriodicBeforeCallback implements AutoCloseable {
+087
+private SimPeriodicBeforeCallback(Runnable r) {
+088
+m_run = r;
+089
+}
+090
+091
+@Override
+092
+public void close() {
+093
+synchronized (s_simPeriodicBefore) {
+094
+s_simPeriodicBefore.remove(m_run);
+095
+}
+096
+}
+097
+098
+private final Runnable m_run;
+099
+}
+100
+101
+/**
+102
+* Registers a callback to be run by IterativeRobotBase prior to the user's simulationPeriodic
+103
+* code.
+104
+*
+105
+* @param r runnable
+106
+* @return Callback object (must be retained for callback to stay active).
+107
+*/
+108
+public static SimPeriodicBeforeCallback registerSimPeriodicBeforeCallback(Runnable r) {
+109
+synchronized (s_simPeriodicBefore) {
+110
+s_simPeriodicBefore.add(r);
+111
+}
+112
+return new SimPeriodicBeforeCallback(r);
+113
+}
+114
+115
+/**
+116
+* Runs SimPeriodicBefore callbacks. IterativeRobotBase calls this prior to the user's
+117
+* simulationPeriodic code.
+118
+*/
+119
+public static void simPeriodicBefore() {
+120
+simPeriodicBeforeNative();
+121
+synchronized (s_simPeriodicBefore) {
+122
+for (Runnable r : s_simPeriodicBefore) {
+123
+r.run();
+124
+}
+125
+}
+126
+}
+127
+128
+private static native void simPeriodicAfterNative();
+129
+130
+private static final List<Runnable> s_simPeriodicAfter = new ArrayList<>();
+131
+132
+/** A callback to be run by IterativeRobotBase after the user's simulationPeriodic code. */
+133
+public static final class SimPeriodicAfterCallback implements AutoCloseable {
+134
+private SimPeriodicAfterCallback(Runnable r) {
+135
+m_run = r;
+136
+}
+137
+138
+@Override
+139
+public void close() {
+140
+synchronized (s_simPeriodicAfter) {
+141
+s_simPeriodicAfter.remove(m_run);
+142
+}
+143
+}
+144
+145
+private final Runnable m_run;
+146
+}
+147
+148
+/**
+149
+* Registers a callback to be run by IterativeRobotBase after the user's simulationPeriodic code.
+150
+*
+151
+* @param r runnable
+152
+* @return Callback object (must be retained for callback to stay active).
+153
+*/
+154
+public static SimPeriodicAfterCallback registerSimPeriodicAfterCallback(Runnable r) {
+155
+synchronized (s_simPeriodicAfter) {
+156
+s_simPeriodicAfter.add(r);
+157
+}
+158
+return new SimPeriodicAfterCallback(r);
+159
+}
+160
+161
+/**
+162
+* Runs SimPeriodicAfter callbacks. IterativeRobotBase calls this after the user's
+163
+* simulationPeriodic code.
+164
+*/
+165
+public static void simPeriodicAfter() {
+166
+simPeriodicAfterNative();
+167
+synchronized (s_simPeriodicAfter) {
+168
+for (Runnable r : s_simPeriodicAfter) {
+169
+r.run();
+170
+}
+171
+}
+172
+}
+173
+174
+/**
+175
+* Gets if the system is in a browned out state.
+176
+*
+177
+* @return true if the system is in a low voltage brown out, false otherwise
+178
+* @see "HAL_GetBrownedOut"
+179
+*/
+180
+public static native boolean getBrownedOut();
+181
+182
+/**
+183
+* Gets if the system outputs are currently active.
+184
+*
+185
+* @return true if the system outputs are active, false if disabled
+186
+* @see "HAL_GetSystemActive"
+187
+*/
+188
+public static native boolean getSystemActive();
+189
+190
+/**
+191
+* Gets the current state of the Robot Signal Light (RSL).
+192
+*
+193
+* @return The current state of the RSL- true if on, false if off
+194
+* @see "HAL_GetRSLState"
+195
+*/
+196
+public static native boolean getRSLState();
+197
+198
+/**
+199
+* Gets the number of times the system has been disabled due to communication errors with the
+200
+* Driver Station.
+201
+*
+202
+* @return number of disables due to communication errors.
+203
+*/
+204
+public static native int getCommsDisableCount();
+205
+206
+/**
+207
+* Gets if the system time is valid.
+208
+*
+209
+* @return True if the system time is valid, false otherwise
+210
+* @see "HAL_GetSystemTimeValid"
+211
+*/
+212
+public static native boolean getSystemTimeValid();
+213
+214
+/**
+215
+* Gets a port handle for a specific channel and module.
+216
+*
+217
+* <p>This is expected to be used for PCMs, as the roboRIO does not work with modules anymore.
+218
+*
+219
+* <p>The created handle does not need to be freed.
+220
+*
+221
+* @param module the module number
+222
+* @param channel the channel number
+223
+* @return the created port
+224
+* @see "HAL_GetPortWithModule"
+225
+*/
+226
+public static native int getPortWithModule(byte module, byte channel);
+227
+228
+/**
+229
+* Gets a port handle for a specific channel.
+230
+*
+231
+* <p>The created handle does not need to be freed.
+232
+*
+233
+* @param channel the channel number
+234
+* @return the created port
+235
+* @see "HAL_GetPort"
+236
+*/
+237
+public static native int getPort(byte channel);
+238
+239
+/**
+240
+* Report the usage of a resource of interest.
+241
+*
+242
+* <p>Original signature: <code>uint32_t report(tResourceType, uint8_t, uint8_t, const
+243
+* char*)</code>
+244
+*
+245
+* @param resource one of the values in the tResourceType above.
+246
+* @param instanceNumber an index that identifies the resource instance.
+247
+* @see "HAL_Report"
+248
+*/
+249
+public static void report(int resource, int instanceNumber) {
+250
+report(resource, instanceNumber, 0, "");
+251
+}
+252
+253
+/**
+254
+* Report the usage of a resource of interest.
+255
+*
+256
+* <p>Original signature: <code>uint32_t report(tResourceType, uint8_t, uint8_t, const
+257
+* char*)</code>
+258
+*
+259
+* @param resource one of the values in the tResourceType above.
+260
+* @param instanceNumber an index that identifies the resource instance.
+261
+* @param context an optional additional context number for some cases (such as module number).
+262
+*     Set to 0 to omit.
+263
+* @see "HAL_Report"
+264
+*/
+265
+public static void report(int resource, int instanceNumber, int context) {
+266
+report(resource, instanceNumber, context, "");
+267
+}
+268
+269
+/**
+270
+* Report the usage of a resource of interest.
+271
+*
+272
+* <p>Original signature: <code>uint32_t report(tResourceType, uint8_t, uint8_t, const
+273
+* char*)</code>
+274
+*
+275
+* @param resource one of the values in the tResourceType above.
+276
+* @param instanceNumber an index that identifies the resource instance.
+277
+* @param context an optional additional context number for some cases (such as module number).
+278
+*     Set to 0 to omit.
+279
+* @param feature a string to be included describing features in use on a specific resource.
+280
+*     Setting the same resource more than once allows you to change the feature string.
+281
+* @return the index of the added value in NetComm
+282
+* @see "HAL_Report"
+283
+*/
+284
+public static int report(int resource, int instanceNumber, int context, String feature) {
+285
+return DriverStationJNI.report(resource, instanceNumber, context, feature);
+286
+}
+287
+288
+private HAL() {}
+289
+}

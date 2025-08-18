@@ -1,0 +1,717 @@
+Package
+edu.wpi.first.wpilibj2.command.button
+Class CommandPS5Controller
+java.lang.Object
+edu.wpi.first.wpilibj2.command.button.CommandGenericHID
+edu.wpi.first.wpilibj2.command.button.CommandPS5Controller
+public class
+CommandPS5Controller
+extends
+CommandGenericHID
+A version of
+PS5Controller
+with
+Trigger
+factories for command-based.
+See Also:
+PS5Controller
+Constructor Summary
+Constructors
+Constructor
+Description
+CommandPS5Controller
+(int port)
+Construct an instance of a controller.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Trigger
+circle
+()
+Constructs a Trigger instance around the circle button's digital signal.
+Trigger
+circle
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the circle button's digital signal.
+Trigger
+create
+()
+Constructs a Trigger instance around the create button's digital signal.
+Trigger
+create
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the create button's digital signal.
+Trigger
+cross
+()
+Constructs a Trigger instance around the cross button's digital signal.
+Trigger
+cross
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the cross button's digital signal.
+PS5Controller
+getHID
+()
+Get the underlying GenericHID object.
+double
+getL2Axis
+()
+Get the left trigger 2 axis value of the controller.
+double
+getLeftX
+()
+Get the X axis value of left side of the controller.
+double
+getLeftY
+()
+Get the Y axis value of left side of the controller.
+double
+getR2Axis
+()
+Get the right trigger 2 axis value of the controller.
+double
+getRightX
+()
+Get the X axis value of right side of the controller.
+double
+getRightY
+()
+Get the Y axis value of right side of the controller.
+Trigger
+L1
+()
+Constructs a Trigger instance around the left trigger 1 button's digital signal.
+Trigger
+L1
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left trigger 1 button's digital signal.
+Trigger
+L2
+()
+Constructs a Trigger instance around the left trigger 2 button's digital signal.
+Trigger
+L2
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left trigger 2 button's digital signal.
+Trigger
+L3
+()
+Constructs a Trigger instance around the L3 (left stick) button's digital signal.
+Trigger
+L3
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the L3 (left stick) button's digital signal.
+Trigger
+options
+()
+Constructs a Trigger instance around the options button's digital signal.
+Trigger
+options
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the options button's digital signal.
+Trigger
+PS
+()
+Constructs a Trigger instance around the PlayStation button's digital signal.
+Trigger
+PS
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the PlayStation button's digital signal.
+Trigger
+R1
+()
+Constructs a Trigger instance around the right trigger 1 button's digital signal.
+Trigger
+R1
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right trigger 1 button's digital signal.
+Trigger
+R2
+()
+Constructs a Trigger instance around the right trigger 2 button's digital signal.
+Trigger
+R2
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right trigger 2 button's digital signal.
+Trigger
+R3
+()
+Constructs a Trigger instance around the R3 (right stick) button's digital signal.
+Trigger
+R3
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the R3 (right stick) button's digital signal.
+Trigger
+square
+()
+Constructs a Trigger instance around the square button's digital signal.
+Trigger
+square
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the square button's digital signal.
+Trigger
+touchpad
+()
+Constructs a Trigger instance around the touchpad button's digital signal.
+Trigger
+touchpad
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the touchpad button's digital signal.
+Trigger
+triangle
+()
+Constructs a Trigger instance around the triangle button's digital signal.
+Trigger
+triangle
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the triangle button's digital signal.
+Methods inherited from class edu.wpi.first.wpilibj2.command.button.
+CommandGenericHID
+axisGreaterThan
+,
+axisGreaterThan
+,
+axisLessThan
+,
+axisLessThan
+,
+axisMagnitudeGreaterThan
+,
+axisMagnitudeGreaterThan
+,
+button
+,
+button
+,
+getRawAxis
+,
+isConnected
+,
+pov
+,
+pov
+,
+povCenter
+,
+povDown
+,
+povDownLeft
+,
+povDownRight
+,
+povLeft
+,
+povRight
+,
+povUp
+,
+povUpLeft
+,
+povUpRight
+,
+setRumble
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CommandPS5Controller
+public
+CommandPS5Controller
+(int port)
+Construct an instance of a controller.
+Parameters:
+port
+- The port index on the Driver Station that the controller is plugged into.
+Method Details
+getHID
+public
+PS5Controller
+getHID
+()
+Get the underlying GenericHID object.
+Overrides:
+getHID
+in class
+CommandGenericHID
+Returns:
+the wrapped GenericHID object
+square
+public
+Trigger
+square
+()
+Constructs a Trigger instance around the square button's digital signal.
+Returns:
+a Trigger instance representing the square button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+square(EventLoop)
+square
+public
+Trigger
+square
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the square button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the square button's digital signal attached
+     to the given loop.
+cross
+public
+Trigger
+cross
+()
+Constructs a Trigger instance around the cross button's digital signal.
+Returns:
+a Trigger instance representing the cross button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+cross(EventLoop)
+cross
+public
+Trigger
+cross
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the cross button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the cross button's digital signal attached
+     to the given loop.
+circle
+public
+Trigger
+circle
+()
+Constructs a Trigger instance around the circle button's digital signal.
+Returns:
+a Trigger instance representing the circle button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+circle(EventLoop)
+circle
+public
+Trigger
+circle
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the circle button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the circle button's digital signal attached
+     to the given loop.
+triangle
+public
+Trigger
+triangle
+()
+Constructs a Trigger instance around the triangle button's digital signal.
+Returns:
+a Trigger instance representing the triangle button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+triangle(EventLoop)
+triangle
+public
+Trigger
+triangle
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the triangle button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the triangle button's digital signal attached
+     to the given loop.
+L1
+public
+Trigger
+L1
+()
+Constructs a Trigger instance around the left trigger 1 button's digital signal.
+Returns:
+a Trigger instance representing the left trigger 1 button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+L1(EventLoop)
+L1
+public
+Trigger
+L1
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left trigger 1 button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the left trigger 1 button's digital signal attached
+     to the given loop.
+R1
+public
+Trigger
+R1
+()
+Constructs a Trigger instance around the right trigger 1 button's digital signal.
+Returns:
+a Trigger instance representing the right trigger 1 button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+R1(EventLoop)
+R1
+public
+Trigger
+R1
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right trigger 1 button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the right trigger 1 button's digital signal attached
+     to the given loop.
+L2
+public
+Trigger
+L2
+()
+Constructs a Trigger instance around the left trigger 2 button's digital signal.
+Returns:
+a Trigger instance representing the left trigger 2 button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+L2(EventLoop)
+L2
+public
+Trigger
+L2
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the left trigger 2 button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the left trigger 2 button's digital signal attached
+     to the given loop.
+R2
+public
+Trigger
+R2
+()
+Constructs a Trigger instance around the right trigger 2 button's digital signal.
+Returns:
+a Trigger instance representing the right trigger 2 button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+R2(EventLoop)
+R2
+public
+Trigger
+R2
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the right trigger 2 button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the right trigger 2 button's digital signal attached
+     to the given loop.
+create
+public
+Trigger
+create
+()
+Constructs a Trigger instance around the create button's digital signal.
+Returns:
+a Trigger instance representing the create button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+create(EventLoop)
+create
+public
+Trigger
+create
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the create button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the create button's digital signal attached
+     to the given loop.
+options
+public
+Trigger
+options
+()
+Constructs a Trigger instance around the options button's digital signal.
+Returns:
+a Trigger instance representing the options button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+options(EventLoop)
+options
+public
+Trigger
+options
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the options button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the options button's digital signal attached
+     to the given loop.
+L3
+public
+Trigger
+L3
+()
+Constructs a Trigger instance around the L3 (left stick) button's digital signal.
+Returns:
+a Trigger instance representing the L3 (left stick) button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+L3(EventLoop)
+L3
+public
+Trigger
+L3
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the L3 (left stick) button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the L3 (left stick) button's digital signal attached
+     to the given loop.
+R3
+public
+Trigger
+R3
+()
+Constructs a Trigger instance around the R3 (right stick) button's digital signal.
+Returns:
+a Trigger instance representing the R3 (right stick) button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+R3(EventLoop)
+R3
+public
+Trigger
+R3
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the R3 (right stick) button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the R3 (right stick) button's digital signal attached
+     to the given loop.
+PS
+public
+Trigger
+PS
+()
+Constructs a Trigger instance around the PlayStation button's digital signal.
+Returns:
+a Trigger instance representing the PlayStation button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+PS(EventLoop)
+PS
+public
+Trigger
+PS
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the PlayStation button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the PlayStation button's digital signal attached
+     to the given loop.
+touchpad
+public
+Trigger
+touchpad
+()
+Constructs a Trigger instance around the touchpad button's digital signal.
+Returns:
+a Trigger instance representing the touchpad button's digital signal attached
+     to the
+default scheduler button loop
+.
+See Also:
+touchpad(EventLoop)
+touchpad
+public
+Trigger
+touchpad
+(
+EventLoop
+loop)
+Constructs a Trigger instance around the touchpad button's digital signal.
+Parameters:
+loop
+- the event loop instance to attach the event to.
+Returns:
+a Trigger instance representing the touchpad button's digital signal attached
+     to the given loop.
+getLeftX
+public
+double
+getLeftX
+()
+Get the X axis value of left side of the controller. Right is positive.
+Returns:
+The axis value.
+getLeftY
+public
+double
+getLeftY
+()
+Get the Y axis value of left side of the controller. Back is positive.
+Returns:
+The axis value.
+getRightX
+public
+double
+getRightX
+()
+Get the X axis value of right side of the controller. Right is positive.
+Returns:
+The axis value.
+getRightY
+public
+double
+getRightY
+()
+Get the Y axis value of right side of the controller. Back is positive.
+Returns:
+The axis value.
+getL2Axis
+public
+double
+getL2Axis
+()
+Get the left trigger 2 axis value of the controller. Note that this axis is bound to the
+ range of [0, 1] as opposed to the usual [-1, 1].
+Returns:
+The axis value.
+getR2Axis
+public
+double
+getR2Axis
+()
+Get the right trigger 2 axis value of the controller. Note that this axis is bound to the
+ range of [0, 1] as opposed to the usual [-1, 1].
+Returns:
+The axis value.

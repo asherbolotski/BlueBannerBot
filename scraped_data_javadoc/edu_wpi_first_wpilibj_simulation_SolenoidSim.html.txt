@@ -1,0 +1,175 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class SolenoidSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.SolenoidSim
+public class
+SolenoidSim
+extends
+Object
+Class to control a simulated
+Solenoid
+.
+Constructor Summary
+Constructors
+Constructor
+Description
+SolenoidSim
+(int module,
+PneumaticsModuleType
+moduleType,
+ int channel)
+Constructs for a solenoid on a pneumatics module of the given type and ID.
+SolenoidSim
+(
+PneumaticsModuleType
+moduleType,
+ int channel)
+Constructs for a solenoid on a pneumatics module of the given type and default ID.
+SolenoidSim
+(
+PneumaticsBaseSim
+moduleSim,
+ int channel)
+Constructs for a solenoid on the given pneumatics module.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+getOutput
+()
+Check the solenoid output.
+PneumaticsBaseSim
+getPCMSim
+()
+Get the wrapped
+PneumaticsBaseSim
+object.
+CallbackStore
+registerOutputCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the output of this solenoid has changed.
+void
+setOutput
+(boolean output)
+Change the solenoid output.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SolenoidSim
+public
+SolenoidSim
+(
+PneumaticsBaseSim
+moduleSim,
+ int channel)
+Constructs for a solenoid on the given pneumatics module.
+Parameters:
+moduleSim
+- the PCM the solenoid is connected to.
+channel
+- the solenoid channel.
+SolenoidSim
+public
+SolenoidSim
+(int module,
+PneumaticsModuleType
+moduleType,
+ int channel)
+Constructs for a solenoid on a pneumatics module of the given type and ID.
+Parameters:
+module
+- the CAN ID of the pneumatics module the solenoid is connected to.
+moduleType
+- the module type (PH or PCM)
+channel
+- the solenoid channel.
+SolenoidSim
+public
+SolenoidSim
+(
+PneumaticsModuleType
+moduleType,
+ int channel)
+Constructs for a solenoid on a pneumatics module of the given type and default ID.
+Parameters:
+moduleType
+- the module type (PH or PCM)
+channel
+- the solenoid channel.
+Method Details
+getOutput
+public
+boolean
+getOutput
+()
+Check the solenoid output.
+Returns:
+the solenoid output
+setOutput
+public
+void
+setOutput
+(boolean output)
+Change the solenoid output.
+Parameters:
+output
+- the new solenoid output
+registerOutputCallback
+public
+CallbackStore
+registerOutputCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the output of this solenoid has changed.
+Parameters:
+callback
+- the callback
+initialNotify
+- should the callback be run with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getPCMSim
+public
+PneumaticsBaseSim
+getPCMSim
+()
+Get the wrapped
+PneumaticsBaseSim
+object.
+Returns:
+the wrapped
+PneumaticsBaseSim
+object.

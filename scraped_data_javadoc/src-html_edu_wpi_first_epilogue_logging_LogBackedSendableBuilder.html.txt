@@ -1,0 +1,389 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.epilogue.logging;
+006
+007
+import edu.wpi.first.util.function.BooleanConsumer;
+008
+import edu.wpi.first.util.function.FloatConsumer;
+009
+import edu.wpi.first.util.function.FloatSupplier;
+010
+import edu.wpi.first.util.sendable.SendableBuilder;
+011
+import java.util.ArrayList;
+012
+import java.util.Collection;
+013
+import java.util.function.BooleanSupplier;
+014
+import java.util.function.Consumer;
+015
+import java.util.function.DoubleConsumer;
+016
+import java.util.function.DoubleSupplier;
+017
+import java.util.function.LongConsumer;
+018
+import java.util.function.LongSupplier;
+019
+import java.util.function.Supplier;
+020
+021
+/** A sendable builder implementation that sends data to a {@link EpilogueBackend}. */
+022
+@SuppressWarnings("PMD.CouplingBetweenObjects") // most methods simply delegate to the backend
+023
+public class LogBackedSendableBuilder implements SendableBuilder {
+024
+private final EpilogueBackend m_backend;
+025
+private final Collection<Runnable> m_updates = new ArrayList<>();
+026
+027
+/**
+028
+* Creates a new sendable builder that delegates writes to an underlying backend.
+029
+*
+030
+* @param backend the backend to write the sendable data to
+031
+*/
+032
+public LogBackedSendableBuilder(EpilogueBackend backend) {
+033
+this.m_backend = backend;
+034
+}
+035
+036
+@Override
+037
+public void setSmartDashboardType(String type) {
+038
+m_backend.log(".type", type);
+039
+}
+040
+041
+@Override
+042
+public void setActuator(boolean value) {
+043
+// ignore
+044
+}
+045
+046
+@Override
+047
+public void setSafeState(Runnable func) {
+048
+// ignore
+049
+}
+050
+051
+@Override
+052
+public void addBooleanProperty(String key, BooleanSupplier getter, BooleanConsumer setter) {
+053
+m_updates.add(() -> m_backend.log(key, getter.getAsBoolean()));
+054
+}
+055
+056
+@Override
+057
+public void publishConstBoolean(String key, boolean value) {
+058
+m_backend.log(key, value);
+059
+}
+060
+061
+@Override
+062
+public void addIntegerProperty(String key, LongSupplier getter, LongConsumer setter) {
+063
+m_updates.add(() -> m_backend.log(key, getter.getAsLong()));
+064
+}
+065
+066
+@Override
+067
+public void publishConstInteger(String key, long value) {
+068
+m_backend.log(key, value);
+069
+}
+070
+071
+@Override
+072
+public void addFloatProperty(String key, FloatSupplier getter, FloatConsumer setter) {
+073
+m_updates.add(() -> m_backend.log(key, getter.getAsFloat()));
+074
+}
+075
+076
+@Override
+077
+public void publishConstFloat(String key, float value) {
+078
+m_backend.log(key, value);
+079
+}
+080
+081
+@Override
+082
+public void addDoubleProperty(String key, DoubleSupplier getter, DoubleConsumer setter) {
+083
+m_updates.add(() -> m_backend.log(key, getter.getAsDouble()));
+084
+}
+085
+086
+@Override
+087
+public void publishConstDouble(String key, double value) {
+088
+m_backend.log(key, value);
+089
+}
+090
+091
+@Override
+092
+public void addStringProperty(String key, Supplier<String> getter, Consumer<String> setter) {
+093
+if (getter != null) {
+094
+m_updates.add(() -> m_backend.log(key, getter.get()));
+095
+}
+096
+}
+097
+098
+@Override
+099
+public void publishConstString(String key, String value) {
+100
+m_backend.log(key, value);
+101
+}
+102
+103
+@Override
+104
+public void addBooleanArrayProperty(
+105
+String key, Supplier<boolean[]> getter, Consumer<boolean[]> setter) {
+106
+if (getter != null) {
+107
+m_updates.add(() -> m_backend.log(key, getter.get()));
+108
+}
+109
+}
+110
+111
+@Override
+112
+public void publishConstBooleanArray(String key, boolean[] value) {
+113
+m_backend.log(key, value);
+114
+}
+115
+116
+@Override
+117
+public void addIntegerArrayProperty(
+118
+String key, Supplier<long[]> getter, Consumer<long[]> setter) {
+119
+if (getter != null) {
+120
+m_updates.add(() -> m_backend.log(key, getter.get()));
+121
+}
+122
+}
+123
+124
+@Override
+125
+public void publishConstIntegerArray(String key, long[] value) {
+126
+m_backend.log(key, value);
+127
+}
+128
+129
+@Override
+130
+public void addFloatArrayProperty(
+131
+String key, Supplier<float[]> getter, Consumer<float[]> setter) {
+132
+if (getter != null) {
+133
+m_updates.add(() -> m_backend.log(key, getter.get()));
+134
+}
+135
+}
+136
+137
+@Override
+138
+public void publishConstFloatArray(String key, float[] value) {
+139
+m_backend.log(key, value);
+140
+}
+141
+142
+@Override
+143
+public void addDoubleArrayProperty(
+144
+String key, Supplier<double[]> getter, Consumer<double[]> setter) {
+145
+if (getter != null) {
+146
+m_updates.add(() -> m_backend.log(key, getter.get()));
+147
+}
+148
+}
+149
+150
+@Override
+151
+public void publishConstDoubleArray(String key, double[] value) {
+152
+m_backend.log(key, value);
+153
+}
+154
+155
+@Override
+156
+public void addStringArrayProperty(
+157
+String key, Supplier<String[]> getter, Consumer<String[]> setter) {
+158
+if (getter != null) {
+159
+m_updates.add(() -> m_backend.log(key, getter.get()));
+160
+}
+161
+}
+162
+163
+@Override
+164
+public void publishConstStringArray(String key, String[] value) {
+165
+m_backend.log(key, value);
+166
+}
+167
+168
+@Override
+169
+public void addRawProperty(
+170
+String key, String typeString, Supplier<byte[]> getter, Consumer<byte[]> setter) {
+171
+if (getter != null) {
+172
+m_updates.add(() -> m_backend.log(key, getter.get()));
+173
+}
+174
+}
+175
+176
+@Override
+177
+public void publishConstRaw(String key, String typeString, byte[] value) {
+178
+m_backend.log(key, value);
+179
+}
+180
+181
+@Override
+182
+public BackendKind getBackendKind() {
+183
+return BackendKind.kUnknown;
+184
+}
+185
+186
+@Override
+187
+public boolean isPublished() {
+188
+return true;
+189
+}
+190
+191
+@Override
+192
+public void update() {
+193
+for (Runnable update : m_updates) {
+194
+update.run();
+195
+}
+196
+}
+197
+198
+@Override
+199
+public void clearProperties() {
+200
+m_updates.clear();
+201
+}
+202
+203
+@Override
+204
+public void addCloseable(AutoCloseable closeable) {
+205
+// Ignore
+206
+}
+207
+208
+@Override
+209
+public void close() throws Exception {
+210
+clearProperties();
+211
+}
+212
+}

@@ -1,0 +1,290 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.hal.InterruptJNI;
+010
+011
+/**
+012
+* Class for handling synchronous (blocking) interrupts.
+013
+*
+014
+* <p>By default, interrupts will occur on rising edge.
+015
+*
+016
+* <p>Asynchronous interrupts are handled by the AsynchronousInterrupt class.
+017
+*/
+018
+public class SynchronousInterrupt implements AutoCloseable {
+019
+@SuppressWarnings("PMD.SingularField")
+020
+private final DigitalSource m_source;
+021
+022
+private final int m_handle;
+023
+024
+/** Event trigger combinations for a synchronous interrupt. */
+025
+public enum WaitResult {
+026
+/** Timeout event. */
+027
+kTimeout(0x0),
+028
+/** Rising edge event. */
+029
+kRisingEdge(0x1),
+030
+/** Falling edge event. */
+031
+kFallingEdge(0x100),
+032
+/** Both rising and falling edge events. */
+033
+kBoth(0x101);
+034
+035
+/** WaitResult value. */
+036
+public final int value;
+037
+038
+WaitResult(int value) {
+039
+this.value = value;
+040
+}
+041
+042
+/**
+043
+* Create a wait result enum.
+044
+*
+045
+* @param rising True if a rising edge occurred.
+046
+* @param falling True if a falling edge occurred.
+047
+* @return A wait result enum.
+048
+*/
+049
+public static WaitResult getValue(boolean rising, boolean falling) {
+050
+if (rising && falling) {
+051
+return kBoth;
+052
+} else if (rising) {
+053
+return kRisingEdge;
+054
+} else if (falling) {
+055
+return kFallingEdge;
+056
+} else {
+057
+return kTimeout;
+058
+}
+059
+}
+060
+}
+061
+062
+/**
+063
+* Constructs a new synchronous interrupt using a DigitalSource.
+064
+*
+065
+* <p>At construction, the interrupt will trigger on the rising edge.
+066
+*
+067
+* @param source The digital source to use.
+068
+*/
+069
+public SynchronousInterrupt(DigitalSource source) {
+070
+m_source = requireNonNullParam(source, "source", "SynchronousInterrupt");
+071
+m_handle = InterruptJNI.initializeInterrupts();
+072
+InterruptJNI.requestInterrupts(
+073
+m_handle, m_source.getPortHandleForRouting(), m_source.getAnalogTriggerTypeForRouting());
+074
+InterruptJNI.setInterruptUpSourceEdge(m_handle, true, false);
+075
+}
+076
+077
+/**
+078
+* Closes the interrupt.
+079
+*
+080
+* <p>This does not close the associated digital source.
+081
+*/
+082
+@Override
+083
+public void close() {
+084
+InterruptJNI.cleanInterrupts(m_handle);
+085
+}
+086
+087
+/**
+088
+* Wait for an interrupt.
+089
+*
+090
+* @param timeoutSeconds The timeout in seconds. 0 or less will return immediately.
+091
+* @param ignorePrevious True to ignore if a previous interrupt has occurred, and only wait for a
+092
+*     new trigger. False will consider if an interrupt has occurred since the last time the
+093
+*     interrupt was read.
+094
+* @return Result of which edges were triggered, or if a timeout occurred.
+095
+*/
+096
+public WaitResult waitForInterrupt(double timeoutSeconds, boolean ignorePrevious) {
+097
+long result = InterruptJNI.waitForInterrupt(m_handle, timeoutSeconds, ignorePrevious);
+098
+099
+// Rising edge result is the interrupt bit set in the byte 0xFF
+100
+// Falling edge result is the interrupt bit set in the byte 0xFF00
+101
+// Set any bit set to be true for that edge, and then conduct a logical AND on the 2 results
+102
+// together to match the existing enum for all interrupts
+103
+boolean rising = (result & 0xFF) != 0;
+104
+boolean falling = (result & 0xFF00) != 0;
+105
+return WaitResult.getValue(rising, falling);
+106
+}
+107
+108
+/**
+109
+* Wait for an interrupt, ignoring any previously occurring interrupts.
+110
+*
+111
+* @param timeoutSeconds The timeout in seconds. 0 or less will return immediately.
+112
+* @return Result of which edges were triggered, or if a timeout occurred.
+113
+*/
+114
+public WaitResult waitForInterrupt(double timeoutSeconds) {
+115
+return waitForInterrupt(timeoutSeconds, true);
+116
+}
+117
+118
+/**
+119
+* Set which edges to trigger the interrupt on.
+120
+*
+121
+* @param risingEdge Trigger on rising edge
+122
+* @param fallingEdge Trigger on falling edge
+123
+*/
+124
+public void setInterruptEdges(boolean risingEdge, boolean fallingEdge) {
+125
+InterruptJNI.setInterruptUpSourceEdge(m_handle, risingEdge, fallingEdge);
+126
+}
+127
+128
+/**
+129
+* Get the timestamp of the last rising edge.
+130
+*
+131
+* <p>This only works if rising edge was configured using setInterruptEdges.
+132
+*
+133
+* @return the timestamp in seconds relative to getFPGATime
+134
+*/
+135
+public double getRisingTimestamp() {
+136
+return InterruptJNI.readInterruptRisingTimestamp(m_handle) * 1e-6;
+137
+}
+138
+139
+/**
+140
+* Get the timestamp of the last falling edge.
+141
+*
+142
+* <p>This only works if falling edge was configured using setInterruptEdges.
+143
+*
+144
+* @return the timestamp in seconds relative to getFPGATime
+145
+*/
+146
+public double getFallingTimestamp() {
+147
+return InterruptJNI.readInterruptFallingTimestamp(m_handle) * 1e-6;
+148
+}
+149
+150
+/** Force triggering of any waiting interrupt, which will be seen as a timeout. */
+151
+public void wakeupWaitingInterrupt() {
+152
+InterruptJNI.releaseWaitingInterrupt(m_handle);
+153
+}
+154
+}

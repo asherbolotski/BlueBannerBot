@@ -1,0 +1,250 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Analog Gyro JNI Functions.
+009
+*
+010
+* @see "hal/AnalogGyro.h"
+011
+*/
+012
+public class AnalogGyroJNI extends JNIWrapper {
+013
+/**
+014
+* Initializes an analog gyro.
+015
+*
+016
+* @param halAnalogInputHandle handle to the analog input port
+017
+* @return the initialized gyro handle
+018
+* @see "HAL_InitializeAnalogGyro"
+019
+*/
+020
+public static native int initializeAnalogGyro(int halAnalogInputHandle);
+021
+022
+/**
+023
+* Sets up an analog gyro with the proper offsets and settings for the KOP analog gyro.
+024
+*
+025
+* @param handle the gyro handle
+026
+* @see "HAL_SetupAnalogGyro"
+027
+*/
+028
+public static native void setupAnalogGyro(int handle);
+029
+030
+/**
+031
+* Frees an analog gyro.
+032
+*
+033
+* @param handle the gyro handle
+034
+* @see "HAL_FreeAnalogGyro"
+035
+*/
+036
+public static native void freeAnalogGyro(int handle);
+037
+038
+/**
+039
+* Sets the analog gyro parameters to the specified values.
+040
+*
+041
+* <p>This is meant to be used if you want to reuse the values from a previous calibration.
+042
+*
+043
+* @param handle the gyro handle
+044
+* @param voltsPerDegreePerSecond the gyro volts scaling
+045
+* @param offset the gyro offset
+046
+* @param center the gyro center
+047
+* @see "HAL_SetAnalogGyroParameters"
+048
+*/
+049
+public static native void setAnalogGyroParameters(
+050
+int handle, double voltsPerDegreePerSecond, double offset, int center);
+051
+052
+/**
+053
+* Sets the analog gyro volts per degrees per second scaling.
+054
+*
+055
+* @param handle the gyro handle
+056
+* @param voltsPerDegreePerSecond the gyro volts scaling
+057
+* @see "HAL_SetAnalogGyroVoltsPerDegreePerSecond"
+058
+*/
+059
+public static native void setAnalogGyroVoltsPerDegreePerSecond(
+060
+int handle, double voltsPerDegreePerSecond);
+061
+062
+/**
+063
+* Resets the analog gyro value to 0.
+064
+*
+065
+* @param handle the gyro handle
+066
+* @see "HAL_ResetAnalogGyro"
+067
+*/
+068
+public static native void resetAnalogGyro(int handle);
+069
+070
+/**
+071
+* Calibrates the analog gyro.
+072
+*
+073
+* <p>This happens by calculating the average value of the gyro over 5 seconds, and setting that
+074
+* as the center. Note that this call blocks for 5 seconds to perform this.
+075
+*
+076
+* @param handle the gyro handle
+077
+* @see "HAL_CalibrateAnalogGyro"
+078
+*/
+079
+public static native void calibrateAnalogGyro(int handle);
+080
+081
+/**
+082
+* Sets the deadband of the analog gyro.
+083
+*
+084
+* @param handle the gyro handle
+085
+* @param volts the voltage deadband
+086
+* @see "HAL_SetAnalogGyroDeadband"
+087
+*/
+088
+public static native void setAnalogGyroDeadband(int handle, double volts);
+089
+090
+/**
+091
+* Gets the gyro angle in degrees.
+092
+*
+093
+* @param handle the gyro handle
+094
+* @return the gyro angle in degrees
+095
+* @see "HAL_GetAnalogGyroAngle"
+096
+*/
+097
+public static native double getAnalogGyroAngle(int handle);
+098
+099
+/**
+100
+* Gets the gyro rate in degrees/second.
+101
+*
+102
+* @param handle the gyro handle
+103
+* @return the gyro rate in degrees/second
+104
+* @see "HAL_GetAnalogGyroRate"
+105
+*/
+106
+public static native double getAnalogGyroRate(int handle);
+107
+108
+/**
+109
+* Gets the calibrated gyro offset.
+110
+*
+111
+* <p>Can be used to not repeat a calibration but reconstruct the gyro object.
+112
+*
+113
+* @param handle the gyro handle
+114
+* @return the gyro offset
+115
+* @see "HAL_GetAnalogGyroOffset"
+116
+*/
+117
+public static native double getAnalogGyroOffset(int handle);
+118
+119
+/**
+120
+* Gets the calibrated gyro center.
+121
+*
+122
+* <p>Can be used to not repeat a calibration but reconstruct the gyro object.
+123
+*
+124
+* @param handle the gyro handle
+125
+* @return the gyro center
+126
+* @see "HAL_GetAnalogGyroCenter"
+127
+*/
+128
+public static native int getAnalogGyroCenter(int handle);
+129
+130
+/** Utility class. */
+131
+private AnalogGyroJNI() {}
+132
+}

@@ -1,0 +1,307 @@
+Package
+edu.wpi.first.units
+Class TemperatureUnit
+java.lang.Object
+edu.wpi.first.units.Unit
+edu.wpi.first.units.TemperatureUnit
+public final class
+TemperatureUnit
+extends
+Unit
+Unit of temperature dimension.
+This is the base type for units of temperature dimension. It is also used to specify the
+ dimension for
+Measure
+:
+Measure<TemperatureUnit>
+.
+Actual units (such as
+Units.Celsius
+and
+Units.Fahrenheit
+) can be found in the
+Units
+class.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+convertFrom
+(double magnitude,
+TemperatureUnit
+otherUnit)
+Converts a measurement value in terms of another temperature unit to this unit.
+TemperatureUnit
+getBaseUnit
+()
+Gets the base unit of measurement that this unit is derived from.
+MutTemperature
+mutable
+(double initialMagnitude)
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit.
+Temperature
+of
+(double magnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+Temperature
+ofBaseUnits
+(double baseUnitMagnitude)
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+Temperature
+one
+()
+Gets a measure with a magnitude of 1.0 in terms of this unit.
+VelocityUnit
+<
+TemperatureUnit
+>
+per
+(
+TimeUnit
+period)
+Combines this unit with a unit of time.
+<U extends
+Unit
+>
+PerUnit
+<
+TemperatureUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+Temperature
+zero
+()
+Gets a measure of zero magnitude in terms of this unit.
+Methods inherited from class edu.wpi.first.units.
+Unit
+equals
+,
+equivalent
+,
+fromBaseUnits
+,
+getConverterFromBase
+,
+getConverterToBase
+,
+hashCode
+,
+isBaseUnit
+,
+name
+,
+symbol
+,
+toBaseUnits
+,
+toString
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getBaseUnit
+public
+TemperatureUnit
+getBaseUnit
+()
+Description copied from class:
+Unit
+Gets the base unit of measurement that this unit is derived from. If the unit is the base unit,
+ the unit will be returned.
+NOTE:
+Subclasses
+must
+override this method to provide the
+ correct return type. Failing to do say will make unit combinations that use it break at
+ runtime!
+Unit baseUnit = new Unit(null, ...);
+   baseUnit.getBaseUnit(); // returns baseUnit
+
+   Unit derivedUnit = new Unit(baseUnit, ...);
+   derivedUnit.getBaseUnit(); // returns baseUnit
+Overrides:
+getBaseUnit
+in class
+Unit
+Returns:
+the base unit
+of
+public
+Temperature
+of
+(double magnitude)
+Description copied from class:
+Unit
+Creates a new immutable measurement of the given magnitude in terms of this unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Specified by:
+of
+in class
+Unit
+Parameters:
+magnitude
+- the magnitude of the measurement.
+Returns:
+the measurement object
+ofBaseUnits
+public
+Temperature
+ofBaseUnits
+(double baseUnitMagnitude)
+Description copied from class:
+Unit
+Creates a new immutable measurement of the given magnitude in terms of this unit's base unit.
+ Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Specified by:
+ofBaseUnits
+in class
+Unit
+Parameters:
+baseUnitMagnitude
+- the magnitude in terms of the base unit
+Returns:
+the measurement object
+zero
+public
+Temperature
+zero
+()
+Description copied from class:
+Unit
+Gets a measure of zero magnitude in terms of this unit. The returned object is guaranteed to be
+ of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override this
+ method to sharpen the return type.
+Overrides:
+zero
+in class
+Unit
+Returns:
+a zero-magnitude measure of this unit
+one
+public
+Temperature
+one
+()
+Description copied from class:
+Unit
+Gets a measure with a magnitude of 1.0 in terms of this unit. The returned object is guaranteed
+ to be of the same type returned by
+Unit.of(double)
+. Subclasses are encouraged to override
+ this method to sharpen the return type.
+Overrides:
+one
+in class
+Unit
+Returns:
+a measure of magnitude 1.0 in terms of this unit
+mutable
+public
+MutTemperature
+mutable
+(double initialMagnitude)
+Description copied from class:
+Unit
+Creates a new mutable measurement that is initialized to the given magnitude in terms of this
+ unit. Implementations are
+strongly
+recommended to sharpen the return type to a
+ unit-specific measurement implementation.
+Specified by:
+mutable
+in class
+Unit
+Parameters:
+initialMagnitude
+- the initial magnitude of the mutable measurement
+Returns:
+the mutable measurement object
+per
+public
+VelocityUnit
+<
+TemperatureUnit
+>
+per
+(
+TimeUnit
+period)
+Description copied from class:
+Unit
+Combines this unit with a unit of time. This often - but not always - results in a velocity.
+ Subclasses should sharpen the return type to be unit-specific.
+Specified by:
+per
+in class
+Unit
+Parameters:
+period
+- the unit of time
+Returns:
+the combined unit
+per
+public
+<U extends
+Unit
+>
+PerUnit
+<
+TemperatureUnit
+,
+U>
+per
+(U other)
+Creates a ratio unit between this unit and an arbitrary other unit.
+Type Parameters:
+U
+- the type of the other unit
+Parameters:
+other
+- the other unit
+Returns:
+the ratio unit
+convertFrom
+public
+double
+convertFrom
+(double magnitude,
+TemperatureUnit
+otherUnit)
+Converts a measurement value in terms of another temperature unit to this unit.
+Parameters:
+magnitude
+- the magnitude of the measurement in terms of the other temperature unit
+otherUnit
+- the other temperature unit
+Returns:
+the value of the measurement in terms of this unit

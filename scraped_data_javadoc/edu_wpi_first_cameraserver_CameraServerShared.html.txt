@@ -1,0 +1,90 @@
+Package
+edu.wpi.first.cameraserver
+Interface CameraServerShared
+public interface
+CameraServerShared
+CameraServer shared functions.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+Long
+getRobotMainThreadId
+()
+get the main thread id func.
+default boolean
+isRoboRIO
+()
+Get if running on a roboRIO.
+void
+reportAxisCamera
+(int id)
+Report an axis camera usage.
+void
+reportDriverStationError
+(
+String
+error)
+Report an error to the driver station.
+void
+reportUsbCamera
+(int id)
+Report a usb camera usage.
+void
+reportVideoServer
+(int id)
+Report an video server usage.
+Method Details
+getRobotMainThreadId
+Long
+getRobotMainThreadId
+()
+get the main thread id func.
+Returns:
+the robotMainThreadId
+reportDriverStationError
+void
+reportDriverStationError
+(
+String
+error)
+Report an error to the driver station.
+Parameters:
+error
+- the error to set
+reportVideoServer
+void
+reportVideoServer
+(int id)
+Report an video server usage.
+Parameters:
+id
+- the usage id
+reportUsbCamera
+void
+reportUsbCamera
+(int id)
+Report a usb camera usage.
+Parameters:
+id
+- the usage id
+reportAxisCamera
+void
+reportAxisCamera
+(int id)
+Report an axis camera usage.
+Parameters:
+id
+- the usage id
+isRoboRIO
+default
+boolean
+isRoboRIO
+()
+Get if running on a roboRIO.
+Returns:
+true if on roboRIO

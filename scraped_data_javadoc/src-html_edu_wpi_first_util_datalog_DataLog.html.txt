@@ -1,0 +1,888 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.datalog;
+006
+007
+import edu.wpi.first.util.WPIUtilJNI;
+008
+import edu.wpi.first.util.protobuf.Protobuf;
+009
+import edu.wpi.first.util.struct.Struct;
+010
+import java.nio.ByteBuffer;
+011
+import java.util.HashSet;
+012
+import java.util.Set;
+013
+import java.util.concurrent.ConcurrentHashMap;
+014
+import java.util.concurrent.ConcurrentMap;
+015
+016
+/**
+017
+* A data log for high-speed writing of data values.
+018
+*
+019
+* <p>The finish() function is needed only to indicate in the log that a particular entry is no
+020
+* longer being used (it releases the name to ID mapping). The finish() function is not required to
+021
+* be called for data to be flushed to disk; entries in the log are written as append() calls are
+022
+* being made. In fact, finish() does not need to be called at all.
+023
+*
+024
+* <p>DataLog calls are thread safe. DataLog uses a typical multiple-supplier, single-consumer
+025
+* setup. Writes to the log are atomic, but there is no guaranteed order in the log when multiple
+026
+* threads are writing to it; whichever thread grabs the write mutex first will get written first.
+027
+* For this reason (as well as the fact that timestamps can be set to arbitrary values), records in
+028
+* the log are not guaranteed to be sorted by timestamp.
+029
+*/
+030
+public class DataLog implements AutoCloseable {
+031
+/**
+032
+* Constructs.
+033
+*
+034
+* @param impl implementation handle
+035
+*/
+036
+protected DataLog(long impl) {
+037
+m_impl = impl;
+038
+}
+039
+040
+/** Explicitly flushes the log data to disk. */
+041
+public void flush() {
+042
+DataLogJNI.flush(m_impl);
+043
+}
+044
+045
+/**
+046
+* Pauses appending of data records to the log. While paused, no data records are saved (e.g.
+047
+* AppendX is a no-op). Has no effect on entry starts / finishes / metadata changes.
+048
+*/
+049
+public void pause() {
+050
+DataLogJNI.pause(m_impl);
+051
+}
+052
+053
+/** Resumes appending of data records to the log. */
+054
+public void resume() {
+055
+DataLogJNI.resume(m_impl);
+056
+}
+057
+058
+/** Stops appending all records to the log, and closes the log file. */
+059
+public void stop() {
+060
+DataLogJNI.stop(m_impl);
+061
+}
+062
+063
+/**
+064
+* Returns whether there is a data schema already registered with the given name.
+065
+*
+066
+* @param name Name (the string passed as the data type for records using this schema)
+067
+* @return True if schema already registered
+068
+*/
+069
+public boolean hasSchema(String name) {
+070
+return m_schemaMap.containsKey(name);
+071
+}
+072
+073
+/**
+074
+* Registers a data schema. Data schemas provide information for how a certain data type string
+075
+* can be decoded. The type string of a data schema indicates the type of the schema itself (e.g.
+076
+* "protobuf" for protobuf schemas, "struct" for struct schemas, etc). In the data log, schemas
+077
+* are saved just like normal records, with the name being generated from the provided name:
+078
+* "/.schema/name". Duplicate calls to this function with the same name are silently ignored.
+079
+*
+080
+* @param name Name (the string passed as the data type for records using this schema)
+081
+* @param type Type of schema (e.g. "protobuf", "struct", etc)
+082
+* @param schema Schema data
+083
+* @param timestamp Time stamp (may be 0 to indicate now)
+084
+*/
+085
+public void addSchema(String name, String type, byte[] schema, long timestamp) {
+086
+if (m_schemaMap.putIfAbsent(name, 1) != null) {
+087
+return;
+088
+}
+089
+DataLogJNI.addSchema(m_impl, name, type, schema, timestamp);
+090
+}
+091
+092
+/**
+093
+* Registers a data schema. Data schemas provide information for how a certain data type string
+094
+* can be decoded. The type string of a data schema indicates the type of the schema itself (e.g.
+095
+* "protobuf" for protobuf schemas, "struct" for struct schemas, etc). In the data log, schemas
+096
+* are saved just like normal records, with the name being generated from the provided name:
+097
+* "/.schema/name". Duplicate calls to this function with the same name are silently ignored.
+098
+*
+099
+* @param name Name (the string passed as the data type for records using this schema)
+100
+* @param type Type of schema (e.g. "protobuf", "struct", etc)
+101
+* @param schema Schema data
+102
+*/
+103
+public void addSchema(String name, String type, byte[] schema) {
+104
+addSchema(name, type, schema, 0);
+105
+}
+106
+107
+/**
+108
+* Registers a data schema. Data schemas provide information for how a certain data type string
+109
+* can be decoded. The type string of a data schema indicates the type of the schema itself (e.g.
+110
+* "protobuf" for protobuf schemas, "struct" for struct schemas, etc). In the data log, schemas
+111
+* are saved just like normal records, with the name being generated from the provided name:
+112
+* "/.schema/name". Duplicate calls to this function with the same name are silently ignored.
+113
+*
+114
+* @param name Name (the string passed as the data type for records using this schema)
+115
+* @param type Type of schema (e.g. "protobuf", "struct", etc)
+116
+* @param schema Schema data
+117
+* @param timestamp Time stamp (may be 0 to indicate now)
+118
+*/
+119
+public void addSchema(String name, String type, String schema, long timestamp) {
+120
+if (m_schemaMap.putIfAbsent(name, 1) != null) {
+121
+return;
+122
+}
+123
+DataLogJNI.addSchemaString(m_impl, name, type, schema, timestamp);
+124
+}
+125
+126
+/**
+127
+* Registers a data schema. Data schemas provide information for how a certain data type string
+128
+* can be decoded. The type string of a data schema indicates the type of the schema itself (e.g.
+129
+* "protobuf" for protobuf schemas, "struct" for struct schemas, etc). In the data log, schemas
+130
+* are saved just like normal records, with the name being generated from the provided name:
+131
+* "/.schema/name". Duplicate calls to this function with the same name are silently ignored.
+132
+*
+133
+* @param name Name (the string passed as the data type for records using this schema)
+134
+* @param type Type of schema (e.g. "protobuf", "struct", etc)
+135
+* @param schema Schema data
+136
+*/
+137
+public void addSchema(String name, String type, String schema) {
+138
+addSchema(name, type, schema, 0);
+139
+}
+140
+141
+/**
+142
+* Registers a protobuf schema. Duplicate calls to this function with the same name are silently
+143
+* ignored.
+144
+*
+145
+* @param proto protobuf serialization object
+146
+* @param timestamp Time stamp (0 to indicate now)
+147
+*/
+148
+public void addSchema(Protobuf<?, ?> proto, long timestamp) {
+149
+final long actualTimestamp = timestamp == 0 ? WPIUtilJNI.now() : timestamp;
+150
+proto.forEachDescriptor(
+151
+this::hasSchema,
+152
+(typeString, schema) ->
+153
+addSchema(typeString, "proto:FileDescriptorProto", schema, actualTimestamp));
+154
+}
+155
+156
+/**
+157
+* Registers a protobuf schema. Duplicate calls to this function with the same name are silently
+158
+* ignored.
+159
+*
+160
+* @param proto protobuf serialization object
+161
+*/
+162
+public void addSchema(Protobuf<?, ?> proto) {
+163
+addSchema(proto, 0);
+164
+}
+165
+166
+/**
+167
+* Registers a struct schema. Duplicate calls to this function with the same name are silently
+168
+* ignored.
+169
+*
+170
+* @param struct struct serialization object
+171
+* @param timestamp Time stamp (0 to indicate now)
+172
+*/
+173
+public void addSchema(Struct<?> struct, long timestamp) {
+174
+addSchemaImpl(struct, timestamp == 0 ? WPIUtilJNI.now() : timestamp, new HashSet<>());
+175
+}
+176
+177
+/**
+178
+* Registers a struct schema. Duplicate calls to this function with the same name are silently
+179
+* ignored.
+180
+*
+181
+* @param struct struct serialization object
+182
+*/
+183
+public void addSchema(Struct<?> struct) {
+184
+addSchema(struct, 0);
+185
+}
+186
+187
+/**
+188
+* Start an entry. Duplicate names are allowed (with the same type), and result in the same index
+189
+* being returned (start/finish are reference counted). A duplicate name with a different type
+190
+* will result in an error message being printed to the console and 0 being returned (which will
+191
+* be ignored by the append functions).
+192
+*
+193
+* @param name Name
+194
+* @param type Data type
+195
+* @param metadata Initial metadata (e.g. data properties)
+196
+* @param timestamp Time stamp (0 to indicate now)
+197
+* @return Entry index
+198
+*/
+199
+public int start(String name, String type, String metadata, long timestamp) {
+200
+return DataLogJNI.start(m_impl, name, type, metadata, timestamp);
+201
+}
+202
+203
+/**
+204
+* Start an entry. Duplicate names are allowed (with the same type), and result in the same index
+205
+* being returned (start/finish are reference counted). A duplicate name with a different type
+206
+* will result in an error message being printed to the console and 0 being returned (which will
+207
+* be ignored by the append functions).
+208
+*
+209
+* @param name Name
+210
+* @param type Data type
+211
+* @param metadata Initial metadata (e.g. data properties)
+212
+* @return Entry index
+213
+*/
+214
+public int start(String name, String type, String metadata) {
+215
+return start(name, type, metadata, 0);
+216
+}
+217
+218
+/**
+219
+* Start an entry. Duplicate names are allowed (with the same type), and result in the same index
+220
+* being returned (start/finish are reference counted). A duplicate name with a different type
+221
+* will result in an error message being printed to the console and 0 being returned (which will
+222
+* be ignored by the append functions).
+223
+*
+224
+* @param name Name
+225
+* @param type Data type
+226
+* @return Entry index
+227
+*/
+228
+public int start(String name, String type) {
+229
+return start(name, type, "");
+230
+}
+231
+232
+/**
+233
+* Finish an entry.
+234
+*
+235
+* @param entry Entry index
+236
+* @param timestamp Time stamp (0 to indicate now)
+237
+*/
+238
+public void finish(int entry, long timestamp) {
+239
+DataLogJNI.finish(m_impl, entry, timestamp);
+240
+}
+241
+242
+/**
+243
+* Finish an entry.
+244
+*
+245
+* @param entry Entry index
+246
+*/
+247
+public void finish(int entry) {
+248
+finish(entry, 0);
+249
+}
+250
+251
+/**
+252
+* Updates the metadata for an entry.
+253
+*
+254
+* @param entry Entry index
+255
+* @param metadata New metadata for the entry
+256
+* @param timestamp Time stamp (0 to indicate now)
+257
+*/
+258
+public void setMetadata(int entry, String metadata, long timestamp) {
+259
+DataLogJNI.setMetadata(m_impl, entry, metadata, timestamp);
+260
+}
+261
+262
+/**
+263
+* Updates the metadata for an entry.
+264
+*
+265
+* @param entry Entry index
+266
+* @param metadata New metadata for the entry
+267
+*/
+268
+public void setMetadata(int entry, String metadata) {
+269
+setMetadata(entry, metadata, 0);
+270
+}
+271
+272
+@Override
+273
+public void close() {
+274
+DataLogJNI.close(m_impl);
+275
+m_impl = 0;
+276
+}
+277
+278
+/**
+279
+* Appends a raw record to the log.
+280
+*
+281
+* @param entry Entry index, as returned by start()
+282
+* @param data Byte array to record; will send entire array contents
+283
+* @param timestamp Time stamp (0 to indicate now)
+284
+*/
+285
+public void appendRaw(int entry, byte[] data, long timestamp) {
+286
+appendRaw(entry, data, 0, data.length, timestamp);
+287
+}
+288
+289
+/**
+290
+* Appends a record to the log.
+291
+*
+292
+* @param entry Entry index, as returned by start()
+293
+* @param data Byte array to record
+294
+* @param start Start position of data (in byte array)
+295
+* @param len Length of data (must be less than or equal to data.length - start)
+296
+* @param timestamp Time stamp (0 to indicate now)
+297
+*/
+298
+public void appendRaw(int entry, byte[] data, int start, int len, long timestamp) {
+299
+DataLogJNI.appendRaw(m_impl, entry, data, start, len, timestamp);
+300
+}
+301
+302
+/**
+303
+* Appends a record to the log.
+304
+*
+305
+* @param entry Entry index, as returned by start()
+306
+* @param data Buffer to record; will send from data.position() to data.limit()
+307
+* @param timestamp Time stamp (0 to indicate now)
+308
+*/
+309
+public void appendRaw(int entry, ByteBuffer data, long timestamp) {
+310
+int pos = data.position();
+311
+appendRaw(entry, data, pos, data.limit() - pos, timestamp);
+312
+}
+313
+314
+/**
+315
+* Appends a record to the log.
+316
+*
+317
+* @param entry Entry index, as returned by start()
+318
+* @param data Buffer to record
+319
+* @param start Start position of data (in buffer)
+320
+* @param len Length of data (must be less than or equal to data.capacity() - start)
+321
+* @param timestamp Time stamp (0 to indicate now)
+322
+*/
+323
+public void appendRaw(int entry, ByteBuffer data, int start, int len, long timestamp) {
+324
+DataLogJNI.appendRaw(m_impl, entry, data, start, len, timestamp);
+325
+}
+326
+327
+/**
+328
+* Appends a boolean record to the log.
+329
+*
+330
+* @param entry Entry index, as returned by start()
+331
+* @param value Boolean value to record
+332
+* @param timestamp Time stamp (0 to indicate now)
+333
+*/
+334
+public void appendBoolean(int entry, boolean value, long timestamp) {
+335
+DataLogJNI.appendBoolean(m_impl, entry, value, timestamp);
+336
+}
+337
+338
+/**
+339
+* Appends an integer record to the log.
+340
+*
+341
+* @param entry Entry index, as returned by start()
+342
+* @param value Integer value to record
+343
+* @param timestamp Time stamp (0 to indicate now)
+344
+*/
+345
+public void appendInteger(int entry, long value, long timestamp) {
+346
+DataLogJNI.appendInteger(m_impl, entry, value, timestamp);
+347
+}
+348
+349
+/**
+350
+* Appends a float record to the log.
+351
+*
+352
+* @param entry Entry index, as returned by start()
+353
+* @param value Float value to record
+354
+* @param timestamp Time stamp (0 to indicate now)
+355
+*/
+356
+public void appendFloat(int entry, float value, long timestamp) {
+357
+DataLogJNI.appendFloat(m_impl, entry, value, timestamp);
+358
+}
+359
+360
+/**
+361
+* Appends a double record to the log.
+362
+*
+363
+* @param entry Entry index, as returned by start()
+364
+* @param value Double value to record
+365
+* @param timestamp Time stamp (0 to indicate now)
+366
+*/
+367
+public void appendDouble(int entry, double value, long timestamp) {
+368
+DataLogJNI.appendDouble(m_impl, entry, value, timestamp);
+369
+}
+370
+371
+/**
+372
+* Appends a string record to the log.
+373
+*
+374
+* @param entry Entry index, as returned by start()
+375
+* @param value String value to record
+376
+* @param timestamp Time stamp (0 to indicate now)
+377
+*/
+378
+public void appendString(int entry, String value, long timestamp) {
+379
+DataLogJNI.appendString(m_impl, entry, value, timestamp);
+380
+}
+381
+382
+/**
+383
+* Appends a boolean array record to the log.
+384
+*
+385
+* @param entry Entry index, as returned by start()
+386
+* @param arr Boolean array to record
+387
+* @param timestamp Time stamp (0 to indicate now)
+388
+*/
+389
+public void appendBooleanArray(int entry, boolean[] arr, long timestamp) {
+390
+DataLogJNI.appendBooleanArray(m_impl, entry, arr, timestamp);
+391
+}
+392
+393
+/**
+394
+* Appends an integer array record to the log.
+395
+*
+396
+* @param entry Entry index, as returned by start()
+397
+* @param arr Integer array to record
+398
+* @param timestamp Time stamp (0 to indicate now)
+399
+*/
+400
+public void appendIntegerArray(int entry, long[] arr, long timestamp) {
+401
+DataLogJNI.appendIntegerArray(m_impl, entry, arr, timestamp);
+402
+}
+403
+404
+/**
+405
+* Appends a float array record to the log.
+406
+*
+407
+* @param entry Entry index, as returned by start()
+408
+* @param arr Float array to record
+409
+* @param timestamp Time stamp (0 to indicate now)
+410
+*/
+411
+public void appendFloatArray(int entry, float[] arr, long timestamp) {
+412
+DataLogJNI.appendFloatArray(m_impl, entry, arr, timestamp);
+413
+}
+414
+415
+/**
+416
+* Appends a double array record to the log.
+417
+*
+418
+* @param entry Entry index, as returned by start()
+419
+* @param arr Double array to record
+420
+* @param timestamp Time stamp (0 to indicate now)
+421
+*/
+422
+public void appendDoubleArray(int entry, double[] arr, long timestamp) {
+423
+DataLogJNI.appendDoubleArray(m_impl, entry, arr, timestamp);
+424
+}
+425
+426
+/**
+427
+* Appends a string array record to the log.
+428
+*
+429
+* @param entry Entry index, as returned by start()
+430
+* @param arr String array to record
+431
+* @param timestamp Time stamp (0 to indicate now)
+432
+*/
+433
+public void appendStringArray(int entry, String[] arr, long timestamp) {
+434
+DataLogJNI.appendStringArray(m_impl, entry, arr, timestamp);
+435
+}
+436
+437
+/**
+438
+* Gets the JNI implementation handle.
+439
+*
+440
+* @return data log handle.
+441
+*/
+442
+public long getImpl() {
+443
+return m_impl;
+444
+}
+445
+446
+private void addSchemaImpl(Struct<?> struct, long timestamp, Set<String> seen) {
+447
+String typeString = struct.getTypeString();
+448
+if (hasSchema(typeString)) {
+449
+return;
+450
+}
+451
+if (!seen.add(typeString)) {
+452
+throw new UnsupportedOperationException(typeString + ": circular reference with " + seen);
+453
+}
+454
+addSchema(typeString, "structschema", struct.getSchema(), timestamp);
+455
+for (Struct<?> inner : struct.getNested()) {
+456
+addSchemaImpl(inner, timestamp, seen);
+457
+}
+458
+seen.remove(typeString);
+459
+}
+460
+461
+/** Implementation handle. */
+462
+protected long m_impl;
+463
+464
+private final ConcurrentMap<String, Integer> m_schemaMap = new ConcurrentHashMap<>();
+465
+}

@@ -1,0 +1,113 @@
+Package
+edu.wpi.first.math.spline
+Class Spline
+java.lang.Object
+edu.wpi.first.math.spline.Spline
+Direct Known Subclasses:
+CubicHermiteSpline
+,
+QuinticHermiteSpline
+public abstract class
+Spline
+extends
+Object
+Represents a two-dimensional parametric spline that interpolates between two points.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static class
+Spline.ControlVector
+Represents a control vector for a spline.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+abstract org.ejml.simple.SimpleMatrix
+getCoefficients
+()
+Returns the coefficients of the spline.
+abstract
+Spline.ControlVector
+getFinalControlVector
+()
+Returns the final control vector that created this spline.
+abstract
+Spline.ControlVector
+getInitialControlVector
+()
+Returns the initial control vector that created this spline.
+Optional
+<
+PoseWithCurvature
+>
+getPoint
+(double t)
+Gets the pose and curvature at some point t on the spline.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getCoefficients
+public abstract
+org.ejml.simple.SimpleMatrix
+getCoefficients
+()
+Returns the coefficients of the spline.
+Returns:
+The coefficients of the spline.
+getInitialControlVector
+public abstract
+Spline.ControlVector
+getInitialControlVector
+()
+Returns the initial control vector that created this spline.
+Returns:
+The initial control vector that created this spline.
+getFinalControlVector
+public abstract
+Spline.ControlVector
+getFinalControlVector
+()
+Returns the final control vector that created this spline.
+Returns:
+The final control vector that created this spline.
+getPoint
+public
+Optional
+<
+PoseWithCurvature
+>
+getPoint
+(double t)
+Gets the pose and curvature at some point t on the spline.
+Parameters:
+t
+- The point t
+Returns:
+The pose and curvature at that point.

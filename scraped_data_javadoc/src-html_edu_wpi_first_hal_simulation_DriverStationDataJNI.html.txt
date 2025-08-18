@@ -1,0 +1,220 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.JNIWrapper;
+008
+009
+/** JNI for Driver Station data. */
+010
+public class DriverStationDataJNI extends JNIWrapper {
+011
+public static native int registerEnabledCallback(NotifyCallback callback, boolean initialNotify);
+012
+013
+public static native void cancelEnabledCallback(int uid);
+014
+015
+public static native boolean getEnabled();
+016
+017
+public static native void setEnabled(boolean enabled);
+018
+019
+public static native int registerAutonomousCallback(
+020
+NotifyCallback callback, boolean initialNotify);
+021
+022
+public static native void cancelAutonomousCallback(int uid);
+023
+024
+public static native boolean getAutonomous();
+025
+026
+public static native void setAutonomous(boolean autonomous);
+027
+028
+public static native int registerTestCallback(NotifyCallback callback, boolean initialNotify);
+029
+030
+public static native void cancelTestCallback(int uid);
+031
+032
+public static native boolean getTest();
+033
+034
+public static native void setTest(boolean test);
+035
+036
+public static native int registerEStopCallback(NotifyCallback callback, boolean initialNotify);
+037
+038
+public static native void cancelEStopCallback(int uid);
+039
+040
+public static native boolean getEStop();
+041
+042
+public static native void setEStop(boolean eStop);
+043
+044
+public static native int registerFmsAttachedCallback(
+045
+NotifyCallback callback, boolean initialNotify);
+046
+047
+public static native void cancelFmsAttachedCallback(int uid);
+048
+049
+public static native boolean getFmsAttached();
+050
+051
+public static native void setFmsAttached(boolean fmsAttached);
+052
+053
+public static native int registerDsAttachedCallback(
+054
+NotifyCallback callback, boolean initialNotify);
+055
+056
+public static native void cancelDsAttachedCallback(int uid);
+057
+058
+public static native boolean getDsAttached();
+059
+060
+public static native void setDsAttached(boolean dsAttached);
+061
+062
+public static native int registerAllianceStationIdCallback(
+063
+NotifyCallback callback, boolean initialNotify);
+064
+065
+public static native void cancelAllianceStationIdCallback(int uid);
+066
+067
+public static native int getAllianceStationId();
+068
+069
+public static native void setAllianceStationId(int allianceStationId);
+070
+071
+public static native int registerMatchTimeCallback(
+072
+NotifyCallback callback, boolean initialNotify);
+073
+074
+public static native void cancelMatchTimeCallback(int uid);
+075
+076
+public static native double getMatchTime();
+077
+078
+public static native void setMatchTime(double matchTime);
+079
+080
+public static native void setJoystickAxes(byte joystickNum, float[] axesArray);
+081
+082
+public static native void setJoystickPOVs(byte joystickNum, short[] povsArray);
+083
+084
+public static native void setJoystickButtons(byte joystickNum, int buttons, int count);
+085
+086
+public static native long getJoystickOutputs(int stick);
+087
+088
+public static native int getJoystickRumble(int stick, int rumbleNum);
+089
+090
+public static native void setMatchInfo(
+091
+String eventName,
+092
+String gameSpecificMessage,
+093
+int matchNumber,
+094
+int replayNumber,
+095
+int matchType);
+096
+097
+public static native void registerAllCallbacks(NotifyCallback callback, boolean initialNotify);
+098
+099
+public static native void notifyNewData();
+100
+101
+public static native void setSendError(boolean shouldSend);
+102
+103
+public static native void setSendConsoleLine(boolean shouldSend);
+104
+105
+public static native void setJoystickButton(int stick, int button, boolean state);
+106
+107
+public static native void setJoystickAxis(int stick, int axis, double value);
+108
+109
+public static native void setJoystickPOV(int stick, int pov, int value);
+110
+111
+public static native void setJoystickButtonsValue(int stick, int buttons);
+112
+113
+public static native void setJoystickAxisCount(int stick, int count);
+114
+115
+public static native void setJoystickPOVCount(int stick, int count);
+116
+117
+public static native void setJoystickButtonCount(int stick, int count);
+118
+119
+public static native void setJoystickIsXbox(int stick, boolean isXbox);
+120
+121
+public static native void setJoystickType(int stick, int type);
+122
+123
+public static native void setJoystickName(int stick, String name);
+124
+125
+public static native void setJoystickAxisType(int stick, int axis, int type);
+126
+127
+public static native void setGameSpecificMessage(String message);
+128
+129
+public static native void setEventName(String name);
+130
+131
+public static native void setMatchType(int type);
+132
+133
+public static native void setMatchNumber(int matchNumber);
+134
+135
+public static native void setReplayNumber(int replayNumber);
+136
+137
+public static native void resetData();
+138
+139
+/** Utility class. */
+140
+private DriverStationDataJNI() {}
+141
+}

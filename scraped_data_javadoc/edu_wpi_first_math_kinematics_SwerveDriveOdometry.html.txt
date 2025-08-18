@@ -1,0 +1,204 @@
+Package
+edu.wpi.first.math.kinematics
+Class SwerveDriveOdometry
+java.lang.Object
+edu.wpi.first.math.kinematics.Odometry
+<
+SwerveModulePosition
+[]>
+edu.wpi.first.math.kinematics.SwerveDriveOdometry
+public class
+SwerveDriveOdometry
+extends
+Odometry
+<
+SwerveModulePosition
+[]>
+Class for swerve drive odometry. Odometry allows you to track the robot's position on the field
+ over a course of a match using readings from your swerve drive encoders and swerve azimuth
+ encoders.
+Teams can use odometry during the autonomous period for complex tasks like path following.
+ Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+Constructor Summary
+Constructors
+Constructor
+Description
+SwerveDriveOdometry
+(
+SwerveDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions)
+Constructs a SwerveDriveOdometry object with the default pose at the origin.
+SwerveDriveOdometry
+(
+SwerveDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions,
+Pose2d
+initialPose)
+Constructs a SwerveDriveOdometry object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+resetPosition
+(
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions,
+Pose2d
+pose)
+Resets the robot's position on the field.
+Pose2d
+update
+(
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions)
+Updates the robot's position on the field using forward kinematics and integration of the pose
+ over time.
+Methods inherited from class edu.wpi.first.math.kinematics.
+Odometry
+getPoseMeters
+,
+resetPose
+,
+resetRotation
+,
+resetTranslation
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SwerveDriveOdometry
+public
+SwerveDriveOdometry
+(
+SwerveDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions,
+Pose2d
+initialPose)
+Constructs a SwerveDriveOdometry object.
+Parameters:
+kinematics
+- The swerve drive kinematics for your drivetrain.
+gyroAngle
+- The angle reported by the gyroscope.
+modulePositions
+- The wheel positions reported by each module.
+initialPose
+- The starting position of the robot on the field.
+SwerveDriveOdometry
+public
+SwerveDriveOdometry
+(
+SwerveDriveKinematics
+kinematics,
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions)
+Constructs a SwerveDriveOdometry object with the default pose at the origin.
+Parameters:
+kinematics
+- The swerve drive kinematics for your drivetrain.
+gyroAngle
+- The angle reported by the gyroscope.
+modulePositions
+- The wheel positions reported by each module.
+Method Details
+resetPosition
+public
+void
+resetPosition
+(
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions,
+Pose2d
+pose)
+Description copied from class:
+Odometry
+Resets the robot's position on the field.
+The gyroscope angle does not need to be reset here on the user's robot code. The library
+ automatically takes care of offsetting the gyro angle.
+Overrides:
+resetPosition
+in class
+Odometry
+<
+SwerveModulePosition
+[]>
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+modulePositions
+- The current encoder readings.
+pose
+- The position on the field that your robot is at.
+update
+public
+Pose2d
+update
+(
+Rotation2d
+gyroAngle,
+SwerveModulePosition
+[] modulePositions)
+Description copied from class:
+Odometry
+Updates the robot's position on the field using forward kinematics and integration of the pose
+ over time. This method takes in an angle parameter which is used instead of the angular rate
+ that is calculated from forward kinematics, in addition to the current distance measurement at
+ each wheel.
+Overrides:
+update
+in class
+Odometry
+<
+SwerveModulePosition
+[]>
+Parameters:
+gyroAngle
+- The angle reported by the gyroscope.
+modulePositions
+- The current encoder readings.
+Returns:
+The new pose of the robot.

@@ -1,0 +1,614 @@
+Package
+edu.wpi.first.math.controller
+Class PIDController
+java.lang.Object
+edu.wpi.first.math.controller.PIDController
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+PIDController
+extends
+Object
+implements
+Sendable
+,
+AutoCloseable
+Implements a PID control loop.
+Constructor Summary
+Constructors
+Constructor
+Description
+PIDController
+(double kp,
+ double ki,
+ double kd)
+Allocates a PIDController with the given constants for kp, ki, and kd and a default period of
+ 0.02 seconds.
+PIDController
+(double kp,
+ double ki,
+ double kd,
+ double period)
+Allocates a PIDController with the given constants for kp, ki, and kd.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+boolean
+atSetpoint
+()
+Returns true if the error is within the tolerance of the setpoint.
+double
+calculate
+(double measurement)
+Returns the next output of the PID controller.
+double
+calculate
+(double measurement,
+ double setpoint)
+Returns the next output of the PID controller.
+void
+close
+()
+void
+disableContinuousInput
+()
+Disables continuous input.
+void
+enableContinuousInput
+(double minimumInput,
+ double maximumInput)
+Enables continuous input.
+double
+getAccumulatedError
+()
+Returns the accumulated error used in the integral calculation of this controller.
+double
+getD
+()
+Get the Differential coefficient.
+double
+getError
+()
+Returns the difference between the setpoint and the measurement.
+double
+getErrorDerivative
+()
+Returns the error derivative.
+double
+getErrorDerivativeTolerance
+()
+Returns the error derivative tolerance of this controller.
+double
+getErrorTolerance
+()
+Returns the error tolerance of this controller.
+double
+getI
+()
+Get the Integral coefficient.
+double
+getIZone
+()
+Get the IZone range.
+double
+getP
+()
+Get the Proportional coefficient.
+double
+getPeriod
+()
+Returns the period of this controller.
+double
+getPositionError
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getError() instead.
+double
+getPositionTolerance
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getErrorTolerance() instead.
+double
+getSetpoint
+()
+Returns the current setpoint of the PIDController.
+double
+getVelocityError
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getErrorDerivative() instead.
+double
+getVelocityTolerance
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getErrorDerivativeTolerance() instead.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isContinuousInputEnabled
+()
+Returns true if continuous input is enabled.
+void
+reset
+()
+Resets the previous error and the integral term.
+void
+setD
+(double kd)
+Sets the Differential coefficient of the PID controller gain.
+void
+setI
+(double ki)
+Sets the Integral coefficient of the PID controller gain.
+void
+setIntegratorRange
+(double minimumIntegral,
+ double maximumIntegral)
+Sets the minimum and maximum contributions of the integral term.
+void
+setIZone
+(double iZone)
+Sets the IZone range.
+void
+setP
+(double kp)
+Sets the Proportional coefficient of the PID controller gain.
+void
+setPID
+(double kp,
+ double ki,
+ double kd)
+Sets the PID Controller gain parameters.
+void
+setSetpoint
+(double setpoint)
+Sets the setpoint for the PIDController.
+void
+setTolerance
+(double errorTolerance)
+Sets the error which is considered tolerable for use with atSetpoint().
+void
+setTolerance
+(double errorTolerance,
+ double errorDerivativeTolerance)
+Sets the error which is considered tolerable for use with atSetpoint().
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+PIDController
+public
+PIDController
+(double kp,
+ double ki,
+ double kd)
+Allocates a PIDController with the given constants for kp, ki, and kd and a default period of
+ 0.02 seconds.
+Parameters:
+kp
+- The proportional coefficient.
+ki
+- The integral coefficient.
+kd
+- The derivative coefficient.
+Throws:
+IllegalArgumentException
+- if kp < 0
+IllegalArgumentException
+- if ki < 0
+IllegalArgumentException
+- if kd < 0
+PIDController
+public
+PIDController
+(double kp,
+ double ki,
+ double kd,
+ double period)
+Allocates a PIDController with the given constants for kp, ki, and kd.
+Parameters:
+kp
+- The proportional coefficient.
+ki
+- The integral coefficient.
+kd
+- The derivative coefficient.
+period
+- The period between controller updates in seconds.
+Throws:
+IllegalArgumentException
+- if kp < 0
+IllegalArgumentException
+- if ki < 0
+IllegalArgumentException
+- if kd < 0
+IllegalArgumentException
+- if period <= 0
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+setPID
+public
+void
+setPID
+(double kp,
+ double ki,
+ double kd)
+Sets the PID Controller gain parameters.
+Set the proportional, integral, and differential coefficients.
+Parameters:
+kp
+- The proportional coefficient.
+ki
+- The integral coefficient.
+kd
+- The derivative coefficient.
+setP
+public
+void
+setP
+(double kp)
+Sets the Proportional coefficient of the PID controller gain.
+Parameters:
+kp
+- The proportional coefficient. Must be >= 0.
+setI
+public
+void
+setI
+(double ki)
+Sets the Integral coefficient of the PID controller gain.
+Parameters:
+ki
+- The integral coefficient. Must be >= 0.
+setD
+public
+void
+setD
+(double kd)
+Sets the Differential coefficient of the PID controller gain.
+Parameters:
+kd
+- The differential coefficient. Must be >= 0.
+setIZone
+public
+void
+setIZone
+(double iZone)
+Sets the IZone range. When the absolute value of the position error is greater than IZone, the
+ total accumulated error will reset to zero, disabling integral gain until the absolute value of
+ the position error is less than IZone. This is used to prevent integral windup. Must be
+ non-negative. Passing a value of zero will effectively disable integral gain. Passing a value
+ of
+Double.POSITIVE_INFINITY
+disables IZone functionality.
+Parameters:
+iZone
+- Maximum magnitude of error to allow integral control.
+Throws:
+IllegalArgumentException
+- if iZone < 0
+getP
+public
+double
+getP
+()
+Get the Proportional coefficient.
+Returns:
+proportional coefficient
+getI
+public
+double
+getI
+()
+Get the Integral coefficient.
+Returns:
+integral coefficient
+getD
+public
+double
+getD
+()
+Get the Differential coefficient.
+Returns:
+differential coefficient
+getIZone
+public
+double
+getIZone
+()
+Get the IZone range.
+Returns:
+Maximum magnitude of error to allow integral control.
+getPeriod
+public
+double
+getPeriod
+()
+Returns the period of this controller.
+Returns:
+the period of the controller.
+getPositionTolerance
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public
+double
+getPositionTolerance
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getErrorTolerance() instead.
+Returns the position tolerance of this controller.
+Returns:
+the position tolerance of the controller.
+getVelocityTolerance
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public
+double
+getVelocityTolerance
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getErrorDerivativeTolerance() instead.
+Returns the velocity tolerance of this controller.
+Returns:
+the velocity tolerance of the controller.
+getErrorTolerance
+public
+double
+getErrorTolerance
+()
+Returns the error tolerance of this controller. Defaults to 0.05.
+Returns:
+the error tolerance of the controller.
+getErrorDerivativeTolerance
+public
+double
+getErrorDerivativeTolerance
+()
+Returns the error derivative tolerance of this controller. Defaults to ∞.
+Returns:
+the error derivative tolerance of the controller.
+getAccumulatedError
+public
+double
+getAccumulatedError
+()
+Returns the accumulated error used in the integral calculation of this controller.
+Returns:
+The accumulated error of this controller.
+setSetpoint
+public
+void
+setSetpoint
+(double setpoint)
+Sets the setpoint for the PIDController.
+Parameters:
+setpoint
+- The desired setpoint.
+getSetpoint
+public
+double
+getSetpoint
+()
+Returns the current setpoint of the PIDController.
+Returns:
+The current setpoint.
+atSetpoint
+public
+boolean
+atSetpoint
+()
+Returns true if the error is within the tolerance of the setpoint. The error tolerance defaults
+ to 0.05, and the error derivative tolerance defaults to ∞.
+This will return false until at least one input value has been computed.
+Returns:
+Whether the error is within the acceptable bounds.
+enableContinuousInput
+public
+void
+enableContinuousInput
+(double minimumInput,
+ double maximumInput)
+Enables continuous input.
+Rather then using the max and min input range as constraints, it considers them to be the
+ same point and automatically calculates the shortest route to the setpoint.
+Parameters:
+minimumInput
+- The minimum value expected from the input.
+maximumInput
+- The maximum value expected from the input.
+disableContinuousInput
+public
+void
+disableContinuousInput
+()
+Disables continuous input.
+isContinuousInputEnabled
+public
+boolean
+isContinuousInputEnabled
+()
+Returns true if continuous input is enabled.
+Returns:
+True if continuous input is enabled.
+setIntegratorRange
+public
+void
+setIntegratorRange
+(double minimumIntegral,
+ double maximumIntegral)
+Sets the minimum and maximum contributions of the integral term.
+The internal integrator is clamped so that the integral term's contribution to the output
+ stays between minimumIntegral and maximumIntegral. This prevents integral windup.
+Parameters:
+minimumIntegral
+- The minimum contribution of the integral term.
+maximumIntegral
+- The maximum contribution of the integral term.
+setTolerance
+public
+void
+setTolerance
+(double errorTolerance)
+Sets the error which is considered tolerable for use with atSetpoint().
+Parameters:
+errorTolerance
+- Error which is tolerable.
+setTolerance
+public
+void
+setTolerance
+(double errorTolerance,
+ double errorDerivativeTolerance)
+Sets the error which is considered tolerable for use with atSetpoint().
+Parameters:
+errorTolerance
+- Error which is tolerable.
+errorDerivativeTolerance
+- Error derivative which is tolerable.
+getPositionError
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public
+double
+getPositionError
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getError() instead.
+Returns the difference between the setpoint and the measurement.
+Returns:
+The error.
+getVelocityError
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public
+double
+getVelocityError
+()
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use getErrorDerivative() instead.
+Returns the velocity error.
+Returns:
+The velocity error.
+getError
+public
+double
+getError
+()
+Returns the difference between the setpoint and the measurement.
+Returns:
+The error.
+getErrorDerivative
+public
+double
+getErrorDerivative
+()
+Returns the error derivative.
+Returns:
+The error derivative.
+calculate
+public
+double
+calculate
+(double measurement,
+ double setpoint)
+Returns the next output of the PID controller.
+Parameters:
+measurement
+- The current measurement of the process variable.
+setpoint
+- The new setpoint of the controller.
+Returns:
+The next controller output.
+calculate
+public
+double
+calculate
+(double measurement)
+Returns the next output of the PID controller.
+Parameters:
+measurement
+- The current measurement of the process variable.
+Returns:
+The next controller output.
+reset
+public
+void
+reset
+()
+Resets the previous error and the integral term.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

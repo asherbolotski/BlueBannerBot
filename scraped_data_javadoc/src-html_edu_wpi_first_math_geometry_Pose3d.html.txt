@@ -1,0 +1,847 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry;
+006
+007
+import static edu.wpi.first.units.Units.Meters;
+008
+009
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+010
+import com.fasterxml.jackson.annotation.JsonCreator;
+011
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+012
+import com.fasterxml.jackson.annotation.JsonProperty;
+013
+import edu.wpi.first.math.MatBuilder;
+014
+import edu.wpi.first.math.Matrix;
+015
+import edu.wpi.first.math.Nat;
+016
+import edu.wpi.first.math.geometry.proto.Pose3dProto;
+017
+import edu.wpi.first.math.geometry.struct.Pose3dStruct;
+018
+import edu.wpi.first.math.interpolation.Interpolatable;
+019
+import edu.wpi.first.math.jni.Pose3dJNI;
+020
+import edu.wpi.first.math.numbers.N4;
+021
+import edu.wpi.first.units.measure.Distance;
+022
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+023
+import edu.wpi.first.util.struct.StructSerializable;
+024
+import java.util.Objects;
+025
+026
+/** Represents a 3D pose containing translational and rotational elements. */
+027
+@JsonIgnoreProperties(ignoreUnknown = true)
+028
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
+029
+public class Pose3d implements Interpolatable<Pose3d>, ProtobufSerializable, StructSerializable {
+030
+/**
+031
+* A preallocated Pose3d representing the origin.
+032
+*
+033
+* <p>This exists to avoid allocations for common poses.
+034
+*/
+035
+public static final Pose3d kZero = new Pose3d();
+036
+037
+private final Translation3d m_translation;
+038
+private final Rotation3d m_rotation;
+039
+040
+/** Constructs a pose at the origin facing toward the positive X axis. */
+041
+public Pose3d() {
+042
+m_translation = Translation3d.kZero;
+043
+m_rotation = Rotation3d.kZero;
+044
+}
+045
+046
+/**
+047
+* Constructs a pose with the specified translation and rotation.
+048
+*
+049
+* @param translation The translational component of the pose.
+050
+* @param rotation The rotational component of the pose.
+051
+*/
+052
+@JsonCreator
+053
+public Pose3d(
+054
+@JsonProperty(required = true, value = "translation") Translation3d translation,
+055
+@JsonProperty(required = true, value = "rotation") Rotation3d rotation) {
+056
+m_translation = translation;
+057
+m_rotation = rotation;
+058
+}
+059
+060
+/**
+061
+* Constructs a pose with x, y, and z translations instead of a separate Translation3d.
+062
+*
+063
+* @param x The x component of the translational component of the pose.
+064
+* @param y The y component of the translational component of the pose.
+065
+* @param z The z component of the translational component of the pose.
+066
+* @param rotation The rotational component of the pose.
+067
+*/
+068
+public Pose3d(double x, double y, double z, Rotation3d rotation) {
+069
+m_translation = new Translation3d(x, y, z);
+070
+m_rotation = rotation;
+071
+}
+072
+073
+/**
+074
+* Constructs a pose with x, y, and z translations instead of a separate Translation3d. The X, Y,
+075
+* and Z translations will be converted to and tracked as meters.
+076
+*
+077
+* @param x The x component of the translational component of the pose.
+078
+* @param y The y component of the translational component of the pose.
+079
+* @param z The z component of the translational component of the pose.
+080
+* @param rotation The rotational component of the pose.
+081
+*/
+082
+public Pose3d(Distance x, Distance y, Distance z, Rotation3d rotation) {
+083
+this(x.in(Meters), y.in(Meters), z.in(Meters), rotation);
+084
+}
+085
+086
+/**
+087
+* Constructs a pose with the specified affine transformation matrix.
+088
+*
+089
+* @param matrix The affine transformation matrix.
+090
+* @throws IllegalArgumentException if the affine transformation matrix is invalid.
+091
+*/
+092
+public Pose3d(Matrix<N4, N4> matrix) {
+093
+m_translation = new Translation3d(matrix.get(0, 3), matrix.get(1, 3), matrix.get(2, 3));
+094
+m_rotation = new Rotation3d(matrix.block(3, 3, 0, 0));
+095
+if (matrix.get(3, 0) != 0.0
+096
+|| matrix.get(3, 1) != 0.0
+097
+|| matrix.get(3, 2) != 0.0
+098
+|| matrix.get(3, 3) != 1.0) {
+099
+throw new IllegalArgumentException("Affine transformation matrix is invalid");
+100
+}
+101
+}
+102
+103
+/**
+104
+* Constructs a 3D pose from a 2D pose in the X-Y plane.
+105
+*
+106
+* @param pose The 2D pose.
+107
+* @see Rotation3d#Rotation3d(Rotation2d)
+108
+* @see Translation3d#Translation3d(Translation2d)
+109
+*/
+110
+public Pose3d(Pose2d pose) {
+111
+m_translation = new Translation3d(pose.getX(), pose.getY(), 0.0);
+112
+m_rotation = new Rotation3d(0.0, 0.0, pose.getRotation().getRadians());
+113
+}
+114
+115
+/**
+116
+* Transforms the pose by the given transformation and returns the new transformed pose. The
+117
+* transform is applied relative to the pose's frame. Note that this differs from {@link
+118
+* Pose3d#rotateBy(Rotation3d)}, which is applied relative to the global frame and around the
+119
+* origin.
+120
+*
+121
+* @param other The transform to transform the pose by.
+122
+* @return The transformed pose.
+123
+*/
+124
+public Pose3d plus(Transform3d other) {
+125
+return transformBy(other);
+126
+}
+127
+128
+/**
+129
+* Returns the Transform3d that maps the one pose to another.
+130
+*
+131
+* @param other The initial pose of the transformation.
+132
+* @return The transform that maps the other pose to the current pose.
+133
+*/
+134
+public Transform3d minus(Pose3d other) {
+135
+final var pose = this.relativeTo(other);
+136
+return new Transform3d(pose.getTranslation(), pose.getRotation());
+137
+}
+138
+139
+/**
+140
+* Returns the translation component of the transformation.
+141
+*
+142
+* @return The translational component of the pose.
+143
+*/
+144
+@JsonProperty
+145
+public Translation3d getTranslation() {
+146
+return m_translation;
+147
+}
+148
+149
+/**
+150
+* Returns the X component of the pose's translation.
+151
+*
+152
+* @return The x component of the pose's translation.
+153
+*/
+154
+public double getX() {
+155
+return m_translation.getX();
+156
+}
+157
+158
+/**
+159
+* Returns the Y component of the pose's translation.
+160
+*
+161
+* @return The y component of the pose's translation.
+162
+*/
+163
+public double getY() {
+164
+return m_translation.getY();
+165
+}
+166
+167
+/**
+168
+* Returns the Z component of the pose's translation.
+169
+*
+170
+* @return The z component of the pose's translation.
+171
+*/
+172
+public double getZ() {
+173
+return m_translation.getZ();
+174
+}
+175
+176
+/**
+177
+* Returns the X component of the pose's translation in a measure.
+178
+*
+179
+* @return The x component of the pose's translation in a measure.
+180
+*/
+181
+public Distance getMeasureX() {
+182
+return m_translation.getMeasureX();
+183
+}
+184
+185
+/**
+186
+* Returns the Y component of the pose's translation in a measure.
+187
+*
+188
+* @return The y component of the pose's translation in a measure.
+189
+*/
+190
+public Distance getMeasureY() {
+191
+return m_translation.getMeasureY();
+192
+}
+193
+194
+/**
+195
+* Returns the Z component of the pose's translation in a measure.
+196
+*
+197
+* @return The z component of the pose's translation in a measure.
+198
+*/
+199
+public Distance getMeasureZ() {
+200
+return m_translation.getMeasureZ();
+201
+}
+202
+203
+/**
+204
+* Returns the rotational component of the transformation.
+205
+*
+206
+* @return The rotational component of the pose.
+207
+*/
+208
+@JsonProperty
+209
+public Rotation3d getRotation() {
+210
+return m_rotation;
+211
+}
+212
+213
+/**
+214
+* Multiplies the current pose by a scalar.
+215
+*
+216
+* @param scalar The scalar.
+217
+* @return The new scaled Pose3d.
+218
+*/
+219
+public Pose3d times(double scalar) {
+220
+return new Pose3d(m_translation.times(scalar), m_rotation.times(scalar));
+221
+}
+222
+223
+/**
+224
+* Divides the current pose by a scalar.
+225
+*
+226
+* @param scalar The scalar.
+227
+* @return The new scaled Pose3d.
+228
+*/
+229
+public Pose3d div(double scalar) {
+230
+return times(1.0 / scalar);
+231
+}
+232
+233
+/**
+234
+* Rotates the pose around the origin and returns the new pose.
+235
+*
+236
+* @param other The rotation to transform the pose by, which is applied extrinsically (from the
+237
+*     global frame).
+238
+* @return The rotated pose.
+239
+*/
+240
+public Pose3d rotateBy(Rotation3d other) {
+241
+return new Pose3d(m_translation.rotateBy(other), m_rotation.rotateBy(other));
+242
+}
+243
+244
+/**
+245
+* Transforms the pose by the given transformation and returns the new transformed pose. The
+246
+* transform is applied relative to the pose's frame. Note that this differs from {@link
+247
+* Pose3d#rotateBy(Rotation3d)}, which is applied relative to the global frame and around the
+248
+* origin.
+249
+*
+250
+* @param other The transform to transform the pose by.
+251
+* @return The transformed pose.
+252
+*/
+253
+public Pose3d transformBy(Transform3d other) {
+254
+return new Pose3d(
+255
+m_translation.plus(other.getTranslation().rotateBy(m_rotation)),
+256
+other.getRotation().plus(m_rotation));
+257
+}
+258
+259
+/**
+260
+* Returns the current pose relative to the given pose.
+261
+*
+262
+* <p>This function can often be used for trajectory tracking or pose stabilization algorithms to
+263
+* get the error between the reference and the current pose.
+264
+*
+265
+* @param other The pose that is the origin of the new coordinate frame that the current pose will
+266
+*     be converted into.
+267
+* @return The current pose relative to the new origin pose.
+268
+*/
+269
+public Pose3d relativeTo(Pose3d other) {
+270
+var transform = new Transform3d(other, this);
+271
+return new Pose3d(transform.getTranslation(), transform.getRotation());
+272
+}
+273
+274
+/**
+275
+* Rotates the current pose around a point in 3D space.
+276
+*
+277
+* @param point The point in 3D space to rotate around.
+278
+* @param rot The rotation to rotate the pose by.
+279
+* @return The new rotated pose.
+280
+*/
+281
+public Pose3d rotateAround(Translation3d point, Rotation3d rot) {
+282
+return new Pose3d(m_translation.rotateAround(point, rot), m_rotation.rotateBy(rot));
+283
+}
+284
+285
+/**
+286
+* Obtain a new Pose3d from a (constant curvature) velocity.
+287
+*
+288
+* <p>The twist is a change in pose in the robot's coordinate frame since the previous pose
+289
+* update. When the user runs exp() on the previous known field-relative pose with the argument
+290
+* being the twist, the user will receive the new field-relative pose.
+291
+*
+292
+* <p>"Exp" represents the pose exponential, which is solving a differential equation moving the
+293
+* pose forward in time.
+294
+*
+295
+* @param twist The change in pose in the robot's coordinate frame since the previous pose update.
+296
+*     For example, if a non-holonomic robot moves forward 0.01 meters and changes angle by 0.5
+297
+*     degrees since the previous pose update, the twist would be Twist3d(0.01, 0.0, 0.0, new new
+298
+*     Rotation3d(0.0, 0.0, Units.degreesToRadians(0.5))).
+299
+* @return The new pose of the robot.
+300
+*/
+301
+public Pose3d exp(Twist3d twist) {
+302
+var quaternion = this.getRotation().getQuaternion();
+303
+double[] resultArray =
+304
+Pose3dJNI.exp(
+305
+this.getX(),
+306
+this.getY(),
+307
+this.getZ(),
+308
+quaternion.getW(),
+309
+quaternion.getX(),
+310
+quaternion.getY(),
+311
+quaternion.getZ(),
+312
+twist.dx,
+313
+twist.dy,
+314
+twist.dz,
+315
+twist.rx,
+316
+twist.ry,
+317
+twist.rz);
+318
+return new Pose3d(
+319
+resultArray[0],
+320
+resultArray[1],
+321
+resultArray[2],
+322
+new Rotation3d(
+323
+new Quaternion(resultArray[3], resultArray[4], resultArray[5], resultArray[6])));
+324
+}
+325
+326
+/**
+327
+* Returns a Twist3d that maps this pose to the end pose. If c is the output of {@code a.Log(b)},
+328
+* then {@code a.Exp(c)} would yield b.
+329
+*
+330
+* @param end The end pose for the transformation.
+331
+* @return The twist that maps this to end.
+332
+*/
+333
+public Twist3d log(Pose3d end) {
+334
+var thisQuaternion = this.getRotation().getQuaternion();
+335
+var endQuaternion = end.getRotation().getQuaternion();
+336
+double[] resultArray =
+337
+Pose3dJNI.log(
+338
+this.getX(),
+339
+this.getY(),
+340
+this.getZ(),
+341
+thisQuaternion.getW(),
+342
+thisQuaternion.getX(),
+343
+thisQuaternion.getY(),
+344
+thisQuaternion.getZ(),
+345
+end.getX(),
+346
+end.getY(),
+347
+end.getZ(),
+348
+endQuaternion.getW(),
+349
+endQuaternion.getX(),
+350
+endQuaternion.getY(),
+351
+endQuaternion.getZ());
+352
+return new Twist3d(
+353
+resultArray[0],
+354
+resultArray[1],
+355
+resultArray[2],
+356
+resultArray[3],
+357
+resultArray[4],
+358
+resultArray[5]);
+359
+}
+360
+361
+/**
+362
+* Returns an affine transformation matrix representation of this pose.
+363
+*
+364
+* @return An affine transformation matrix representation of this pose.
+365
+*/
+366
+public Matrix<N4, N4> toMatrix() {
+367
+var vec = m_translation.toVector();
+368
+var mat = m_rotation.toMatrix();
+369
+return MatBuilder.fill(
+370
+Nat.N4(),
+371
+Nat.N4(),
+372
+mat.get(0, 0),
+373
+mat.get(0, 1),
+374
+mat.get(0, 2),
+375
+vec.get(0),
+376
+mat.get(1, 0),
+377
+mat.get(1, 1),
+378
+mat.get(1, 2),
+379
+vec.get(1),
+380
+mat.get(2, 0),
+381
+mat.get(2, 1),
+382
+mat.get(2, 2),
+383
+vec.get(2),
+384
+0.0,
+385
+0.0,
+386
+0.0,
+387
+1.0);
+388
+}
+389
+390
+/**
+391
+* Returns a Pose2d representing this Pose3d projected into the X-Y plane.
+392
+*
+393
+* @return A Pose2d representing this Pose3d projected into the X-Y plane.
+394
+*/
+395
+public Pose2d toPose2d() {
+396
+return new Pose2d(m_translation.toTranslation2d(), m_rotation.toRotation2d());
+397
+}
+398
+399
+@Override
+400
+public String toString() {
+401
+return String.format("Pose3d(%s, %s)", m_translation, m_rotation);
+402
+}
+403
+404
+/**
+405
+* Checks equality between this Pose3d and another object.
+406
+*
+407
+* @param obj The other object.
+408
+* @return Whether the two objects are equal or not.
+409
+*/
+410
+@Override
+411
+public boolean equals(Object obj) {
+412
+return obj instanceof Pose3d pose
+413
+&& m_translation.equals(pose.m_translation)
+414
+&& m_rotation.equals(pose.m_rotation);
+415
+}
+416
+417
+@Override
+418
+public int hashCode() {
+419
+return Objects.hash(m_translation, m_rotation);
+420
+}
+421
+422
+@Override
+423
+public Pose3d interpolate(Pose3d endValue, double t) {
+424
+if (t < 0) {
+425
+return this;
+426
+} else if (t >= 1) {
+427
+return endValue;
+428
+} else {
+429
+var twist = this.log(endValue);
+430
+var scaledTwist =
+431
+new Twist3d(
+432
+twist.dx * t, twist.dy * t, twist.dz * t, twist.rx * t, twist.ry * t, twist.rz * t);
+433
+return this.exp(scaledTwist);
+434
+}
+435
+}
+436
+437
+/** Pose3d protobuf for serialization. */
+438
+public static final Pose3dProto proto = new Pose3dProto();
+439
+440
+/** Pose3d struct for serialization. */
+441
+public static final Pose3dStruct struct = new Pose3dStruct();
+442
+}

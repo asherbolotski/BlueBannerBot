@@ -1,0 +1,319 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.geometry.Rotation2d;
+009
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+010
+import edu.wpi.first.math.trajectory.Trajectory;
+011
+import edu.wpi.first.math.util.Units;
+012
+013
+/**
+014
+* This holonomic drive controller can be used to follow trajectories using a holonomic drivetrain
+015
+* (i.e. swerve or mecanum). Holonomic trajectory following is a much simpler problem to solve
+016
+* compared to skid-steer style drivetrains because it is possible to individually control forward,
+017
+* sideways, and angular velocity.
+018
+*
+019
+* <p>The holonomic drive controller takes in one PID controller for each direction, forward and
+020
+* sideways, and one profiled PID controller for the angular direction. Because the heading dynamics
+021
+* are decoupled from translations, users can specify a custom heading that the drivetrain should
+022
+* point toward. This heading reference is profiled for smoothness.
+023
+*/
+024
+public class HolonomicDriveController {
+025
+private Pose2d m_poseError = Pose2d.kZero;
+026
+private Rotation2d m_rotationError = Rotation2d.kZero;
+027
+private Pose2d m_poseTolerance = Pose2d.kZero;
+028
+private boolean m_enabled = true;
+029
+030
+private final PIDController m_xController;
+031
+private final PIDController m_yController;
+032
+private final ProfiledPIDController m_thetaController;
+033
+034
+private boolean m_firstRun = true;
+035
+036
+/**
+037
+* Constructs a holonomic drive controller.
+038
+*
+039
+* @param xController A PID Controller to respond to error in the field-relative x direction.
+040
+* @param yController A PID Controller to respond to error in the field-relative y direction.
+041
+* @param thetaController A profiled PID controller to respond to error in angle.
+042
+*/
+043
+public HolonomicDriveController(
+044
+PIDController xController, PIDController yController, ProfiledPIDController thetaController) {
+045
+m_xController = xController;
+046
+m_yController = yController;
+047
+m_thetaController = thetaController;
+048
+m_thetaController.enableContinuousInput(0, Units.degreesToRadians(360.0));
+049
+}
+050
+051
+/**
+052
+* Returns true if the pose error is within tolerance of the reference.
+053
+*
+054
+* @return True if the pose error is within tolerance of the reference.
+055
+*/
+056
+public boolean atReference() {
+057
+final var eTranslate = m_poseError.getTranslation();
+058
+final var eRotate = m_rotationError;
+059
+final var tolTranslate = m_poseTolerance.getTranslation();
+060
+final var tolRotate = m_poseTolerance.getRotation();
+061
+return Math.abs(eTranslate.getX()) < tolTranslate.getX()
+062
+&& Math.abs(eTranslate.getY()) < tolTranslate.getY()
+063
+&& Math.abs(eRotate.getRadians()) < tolRotate.getRadians();
+064
+}
+065
+066
+/**
+067
+* Sets the pose error which is considered tolerance for use with atReference().
+068
+*
+069
+* @param tolerance The pose error which is tolerable.
+070
+*/
+071
+public void setTolerance(Pose2d tolerance) {
+072
+m_poseTolerance = tolerance;
+073
+}
+074
+075
+/**
+076
+* Returns the next output of the holonomic drive controller.
+077
+*
+078
+* @param currentPose The current pose, as measured by odometry or pose estimator.
+079
+* @param trajectoryPose The desired trajectory pose, as sampled for the current timestep.
+080
+* @param desiredLinearVelocityMetersPerSecond The desired linear velocity.
+081
+* @param desiredHeading The desired heading.
+082
+* @return The next output of the holonomic drive controller.
+083
+*/
+084
+public ChassisSpeeds calculate(
+085
+Pose2d currentPose,
+086
+Pose2d trajectoryPose,
+087
+double desiredLinearVelocityMetersPerSecond,
+088
+Rotation2d desiredHeading) {
+089
+// If this is the first run, then we need to reset the theta controller to the current pose's
+090
+// heading.
+091
+if (m_firstRun) {
+092
+m_thetaController.reset(currentPose.getRotation().getRadians());
+093
+m_firstRun = false;
+094
+}
+095
+096
+// Calculate feedforward velocities (field-relative).
+097
+double xFF = desiredLinearVelocityMetersPerSecond * trajectoryPose.getRotation().getCos();
+098
+double yFF = desiredLinearVelocityMetersPerSecond * trajectoryPose.getRotation().getSin();
+099
+double thetaFF =
+100
+m_thetaController.calculate(
+101
+currentPose.getRotation().getRadians(), desiredHeading.getRadians());
+102
+103
+m_poseError = trajectoryPose.relativeTo(currentPose);
+104
+m_rotationError = desiredHeading.minus(currentPose.getRotation());
+105
+106
+if (!m_enabled) {
+107
+return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, thetaFF, currentPose.getRotation());
+108
+}
+109
+110
+// Calculate feedback velocities (based on position error).
+111
+double xFeedback = m_xController.calculate(currentPose.getX(), trajectoryPose.getX());
+112
+double yFeedback = m_yController.calculate(currentPose.getY(), trajectoryPose.getY());
+113
+114
+// Return next output.
+115
+return ChassisSpeeds.fromFieldRelativeSpeeds(
+116
+xFF + xFeedback, yFF + yFeedback, thetaFF, currentPose.getRotation());
+117
+}
+118
+119
+/**
+120
+* Returns the next output of the holonomic drive controller.
+121
+*
+122
+* @param currentPose The current pose, as measured by odometry or pose estimator.
+123
+* @param desiredState The desired trajectory pose, as sampled for the current timestep.
+124
+* @param desiredHeading The desired heading.
+125
+* @return The next output of the holonomic drive controller.
+126
+*/
+127
+public ChassisSpeeds calculate(
+128
+Pose2d currentPose, Trajectory.State desiredState, Rotation2d desiredHeading) {
+129
+return calculate(
+130
+currentPose, desiredState.poseMeters, desiredState.velocityMetersPerSecond, desiredHeading);
+131
+}
+132
+133
+/**
+134
+* Enables and disables the controller for troubleshooting problems. When calculate() is called on
+135
+* a disabled controller, only feedforward values are returned.
+136
+*
+137
+* @param enabled If the controller is enabled or not.
+138
+*/
+139
+public void setEnabled(boolean enabled) {
+140
+m_enabled = enabled;
+141
+}
+142
+143
+/**
+144
+* Returns the x controller.
+145
+*
+146
+* @return X PIDController
+147
+*/
+148
+public PIDController getXController() {
+149
+return m_xController;
+150
+}
+151
+152
+/**
+153
+* Returns the y controller.
+154
+*
+155
+* @return Y PIDController
+156
+*/
+157
+public PIDController getYController() {
+158
+return m_yController;
+159
+}
+160
+161
+/**
+162
+* Returns the heading controller.
+163
+*
+164
+* @return heading ProfiledPIDController
+165
+*/
+166
+public ProfiledPIDController getThetaController() {
+167
+return m_thetaController;
+168
+}
+169
+}

@@ -1,0 +1,235 @@
+Package
+edu.wpi.first.math.controller
+Class LTVDifferentialDriveController
+java.lang.Object
+edu.wpi.first.math.controller.LTVDifferentialDriveController
+public class
+LTVDifferentialDriveController
+extends
+Object
+The linear time-varying differential drive controller has a similar form to the LQR, but the
+ model used to compute the controller gain is the nonlinear differential drive model linearized
+ around the drivetrain's current state. We precompute gains for important places in our
+ state-space, then interpolate between them with a lookup table to save computational resources.
+This controller has a flat hierarchy with pose and wheel velocity references and voltage
+ outputs. This is different from a Ramsete controller's nested hierarchy where the top-level
+ controller has a pose reference and chassis velocity command outputs, and the low-level
+ controller has wheel velocity references and voltage outputs. Flat hierarchies are easier to tune
+ in one shot. Furthermore, this controller is more optimal in the "least-squares error" sense than
+ a controller based on Ramsete.
+See section 8.7 in Controls Engineering in FRC for a derivation of the control law we used
+ shown in theorem 8.7.4.
+Constructor Summary
+Constructors
+Constructor
+Description
+LTVDifferentialDriveController
+(
+LinearSystem
+<
+N2
+,
+N2
+,
+N2
+> plant,
+ double trackwidth,
+Vector
+<
+N5
+> qelems,
+Vector
+<
+N2
+> relems,
+ double dt)
+Constructs a linear time-varying differential drive controller.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+atReference
+()
+Returns true if the pose error is within tolerance of the reference.
+DifferentialDriveWheelVoltages
+calculate
+(
+Pose2d
+currentPose,
+ double leftVelocity,
+ double rightVelocity,
+Pose2d
+poseRef,
+ double leftVelocityRef,
+ double rightVelocityRef)
+Returns the left and right output voltages of the LTV controller.
+DifferentialDriveWheelVoltages
+calculate
+(
+Pose2d
+currentPose,
+ double leftVelocity,
+ double rightVelocity,
+Trajectory.State
+desiredState)
+Returns the left and right output voltages of the LTV controller.
+void
+setTolerance
+(
+Pose2d
+poseTolerance,
+ double leftVelocityTolerance,
+ double rightVelocityTolerance)
+Sets the pose error which is considered tolerable for use with atReference().
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LTVDifferentialDriveController
+public
+LTVDifferentialDriveController
+(
+LinearSystem
+<
+N2
+,
+N2
+,
+N2
+> plant,
+ double trackwidth,
+Vector
+<
+N5
+> qelems,
+Vector
+<
+N2
+> relems,
+ double dt)
+Constructs a linear time-varying differential drive controller.
+See
+https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-intro.html#lqr-tuning
+for how to select the tolerances.
+Parameters:
+plant
+- The differential drive velocity plant.
+trackwidth
+- The distance between the differential drive's left and right wheels in
+     meters.
+qelems
+- The maximum desired error tolerance for each state.
+relems
+- The maximum desired control effort for each input.
+dt
+- Discretization timestep in seconds.
+Throws:
+IllegalArgumentException
+- if max velocity of plant with 12 V input <= 0 m/s or >=
+     15 m/s.
+Method Details
+atReference
+public
+boolean
+atReference
+()
+Returns true if the pose error is within tolerance of the reference.
+Returns:
+True if the pose error is within tolerance of the reference.
+setTolerance
+public
+void
+setTolerance
+(
+Pose2d
+poseTolerance,
+ double leftVelocityTolerance,
+ double rightVelocityTolerance)
+Sets the pose error which is considered tolerable for use with atReference().
+Parameters:
+poseTolerance
+- Pose error which is tolerable.
+leftVelocityTolerance
+- Left velocity error which is tolerable in meters per second.
+rightVelocityTolerance
+- Right velocity error which is tolerable in meters per second.
+calculate
+public
+DifferentialDriveWheelVoltages
+calculate
+(
+Pose2d
+currentPose,
+ double leftVelocity,
+ double rightVelocity,
+Pose2d
+poseRef,
+ double leftVelocityRef,
+ double rightVelocityRef)
+Returns the left and right output voltages of the LTV controller.
+The reference pose, linear velocity, and angular velocity should come from a drivetrain
+ trajectory.
+Parameters:
+currentPose
+- The current pose.
+leftVelocity
+- The current left velocity in meters per second.
+rightVelocity
+- The current right velocity in meters per second.
+poseRef
+- The desired pose.
+leftVelocityRef
+- The desired left velocity in meters per second.
+rightVelocityRef
+- The desired right velocity in meters per second.
+Returns:
+Left and right output voltages of the LTV controller.
+calculate
+public
+DifferentialDriveWheelVoltages
+calculate
+(
+Pose2d
+currentPose,
+ double leftVelocity,
+ double rightVelocity,
+Trajectory.State
+desiredState)
+Returns the left and right output voltages of the LTV controller.
+The reference pose, linear velocity, and angular velocity should come from a drivetrain
+ trajectory.
+Parameters:
+currentPose
+- The current pose.
+leftVelocity
+- The left velocity in meters per second.
+rightVelocity
+- The right velocity in meters per second.
+desiredState
+- The desired pose, linear velocity, and angular velocity from a trajectory.
+Returns:
+The left and right output voltages of the LTV controller.

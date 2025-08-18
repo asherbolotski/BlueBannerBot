@@ -1,0 +1,332 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+/**
+008
+* A timer class.
+009
+*
+010
+* <p>Note that if the user calls SimHooks.restartTiming(), they should also reset the timer so
+011
+* get() won't return a negative duration.
+012
+*/
+013
+public class Timer {
+014
+/**
+015
+* Return the clock time in seconds. By default, the time is based on the FPGA hardware clock in
+016
+* seconds since the FPGA started. However, the return value of this method may be modified to use
+017
+* any time base, including non-monotonic time bases.
+018
+*
+019
+* @return Robot running time in seconds.
+020
+*/
+021
+public static double getTimestamp() {
+022
+return RobotController.getTime() / 1000000.0;
+023
+}
+024
+025
+/**
+026
+* Return the system clock time in seconds. Return the time from the FPGA hardware clock in
+027
+* seconds since the FPGA started.
+028
+*
+029
+* @return Robot running time in seconds.
+030
+*/
+031
+public static double getFPGATimestamp() {
+032
+return RobotController.getFPGATime() / 1000000.0;
+033
+}
+034
+035
+/**
+036
+* Return the approximate match time. The FMS does not send an official match time to the robots,
+037
+* but does send an approximate match time. The value will count down the time remaining in the
+038
+* current period (auto or teleop). Warning: This is not an official time (so it cannot be used to
+039
+* dispute ref calls or guarantee that a function will trigger before the match ends) The Practice
+040
+* Match function of the DS approximates the behavior seen on the field.
+041
+*
+042
+* @return Time remaining in current match period (auto or teleop) in seconds
+043
+*/
+044
+public static double getMatchTime() {
+045
+return DriverStation.getMatchTime();
+046
+}
+047
+048
+/**
+049
+* Pause the thread for a specified time. Pause the execution of the thread for a specified period
+050
+* of time given in seconds. Motors will continue to run at their last assigned values, and
+051
+* sensors will continue to update. Only the task containing the wait will pause until the wait
+052
+* time is expired.
+053
+*
+054
+* @param seconds Length of time to pause
+055
+*/
+056
+public static void delay(final double seconds) {
+057
+try {
+058
+Thread.sleep((long) (seconds * 1e3));
+059
+} catch (final InterruptedException ex) {
+060
+Thread.currentThread().interrupt();
+061
+}
+062
+}
+063
+064
+private double m_startTime;
+065
+private double m_accumulatedTime;
+066
+private boolean m_running;
+067
+068
+/** Timer constructor. */
+069
+public Timer() {
+070
+reset();
+071
+}
+072
+073
+private double getMsClock() {
+074
+return RobotController.getTime() / 1000.0;
+075
+}
+076
+077
+/**
+078
+* Get the current time from the timer. If the clock is running it is derived from the current
+079
+* system clock the start time stored in the timer class. If the clock is not running, then return
+080
+* the time when it was last stopped.
+081
+*
+082
+* @return Current time value for this timer in seconds
+083
+*/
+084
+public double get() {
+085
+if (m_running) {
+086
+return m_accumulatedTime + (getMsClock() - m_startTime) / 1000.0;
+087
+} else {
+088
+return m_accumulatedTime;
+089
+}
+090
+}
+091
+092
+/**
+093
+* Reset the timer by setting the time to 0.
+094
+*
+095
+* <p>Make the timer startTime the current time so new requests will be relative now.
+096
+*/
+097
+public final void reset() {
+098
+m_accumulatedTime = 0;
+099
+m_startTime = getMsClock();
+100
+}
+101
+102
+/**
+103
+* Start the timer running. Just set the running flag to true indicating that all time requests
+104
+* should be relative to the system clock. Note that this method is a no-op if the timer is
+105
+* already running.
+106
+*/
+107
+public void start() {
+108
+if (!m_running) {
+109
+m_startTime = getMsClock();
+110
+m_running = true;
+111
+}
+112
+}
+113
+114
+/**
+115
+* Restart the timer by stopping the timer, if it is not already stopped, resetting the
+116
+* accumulated time, then starting the timer again. If you want an event to periodically reoccur
+117
+* at some time interval from the start time, consider using advanceIfElapsed() instead.
+118
+*/
+119
+public void restart() {
+120
+if (m_running) {
+121
+stop();
+122
+}
+123
+reset();
+124
+start();
+125
+}
+126
+127
+/**
+128
+* Stop the timer. This computes the time as of now and clears the running flag, causing all
+129
+* subsequent time requests to be read from the accumulated time rather than looking at the system
+130
+* clock.
+131
+*/
+132
+public void stop() {
+133
+m_accumulatedTime = get();
+134
+m_running = false;
+135
+}
+136
+137
+/**
+138
+* Check if the period specified has passed.
+139
+*
+140
+* @param seconds The period to check.
+141
+* @return Whether the period has passed.
+142
+*/
+143
+public boolean hasElapsed(double seconds) {
+144
+return get() >= seconds;
+145
+}
+146
+147
+/**
+148
+* Check if the period specified has passed and if it has, advance the start time by that period.
+149
+* This is useful to decide if it's time to do periodic work without drifting later by the time it
+150
+* took to get around to checking.
+151
+*
+152
+* @param seconds The period to check.
+153
+* @return Whether the period has passed.
+154
+*/
+155
+public boolean advanceIfElapsed(double seconds) {
+156
+if (get() >= seconds) {
+157
+// Advance the start time by the period.
+158
+// Don't set it to the current time... we want to avoid drift.
+159
+m_startTime += seconds * 1000;
+160
+return true;
+161
+} else {
+162
+return false;
+163
+}
+164
+}
+165
+166
+/**
+167
+* Whether the timer is currently running.
+168
+*
+169
+* @return true if running.
+170
+*/
+171
+public boolean isRunning() {
+172
+return m_running;
+173
+}
+174
+}

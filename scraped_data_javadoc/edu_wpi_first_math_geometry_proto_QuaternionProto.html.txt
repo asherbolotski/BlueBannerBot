@@ -1,0 +1,240 @@
+Package
+edu.wpi.first.math.geometry.proto
+Class QuaternionProto
+java.lang.Object
+edu.wpi.first.math.geometry.proto.QuaternionProto
+All Implemented Interfaces:
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+public class
+QuaternionProto
+extends
+Object
+implements
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+Constructor Summary
+Constructors
+Constructor
+Description
+QuaternionProto
+()
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Geometry3D.ProtobufQuaternion
+createMessage
+()
+Creates protobuf message.
+us.hebi.quickbuf.Descriptors.Descriptor
+getDescriptor
+()
+Gets the protobuf descriptor.
+Class
+<
+Quaternion
+>
+getTypeClass
+()
+Gets the Class object for the stored value.
+boolean
+isImmutable
+()
+Returns whether or not objects are immutable.
+void
+pack
+(
+Geometry3D.ProtobufQuaternion
+msg,
+Quaternion
+value)
+Copies the object contents into a protobuf message.
+Quaternion
+unpack
+(
+Geometry3D.ProtobufQuaternion
+msg)
+Deserializes an object from a protobuf message.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.util.protobuf.
+Protobuf
+clone
+,
+forEachDescriptor
+,
+getTypeString
+,
+isCloneable
+,
+unpackInto
+Constructor Details
+QuaternionProto
+public
+QuaternionProto
+()
+Method Details
+getTypeClass
+public
+Class
+<
+Quaternion
+>
+getTypeClass
+()
+Description copied from interface:
+Protobuf
+Gets the Class object for the stored value.
+Specified by:
+getTypeClass
+in interface
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+Returns:
+Class
+getDescriptor
+public
+us.hebi.quickbuf.Descriptors.Descriptor
+getDescriptor
+()
+Description copied from interface:
+Protobuf
+Gets the protobuf descriptor.
+Specified by:
+getDescriptor
+in interface
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+Returns:
+descriptor
+createMessage
+public
+Geometry3D.ProtobufQuaternion
+createMessage
+()
+Description copied from interface:
+Protobuf
+Creates protobuf message.
+Specified by:
+createMessage
+in interface
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+Returns:
+protobuf message
+unpack
+public
+Quaternion
+unpack
+(
+Geometry3D.ProtobufQuaternion
+msg)
+Description copied from interface:
+Protobuf
+Deserializes an object from a protobuf message.
+Specified by:
+unpack
+in interface
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+Parameters:
+msg
+- protobuf message
+Returns:
+New object
+pack
+public
+void
+pack
+(
+Geometry3D.ProtobufQuaternion
+msg,
+Quaternion
+value)
+Description copied from interface:
+Protobuf
+Copies the object contents into a protobuf message. Implementations should call either
+ msg.setMember(member) or member.copyToProto(msg.getMutableMember()) for each member.
+Specified by:
+pack
+in interface
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+Parameters:
+msg
+- protobuf message
+value
+- object to serialize
+isImmutable
+public
+boolean
+isImmutable
+()
+Description copied from interface:
+Protobuf
+Returns whether or not objects are immutable. Immutable objects must also be comparable using
+ the equals() method. Default implementation returns false.
+Specified by:
+isImmutable
+in interface
+Protobuf
+<
+Quaternion
+,
+Geometry3D.ProtobufQuaternion
+>
+Returns:
+True if object is immutable

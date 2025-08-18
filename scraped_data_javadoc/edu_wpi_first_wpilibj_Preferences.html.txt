@@ -1,0 +1,538 @@
+Package
+edu.wpi.first.wpilibj
+Class Preferences
+java.lang.Object
+edu.wpi.first.wpilibj.Preferences
+public final class
+Preferences
+extends
+Object
+The preferences class provides a relatively simple way to save important values to the roboRIO to
+ access the next time the roboRIO is booted.
+This class loads and saves from a file inside the roboRIO. The user can not access the file
+ directly, but may modify values at specific fields which will then be automatically saved to the
+ file by the NetworkTables server.
+This class is thread safe.
+This will also interact with
+NetworkTable
+by creating a table called "Preferences"
+ with all the key-value pairs.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static boolean
+containsKey
+(
+String
+key)
+Returns whether there is a key with the given name.
+static boolean
+getBoolean
+(
+String
+key,
+ boolean backup)
+Returns the boolean at the given key.
+static double
+getDouble
+(
+String
+key,
+ double backup)
+Returns the double at the given key.
+static float
+getFloat
+(
+String
+key,
+ float backup)
+Returns the float at the given key.
+static int
+getInt
+(
+String
+key,
+ int backup)
+Returns the int at the given key.
+static
+Collection
+<
+String
+>
+getKeys
+()
+Gets the preferences keys.
+static long
+getLong
+(
+String
+key,
+ long backup)
+Returns the long at the given key.
+static
+String
+getString
+(
+String
+key,
+String
+backup)
+Returns the string at the given key.
+static void
+initBoolean
+(
+String
+key,
+ boolean value)
+Puts the given boolean into the preferences table if it doesn't already exist.
+static void
+initDouble
+(
+String
+key,
+ double value)
+Puts the given double into the preferences table if it doesn't already exist.
+static void
+initFloat
+(
+String
+key,
+ float value)
+Puts the given float into the preferences table if it doesn't already exist.
+static void
+initInt
+(
+String
+key,
+ int value)
+Puts the given int into the preferences table if it doesn't already exist.
+static void
+initLong
+(
+String
+key,
+ long value)
+Puts the given long into the preferences table if it doesn't already exist.
+static void
+initString
+(
+String
+key,
+String
+value)
+Puts the given string into the preferences table if it doesn't already exist.
+static void
+remove
+(
+String
+key)
+Remove a preference.
+static void
+removeAll
+()
+Remove all preferences.
+static void
+setBoolean
+(
+String
+key,
+ boolean value)
+Puts the given boolean into the preferences table.
+static void
+setDouble
+(
+String
+key,
+ double value)
+Puts the given double into the preferences table.
+static void
+setFloat
+(
+String
+key,
+ float value)
+Puts the given float into the preferences table.
+static void
+setInt
+(
+String
+key,
+ int value)
+Puts the given int into the preferences table.
+static void
+setLong
+(
+String
+key,
+ long value)
+Puts the given long into the preferences table.
+static void
+setNetworkTableInstance
+(
+NetworkTableInstance
+inst)
+Set the NetworkTable instance used for entries.
+static void
+setString
+(
+String
+key,
+String
+value)
+Puts the given string into the preferences table.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+setNetworkTableInstance
+public static
+void
+setNetworkTableInstance
+(
+NetworkTableInstance
+inst)
+Set the NetworkTable instance used for entries. For testing purposes; use with caution.
+Parameters:
+inst
+- NetworkTable instance
+getKeys
+public static
+Collection
+<
+String
+>
+getKeys
+()
+Gets the preferences keys.
+Returns:
+a collection of the keys
+setString
+public static
+void
+setString
+(
+String
+key,
+String
+value)
+Puts the given string into the preferences table.
+Parameters:
+key
+- the key
+value
+- the value
+Throws:
+NullPointerException
+- if value is null
+initString
+public static
+void
+initString
+(
+String
+key,
+String
+value)
+Puts the given string into the preferences table if it doesn't already exist.
+Parameters:
+key
+- The key
+value
+- The value
+setInt
+public static
+void
+setInt
+(
+String
+key,
+ int value)
+Puts the given int into the preferences table.
+Parameters:
+key
+- the key
+value
+- the value
+initInt
+public static
+void
+initInt
+(
+String
+key,
+ int value)
+Puts the given int into the preferences table if it doesn't already exist.
+Parameters:
+key
+- The key
+value
+- The value
+setDouble
+public static
+void
+setDouble
+(
+String
+key,
+ double value)
+Puts the given double into the preferences table.
+Parameters:
+key
+- the key
+value
+- the value
+initDouble
+public static
+void
+initDouble
+(
+String
+key,
+ double value)
+Puts the given double into the preferences table if it doesn't already exist.
+Parameters:
+key
+- The key
+value
+- The value
+setFloat
+public static
+void
+setFloat
+(
+String
+key,
+ float value)
+Puts the given float into the preferences table.
+Parameters:
+key
+- the key
+value
+- the value
+initFloat
+public static
+void
+initFloat
+(
+String
+key,
+ float value)
+Puts the given float into the preferences table if it doesn't already exist.
+Parameters:
+key
+- The key
+value
+- The value
+setBoolean
+public static
+void
+setBoolean
+(
+String
+key,
+ boolean value)
+Puts the given boolean into the preferences table.
+Parameters:
+key
+- the key
+value
+- the value
+initBoolean
+public static
+void
+initBoolean
+(
+String
+key,
+ boolean value)
+Puts the given boolean into the preferences table if it doesn't already exist.
+Parameters:
+key
+- The key
+value
+- The value
+setLong
+public static
+void
+setLong
+(
+String
+key,
+ long value)
+Puts the given long into the preferences table.
+Parameters:
+key
+- the key
+value
+- the value
+initLong
+public static
+void
+initLong
+(
+String
+key,
+ long value)
+Puts the given long into the preferences table if it doesn't already exist.
+Parameters:
+key
+- The key
+value
+- The value
+containsKey
+public static
+boolean
+containsKey
+(
+String
+key)
+Returns whether there is a key with the given name.
+Parameters:
+key
+- the key
+Returns:
+if there is a value at the given key
+remove
+public static
+void
+remove
+(
+String
+key)
+Remove a preference.
+Parameters:
+key
+- the key
+removeAll
+public static
+void
+removeAll
+()
+Remove all preferences.
+getString
+public static
+String
+getString
+(
+String
+key,
+String
+backup)
+Returns the string at the given key. If this table does not have a value for that position,
+ then the given backup value will be returned.
+Parameters:
+key
+- the key
+backup
+- the value to return if none exists in the table
+Returns:
+either the value in the table, or the backup
+getInt
+public static
+int
+getInt
+(
+String
+key,
+ int backup)
+Returns the int at the given key. If this table does not have a value for that position, then
+ the given backup value will be returned.
+Parameters:
+key
+- the key
+backup
+- the value to return if none exists in the table
+Returns:
+either the value in the table, or the backup
+getDouble
+public static
+double
+getDouble
+(
+String
+key,
+ double backup)
+Returns the double at the given key. If this table does not have a value for that position,
+ then the given backup value will be returned.
+Parameters:
+key
+- the key
+backup
+- the value to return if none exists in the table
+Returns:
+either the value in the table, or the backup
+getBoolean
+public static
+boolean
+getBoolean
+(
+String
+key,
+ boolean backup)
+Returns the boolean at the given key. If this table does not have a value for that position,
+ then the given backup value will be returned.
+Parameters:
+key
+- the key
+backup
+- the value to return if none exists in the table
+Returns:
+either the value in the table, or the backup
+getFloat
+public static
+float
+getFloat
+(
+String
+key,
+ float backup)
+Returns the float at the given key. If this table does not have a value for that position, then
+ the given backup value will be returned.
+Parameters:
+key
+- the key
+backup
+- the value to return if none exists in the table
+Returns:
+either the value in the table, or the backup
+getLong
+public static
+long
+getLong
+(
+String
+key,
+ long backup)
+Returns the long at the given key. If this table does not have a value for that position, then
+ the given backup value will be returned.
+Parameters:
+key
+- the key
+backup
+- the value to return if none exists in the table
+Returns:
+either the value in the table, or the backup

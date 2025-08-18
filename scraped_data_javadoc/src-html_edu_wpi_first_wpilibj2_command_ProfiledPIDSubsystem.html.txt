@@ -1,0 +1,222 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+008
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+009
+010
+import edu.wpi.first.math.controller.ProfiledPIDController;
+011
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+012
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+013
+014
+/**
+015
+* A subsystem that uses a {@link ProfiledPIDController} to control an output. The controller is run
+016
+* synchronously from the subsystem's periodic() method.
+017
+*
+018
+* <p>This class is provided by the NewCommands VendorDep
+019
+*
+020
+* @deprecated Use a ProfiledPIDController instead
+021
+*/
+022
+@Deprecated(forRemoval = true, since = "2025")
+023
+public abstract class ProfiledPIDSubsystem extends SubsystemBase {
+024
+/** Profiled PID controller. */
+025
+protected final ProfiledPIDController m_controller;
+026
+027
+/** Whether the profiled PID controller output is enabled. */
+028
+protected boolean m_enabled;
+029
+030
+/**
+031
+* Creates a new ProfiledPIDSubsystem.
+032
+*
+033
+* @param controller the ProfiledPIDController to use
+034
+* @param initialPosition the initial goal position of the controller
+035
+*/
+036
+public ProfiledPIDSubsystem(ProfiledPIDController controller, double initialPosition) {
+037
+m_controller = requireNonNullParam(controller, "controller", "ProfiledPIDSubsystem");
+038
+setGoal(initialPosition);
+039
+}
+040
+041
+/**
+042
+* Creates a new ProfiledPIDSubsystem. Initial goal position is zero.
+043
+*
+044
+* @param controller the ProfiledPIDController to use
+045
+*/
+046
+public ProfiledPIDSubsystem(ProfiledPIDController controller) {
+047
+this(controller, 0);
+048
+}
+049
+050
+@Override
+051
+public void periodic() {
+052
+if (m_enabled) {
+053
+useOutput(m_controller.calculate(getMeasurement()), m_controller.getSetpoint());
+054
+}
+055
+}
+056
+057
+/**
+058
+* Returns the ProfiledPIDController.
+059
+*
+060
+* @return The controller.
+061
+*/
+062
+public ProfiledPIDController getController() {
+063
+return m_controller;
+064
+}
+065
+066
+/**
+067
+* Sets the goal state for the subsystem.
+068
+*
+069
+* @param goal The goal state for the subsystem's motion profile.
+070
+*/
+071
+public final void setGoal(TrapezoidProfile.State goal) {
+072
+m_controller.setGoal(goal);
+073
+}
+074
+075
+/**
+076
+* Sets the goal state for the subsystem. Goal velocity assumed to be zero.
+077
+*
+078
+* @param goal The goal position for the subsystem's motion profile.
+079
+*/
+080
+public final void setGoal(double goal) {
+081
+setGoal(new TrapezoidProfile.State(goal, 0));
+082
+}
+083
+084
+/**
+085
+* Uses the output from the ProfiledPIDController.
+086
+*
+087
+* @param output the output of the ProfiledPIDController
+088
+* @param setpoint the setpoint state of the ProfiledPIDController, for feedforward
+089
+*/
+090
+protected abstract void useOutput(double output, State setpoint);
+091
+092
+/**
+093
+* Returns the measurement of the process variable used by the ProfiledPIDController.
+094
+*
+095
+* @return the measurement of the process variable
+096
+*/
+097
+protected abstract double getMeasurement();
+098
+099
+/** Enables the PID control. Resets the controller. */
+100
+public void enable() {
+101
+m_enabled = true;
+102
+m_controller.reset(getMeasurement());
+103
+}
+104
+105
+/** Disables the PID control. Sets output to zero. */
+106
+public void disable() {
+107
+m_enabled = false;
+108
+useOutput(0, new State());
+109
+}
+110
+111
+/**
+112
+* Returns whether the controller is enabled.
+113
+*
+114
+* @return Whether the controller is enabled.
+115
+*/
+116
+public boolean isEnabled() {
+117
+return m_enabled;
+118
+}
+119
+}

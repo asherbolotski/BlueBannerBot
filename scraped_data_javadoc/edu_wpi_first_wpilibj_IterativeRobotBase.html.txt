@@ -1,0 +1,416 @@
+Package
+edu.wpi.first.wpilibj
+Class IterativeRobotBase
+java.lang.Object
+edu.wpi.first.wpilibj.RobotBase
+edu.wpi.first.wpilibj.IterativeRobotBase
+All Implemented Interfaces:
+AutoCloseable
+Direct Known Subclasses:
+TimedRobot
+public abstract class
+IterativeRobotBase
+extends
+RobotBase
+IterativeRobotBase implements a specific type of robot program framework, extending the RobotBase
+ class.
+The IterativeRobotBase class does not implement startCompetition(), so it should not be used
+ by teams directly.
+This class provides the following functions which are called by the main loop,
+ startCompetition(), at the appropriate times:
+robotInit() -- provide for initialization at robot power-on
+driverStationConnected() -- provide for initialization the first time the DS is connected
+init() functions -- each of the following functions is called once when the appropriate mode
+ is entered:
+disabledInit() -- called each and every time disabled is entered from another mode
+autonomousInit() -- called each and every time autonomous is entered from another mode
+teleopInit() -- called each and every time teleop is entered from another mode
+testInit() -- called each and every time test is entered from another mode
+periodic() functions -- each of these functions is called on an interval:
+robotPeriodic()
+disabledPeriodic()
+autonomousPeriodic()
+teleopPeriodic()
+testPeriodic()
+exit() functions -- each of the following functions is called once when the appropriate mode
+ is exited:
+disabledExit() -- called each and every time disabled is exited
+autonomousExit() -- called each and every time autonomous is exited
+teleopExit() -- called each and every time teleop is exited
+testExit() -- called each and every time test is exited
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+IterativeRobotBase
+(double period)
+Constructor for IterativeRobotBase.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+void
+autonomousExit
+()
+Exit code for autonomous mode should go here.
+void
+autonomousInit
+()
+Initialization code for autonomous mode should go here.
+void
+autonomousPeriodic
+()
+Periodic code for autonomous mode should go here.
+void
+disabledExit
+()
+Exit code for disabled mode should go here.
+void
+disabledInit
+()
+Initialization code for disabled mode should go here.
+void
+disabledPeriodic
+()
+Periodic code for disabled mode should go here.
+void
+driverStationConnected
+()
+Code that needs to know the DS state should go here.
+void
+enableLiveWindowInTest
+(boolean testLW)
+Sets whether LiveWindow operation is enabled during test mode.
+double
+getPeriod
+()
+Gets time period between calls to Periodic() functions.
+boolean
+isLiveWindowEnabledInTest
+()
+Whether LiveWindow operation is enabled during test mode.
+protected void
+loopFunc
+()
+Loop function.
+void
+printWatchdogEpochs
+()
+Prints list of epochs added so far and their times.
+void
+robotInit
+()
+Robot-wide initialization code should go here.
+void
+robotPeriodic
+()
+Periodic code for all robot modes should go here.
+void
+setNetworkTablesFlushEnabled
+(boolean enabled)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Deprecated without replacement.
+void
+simulationInit
+()
+Robot-wide simulation initialization code should go here.
+void
+simulationPeriodic
+()
+Periodic simulation code should go here.
+abstract void
+startCompetition
+()
+Provide an alternate "main loop" via startCompetition().
+void
+teleopExit
+()
+Exit code for teleop mode should go here.
+void
+teleopInit
+()
+Initialization code for teleop mode should go here.
+void
+teleopPeriodic
+()
+Periodic code for teleop mode should go here.
+void
+testExit
+()
+Exit code for test mode should go here.
+void
+testInit
+()
+Initialization code for test mode should go here.
+void
+testPeriodic
+()
+Periodic code for test mode should go here.
+Methods inherited from class edu.wpi.first.wpilibj.
+RobotBase
+close
+,
+endCompetition
+,
+getMainThreadId
+,
+getRuntimeType
+,
+isAutonomous
+,
+isAutonomousEnabled
+,
+isDisabled
+,
+isEnabled
+,
+isReal
+,
+isSimulation
+,
+isTeleop
+,
+isTeleopEnabled
+,
+isTest
+,
+isTestEnabled
+,
+startRobot
+,
+suppressExitWarning
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+IterativeRobotBase
+protected
+IterativeRobotBase
+(double period)
+Constructor for IterativeRobotBase.
+Parameters:
+period
+- Period in seconds.
+Method Details
+startCompetition
+public abstract
+void
+startCompetition
+()
+Provide an alternate "main loop" via startCompetition().
+Specified by:
+startCompetition
+in class
+RobotBase
+robotInit
+public
+void
+robotInit
+()
+Robot-wide initialization code should go here.
+Users should override this method for default Robot-wide initialization which will be called
+ when the robot is first powered on. It will be called exactly one time.
+Note: This method is functionally identical to the class constructor so that should be used
+ instead.
+driverStationConnected
+public
+void
+driverStationConnected
+()
+Code that needs to know the DS state should go here.
+Users should override this method for initialization that needs to occur after the DS is
+ connected, such as needing the alliance information.
+simulationInit
+public
+void
+simulationInit
+()
+Robot-wide simulation initialization code should go here.
+Users should override this method for default Robot-wide simulation related initialization
+ which will be called when the robot is first started. It will be called exactly one time after
+ RobotInit is called only when the robot is in simulation.
+disabledInit
+public
+void
+disabledInit
+()
+Initialization code for disabled mode should go here.
+Users should override this method for initialization code which will be called each time the
+ robot enters disabled mode.
+autonomousInit
+public
+void
+autonomousInit
+()
+Initialization code for autonomous mode should go here.
+Users should override this method for initialization code which will be called each time the
+ robot enters autonomous mode.
+teleopInit
+public
+void
+teleopInit
+()
+Initialization code for teleop mode should go here.
+Users should override this method for initialization code which will be called each time the
+ robot enters teleop mode.
+testInit
+public
+void
+testInit
+()
+Initialization code for test mode should go here.
+Users should override this method for initialization code which will be called each time the
+ robot enters test mode.
+robotPeriodic
+public
+void
+robotPeriodic
+()
+Periodic code for all robot modes should go here.
+simulationPeriodic
+public
+void
+simulationPeriodic
+()
+Periodic simulation code should go here.
+This function is called in a simulated robot after user code executes.
+disabledPeriodic
+public
+void
+disabledPeriodic
+()
+Periodic code for disabled mode should go here.
+autonomousPeriodic
+public
+void
+autonomousPeriodic
+()
+Periodic code for autonomous mode should go here.
+teleopPeriodic
+public
+void
+teleopPeriodic
+()
+Periodic code for teleop mode should go here.
+testPeriodic
+public
+void
+testPeriodic
+()
+Periodic code for test mode should go here.
+disabledExit
+public
+void
+disabledExit
+()
+Exit code for disabled mode should go here.
+Users should override this method for code which will be called each time the robot exits
+ disabled mode.
+autonomousExit
+public
+void
+autonomousExit
+()
+Exit code for autonomous mode should go here.
+Users should override this method for code which will be called each time the robot exits
+ autonomous mode.
+teleopExit
+public
+void
+teleopExit
+()
+Exit code for teleop mode should go here.
+Users should override this method for code which will be called each time the robot exits
+ teleop mode.
+testExit
+public
+void
+testExit
+()
+Exit code for test mode should go here.
+Users should override this method for code which will be called each time the robot exits
+ test mode.
+setNetworkTablesFlushEnabled
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public
+void
+setNetworkTablesFlushEnabled
+(boolean enabled)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Deprecated without replacement.
+Enables or disables flushing NetworkTables every loop iteration. By default, this is enabled.
+Parameters:
+enabled
+- True to enable, false to disable
+enableLiveWindowInTest
+public
+void
+enableLiveWindowInTest
+(boolean testLW)
+Sets whether LiveWindow operation is enabled during test mode. Calling
+Parameters:
+testLW
+- True to enable, false to disable. Defaults to false.
+Throws:
+ConcurrentModificationException
+- if this is called during test mode.
+isLiveWindowEnabledInTest
+public
+boolean
+isLiveWindowEnabledInTest
+()
+Whether LiveWindow operation is enabled during test mode.
+Returns:
+whether LiveWindow should be enabled in test mode.
+getPeriod
+public
+double
+getPeriod
+()
+Gets time period between calls to Periodic() functions.
+Returns:
+The time period between calls to Periodic() functions.
+loopFunc
+protected
+void
+loopFunc
+()
+Loop function.
+printWatchdogEpochs
+public
+void
+printWatchdogEpochs
+()
+Prints list of epochs added so far and their times.

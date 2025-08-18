@@ -1,0 +1,971 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.AllianceStationID;
+008
+import edu.wpi.first.hal.DriverStationJNI;
+009
+import edu.wpi.first.hal.simulation.DriverStationDataJNI;
+010
+import edu.wpi.first.hal.simulation.NotifyCallback;
+011
+import edu.wpi.first.util.WPIUtilJNI;
+012
+import edu.wpi.first.wpilibj.DriverStation;
+013
+014
+/** Class to control a simulated driver station. */
+015
+public final class DriverStationSim {
+016
+private DriverStationSim() {
+017
+throw new UnsupportedOperationException("This is a utility class!");
+018
+}
+019
+020
+/**
+021
+* Register a callback on whether the DS is enabled.
+022
+*
+023
+* @param callback the callback that will be called whenever the enabled state is changed
+024
+* @param initialNotify if true, the callback will be run on the initial value
+025
+* @return the {@link CallbackStore} object associated with this callback.
+026
+*/
+027
+public static CallbackStore registerEnabledCallback(
+028
+NotifyCallback callback, boolean initialNotify) {
+029
+int uid = DriverStationDataJNI.registerEnabledCallback(callback, initialNotify);
+030
+return new CallbackStore(uid, DriverStationDataJNI::cancelEnabledCallback);
+031
+}
+032
+033
+/**
+034
+* Check if the DS is enabled.
+035
+*
+036
+* @return true if enabled
+037
+*/
+038
+public static boolean getEnabled() {
+039
+return DriverStationDataJNI.getEnabled();
+040
+}
+041
+042
+/**
+043
+* Change whether the DS is enabled.
+044
+*
+045
+* @param enabled the new value
+046
+*/
+047
+public static void setEnabled(boolean enabled) {
+048
+DriverStationDataJNI.setEnabled(enabled);
+049
+}
+050
+051
+/**
+052
+* Register a callback on whether the DS is in autonomous mode.
+053
+*
+054
+* @param callback the callback that will be called on autonomous mode entrance/exit
+055
+* @param initialNotify if true, the callback will be run on the initial value
+056
+* @return the {@link CallbackStore} object associated with this callback.
+057
+*/
+058
+public static CallbackStore registerAutonomousCallback(
+059
+NotifyCallback callback, boolean initialNotify) {
+060
+int uid = DriverStationDataJNI.registerAutonomousCallback(callback, initialNotify);
+061
+return new CallbackStore(uid, DriverStationDataJNI::cancelAutonomousCallback);
+062
+}
+063
+064
+/**
+065
+* Check if the DS is in autonomous.
+066
+*
+067
+* @return true if autonomous
+068
+*/
+069
+public static boolean getAutonomous() {
+070
+return DriverStationDataJNI.getAutonomous();
+071
+}
+072
+073
+/**
+074
+* Change whether the DS is in autonomous.
+075
+*
+076
+* @param autonomous the new value
+077
+*/
+078
+public static void setAutonomous(boolean autonomous) {
+079
+DriverStationDataJNI.setAutonomous(autonomous);
+080
+}
+081
+082
+/**
+083
+* Register a callback on whether the DS is in test mode.
+084
+*
+085
+* @param callback the callback that will be called whenever the test mode is entered or left
+086
+* @param initialNotify if true, the callback will be run on the initial value
+087
+* @return the {@link CallbackStore} object associated with this callback.
+088
+*/
+089
+public static CallbackStore registerTestCallback(NotifyCallback callback, boolean initialNotify) {
+090
+int uid = DriverStationDataJNI.registerTestCallback(callback, initialNotify);
+091
+return new CallbackStore(uid, DriverStationDataJNI::cancelTestCallback);
+092
+}
+093
+094
+/**
+095
+* Check if the DS is in test.
+096
+*
+097
+* @return true if test
+098
+*/
+099
+public static boolean getTest() {
+100
+return DriverStationDataJNI.getTest();
+101
+}
+102
+103
+/**
+104
+* Change whether the DS is in test.
+105
+*
+106
+* @param test the new value
+107
+*/
+108
+public static void setTest(boolean test) {
+109
+DriverStationDataJNI.setTest(test);
+110
+}
+111
+112
+/**
+113
+* Register a callback on the eStop state.
+114
+*
+115
+* @param callback the callback that will be called whenever the eStop state changes
+116
+* @param initialNotify if true, the callback will be run on the initial value
+117
+* @return the {@link CallbackStore} object associated with this callback.
+118
+*/
+119
+public static CallbackStore registerEStopCallback(
+120
+NotifyCallback callback, boolean initialNotify) {
+121
+int uid = DriverStationDataJNI.registerEStopCallback(callback, initialNotify);
+122
+return new CallbackStore(uid, DriverStationDataJNI::cancelEStopCallback);
+123
+}
+124
+125
+/**
+126
+* Check if eStop has been activated.
+127
+*
+128
+* @return true if eStopped
+129
+*/
+130
+public static boolean getEStop() {
+131
+return DriverStationDataJNI.getEStop();
+132
+}
+133
+134
+/**
+135
+* Set whether eStop is active.
+136
+*
+137
+* @param eStop true to activate
+138
+*/
+139
+public static void setEStop(boolean eStop) {
+140
+DriverStationDataJNI.setEStop(eStop);
+141
+}
+142
+143
+/**
+144
+* Register a callback on whether the FMS is connected.
+145
+*
+146
+* @param callback the callback that will be called whenever the FMS connection changes
+147
+* @param initialNotify if true, the callback will be run on the initial value
+148
+* @return the {@link CallbackStore} object associated with this callback.
+149
+*/
+150
+public static CallbackStore registerFmsAttachedCallback(
+151
+NotifyCallback callback, boolean initialNotify) {
+152
+int uid = DriverStationDataJNI.registerFmsAttachedCallback(callback, initialNotify);
+153
+return new CallbackStore(uid, DriverStationDataJNI::cancelFmsAttachedCallback);
+154
+}
+155
+156
+/**
+157
+* Check if the FMS is connected.
+158
+*
+159
+* @return true if FMS is connected
+160
+*/
+161
+public static boolean getFmsAttached() {
+162
+return DriverStationDataJNI.getFmsAttached();
+163
+}
+164
+165
+/**
+166
+* Change whether the FMS is connected.
+167
+*
+168
+* @param fmsAttached the new value
+169
+*/
+170
+public static void setFmsAttached(boolean fmsAttached) {
+171
+DriverStationDataJNI.setFmsAttached(fmsAttached);
+172
+}
+173
+174
+/**
+175
+* Register a callback on whether the DS is connected.
+176
+*
+177
+* @param callback the callback that will be called whenever the DS connection changes
+178
+* @param initialNotify if true, the callback will be run on the initial value
+179
+* @return the {@link CallbackStore} object associated with this callback.
+180
+*/
+181
+public static CallbackStore registerDsAttachedCallback(
+182
+NotifyCallback callback, boolean initialNotify) {
+183
+int uid = DriverStationDataJNI.registerDsAttachedCallback(callback, initialNotify);
+184
+return new CallbackStore(uid, DriverStationDataJNI::cancelDsAttachedCallback);
+185
+}
+186
+187
+/**
+188
+* Check if the DS is attached.
+189
+*
+190
+* @return true if attached
+191
+*/
+192
+public static boolean getDsAttached() {
+193
+return DriverStationDataJNI.getDsAttached();
+194
+}
+195
+196
+/**
+197
+* Change whether the DS is attached.
+198
+*
+199
+* @param dsAttached the new value
+200
+*/
+201
+public static void setDsAttached(boolean dsAttached) {
+202
+DriverStationDataJNI.setDsAttached(dsAttached);
+203
+}
+204
+205
+/**
+206
+* Register a callback on the alliance station ID.
+207
+*
+208
+* @param callback the callback that will be called whenever the alliance station changes
+209
+* @param initialNotify if true, the callback will be run on the initial value
+210
+* @return the {@link CallbackStore} object associated with this callback.
+211
+*/
+212
+public static CallbackStore registerAllianceStationIdCallback(
+213
+NotifyCallback callback, boolean initialNotify) {
+214
+int uid = DriverStationDataJNI.registerAllianceStationIdCallback(callback, initialNotify);
+215
+return new CallbackStore(uid, DriverStationDataJNI::cancelAllianceStationIdCallback);
+216
+}
+217
+218
+/**
+219
+* Get the alliance station ID (color + number).
+220
+*
+221
+* @return the alliance station color and number
+222
+*/
+223
+public static AllianceStationID getAllianceStationId() {
+224
+return switch (DriverStationDataJNI.getAllianceStationId()) {
+225
+case DriverStationJNI.kUnknownAllianceStation -> AllianceStationID.Unknown;
+226
+case DriverStationJNI.kRed1AllianceStation -> AllianceStationID.Red1;
+227
+case DriverStationJNI.kRed2AllianceStation -> AllianceStationID.Red2;
+228
+case DriverStationJNI.kRed3AllianceStation -> AllianceStationID.Red3;
+229
+case DriverStationJNI.kBlue1AllianceStation -> AllianceStationID.Blue1;
+230
+case DriverStationJNI.kBlue2AllianceStation -> AllianceStationID.Blue2;
+231
+case DriverStationJNI.kBlue3AllianceStation -> AllianceStationID.Blue3;
+232
+default -> AllianceStationID.Unknown;
+233
+};
+234
+}
+235
+236
+/**
+237
+* Change the alliance station.
+238
+*
+239
+* @param allianceStationId the new alliance station
+240
+*/
+241
+public static void setAllianceStationId(AllianceStationID allianceStationId) {
+242
+int allianceStation =
+243
+switch (allianceStationId) {
+244
+case Unknown -> DriverStationJNI.kUnknownAllianceStation;
+245
+case Red1 -> DriverStationJNI.kRed1AllianceStation;
+246
+case Red2 -> DriverStationJNI.kRed2AllianceStation;
+247
+case Red3 -> DriverStationJNI.kRed3AllianceStation;
+248
+case Blue1 -> DriverStationJNI.kBlue1AllianceStation;
+249
+case Blue2 -> DriverStationJNI.kBlue2AllianceStation;
+250
+case Blue3 -> DriverStationJNI.kBlue3AllianceStation;
+251
+};
+252
+DriverStationDataJNI.setAllianceStationId(allianceStation);
+253
+}
+254
+255
+/**
+256
+* Register a callback on match time.
+257
+*
+258
+* @param callback the callback that will be called whenever match time changes
+259
+* @param initialNotify if true, the callback will be run on the initial value
+260
+* @return the {@link CallbackStore} object associated with this callback.
+261
+*/
+262
+public static CallbackStore registerMatchTimeCallback(
+263
+NotifyCallback callback, boolean initialNotify) {
+264
+int uid = DriverStationDataJNI.registerMatchTimeCallback(callback, initialNotify);
+265
+return new CallbackStore(uid, DriverStationDataJNI::cancelMatchTimeCallback);
+266
+}
+267
+268
+/**
+269
+* Get the current value of the match timer.
+270
+*
+271
+* @return the current match time
+272
+*/
+273
+public static double getMatchTime() {
+274
+return DriverStationDataJNI.getMatchTime();
+275
+}
+276
+277
+/**
+278
+* Sets the match timer.
+279
+*
+280
+* @param matchTime the new match time
+281
+*/
+282
+public static void setMatchTime(double matchTime) {
+283
+DriverStationDataJNI.setMatchTime(matchTime);
+284
+}
+285
+286
+/** Updates DriverStation data so that new values are visible to the user program. */
+287
+public static void notifyNewData() {
+288
+int handle = WPIUtilJNI.createEvent(false, false);
+289
+DriverStationJNI.provideNewDataEventHandle(handle);
+290
+DriverStationDataJNI.notifyNewData();
+291
+try {
+292
+WPIUtilJNI.waitForObject(handle);
+293
+} catch (InterruptedException e) {
+294
+e.printStackTrace();
+295
+}
+296
+DriverStationJNI.removeNewDataEventHandle(handle);
+297
+WPIUtilJNI.destroyEvent(handle);
+298
+DriverStation.refreshData();
+299
+}
+300
+301
+/**
+302
+* Sets suppression of DriverStation.reportError and reportWarning messages.
+303
+*
+304
+* @param shouldSend If false then messages will be suppressed.
+305
+*/
+306
+public static void setSendError(boolean shouldSend) {
+307
+DriverStationDataJNI.setSendError(shouldSend);
+308
+}
+309
+310
+/**
+311
+* Sets suppression of DriverStation.sendConsoleLine messages.
+312
+*
+313
+* @param shouldSend If false then messages will be suppressed.
+314
+*/
+315
+public static void setSendConsoleLine(boolean shouldSend) {
+316
+DriverStationDataJNI.setSendConsoleLine(shouldSend);
+317
+}
+318
+319
+/**
+320
+* Gets the joystick outputs.
+321
+*
+322
+* @param stick The joystick number
+323
+* @return The joystick outputs
+324
+*/
+325
+public static long getJoystickOutputs(int stick) {
+326
+return DriverStationDataJNI.getJoystickOutputs(stick);
+327
+}
+328
+329
+/**
+330
+* Gets the joystick rumble.
+331
+*
+332
+* @param stick The joystick number
+333
+* @param rumbleNum Rumble to get (0=left, 1=right)
+334
+* @return The joystick rumble value
+335
+*/
+336
+public static int getJoystickRumble(int stick, int rumbleNum) {
+337
+return DriverStationDataJNI.getJoystickRumble(stick, rumbleNum);
+338
+}
+339
+340
+/**
+341
+* Sets the state of one joystick button. Button indexes begin at 1.
+342
+*
+343
+* @param stick The joystick number
+344
+* @param button The button index, beginning at 1
+345
+* @param state The state of the joystick button
+346
+*/
+347
+public static void setJoystickButton(int stick, int button, boolean state) {
+348
+DriverStationDataJNI.setJoystickButton(stick, button, state);
+349
+}
+350
+351
+/**
+352
+* Gets the value of the axis on a joystick.
+353
+*
+354
+* @param stick The joystick number
+355
+* @param axis The analog axis number
+356
+* @param value The value of the axis on the joystick
+357
+*/
+358
+public static void setJoystickAxis(int stick, int axis, double value) {
+359
+DriverStationDataJNI.setJoystickAxis(stick, axis, value);
+360
+}
+361
+362
+/**
+363
+* Gets the state of a POV on a joystick.
+364
+*
+365
+* @param stick The joystick number
+366
+* @param pov The POV number
+367
+* @param value the angle of the POV in degrees, or -1 for not pressed
+368
+*/
+369
+public static void setJoystickPOV(int stick, int pov, int value) {
+370
+DriverStationDataJNI.setJoystickPOV(stick, pov, value);
+371
+}
+372
+373
+/**
+374
+* Sets the state of all the buttons on a joystick.
+375
+*
+376
+* @param stick The joystick number
+377
+* @param buttons The bitmap state of the buttons on the joystick
+378
+*/
+379
+public static void setJoystickButtons(int stick, int buttons) {
+380
+DriverStationDataJNI.setJoystickButtonsValue(stick, buttons);
+381
+}
+382
+383
+/**
+384
+* Sets the number of axes for a joystick.
+385
+*
+386
+* @param stick The joystick number
+387
+* @param count The number of axes on the indicated joystick
+388
+*/
+389
+public static void setJoystickAxisCount(int stick, int count) {
+390
+DriverStationDataJNI.setJoystickAxisCount(stick, count);
+391
+}
+392
+393
+/**
+394
+* Sets the number of POVs for a joystick.
+395
+*
+396
+* @param stick The joystick number
+397
+* @param count The number of POVs on the indicated joystick
+398
+*/
+399
+public static void setJoystickPOVCount(int stick, int count) {
+400
+DriverStationDataJNI.setJoystickPOVCount(stick, count);
+401
+}
+402
+403
+/**
+404
+* Sets the number of buttons for a joystick.
+405
+*
+406
+* @param stick The joystick number
+407
+* @param count The number of buttons on the indicated joystick
+408
+*/
+409
+public static void setJoystickButtonCount(int stick, int count) {
+410
+DriverStationDataJNI.setJoystickButtonCount(stick, count);
+411
+}
+412
+413
+/**
+414
+* Sets the value of isXbox for a joystick.
+415
+*
+416
+* @param stick The joystick number
+417
+* @param isXbox The value of isXbox
+418
+*/
+419
+public static void setJoystickIsXbox(int stick, boolean isXbox) {
+420
+DriverStationDataJNI.setJoystickIsXbox(stick, isXbox);
+421
+}
+422
+423
+/**
+424
+* Sets the value of type for a joystick.
+425
+*
+426
+* @param stick The joystick number
+427
+* @param type The value of type
+428
+*/
+429
+public static void setJoystickType(int stick, int type) {
+430
+DriverStationDataJNI.setJoystickType(stick, type);
+431
+}
+432
+433
+/**
+434
+* Sets the name of a joystick.
+435
+*
+436
+* @param stick The joystick number
+437
+* @param name The value of name
+438
+*/
+439
+public static void setJoystickName(int stick, String name) {
+440
+DriverStationDataJNI.setJoystickName(stick, name);
+441
+}
+442
+443
+/**
+444
+* Sets the types of Axes for a joystick.
+445
+*
+446
+* @param stick The joystick number
+447
+* @param axis The target axis
+448
+* @param type The type of axis
+449
+*/
+450
+public static void setJoystickAxisType(int stick, int axis, int type) {
+451
+DriverStationDataJNI.setJoystickAxisType(stick, axis, type);
+452
+}
+453
+454
+/**
+455
+* Sets the game specific message.
+456
+*
+457
+* @param message the game specific message
+458
+*/
+459
+public static void setGameSpecificMessage(String message) {
+460
+DriverStationDataJNI.setGameSpecificMessage(message);
+461
+}
+462
+463
+/**
+464
+* Sets the event name.
+465
+*
+466
+* @param name the event name
+467
+*/
+468
+public static void setEventName(String name) {
+469
+DriverStationDataJNI.setEventName(name);
+470
+}
+471
+472
+/**
+473
+* Sets the match type.
+474
+*
+475
+* @param type the match type
+476
+*/
+477
+public static void setMatchType(DriverStation.MatchType type) {
+478
+int matchType =
+479
+switch (type) {
+480
+case Practice -> 1;
+481
+case Qualification -> 2;
+482
+case Elimination -> 3;
+483
+case None -> 0;
+484
+};
+485
+DriverStationDataJNI.setMatchType(matchType);
+486
+}
+487
+488
+/**
+489
+* Sets the match number.
+490
+*
+491
+* @param matchNumber the match number
+492
+*/
+493
+public static void setMatchNumber(int matchNumber) {
+494
+DriverStationDataJNI.setMatchNumber(matchNumber);
+495
+}
+496
+497
+/**
+498
+* Sets the replay number.
+499
+*
+500
+* @param replayNumber the replay number
+501
+*/
+502
+public static void setReplayNumber(int replayNumber) {
+503
+DriverStationDataJNI.setReplayNumber(replayNumber);
+504
+}
+505
+506
+/** Reset all simulation data for the Driver Station. */
+507
+public static void resetData() {
+508
+DriverStationDataJNI.resetData();
+509
+}
+510
+}

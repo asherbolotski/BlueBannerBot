@@ -1,0 +1,328 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import java.util.Set;
+008
+import java.util.function.Supplier;
+009
+010
+/**
+011
+* A robot subsystem. Subsystems are the basic unit of robot organization in the Command-based
+012
+* framework; they encapsulate low-level hardware objects (motor controllers, sensors, etc.) and
+013
+* provide methods through which they can be used by {@link Command}s. Subsystems are used by the
+014
+* {@link CommandScheduler}'s resource management system to ensure multiple robot actions are not
+015
+* "fighting" over the same hardware; Commands that use a subsystem should include that subsystem in
+016
+* their {@link Command#getRequirements()} method, and resources used within a subsystem should
+017
+* generally remain encapsulated and not be shared by other parts of the robot.
+018
+*
+019
+* <p>Subsystems must be registered with the scheduler with the {@link
+020
+* CommandScheduler#registerSubsystem(Subsystem...)} method in order for the {@link
+021
+* Subsystem#periodic()} method to be called. It is recommended that this method be called from the
+022
+* constructor of users' Subsystem implementations. The {@link SubsystemBase} class offers a simple
+023
+* base for user implementations that handles this.
+024
+*
+025
+* <p>This class is provided by the NewCommands VendorDep
+026
+*/
+027
+public interface Subsystem {
+028
+/**
+029
+* This method is called periodically by the {@link CommandScheduler}. Useful for updating
+030
+* subsystem-specific state that you don't want to offload to a {@link Command}. Teams should try
+031
+* to be consistent within their own codebases about which responsibilities will be handled by
+032
+* Commands, and which will be handled here.
+033
+*/
+034
+default void periodic() {}
+035
+036
+/**
+037
+* This method is called periodically by the {@link CommandScheduler}. Useful for updating
+038
+* subsystem-specific state that needs to be maintained for simulations, such as for updating
+039
+* {@link edu.wpi.first.wpilibj.simulation} classes and setting simulated sensor readings.
+040
+*/
+041
+default void simulationPeriodic() {}
+042
+043
+/**
+044
+* Gets the subsystem name of this Subsystem.
+045
+*
+046
+* @return Subsystem name
+047
+*/
+048
+default String getName() {
+049
+return this.getClass().getSimpleName();
+050
+}
+051
+052
+/**
+053
+* Sets the default {@link Command} of the subsystem. The default command will be automatically
+054
+* scheduled when no other commands are scheduled that require the subsystem. Default commands
+055
+* should generally not end on their own, i.e. their {@link Command#isFinished()} method should
+056
+* always return false. Will automatically register this subsystem with the {@link
+057
+* CommandScheduler}.
+058
+*
+059
+* @param defaultCommand the default command to associate with this subsystem
+060
+*/
+061
+default void setDefaultCommand(Command defaultCommand) {
+062
+CommandScheduler.getInstance().setDefaultCommand(this, defaultCommand);
+063
+}
+064
+065
+/**
+066
+* Removes the default command for the subsystem. This will not cancel the default command if it
+067
+* is currently running.
+068
+*/
+069
+default void removeDefaultCommand() {
+070
+CommandScheduler.getInstance().removeDefaultCommand(this);
+071
+}
+072
+073
+/**
+074
+* Gets the default command for this subsystem. Returns null if no default command is currently
+075
+* associated with the subsystem.
+076
+*
+077
+* @return the default command associated with this subsystem
+078
+*/
+079
+default Command getDefaultCommand() {
+080
+return CommandScheduler.getInstance().getDefaultCommand(this);
+081
+}
+082
+083
+/**
+084
+* Returns the command currently running on this subsystem. Returns null if no command is
+085
+* currently scheduled that requires this subsystem.
+086
+*
+087
+* @return the scheduled command currently requiring this subsystem
+088
+*/
+089
+default Command getCurrentCommand() {
+090
+return CommandScheduler.getInstance().requiring(this);
+091
+}
+092
+093
+/**
+094
+* Registers this subsystem with the {@link CommandScheduler}, allowing its {@link
+095
+* Subsystem#periodic()} method to be called when the scheduler runs.
+096
+*/
+097
+default void register() {
+098
+CommandScheduler.getInstance().registerSubsystem(this);
+099
+}
+100
+101
+/**
+102
+* Constructs a command that runs an action once and finishes. Requires this subsystem.
+103
+*
+104
+* @param action the action to run
+105
+* @return the command
+106
+* @see InstantCommand
+107
+*/
+108
+default Command runOnce(Runnable action) {
+109
+return Commands.runOnce(action, this);
+110
+}
+111
+112
+/**
+113
+* Constructs a command that runs an action every iteration until interrupted. Requires this
+114
+* subsystem.
+115
+*
+116
+* @param action the action to run
+117
+* @return the command
+118
+* @see RunCommand
+119
+*/
+120
+default Command run(Runnable action) {
+121
+return Commands.run(action, this);
+122
+}
+123
+124
+/**
+125
+* Constructs a command that runs an action once and another action when the command is
+126
+* interrupted. Requires this subsystem.
+127
+*
+128
+* @param start the action to run on start
+129
+* @param end the action to run on interrupt
+130
+* @return the command
+131
+* @see StartEndCommand
+132
+*/
+133
+default Command startEnd(Runnable start, Runnable end) {
+134
+return Commands.startEnd(start, end, this);
+135
+}
+136
+137
+/**
+138
+* Constructs a command that runs an action every iteration until interrupted, and then runs a
+139
+* second action. Requires this subsystem.
+140
+*
+141
+* @param run the action to run every iteration
+142
+* @param end the action to run on interrupt
+143
+* @return the command
+144
+*/
+145
+default Command runEnd(Runnable run, Runnable end) {
+146
+return Commands.runEnd(run, end, this);
+147
+}
+148
+149
+/**
+150
+* Constructs a command that runs an action once and then runs another action every iteration
+151
+* until interrupted. Requires this subsystem.
+152
+*
+153
+* @param start the action to run on start
+154
+* @param run the action to run every iteration
+155
+* @return the command
+156
+*/
+157
+default Command startRun(Runnable start, Runnable run) {
+158
+return Commands.startRun(start, run, this);
+159
+}
+160
+161
+/**
+162
+* Constructs a {@link DeferredCommand} with the provided supplier. This subsystem is added as a
+163
+* requirement.
+164
+*
+165
+* @param supplier the command supplier.
+166
+* @return the command.
+167
+* @see DeferredCommand
+168
+*/
+169
+default Command defer(Supplier<Command> supplier) {
+170
+return Commands.defer(supplier, Set.of(this));
+171
+}
+172
+}

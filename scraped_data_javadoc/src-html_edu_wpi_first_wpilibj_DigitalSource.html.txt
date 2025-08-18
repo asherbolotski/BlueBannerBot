@@ -1,0 +1,87 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+/**
+008
+* DigitalSource Interface. The DigitalSource represents all the possible inputs for a counter or a
+009
+* quadrature encoder. The source may be either a digital input or an analog input. If the caller
+010
+* just provides a channel, then a digital input will be constructed and freed when finished for the
+011
+* source. The source can either be a digital input or analog trigger but not both.
+012
+*/
+013
+public abstract class DigitalSource implements AutoCloseable {
+014
+/** Default constructor. */
+015
+public DigitalSource() {}
+016
+017
+/**
+018
+* Returns true if this DigitalSource is an AnalogTrigger.
+019
+*
+020
+* @return True if this DigitalSource is an AnalogTrigger.
+021
+*/
+022
+public abstract boolean isAnalogTrigger();
+023
+024
+/**
+025
+* The DigitalSource channel.
+026
+*
+027
+* @return The DigitalSource channel.
+028
+*/
+029
+public abstract int getChannel();
+030
+031
+/**
+032
+* If this is an analog trigger.
+033
+*
+034
+* @return true if this is an analog trigger.
+035
+*/
+036
+public abstract int getAnalogTriggerTypeForRouting();
+037
+038
+/**
+039
+* The channel routing number.
+040
+*
+041
+* @return channel routing number
+042
+*/
+043
+public abstract int getPortHandleForRouting();
+044
+045
+@Override
+046
+public void close() {}
+047
+}

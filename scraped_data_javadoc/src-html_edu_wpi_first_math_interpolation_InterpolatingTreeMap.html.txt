@@ -1,0 +1,197 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.interpolation;
+006
+007
+import java.util.Comparator;
+008
+import java.util.TreeMap;
+009
+010
+/**
+011
+* Interpolating Tree Maps are used to get values at points that are not defined by making a guess
+012
+* from points that are defined. This uses linear interpolation.
+013
+*
+014
+* <p>{@code K} must implement {@link Comparable}, or a {@link Comparator} on {@code K} can be
+015
+* provided.
+016
+*
+017
+* @param <K> The type of keys held in this map.
+018
+* @param <V> The type of values held in this map.
+019
+*/
+020
+public class InterpolatingTreeMap<K, V> {
+021
+private final TreeMap<K, V> m_map;
+022
+023
+private final InverseInterpolator<K> m_inverseInterpolator;
+024
+private final Interpolator<V> m_interpolator;
+025
+026
+/**
+027
+* Constructs an InterpolatingTreeMap.
+028
+*
+029
+* @param inverseInterpolator Function to use for inverse interpolation of the keys.
+030
+* @param interpolator Function to use for interpolation of the values.
+031
+*/
+032
+public InterpolatingTreeMap(
+033
+InverseInterpolator<K> inverseInterpolator, Interpolator<V> interpolator) {
+034
+m_map = new TreeMap<>();
+035
+m_inverseInterpolator = inverseInterpolator;
+036
+m_interpolator = interpolator;
+037
+}
+038
+039
+/**
+040
+* Constructs an InterpolatingTreeMap using {@code comparator}.
+041
+*
+042
+* @param inverseInterpolator Function to use for inverse interpolation of the keys.
+043
+* @param interpolator Function to use for interpolation of the values.
+044
+* @param comparator Comparator to use on keys.
+045
+*/
+046
+public InterpolatingTreeMap(
+047
+InverseInterpolator<K> inverseInterpolator,
+048
+Interpolator<V> interpolator,
+049
+Comparator<K> comparator) {
+050
+m_inverseInterpolator = inverseInterpolator;
+051
+m_interpolator = interpolator;
+052
+m_map = new TreeMap<>(comparator);
+053
+}
+054
+055
+/**
+056
+* Inserts a key-value pair.
+057
+*
+058
+* @param key The key.
+059
+* @param value The value.
+060
+*/
+061
+public void put(K key, V value) {
+062
+m_map.put(key, value);
+063
+}
+064
+065
+/**
+066
+* Returns the value associated with a given key.
+067
+*
+068
+* <p>If there's no matching key, the value returned will be an interpolation between the keys
+069
+* before and after the provided one, using the {@link Interpolator} and {@link
+070
+* InverseInterpolator} provided.
+071
+*
+072
+* @param key The key.
+073
+* @return The value associated with the given key.
+074
+*/
+075
+public V get(K key) {
+076
+V val = m_map.get(key);
+077
+if (val == null) {
+078
+K ceilingKey = m_map.ceilingKey(key);
+079
+K floorKey = m_map.floorKey(key);
+080
+081
+if (ceilingKey == null && floorKey == null) {
+082
+return null;
+083
+}
+084
+if (ceilingKey == null) {
+085
+return m_map.get(floorKey);
+086
+}
+087
+if (floorKey == null) {
+088
+return m_map.get(ceilingKey);
+089
+}
+090
+V floor = m_map.get(floorKey);
+091
+V ceiling = m_map.get(ceilingKey);
+092
+093
+return m_interpolator.interpolate(
+094
+floor, ceiling, m_inverseInterpolator.inverseInterpolate(floorKey, ceilingKey, key));
+095
+} else {
+096
+return val;
+097
+}
+098
+}
+099
+100
+/** Clears the contents. */
+101
+public void clear() {
+102
+m_map.clear();
+103
+}
+104
+}

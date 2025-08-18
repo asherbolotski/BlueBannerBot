@@ -1,0 +1,339 @@
+Package
+edu.wpi.first.wpilibj2.command
+Interface Subsystem
+All Known Implementing Classes:
+PIDSubsystem
+,
+ProfiledPIDSubsystem
+,
+SubsystemBase
+,
+TrapezoidProfileSubsystem
+public interface
+Subsystem
+A robot subsystem. Subsystems are the basic unit of robot organization in the Command-based
+ framework; they encapsulate low-level hardware objects (motor controllers, sensors, etc.) and
+ provide methods through which they can be used by
+Command
+s. Subsystems are used by the
+CommandScheduler
+'s resource management system to ensure multiple robot actions are not
+ "fighting" over the same hardware; Commands that use a subsystem should include that subsystem in
+ their
+Command.getRequirements()
+method, and resources used within a subsystem should
+ generally remain encapsulated and not be shared by other parts of the robot.
+Subsystems must be registered with the scheduler with the
+CommandScheduler.registerSubsystem(Subsystem...)
+method in order for the
+periodic()
+method to be called. It is recommended that this method be called from the
+ constructor of users' Subsystem implementations. The
+SubsystemBase
+class offers a simple
+ base for user implementations that handles this.
+This class is provided by the NewCommands VendorDep
+Method Summary
+All Methods
+Instance Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default
+Command
+defer
+(
+Supplier
+<
+Command
+> supplier)
+Constructs a
+DeferredCommand
+with the provided supplier.
+default
+Command
+getCurrentCommand
+()
+Returns the command currently running on this subsystem.
+default
+Command
+getDefaultCommand
+()
+Gets the default command for this subsystem.
+default
+String
+getName
+()
+Gets the subsystem name of this Subsystem.
+default void
+periodic
+()
+This method is called periodically by the
+CommandScheduler
+.
+default void
+register
+()
+Registers this subsystem with the
+CommandScheduler
+, allowing its
+periodic()
+method to be called when the scheduler runs.
+default void
+removeDefaultCommand
+()
+Removes the default command for the subsystem.
+default
+Command
+run
+(
+Runnable
+action)
+Constructs a command that runs an action every iteration until interrupted.
+default
+Command
+runEnd
+(
+Runnable
+run,
+Runnable
+end)
+Constructs a command that runs an action every iteration until interrupted, and then runs a
+ second action.
+default
+Command
+runOnce
+(
+Runnable
+action)
+Constructs a command that runs an action once and finishes.
+default void
+setDefaultCommand
+(
+Command
+defaultCommand)
+Sets the default
+Command
+of the subsystem.
+default void
+simulationPeriodic
+()
+This method is called periodically by the
+CommandScheduler
+.
+default
+Command
+startEnd
+(
+Runnable
+start,
+Runnable
+end)
+Constructs a command that runs an action once and another action when the command is
+ interrupted.
+default
+Command
+startRun
+(
+Runnable
+start,
+Runnable
+run)
+Constructs a command that runs an action once and then runs another action every iteration
+ until interrupted.
+Method Details
+periodic
+default
+void
+periodic
+()
+This method is called periodically by the
+CommandScheduler
+. Useful for updating
+ subsystem-specific state that you don't want to offload to a
+Command
+. Teams should try
+ to be consistent within their own codebases about which responsibilities will be handled by
+ Commands, and which will be handled here.
+simulationPeriodic
+default
+void
+simulationPeriodic
+()
+This method is called periodically by the
+CommandScheduler
+. Useful for updating
+ subsystem-specific state that needs to be maintained for simulations, such as for updating
+edu.wpi.first.wpilibj.simulation
+classes and setting simulated sensor readings.
+getName
+default
+String
+getName
+()
+Gets the subsystem name of this Subsystem.
+Returns:
+Subsystem name
+setDefaultCommand
+default
+void
+setDefaultCommand
+(
+Command
+defaultCommand)
+Sets the default
+Command
+of the subsystem. The default command will be automatically
+ scheduled when no other commands are scheduled that require the subsystem. Default commands
+ should generally not end on their own, i.e. their
+Command.isFinished()
+method should
+ always return false. Will automatically register this subsystem with the
+CommandScheduler
+.
+Parameters:
+defaultCommand
+- the default command to associate with this subsystem
+removeDefaultCommand
+default
+void
+removeDefaultCommand
+()
+Removes the default command for the subsystem. This will not cancel the default command if it
+ is currently running.
+getDefaultCommand
+default
+Command
+getDefaultCommand
+()
+Gets the default command for this subsystem. Returns null if no default command is currently
+ associated with the subsystem.
+Returns:
+the default command associated with this subsystem
+getCurrentCommand
+default
+Command
+getCurrentCommand
+()
+Returns the command currently running on this subsystem. Returns null if no command is
+ currently scheduled that requires this subsystem.
+Returns:
+the scheduled command currently requiring this subsystem
+register
+default
+void
+register
+()
+Registers this subsystem with the
+CommandScheduler
+, allowing its
+periodic()
+method to be called when the scheduler runs.
+runOnce
+default
+Command
+runOnce
+(
+Runnable
+action)
+Constructs a command that runs an action once and finishes. Requires this subsystem.
+Parameters:
+action
+- the action to run
+Returns:
+the command
+See Also:
+InstantCommand
+run
+default
+Command
+run
+(
+Runnable
+action)
+Constructs a command that runs an action every iteration until interrupted. Requires this
+ subsystem.
+Parameters:
+action
+- the action to run
+Returns:
+the command
+See Also:
+RunCommand
+startEnd
+default
+Command
+startEnd
+(
+Runnable
+start,
+Runnable
+end)
+Constructs a command that runs an action once and another action when the command is
+ interrupted. Requires this subsystem.
+Parameters:
+start
+- the action to run on start
+end
+- the action to run on interrupt
+Returns:
+the command
+See Also:
+StartEndCommand
+runEnd
+default
+Command
+runEnd
+(
+Runnable
+run,
+Runnable
+end)
+Constructs a command that runs an action every iteration until interrupted, and then runs a
+ second action. Requires this subsystem.
+Parameters:
+run
+- the action to run every iteration
+end
+- the action to run on interrupt
+Returns:
+the command
+startRun
+default
+Command
+startRun
+(
+Runnable
+start,
+Runnable
+run)
+Constructs a command that runs an action once and then runs another action every iteration
+ until interrupted. Requires this subsystem.
+Parameters:
+start
+- the action to run on start
+run
+- the action to run every iteration
+Returns:
+the command
+defer
+default
+Command
+defer
+(
+Supplier
+<
+Command
+> supplier)
+Constructs a
+DeferredCommand
+with the provided supplier. This subsystem is added as a
+ requirement.
+Parameters:
+supplier
+- the command supplier.
+Returns:
+the command.
+See Also:
+DeferredCommand

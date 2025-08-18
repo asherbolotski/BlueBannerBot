@@ -1,0 +1,27 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.cleanup;
+006
+007
+import java.lang.annotation.ElementType;
+008
+import java.lang.annotation.Retention;
+009
+import java.lang.annotation.RetentionPolicy;
+010
+import java.lang.annotation.Target;
+011
+012
+/** Attribute for telling JVM to skip object cleanup. */
+013
+@Target(ElementType.FIELD)
+014
+@Retention(RetentionPolicy.RUNTIME)
+015
+public @interface SkipCleanup {}

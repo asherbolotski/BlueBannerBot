@@ -1,0 +1,286 @@
+Package
+edu.wpi.first.math.controller
+Class ImplicitModelFollower<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.controller.ImplicitModelFollower<States,
+Inputs,
+Outputs>
+Type Parameters:
+States
+- Number of states.
+Inputs
+- Number of inputs.
+Outputs
+- Number of outputs.
+public class
+ImplicitModelFollower
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+extends
+Object
+Contains the controller coefficients and logic for an implicit model follower.
+Implicit model following lets us design a feedback controller that erases the dynamics of our
+ system and makes it behave like some other system. This can be used to make a drivetrain more
+ controllable during teleop driving by making it behave like a slower or more benign drivetrain.
+For more on the underlying math, read appendix B.3 in
+https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+.
+Constructor Summary
+Constructors
+Constructor
+Description
+ImplicitModelFollower
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+States
+,
+States
+> Aref,
+Matrix
+<
+States
+,
+Inputs
+> Bref)
+Constructs a controller with the given coefficients and plant.
+ImplicitModelFollower
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plantRef)
+Constructs a controller with the given coefficients and plant.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+Inputs
+,
+N1
+> u)
+Returns the next output of the controller.
+Matrix
+<
+Inputs
+,
+N1
+>
+getU
+()
+Returns the control input vector u.
+double
+getU
+(int i)
+Returns an element of the control input vector u.
+final void
+reset
+()
+Resets the controller.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ImplicitModelFollower
+public
+ImplicitModelFollower
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plantRef)
+Constructs a controller with the given coefficients and plant.
+Parameters:
+plant
+- The plant being controlled.
+plantRef
+- The plant whose dynamics should be followed.
+ImplicitModelFollower
+public
+ImplicitModelFollower
+(
+Matrix
+<
+States
+,
+States
+> A,
+Matrix
+<
+States
+,
+Inputs
+> B,
+Matrix
+<
+States
+,
+States
+> Aref,
+Matrix
+<
+States
+,
+Inputs
+> Bref)
+Constructs a controller with the given coefficients and plant.
+Parameters:
+A
+- Continuous system matrix of the plant being controlled.
+B
+- Continuous input matrix of the plant being controlled.
+Aref
+- Continuous system matrix whose dynamics should be followed.
+Bref
+- Continuous input matrix whose dynamics should be followed.
+Method Details
+getU
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+getU
+()
+Returns the control input vector u.
+Returns:
+The control input.
+getU
+public
+double
+getU
+(int i)
+Returns an element of the control input vector u.
+Parameters:
+i
+- Row of u.
+Returns:
+The row of the control input vector.
+reset
+public final
+void
+reset
+()
+Resets the controller.
+calculate
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+calculate
+(
+Matrix
+<
+States
+,
+N1
+> x,
+Matrix
+<
+Inputs
+,
+N1
+> u)
+Returns the next output of the controller.
+Parameters:
+x
+- The current state x.
+u
+- The current input for the original model.
+Returns:
+The next controller output.

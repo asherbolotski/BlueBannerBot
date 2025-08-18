@@ -1,0 +1,497 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.NotifierJNI;
+008
+import java.io.Closeable;
+009
+import java.util.PriorityQueue;
+010
+import java.util.concurrent.locks.ReentrantLock;
+011
+012
+/**
+013
+* A class that's a wrapper around a watchdog timer.
+014
+*
+015
+* <p>When the timer expires, a message is printed to the console and an optional user-provided
+016
+* callback is invoked.
+017
+*
+018
+* <p>The watchdog is initialized disabled, so the user needs to call enable() before use.
+019
+*/
+020
+public class Watchdog implements Closeable, Comparable<Watchdog> {
+021
+// Used for timeout print rate-limiting
+022
+private static final long kMinPrintPeriodMicroS = (long) 1e6;
+023
+024
+private double m_startTimeSeconds;
+025
+private double m_timeoutSeconds;
+026
+private double m_expirationTimeSeconds;
+027
+private final Runnable m_callback;
+028
+private double m_lastTimeoutPrintSeconds;
+029
+030
+boolean m_isExpired;
+031
+032
+boolean m_suppressTimeoutMessage;
+033
+034
+private final Tracer m_tracer;
+035
+036
+private static final PriorityQueue<Watchdog> m_watchdogs = new PriorityQueue<>();
+037
+private static ReentrantLock m_queueMutex = new ReentrantLock();
+038
+private static int m_notifier;
+039
+040
+static {
+041
+m_notifier = NotifierJNI.initializeNotifier();
+042
+NotifierJNI.setNotifierName(m_notifier, "Watchdog");
+043
+startDaemonThread(Watchdog::schedulerFunc);
+044
+}
+045
+046
+/**
+047
+* Watchdog constructor.
+048
+*
+049
+* @param timeoutSeconds The watchdog's timeout in seconds with microsecond resolution.
+050
+* @param callback This function is called when the timeout expires.
+051
+*/
+052
+public Watchdog(double timeoutSeconds, Runnable callback) {
+053
+m_timeoutSeconds = timeoutSeconds;
+054
+m_callback = callback;
+055
+m_tracer = new Tracer();
+056
+}
+057
+058
+@Override
+059
+public void close() {
+060
+disable();
+061
+}
+062
+063
+@Override
+064
+public boolean equals(Object obj) {
+065
+return obj instanceof Watchdog watchdog
+066
+&& Double.compare(m_expirationTimeSeconds, watchdog.m_expirationTimeSeconds) == 0;
+067
+}
+068
+069
+@Override
+070
+public int hashCode() {
+071
+return Double.hashCode(m_expirationTimeSeconds);
+072
+}
+073
+074
+@Override
+075
+public int compareTo(Watchdog rhs) {
+076
+// Elements with sooner expiration times are sorted as lesser. The head of
+077
+// Java's PriorityQueue is the least element.
+078
+return Double.compare(m_expirationTimeSeconds, rhs.m_expirationTimeSeconds);
+079
+}
+080
+081
+/**
+082
+* Returns the time in seconds since the watchdog was last fed.
+083
+*
+084
+* @return The time in seconds since the watchdog was last fed.
+085
+*/
+086
+public double getTime() {
+087
+return Timer.getFPGATimestamp() - m_startTimeSeconds;
+088
+}
+089
+090
+/**
+091
+* Sets the watchdog's timeout.
+092
+*
+093
+* @param timeoutSeconds The watchdog's timeout in seconds with microsecond resolution.
+094
+*/
+095
+public void setTimeout(double timeoutSeconds) {
+096
+m_startTimeSeconds = Timer.getFPGATimestamp();
+097
+m_tracer.clearEpochs();
+098
+099
+m_queueMutex.lock();
+100
+try {
+101
+m_timeoutSeconds = timeoutSeconds;
+102
+m_isExpired = false;
+103
+104
+m_watchdogs.remove(this);
+105
+m_expirationTimeSeconds = m_startTimeSeconds + m_timeoutSeconds;
+106
+m_watchdogs.add(this);
+107
+updateAlarm();
+108
+} finally {
+109
+m_queueMutex.unlock();
+110
+}
+111
+}
+112
+113
+/**
+114
+* Returns the watchdog's timeout in seconds.
+115
+*
+116
+* @return The watchdog's timeout in seconds.
+117
+*/
+118
+public double getTimeout() {
+119
+m_queueMutex.lock();
+120
+try {
+121
+return m_timeoutSeconds;
+122
+} finally {
+123
+m_queueMutex.unlock();
+124
+}
+125
+}
+126
+127
+/**
+128
+* Returns true if the watchdog timer has expired.
+129
+*
+130
+* @return True if the watchdog timer has expired.
+131
+*/
+132
+public boolean isExpired() {
+133
+m_queueMutex.lock();
+134
+try {
+135
+return m_isExpired;
+136
+} finally {
+137
+m_queueMutex.unlock();
+138
+}
+139
+}
+140
+141
+/**
+142
+* Adds time since last epoch to the list printed by printEpochs().
+143
+*
+144
+* @see Tracer#addEpoch(String)
+145
+* @param epochName The name to associate with the epoch.
+146
+*/
+147
+public void addEpoch(String epochName) {
+148
+m_tracer.addEpoch(epochName);
+149
+}
+150
+151
+/**
+152
+* Prints list of epochs added so far and their times.
+153
+*
+154
+* @see Tracer#printEpochs()
+155
+*/
+156
+public void printEpochs() {
+157
+m_tracer.printEpochs();
+158
+}
+159
+160
+/**
+161
+* Resets the watchdog timer.
+162
+*
+163
+* <p>This also enables the timer if it was previously disabled.
+164
+*/
+165
+public void reset() {
+166
+enable();
+167
+}
+168
+169
+/** Enables the watchdog timer. */
+170
+public void enable() {
+171
+m_startTimeSeconds = Timer.getFPGATimestamp();
+172
+m_tracer.clearEpochs();
+173
+174
+m_queueMutex.lock();
+175
+try {
+176
+m_isExpired = false;
+177
+178
+m_watchdogs.remove(this);
+179
+m_expirationTimeSeconds = m_startTimeSeconds + m_timeoutSeconds;
+180
+m_watchdogs.add(this);
+181
+updateAlarm();
+182
+} finally {
+183
+m_queueMutex.unlock();
+184
+}
+185
+}
+186
+187
+/** Disables the watchdog timer. */
+188
+public void disable() {
+189
+m_queueMutex.lock();
+190
+try {
+191
+m_watchdogs.remove(this);
+192
+updateAlarm();
+193
+} finally {
+194
+m_queueMutex.unlock();
+195
+}
+196
+}
+197
+198
+/**
+199
+* Enable or disable suppression of the generic timeout message.
+200
+*
+201
+* <p>This may be desirable if the user-provided callback already prints a more specific message.
+202
+*
+203
+* @param suppress Whether to suppress generic timeout message.
+204
+*/
+205
+public void suppressTimeoutMessage(boolean suppress) {
+206
+m_suppressTimeoutMessage = suppress;
+207
+}
+208
+209
+@SuppressWarnings("resource")
+210
+private static void updateAlarm() {
+211
+if (m_watchdogs.isEmpty()) {
+212
+NotifierJNI.cancelNotifierAlarm(m_notifier);
+213
+} else {
+214
+NotifierJNI.updateNotifierAlarm(
+215
+m_notifier, (long) (m_watchdogs.peek().m_expirationTimeSeconds * 1e6));
+216
+}
+217
+}
+218
+219
+private static Thread startDaemonThread(Runnable target) {
+220
+Thread inst = new Thread(target);
+221
+inst.setDaemon(true);
+222
+inst.start();
+223
+return inst;
+224
+}
+225
+226
+private static void schedulerFunc() {
+227
+while (!Thread.currentThread().isInterrupted()) {
+228
+long curTime = NotifierJNI.waitForNotifierAlarm(m_notifier);
+229
+if (curTime == 0) {
+230
+break;
+231
+}
+232
+233
+m_queueMutex.lock();
+234
+try {
+235
+if (m_watchdogs.isEmpty()) {
+236
+continue;
+237
+}
+238
+239
+// If the condition variable timed out, that means a Watchdog timeout
+240
+// has occurred, so call its timeout function.
+241
+Watchdog watchdog = m_watchdogs.poll();
+242
+243
+double now = curTime * 1e-6;
+244
+if (now - watchdog.m_lastTimeoutPrintSeconds > kMinPrintPeriodMicroS) {
+245
+watchdog.m_lastTimeoutPrintSeconds = now;
+246
+if (!watchdog.m_suppressTimeoutMessage) {
+247
+DriverStation.reportWarning(
+248
+String.format("Watchdog not fed within %.6fs\n", watchdog.m_timeoutSeconds), false);
+249
+}
+250
+}
+251
+252
+// Set expiration flag before calling the callback so any
+253
+// manipulation of the flag in the callback (e.g., calling
+254
+// Disable()) isn't clobbered.
+255
+watchdog.m_isExpired = true;
+256
+257
+m_queueMutex.unlock();
+258
+watchdog.m_callback.run();
+259
+m_queueMutex.lock();
+260
+261
+updateAlarm();
+262
+} finally {
+263
+m_queueMutex.unlock();
+264
+}
+265
+}
+266
+}
+267
+}

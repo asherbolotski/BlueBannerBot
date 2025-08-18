@@ -1,0 +1,1116 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.estimator;
+006
+007
+import edu.wpi.first.math.Matrix;
+008
+import edu.wpi.first.math.Nat;
+009
+import edu.wpi.first.math.Num;
+010
+import edu.wpi.first.math.Pair;
+011
+import edu.wpi.first.math.StateSpaceUtil;
+012
+import edu.wpi.first.math.numbers.N1;
+013
+import edu.wpi.first.math.system.Discretization;
+014
+import edu.wpi.first.math.system.NumericalIntegration;
+015
+import edu.wpi.first.math.system.NumericalJacobian;
+016
+import java.util.function.BiFunction;
+017
+import org.ejml.dense.row.decomposition.qr.QRDecompositionHouseholder_DDRM;
+018
+import org.ejml.simple.SimpleMatrix;
+019
+020
+/**
+021
+* A Kalman filter combines predictions from a model and measurements to give an estimate of the
+022
+* true system state. This is useful because many states cannot be measured directly as a result of
+023
+* sensor noise, or because the state is "hidden".
+024
+*
+025
+* <p>Kalman filters use a K gain matrix to determine whether to trust the model or measurements
+026
+* more. Kalman filter theory uses statistics to compute an optimal K gain which minimizes the sum
+027
+* of squares error in the state estimate. This K gain is used to correct the state estimate by some
+028
+* amount of the difference between the actual measurements and the measurements predicted by the
+029
+* model.
+030
+*
+031
+* <p>An unscented Kalman filter uses nonlinear state and measurement models. It propagates the
+032
+* error covariance using sigma points chosen to approximate the true probability distribution.
+033
+*
+034
+* <p>For more on the underlying math, read <a
+035
+* href="https://file.tavsys.net/control/controls-engineering-in-frc.pdf">https://file.tavsys.net/control/controls-engineering-in-frc.pdf</a>
+036
+* chapter 9 "Stochastic control theory".
+037
+*
+038
+* <p>This class implements a square-root-form unscented Kalman filter (SR-UKF). The main reason for
+039
+* this is to guarantee that the covariance matrix remains positive definite. For more information
+040
+* about the SR-UKF, see https://www.researchgate.net/publication/3908304.
+041
+*
+042
+* @param <States> Number of states.
+043
+* @param <Inputs> Number of inputs.
+044
+* @param <Outputs> Number of outputs.
+045
+*/
+046
+public class UnscentedKalmanFilter<States extends Num, Inputs extends Num, Outputs extends Num>
+047
+implements KalmanTypeFilter<States, Inputs, Outputs> {
+048
+private final Nat<States> m_states;
+049
+private final Nat<Outputs> m_outputs;
+050
+051
+private final BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<States, N1>> m_f;
+052
+private final BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<Outputs, N1>> m_h;
+053
+054
+private BiFunction<Matrix<States, ?>, Matrix<?, N1>, Matrix<States, N1>> m_meanFuncX;
+055
+private BiFunction<Matrix<Outputs, ?>, Matrix<?, N1>, Matrix<Outputs, N1>> m_meanFuncY;
+056
+private BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> m_residualFuncX;
+057
+private BiFunction<Matrix<Outputs, N1>, Matrix<Outputs, N1>, Matrix<Outputs, N1>> m_residualFuncY;
+058
+private BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> m_addFuncX;
+059
+060
+private Matrix<States, N1> m_xHat;
+061
+private Matrix<States, States> m_S;
+062
+private final Matrix<States, States> m_contQ;
+063
+private final Matrix<Outputs, Outputs> m_contR;
+064
+private Matrix<States, ?> m_sigmasF;
+065
+private double m_dtSeconds;
+066
+067
+private final MerweScaledSigmaPoints<States> m_pts;
+068
+069
+/**
+070
+* Constructs an Unscented Kalman Filter.
+071
+*
+072
+* <p>See <a
+073
+* href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-observers.html#process-and-measurement-noise-covariance-matrices">https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-observers.html#process-and-measurement-noise-covariance-matrices</a>
+074
+* for how to select the standard deviations.
+075
+*
+076
+* @param states A Nat representing the number of states.
+077
+* @param outputs A Nat representing the number of outputs.
+078
+* @param f A vector-valued function of x and u that returns the derivative of the state vector.
+079
+* @param h A vector-valued function of x and u that returns the measurement vector.
+080
+* @param stateStdDevs Standard deviations of model states.
+081
+* @param measurementStdDevs Standard deviations of measurements.
+082
+* @param nominalDtSeconds Nominal discretization timestep.
+083
+*/
+084
+public UnscentedKalmanFilter(
+085
+Nat<States> states,
+086
+Nat<Outputs> outputs,
+087
+BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<States, N1>> f,
+088
+BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<Outputs, N1>> h,
+089
+Matrix<States, N1> stateStdDevs,
+090
+Matrix<Outputs, N1> measurementStdDevs,
+091
+double nominalDtSeconds) {
+092
+this(
+093
+states,
+094
+outputs,
+095
+f,
+096
+h,
+097
+stateStdDevs,
+098
+measurementStdDevs,
+099
+(sigmas, Wm) -> sigmas.times(Matrix.changeBoundsUnchecked(Wm)),
+100
+(sigmas, Wm) -> sigmas.times(Matrix.changeBoundsUnchecked(Wm)),
+101
+Matrix::minus,
+102
+Matrix::minus,
+103
+Matrix::plus,
+104
+nominalDtSeconds);
+105
+}
+106
+107
+/**
+108
+* Constructs an Unscented Kalman filter with custom mean, residual, and addition functions. Using
+109
+* custom functions for arithmetic can be useful if you have angles in the state or measurements,
+110
+* because they allow you to correctly account for the modular nature of angle arithmetic.
+111
+*
+112
+* <p>See <a
+113
+* href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-observers.html#process-and-measurement-noise-covariance-matrices">https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-observers.html#process-and-measurement-noise-covariance-matrices</a>
+114
+* for how to select the standard deviations.
+115
+*
+116
+* @param states A Nat representing the number of states.
+117
+* @param outputs A Nat representing the number of outputs.
+118
+* @param f A vector-valued function of x and u that returns the derivative of the state vector.
+119
+* @param h A vector-valued function of x and u that returns the measurement vector.
+120
+* @param stateStdDevs Standard deviations of model states.
+121
+* @param measurementStdDevs Standard deviations of measurements.
+122
+* @param meanFuncX A function that computes the mean of 2 * States + 1 state vectors using a
+123
+*     given set of weights.
+124
+* @param meanFuncY A function that computes the mean of 2 * States + 1 measurement vectors using
+125
+*     a given set of weights.
+126
+* @param residualFuncX A function that computes the residual of two state vectors (i.e. it
+127
+*     subtracts them.)
+128
+* @param residualFuncY A function that computes the residual of two measurement vectors (i.e. it
+129
+*     subtracts them.)
+130
+* @param addFuncX A function that adds two state vectors.
+131
+* @param nominalDtSeconds Nominal discretization timestep.
+132
+*/
+133
+public UnscentedKalmanFilter(
+134
+Nat<States> states,
+135
+Nat<Outputs> outputs,
+136
+BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<States, N1>> f,
+137
+BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<Outputs, N1>> h,
+138
+Matrix<States, N1> stateStdDevs,
+139
+Matrix<Outputs, N1> measurementStdDevs,
+140
+BiFunction<Matrix<States, ?>, Matrix<?, N1>, Matrix<States, N1>> meanFuncX,
+141
+BiFunction<Matrix<Outputs, ?>, Matrix<?, N1>, Matrix<Outputs, N1>> meanFuncY,
+142
+BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> residualFuncX,
+143
+BiFunction<Matrix<Outputs, N1>, Matrix<Outputs, N1>, Matrix<Outputs, N1>> residualFuncY,
+144
+BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> addFuncX,
+145
+double nominalDtSeconds) {
+146
+this.m_states = states;
+147
+this.m_outputs = outputs;
+148
+149
+m_f = f;
+150
+m_h = h;
+151
+152
+m_meanFuncX = meanFuncX;
+153
+m_meanFuncY = meanFuncY;
+154
+m_residualFuncX = residualFuncX;
+155
+m_residualFuncY = residualFuncY;
+156
+m_addFuncX = addFuncX;
+157
+158
+m_dtSeconds = nominalDtSeconds;
+159
+160
+m_contQ = StateSpaceUtil.makeCovarianceMatrix(states, stateStdDevs);
+161
+m_contR = StateSpaceUtil.makeCovarianceMatrix(outputs, measurementStdDevs);
+162
+163
+m_pts = new MerweScaledSigmaPoints<>(states);
+164
+165
+reset();
+166
+}
+167
+168
+static <S extends Num, C extends Num>
+169
+Pair<Matrix<C, N1>, Matrix<C, C>> squareRootUnscentedTransform(
+170
+Nat<S> s,
+171
+Nat<C> dim,
+172
+Matrix<C, ?> sigmas,
+173
+Matrix<?, N1> Wm,
+174
+Matrix<?, N1> Wc,
+175
+BiFunction<Matrix<C, ?>, Matrix<?, N1>, Matrix<C, N1>> meanFunc,
+176
+BiFunction<Matrix<C, N1>, Matrix<C, N1>, Matrix<C, N1>> residualFunc,
+177
+Matrix<C, C> squareRootR) {
+178
+if (sigmas.getNumRows() != dim.getNum() || sigmas.getNumCols() != 2 * s.getNum() + 1) {
+179
+throw new IllegalArgumentException(
+180
+"Sigmas must be covDim by 2 * states + 1! Got "
+181
++ sigmas.getNumRows()
+182
++ " by "
+183
++ sigmas.getNumCols());
+184
+}
+185
+186
+if (Wm.getNumRows() != 2 * s.getNum() + 1 || Wm.getNumCols() != 1) {
+187
+throw new IllegalArgumentException(
+188
+"Wm must be 2 * states + 1 by 1! Got " + Wm.getNumRows() + " by " + Wm.getNumCols());
+189
+}
+190
+191
+if (Wc.getNumRows() != 2 * s.getNum() + 1 || Wc.getNumCols() != 1) {
+192
+throw new IllegalArgumentException(
+193
+"Wc must be 2 * states + 1 by 1! Got " + Wc.getNumRows() + " by " + Wc.getNumCols());
+194
+}
+195
+196
+// New mean is usually just the sum of the sigmas * weights:
+197
+//
+198
+//      2n
+199
+//   x̂ = Σ Wᵢ⁽ᵐ⁾𝒳ᵢ
+200
+//      i=0
+201
+//
+202
+// equations (19) and (23) in the paper show this,
+203
+// but we allow a custom function, usually for angle wrapping
+204
+Matrix<C, N1> x = meanFunc.apply(sigmas, Wm);
+205
+206
+// Form an intermediate matrix S⁻ as:
+207
+//
+208
+//   [√{W₁⁽ᶜ⁾}(𝒳_{1:2L} - x̂) √{Rᵛ}]
+209
+//
+210
+// the part of equations (20) and (24) within the "qr{}"
+211
+Matrix<C, ?> Sbar = new Matrix<>(new SimpleMatrix(dim.getNum(), 2 * s.getNum() + dim.getNum()));
+212
+for (int i = 0; i < 2 * s.getNum(); i++) {
+213
+Sbar.setColumn(
+214
+i,
+215
+residualFunc.apply(sigmas.extractColumnVector(1 + i), x).times(Math.sqrt(Wc.get(1, 0))));
+216
+}
+217
+Sbar.assignBlock(0, 2 * s.getNum(), squareRootR);
+218
+219
+QRDecompositionHouseholder_DDRM qr = new QRDecompositionHouseholder_DDRM();
+220
+var qrStorage = Sbar.transpose().getStorage();
+221
+222
+if (!qr.decompose(qrStorage.getDDRM())) {
+223
+throw new RuntimeException("QR decomposition failed! Input matrix:\n" + qrStorage);
+224
+}
+225
+226
+// Compute the square-root covariance of the sigma points
+227
+//
+228
+// We transpose S⁻ first because we formed it by horizontally
+229
+// concatenating each part; it should be vertical so we can take
+230
+// the QR decomposition as defined in the "QR Decomposition" passage
+231
+// of section 3. "EFFICIENT SQUARE-ROOT IMPLEMENTATION"
+232
+//
+233
+// The resulting matrix R is the square-root covariance S, but it
+234
+// is upper triangular, so we need to transpose it.
+235
+//
+236
+// equations (20) and (24)
+237
+Matrix<C, C> newS = new Matrix<>(new SimpleMatrix(qr.getR(null, true)).transpose());
+238
+239
+// Update or downdate the square-root covariance with (𝒳₀-x̂)
+240
+// depending on whether its weight (W₀⁽ᶜ⁾) is positive or negative.
+241
+//
+242
+// equations (21) and (25)
+243
+newS.rankUpdate(residualFunc.apply(sigmas.extractColumnVector(0), x), Wc.get(0, 0), true);
+244
+245
+return new Pair<>(x, newS);
+246
+}
+247
+248
+/**
+249
+* Returns the square-root error covariance matrix S.
+250
+*
+251
+* @return the square-root error covariance matrix S.
+252
+*/
+253
+public Matrix<States, States> getS() {
+254
+return m_S;
+255
+}
+256
+257
+/**
+258
+* Returns an element of the square-root error covariance matrix S.
+259
+*
+260
+* @param row Row of S.
+261
+* @param col Column of S.
+262
+* @return the value of the square-root error covariance matrix S at (i, j).
+263
+*/
+264
+public double getS(int row, int col) {
+265
+return m_S.get(row, col);
+266
+}
+267
+268
+/**
+269
+* Sets the entire square-root error covariance matrix S.
+270
+*
+271
+* @param newS The new value of S to use.
+272
+*/
+273
+public void setS(Matrix<States, States> newS) {
+274
+m_S = newS;
+275
+}
+276
+277
+/**
+278
+* Returns the reconstructed error covariance matrix P.
+279
+*
+280
+* @return the error covariance matrix P.
+281
+*/
+282
+@Override
+283
+public Matrix<States, States> getP() {
+284
+return m_S.times(m_S.transpose());
+285
+}
+286
+287
+/**
+288
+* Returns an element of the error covariance matrix P.
+289
+*
+290
+* @param row Row of P.
+291
+* @param col Column of P.
+292
+* @return the value of the error covariance matrix P at (i, j).
+293
+* @throws UnsupportedOperationException indexing into the reconstructed P matrix is not supported
+294
+*/
+295
+@Override
+296
+public double getP(int row, int col) {
+297
+throw new UnsupportedOperationException(
+298
+"indexing into the reconstructed P matrix is not supported");
+299
+}
+300
+301
+/**
+302
+* Sets the entire error covariance matrix P.
+303
+*
+304
+* @param newP The new value of P to use.
+305
+*/
+306
+@Override
+307
+public void setP(Matrix<States, States> newP) {
+308
+m_S = newP.lltDecompose(true);
+309
+}
+310
+311
+/**
+312
+* Returns the state estimate x-hat.
+313
+*
+314
+* @return the state estimate x-hat.
+315
+*/
+316
+@Override
+317
+public Matrix<States, N1> getXhat() {
+318
+return m_xHat;
+319
+}
+320
+321
+/**
+322
+* Returns an element of the state estimate x-hat.
+323
+*
+324
+* @param row Row of x-hat.
+325
+* @return the value of the state estimate x-hat at 'i'.
+326
+*/
+327
+@Override
+328
+public double getXhat(int row) {
+329
+return m_xHat.get(row, 0);
+330
+}
+331
+332
+/**
+333
+* Set initial state estimate x-hat.
+334
+*
+335
+* @param xHat The state estimate x-hat.
+336
+*/
+337
+@Override
+338
+public void setXhat(Matrix<States, N1> xHat) {
+339
+m_xHat = xHat;
+340
+}
+341
+342
+/**
+343
+* Set an element of the initial state estimate x-hat.
+344
+*
+345
+* @param row Row of x-hat.
+346
+* @param value Value for element of x-hat.
+347
+*/
+348
+@Override
+349
+public void setXhat(int row, double value) {
+350
+m_xHat.set(row, 0, value);
+351
+}
+352
+353
+/** Resets the observer. */
+354
+@Override
+355
+public final void reset() {
+356
+m_xHat = new Matrix<>(m_states, Nat.N1());
+357
+m_S = new Matrix<>(m_states, m_states);
+358
+m_sigmasF = new Matrix<>(new SimpleMatrix(m_states.getNum(), 2 * m_states.getNum() + 1));
+359
+}
+360
+361
+/**
+362
+* Project the model into the future with a new control input u.
+363
+*
+364
+* @param u New control input from controller.
+365
+* @param dtSeconds Timestep for prediction.
+366
+*/
+367
+@Override
+368
+public void predict(Matrix<Inputs, N1> u, double dtSeconds) {
+369
+// Discretize Q before projecting mean and covariance forward
+370
+Matrix<States, States> contA =
+371
+NumericalJacobian.numericalJacobianX(m_states, m_states, m_f, m_xHat, u);
+372
+var discQ = Discretization.discretizeAQ(contA, m_contQ, dtSeconds).getSecond();
+373
+var squareRootDiscQ = discQ.lltDecompose(true);
+374
+375
+// Generate sigma points around the state mean
+376
+//
+377
+// equation (17)
+378
+var sigmas = m_pts.squareRootSigmaPoints(m_xHat, m_S);
+379
+380
+// Project each sigma point forward in time according to the
+381
+// dynamics f(x, u)
+382
+//
+383
+//   sigmas  = 𝒳ₖ₋₁
+384
+//   sigmasF = 𝒳ₖ,ₖ₋₁ or just 𝒳 for readability
+385
+//
+386
+// equation (18)
+387
+for (int i = 0; i < m_pts.getNumSigmas(); ++i) {
+388
+Matrix<States, N1> x = sigmas.extractColumnVector(i);
+389
+390
+m_sigmasF.setColumn(i, NumericalIntegration.rk4(m_f, x, u, dtSeconds));
+391
+}
+392
+393
+// Pass the predicted sigmas (𝒳) through the Unscented Transform
+394
+// to compute the prior state mean and covariance
+395
+//
+396
+// equations (18) (19) and (20)
+397
+var ret =
+398
+squareRootUnscentedTransform(
+399
+m_states,
+400
+m_states,
+401
+m_sigmasF,
+402
+m_pts.getWm(),
+403
+m_pts.getWc(),
+404
+m_meanFuncX,
+405
+m_residualFuncX,
+406
+squareRootDiscQ);
+407
+408
+m_xHat = ret.getFirst();
+409
+m_S = ret.getSecond();
+410
+m_dtSeconds = dtSeconds;
+411
+}
+412
+413
+/**
+414
+* Correct the state estimate x-hat using the measurements in y.
+415
+*
+416
+* @param u Same control input used in the predict step.
+417
+* @param y Measurement vector.
+418
+*/
+419
+@Override
+420
+public void correct(Matrix<Inputs, N1> u, Matrix<Outputs, N1> y) {
+421
+correct(
+422
+m_outputs, u, y, m_h, m_contR, m_meanFuncY, m_residualFuncY, m_residualFuncX, m_addFuncX);
+423
+}
+424
+425
+/**
+426
+* Correct the state estimate x-hat using the measurements in y.
+427
+*
+428
+* <p>This is useful for when the measurement noise covariances vary.
+429
+*
+430
+* @param u Same control input used in the predict step.
+431
+* @param y Measurement vector.
+432
+* @param R Continuous measurement noise covariance matrix.
+433
+*/
+434
+public void correct(Matrix<Inputs, N1> u, Matrix<Outputs, N1> y, Matrix<Outputs, Outputs> R) {
+435
+correct(m_outputs, u, y, m_h, R, m_meanFuncY, m_residualFuncY, m_residualFuncX, m_addFuncX);
+436
+}
+437
+438
+/**
+439
+* Correct the state estimate x-hat using the measurements in y.
+440
+*
+441
+* <p>This is useful for when the measurements available during a timestep's Correct() call vary.
+442
+* The h(x, u) passed to the constructor is used if one is not provided (the two-argument version
+443
+* of this function).
+444
+*
+445
+* @param <R> Number of measurements in y.
+446
+* @param rows Number of rows in y.
+447
+* @param u Same control input used in the predict step.
+448
+* @param y Measurement vector.
+449
+* @param h A vector-valued function of x and u that returns the measurement vector.
+450
+* @param R Continuous measurement noise covariance matrix.
+451
+*/
+452
+public <R extends Num> void correct(
+453
+Nat<R> rows,
+454
+Matrix<Inputs, N1> u,
+455
+Matrix<R, N1> y,
+456
+BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<R, N1>> h,
+457
+Matrix<R, R> R) {
+458
+BiFunction<Matrix<R, ?>, Matrix<?, N1>, Matrix<R, N1>> meanFuncY =
+459
+(sigmas, Wm) -> sigmas.times(Matrix.changeBoundsUnchecked(Wm));
+460
+BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> residualFuncX =
+461
+Matrix::minus;
+462
+BiFunction<Matrix<R, N1>, Matrix<R, N1>, Matrix<R, N1>> residualFuncY = Matrix::minus;
+463
+BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> addFuncX = Matrix::plus;
+464
+correct(rows, u, y, h, R, meanFuncY, residualFuncY, residualFuncX, addFuncX);
+465
+}
+466
+467
+/**
+468
+* Correct the state estimate x-hat using the measurements in y.
+469
+*
+470
+* <p>This is useful for when the measurements available during a timestep's Correct() call vary.
+471
+* The h(x, u) passed to the constructor is used if one is not provided (the two-argument version
+472
+* of this function).
+473
+*
+474
+* @param <R> Number of measurements in y.
+475
+* @param rows Number of rows in y.
+476
+* @param u Same control input used in the predict step.
+477
+* @param y Measurement vector.
+478
+* @param h A vector-valued function of x and u that returns the measurement vector.
+479
+* @param R Continuous measurement noise covariance matrix.
+480
+* @param meanFuncY A function that computes the mean of 2 * States + 1 measurement vectors using
+481
+*     a given set of weights.
+482
+* @param residualFuncY A function that computes the residual of two measurement vectors (i.e. it
+483
+*     subtracts them.)
+484
+* @param residualFuncX A function that computes the residual of two state vectors (i.e. it
+485
+*     subtracts them.)
+486
+* @param addFuncX A function that adds two state vectors.
+487
+*/
+488
+public <R extends Num> void correct(
+489
+Nat<R> rows,
+490
+Matrix<Inputs, N1> u,
+491
+Matrix<R, N1> y,
+492
+BiFunction<Matrix<States, N1>, Matrix<Inputs, N1>, Matrix<R, N1>> h,
+493
+Matrix<R, R> R,
+494
+BiFunction<Matrix<R, ?>, Matrix<?, N1>, Matrix<R, N1>> meanFuncY,
+495
+BiFunction<Matrix<R, N1>, Matrix<R, N1>, Matrix<R, N1>> residualFuncY,
+496
+BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> residualFuncX,
+497
+BiFunction<Matrix<States, N1>, Matrix<States, N1>, Matrix<States, N1>> addFuncX) {
+498
+final var discR = Discretization.discretizeR(R, m_dtSeconds);
+499
+final var squareRootDiscR = discR.lltDecompose(true);
+500
+501
+// Generate new sigma points from the prior mean and covariance
+502
+// and transform them into measurement space using h(x, u)
+503
+//
+504
+//   sigmas  = 𝒳
+505
+//   sigmasH = 𝒴
+506
+//
+507
+// This differs from equation (22) which uses
+508
+// the prior sigma points, regenerating them allows
+509
+// multiple measurement updates per time update
+510
+Matrix<R, ?> sigmasH = new Matrix<>(new SimpleMatrix(rows.getNum(), 2 * m_states.getNum() + 1));
+511
+var sigmas = m_pts.squareRootSigmaPoints(m_xHat, m_S);
+512
+for (int i = 0; i < m_pts.getNumSigmas(); i++) {
+513
+Matrix<R, N1> hRet = h.apply(sigmas.extractColumnVector(i), u);
+514
+sigmasH.setColumn(i, hRet);
+515
+}
+516
+517
+// Pass the predicted measurement sigmas through the Unscented Transform
+518
+// to compute the mean predicted measurement and square-root innovation
+519
+// covariance.
+520
+//
+521
+// equations (23) (24) and (25)
+522
+var transRet =
+523
+squareRootUnscentedTransform(
+524
+m_states,
+525
+rows,
+526
+sigmasH,
+527
+m_pts.getWm(),
+528
+m_pts.getWc(),
+529
+meanFuncY,
+530
+residualFuncY,
+531
+squareRootDiscR);
+532
+var yHat = transRet.getFirst();
+533
+var Sy = transRet.getSecond();
+534
+535
+// Compute cross covariance of the predicted state and measurement sigma
+536
+// points given as:
+537
+//
+538
+//           2n
+539
+//   P_{xy} = Σ Wᵢ⁽ᶜ⁾[𝒳ᵢ - x̂][𝒴ᵢ - ŷ⁻]ᵀ
+540
+//           i=0
+541
+//
+542
+// equation (26)
+543
+Matrix<States, R> Pxy = new Matrix<>(m_states, rows);
+544
+for (int i = 0; i < m_pts.getNumSigmas(); i++) {
+545
+var dx = residualFuncX.apply(m_sigmasF.extractColumnVector(i), m_xHat);
+546
+var dy = residualFuncY.apply(sigmasH.extractColumnVector(i), yHat).transpose();
+547
+548
+Pxy = Pxy.plus(dx.times(dy).times(m_pts.getWc(i)));
+549
+}
+550
+551
+// Compute the Kalman gain. We use Eigen's QR decomposition to solve. This
+552
+// is equivalent to MATLAB's \ operator, so we need to rearrange to use
+553
+// that.
+554
+//
+555
+//   K = (P_{xy} / S_{y}ᵀ) / S_{y}
+556
+//   K = (S_{y} \ P_{xy})ᵀ / S_{y}
+557
+//   K = (S_{y}ᵀ \ (S_{y} \ P_{xy}ᵀ))ᵀ
+558
+//
+559
+// equation (27)
+560
+Matrix<States, R> K =
+561
+Sy.transpose()
+562
+.solveFullPivHouseholderQr(Sy.solveFullPivHouseholderQr(Pxy.transpose()))
+563
+.transpose();
+564
+565
+// Compute the posterior state mean
+566
+//
+567
+// x̂ = x̂⁻ + K(y − ŷ⁻)
+568
+//
+569
+// second part of equation (27)
+570
+m_xHat = addFuncX.apply(m_xHat, K.times(residualFuncY.apply(y, yHat)));
+571
+572
+// Compute the intermediate matrix U for downdating
+573
+// the square-root covariance
+574
+//
+575
+// equation (28)
+576
+Matrix<States, R> U = K.times(Sy);
+577
+578
+// Downdate the posterior square-root state covariance
+579
+//
+580
+// equation (29)
+581
+for (int i = 0; i < rows.getNum(); i++) {
+582
+m_S.rankUpdate(U.extractColumnVector(i), -1, true);
+583
+}
+584
+}
+585
+}

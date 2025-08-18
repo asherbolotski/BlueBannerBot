@@ -1,0 +1,468 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+/** Interface for pneumatics devices. */
+008
+public interface PneumaticsBase extends AutoCloseable {
+009
+/**
+010
+* For internal use to get a module for a specific type.
+011
+*
+012
+* @param module module number
+013
+* @param type module type
+014
+* @return module
+015
+*/
+016
+static PneumaticsBase getForType(int module, PneumaticsModuleType type) {
+017
+return switch (type) {
+018
+case CTREPCM -> new PneumaticsControlModule(module);
+019
+case REVPH -> new PneumaticHub(module);
+020
+};
+021
+}
+022
+023
+/**
+024
+* For internal use to get the default for a specific type.
+025
+*
+026
+* @param type module type
+027
+* @return module default
+028
+*/
+029
+static int getDefaultForType(PneumaticsModuleType type) {
+030
+return switch (type) {
+031
+case CTREPCM -> SensorUtil.getDefaultCTREPCMModule();
+032
+case REVPH -> SensorUtil.getDefaultREVPHModule();
+033
+};
+034
+}
+035
+036
+/**
+037
+* Sets solenoids on a pneumatics module.
+038
+*
+039
+* @param mask Bitmask indicating which solenoids to set. The LSB represents solenoid 0.
+040
+* @param values Bitmask indicating the desired states of the solenoids. The LSB represents
+041
+*     solenoid 0.
+042
+*/
+043
+void setSolenoids(int mask, int values);
+044
+045
+/**
+046
+* Gets a bitmask of solenoid values.
+047
+*
+048
+* @return Bitmask containing the state of the solenoids. The LSB represents solenoid 0.
+049
+*/
+050
+int getSolenoids();
+051
+052
+/**
+053
+* Get module number for this module.
+054
+*
+055
+* @return module number
+056
+*/
+057
+int getModuleNumber();
+058
+059
+/**
+060
+* Get a bitmask of disabled solenoids.
+061
+*
+062
+* @return Bitmask indicating disabled solenoids. The LSB represents solenoid 0.
+063
+*/
+064
+int getSolenoidDisabledList();
+065
+066
+/**
+067
+* Fire a single solenoid shot.
+068
+*
+069
+* @param index solenoid index
+070
+*/
+071
+void fireOneShot(int index);
+072
+073
+/**
+074
+* Set the duration for a single solenoid shot.
+075
+*
+076
+* @param index solenoid index
+077
+* @param durMs shot duration
+078
+*/
+079
+void setOneShotDuration(int index, int durMs);
+080
+081
+/**
+082
+* Returns whether the compressor is active or not.
+083
+*
+084
+* @return True if the compressor is on - otherwise false.
+085
+*/
+086
+boolean getCompressor();
+087
+088
+/**
+089
+* Returns the state of the pressure switch.
+090
+*
+091
+* @return True if pressure switch indicates that the system is not full, otherwise false.
+092
+*/
+093
+boolean getPressureSwitch();
+094
+095
+/**
+096
+* Returns the current drawn by the compressor in amps.
+097
+*
+098
+* @return The current drawn by the compressor.
+099
+*/
+100
+double getCompressorCurrent();
+101
+102
+/** Disables the compressor. */
+103
+void disableCompressor();
+104
+105
+/**
+106
+* Enables the compressor in digital mode using the digital pressure switch. The compressor will
+107
+* turn on when the pressure switch indicates that the system is not full, and will turn off when
+108
+* the pressure switch indicates that the system is full.
+109
+*/
+110
+void enableCompressorDigital();
+111
+112
+/**
+113
+* If supported by the device, enables the compressor in analog mode. This mode uses an analog
+114
+* pressure sensor connected to analog channel 0 to cycle the compressor. The compressor will turn
+115
+* on when the pressure drops below {@code minPressure} and will turn off when the pressure
+116
+* reaches {@code maxPressure}. This mode is only supported by the REV PH with the REV Analog
+117
+* Pressure Sensor connected to analog channel 0.
+118
+*
+119
+* <p>On CTRE PCM, this will enable digital control.
+120
+*
+121
+* @param minPressure The minimum pressure in PSI. The compressor will turn on when the pressure
+122
+*     drops below this value.
+123
+* @param maxPressure The maximum pressure in PSI. The compressor will turn off when the pressure
+124
+*     reaches this value.
+125
+*/
+126
+void enableCompressorAnalog(double minPressure, double maxPressure);
+127
+128
+/**
+129
+* If supported by the device, enables the compressor in hybrid mode. This mode uses both a
+130
+* digital pressure switch and an analog pressure sensor connected to analog channel 0 to cycle
+131
+* the compressor. This mode is only supported by the REV PH with the REV Analog Pressure Sensor
+132
+* connected to analog channel 0.
+133
+*
+134
+* <p>The compressor will turn on when <i>both</i>:
+135
+*
+136
+* <ul>
+137
+*   <li>The digital pressure switch indicates the system is not full AND
+138
+*   <li>The analog pressure sensor indicates that the pressure in the system is below the
+139
+*       specified minimum pressure.
+140
+* </ul>
+141
+*
+142
+* <p>The compressor will turn off when <i>either</i>:
+143
+*
+144
+* <ul>
+145
+*   <li>The digital pressure switch is disconnected or indicates that the system is full OR
+146
+*   <li>The pressure detected by the analog sensor is greater than the specified maximum
+147
+*       pressure.
+148
+* </ul>
+149
+*
+150
+* <p>On CTRE PCM, this will enable digital control.
+151
+*
+152
+* @param minPressure The minimum pressure in PSI. The compressor will turn on when the pressure
+153
+*     drops below this value and the pressure switch indicates that the system is not full.
+154
+* @param maxPressure The maximum pressure in PSI. The compressor will turn off when the pressure
+155
+*     reaches this value or the pressure switch is disconnected or indicates that the system is
+156
+*     full.
+157
+*/
+158
+void enableCompressorHybrid(double minPressure, double maxPressure);
+159
+160
+/**
+161
+* If supported by the device, returns the raw voltage of the specified analog input channel.
+162
+*
+163
+* <p>This function is only supported by the REV PH. On CTRE PCM, this will return 0.
+164
+*
+165
+* @param channel The analog input channel to read voltage from.
+166
+* @return The voltage of the specified analog input channel.
+167
+*/
+168
+double getAnalogVoltage(int channel);
+169
+170
+/**
+171
+* If supported by the device, returns the pressure (in PSI) read by an analog pressure sensor on
+172
+* the specified analog input channel.
+173
+*
+174
+* <p>This function is only supported by the REV PH. On CTRE PCM, this will return 0.
+175
+*
+176
+* @param channel The analog input channel to read pressure from.
+177
+* @return The pressure (in PSI) read by an analog pressure sensor on the specified analog input
+178
+*     channel.
+179
+*/
+180
+double getPressure(int channel);
+181
+182
+/**
+183
+* Returns the active compressor configuration.
+184
+*
+185
+* @return The active compressor configuration.
+186
+*/
+187
+CompressorConfigType getCompressorConfigType();
+188
+189
+/**
+190
+* Check if a solenoid channel is valid.
+191
+*
+192
+* @param channel Channel to check
+193
+* @return True if channel exists
+194
+*/
+195
+boolean checkSolenoidChannel(int channel);
+196
+197
+/**
+198
+* Check to see if the solenoids marked in the bitmask can be reserved, and if so, reserve them.
+199
+*
+200
+* @param mask The bitmask of solenoids to reserve. The LSB represents solenoid 0.
+201
+* @return 0 if successful; mask of solenoids that couldn't be allocated otherwise
+202
+*/
+203
+int checkAndReserveSolenoids(int mask);
+204
+205
+/**
+206
+* Unreserve the solenoids marked in the bitmask.
+207
+*
+208
+* @param mask The bitmask of solenoids to unreserve. The LSB represents solenoid 0.
+209
+*/
+210
+void unreserveSolenoids(int mask);
+211
+212
+/**
+213
+* Reserve the compressor.
+214
+*
+215
+* @return true if successful; false if compressor already reserved
+216
+*/
+217
+boolean reserveCompressor();
+218
+219
+/** Unreserve the compressor. */
+220
+void unreserveCompressor();
+221
+222
+@Override
+223
+void close();
+224
+225
+/**
+226
+* Create a solenoid object for the specified channel.
+227
+*
+228
+* @param channel solenoid channel
+229
+* @return Solenoid object
+230
+*/
+231
+Solenoid makeSolenoid(int channel);
+232
+233
+/**
+234
+* Create a double solenoid object for the specified channels.
+235
+*
+236
+* @param forwardChannel solenoid channel for forward
+237
+* @param reverseChannel solenoid channel for reverse
+238
+* @return DoubleSolenoid object
+239
+*/
+240
+DoubleSolenoid makeDoubleSolenoid(int forwardChannel, int reverseChannel);
+241
+242
+/**
+243
+* Create a compressor object.
+244
+*
+245
+* @return Compressor object
+246
+*/
+247
+Compressor makeCompressor();
+248
+}

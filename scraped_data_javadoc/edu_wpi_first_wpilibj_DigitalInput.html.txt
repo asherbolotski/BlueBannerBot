@@ -1,0 +1,204 @@
+Package
+edu.wpi.first.wpilibj
+Class DigitalInput
+java.lang.Object
+edu.wpi.first.wpilibj.DigitalSource
+edu.wpi.first.wpilibj.DigitalInput
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+DigitalInput
+extends
+DigitalSource
+implements
+Sendable
+Class to read a digital input. This class will read digital inputs and return the current value
+ on the channel. Other devices such as encoders, gear tooth sensors, etc. that are implemented
+ elsewhere will automatically allocate digital inputs and outputs as required. This class is only
+ for devices like switches etc. that aren't implemented anywhere else.
+Constructor Summary
+Constructors
+Constructor
+Description
+DigitalInput
+(int channel)
+Create an instance of a Digital Input class.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+boolean
+get
+()
+Get the value from a digital input channel.
+int
+getAnalogTriggerTypeForRouting
+()
+Get the analog trigger type.
+int
+getChannel
+()
+Get the channel of the digital input.
+int
+getPortHandleForRouting
+()
+Get the HAL Port Handle.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isAnalogTrigger
+()
+Is this an analog trigger.
+void
+setSimDevice
+(
+SimDevice
+device)
+Indicates this input is used by a simulated device.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DigitalInput
+public
+DigitalInput
+(int channel)
+Create an instance of a Digital Input class. Creates a digital input given a channel.
+Parameters:
+channel
+- the DIO channel for the digital input 0-9 are on-board, 10-25 are on the MXP
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+Overrides:
+close
+in class
+DigitalSource
+get
+public
+boolean
+get
+()
+Get the value from a digital input channel. Retrieve the value of a single digital input
+ channel from the FPGA.
+Returns:
+the status of the digital input
+getChannel
+public
+int
+getChannel
+()
+Get the channel of the digital input.
+Specified by:
+getChannel
+in class
+DigitalSource
+Returns:
+The GPIO channel number that this object represents.
+getAnalogTriggerTypeForRouting
+public
+int
+getAnalogTriggerTypeForRouting
+()
+Get the analog trigger type.
+Specified by:
+getAnalogTriggerTypeForRouting
+in class
+DigitalSource
+Returns:
+false
+isAnalogTrigger
+public
+boolean
+isAnalogTrigger
+()
+Is this an analog trigger.
+Specified by:
+isAnalogTrigger
+in class
+DigitalSource
+Returns:
+true if this is an analog trigger
+getPortHandleForRouting
+public
+int
+getPortHandleForRouting
+()
+Get the HAL Port Handle.
+Specified by:
+getPortHandleForRouting
+in class
+DigitalSource
+Returns:
+The HAL Handle to the specified source.
+setSimDevice
+public
+void
+setSimDevice
+(
+SimDevice
+device)
+Indicates this input is used by a simulated device.
+Parameters:
+device
+- simulated device handle
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder

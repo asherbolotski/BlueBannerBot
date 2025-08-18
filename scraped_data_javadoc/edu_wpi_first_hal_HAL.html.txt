@@ -1,0 +1,420 @@
+Package
+edu.wpi.first.hal
+Class HAL
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.HAL
+public final class
+HAL
+extends
+JNIWrapper
+JNI Wrapper for Hardware Abstraction Layer (HAL).
+See Also:
+"hal/HALBase.h"
+"hal/Main.h"
+"hal/FRCUsageReporting.h"
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static final class
+HAL.SimPeriodicAfterCallback
+A callback to be run by IterativeRobotBase after the user's simulationPeriodic code.
+static final class
+HAL.SimPeriodicBeforeCallback
+A callback to be run by IterativeRobotBase prior to the user's simulationPeriodic code.
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+exitMain
+()
+Causes HAL_RunMain() to exit.
+static boolean
+getBrownedOut
+()
+Gets if the system is in a browned out state.
+static int
+getCommsDisableCount
+()
+Gets the number of times the system has been disabled due to communication errors with the
+ Driver Station.
+static int
+getPort
+(byte channel)
+Gets a port handle for a specific channel.
+static int
+getPortWithModule
+(byte module,
+ byte channel)
+Gets a port handle for a specific channel and module.
+static boolean
+getRSLState
+()
+Gets the current state of the Robot Signal Light (RSL).
+static boolean
+getSystemActive
+()
+Gets if the system outputs are currently active.
+static boolean
+getSystemTimeValid
+()
+Gets if the system time is valid.
+static boolean
+hasMain
+()
+Returns true if HAL_SetMain() has been called.
+static boolean
+initialize
+(int timeout,
+ int mode)
+Call this to start up HAL.
+static
+HAL.SimPeriodicAfterCallback
+registerSimPeriodicAfterCallback
+(
+Runnable
+r)
+Registers a callback to be run by IterativeRobotBase after the user's simulationPeriodic code.
+static
+HAL.SimPeriodicBeforeCallback
+registerSimPeriodicBeforeCallback
+(
+Runnable
+r)
+Registers a callback to be run by IterativeRobotBase prior to the user's simulationPeriodic
+ code.
+static void
+report
+(int resource,
+ int instanceNumber)
+Report the usage of a resource of interest.
+static void
+report
+(int resource,
+ int instanceNumber,
+ int context)
+Report the usage of a resource of interest.
+static int
+report
+(int resource,
+ int instanceNumber,
+ int context,
+String
+feature)
+Report the usage of a resource of interest.
+static void
+runMain
+()
+Runs the main function provided to HAL_SetMain().
+static void
+shutdown
+()
+Call this to shut down HAL.
+static void
+simPeriodicAfter
+()
+Runs SimPeriodicAfter callbacks.
+static void
+simPeriodicBefore
+()
+Runs SimPeriodicBefore callbacks.
+static void
+terminate
+()
+Terminates the executable (at the native level).
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+initialize
+public static
+boolean
+initialize
+(int timeout,
+ int mode)
+Call this to start up HAL. This is required for robot programs.
+This must be called before any other HAL functions. Failure to do so will result in
+ undefined behavior, and likely segmentation faults. This means that any statically initialized
+ variables in a program MUST call this function in their constructors if they want to use other
+ HAL calls.
+The common parameters are 500 for timeout and 0 for mode.
+This function is safe to call from any thread, and as many times as you wish. It internally
+ guards from any reentrancy.
+The applicable modes are: 0: Try to kill an existing HAL from another program, if not
+ successful, error. 1: Force kill a HAL from another program. 2: Just warn if another hal exists
+ and cannot be killed. Will likely result in undefined behavior.
+Parameters:
+timeout
+- the initialization timeout (ms)
+mode
+- the initialization mode (see remarks)
+Returns:
+true if initialization was successful, otherwise false.
+See Also:
+"HAL_Initialize"
+shutdown
+public static
+void
+shutdown
+()
+Call this to shut down HAL.
+This must be called at termination of the robot program to avoid potential segmentation
+ faults with simulation extensions at exit.
+See Also:
+"HAL_Shutdown"
+hasMain
+public static
+boolean
+hasMain
+()
+Returns true if HAL_SetMain() has been called.
+Returns:
+True if HAL_SetMain() has been called, false otherwise.
+See Also:
+"HAL_HasMain"
+runMain
+public static
+void
+runMain
+()
+Runs the main function provided to HAL_SetMain().
+If HAL_SetMain() has not been called, simply sleeps until exitMain() is called.
+See Also:
+"HAL_RunMain"
+exitMain
+public static
+void
+exitMain
+()
+Causes HAL_RunMain() to exit.
+If HAL_SetMain() has been called, this calls the exit function provided to that function.
+See Also:
+"HAL_ExitMain"
+terminate
+public static
+void
+terminate
+()
+Terminates the executable (at the native level). Does nothing in simulation.
+registerSimPeriodicBeforeCallback
+public static
+HAL.SimPeriodicBeforeCallback
+registerSimPeriodicBeforeCallback
+(
+Runnable
+r)
+Registers a callback to be run by IterativeRobotBase prior to the user's simulationPeriodic
+ code.
+Parameters:
+r
+- runnable
+Returns:
+Callback object (must be retained for callback to stay active).
+simPeriodicBefore
+public static
+void
+simPeriodicBefore
+()
+Runs SimPeriodicBefore callbacks. IterativeRobotBase calls this prior to the user's
+ simulationPeriodic code.
+registerSimPeriodicAfterCallback
+public static
+HAL.SimPeriodicAfterCallback
+registerSimPeriodicAfterCallback
+(
+Runnable
+r)
+Registers a callback to be run by IterativeRobotBase after the user's simulationPeriodic code.
+Parameters:
+r
+- runnable
+Returns:
+Callback object (must be retained for callback to stay active).
+simPeriodicAfter
+public static
+void
+simPeriodicAfter
+()
+Runs SimPeriodicAfter callbacks. IterativeRobotBase calls this after the user's
+ simulationPeriodic code.
+getBrownedOut
+public static
+boolean
+getBrownedOut
+()
+Gets if the system is in a browned out state.
+Returns:
+true if the system is in a low voltage brown out, false otherwise
+See Also:
+"HAL_GetBrownedOut"
+getSystemActive
+public static
+boolean
+getSystemActive
+()
+Gets if the system outputs are currently active.
+Returns:
+true if the system outputs are active, false if disabled
+See Also:
+"HAL_GetSystemActive"
+getRSLState
+public static
+boolean
+getRSLState
+()
+Gets the current state of the Robot Signal Light (RSL).
+Returns:
+The current state of the RSL- true if on, false if off
+See Also:
+"HAL_GetRSLState"
+getCommsDisableCount
+public static
+int
+getCommsDisableCount
+()
+Gets the number of times the system has been disabled due to communication errors with the
+ Driver Station.
+Returns:
+number of disables due to communication errors.
+getSystemTimeValid
+public static
+boolean
+getSystemTimeValid
+()
+Gets if the system time is valid.
+Returns:
+True if the system time is valid, false otherwise
+See Also:
+"HAL_GetSystemTimeValid"
+getPortWithModule
+public static
+int
+getPortWithModule
+(byte module,
+ byte channel)
+Gets a port handle for a specific channel and module.
+This is expected to be used for PCMs, as the roboRIO does not work with modules anymore.
+The created handle does not need to be freed.
+Parameters:
+module
+- the module number
+channel
+- the channel number
+Returns:
+the created port
+See Also:
+"HAL_GetPortWithModule"
+getPort
+public static
+int
+getPort
+(byte channel)
+Gets a port handle for a specific channel.
+The created handle does not need to be freed.
+Parameters:
+channel
+- the channel number
+Returns:
+the created port
+See Also:
+"HAL_GetPort"
+report
+public static
+void
+report
+(int resource,
+ int instanceNumber)
+Report the usage of a resource of interest.
+Original signature:
+uint32_t report(tResourceType, uint8_t, uint8_t, const
+ char*)
+Parameters:
+resource
+- one of the values in the tResourceType above.
+instanceNumber
+- an index that identifies the resource instance.
+See Also:
+"HAL_Report"
+report
+public static
+void
+report
+(int resource,
+ int instanceNumber,
+ int context)
+Report the usage of a resource of interest.
+Original signature:
+uint32_t report(tResourceType, uint8_t, uint8_t, const
+ char*)
+Parameters:
+resource
+- one of the values in the tResourceType above.
+instanceNumber
+- an index that identifies the resource instance.
+context
+- an optional additional context number for some cases (such as module number).
+     Set to 0 to omit.
+See Also:
+"HAL_Report"
+report
+public static
+int
+report
+(int resource,
+ int instanceNumber,
+ int context,
+String
+feature)
+Report the usage of a resource of interest.
+Original signature:
+uint32_t report(tResourceType, uint8_t, uint8_t, const
+ char*)
+Parameters:
+resource
+- one of the values in the tResourceType above.
+instanceNumber
+- an index that identifies the resource instance.
+context
+- an optional additional context number for some cases (such as module number).
+     Set to 0 to omit.
+feature
+- a string to be included describing features in use on a specific resource.
+     Setting the same resource more than once allows you to change the feature string.
+Returns:
+the index of the added value in NetComm
+See Also:
+"HAL_Report"

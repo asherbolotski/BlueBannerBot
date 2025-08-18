@@ -1,0 +1,230 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.counter;
+006
+007
+import edu.wpi.first.hal.CounterJNI;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import edu.wpi.first.util.sendable.SendableBuilder;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+import edu.wpi.first.wpilibj.DigitalSource;
+014
+import java.nio.ByteBuffer;
+015
+import java.nio.ByteOrder;
+016
+017
+/**
+018
+* Up Down Counter.
+019
+*
+020
+* <p>This class can count edges on a single digital input or count up based on an edge from one
+021
+* digital input and down on an edge from another digital input.
+022
+*/
+023
+public class UpDownCounter implements Sendable, AutoCloseable {
+024
+private final DigitalSource m_upSource;
+025
+private final DigitalSource m_downSource;
+026
+027
+private final int m_handle;
+028
+029
+/**
+030
+* Constructs a new UpDown Counter.
+031
+*
+032
+* @param upSource The up count source (can be null).
+033
+* @param downSource The down count source (can be null).
+034
+*/
+035
+@SuppressWarnings("this-escape")
+036
+public UpDownCounter(DigitalSource upSource, DigitalSource downSource) {
+037
+ByteBuffer index = ByteBuffer.allocateDirect(4);
+038
+// set the byte order
+039
+index.order(ByteOrder.LITTLE_ENDIAN);
+040
+m_handle = CounterJNI.initializeCounter(CounterJNI.TWO_PULSE, index.asIntBuffer());
+041
+042
+if (upSource != null) {
+043
+m_upSource = upSource;
+044
+CounterJNI.setCounterUpSource(
+045
+m_handle, upSource.getPortHandleForRouting(), upSource.getAnalogTriggerTypeForRouting());
+046
+CounterJNI.setCounterUpSourceEdge(m_handle, true, false);
+047
+} else {
+048
+m_upSource = null;
+049
+}
+050
+051
+if (downSource != null) {
+052
+m_downSource = downSource;
+053
+CounterJNI.setCounterDownSource(
+054
+m_handle,
+055
+downSource.getPortHandleForRouting(),
+056
+downSource.getAnalogTriggerTypeForRouting());
+057
+CounterJNI.setCounterDownSourceEdge(m_handle, true, false);
+058
+} else {
+059
+m_downSource = null;
+060
+}
+061
+062
+reset();
+063
+064
+int intIndex = index.getInt();
+065
+HAL.report(tResourceType.kResourceType_Counter, intIndex + 1);
+066
+SendableRegistry.addLW(this, "UpDown Counter", intIndex);
+067
+}
+068
+069
+@Override
+070
+public void close() {
+071
+SendableRegistry.remove(this);
+072
+CounterJNI.freeCounter(m_handle);
+073
+CounterJNI.suppressUnused(m_upSource);
+074
+CounterJNI.suppressUnused(m_downSource);
+075
+}
+076
+077
+/**
+078
+* Sets the configuration for the up source.
+079
+*
+080
+* @param configuration The up source configuration.
+081
+*/
+082
+public void setUpEdgeConfiguration(EdgeConfiguration configuration) {
+083
+CounterJNI.setCounterUpSourceEdge(m_handle, configuration.rising, configuration.falling);
+084
+}
+085
+086
+/**
+087
+* Sets the configuration for the down source.
+088
+*
+089
+* @param configuration The down source configuration.
+090
+*/
+091
+public void setDownEdgeConfiguration(EdgeConfiguration configuration) {
+092
+CounterJNI.setCounterDownSourceEdge(m_handle, configuration.rising, configuration.falling);
+093
+}
+094
+095
+/** Resets the current count. */
+096
+public final void reset() {
+097
+CounterJNI.resetCounter(m_handle);
+098
+}
+099
+100
+/**
+101
+* Sets to reverse the counter direction.
+102
+*
+103
+* @param reverseDirection True to reverse counting direction.
+104
+*/
+105
+public void setReverseDirection(boolean reverseDirection) {
+106
+CounterJNI.setCounterReverseDirection(m_handle, reverseDirection);
+107
+}
+108
+109
+/**
+110
+* Gets the current count.
+111
+*
+112
+* @return The current count.
+113
+*/
+114
+public int getCount() {
+115
+return CounterJNI.getCounter(m_handle);
+116
+}
+117
+118
+@Override
+119
+public void initSendable(SendableBuilder builder) {
+120
+builder.setSmartDashboardType("UpDown Counter");
+121
+builder.addDoubleProperty("Count", this::getCount, null);
+122
+}
+123
+}

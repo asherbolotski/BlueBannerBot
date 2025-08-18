@@ -1,0 +1,1085 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class RoboRioSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.RoboRioSim
+public final class
+RoboRioSim
+extends
+Object
+A utility class to control a simulated RoboRIO.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static double
+getBrownoutVoltage
+()
+Measure the Brownout voltage.
+static
+String
+getComments
+()
+Get the comments string.
+static double
+getCPUTemp
+()
+Get the cpu temp.
+static boolean
+getFPGAButton
+()
+Query the state of the FPGA button.
+static
+RobotController.RadioLEDState
+getRadioLEDState
+()
+Get the state of the radio led.
+static
+String
+getSerialNumber
+()
+Get the serial number.
+static int
+getTeamNumber
+()
+Get the team number.
+static boolean
+getUserActive3V3
+()
+Get the 3.3V rail active state.
+static boolean
+getUserActive5V
+()
+Get the 5V rail active state.
+static boolean
+getUserActive6V
+()
+Get the 6V rail active state.
+static double
+getUserCurrent3V3
+()
+Measure the 3.3V rail current.
+static double
+getUserCurrent5V
+()
+Measure the 5V rail current.
+static double
+getUserCurrent6V
+()
+Measure the 6V rail current.
+static int
+getUserFaults3V3
+()
+Get the 3.3V rail number of faults.
+static int
+getUserFaults5V
+()
+Get the 5V rail number of faults.
+static int
+getUserFaults6V
+()
+Get the 6V rail number of faults.
+static double
+getUserVoltage3V3
+()
+Measure the 3.3V rail voltage.
+static double
+getUserVoltage5V
+()
+Measure the 5V rail voltage.
+static double
+getUserVoltage6V
+()
+Measure the 6V rail voltage.
+static double
+getVInCurrent
+()
+Measure the Vin current.
+static double
+getVInVoltage
+()
+Measure the Vin voltage.
+static
+CallbackStore
+registerBrownoutVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Brownout voltage changes.
+static
+CallbackStore
+registerCPUTempCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the cpu temp changes.
+static
+CallbackStore
+registerFPGAButtonCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the FPGA button state changes.
+static
+CallbackStore
+registerRadioLEDStateCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Radio led state changes.
+static
+CallbackStore
+registerTeamNumberCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the team number changes.
+static
+CallbackStore
+registerUserActive3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail active state changes.
+static
+CallbackStore
+registerUserActive5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail active state changes.
+static
+CallbackStore
+registerUserActive6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail active state changes.
+static
+CallbackStore
+registerUserCurrent3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail current changes.
+static
+CallbackStore
+registerUserCurrent5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail current changes.
+static
+CallbackStore
+registerUserCurrent6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail current changes.
+static
+CallbackStore
+registerUserFaults3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail number of faults changes.
+static
+CallbackStore
+registerUserFaults5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail number of faults changes.
+static
+CallbackStore
+registerUserFaults6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail number of faults changes.
+static
+CallbackStore
+registerUserVoltage3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail voltage changes.
+static
+CallbackStore
+registerUserVoltage5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail voltage changes.
+static
+CallbackStore
+registerUserVoltage6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail voltage changes.
+static
+CallbackStore
+registerVInCurrentCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Vin current changes.
+static
+CallbackStore
+registerVInVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Vin voltage changes.
+static void
+resetData
+()
+Reset all simulation data.
+static void
+setBrownoutVoltage
+(double vInVoltage)
+Define the Brownout voltage.
+static void
+setComments
+(
+String
+comments)
+Set the comments string.
+static void
+setCPUTemp
+(double cpuTemp)
+Set the cpu temp.
+static void
+setFPGAButton
+(boolean fpgaButton)
+Define the state of the FPGA button.
+static void
+setRadioLEDState
+(
+RobotController.RadioLEDState
+state)
+Set the state of the radio led.
+static void
+setSerialNumber
+(
+String
+serialNumber)
+Set the serial number.
+static void
+setTeamNumber
+(int teamNumber)
+Set the team number.
+static void
+setUserActive3V3
+(boolean userActive3V3)
+Set the 3.3V rail active state.
+static void
+setUserActive5V
+(boolean userActive5V)
+Set the 5V rail active state.
+static void
+setUserActive6V
+(boolean userActive6V)
+Set the 6V rail active state.
+static void
+setUserCurrent3V3
+(double userCurrent3V3)
+Define the 3.3V rail current.
+static void
+setUserCurrent5V
+(double userCurrent5V)
+Define the 5V rail current.
+static void
+setUserCurrent6V
+(double userCurrent6V)
+Define the 6V rail current.
+static void
+setUserFaults3V3
+(int userFaults3V3)
+Set the 3.3V rail number of faults.
+static void
+setUserFaults5V
+(int userFaults5V)
+Set the 5V rail number of faults.
+static void
+setUserFaults6V
+(int userFaults6V)
+Set the 6V rail number of faults.
+static void
+setUserVoltage3V3
+(double userVoltage3V3)
+Define the 3.3V rail voltage.
+static void
+setUserVoltage5V
+(double userVoltage5V)
+Define the 5V rail voltage.
+static void
+setUserVoltage6V
+(double userVoltage6V)
+Define the 6V rail voltage.
+static void
+setVInCurrent
+(double vInCurrent)
+Define the Vin current.
+static void
+setVInVoltage
+(double vInVoltage)
+Define the Vin voltage.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+registerFPGAButtonCallback
+public static
+CallbackStore
+registerFPGAButtonCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when the FPGA button state changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getFPGAButton
+public static
+boolean
+getFPGAButton
+()
+Query the state of the FPGA button.
+Returns:
+the FPGA button state
+setFPGAButton
+public static
+void
+setFPGAButton
+(boolean fpgaButton)
+Define the state of the FPGA button.
+Parameters:
+fpgaButton
+- the new state
+registerVInVoltageCallback
+public static
+CallbackStore
+registerVInVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Vin voltage changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getVInVoltage
+public static
+double
+getVInVoltage
+()
+Measure the Vin voltage.
+Returns:
+the Vin voltage
+setVInVoltage
+public static
+void
+setVInVoltage
+(double vInVoltage)
+Define the Vin voltage.
+Parameters:
+vInVoltage
+- the new voltage
+registerVInCurrentCallback
+public static
+CallbackStore
+registerVInCurrentCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Vin current changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getVInCurrent
+public static
+double
+getVInCurrent
+()
+Measure the Vin current.
+Returns:
+the Vin current
+setVInCurrent
+public static
+void
+setVInCurrent
+(double vInCurrent)
+Define the Vin current.
+Parameters:
+vInCurrent
+- the new current
+registerUserVoltage6VCallback
+public static
+CallbackStore
+registerUserVoltage6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail voltage changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserVoltage6V
+public static
+double
+getUserVoltage6V
+()
+Measure the 6V rail voltage.
+Returns:
+the 6V rail voltage
+setUserVoltage6V
+public static
+void
+setUserVoltage6V
+(double userVoltage6V)
+Define the 6V rail voltage.
+Parameters:
+userVoltage6V
+- the new voltage
+registerUserCurrent6VCallback
+public static
+CallbackStore
+registerUserCurrent6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail current changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserCurrent6V
+public static
+double
+getUserCurrent6V
+()
+Measure the 6V rail current.
+Returns:
+the 6V rail current
+setUserCurrent6V
+public static
+void
+setUserCurrent6V
+(double userCurrent6V)
+Define the 6V rail current.
+Parameters:
+userCurrent6V
+- the new current
+registerUserActive6VCallback
+public static
+CallbackStore
+registerUserActive6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail active state changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserActive6V
+public static
+boolean
+getUserActive6V
+()
+Get the 6V rail active state.
+Returns:
+true if the 6V rail is active
+setUserActive6V
+public static
+void
+setUserActive6V
+(boolean userActive6V)
+Set the 6V rail active state.
+Parameters:
+userActive6V
+- true to make rail active
+registerUserVoltage5VCallback
+public static
+CallbackStore
+registerUserVoltage5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail voltage changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserVoltage5V
+public static
+double
+getUserVoltage5V
+()
+Measure the 5V rail voltage.
+Returns:
+the 5V rail voltage
+setUserVoltage5V
+public static
+void
+setUserVoltage5V
+(double userVoltage5V)
+Define the 5V rail voltage.
+Parameters:
+userVoltage5V
+- the new voltage
+registerUserCurrent5VCallback
+public static
+CallbackStore
+registerUserCurrent5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail current changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserCurrent5V
+public static
+double
+getUserCurrent5V
+()
+Measure the 5V rail current.
+Returns:
+the 5V rail current
+setUserCurrent5V
+public static
+void
+setUserCurrent5V
+(double userCurrent5V)
+Define the 5V rail current.
+Parameters:
+userCurrent5V
+- the new current
+registerUserActive5VCallback
+public static
+CallbackStore
+registerUserActive5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail active state changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserActive5V
+public static
+boolean
+getUserActive5V
+()
+Get the 5V rail active state.
+Returns:
+true if the 5V rail is active
+setUserActive5V
+public static
+void
+setUserActive5V
+(boolean userActive5V)
+Set the 5V rail active state.
+Parameters:
+userActive5V
+- true to make rail active
+registerUserVoltage3V3Callback
+public static
+CallbackStore
+registerUserVoltage3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail voltage changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserVoltage3V3
+public static
+double
+getUserVoltage3V3
+()
+Measure the 3.3V rail voltage.
+Returns:
+the 3.3V rail voltage
+setUserVoltage3V3
+public static
+void
+setUserVoltage3V3
+(double userVoltage3V3)
+Define the 3.3V rail voltage.
+Parameters:
+userVoltage3V3
+- the new voltage
+registerUserCurrent3V3Callback
+public static
+CallbackStore
+registerUserCurrent3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail current changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserCurrent3V3
+public static
+double
+getUserCurrent3V3
+()
+Measure the 3.3V rail current.
+Returns:
+the 3.3V rail current
+setUserCurrent3V3
+public static
+void
+setUserCurrent3V3
+(double userCurrent3V3)
+Define the 3.3V rail current.
+Parameters:
+userCurrent3V3
+- the new current
+registerUserActive3V3Callback
+public static
+CallbackStore
+registerUserActive3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail active state changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserActive3V3
+public static
+boolean
+getUserActive3V3
+()
+Get the 3.3V rail active state.
+Returns:
+true if the 3.3V rail is active
+setUserActive3V3
+public static
+void
+setUserActive3V3
+(boolean userActive3V3)
+Set the 3.3V rail active state.
+Parameters:
+userActive3V3
+- true to make rail active
+registerUserFaults6VCallback
+public static
+CallbackStore
+registerUserFaults6VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 6V rail number of faults changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserFaults6V
+public static
+int
+getUserFaults6V
+()
+Get the 6V rail number of faults.
+Returns:
+number of faults
+setUserFaults6V
+public static
+void
+setUserFaults6V
+(int userFaults6V)
+Set the 6V rail number of faults.
+Parameters:
+userFaults6V
+- number of faults
+registerUserFaults5VCallback
+public static
+CallbackStore
+registerUserFaults5VCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 5V rail number of faults changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserFaults5V
+public static
+int
+getUserFaults5V
+()
+Get the 5V rail number of faults.
+Returns:
+number of faults
+setUserFaults5V
+public static
+void
+setUserFaults5V
+(int userFaults5V)
+Set the 5V rail number of faults.
+Parameters:
+userFaults5V
+- number of faults
+registerUserFaults3V3Callback
+public static
+CallbackStore
+registerUserFaults3V3Callback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the 3.3V rail number of faults changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether the callback should be called with the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getUserFaults3V3
+public static
+int
+getUserFaults3V3
+()
+Get the 3.3V rail number of faults.
+Returns:
+number of faults
+setUserFaults3V3
+public static
+void
+setUserFaults3V3
+(int userFaults3V3)
+Set the 3.3V rail number of faults.
+Parameters:
+userFaults3V3
+- number of faults
+registerBrownoutVoltageCallback
+public static
+CallbackStore
+registerBrownoutVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Brownout voltage changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getBrownoutVoltage
+public static
+double
+getBrownoutVoltage
+()
+Measure the Brownout voltage.
+Returns:
+the Brownout voltage
+setBrownoutVoltage
+public static
+void
+setBrownoutVoltage
+(double vInVoltage)
+Define the Brownout voltage.
+Parameters:
+vInVoltage
+- the new voltage
+registerCPUTempCallback
+public static
+CallbackStore
+registerCPUTempCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the cpu temp changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getCPUTemp
+public static
+double
+getCPUTemp
+()
+Get the cpu temp.
+Returns:
+the cpu temp.
+setCPUTemp
+public static
+void
+setCPUTemp
+(double cpuTemp)
+Set the cpu temp.
+Parameters:
+cpuTemp
+- the new cpu temp.
+registerTeamNumberCallback
+public static
+CallbackStore
+registerTeamNumberCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the team number changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getTeamNumber
+public static
+int
+getTeamNumber
+()
+Get the team number.
+Returns:
+the team number.
+setTeamNumber
+public static
+void
+setTeamNumber
+(int teamNumber)
+Set the team number.
+Parameters:
+teamNumber
+- the new team number.
+getSerialNumber
+public static
+String
+getSerialNumber
+()
+Get the serial number.
+Returns:
+The serial number.
+setSerialNumber
+public static
+void
+setSerialNumber
+(
+String
+serialNumber)
+Set the serial number.
+Parameters:
+serialNumber
+- The serial number.
+getComments
+public static
+String
+getComments
+()
+Get the comments string.
+Returns:
+The comments string.
+setComments
+public static
+void
+setComments
+(
+String
+comments)
+Set the comments string.
+Parameters:
+comments
+- The comments string.
+registerRadioLEDStateCallback
+public static
+CallbackStore
+registerRadioLEDStateCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the Radio led state changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getRadioLEDState
+public static
+RobotController.RadioLEDState
+getRadioLEDState
+()
+Get the state of the radio led.
+Returns:
+The state of the radio led.
+setRadioLEDState
+public static
+void
+setRadioLEDState
+(
+RobotController.RadioLEDState
+state)
+Set the state of the radio led.
+Parameters:
+state
+- The state of the radio led.
+resetData
+public static
+void
+resetData
+()
+Reset all simulation data.

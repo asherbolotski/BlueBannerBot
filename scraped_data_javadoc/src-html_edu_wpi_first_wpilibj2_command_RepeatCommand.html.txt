@@ -1,0 +1,168 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.util.sendable.SendableBuilder;
+010
+011
+/**
+012
+* A command that runs another command repeatedly, restarting it when it ends, until this command is
+013
+* interrupted. Command instances that are passed to it cannot be added to any other groups, or
+014
+* scheduled individually.
+015
+*
+016
+* <p>The rules for command compositions apply: command instances that are passed to it cannot be
+017
+* added to any other composition or scheduled individually,and the composition requires all
+018
+* subsystems its components require.
+019
+*
+020
+* <p>This class is provided by the NewCommands VendorDep
+021
+*/
+022
+public class RepeatCommand extends Command {
+023
+private final Command m_command;
+024
+private boolean m_ended;
+025
+026
+/**
+027
+* Creates a new RepeatCommand. Will run another command repeatedly, restarting it whenever it
+028
+* ends, until this command is interrupted.
+029
+*
+030
+* @param command the command to run repeatedly
+031
+*/
+032
+@SuppressWarnings("this-escape")
+033
+public RepeatCommand(Command command) {
+034
+m_command = requireNonNullParam(command, "command", "RepeatCommand");
+035
+CommandScheduler.getInstance().registerComposedCommands(command);
+036
+addRequirements(command.getRequirements());
+037
+setName("Repeat(" + command.getName() + ")");
+038
+}
+039
+040
+@Override
+041
+public void initialize() {
+042
+m_ended = false;
+043
+m_command.initialize();
+044
+}
+045
+046
+@Override
+047
+public void execute() {
+048
+if (m_ended) {
+049
+m_ended = false;
+050
+m_command.initialize();
+051
+}
+052
+m_command.execute();
+053
+if (m_command.isFinished()) {
+054
+// restart command
+055
+m_command.end(false);
+056
+m_ended = true;
+057
+}
+058
+}
+059
+060
+@Override
+061
+public boolean isFinished() {
+062
+return false;
+063
+}
+064
+065
+@Override
+066
+public void end(boolean interrupted) {
+067
+// Make sure we didn't already call end() (which would happen if the command finished in the
+068
+// last call to our execute())
+069
+if (!m_ended) {
+070
+m_command.end(interrupted);
+071
+m_ended = true;
+072
+}
+073
+}
+074
+075
+@Override
+076
+public boolean runsWhenDisabled() {
+077
+return m_command.runsWhenDisabled();
+078
+}
+079
+080
+@Override
+081
+public InterruptionBehavior getInterruptionBehavior() {
+082
+return m_command.getInterruptionBehavior();
+083
+}
+084
+085
+@Override
+086
+public void initSendable(SendableBuilder builder) {
+087
+super.initSendable(builder);
+088
+builder.addStringProperty("command", m_command::getName, null);
+089
+}
+090
+}

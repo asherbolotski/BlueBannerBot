@@ -1,0 +1,127 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.shuffleboard;
+006
+007
+import edu.wpi.first.networktables.GenericEntry;
+008
+import edu.wpi.first.networktables.NetworkTable;
+009
+010
+/** A Shuffleboard widget that handles a single data point such as a number or string. */
+011
+public final class SimpleWidget extends ShuffleboardWidget<SimpleWidget> implements AutoCloseable {
+012
+private String m_typeString = "";
+013
+private GenericEntry m_entry;
+014
+015
+SimpleWidget(ShuffleboardContainer parent, String title) {
+016
+super(parent, title);
+017
+}
+018
+019
+/**
+020
+* Gets the NetworkTable entry that contains the data for this widget.
+021
+*
+022
+* @return The NetworkTable entry that contains the data for this widget.
+023
+*/
+024
+public GenericEntry getEntry() {
+025
+if (m_entry == null) {
+026
+forceGenerate();
+027
+}
+028
+return m_entry;
+029
+}
+030
+031
+/**
+032
+* Gets the NetworkTable entry that contains the data for this widget.
+033
+*
+034
+* @param typeString NetworkTable type string
+035
+* @return The NetworkTable entry that contains the data for this widget.
+036
+*/
+037
+public GenericEntry getEntry(String typeString) {
+038
+if (m_entry == null) {
+039
+m_typeString = typeString;
+040
+forceGenerate();
+041
+}
+042
+return m_entry;
+043
+}
+044
+045
+@Override
+046
+public void close() {
+047
+if (m_entry != null) {
+048
+m_entry.close();
+049
+}
+050
+}
+051
+052
+@Override
+053
+public void buildInto(NetworkTable parentTable, NetworkTable metaTable) {
+054
+buildMetadata(metaTable);
+055
+if (m_entry == null) {
+056
+m_entry = parentTable.getTopic(getTitle()).getGenericEntry(m_typeString);
+057
+}
+058
+}
+059
+060
+private void forceGenerate() {
+061
+ShuffleboardContainer parent = getParent();
+062
+while (parent instanceof ShuffleboardLayout layout) {
+063
+parent = layout.getParent();
+064
+}
+065
+ShuffleboardTab tab = (ShuffleboardTab) parent;
+066
+tab.getRoot().update();
+067
+}
+068
+}

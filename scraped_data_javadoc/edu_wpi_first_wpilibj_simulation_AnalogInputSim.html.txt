@@ -1,0 +1,532 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class AnalogInputSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.AnalogInputSim
+public class
+AnalogInputSim
+extends
+Object
+Class to control a simulated analog input.
+Constructor Summary
+Constructors
+Constructor
+Description
+AnalogInputSim
+(int channel)
+Constructs from an analog input channel number.
+AnalogInputSim
+(
+AnalogInput
+analogInput)
+Constructs from an AnalogInput object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+int
+getAccumulatorCenter
+()
+Get the accumulator center.
+long
+getAccumulatorCount
+()
+Get the accumulator count.
+int
+getAccumulatorDeadband
+()
+Get the accumulator deadband.
+boolean
+getAccumulatorInitialized
+()
+Check if the accumulator has been initialized.
+long
+getAccumulatorValue
+()
+Get the accumulator value.
+int
+getAverageBits
+()
+Get the number of average bits.
+boolean
+getInitialized
+()
+Check if this analog input has been initialized.
+int
+getOversampleBits
+()
+Get the amount of oversampling bits.
+double
+getVoltage
+()
+Get the voltage.
+CallbackStore
+registerAccumulatorCenterCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator center.
+CallbackStore
+registerAccumulatorCountCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator count.
+CallbackStore
+registerAccumulatorDeadbandCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator deadband.
+CallbackStore
+registerAccumulatorInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on whether the accumulator is initialized.
+CallbackStore
+registerAccumulatorValueCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator value.
+CallbackStore
+registerAverageBitsCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the number of average bits.
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on whether the analog input is initialized.
+CallbackStore
+registerOversampleBitsCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the amount of oversampling bits.
+CallbackStore
+registerVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the voltage.
+void
+resetData
+()
+Reset all simulation data for this object.
+void
+setAccumulatorCenter
+(int accumulatorCenter)
+Change the accumulator center.
+void
+setAccumulatorCount
+(long accumulatorCount)
+Change the accumulator count.
+void
+setAccumulatorDeadband
+(int accumulatorDeadband)
+Change the accumulator deadband.
+void
+setAccumulatorInitialized
+(boolean accumulatorInitialized)
+Change whether the accumulator has been initialized.
+void
+setAccumulatorValue
+(long accumulatorValue)
+Change the accumulator value.
+void
+setAverageBits
+(int averageBits)
+Change the number of average bits.
+void
+setInitialized
+(boolean initialized)
+Change whether this analog input has been initialized.
+void
+setOversampleBits
+(int oversampleBits)
+Change the amount of oversampling bits.
+void
+setVoltage
+(double voltage)
+Change the voltage.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AnalogInputSim
+public
+AnalogInputSim
+(
+AnalogInput
+analogInput)
+Constructs from an AnalogInput object.
+Parameters:
+analogInput
+- AnalogInput to simulate
+AnalogInputSim
+public
+AnalogInputSim
+(int channel)
+Constructs from an analog input channel number.
+Parameters:
+channel
+- Channel number
+Method Details
+registerInitializedCallback
+public
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on whether the analog input is initialized.
+Parameters:
+callback
+- the callback that will be called whenever the analog input is initialized
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getInitialized
+public
+boolean
+getInitialized
+()
+Check if this analog input has been initialized.
+Returns:
+true if initialized
+setInitialized
+public
+void
+setInitialized
+(boolean initialized)
+Change whether this analog input has been initialized.
+Parameters:
+initialized
+- the new value
+registerAverageBitsCallback
+public
+CallbackStore
+registerAverageBitsCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the number of average bits.
+Parameters:
+callback
+- the callback that will be called whenever the number of average bits is changed
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getAverageBits
+public
+int
+getAverageBits
+()
+Get the number of average bits.
+Returns:
+the number of average bits
+setAverageBits
+public
+void
+setAverageBits
+(int averageBits)
+Change the number of average bits.
+Parameters:
+averageBits
+- the new value
+registerOversampleBitsCallback
+public
+CallbackStore
+registerOversampleBitsCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the amount of oversampling bits.
+Parameters:
+callback
+- the callback that will be called whenever the oversampling bits are changed.
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getOversampleBits
+public
+int
+getOversampleBits
+()
+Get the amount of oversampling bits.
+Returns:
+the amount of oversampling bits
+setOversampleBits
+public
+void
+setOversampleBits
+(int oversampleBits)
+Change the amount of oversampling bits.
+Parameters:
+oversampleBits
+- the new value
+registerVoltageCallback
+public
+CallbackStore
+registerVoltageCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the voltage.
+Parameters:
+callback
+- the callback that will be called whenever the voltage is changed.
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getVoltage
+public
+double
+getVoltage
+()
+Get the voltage.
+Returns:
+the voltage
+setVoltage
+public
+void
+setVoltage
+(double voltage)
+Change the voltage.
+Parameters:
+voltage
+- the new value
+registerAccumulatorInitializedCallback
+public
+CallbackStore
+registerAccumulatorInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on whether the accumulator is initialized.
+Parameters:
+callback
+- the callback that will be called whenever the accumulator is initialized
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getAccumulatorInitialized
+public
+boolean
+getAccumulatorInitialized
+()
+Check if the accumulator has been initialized.
+Returns:
+true if initialized
+setAccumulatorInitialized
+public
+void
+setAccumulatorInitialized
+(boolean accumulatorInitialized)
+Change whether the accumulator has been initialized.
+Parameters:
+accumulatorInitialized
+- the new value
+registerAccumulatorValueCallback
+public
+CallbackStore
+registerAccumulatorValueCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator value.
+Parameters:
+callback
+- the callback that will be called whenever the accumulator value is changed.
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getAccumulatorValue
+public
+long
+getAccumulatorValue
+()
+Get the accumulator value.
+Returns:
+the accumulator value
+setAccumulatorValue
+public
+void
+setAccumulatorValue
+(long accumulatorValue)
+Change the accumulator value.
+Parameters:
+accumulatorValue
+- the new value
+registerAccumulatorCountCallback
+public
+CallbackStore
+registerAccumulatorCountCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator count.
+Parameters:
+callback
+- the callback that will be called whenever the accumulator count is changed.
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getAccumulatorCount
+public
+long
+getAccumulatorCount
+()
+Get the accumulator count.
+Returns:
+the accumulator count.
+setAccumulatorCount
+public
+void
+setAccumulatorCount
+(long accumulatorCount)
+Change the accumulator count.
+Parameters:
+accumulatorCount
+- the new count.
+registerAccumulatorCenterCallback
+public
+CallbackStore
+registerAccumulatorCenterCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator center.
+Parameters:
+callback
+- the callback that will be called whenever the accumulator center is changed
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getAccumulatorCenter
+public
+int
+getAccumulatorCenter
+()
+Get the accumulator center.
+Returns:
+the accumulator center
+setAccumulatorCenter
+public
+void
+setAccumulatorCenter
+(int accumulatorCenter)
+Change the accumulator center.
+Parameters:
+accumulatorCenter
+- the new center
+registerAccumulatorDeadbandCallback
+public
+CallbackStore
+registerAccumulatorDeadbandCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback on the accumulator deadband.
+Parameters:
+callback
+- the callback that will be called whenever the accumulator deadband is changed
+initialNotify
+- if true, the callback will be run on the initial value
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getAccumulatorDeadband
+public
+int
+getAccumulatorDeadband
+()
+Get the accumulator deadband.
+Returns:
+the accumulator deadband
+setAccumulatorDeadband
+public
+void
+setAccumulatorDeadband
+(int accumulatorDeadband)
+Change the accumulator deadband.
+Parameters:
+accumulatorDeadband
+- the new deadband
+resetData
+public
+void
+resetData
+()
+Reset all simulation data for this object.

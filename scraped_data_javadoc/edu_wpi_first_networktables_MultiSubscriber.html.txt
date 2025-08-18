@@ -1,0 +1,126 @@
+Package
+edu.wpi.first.networktables
+Class MultiSubscriber
+java.lang.Object
+edu.wpi.first.networktables.MultiSubscriber
+All Implemented Interfaces:
+AutoCloseable
+public final class
+MultiSubscriber
+extends
+Object
+implements
+AutoCloseable
+Subscribe to multiple topics based on one or more topic name prefixes. Can be used in combination
+ with NetworkTableListenerPoller to listen for value changes across all matching topics.
+Constructor Summary
+Constructors
+Constructor
+Description
+MultiSubscriber
+(
+NetworkTableInstance
+inst,
+String
+[] prefixes,
+PubSubOption
+... options)
+Create a multiple subscriber.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+int
+getHandle
+()
+Gets the native handle.
+NetworkTableInstance
+getInstance
+()
+Gets the instance for the subscriber.
+boolean
+isValid
+()
+Determines if the native handle is valid.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MultiSubscriber
+public
+MultiSubscriber
+(
+NetworkTableInstance
+inst,
+String
+[] prefixes,
+PubSubOption
+... options)
+Create a multiple subscriber.
+Parameters:
+inst
+- instance
+prefixes
+- topic name prefixes
+options
+- subscriber options
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getInstance
+public
+NetworkTableInstance
+getInstance
+()
+Gets the instance for the subscriber.
+Returns:
+Instance
+isValid
+public
+boolean
+isValid
+()
+Determines if the native handle is valid.
+Returns:
+True if the native handle is valid, false otherwise.
+getHandle
+public
+int
+getHandle
+()
+Gets the native handle.
+Returns:
+Handle

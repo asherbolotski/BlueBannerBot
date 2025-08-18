@@ -1,0 +1,429 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.struct;
+006
+007
+import java.lang.reflect.Array;
+008
+import java.nio.ByteBuffer;
+009
+010
+/**
+011
+* Interface for raw struct serialization.
+012
+*
+013
+* <p>This is designed for serializing small fixed-size data structures in the fastest and most
+014
+* compact means possible. Serialization consists of making relative put() calls to a ByteBuffer and
+015
+* deserialization consists of making relative get() calls from a ByteBuffer.
+016
+*
+017
+* <p>Idiomatically, classes that support raw struct serialization should provide a static final
+018
+* member named "struct" that provides an instance of an implementation of this interface.
+019
+*
+020
+* @param <T> object type
+021
+*/
+022
+public interface Struct<T> {
+023
+/** Serialized size of a "bool" value. */
+024
+int kSizeBool = 1;
+025
+026
+/** Serialized size of an "int8" or "uint8" value. */
+027
+int kSizeInt8 = 1;
+028
+029
+/** Serialized size of an "int16" or "uint16" value. */
+030
+int kSizeInt16 = 2;
+031
+032
+/** Serialized size of an "int32" or "uint32" value. */
+033
+int kSizeInt32 = 4;
+034
+035
+/** Serialized size of an "int64" or "uint64" value. */
+036
+int kSizeInt64 = 8;
+037
+038
+/** Serialized size of an "float" or "float32" value. */
+039
+int kSizeFloat = 4;
+040
+041
+/** Serialized size of an "double" or "float64" value. */
+042
+int kSizeDouble = 8;
+043
+044
+/**
+045
+* Gets the Class object for the stored value.
+046
+*
+047
+* @return Class
+048
+*/
+049
+Class<T> getTypeClass();
+050
+051
+/**
+052
+* Gets the type name (e.g. for schemas of other structs). This should be globally unique among
+053
+* structs.
+054
+*
+055
+* @return type name
+056
+*/
+057
+String getTypeName();
+058
+059
+/**
+060
+* Gets the type string (e.g. for NetworkTables). This should be globally unique and start with
+061
+* "struct:".
+062
+*
+063
+* @return type string
+064
+*/
+065
+default String getTypeString() {
+066
+return "struct:" + getTypeName();
+067
+}
+068
+069
+/**
+070
+* Gets the serialized size (in bytes). This should always be a constant.
+071
+*
+072
+* @return serialized size
+073
+*/
+074
+int getSize();
+075
+076
+/**
+077
+* Gets the schema.
+078
+*
+079
+* @return schema
+080
+*/
+081
+String getSchema();
+082
+083
+/**
+084
+* Gets the list of struct types referenced by this struct.
+085
+*
+086
+* @return list of struct types
+087
+*/
+088
+default Struct<?>[] getNested() {
+089
+return new Struct<?>[] {};
+090
+}
+091
+092
+/**
+093
+* Deserializes an object from a raw struct serialized ByteBuffer starting at the current
+094
+* position. Will increment the ByteBuffer position by getStructSize() bytes. Will not otherwise
+095
+* modify the ByteBuffer (e.g. byte order will not be changed).
+096
+*
+097
+* @param bb ByteBuffer
+098
+* @return New object
+099
+*/
+100
+T unpack(ByteBuffer bb);
+101
+102
+/**
+103
+* Puts object contents to a ByteBuffer starting at the current position. Will increment the
+104
+* ByteBuffer position by getStructSize() bytes. Will not otherwise modify the ByteBuffer (e.g.
+105
+* byte order will not be changed).
+106
+*
+107
+* @param bb ByteBuffer
+108
+* @param value object to serialize
+109
+*/
+110
+void pack(ByteBuffer bb, T value);
+111
+112
+/**
+113
+* Updates object contents from a raw struct serialized ByteBuffer starting at the current
+114
+* position. Will increment the ByteBuffer position by getStructSize() bytes. Will not otherwise
+115
+* modify the ByteBuffer (e.g. byte order will not be changed).
+116
+*
+117
+* <p>Immutable classes cannot and should not implement this function. The default implementation
+118
+* throws UnsupportedOperationException.
+119
+*
+120
+* @param out object to update
+121
+* @param bb ByteBuffer
+122
+* @throws UnsupportedOperationException if the object is immutable
+123
+*/
+124
+default void unpackInto(T out, ByteBuffer bb) {
+125
+throw new UnsupportedOperationException("object does not support unpackInto");
+126
+}
+127
+128
+/**
+129
+* Deserializes an array from a raw struct serialized ByteBuffer starting at the current position.
+130
+* Will increment the ByteBuffer position by size * struct.size() bytes. Will not otherwise modify
+131
+* the ByteBuffer (e.g. byte order will not be changed).
+132
+*
+133
+* @param <T> Object type
+134
+* @param bb ByteBuffer
+135
+* @param size Size of the array
+136
+* @param struct Struct implementation
+137
+* @return Deserialized array
+138
+*/
+139
+static <T> T[] unpackArray(ByteBuffer bb, int size, Struct<T> struct) {
+140
+@SuppressWarnings("unchecked")
+141
+T[] arr = (T[]) Array.newInstance(struct.getTypeClass(), size);
+142
+for (int i = 0; i < arr.length; i++) {
+143
+arr[i] = struct.unpack(bb);
+144
+}
+145
+return arr;
+146
+}
+147
+148
+/**
+149
+* Deserializes a double array from a raw struct serialized ByteBuffer starting at the current
+150
+* position. Will increment the ByteBuffer position by size * kSizeDouble bytes. Will not
+151
+* otherwise modify the ByteBuffer (e.g. byte order will not be changed).
+152
+*
+153
+* @param bb ByteBuffer
+154
+* @param size Size of the array
+155
+* @return Double array
+156
+*/
+157
+static double[] unpackDoubleArray(ByteBuffer bb, int size) {
+158
+double[] arr = new double[size];
+159
+for (int i = 0; i < size; i++) {
+160
+arr[i] = bb.getDouble();
+161
+}
+162
+return arr;
+163
+}
+164
+165
+/**
+166
+* Puts array contents to a ByteBuffer starting at the current position. Will increment the
+167
+* ByteBuffer position by size * struct.size() bytes. Will not otherwise modify the ByteBuffer
+168
+* (e.g. byte order will not be changed).
+169
+*
+170
+* @param <T> Object type
+171
+* @param bb ByteBuffer
+172
+* @param arr Array to serialize
+173
+* @param struct Struct implementation
+174
+*/
+175
+static <T> void packArray(ByteBuffer bb, T[] arr, Struct<T> struct) {
+176
+for (T obj : arr) {
+177
+struct.pack(bb, obj);
+178
+}
+179
+}
+180
+181
+/**
+182
+* Puts array contents to a ByteBuffer starting at the current position. Will increment the
+183
+* ByteBuffer position by size * kSizeDouble bytes. Will not otherwise modify the ByteBuffer (e.g.
+184
+* byte order will not be changed).
+185
+*
+186
+* @param bb ByteBuffer
+187
+* @param arr Array to serialize
+188
+*/
+189
+static void packArray(ByteBuffer bb, double[] arr) {
+190
+for (double obj : arr) {
+191
+bb.putDouble(obj);
+192
+}
+193
+}
+194
+195
+/**
+196
+* Returns whether or not objects are immutable. Immutable objects must also be comparable using
+197
+* the equals() method. Default implementation returns false.
+198
+*
+199
+* @return True if object is immutable
+200
+*/
+201
+default boolean isImmutable() {
+202
+return false;
+203
+}
+204
+205
+/**
+206
+* Returns whether or not objects are cloneable using the clone() method. Cloneable objects must
+207
+* also be comparable using the equals() method. Default implementation returns false.
+208
+*
+209
+* @return True if object is cloneable
+210
+*/
+211
+default boolean isCloneable() {
+212
+return false;
+213
+}
+214
+215
+/**
+216
+* Creates a (deep) clone of the object. May also return the object directly if the object is
+217
+* immutable. Default implementation throws CloneNotSupportedException. Typically this should be
+218
+* implemented by implementing clone() on the object itself, and calling it from here.
+219
+*
+220
+* @param obj object to clone
+221
+* @return Clone of object (if immutable, may be same object)
+222
+* @throws CloneNotSupportedException if clone not supported
+223
+*/
+224
+default T clone(T obj) throws CloneNotSupportedException {
+225
+throw new CloneNotSupportedException();
+226
+}
+227
+}

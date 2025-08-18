@@ -1,0 +1,199 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.AccelerometerJNI;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import edu.wpi.first.util.sendable.SendableBuilder;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+014
+/**
+015
+* Built-in accelerometer.
+016
+*
+017
+* <p>This class allows access to the roboRIO's internal accelerometer.
+018
+*/
+019
+public class BuiltInAccelerometer implements Sendable, AutoCloseable {
+020
+/** Accelerometer range. */
+021
+public enum Range {
+022
+/** 2 Gs max. */
+023
+k2G,
+024
+/** 4 Gs max. */
+025
+k4G,
+026
+/** 8 Gs max. */
+027
+k8G
+028
+}
+029
+030
+/**
+031
+* Constructor.
+032
+*
+033
+* @param range The range the accelerometer will measure
+034
+*/
+035
+@SuppressWarnings("this-escape")
+036
+public BuiltInAccelerometer(Range range) {
+037
+setRange(range);
+038
+HAL.report(tResourceType.kResourceType_Accelerometer, 0, 0, "Built-in accelerometer");
+039
+SendableRegistry.addLW(this, "BuiltInAccel", 0);
+040
+}
+041
+042
+/** Constructor. The accelerometer will measure +/-8 g-forces */
+043
+public BuiltInAccelerometer() {
+044
+this(Range.k8G);
+045
+}
+046
+047
+@Override
+048
+public void close() {
+049
+SendableRegistry.remove(this);
+050
+}
+051
+052
+/**
+053
+* Set the measuring range of the accelerometer.
+054
+*
+055
+* @param range The maximum acceleration, positive or negative, that the accelerometer will
+056
+*     measure.
+057
+*/
+058
+public final void setRange(Range range) {
+059
+AccelerometerJNI.setAccelerometerActive(false);
+060
+061
+int rangeValue =
+062
+switch (range) {
+063
+case k2G -> 0;
+064
+case k4G -> 1;
+065
+case k8G -> 2;
+066
+};
+067
+068
+AccelerometerJNI.setAccelerometerRange(rangeValue);
+069
+AccelerometerJNI.setAccelerometerActive(true);
+070
+}
+071
+072
+/**
+073
+* The acceleration in the X axis.
+074
+*
+075
+* @return The acceleration of the roboRIO along the X axis in g-forces
+076
+*/
+077
+public double getX() {
+078
+return AccelerometerJNI.getAccelerometerX();
+079
+}
+080
+081
+/**
+082
+* The acceleration in the Y axis.
+083
+*
+084
+* @return The acceleration of the roboRIO along the Y axis in g-forces
+085
+*/
+086
+public double getY() {
+087
+return AccelerometerJNI.getAccelerometerY();
+088
+}
+089
+090
+/**
+091
+* The acceleration in the Z axis.
+092
+*
+093
+* @return The acceleration of the roboRIO along the Z axis in g-forces
+094
+*/
+095
+public double getZ() {
+096
+return AccelerometerJNI.getAccelerometerZ();
+097
+}
+098
+099
+@Override
+100
+public void initSendable(SendableBuilder builder) {
+101
+builder.setSmartDashboardType("3AxisAccelerometer");
+102
+builder.addDoubleProperty("X", this::getX, null);
+103
+builder.addDoubleProperty("Y", this::getY, null);
+104
+builder.addDoubleProperty("Z", this::getZ, null);
+105
+}
+106
+}

@@ -1,0 +1,406 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.protobuf;
+006
+007
+import java.lang.reflect.Array;
+008
+import java.util.function.BiConsumer;
+009
+import java.util.function.Predicate;
+010
+import us.hebi.quickbuf.Descriptors.Descriptor;
+011
+import us.hebi.quickbuf.Descriptors.FileDescriptor;
+012
+import us.hebi.quickbuf.ProtoMessage;
+013
+import us.hebi.quickbuf.RepeatedDouble;
+014
+import us.hebi.quickbuf.RepeatedMessage;
+015
+016
+/**
+017
+* Interface for Protobuf serialization.
+018
+*
+019
+* <p>This is designed for serialization of more complex data structures including forward/backwards
+020
+* compatibility and repeated/nested/variable length members, etc. Serialization and deserialization
+021
+* code is auto-generated from .proto interface descriptions (the MessageType generic parameter).
+022
+*
+023
+* <p>Idiomatically, classes that support protobuf serialization should provide a static final
+024
+* member named "proto" that provides an instance of an implementation of this interface, or a
+025
+* static final method named "getProto" if the class is generic.
+026
+*
+027
+* @param <T> object type
+028
+* @param <MessageType> protobuf message type
+029
+*/
+030
+public interface Protobuf<T, MessageType extends ProtoMessage<?>> {
+031
+/**
+032
+* Gets the Class object for the stored value.
+033
+*
+034
+* @return Class
+035
+*/
+036
+Class<T> getTypeClass();
+037
+038
+/**
+039
+* Gets the type string (e.g. for NetworkTables). This should be globally unique and start with
+040
+* "proto:".
+041
+*
+042
+* @return type string
+043
+*/
+044
+default String getTypeString() {
+045
+return "proto:" + getDescriptor().getFullName();
+046
+}
+047
+048
+/**
+049
+* Gets the protobuf descriptor.
+050
+*
+051
+* @return descriptor
+052
+*/
+053
+Descriptor getDescriptor();
+054
+055
+/**
+056
+* Creates protobuf message.
+057
+*
+058
+* @return protobuf message
+059
+*/
+060
+MessageType createMessage();
+061
+062
+/**
+063
+* Deserializes an object from a protobuf message.
+064
+*
+065
+* @param msg protobuf message
+066
+* @return New object
+067
+*/
+068
+T unpack(MessageType msg);
+069
+070
+/**
+071
+* Copies the object contents into a protobuf message. Implementations should call either
+072
+* msg.setMember(member) or member.copyToProto(msg.getMutableMember()) for each member.
+073
+*
+074
+* @param msg protobuf message
+075
+* @param value object to serialize
+076
+*/
+077
+void pack(MessageType msg, T value);
+078
+079
+/**
+080
+* Updates the object contents from a protobuf message. Implementations should call
+081
+* msg.getMember(member), MemberClass.makeFromProto(msg.getMember()), or
+082
+* member.updateFromProto(msg.getMember()) for each member.
+083
+*
+084
+* <p>Immutable classes cannot and should not implement this function. The default implementation
+085
+* throws UnsupportedOperationException.
+086
+*
+087
+* @param out object to update
+088
+* @param msg protobuf message
+089
+* @throws UnsupportedOperationException if the object is immutable
+090
+*/
+091
+default void unpackInto(T out, MessageType msg) {
+092
+throw new UnsupportedOperationException("object does not support unpackInto");
+093
+}
+094
+095
+/**
+096
+* Returns whether or not objects are immutable. Immutable objects must also be comparable using
+097
+* the equals() method. Default implementation returns false.
+098
+*
+099
+* @return True if object is immutable
+100
+*/
+101
+default boolean isImmutable() {
+102
+return false;
+103
+}
+104
+105
+/**
+106
+* Returns whether or not objects are cloneable using the clone() method. Cloneable objects must
+107
+* also be comparable using the equals() method. Default implementation returns false.
+108
+*
+109
+* @return True if object is cloneable
+110
+*/
+111
+default boolean isCloneable() {
+112
+return false;
+113
+}
+114
+115
+/**
+116
+* Creates a (deep) clone of the object. May also return the object directly if the object is
+117
+* immutable. Default implementation throws CloneNotSupportedException. Typically this should be
+118
+* implemented by implementing clone() on the object itself, and calling it from here.
+119
+*
+120
+* @param obj object to clone
+121
+* @return Clone of object (if immutable, may be same object)
+122
+* @throws CloneNotSupportedException if clone not supported
+123
+*/
+124
+default T clone(T obj) throws CloneNotSupportedException {
+125
+throw new CloneNotSupportedException();
+126
+}
+127
+128
+/**
+129
+* Loops over all protobuf descriptors including nested/referenced descriptors.
+130
+*
+131
+* @param exists function that returns false if fn should be called for the given type string
+132
+* @param fn function to call for each descriptor
+133
+*/
+134
+default void forEachDescriptor(Predicate<String> exists, BiConsumer<String, byte[]> fn) {
+135
+forEachDescriptorImpl(getDescriptor().getFile(), exists, fn);
+136
+}
+137
+138
+private static void forEachDescriptorImpl(
+139
+FileDescriptor desc, Predicate<String> exists, BiConsumer<String, byte[]> fn) {
+140
+String name = "proto:" + desc.getFullName();
+141
+if (exists.test(name)) {
+142
+return;
+143
+}
+144
+for (FileDescriptor dep : desc.getDependencies()) {
+145
+forEachDescriptorImpl(dep, exists, fn);
+146
+}
+147
+fn.accept(name, desc.toProtoBytes());
+148
+}
+149
+150
+/**
+151
+* Unpack a serialized protobuf array message.
+152
+*
+153
+* @param <T> object type
+154
+* @param <MessageType> element type of the protobuf array
+155
+* @param msg protobuf array message
+156
+* @param proto protobuf implementation
+157
+* @return Deserialized array
+158
+*/
+159
+static <T, MessageType extends ProtoMessage<MessageType>> T[] unpackArray(
+160
+RepeatedMessage<MessageType> msg, Protobuf<T, MessageType> proto) {
+161
+@SuppressWarnings("unchecked")
+162
+T[] result = (T[]) Array.newInstance(proto.getTypeClass(), msg.length());
+163
+for (int i = 0; i < result.length; i++) {
+164
+result[i] = proto.unpack(msg.get(i));
+165
+}
+166
+return result;
+167
+}
+168
+169
+/**
+170
+* Unpack a serialized protobuf double array message.
+171
+*
+172
+* @param msg protobuf double array message
+173
+* @return Deserialized array
+174
+*/
+175
+static double[] unpackArray(RepeatedDouble msg) {
+176
+double[] result = new double[msg.length()];
+177
+for (int i = 0; i < result.length; i++) {
+178
+result[i] = msg.get(i);
+179
+}
+180
+return result;
+181
+}
+182
+183
+/**
+184
+* Pack a serialized protobuf array message.
+185
+*
+186
+* @param <T> object type
+187
+* @param <MessageType> element type of the protobuf array
+188
+* @param msg protobuf array message
+189
+* @param arr array of objects
+190
+* @param proto protobuf implementation
+191
+*/
+192
+static <T, MessageType extends ProtoMessage<MessageType>> void packArray(
+193
+RepeatedMessage<MessageType> msg, T[] arr, Protobuf<T, MessageType> proto) {
+194
+msg.clear();
+195
+msg.reserve(arr.length);
+196
+for (var obj : arr) {
+197
+proto.pack(msg.next(), obj);
+198
+}
+199
+}
+200
+201
+/**
+202
+* Pack a serialized protobuf double array message.
+203
+*
+204
+* @param msg protobuf double array message
+205
+* @param arr array of objects
+206
+*/
+207
+static void packArray(RepeatedDouble msg, double[] arr) {
+208
+msg.clear();
+209
+msg.reserve(arr.length);
+210
+msg.addAll(arr);
+211
+}
+212
+}

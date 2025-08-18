@@ -1,0 +1,215 @@
+Package
+edu.wpi.first.wpilibj
+Class DataLogManager
+java.lang.Object
+edu.wpi.first.wpilibj.DataLogManager
+public final class
+DataLogManager
+extends
+Object
+Centralized data log that provides automatic data log file management. It automatically cleans up
+ old files when disk space is low and renames the file based either on current date/time or (if
+ available) competition match number. The data file will be saved to a USB flash drive in a folder
+ named "logs" if one is attached, or to /home/lvuser/logs otherwise.
+Log files are initially named "FRC_TBD_{random}.wpilog" until the DS connects. After the DS
+ connects, the log file is renamed to "FRC_yyyyMMdd_HHmmss.wpilog" (where the date/time is UTC).
+ If the FMS is connected and provides a match number, the log file is renamed to
+ "FRC_yyyyMMdd_HHmmss_{event}_{match}.wpilog".
+On startup, all existing FRC_TBD log files are deleted. If there is less than 50 MB of free
+ space on the target storage, FRC_ log files are deleted (oldest to newest) until there is 50 MB
+ free OR there are 10 files remaining.
+By default, all NetworkTables value changes are stored to the data log.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+DataLog
+getLog
+()
+Get the managed data log (for custom logging).
+static
+String
+getLogDir
+()
+Get the log directory.
+static void
+log
+(
+String
+message)
+Log a message to the "messages" entry.
+static void
+logConsoleOutput
+(boolean enabled)
+Enable or disable logging of the console output.
+static void
+logNetworkTables
+(boolean enabled)
+Enable or disable logging of NetworkTables data.
+static void
+start
+()
+Start data log manager with default directory location.
+static void
+start
+(
+String
+dir)
+Start data log manager.
+static void
+start
+(
+String
+dir,
+String
+filename)
+Start data log manager.
+static void
+start
+(
+String
+dir,
+String
+filename,
+ double period)
+Start data log manager.
+static void
+stop
+()
+Stop data log manager.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+start
+public static
+void
+start
+()
+Start data log manager with default directory location.
+start
+public static
+void
+start
+(
+String
+dir)
+Start data log manager. The parameters have no effect if the data log manager was already
+ started (e.g. by calling another static function).
+Parameters:
+dir
+- if not empty, directory to use for data log storage
+start
+public static
+void
+start
+(
+String
+dir,
+String
+filename)
+Start data log manager. The parameters have no effect if the data log manager was already
+ started (e.g. by calling another static function).
+Parameters:
+dir
+- if not empty, directory to use for data log storage
+filename
+- filename to use; if none provided, the filename is automatically generated
+start
+public static
+void
+start
+(
+String
+dir,
+String
+filename,
+ double period)
+Start data log manager. The parameters have no effect if the data log manager was already
+ started (e.g. by calling another static function).
+Parameters:
+dir
+- if not empty, directory to use for data log storage
+filename
+- filename to use; if none provided, the filename is automatically generated
+period
+- time between automatic flushes to disk, in seconds; this is a time/storage
+     tradeoff
+stop
+public static
+void
+stop
+()
+Stop data log manager.
+log
+public static
+void
+log
+(
+String
+message)
+Log a message to the "messages" entry. The message is also printed to standard output (followed
+ by a newline).
+Parameters:
+message
+- message
+getLog
+public static
+DataLog
+getLog
+()
+Get the managed data log (for custom logging). Starts the data log manager if not already
+ started.
+Returns:
+data log
+getLogDir
+public static
+String
+getLogDir
+()
+Get the log directory.
+Returns:
+log directory, or empty string if logging not yet started
+logNetworkTables
+public static
+void
+logNetworkTables
+(boolean enabled)
+Enable or disable logging of NetworkTables data. Note that unlike the network interface for
+ NetworkTables, this will capture every value change. Defaults to enabled.
+Parameters:
+enabled
+- true to enable, false to disable
+logConsoleOutput
+public static
+void
+logConsoleOutput
+(boolean enabled)
+Enable or disable logging of the console output. Defaults to enabled.
+Parameters:
+enabled
+- true to enable, false to disable

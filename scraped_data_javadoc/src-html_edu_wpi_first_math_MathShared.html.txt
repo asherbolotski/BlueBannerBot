@@ -1,0 +1,58 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math;
+006
+007
+/** WPIMath utility functions. */
+008
+public interface MathShared {
+009
+/**
+010
+* Report an error.
+011
+*
+012
+* @param error the error to set
+013
+* @param stackTrace array of stacktrace elements
+014
+*/
+015
+void reportError(String error, StackTraceElement[] stackTrace);
+016
+017
+/**
+018
+* Report usage.
+019
+*
+020
+* @param id the usage id
+021
+* @param count the usage count
+022
+*/
+023
+void reportUsage(MathUsageId id, int count);
+024
+025
+/**
+026
+* Get the current time.
+027
+*
+028
+* @return Time in seconds
+029
+*/
+030
+double getTimestamp();
+031
+}

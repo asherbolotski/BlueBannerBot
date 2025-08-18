@@ -1,0 +1,1508 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.hal.FRCNetComm.tInstances;
+010
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+011
+import edu.wpi.first.hal.HAL;
+012
+import edu.wpi.first.util.sendable.Sendable;
+013
+import edu.wpi.first.util.sendable.SendableBuilder;
+014
+import edu.wpi.first.util.sendable.SendableRegistry;
+015
+import edu.wpi.first.wpilibj.DriverStation;
+016
+import edu.wpi.first.wpilibj.RobotBase;
+017
+import edu.wpi.first.wpilibj.RobotState;
+018
+import edu.wpi.first.wpilibj.TimedRobot;
+019
+import edu.wpi.first.wpilibj.Watchdog;
+020
+import edu.wpi.first.wpilibj.event.EventLoop;
+021
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+022
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+023
+import java.io.PrintWriter;
+024
+import java.io.StringWriter;
+025
+import java.util.ArrayList;
+026
+import java.util.Arrays;
+027
+import java.util.Collection;
+028
+import java.util.Collections;
+029
+import java.util.Iterator;
+030
+import java.util.LinkedHashMap;
+031
+import java.util.LinkedHashSet;
+032
+import java.util.List;
+033
+import java.util.Map;
+034
+import java.util.Optional;
+035
+import java.util.Set;
+036
+import java.util.WeakHashMap;
+037
+import java.util.function.BiConsumer;
+038
+import java.util.function.Consumer;
+039
+040
+/**
+041
+* The scheduler responsible for running {@link Command}s. A Command-based robot should call {@link
+042
+* CommandScheduler#run()} on the singleton instance in its periodic block in order to run commands
+043
+* synchronously from the main loop. Subsystems should be registered with the scheduler using {@link
+044
+* CommandScheduler#registerSubsystem(Subsystem...)} in order for their {@link Subsystem#periodic()}
+045
+* methods to be called and for their default commands to be scheduled.
+046
+*
+047
+* <p>This class is provided by the NewCommands VendorDep
+048
+*/
+049
+public final class CommandScheduler implements Sendable, AutoCloseable {
+050
+/** The Singleton Instance. */
+051
+private static CommandScheduler instance;
+052
+053
+/**
+054
+* Returns the Scheduler instance.
+055
+*
+056
+* @return the instance
+057
+*/
+058
+public static synchronized CommandScheduler getInstance() {
+059
+if (instance == null) {
+060
+instance = new CommandScheduler();
+061
+}
+062
+return instance;
+063
+}
+064
+065
+private static final Optional<Command> kNoInterruptor = Optional.empty();
+066
+067
+private final Map<Command, Exception> m_composedCommands = new WeakHashMap<>();
+068
+069
+// A set of the currently-running commands.
+070
+private final Set<Command> m_scheduledCommands = new LinkedHashSet<>();
+071
+072
+// A map from required subsystems to their requiring commands. Also used as a set of the
+073
+// currently-required subsystems.
+074
+private final Map<Subsystem, Command> m_requirements = new LinkedHashMap<>();
+075
+076
+// A map from subsystems registered with the scheduler to their default commands.  Also used
+077
+// as a list of currently-registered subsystems.
+078
+private final Map<Subsystem, Command> m_subsystems = new LinkedHashMap<>();
+079
+080
+private final EventLoop m_defaultButtonLoop = new EventLoop();
+081
+// The set of currently-registered buttons that will be polled every iteration.
+082
+private EventLoop m_activeButtonLoop = m_defaultButtonLoop;
+083
+084
+private boolean m_disabled;
+085
+086
+// Lists of user-supplied actions to be executed on scheduling events for every command.
+087
+private final List<Consumer<Command>> m_initActions = new ArrayList<>();
+088
+private final List<Consumer<Command>> m_executeActions = new ArrayList<>();
+089
+private final List<BiConsumer<Command, Optional<Command>>> m_interruptActions = new ArrayList<>();
+090
+private final List<Consumer<Command>> m_finishActions = new ArrayList<>();
+091
+092
+// Flag and queues for avoiding ConcurrentModificationException if commands are
+093
+// scheduled/canceled during run
+094
+private boolean m_inRunLoop;
+095
+private final Set<Command> m_toSchedule = new LinkedHashSet<>();
+096
+private final List<Command> m_toCancelCommands = new ArrayList<>();
+097
+private final List<Optional<Command>> m_toCancelInterruptors = new ArrayList<>();
+098
+private final Set<Command> m_endingCommands = new LinkedHashSet<>();
+099
+100
+private final Watchdog m_watchdog = new Watchdog(TimedRobot.kDefaultPeriod, () -> {});
+101
+102
+CommandScheduler() {
+103
+HAL.report(tResourceType.kResourceType_Command, tInstances.kCommand2_Scheduler);
+104
+SendableRegistry.addLW(this, "Scheduler");
+105
+LiveWindow.setEnabledListener(
+106
+() -> {
+107
+disable();
+108
+cancelAll();
+109
+});
+110
+LiveWindow.setDisabledListener(this::enable);
+111
+}
+112
+113
+/**
+114
+* Changes the period of the loop overrun watchdog. This should be kept in sync with the
+115
+* TimedRobot period.
+116
+*
+117
+* @param period Period in seconds.
+118
+*/
+119
+public void setPeriod(double period) {
+120
+m_watchdog.setTimeout(period);
+121
+}
+122
+123
+@Override
+124
+public void close() {
+125
+SendableRegistry.remove(this);
+126
+LiveWindow.setEnabledListener(null);
+127
+LiveWindow.setDisabledListener(null);
+128
+}
+129
+130
+/**
+131
+* Get the default button poll.
+132
+*
+133
+* @return a reference to the default {@link EventLoop} object polling buttons.
+134
+*/
+135
+public EventLoop getDefaultButtonLoop() {
+136
+return m_defaultButtonLoop;
+137
+}
+138
+139
+/**
+140
+* Get the active button poll.
+141
+*
+142
+* @return a reference to the current {@link EventLoop} object polling buttons.
+143
+*/
+144
+public EventLoop getActiveButtonLoop() {
+145
+return m_activeButtonLoop;
+146
+}
+147
+148
+/**
+149
+* Replace the button poll with another one.
+150
+*
+151
+* @param loop the new button polling loop object.
+152
+*/
+153
+public void setActiveButtonLoop(EventLoop loop) {
+154
+m_activeButtonLoop =
+155
+requireNonNullParam(loop, "loop", "CommandScheduler" + ".replaceButtonEventLoop");
+156
+}
+157
+158
+/**
+159
+* Initializes a given command, adds its requirements to the list, and performs the init actions.
+160
+*
+161
+* @param command The command to initialize
+162
+* @param requirements The command requirements
+163
+*/
+164
+private void initCommand(Command command, Set<Subsystem> requirements) {
+165
+m_scheduledCommands.add(command);
+166
+for (Subsystem requirement : requirements) {
+167
+m_requirements.put(requirement, command);
+168
+}
+169
+command.initialize();
+170
+for (Consumer<Command> action : m_initActions) {
+171
+action.accept(command);
+172
+}
+173
+174
+m_watchdog.addEpoch(command.getName() + ".initialize()");
+175
+}
+176
+177
+/**
+178
+* Schedules a command for execution. Does nothing if the command is already scheduled. If a
+179
+* command's requirements are not available, it will only be started if all the commands currently
+180
+* using those requirements have been scheduled as interruptible. If this is the case, they will
+181
+* be interrupted and the command will be scheduled.
+182
+*
+183
+* <p>WARNING: using this function directly can often lead to unexpected behavior and should be
+184
+* avoided. Instead Triggers should be used to schedule Commands.
+185
+*
+186
+* @param command the command to schedule. If null, no-op.
+187
+*/
+188
+private void schedule(Command command) {
+189
+if (command == null) {
+190
+DriverStation.reportWarning("Tried to schedule a null command", true);
+191
+return;
+192
+}
+193
+if (m_inRunLoop) {
+194
+m_toSchedule.add(command);
+195
+return;
+196
+}
+197
+198
+requireNotComposed(command);
+199
+200
+// Do nothing if the scheduler is disabled, the robot is disabled and the command doesn't
+201
+// run when disabled, or the command is already scheduled.
+202
+if (m_disabled
+203
+|| isScheduled(command)
+204
+|| RobotState.isDisabled() && !command.runsWhenDisabled()) {
+205
+return;
+206
+}
+207
+208
+Set<Subsystem> requirements = command.getRequirements();
+209
+210
+// Schedule the command if the requirements are not currently in-use.
+211
+if (Collections.disjoint(m_requirements.keySet(), requirements)) {
+212
+initCommand(command, requirements);
+213
+} else {
+214
+// Else check if the requirements that are in use have all have interruptible commands,
+215
+// and if so, interrupt those commands and schedule the new command.
+216
+for (Subsystem requirement : requirements) {
+217
+Command requiring = requiring(requirement);
+218
+if (requiring != null
+219
+&& requiring.getInterruptionBehavior() == InterruptionBehavior.kCancelIncoming) {
+220
+return;
+221
+}
+222
+}
+223
+for (Subsystem requirement : requirements) {
+224
+Command requiring = requiring(requirement);
+225
+if (requiring != null) {
+226
+cancel(requiring, Optional.of(command));
+227
+}
+228
+}
+229
+initCommand(command, requirements);
+230
+}
+231
+}
+232
+233
+/**
+234
+* Schedules multiple commands for execution. Does nothing for commands already scheduled.
+235
+*
+236
+* <p>WARNING: using this function directly can often lead to unexpected behavior and should be
+237
+* avoided. Instead Triggers should be used to schedule Commands.
+238
+*
+239
+* @param commands the commands to schedule. No-op on null.
+240
+*/
+241
+public void schedule(Command... commands) {
+242
+for (Command command : commands) {
+243
+schedule(command);
+244
+}
+245
+}
+246
+247
+/**
+248
+* Runs a single iteration of the scheduler. The execution occurs in the following order:
+249
+*
+250
+* <p>Subsystem periodic methods are called.
+251
+*
+252
+* <p>Button bindings are polled, and new commands are scheduled from them.
+253
+*
+254
+* <p>Currently-scheduled commands are executed.
+255
+*
+256
+* <p>End conditions are checked on currently-scheduled commands, and commands that are finished
+257
+* have their end methods called and are removed.
+258
+*
+259
+* <p>Any subsystems not being used as requirements have their default methods started.
+260
+*/
+261
+public void run() {
+262
+if (m_disabled) {
+263
+return;
+264
+}
+265
+m_watchdog.reset();
+266
+267
+// Run the periodic method of all registered subsystems.
+268
+for (Subsystem subsystem : m_subsystems.keySet()) {
+269
+subsystem.periodic();
+270
+if (RobotBase.isSimulation()) {
+271
+subsystem.simulationPeriodic();
+272
+}
+273
+m_watchdog.addEpoch(subsystem.getName() + ".periodic()");
+274
+}
+275
+276
+// Cache the active instance to avoid concurrency problems if setActiveLoop() is called from
+277
+// inside the button bindings.
+278
+EventLoop loopCache = m_activeButtonLoop;
+279
+// Poll buttons for new commands to add.
+280
+loopCache.poll();
+281
+m_watchdog.addEpoch("buttons.run()");
+282
+283
+m_inRunLoop = true;
+284
+boolean isDisabled = RobotState.isDisabled();
+285
+// Run scheduled commands, remove finished commands.
+286
+for (Iterator<Command> iterator = m_scheduledCommands.iterator(); iterator.hasNext(); ) {
+287
+Command command = iterator.next();
+288
+289
+if (isDisabled && !command.runsWhenDisabled()) {
+290
+cancel(command, kNoInterruptor);
+291
+continue;
+292
+}
+293
+294
+command.execute();
+295
+for (Consumer<Command> action : m_executeActions) {
+296
+action.accept(command);
+297
+}
+298
+m_watchdog.addEpoch(command.getName() + ".execute()");
+299
+if (command.isFinished()) {
+300
+m_endingCommands.add(command);
+301
+command.end(false);
+302
+for (Consumer<Command> action : m_finishActions) {
+303
+action.accept(command);
+304
+}
+305
+m_endingCommands.remove(command);
+306
+iterator.remove();
+307
+308
+m_requirements.keySet().removeAll(command.getRequirements());
+309
+m_watchdog.addEpoch(command.getName() + ".end(false)");
+310
+}
+311
+}
+312
+m_inRunLoop = false;
+313
+314
+// Schedule/cancel commands from queues populated during loop
+315
+for (Command command : m_toSchedule) {
+316
+schedule(command);
+317
+}
+318
+319
+for (int i = 0; i < m_toCancelCommands.size(); i++) {
+320
+cancel(m_toCancelCommands.get(i), m_toCancelInterruptors.get(i));
+321
+}
+322
+323
+m_toSchedule.clear();
+324
+m_toCancelCommands.clear();
+325
+m_toCancelInterruptors.clear();
+326
+327
+// Add default commands for un-required registered subsystems.
+328
+for (Map.Entry<Subsystem, Command> subsystemCommand : m_subsystems.entrySet()) {
+329
+if (!m_requirements.containsKey(subsystemCommand.getKey())
+330
+&& subsystemCommand.getValue() != null) {
+331
+schedule(subsystemCommand.getValue());
+332
+}
+333
+}
+334
+335
+m_watchdog.disable();
+336
+if (m_watchdog.isExpired()) {
+337
+System.out.println("CommandScheduler loop overrun");
+338
+m_watchdog.printEpochs();
+339
+}
+340
+}
+341
+342
+/**
+343
+* Registers subsystems with the scheduler. This must be called for the subsystem's periodic block
+344
+* to run when the scheduler is run, and for the subsystem's default command to be scheduled. It
+345
+* is recommended to call this from the constructor of your subsystem implementations.
+346
+*
+347
+* @param subsystems the subsystem to register
+348
+*/
+349
+public void registerSubsystem(Subsystem... subsystems) {
+350
+for (Subsystem subsystem : subsystems) {
+351
+if (subsystem == null) {
+352
+DriverStation.reportWarning("Tried to register a null subsystem", true);
+353
+continue;
+354
+}
+355
+if (m_subsystems.containsKey(subsystem)) {
+356
+DriverStation.reportWarning("Tried to register an already-registered subsystem", true);
+357
+continue;
+358
+}
+359
+m_subsystems.put(subsystem, null);
+360
+}
+361
+}
+362
+363
+/**
+364
+* Un-registers subsystems with the scheduler. The subsystem will no longer have its periodic
+365
+* block called, and will not have its default command scheduled.
+366
+*
+367
+* @param subsystems the subsystem to un-register
+368
+*/
+369
+public void unregisterSubsystem(Subsystem... subsystems) {
+370
+m_subsystems.keySet().removeAll(Set.of(subsystems));
+371
+}
+372
+373
+/**
+374
+* Un-registers all registered Subsystems with the scheduler. All currently registered subsystems
+375
+* will no longer have their periodic block called, and will not have their default command
+376
+* scheduled.
+377
+*/
+378
+public void unregisterAllSubsystems() {
+379
+m_subsystems.clear();
+380
+}
+381
+382
+/**
+383
+* Sets the default command for a subsystem. Registers that subsystem if it is not already
+384
+* registered. Default commands will run whenever there is no other command currently scheduled
+385
+* that requires the subsystem. Default commands should be written to never end (i.e. their {@link
+386
+* Command#isFinished()} method should return false), as they would simply be re-scheduled if they
+387
+* do. Default commands must also require their subsystem.
+388
+*
+389
+* @param subsystem the subsystem whose default command will be set
+390
+* @param defaultCommand the default command to associate with the subsystem
+391
+*/
+392
+public void setDefaultCommand(Subsystem subsystem, Command defaultCommand) {
+393
+if (subsystem == null) {
+394
+DriverStation.reportWarning("Tried to set a default command for a null subsystem", true);
+395
+return;
+396
+}
+397
+if (defaultCommand == null) {
+398
+DriverStation.reportWarning("Tried to set a null default command", true);
+399
+return;
+400
+}
+401
+402
+requireNotComposed(defaultCommand);
+403
+404
+if (!defaultCommand.getRequirements().contains(subsystem)) {
+405
+throw new IllegalArgumentException("Default commands must require their subsystem!");
+406
+}
+407
+408
+if (defaultCommand.getInterruptionBehavior() == InterruptionBehavior.kCancelIncoming) {
+409
+DriverStation.reportWarning(
+410
+"Registering a non-interruptible default command!\n"
+411
++ "This will likely prevent any other commands from requiring this subsystem.",
+412
+true);
+413
+// Warn, but allow -- there might be a use case for this.
+414
+}
+415
+416
+m_subsystems.put(subsystem, defaultCommand);
+417
+}
+418
+419
+/**
+420
+* Removes the default command for a subsystem. The current default command will run until another
+421
+* command is scheduled that requires the subsystem, at which point the current default command
+422
+* will not be re-scheduled.
+423
+*
+424
+* @param subsystem the subsystem whose default command will be removed
+425
+*/
+426
+public void removeDefaultCommand(Subsystem subsystem) {
+427
+if (subsystem == null) {
+428
+DriverStation.reportWarning("Tried to remove a default command for a null subsystem", true);
+429
+return;
+430
+}
+431
+432
+m_subsystems.put(subsystem, null);
+433
+}
+434
+435
+/**
+436
+* Gets the default command associated with this subsystem. Null if this subsystem has no default
+437
+* command associated with it.
+438
+*
+439
+* @param subsystem the subsystem to inquire about
+440
+* @return the default command associated with the subsystem
+441
+*/
+442
+public Command getDefaultCommand(Subsystem subsystem) {
+443
+return m_subsystems.get(subsystem);
+444
+}
+445
+446
+/**
+447
+* Cancels commands. The scheduler will only call {@link Command#end(boolean)} method of the
+448
+* canceled command with {@code true}, indicating they were canceled (as opposed to finishing
+449
+* normally).
+450
+*
+451
+* <p>Commands will be canceled regardless of {@link InterruptionBehavior interruption behavior}.
+452
+*
+453
+* @param commands the commands to cancel
+454
+*/
+455
+public void cancel(Command... commands) {
+456
+for (Command command : commands) {
+457
+cancel(command, kNoInterruptor);
+458
+}
+459
+}
+460
+461
+/**
+462
+* Cancels a command. The scheduler will only call {@link Command#end(boolean)} method of the
+463
+* canceled command with {@code true}, indicating they were canceled (as opposed to finishing
+464
+* normally).
+465
+*
+466
+* <p>Commands will be canceled regardless of {@link InterruptionBehavior interruption behavior}.
+467
+*
+468
+* @param command the command to cancel
+469
+* @param interruptor the interrupting command, if any
+470
+*/
+471
+private void cancel(Command command, Optional<Command> interruptor) {
+472
+if (command == null) {
+473
+DriverStation.reportWarning("Tried to cancel a null command", true);
+474
+return;
+475
+}
+476
+if (m_endingCommands.contains(command)) {
+477
+return;
+478
+}
+479
+if (m_inRunLoop) {
+480
+m_toCancelCommands.add(command);
+481
+m_toCancelInterruptors.add(interruptor);
+482
+return;
+483
+}
+484
+if (!isScheduled(command)) {
+485
+return;
+486
+}
+487
+488
+m_endingCommands.add(command);
+489
+command.end(true);
+490
+for (BiConsumer<Command, Optional<Command>> action : m_interruptActions) {
+491
+action.accept(command, interruptor);
+492
+}
+493
+m_endingCommands.remove(command);
+494
+m_scheduledCommands.remove(command);
+495
+m_requirements.keySet().removeAll(command.getRequirements());
+496
+m_watchdog.addEpoch(command.getName() + ".end(true)");
+497
+}
+498
+499
+/** Cancels all commands that are currently scheduled. */
+500
+public void cancelAll() {
+501
+// Copy to array to avoid concurrent modification.
+502
+cancel(m_scheduledCommands.toArray(new Command[0]));
+503
+}
+504
+505
+/**
+506
+* Whether the given commands are running. Note that this only works on commands that are directly
+507
+* scheduled by the scheduler; it will not work on commands inside compositions, as the scheduler
+508
+* does not see them.
+509
+*
+510
+* @param commands multiple commands to check
+511
+* @return whether all of the commands are currently scheduled
+512
+*/
+513
+public boolean isScheduled(Command... commands) {
+514
+for (var cmd : commands) {
+515
+if (!isScheduled(cmd)) {
+516
+return false;
+517
+}
+518
+}
+519
+return true;
+520
+}
+521
+522
+/**
+523
+* Whether the given commands are running. Note that this only works on commands that are directly
+524
+* scheduled by the scheduler; it will not work on commands inside compositions, as the scheduler
+525
+* does not see them.
+526
+*
+527
+* @param command a single command to check
+528
+* @return whether all of the commands are currently scheduled
+529
+*/
+530
+public boolean isScheduled(Command command) {
+531
+return m_scheduledCommands.contains(command);
+532
+}
+533
+534
+/**
+535
+* Returns the command currently requiring a given subsystem. Null if no command is currently
+536
+* requiring the subsystem
+537
+*
+538
+* @param subsystem the subsystem to be inquired about
+539
+* @return the command currently requiring the subsystem, or null if no command is currently
+540
+*     scheduled
+541
+*/
+542
+public Command requiring(Subsystem subsystem) {
+543
+return m_requirements.get(subsystem);
+544
+}
+545
+546
+/** Disables the command scheduler. */
+547
+public void disable() {
+548
+m_disabled = true;
+549
+}
+550
+551
+/** Enables the command scheduler. */
+552
+public void enable() {
+553
+m_disabled = false;
+554
+}
+555
+556
+/** Prints list of epochs added so far and their times. */
+557
+public void printWatchdogEpochs() {
+558
+m_watchdog.printEpochs();
+559
+}
+560
+561
+/**
+562
+* Adds an action to perform on the initialization of any command by the scheduler.
+563
+*
+564
+* @param action the action to perform
+565
+*/
+566
+public void onCommandInitialize(Consumer<Command> action) {
+567
+m_initActions.add(requireNonNullParam(action, "action", "onCommandInitialize"));
+568
+}
+569
+570
+/**
+571
+* Adds an action to perform on the execution of any command by the scheduler.
+572
+*
+573
+* @param action the action to perform
+574
+*/
+575
+public void onCommandExecute(Consumer<Command> action) {
+576
+m_executeActions.add(requireNonNullParam(action, "action", "onCommandExecute"));
+577
+}
+578
+579
+/**
+580
+* Adds an action to perform on the interruption of any command by the scheduler.
+581
+*
+582
+* @param action the action to perform
+583
+*/
+584
+public void onCommandInterrupt(Consumer<Command> action) {
+585
+requireNonNullParam(action, "action", "onCommandInterrupt");
+586
+m_interruptActions.add((command, interruptor) -> action.accept(command));
+587
+}
+588
+589
+/**
+590
+* Adds an action to perform on the interruption of any command by the scheduler. The action
+591
+* receives the interrupted command and an Optional containing the interrupting command, or
+592
+* Optional.empty() if it was not canceled by a command (e.g., by {@link
+593
+* CommandScheduler#cancel}).
+594
+*
+595
+* @param action the action to perform
+596
+*/
+597
+public void onCommandInterrupt(BiConsumer<Command, Optional<Command>> action) {
+598
+m_interruptActions.add(requireNonNullParam(action, "action", "onCommandInterrupt"));
+599
+}
+600
+601
+/**
+602
+* Adds an action to perform on the finishing of any command by the scheduler.
+603
+*
+604
+* @param action the action to perform
+605
+*/
+606
+public void onCommandFinish(Consumer<Command> action) {
+607
+m_finishActions.add(requireNonNullParam(action, "action", "onCommandFinish"));
+608
+}
+609
+610
+/**
+611
+* Register commands as composed. An exception will be thrown if these commands are scheduled
+612
+* directly or added to a composition.
+613
+*
+614
+* @param commands the commands to register
+615
+* @throws IllegalArgumentException if the given commands have already been composed, or the array
+616
+*     of commands has duplicates.
+617
+*/
+618
+public void registerComposedCommands(Command... commands) {
+619
+Set<Command> commandSet;
+620
+try {
+621
+commandSet = Set.of(commands);
+622
+} catch (IllegalArgumentException e) {
+623
+throw new IllegalArgumentException(
+624
+"Cannot compose a command twice in the same composition! (Original exception: "
+625
++ e
+626
++ ")");
+627
+}
+628
+requireNotComposedOrScheduled(commandSet);
+629
+var exception = new Exception("Originally composed at:");
+630
+exception.fillInStackTrace();
+631
+for (var command : commands) {
+632
+m_composedCommands.put(command, exception);
+633
+}
+634
+}
+635
+636
+/**
+637
+* Clears the list of composed commands, allowing all commands to be freely used again.
+638
+*
+639
+* <p>WARNING: Using this haphazardly can result in unexpected/undesirable behavior. Do not use
+640
+* this unless you fully understand what you are doing.
+641
+*/
+642
+public void clearComposedCommands() {
+643
+m_composedCommands.clear();
+644
+}
+645
+646
+/**
+647
+* Removes a single command from the list of composed commands, allowing it to be freely used
+648
+* again.
+649
+*
+650
+* <p>WARNING: Using this haphazardly can result in unexpected/undesirable behavior. Do not use
+651
+* this unless you fully understand what you are doing.
+652
+*
+653
+* @param command the command to remove from the list of grouped commands
+654
+*/
+655
+public void removeComposedCommand(Command command) {
+656
+m_composedCommands.remove(command);
+657
+}
+658
+659
+/**
+660
+* Strip additional leading stack trace elements that are in the framework package.
+661
+*
+662
+* @param stacktrace the original stacktrace
+663
+* @return the stacktrace stripped of leading elements so there is at max one leading element from
+664
+*     the edu.wpi.first.wpilibj2.command package.
+665
+*/
+666
+private StackTraceElement[] stripFrameworkStackElements(StackTraceElement[] stacktrace) {
+667
+int i = stacktrace.length - 1;
+668
+for (; i > 0; i--) {
+669
+if (stacktrace[i].getClassName().startsWith("edu.wpi.first.wpilibj2.command.")) {
+670
+break;
+671
+}
+672
+}
+673
+return Arrays.copyOfRange(stacktrace, i, stacktrace.length);
+674
+}
+675
+676
+/**
+677
+* Requires that the specified command hasn't already been added to a composition.
+678
+*
+679
+* @param commands The commands to check
+680
+* @throws IllegalArgumentException if the given commands have already been composed.
+681
+*/
+682
+public void requireNotComposed(Command... commands) {
+683
+for (var command : commands) {
+684
+var exception = m_composedCommands.getOrDefault(command, null);
+685
+if (exception != null) {
+686
+exception.setStackTrace(stripFrameworkStackElements(exception.getStackTrace()));
+687
+var buffer = new StringWriter();
+688
+var writer = new PrintWriter(buffer);
+689
+writer.println(
+690
+"Commands that have been composed may not be added to another composition or scheduled "
+691
++ "individually!");
+692
+exception.printStackTrace(writer);
+693
+var thrownException = new IllegalArgumentException(buffer.toString());
+694
+thrownException.setStackTrace(stripFrameworkStackElements(thrownException.getStackTrace()));
+695
+throw thrownException;
+696
+}
+697
+}
+698
+}
+699
+700
+/**
+701
+* Requires that the specified commands have not already been added to a composition.
+702
+*
+703
+* @param commands The commands to check
+704
+* @throws IllegalArgumentException if the given commands have already been composed.
+705
+*/
+706
+public void requireNotComposed(Collection<Command> commands) {
+707
+requireNotComposed(commands.toArray(Command[]::new));
+708
+}
+709
+710
+/**
+711
+* Requires that the specified command hasn't already been added to a composition, and is not
+712
+* currently scheduled.
+713
+*
+714
+* @param command The command to check
+715
+* @throws IllegalArgumentException if the given command has already been composed or scheduled.
+716
+*/
+717
+public void requireNotComposedOrScheduled(Command command) {
+718
+if (isScheduled(command)) {
+719
+throw new IllegalArgumentException(
+720
+"Commands that have been scheduled individually may not be added to a composition!");
+721
+}
+722
+requireNotComposed(command);
+723
+}
+724
+725
+/**
+726
+* Requires that the specified commands have not already been added to a composition, and are not
+727
+* currently scheduled.
+728
+*
+729
+* @param commands The commands to check
+730
+* @throws IllegalArgumentException if the given commands have already been composed or scheduled.
+731
+*/
+732
+public void requireNotComposedOrScheduled(Collection<Command> commands) {
+733
+for (var command : commands) {
+734
+requireNotComposedOrScheduled(command);
+735
+}
+736
+}
+737
+738
+/**
+739
+* Check if the given command has been composed.
+740
+*
+741
+* @param command The command to check
+742
+* @return true if composed
+743
+*/
+744
+public boolean isComposed(Command command) {
+745
+return getComposedCommands().contains(command);
+746
+}
+747
+748
+Set<Command> getComposedCommands() {
+749
+return m_composedCommands.keySet();
+750
+}
+751
+752
+@Override
+753
+public void initSendable(SendableBuilder builder) {
+754
+builder.setSmartDashboardType("Scheduler");
+755
+builder.addStringArrayProperty(
+756
+"Names",
+757
+() -> {
+758
+String[] names = new String[m_scheduledCommands.size()];
+759
+int i = 0;
+760
+for (Command command : m_scheduledCommands) {
+761
+names[i] = command.getName();
+762
+i++;
+763
+}
+764
+return names;
+765
+},
+766
+null);
+767
+builder.addIntegerArrayProperty(
+768
+"Ids",
+769
+() -> {
+770
+long[] ids = new long[m_scheduledCommands.size()];
+771
+int i = 0;
+772
+for (Command command : m_scheduledCommands) {
+773
+ids[i] = command.hashCode();
+774
+i++;
+775
+}
+776
+return ids;
+777
+},
+778
+null);
+779
+builder.addIntegerArrayProperty(
+780
+"Cancel",
+781
+() -> new long[] {},
+782
+toCancel -> {
+783
+Map<Long, Command> ids = new LinkedHashMap<>();
+784
+for (Command command : m_scheduledCommands) {
+785
+long id = command.hashCode();
+786
+ids.put(id, command);
+787
+}
+788
+for (long hash : toCancel) {
+789
+cancel(ids.get(hash));
+790
+}
+791
+});
+792
+}
+793
+}

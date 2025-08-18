@@ -1,0 +1,375 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.ControlWord;
+008
+import edu.wpi.first.hal.DriverStationJNI;
+009
+import edu.wpi.first.util.WPIUtilJNI;
+010
+import java.util.LinkedHashSet;
+011
+import java.util.Set;
+012
+013
+/**
+014
+* The Motor Safety feature acts as a watchdog timer for an individual motor. It operates by
+015
+* maintaining a timer that tracks how long it has been since the feed() method has been called for
+016
+* that actuator. Code in the Driver Station class initiates a comparison of these timers to the
+017
+* timeout values for any actuator with safety enabled every 5 received packets (100ms nominal).
+018
+*
+019
+* <p>The subclass should call feed() whenever the motor value is updated.
+020
+*/
+021
+public abstract class MotorSafety {
+022
+private static final double kDefaultSafetyExpiration = 0.1;
+023
+024
+private double m_expiration = kDefaultSafetyExpiration;
+025
+private boolean m_enabled;
+026
+private double m_stopTime = Timer.getFPGATimestamp();
+027
+private final Object m_thisMutex = new Object();
+028
+private static final Set<MotorSafety> m_instanceList = new LinkedHashSet<>();
+029
+private static final Object m_listMutex = new Object();
+030
+private static Thread m_safetyThread;
+031
+032
+@SuppressWarnings("PMD.AssignmentInOperand")
+033
+private static void threadMain() {
+034
+int event = WPIUtilJNI.createEvent(false, false);
+035
+DriverStationJNI.provideNewDataEventHandle(event);
+036
+ControlWord controlWord = new ControlWord();
+037
+038
+int safetyCounter = 0;
+039
+while (true) {
+040
+boolean timedOut;
+041
+try {
+042
+timedOut = WPIUtilJNI.waitForObjectTimeout(event, 0.1);
+043
+} catch (InterruptedException e) {
+044
+DriverStationJNI.removeNewDataEventHandle(event);
+045
+WPIUtilJNI.destroyEvent(event);
+046
+Thread.currentThread().interrupt();
+047
+return;
+048
+}
+049
+if (!timedOut) {
+050
+DriverStationJNI.getControlWord(controlWord);
+051
+if (!(controlWord.getEnabled() && controlWord.getDSAttached())) {
+052
+safetyCounter = 0;
+053
+}
+054
+if (++safetyCounter >= 4) {
+055
+checkMotors();
+056
+safetyCounter = 0;
+057
+}
+058
+} else {
+059
+safetyCounter = 0;
+060
+}
+061
+}
+062
+}
+063
+064
+/** MotorSafety constructor. */
+065
+@SuppressWarnings("this-escape")
+066
+public MotorSafety() {
+067
+synchronized (m_listMutex) {
+068
+m_instanceList.add(this);
+069
+if (m_safetyThread == null) {
+070
+m_safetyThread = new Thread(MotorSafety::threadMain, "MotorSafety Thread");
+071
+m_safetyThread.setDaemon(true);
+072
+m_safetyThread.start();
+073
+}
+074
+}
+075
+}
+076
+077
+/**
+078
+* Feed the motor safety object.
+079
+*
+080
+* <p>Resets the timer on this object that is used to do the timeouts.
+081
+*/
+082
+public void feed() {
+083
+synchronized (m_thisMutex) {
+084
+m_stopTime = Timer.getFPGATimestamp() + m_expiration;
+085
+}
+086
+}
+087
+088
+/**
+089
+* Set the expiration time for the corresponding motor safety object.
+090
+*
+091
+* @param expirationTime The timeout value in seconds.
+092
+*/
+093
+public void setExpiration(double expirationTime) {
+094
+synchronized (m_thisMutex) {
+095
+m_expiration = expirationTime;
+096
+}
+097
+}
+098
+099
+/**
+100
+* Retrieve the timeout value for the corresponding motor safety object.
+101
+*
+102
+* @return the timeout value in seconds.
+103
+*/
+104
+public double getExpiration() {
+105
+synchronized (m_thisMutex) {
+106
+return m_expiration;
+107
+}
+108
+}
+109
+110
+/**
+111
+* Determine of the motor is still operating or has timed out.
+112
+*
+113
+* @return a true value if the motor is still operating normally and hasn't timed out.
+114
+*/
+115
+public boolean isAlive() {
+116
+synchronized (m_thisMutex) {
+117
+return !m_enabled || m_stopTime > Timer.getFPGATimestamp();
+118
+}
+119
+}
+120
+121
+/**
+122
+* Check if this motor has exceeded its timeout. This method is called periodically to determine
+123
+* if this motor has exceeded its timeout value. If it has, the stop method is called, and the
+124
+* motor is shut down until its value is updated again.
+125
+*/
+126
+public void check() {
+127
+boolean enabled;
+128
+double stopTime;
+129
+130
+synchronized (m_thisMutex) {
+131
+enabled = m_enabled;
+132
+stopTime = m_stopTime;
+133
+}
+134
+135
+if (!enabled || RobotState.isDisabled() || RobotState.isTest()) {
+136
+return;
+137
+}
+138
+139
+if (stopTime < Timer.getFPGATimestamp()) {
+140
+DriverStation.reportError(
+141
+getDescription()
+142
++ "... Output not updated often enough. See https://docs.wpilib.org/motorsafety for more information.",
+143
+false);
+144
+145
+stopMotor();
+146
+}
+147
+}
+148
+149
+/**
+150
+* Enable/disable motor safety for this device.
+151
+*
+152
+* <p>Turn on and off the motor safety option for this PWM object.
+153
+*
+154
+* @param enabled True if motor safety is enforced for this object
+155
+*/
+156
+public void setSafetyEnabled(boolean enabled) {
+157
+synchronized (m_thisMutex) {
+158
+m_enabled = enabled;
+159
+}
+160
+}
+161
+162
+/**
+163
+* Return the state of the motor safety enabled flag.
+164
+*
+165
+* <p>Return if the motor safety is currently enabled for this device.
+166
+*
+167
+* @return True if motor safety is enforced for this device
+168
+*/
+169
+public boolean isSafetyEnabled() {
+170
+synchronized (m_thisMutex) {
+171
+return m_enabled;
+172
+}
+173
+}
+174
+175
+/**
+176
+* Check the motors to see if any have timed out.
+177
+*
+178
+* <p>This static method is called periodically to poll all the motors and stop any that have
+179
+* timed out.
+180
+*/
+181
+public static void checkMotors() {
+182
+synchronized (m_listMutex) {
+183
+for (MotorSafety elem : m_instanceList) {
+184
+elem.check();
+185
+}
+186
+}
+187
+}
+188
+189
+/** Called to stop the motor when the timeout expires. */
+190
+public abstract void stopMotor();
+191
+192
+/**
+193
+* Returns a description to print when an error occurs.
+194
+*
+195
+* @return Description to print when an error occurs.
+196
+*/
+197
+public abstract String getDescription();
+198
+}

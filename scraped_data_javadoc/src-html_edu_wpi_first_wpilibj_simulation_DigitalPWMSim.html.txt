@@ -1,0 +1,291 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.DigitalPWMDataJNI;
+008
+import edu.wpi.first.hal.simulation.NotifyCallback;
+009
+import edu.wpi.first.wpilibj.DigitalOutput;
+010
+import java.util.NoSuchElementException;
+011
+012
+/**
+013
+* Class to control a simulated digital PWM output.
+014
+*
+015
+* <p>This is for duty cycle PWM outputs on a DigitalOutput, not for the servo style PWM outputs on
+016
+* a PWM channel.
+017
+*/
+018
+public class DigitalPWMSim {
+019
+private final int m_index;
+020
+021
+/**
+022
+* Constructs from a DigitalOutput object.
+023
+*
+024
+* @param digitalOutput DigitalOutput to simulate
+025
+*/
+026
+public DigitalPWMSim(DigitalOutput digitalOutput) {
+027
+m_index = digitalOutput.getChannel();
+028
+}
+029
+030
+private DigitalPWMSim(int index) {
+031
+m_index = index;
+032
+}
+033
+034
+/**
+035
+* Creates an DigitalPWMSim for a digital I/O channel.
+036
+*
+037
+* @param channel DIO channel
+038
+* @return Simulated object
+039
+* @throws NoSuchElementException if no Digital PWM is configured for that channel
+040
+*/
+041
+public static DigitalPWMSim createForChannel(int channel) {
+042
+int index = DigitalPWMDataJNI.findForChannel(channel);
+043
+if (index < 0) {
+044
+throw new NoSuchElementException("no digital PWM found for channel " + channel);
+045
+}
+046
+return new DigitalPWMSim(index);
+047
+}
+048
+049
+/**
+050
+* Creates an DigitalPWMSim for a simulated index. The index is incremented for each simulated
+051
+* DigitalPWM.
+052
+*
+053
+* @param index simulator index
+054
+* @return Simulated object
+055
+*/
+056
+public static DigitalPWMSim createForIndex(int index) {
+057
+return new DigitalPWMSim(index);
+058
+}
+059
+060
+/**
+061
+* Register a callback to be run when this PWM output is initialized.
+062
+*
+063
+* @param callback the callback
+064
+* @param initialNotify whether to run the callback with the initial state
+065
+* @return the {@link CallbackStore} object associated with this callback.
+066
+*/
+067
+public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+068
+int uid = DigitalPWMDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+069
+return new CallbackStore(m_index, uid, DigitalPWMDataJNI::cancelInitializedCallback);
+070
+}
+071
+072
+/**
+073
+* Check whether this PWM output has been initialized.
+074
+*
+075
+* @return true if initialized
+076
+*/
+077
+public boolean getInitialized() {
+078
+return DigitalPWMDataJNI.getInitialized(m_index);
+079
+}
+080
+081
+/**
+082
+* Define whether this PWM output has been initialized.
+083
+*
+084
+* @param initialized whether this object is initialized
+085
+*/
+086
+public void setInitialized(boolean initialized) {
+087
+DigitalPWMDataJNI.setInitialized(m_index, initialized);
+088
+}
+089
+090
+/**
+091
+* Register a callback to be run whenever the duty cycle value changes.
+092
+*
+093
+* @param callback the callback
+094
+* @param initialNotify whether to call the callback with the initial state
+095
+* @return the {@link CallbackStore} object associated with this callback.
+096
+*/
+097
+public CallbackStore registerDutyCycleCallback(NotifyCallback callback, boolean initialNotify) {
+098
+int uid = DigitalPWMDataJNI.registerDutyCycleCallback(m_index, callback, initialNotify);
+099
+return new CallbackStore(m_index, uid, DigitalPWMDataJNI::cancelDutyCycleCallback);
+100
+}
+101
+102
+/**
+103
+* Read the duty cycle value.
+104
+*
+105
+* @return the duty cycle value of this PWM output
+106
+*/
+107
+public double getDutyCycle() {
+108
+return DigitalPWMDataJNI.getDutyCycle(m_index);
+109
+}
+110
+111
+/**
+112
+* Set the duty cycle value of this PWM output.
+113
+*
+114
+* @param dutyCycle the new value
+115
+*/
+116
+public void setDutyCycle(double dutyCycle) {
+117
+DigitalPWMDataJNI.setDutyCycle(m_index, dutyCycle);
+118
+}
+119
+120
+/**
+121
+* Register a callback to be run whenever the pin changes.
+122
+*
+123
+* @param callback the callback
+124
+* @param initialNotify whether to call the callback with the initial state
+125
+* @return the {@link CallbackStore} object associated with this callback.
+126
+*/
+127
+public CallbackStore registerPinCallback(NotifyCallback callback, boolean initialNotify) {
+128
+int uid = DigitalPWMDataJNI.registerPinCallback(m_index, callback, initialNotify);
+129
+return new CallbackStore(m_index, uid, DigitalPWMDataJNI::cancelPinCallback);
+130
+}
+131
+132
+/**
+133
+* Check the pin number.
+134
+*
+135
+* @return the pin number
+136
+*/
+137
+public int getPin() {
+138
+return DigitalPWMDataJNI.getPin(m_index);
+139
+}
+140
+141
+/**
+142
+* Change the pin number.
+143
+*
+144
+* @param pin the new pin number
+145
+*/
+146
+public void setPin(int pin) {
+147
+DigitalPWMDataJNI.setPin(m_index, pin);
+148
+}
+149
+150
+/** Reset all simulation data. */
+151
+public void resetData() {
+152
+DigitalPWMDataJNI.resetData(m_index);
+153
+}
+154
+}

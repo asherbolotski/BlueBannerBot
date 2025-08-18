@@ -1,0 +1,357 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Digital Input/Output (IO) JNI Functions.
+009
+*
+010
+* @see "hal/DIO.h"
+011
+*/
+012
+public class DIOJNI extends JNIWrapper {
+013
+/**
+014
+* Creates a new instance of a digital port.
+015
+*
+016
+* @param halPortHandle the port handle to create from
+017
+* @param input true for input, false for output
+018
+* @return the created digital handle
+019
+* @see "HAL_InitializeDIOPort"
+020
+*/
+021
+public static native int initializeDIOPort(int halPortHandle, boolean input);
+022
+023
+/**
+024
+* Checks if a DIO channel is valid.
+025
+*
+026
+* @param channel the channel number to check
+027
+* @return true if the channel is valid, otherwise false
+028
+* @see "HAL_CheckDIOChannel"
+029
+*/
+030
+public static native boolean checkDIOChannel(int channel);
+031
+032
+/**
+033
+* Frees a DIO port.
+034
+*
+035
+* @param dioPortHandle the DIO channel handle
+036
+* @see "HAL_FreeDIOPort"
+037
+*/
+038
+public static native void freeDIOPort(int dioPortHandle);
+039
+040
+/**
+041
+* Indicates the DIO channel is used by a simulated device.
+042
+*
+043
+* @param handle the DIO channel handle
+044
+* @param device simulated device handle
+045
+* @see "HAL_SetDIOSimDevice"
+046
+*/
+047
+public static native void setDIOSimDevice(int handle, int device);
+048
+049
+/**
+050
+* Writes a digital value to a DIO channel.
+051
+*
+052
+* @param dioPortHandle the digital port handle
+053
+* @param value the state to set the digital channel (if it is configured as an output)
+054
+* @see "HAL_SetDIO"
+055
+*/
+056
+public static native void setDIO(int dioPortHandle, boolean value);
+057
+058
+/**
+059
+* Sets the direction of a DIO channel.
+060
+*
+061
+* @param dioPortHandle the digital port handle
+062
+* @param input true to set input, false for output
+063
+* @see "HAL_SetDIODirection"
+064
+*/
+065
+public static native void setDIODirection(int dioPortHandle, boolean input);
+066
+067
+/**
+068
+* Reads a digital value from a DIO channel.
+069
+*
+070
+* @param dioPortHandle the digital port handle
+071
+* @return the state of the specified channel
+072
+* @see "HAL_GetDIO"
+073
+*/
+074
+public static native boolean getDIO(int dioPortHandle);
+075
+076
+/**
+077
+* Reads the direction of a DIO channel.
+078
+*
+079
+* @param dioPortHandle the digital port handle
+080
+* @return true for input, false for output
+081
+* @see "HAL_GetDIODirection"
+082
+*/
+083
+public static native boolean getDIODirection(int dioPortHandle);
+084
+085
+/**
+086
+* Generates a single digital pulse.
+087
+*
+088
+* <p>Write a pulse to the specified digital output channel. There can only be a single pulse
+089
+* going at any time.
+090
+*
+091
+* @param dioPortHandle the digital port handle
+092
+* @param pulseLengthSeconds the active length of the pulse (in seconds)
+093
+* @see "HAL_Pulse"
+094
+*/
+095
+public static native void pulse(int dioPortHandle, double pulseLengthSeconds);
+096
+097
+/**
+098
+* Generates a single digital pulse on multiple channels.
+099
+*
+100
+* <p>Write a pulse to the channels enabled by the mask. There can only be a single pulse going at
+101
+* any time.
+102
+*
+103
+* @param channelMask the channel mask
+104
+* @param pulseLengthSeconds the active length of the pulse (in seconds)
+105
+* @see "HAL_PulseMultiple"
+106
+*/
+107
+public static native void pulseMultiple(long channelMask, double pulseLengthSeconds);
+108
+109
+/**
+110
+* Checks a DIO line to see if it is currently generating a pulse.
+111
+*
+112
+* @param dioPortHandle the digital port handle
+113
+* @return true if a pulse is in progress, otherwise false
+114
+* @see "HAL_IsPulsing"
+115
+*/
+116
+public static native boolean isPulsing(int dioPortHandle);
+117
+118
+/**
+119
+* Checks if any DIO line is currently generating a pulse.
+120
+*
+121
+* @return true if a pulse on some line is in progress
+122
+* @see "HAL_IsAnyPulsing"
+123
+*/
+124
+public static native boolean isAnyPulsing();
+125
+126
+/**
+127
+* Gets the loop timing of the PWM system.
+128
+*
+129
+* @return the loop time in clock ticks
+130
+*/
+131
+public static native short getLoopTiming();
+132
+133
+/**
+134
+* Allocates a DO PWM Generator.
+135
+*
+136
+* @return the allocated digital PWM handle
+137
+*/
+138
+public static native int allocateDigitalPWM();
+139
+140
+/**
+141
+* Frees the resource associated with a DO PWM generator.
+142
+*
+143
+* @param pwmGenerator the digital PWM handle
+144
+* @see "HAL_FreeDigitalPWM"
+145
+*/
+146
+public static native void freeDigitalPWM(int pwmGenerator);
+147
+148
+/**
+149
+* Changes the frequency of the DO PWM generator.
+150
+*
+151
+* <p>The valid range is from 0.6 Hz to 19 kHz.
+152
+*
+153
+* <p>The frequency resolution is logarithmic.
+154
+*
+155
+* @param rate the frequency to output all digital output PWM signals
+156
+* @see "HAL_SetDigitalPWMRate"
+157
+*/
+158
+public static native void setDigitalPWMRate(double rate);
+159
+160
+/**
+161
+* Configures the duty-cycle of the PWM generator.
+162
+*
+163
+* @param pwmGenerator the digital PWM handle
+164
+* @param dutyCycle the percent duty cycle to output [0..1]
+165
+* @see "HAL_SetDigitalPWMDutyCycle"
+166
+*/
+167
+public static native void setDigitalPWMDutyCycle(int pwmGenerator, double dutyCycle);
+168
+169
+/**
+170
+* Configures the digital PWM to be a PPS signal with specified duty cycle.
+171
+*
+172
+* @param pwmGenerator the digital PWM handle
+173
+* @param dutyCycle the percent duty cycle to output [0..1]
+174
+* @see "HAL_SetDigitalPWMPPS"
+175
+*/
+176
+public static native void setDigitalPWMPPS(int pwmGenerator, double dutyCycle);
+177
+178
+/**
+179
+* Configures which DO channel the PWM signal is output on.
+180
+*
+181
+* @param pwmGenerator the digital PWM handle
+182
+* @param channel the channel to output on
+183
+* @see "HAL_SetDigitalPWMOutputChannel"
+184
+*/
+185
+public static native void setDigitalPWMOutputChannel(int pwmGenerator, int channel);
+186
+187
+/** Utility class. */
+188
+DIOJNI() {}
+189
+}

@@ -1,0 +1,59 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+import edu.wpi.first.util.datalog.DataLog;
+008
+009
+/**
+010
+* A class version of `tail -f`, otherwise known as `tail -f` at home. Watches a file and puts the
+011
+* data into a data log. Only works on Linux-based platforms.
+012
+*/
+013
+public class FileLogger implements AutoCloseable {
+014
+private final long m_impl;
+015
+016
+/**
+017
+* Construct a FileLogger. When the specified file is modified, appended data will be appended to
+018
+* the specified data log.
+019
+*
+020
+* @param file The path to the file.
+021
+* @param log A data log.
+022
+* @param key The log key to append data to.
+023
+*/
+024
+public FileLogger(String file, DataLog log, String key) {
+025
+m_impl = WPIUtilJNI.createFileLogger(file, log.getImpl(), key);
+026
+}
+027
+028
+@Override
+029
+public void close() {
+030
+WPIUtilJNI.freeFileLogger(m_impl);
+031
+}
+032
+}

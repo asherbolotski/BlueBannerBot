@@ -1,0 +1,407 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cscore;
+006
+007
+/** A source or sink property. */
+008
+public class VideoProperty {
+009
+/** VideoProperty property types. */
+010
+public enum Kind {
+011
+/** No specific property. */
+012
+kNone(0),
+013
+/** Boolean property. */
+014
+kBoolean(1),
+015
+/** Integer property. */
+016
+kInteger(2),
+017
+/** String property. */
+018
+kString(4),
+019
+/** Enum property. */
+020
+kEnum(8);
+021
+022
+private final int value;
+023
+024
+Kind(int value) {
+025
+this.value = value;
+026
+}
+027
+028
+/**
+029
+* Returns the Kind value.
+030
+*
+031
+* @return The Kind value.
+032
+*/
+033
+public int getValue() {
+034
+return value;
+035
+}
+036
+}
+037
+038
+/**
+039
+* Convert from the numerical representation of kind to an enum type.
+040
+*
+041
+* @param kind The numerical representation of kind
+042
+* @return The kind
+043
+*/
+044
+public static Kind getKindFromInt(int kind) {
+045
+return switch (kind) {
+046
+case 1 -> Kind.kBoolean;
+047
+case 2 -> Kind.kInteger;
+048
+case 4 -> Kind.kString;
+049
+case 8 -> Kind.kEnum;
+050
+default -> Kind.kNone;
+051
+};
+052
+}
+053
+054
+/**
+055
+* Returns property name.
+056
+*
+057
+* @return Property name.
+058
+*/
+059
+public String getName() {
+060
+return CameraServerJNI.getPropertyName(m_handle);
+061
+}
+062
+063
+/**
+064
+* Returns property kind.
+065
+*
+066
+* @return Property kind.
+067
+*/
+068
+public Kind getKind() {
+069
+return m_kind;
+070
+}
+071
+072
+/**
+073
+* Returns true if property is valid.
+074
+*
+075
+* @return True if property is valid.
+076
+*/
+077
+public boolean isValid() {
+078
+return m_kind != Kind.kNone;
+079
+}
+080
+081
+/**
+082
+* Returns true if property is a boolean.
+083
+*
+084
+* @return True if property is a boolean.
+085
+*/
+086
+public boolean isBoolean() {
+087
+return m_kind == Kind.kBoolean;
+088
+}
+089
+090
+/**
+091
+* Returns true if property is an integer.
+092
+*
+093
+* @return True if property is an integer.
+094
+*/
+095
+public boolean isInteger() {
+096
+return m_kind == Kind.kInteger;
+097
+}
+098
+099
+/**
+100
+* Returns true if property is a string.
+101
+*
+102
+* @return True if property is a string.
+103
+*/
+104
+public boolean isString() {
+105
+return m_kind == Kind.kString;
+106
+}
+107
+108
+/**
+109
+* Returns true if property is an enum.
+110
+*
+111
+* @return True if property is an enum.
+112
+*/
+113
+public boolean isEnum() {
+114
+return m_kind == Kind.kEnum;
+115
+}
+116
+117
+/**
+118
+* Returns property value.
+119
+*
+120
+* @return Property value.
+121
+*/
+122
+public int get() {
+123
+return CameraServerJNI.getProperty(m_handle);
+124
+}
+125
+126
+/**
+127
+* Sets property value.
+128
+*
+129
+* @param value Property value.
+130
+*/
+131
+public void set(int value) {
+132
+CameraServerJNI.setProperty(m_handle, value);
+133
+}
+134
+135
+/**
+136
+* Returns property minimum value.
+137
+*
+138
+* @return Property minimum value.
+139
+*/
+140
+public int getMin() {
+141
+return CameraServerJNI.getPropertyMin(m_handle);
+142
+}
+143
+144
+/**
+145
+* Returns property maximum value.
+146
+*
+147
+* @return Property maximum value.
+148
+*/
+149
+public int getMax() {
+150
+return CameraServerJNI.getPropertyMax(m_handle);
+151
+}
+152
+153
+/**
+154
+* Returns property step size.
+155
+*
+156
+* @return Property step size.
+157
+*/
+158
+public int getStep() {
+159
+return CameraServerJNI.getPropertyStep(m_handle);
+160
+}
+161
+162
+/**
+163
+* Returns property default value.
+164
+*
+165
+* @return Property default value.
+166
+*/
+167
+public int getDefault() {
+168
+return CameraServerJNI.getPropertyDefault(m_handle);
+169
+}
+170
+171
+/**
+172
+* Returns the string property value.
+173
+*
+174
+* <p>This function is string-specific.
+175
+*
+176
+* @return The string property value.
+177
+*/
+178
+public String getString() {
+179
+return CameraServerJNI.getStringProperty(m_handle);
+180
+}
+181
+182
+/**
+183
+* Sets the string property value.
+184
+*
+185
+* <p>This function is string-specific.
+186
+*
+187
+* @param value String property value.
+188
+*/
+189
+public void setString(String value) {
+190
+CameraServerJNI.setStringProperty(m_handle, value);
+191
+}
+192
+193
+/**
+194
+* Returns the possible values for the enum property value.
+195
+*
+196
+* <p>This function is enum-specific.
+197
+*
+198
+* @return The possible values for the enum property value.
+199
+*/
+200
+public String[] getChoices() {
+201
+return CameraServerJNI.getEnumPropertyChoices(m_handle);
+202
+}
+203
+204
+VideoProperty(int handle) {
+205
+m_handle = handle;
+206
+m_kind = getKindFromInt(CameraServerJNI.getPropertyKind(handle));
+207
+}
+208
+209
+VideoProperty(int handle, Kind kind) {
+210
+m_handle = handle;
+211
+m_kind = kind;
+212
+}
+213
+214
+int m_handle;
+215
+private final Kind m_kind;
+216
+}

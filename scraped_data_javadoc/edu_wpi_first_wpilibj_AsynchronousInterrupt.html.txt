@@ -1,0 +1,170 @@
+Package
+edu.wpi.first.wpilibj
+Class AsynchronousInterrupt
+java.lang.Object
+edu.wpi.first.wpilibj.AsynchronousInterrupt
+All Implemented Interfaces:
+AutoCloseable
+public class
+AsynchronousInterrupt
+extends
+Object
+implements
+AutoCloseable
+Class for handling asynchronous interrupts using a callback thread.
+By default, interrupts will occur on rising edge. Callbacks are disabled by default, and
+ enable() must be called before they will occur.
+Both rising and falling edges can be indicated in one callback if both a rising and falling
+ edge occurred since the previous callback.
+Synchronous (blocking) interrupts are handled by the SynchronousInterrupt class.
+Constructor Summary
+Constructors
+Constructor
+Description
+AsynchronousInterrupt
+(
+DigitalSource
+source,
+BiConsumer
+<
+Boolean
+,
+Boolean
+> callback)
+Construct a new asynchronous interrupt using a Digital Source.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Closes the interrupt.
+void
+disable
+()
+Disables interrupt callbacks.
+void
+enable
+()
+Enables interrupt callbacks.
+double
+getFallingTimestamp
+()
+Get the timestamp of the last falling edge.
+double
+getRisingTimestamp
+()
+Get the timestamp of the last rising edge.
+void
+setInterruptEdges
+(boolean risingEdge,
+ boolean fallingEdge)
+Set which edges to trigger the interrupt on.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AsynchronousInterrupt
+public
+AsynchronousInterrupt
+(
+DigitalSource
+source,
+BiConsumer
+<
+Boolean
+,
+Boolean
+> callback)
+Construct a new asynchronous interrupt using a Digital Source.
+At construction, the interrupt will trigger on the rising edge.
+Callbacks will not be triggered until enable() is called.
+The first bool in the callback indicates the rising edge triggered the interrupt, the second
+ bool is falling edge.
+Parameters:
+source
+- The digital source to use.
+callback
+- The callback to call on an interrupt
+Method Details
+close
+public
+void
+close
+()
+Closes the interrupt.
+This does not close the associated digital source.
+This will disable the interrupt if it is enabled.
+Specified by:
+close
+in interface
+AutoCloseable
+enable
+public
+void
+enable
+()
+Enables interrupt callbacks. Before this, callbacks will not occur. Does nothing if already
+ enabled.
+disable
+public
+void
+disable
+()
+Disables interrupt callbacks. Does nothing if already disabled.
+setInterruptEdges
+public
+void
+setInterruptEdges
+(boolean risingEdge,
+ boolean fallingEdge)
+Set which edges to trigger the interrupt on.
+Parameters:
+risingEdge
+- Trigger on rising edge
+fallingEdge
+- Trigger on falling edge
+getRisingTimestamp
+public
+double
+getRisingTimestamp
+()
+Get the timestamp of the last rising edge.
+This function does not require the interrupt to be enabled to work.
+This only works if rising edge was configured using setInterruptEdges.
+Returns:
+the timestamp in seconds relative to getFPGATime
+getFallingTimestamp
+public
+double
+getFallingTimestamp
+()
+Get the timestamp of the last falling edge.
+This function does not require the interrupt to be enabled to work.
+This only works if falling edge was configured using setInterruptEdges.
+Returns:
+the timestamp in seconds relative to getFPGATime

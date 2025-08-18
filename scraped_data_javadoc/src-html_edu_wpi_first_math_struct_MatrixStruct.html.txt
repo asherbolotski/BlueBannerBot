@@ -1,0 +1,112 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.struct;
+006
+007
+import edu.wpi.first.math.MatBuilder;
+008
+import edu.wpi.first.math.Matrix;
+009
+import edu.wpi.first.math.Nat;
+010
+import edu.wpi.first.math.Num;
+011
+import edu.wpi.first.util.struct.Struct;
+012
+import java.nio.ByteBuffer;
+013
+014
+public final class MatrixStruct<R extends Num, C extends Num> implements Struct<Matrix<R, C>> {
+015
+private final Nat<R> m_rows;
+016
+private final Nat<C> m_cols;
+017
+018
+/**
+019
+* Constructs the {@link Struct} implementation.
+020
+*
+021
+* @param rows The number of rows of the matrices this serializer processes.
+022
+* @param cols The number of cols of the matrices this serializer processes.
+023
+*/
+024
+public MatrixStruct(Nat<R> rows, Nat<C> cols) {
+025
+m_rows = rows;
+026
+m_cols = cols;
+027
+}
+028
+029
+@Override
+030
+public Class<Matrix<R, C>> getTypeClass() {
+031
+@SuppressWarnings("unchecked")
+032
+var clazz = (Class<Matrix<R, C>>) (Class<?>) Matrix.class;
+033
+return clazz;
+034
+}
+035
+036
+@Override
+037
+public String getTypeName() {
+038
+return "Matrix__" + m_rows.getNum() + "_" + m_cols.getNum();
+039
+}
+040
+041
+@Override
+042
+public int getSize() {
+043
+return kSizeDouble * m_rows.getNum() * m_cols.getNum();
+044
+}
+045
+046
+@Override
+047
+public String getSchema() {
+048
+return "double data[" + (m_rows.getNum() * m_cols.getNum()) + "]";
+049
+}
+050
+051
+@Override
+052
+public Matrix<R, C> unpack(ByteBuffer bb) {
+053
+return MatBuilder.fill(
+054
+m_rows, m_cols, Struct.unpackDoubleArray(bb, m_rows.getNum() * m_cols.getNum()));
+055
+}
+056
+057
+@Override
+058
+public void pack(ByteBuffer bb, Matrix<R, C> value) {
+059
+Struct.packArray(bb, value.getData());
+060
+}
+061
+}

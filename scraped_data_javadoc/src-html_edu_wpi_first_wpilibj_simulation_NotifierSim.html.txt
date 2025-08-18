@@ -1,0 +1,55 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.NotifierDataJNI;
+008
+009
+/** Class to control simulated notifiers. */
+010
+public final class NotifierSim {
+011
+private NotifierSim() {}
+012
+013
+/**
+014
+* Gets the timeout of the next notifier.
+015
+*
+016
+* @return Timestamp
+017
+*/
+018
+public static long getNextTimeout() {
+019
+return NotifierDataJNI.getNextTimeout();
+020
+}
+021
+022
+/**
+023
+* Gets the total number of notifiers.
+024
+*
+025
+* @return Count
+026
+*/
+027
+public static int getNumNotifiers() {
+028
+return NotifierDataJNI.getNumNotifiers();
+029
+}
+030
+}

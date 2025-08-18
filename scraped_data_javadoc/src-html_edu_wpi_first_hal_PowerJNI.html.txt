@@ -1,0 +1,329 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Power HAL JNI Functions.
+009
+*
+010
+* @see "Power.h"
+011
+*/
+012
+public class PowerJNI extends JNIWrapper {
+013
+/**
+014
+* Gets the roboRIO input voltage.
+015
+*
+016
+* @return the input voltage (volts)
+017
+* @see "HAL_GetVinVoltage"
+018
+*/
+019
+public static native double getVinVoltage();
+020
+021
+/**
+022
+* Gets the roboRIO input current.
+023
+*
+024
+* @return the input current (amps)
+025
+* @see "HAL_GetVinCurrent"
+026
+*/
+027
+public static native double getVinCurrent();
+028
+029
+/**
+030
+* Gets the 6V rail voltage.
+031
+*
+032
+* @return the 6V rail voltage (volts)
+033
+* @see "HAL_GetUserVoltage6V"
+034
+*/
+035
+public static native double getUserVoltage6V();
+036
+037
+/**
+038
+* Gets the 6V rail current.
+039
+*
+040
+* @return the 6V rail current (amps)
+041
+* @see "HAL_GetUserCurrent6V"
+042
+*/
+043
+public static native double getUserCurrent6V();
+044
+045
+/**
+046
+* Enables or disables the 6V rail.
+047
+*
+048
+* @param enabled whether the rail should be enabled
+049
+*/
+050
+public static native void setUserEnabled6V(boolean enabled);
+051
+052
+/**
+053
+* Gets the active state of the 6V rail.
+054
+*
+055
+* @return true if the rail is active, otherwise false
+056
+* @see "HAL_GetUserActive6V"
+057
+*/
+058
+public static native boolean getUserActive6V();
+059
+060
+/**
+061
+* Gets the fault count for the 6V rail.
+062
+*
+063
+* @return the number of 6V fault counts
+064
+* @see "HAL_GetUserCurrentFaults6V"
+065
+*/
+066
+public static native int getUserCurrentFaults6V();
+067
+068
+/**
+069
+* Gets the 5V rail voltage.
+070
+*
+071
+* @return the 5V rail voltage (volts)
+072
+* @see "HAL_GetUserVoltage5V"
+073
+*/
+074
+public static native double getUserVoltage5V();
+075
+076
+/**
+077
+* Gets the 5V rail current.
+078
+*
+079
+* @return the 5V rail current (amps)
+080
+* @see "HAL_GetUserCurrent5V"
+081
+*/
+082
+public static native double getUserCurrent5V();
+083
+084
+/**
+085
+* Enables or disables the 5V rail.
+086
+*
+087
+* @param enabled whether the rail should be enabled
+088
+*/
+089
+public static native void setUserEnabled5V(boolean enabled);
+090
+091
+/**
+092
+* Gets the active state of the 5V rail.
+093
+*
+094
+* @return true if the rail is active, otherwise false
+095
+* @see "HAL_GetUserActive5V"
+096
+*/
+097
+public static native boolean getUserActive5V();
+098
+099
+/**
+100
+* Gets the fault count for the 5V rail.
+101
+*
+102
+* @return the number of 5V fault counts
+103
+* @see "HAL_GetUserCurrentFaults5V"
+104
+*/
+105
+public static native int getUserCurrentFaults5V();
+106
+107
+/**
+108
+* Gets the 3V3 rail voltage.
+109
+*
+110
+* @return the 3V3 rail voltage (volts)
+111
+* @see "HAL_GetUserVoltage3V3"
+112
+*/
+113
+public static native double getUserVoltage3V3();
+114
+115
+/**
+116
+* Gets the 3V3 rail current.
+117
+*
+118
+* @return the 3V3 rail current (amps)
+119
+* @see "HAL_GetUserCurrent3V3"
+120
+*/
+121
+public static native double getUserCurrent3V3();
+122
+123
+/**
+124
+* Enables or disables the 3V3 rail.
+125
+*
+126
+* @param enabled whether the rail should be enabled
+127
+*/
+128
+public static native void setUserEnabled3V3(boolean enabled);
+129
+130
+/**
+131
+* Gets the active state of the 3V3 rail.
+132
+*
+133
+* @return true if the rail is active, otherwise false
+134
+* @see "HAL_GetUserActive3V3"
+135
+*/
+136
+public static native boolean getUserActive3V3();
+137
+138
+/**
+139
+* Gets the fault count for the 3V3 rail.
+140
+*
+141
+* @return the number of 3V3 fault counts
+142
+* @see "HAL_GetUserCurrentFaults3V3"
+143
+*/
+144
+public static native int getUserCurrentFaults3V3();
+145
+146
+/** Resets the overcurrent fault counters for all user rails to 0. */
+147
+public static native void resetUserCurrentFaults();
+148
+149
+/**
+150
+* Set the voltage the roboRIO will brownout and disable all outputs.
+151
+*
+152
+* <p>Note that this only does anything on the roboRIO 2. On the roboRIO it is a no-op.
+153
+*
+154
+* @param voltage The brownout voltage
+155
+* @see "HAL_SetBrownoutVoltage"
+156
+*/
+157
+public static native void setBrownoutVoltage(double voltage);
+158
+159
+/**
+160
+* Get the current brownout voltage setting.
+161
+*
+162
+* @return The brownout voltage
+163
+* @see "HAL_GetBrownoutVoltage"
+164
+*/
+165
+public static native double getBrownoutVoltage();
+166
+167
+/**
+168
+* Get the current CPU temperature in degrees Celsius.
+169
+*
+170
+* @return current CPU temperature in degrees Celsius
+171
+*/
+172
+public static native double getCPUTemp();
+173
+174
+/** Utility class. */
+175
+private PowerJNI() {}
+176
+}

@@ -1,0 +1,1318 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import static edu.wpi.first.units.Units.Meters;
+008
+import static edu.wpi.first.units.Units.Microsecond;
+009
+import static edu.wpi.first.units.Units.Microseconds;
+010
+import static edu.wpi.first.units.Units.Value;
+011
+012
+import edu.wpi.first.math.MathUtil;
+013
+import edu.wpi.first.units.collections.LongToObjectHashMap;
+014
+import edu.wpi.first.units.measure.Dimensionless;
+015
+import edu.wpi.first.units.measure.Distance;
+016
+import edu.wpi.first.units.measure.Frequency;
+017
+import edu.wpi.first.units.measure.LinearVelocity;
+018
+import edu.wpi.first.units.measure.Time;
+019
+import edu.wpi.first.util.WPIUtilJNI;
+020
+import edu.wpi.first.wpilibj.util.Color;
+021
+import java.util.Map;
+022
+import java.util.Objects;
+023
+import java.util.function.BooleanSupplier;
+024
+import java.util.function.DoubleSupplier;
+025
+026
+/**
+027
+* An LED pattern controls lights on an LED strip to command patterns of color that may change over
+028
+* time. Dynamic patterns should synchronize on an external clock for timed-based animations ({@link
+029
+* WPIUtilJNI#now()} is recommended, since it can be mocked in simulation and unit tests), or on
+030
+* some other dynamic input (see {@link #synchronizedBlink(BooleanSupplier)}, for example).
+031
+*
+032
+* <p>Patterns should be updated periodically in order for animations to play smoothly. For example,
+033
+* a hypothetical LED subsystem could create a {@code Command} that will continuously apply the
+034
+* pattern to its LED data buffer as part of the main periodic loop.
+035
+*
+036
+* <pre><code>
+037
+*   public class LEDs extends SubsystemBase {
+038
+*     private final AddressableLED m_led = new AddressableLED(0);
+039
+*     private final AddressableLEDBuffer m_ledData = new AddressableLEDBuffer(120);
+040
+*
+041
+*     public LEDs() {
+042
+*       m_led.setLength(120);
+043
+*       m_led.start();
+044
+*     }
+045
+*
+046
+*    {@literal @}Override
+047
+*     public void periodic() {
+048
+*       m_led.writeData(m_ledData);
+049
+*     }
+050
+*
+051
+*     public Command runPattern(LEDPattern pattern) {
+052
+*       return run(() -> pattern.applyTo(m_ledData));
+053
+*     }
+054
+*   }
+055
+* </code></pre>
+056
+*
+057
+* <p>LED patterns are stateless, and as such can be applied to multiple LED strips (or different
+058
+* sections of the same LED strip, since the roboRIO can only drive a single LED strip). In this
+059
+* example, we split the single buffer into two views - one for the section of the LED strip on the
+060
+* left side of a robot, and another view for the section of LEDs on the right side. The same
+061
+* pattern is able to be applied to both sides.
+062
+*
+063
+* <pre><code>
+064
+*   public class LEDs extends SubsystemBase {
+065
+*     private final AddressableLED m_led = new AddressableLED(0);
+066
+*     private final AddressableLEDBuffer m_ledData = new AddressableLEDBuffer(60);
+067
+*     private final AddressableLEDBufferView m_leftData = m_ledData.createView(0, 29);
+068
+*     private final AddressableLEDBufferView m_rightData = m_ledData.createView(30, 59).reversed();
+069
+*
+070
+*     public LEDs() {
+071
+*       m_led.setLength(60);
+072
+*       m_led.start();
+073
+*     }
+074
+*
+075
+*    {@literal @}Override
+076
+*     public void periodic() {
+077
+*       m_led.writeData(m_ledData);
+078
+*     }
+079
+*
+080
+*     public Command runPattern(LEDPattern pattern) {
+081
+*       // Use the single input pattern to drive both sides
+082
+*       return runSplitPatterns(pattern, pattern);
+083
+*     }
+084
+*
+085
+*     public Command runSplitPatterns(LEDPattern left, LEDPattern right) {
+086
+*       return run(() -> {
+087
+*         left.applyTo(m_leftData);
+088
+*         right.applyTo(m_rightData);
+089
+*       });
+090
+*     }
+091
+*   }
+092
+* </code></pre>
+093
+*/
+094
+@FunctionalInterface
+095
+public interface LEDPattern {
+096
+/** A functional interface for index mapping functions. */
+097
+@FunctionalInterface
+098
+interface IndexMapper {
+099
+/**
+100
+* Maps the index.
+101
+*
+102
+* @param bufLen Length of the buffer
+103
+* @param index The index to map
+104
+* @return The mapped index
+105
+*/
+106
+int apply(int bufLen, int index);
+107
+}
+108
+109
+/**
+110
+* Writes the pattern to an LED buffer. Dynamic animations should be called periodically (such as
+111
+* with a command or with a periodic method) to refresh the buffer over time.
+112
+*
+113
+* <p>This method is intentionally designed to use separate objects for reading and writing data.
+114
+* By splitting them up, we can easily modify the behavior of some base pattern to make it {@link
+115
+* #scrollAtRelativeSpeed(Frequency) scroll}, {@link #blink(Time, Time) blink}, or {@link
+116
+* #breathe(Time) breathe} by intercepting the data writes to transform their behavior to whatever
+117
+* we like.
+118
+*
+119
+* @param reader data reader for accessing buffer length and current colors
+120
+* @param writer data writer for setting new LED colors on the buffer
+121
+*/
+122
+void applyTo(LEDReader reader, LEDWriter writer);
+123
+124
+/**
+125
+* Convenience for {@link #applyTo(LEDReader, LEDWriter)} when one object provides both a read and
+126
+* a write interface. This is most helpful for playing an animated pattern directly on an {@link
+127
+* AddressableLEDBuffer} for the sake of code clarity.
+128
+*
+129
+* <pre><code>
+130
+*   AddressableLEDBuffer data = new AddressableLEDBuffer(120);
+131
+*   LEDPattern pattern = ...
+132
+*
+133
+*   void periodic() {
+134
+*     pattern.applyTo(data);
+135
+*   }
+136
+* </code></pre>
+137
+*
+138
+* @param readWriter the object to use for both reading and writing to a set of LEDs
+139
+* @param <T> the type of the object that can both read and write LED data
+140
+*/
+141
+default <T extends LEDReader & LEDWriter> void applyTo(T readWriter) {
+142
+applyTo(readWriter, readWriter);
+143
+}
+144
+145
+/**
+146
+* Creates a pattern with remapped indices.
+147
+*
+148
+* @param indexMapper the index mapper
+149
+* @return the mapped pattern
+150
+*/
+151
+default LEDPattern mapIndex(IndexMapper indexMapper) {
+152
+return (reader, writer) -> {
+153
+int bufLen = reader.getLength();
+154
+applyTo(
+155
+new LEDReader() {
+156
+@Override
+157
+public int getLength() {
+158
+return reader.getLength();
+159
+}
+160
+161
+@Override
+162
+public int getRed(int index) {
+163
+return reader.getRed(indexMapper.apply(bufLen, index));
+164
+}
+165
+166
+@Override
+167
+public int getGreen(int index) {
+168
+return reader.getGreen(indexMapper.apply(bufLen, index));
+169
+}
+170
+171
+@Override
+172
+public int getBlue(int index) {
+173
+return reader.getBlue(indexMapper.apply(bufLen, index));
+174
+}
+175
+},
+176
+(i, r, g, b) -> writer.setRGB(indexMapper.apply(bufLen, i), r, g, b));
+177
+};
+178
+}
+179
+180
+/**
+181
+* Creates a pattern that displays this one in reverse. Scrolling patterns will scroll in the
+182
+* opposite direction (but at the same speed). It will treat the end of an LED strip as the start,
+183
+* and the start of the strip as the end. This can be useful for making ping-pong patterns that
+184
+* travel from one end of an LED strip to the other, then reverse direction and move back to the
+185
+* start. This can also be useful when working with LED strips connected in a serpentine pattern
+186
+* (where the start of one strip is connected to the end of the previous one); however, consider
+187
+* using a {@link AddressableLEDBufferView#reversed() reversed view} of the overall buffer for
+188
+* that segment rather than reversing patterns.
+189
+*
+190
+* @return the reverse pattern
+191
+* @see AddressableLEDBufferView#reversed()
+192
+*/
+193
+default LEDPattern reversed() {
+194
+return mapIndex((length, index) -> length - 1 - index);
+195
+}
+196
+197
+/**
+198
+* Creates a pattern that plays this one, but offset by a certain number of LEDs. The offset
+199
+* pattern will wrap around, if necessary.
+200
+*
+201
+* @param offset how many LEDs to offset by
+202
+* @return the offset pattern
+203
+*/
+204
+default LEDPattern offsetBy(int offset) {
+205
+return mapIndex((length, index) -> Math.floorMod(index + offset, length));
+206
+}
+207
+208
+/**
+209
+* Creates a pattern that plays this one scrolling up the buffer. The velocity controls how fast
+210
+* the pattern returns back to its original position, and is in terms of the length of the LED
+211
+* strip; scrolling across a segment that is 10 LEDs long will travel twice as fast as on a
+212
+* segment that's only 5 LEDs long (assuming equal LED density on both segments).
+213
+*
+214
+* <p>For example, scrolling a pattern by one quarter of any LED strip's length per second,
+215
+* regardless of the total number of LEDs on that strip:
+216
+*
+217
+* <pre>
+218
+*   LEDPattern rainbow = LEDPattern.rainbow(255, 255);
+219
+*   LEDPattern scrollingRainbow = rainbow.scrollAtRelativeSpeed(Percent.per(Second).of(25));
+220
+* </pre>
+221
+*
+222
+* @param velocity how fast the pattern should move, in terms of how long it takes to do a full
+223
+*     scroll along the length of LEDs and return back to the starting position
+224
+* @return the scrolling pattern
+225
+*/
+226
+default LEDPattern scrollAtRelativeSpeed(Frequency velocity) {
+227
+final double periodMicros = velocity.asPeriod().in(Microseconds);
+228
+229
+return mapIndex(
+230
+(bufLen, index) -> {
+231
+long now = RobotController.getTime();
+232
+233
+// index should move by (buf.length) / (period)
+234
+double t = (now % (long) periodMicros) / periodMicros;
+235
+int offset = (int) (t * bufLen);
+236
+237
+return Math.floorMod(index + offset, bufLen);
+238
+});
+239
+}
+240
+241
+/**
+242
+* Creates a pattern that plays this one scrolling up an LED strip. A negative velocity makes the
+243
+* pattern play in reverse.
+244
+*
+245
+* <p>For example, scrolling a pattern at 4 inches per second along an LED strip with 60 LEDs per
+246
+* meter:
+247
+*
+248
+* <pre>
+249
+*   // LEDs per meter, a known value taken from the spec sheet of our particular LED strip
+250
+*   Distance LED_SPACING = Meters.of(1.0 / 60);
+251
+*
+252
+*   LEDPattern rainbow = LEDPattern.rainbow();
+253
+*   LEDPattern scrollingRainbow =
+254
+*     rainbow.scrollAtAbsoluteSpeed(InchesPerSecond.of(4), LED_SPACING);
+255
+* </pre>
+256
+*
+257
+* <p>Note that this pattern will scroll <i>faster</i> if applied to a less dense LED strip (such
+258
+* as 30 LEDs per meter), or <i>slower</i> if applied to a denser LED strip (such as 120 or 144
+259
+* LEDs per meter).
+260
+*
+261
+* @param velocity how fast the pattern should move along a physical LED strip
+262
+* @param ledSpacing the distance between adjacent LEDs on the physical LED strip
+263
+* @return the scrolling pattern
+264
+*/
+265
+default LEDPattern scrollAtAbsoluteSpeed(LinearVelocity velocity, Distance ledSpacing) {
+266
+// eg velocity = 10 m/s, spacing = 0.01m
+267
+// meters per micro = 1e-5 m/us
+268
+// micros per LED = 1e-2 m / (1e-5 m/us) = 1e-3 us
+269
+270
+var metersPerMicro = velocity.in(Meters.per(Microsecond));
+271
+var microsPerLED = (int) (ledSpacing.in(Meters) / metersPerMicro);
+272
+273
+return mapIndex(
+274
+(bufLen, index) -> {
+275
+long now = RobotController.getTime();
+276
+277
+// every step in time that's a multiple of microsPerLED will increment the offset by 1
+278
+var offset = (int) (now / microsPerLED);
+279
+280
+// floorMod so if the offset is negative, we still get positive outputs
+281
+return Math.floorMod(index + offset, bufLen);
+282
+});
+283
+}
+284
+285
+/**
+286
+* Creates a pattern that switches between playing this pattern and turning the entire LED strip
+287
+* off.
+288
+*
+289
+* @param onTime how long the pattern should play for, per cycle
+290
+* @param offTime how long the pattern should be turned off for, per cycle
+291
+* @return the blinking pattern
+292
+*/
+293
+default LEDPattern blink(Time onTime, Time offTime) {
+294
+final long totalTimeMicros = (long) (onTime.in(Microseconds) + offTime.in(Microseconds));
+295
+final long onTimeMicros = (long) onTime.in(Microseconds);
+296
+297
+return (reader, writer) -> {
+298
+if (RobotController.getTime() % totalTimeMicros < onTimeMicros) {
+299
+applyTo(reader, writer);
+300
+} else {
+301
+kOff.applyTo(reader, writer);
+302
+}
+303
+};
+304
+}
+305
+306
+/**
+307
+* Like {@link #blink(Time, Time) blink(onTime, offTime)}, but where the "off" time is exactly
+308
+* equal to the "on" time.
+309
+*
+310
+* @param onTime how long the pattern should play for (and be turned off for), per cycle
+311
+* @return the blinking pattern
+312
+*/
+313
+default LEDPattern blink(Time onTime) {
+314
+return blink(onTime, onTime);
+315
+}
+316
+317
+/**
+318
+* Creates a pattern that blinks this one on and off in sync with a true/false signal. The pattern
+319
+* will play while the signal outputs {@code true}, and will turn off while the signal outputs
+320
+* {@code false}.
+321
+*
+322
+* @param signal the signal to synchronize with
+323
+* @return the blinking pattern
+324
+*/
+325
+default LEDPattern synchronizedBlink(BooleanSupplier signal) {
+326
+return (reader, writer) -> {
+327
+if (signal.getAsBoolean()) {
+328
+applyTo(reader, writer);
+329
+} else {
+330
+kOff.applyTo(reader, writer);
+331
+}
+332
+};
+333
+}
+334
+335
+/**
+336
+* Creates a pattern that brightens and dims this one over time. Brightness follows a sinusoidal
+337
+* pattern.
+338
+*
+339
+* @param period how fast the breathing pattern should complete a single cycle
+340
+* @return the breathing pattern
+341
+*/
+342
+default LEDPattern breathe(Time period) {
+343
+final long periodMicros = (long) period.in(Microseconds);
+344
+345
+return (reader, writer) -> {
+346
+applyTo(
+347
+reader,
+348
+(i, r, g, b) -> {
+349
+// How far we are in the cycle, in the range [0, 1)
+350
+double t = (RobotController.getTime() % periodMicros) / (double) periodMicros;
+351
+double phase = t * 2 * Math.PI;
+352
+353
+// Apply the cosine function and shift its output from [-1, 1] to [0, 1]
+354
+// Use cosine so the period starts at 100% brightness
+355
+double dim = (Math.cos(phase) + 1) / 2.0;
+356
+357
+int output = Color.lerpRGB(0, 0, 0, r, g, b, dim);
+358
+359
+writer.setRGB(
+360
+i,
+361
+Color.unpackRGB(output, Color.RGBChannel.kRed),
+362
+Color.unpackRGB(output, Color.RGBChannel.kGreen),
+363
+Color.unpackRGB(output, Color.RGBChannel.kBlue));
+364
+});
+365
+};
+366
+}
+367
+368
+/**
+369
+* Creates a pattern that plays this pattern overlaid on another. Anywhere this pattern sets an
+370
+* LED to off (or {@link Color#kBlack}), the base pattern will be displayed instead.
+371
+*
+372
+* @param base the base pattern to overlay on top of
+373
+* @return the combined overlay pattern
+374
+*/
+375
+default LEDPattern overlayOn(LEDPattern base) {
+376
+return (reader, writer) -> {
+377
+// write the base pattern down first...
+378
+base.applyTo(reader, writer);
+379
+380
+// ... then, overwrite with the illuminated LEDs from the overlay
+381
+applyTo(
+382
+reader,
+383
+(i, r, g, b) -> {
+384
+if (r != 0 || g != 0 || b != 0) {
+385
+writer.setRGB(i, r, g, b);
+386
+}
+387
+});
+388
+};
+389
+}
+390
+391
+/**
+392
+* Creates a pattern that displays outputs as a combination of this pattern and another. Color
+393
+* values are calculated as the average color of both patterns; if both patterns set the same LED
+394
+* to the same color, then it is set to that color, but if one pattern sets to one color and the
+395
+* other pattern sets it to off, then it will show the color of the first pattern but at
+396
+* approximately half brightness. This is different from {@link #overlayOn}, which will show the
+397
+* base pattern at full brightness if the overlay is set to off at that position.
+398
+*
+399
+* @param other the pattern to blend with
+400
+* @return the blended pattern
+401
+*/
+402
+default LEDPattern blend(LEDPattern other) {
+403
+return (reader, writer) -> {
+404
+applyTo(reader, writer);
+405
+406
+other.applyTo(
+407
+reader,
+408
+(i, r, g, b) -> {
+409
+int blendedRGB =
+410
+Color.lerpRGB(
+411
+reader.getRed(i), reader.getGreen(i), reader.getBlue(i), r, g, b, 0.5);
+412
+413
+writer.setRGB(
+414
+i,
+415
+Color.unpackRGB(blendedRGB, Color.RGBChannel.kRed),
+416
+Color.unpackRGB(blendedRGB, Color.RGBChannel.kGreen),
+417
+Color.unpackRGB(blendedRGB, Color.RGBChannel.kBlue));
+418
+});
+419
+};
+420
+}
+421
+422
+/**
+423
+* Similar to {@link #blend(LEDPattern)}, but performs a bitwise mask on each color channel rather
+424
+* than averaging the colors for each LED. This can be helpful for displaying only a portion of
+425
+* the base pattern by applying a mask that sets the desired area to white, and all other areas to
+426
+* black. However, it can also be used to display only certain color channels or hues; for
+427
+* example, masking with {@code LEDPattern.color(Color.kRed)} will turn off the green and blue
+428
+* channels on the output pattern, leaving only the red LEDs to be illuminated.
+429
+*
+430
+* @param mask the mask to apply
+431
+* @return the masked pattern
+432
+*/
+433
+default LEDPattern mask(LEDPattern mask) {
+434
+return (reader, writer) -> {
+435
+// Apply the current pattern down as normal...
+436
+applyTo(reader, writer);
+437
+438
+mask.applyTo(
+439
+reader,
+440
+(i, r, g, b) -> {
+441
+// ... then perform a bitwise AND operation on each channel to apply the mask
+442
+writer.setRGB(i, r & reader.getRed(i), g & reader.getGreen(i), b & reader.getBlue(i));
+443
+});
+444
+};
+445
+}
+446
+447
+/**
+448
+* Creates a pattern that plays this one, but at a different brightness. Brightness multipliers
+449
+* are applied per-channel in the RGB space; no HSL or HSV conversions are applied. Multipliers
+450
+* are also uncapped, which may result in the original colors washing out and appearing less
+451
+* saturated or even just a bright white.
+452
+*
+453
+* <p>This method is predominantly intended for dimming LEDs to avoid painfully bright or
+454
+* distracting patterns from playing (apologies to the 2024 NE Greater Boston field staff).
+455
+*
+456
+* <p>For example, dimming can be done simply by adding a call to `atBrightness` at the end of a
+457
+* pattern:
+458
+*
+459
+* <pre>
+460
+*   // Solid red, but at 50% brightness
+461
+*   LEDPattern.solid(Color.kRed).atBrightness(Percent.of(50));
+462
+*
+463
+*   // Solid white, but at only 10% (i.e. ~0.5V)
+464
+*   LEDPattern.solid(Color.kWhite).atBrightness(Percent.of(10));
+465
+* </pre>
+466
+*
+467
+* @param relativeBrightness the multiplier to apply to all channels to modify brightness
+468
+* @return the input pattern, displayed at
+469
+*/
+470
+default LEDPattern atBrightness(Dimensionless relativeBrightness) {
+471
+double multiplier = relativeBrightness.in(Value);
+472
+473
+return (reader, writer) -> {
+474
+applyTo(
+475
+reader,
+476
+(i, r, g, b) -> {
+477
+// Clamp RGB values to keep them in the range [0, 255].
+478
+// Otherwise, the casts to byte would result in values like 256 wrapping to 0
+479
+480
+writer.setRGB(
+481
+i,
+482
+(int) MathUtil.clamp(r * multiplier, 0, 255),
+483
+(int) MathUtil.clamp(g * multiplier, 0, 255),
+484
+(int) MathUtil.clamp(b * multiplier, 0, 255));
+485
+});
+486
+};
+487
+}
+488
+489
+/** A pattern that turns off all LEDs. */
+490
+LEDPattern kOff = solid(Color.kBlack);
+491
+492
+/**
+493
+* Creates a pattern that displays a single static color along the entire length of the LED strip.
+494
+*
+495
+* @param color the color to display
+496
+* @return the pattern
+497
+*/
+498
+static LEDPattern solid(Color color) {
+499
+return (reader, writer) -> {
+500
+int bufLen = reader.getLength();
+501
+for (int led = 0; led < bufLen; led++) {
+502
+writer.setLED(led, color);
+503
+}
+504
+};
+505
+}
+506
+507
+/**
+508
+* Creates a pattern that works as a mask layer for {@link #mask(LEDPattern)} that illuminates
+509
+* only the portion of the LED strip corresponding with some progress. The mask pattern will start
+510
+* from the base and set LEDs to white at a proportion equal to the progress returned by the
+511
+* function. Some usages for this could be for displaying progress of a flywheel to its target
+512
+* velocity, progress of a complex autonomous sequence, or the height of an elevator.
+513
+*
+514
+* <p>For example, creating a mask for displaying a red-to-blue gradient, starting from the red
+515
+* end, based on where an elevator is in its range of travel.
+516
+*
+517
+* <pre>
+518
+*   LEDPattern basePattern = gradient(Color.kRed, Color.kBlue);
+519
+*   LEDPattern progressPattern =
+520
+*     basePattern.mask(progressMaskLayer(() -> elevator.getHeight() / elevator.maxHeight());
+521
+* </pre>
+522
+*
+523
+* @param progressSupplier the function to call to determine the progress. This should return
+524
+*     values in the range [0, 1]; any values outside that range will be clamped.
+525
+* @return the mask pattern
+526
+*/
+527
+static LEDPattern progressMaskLayer(DoubleSupplier progressSupplier) {
+528
+return (reader, writer) -> {
+529
+double progress = MathUtil.clamp(progressSupplier.getAsDouble(), 0, 1);
+530
+531
+int bufLen = reader.getLength();
+532
+int max = (int) (bufLen * progress);
+533
+534
+for (int led = 0; led < max; led++) {
+535
+writer.setLED(led, Color.kWhite);
+536
+}
+537
+538
+for (int led = max; led < bufLen; led++) {
+539
+writer.setLED(led, Color.kBlack);
+540
+}
+541
+};
+542
+}
+543
+544
+/**
+545
+* Display a set of colors in steps across the length of the LED strip. No interpolation is done
+546
+* between colors. Colors are specified by the first LED on the strip to show that color. The last
+547
+* color in the map will be displayed all the way to the end of the strip. LEDs positioned before
+548
+* the first specified step will be turned off (you can think of this as if there's a 0 -> black
+549
+* step by default)
+550
+*
+551
+* <pre>
+552
+*   // Display red from 0-33%, white from 33% - 67%, and blue from 67% to 100%
+553
+*   steps(Map.of(0.00, Color.kRed, 0.33, Color.kWhite, 0.67, Color.kBlue))
+554
+*
+555
+*   // Half off, half on
+556
+*   steps(Map.of(0.5, Color.kWhite))
+557
+* </pre>
+558
+*
+559
+* @param steps a map of progress to the color to start displaying at that position along the LED
+560
+*     strip
+561
+* @return a motionless step pattern
+562
+*/
+563
+static LEDPattern steps(Map<? extends Number, Color> steps) {
+564
+if (steps.isEmpty()) {
+565
+// no colors specified
+566
+DriverStation.reportWarning("Creating LED steps with no colors!", false);
+567
+return kOff;
+568
+}
+569
+570
+if (steps.size() == 1 && steps.keySet().iterator().next().doubleValue() == 0) {
+571
+// only one color specified, just show a static color
+572
+DriverStation.reportWarning("Creating LED steps with only one color!", false);
+573
+return solid(steps.values().iterator().next());
+574
+}
+575
+576
+return (reader, writer) -> {
+577
+int bufLen = reader.getLength();
+578
+579
+// precompute relevant positions for this buffer so we don't need to do a check
+580
+// on every single LED index
+581
+var stopPositions = new LongToObjectHashMap<Color>();
+582
+steps.forEach(
+583
+(progress, color) -> {
+584
+stopPositions.put((int) Math.floor(progress.doubleValue() * bufLen), color);
+585
+});
+586
+587
+Color currentColor = Color.kBlack;
+588
+for (int led = 0; led < bufLen; led++) {
+589
+currentColor = Objects.requireNonNullElse(stopPositions.get(led), currentColor);
+590
+591
+writer.setLED(led, currentColor);
+592
+}
+593
+};
+594
+}
+595
+596
+/** Types of gradients. */
+597
+enum GradientType {
+598
+/**
+599
+* A continuous gradient, where the gradient wraps around to allow for seamless scrolling
+600
+* effects.
+601
+*/
+602
+kContinuous,
+603
+604
+/**
+605
+* A discontinuous gradient, where the first pixel is set to the first color of the gradient and
+606
+* the final pixel is set to the last color of the gradient. There is no wrapping effect, so
+607
+* scrolling effects will display an obvious seam.
+608
+*/
+609
+kDiscontinuous
+610
+}
+611
+612
+/**
+613
+* Creates a pattern that displays a non-animated gradient of colors across the entire length of
+614
+* the LED strip. Colors are evenly distributed along the full length of the LED strip. The
+615
+* gradient type is configured with the {@code type} parameter, allowing the gradient to be either
+616
+* continuous (no seams, good for scrolling effects) or discontinuous (a clear seam is visible,
+617
+* but the gradient applies to the full length of the LED strip without needing to use some space
+618
+* for wrapping).
+619
+*
+620
+* @param type the type of gradient (continuous or discontinuous)
+621
+* @param colors the colors to display in the gradient
+622
+* @return a motionless gradient pattern
+623
+*/
+624
+static LEDPattern gradient(GradientType type, Color... colors) {
+625
+if (colors.length == 0) {
+626
+// Nothing to display
+627
+DriverStation.reportWarning("Creating a gradient with no colors!", false);
+628
+return kOff;
+629
+}
+630
+631
+if (colors.length == 1) {
+632
+// No gradients with one color
+633
+DriverStation.reportWarning("Creating a gradient with only one color!", false);
+634
+return solid(colors[0]);
+635
+}
+636
+637
+final int numSegments = colors.length;
+638
+639
+return (reader, writer) -> {
+640
+int bufLen = reader.getLength();
+641
+int ledsPerSegment =
+642
+switch (type) {
+643
+case kContinuous -> bufLen / numSegments;
+644
+case kDiscontinuous -> (bufLen - 1) / (numSegments - 1);
+645
+};
+646
+647
+for (int led = 0; led < bufLen; led++) {
+648
+int colorIndex = (led / ledsPerSegment) % numSegments;
+649
+int nextColorIndex = (colorIndex + 1) % numSegments;
+650
+double t = (led / (double) ledsPerSegment) % 1;
+651
+652
+Color color = colors[colorIndex];
+653
+Color nextColor = colors[nextColorIndex];
+654
+int gradientColor =
+655
+Color.lerpRGB(
+656
+color.red,
+657
+color.green,
+658
+color.blue,
+659
+nextColor.red,
+660
+nextColor.green,
+661
+nextColor.blue,
+662
+t);
+663
+664
+writer.setRGB(
+665
+led,
+666
+Color.unpackRGB(gradientColor, Color.RGBChannel.kRed),
+667
+Color.unpackRGB(gradientColor, Color.RGBChannel.kGreen),
+668
+Color.unpackRGB(gradientColor, Color.RGBChannel.kBlue));
+669
+}
+670
+};
+671
+}
+672
+673
+/**
+674
+* Creates an LED pattern that displays a rainbow across the color wheel. The rainbow pattern will
+675
+* stretch across the entire length of the LED strip.
+676
+*
+677
+* @param saturation the saturation of the HSV colors, in [0, 255]
+678
+* @param value the value of the HSV colors, in [0, 255]
+679
+* @return the rainbow pattern
+680
+*/
+681
+static LEDPattern rainbow(int saturation, int value) {
+682
+return (reader, writer) -> {
+683
+int bufLen = reader.getLength();
+684
+for (int i = 0; i < bufLen; i++) {
+685
+int hue = ((i * 180) / bufLen) % 180;
+686
+writer.setHSV(i, hue, saturation, value);
+687
+}
+688
+};
+689
+}
+690
+}

@@ -1,0 +1,89 @@
+Package
+edu.wpi.first.epilogue.logging.errors
+Class CrashOnError
+java.lang.Object
+edu.wpi.first.epilogue.logging.errors.CrashOnError
+All Implemented Interfaces:
+ErrorHandler
+public class
+CrashOnError
+extends
+Object
+implements
+ErrorHandler
+An error handler implementation that will throw an exception if logging raised an exception. This
+ is useful when running code in simulation or in JUnit tests to quickly identify errors in your
+ code.
+Constructor Summary
+Constructors
+Constructor
+Description
+CrashOnError
+()
+Default constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+handle
+(
+Throwable
+exception,
+ClassSpecificLogger
+<?> logger)
+Handles an exception that arose while logging.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CrashOnError
+public
+CrashOnError
+()
+Default constructor.
+Method Details
+handle
+public
+void
+handle
+(
+Throwable
+exception,
+ClassSpecificLogger
+<?> logger)
+Description copied from interface:
+ErrorHandler
+Handles an exception that arose while logging.
+Specified by:
+handle
+in interface
+ErrorHandler
+Parameters:
+exception
+- the exception that occurred
+logger
+- the logger that was being processed that caused the error to occur

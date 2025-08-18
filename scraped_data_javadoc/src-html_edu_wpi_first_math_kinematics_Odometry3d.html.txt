@@ -1,0 +1,281 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.geometry.Pose3d;
+009
+import edu.wpi.first.math.geometry.Rotation2d;
+010
+import edu.wpi.first.math.geometry.Rotation3d;
+011
+import edu.wpi.first.math.geometry.Translation2d;
+012
+import edu.wpi.first.math.geometry.Translation3d;
+013
+import edu.wpi.first.math.geometry.Twist3d;
+014
+015
+/**
+016
+* Class for odometry. Robot code should not use this directly- Instead, use the particular type for
+017
+* your drivetrain (e.g., {@link DifferentialDriveOdometry3d}). Odometry allows you to track the
+018
+* robot's position on the field over the course of a match using readings from encoders and a
+019
+* gyroscope.
+020
+*
+021
+* <p>This class is meant to be an easy replacement for {@link Odometry}, only requiring the
+022
+* addition of appropriate conversions between 2D and 3D versions of geometry classes. (See {@link
+023
+* Pose3d#Pose3d(Pose2d)}, {@link Rotation3d#Rotation3d(Rotation2d)}, {@link
+024
+* Translation3d#Translation3d(Translation2d)}, and {@link Pose3d#toPose2d()}.)
+025
+*
+026
+* <p>Teams can use odometry during the autonomous period for complex tasks like path following.
+027
+* Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+028
+*
+029
+* @param <T> Wheel positions type.
+030
+*/
+031
+public class Odometry3d<T> {
+032
+private final Kinematics<?, T> m_kinematics;
+033
+private Pose3d m_poseMeters;
+034
+035
+private Rotation3d m_gyroOffset;
+036
+private Rotation3d m_previousAngle;
+037
+private final T m_previousWheelPositions;
+038
+039
+/**
+040
+* Constructs an Odometry3d object.
+041
+*
+042
+* @param kinematics The kinematics of the drivebase.
+043
+* @param gyroAngle The angle reported by the gyroscope.
+044
+* @param wheelPositions The current encoder readings.
+045
+* @param initialPoseMeters The starting position of the robot on the field.
+046
+*/
+047
+public Odometry3d(
+048
+Kinematics<?, T> kinematics,
+049
+Rotation3d gyroAngle,
+050
+T wheelPositions,
+051
+Pose3d initialPoseMeters) {
+052
+m_kinematics = kinematics;
+053
+m_poseMeters = initialPoseMeters;
+054
+m_gyroOffset = m_poseMeters.getRotation().minus(gyroAngle);
+055
+m_previousAngle = m_poseMeters.getRotation();
+056
+m_previousWheelPositions = m_kinematics.copy(wheelPositions);
+057
+}
+058
+059
+/**
+060
+* Resets the robot's position on the field.
+061
+*
+062
+* <p>The gyroscope angle does not need to be reset here on the user's robot code. The library
+063
+* automatically takes care of offsetting the gyro angle.
+064
+*
+065
+* @param gyroAngle The angle reported by the gyroscope.
+066
+* @param wheelPositions The current encoder readings.
+067
+* @param poseMeters The position on the field that your robot is at.
+068
+*/
+069
+public void resetPosition(Rotation3d gyroAngle, T wheelPositions, Pose3d poseMeters) {
+070
+m_poseMeters = poseMeters;
+071
+m_previousAngle = m_poseMeters.getRotation();
+072
+m_gyroOffset = m_poseMeters.getRotation().minus(gyroAngle);
+073
+m_kinematics.copyInto(wheelPositions, m_previousWheelPositions);
+074
+}
+075
+076
+/**
+077
+* Resets the pose.
+078
+*
+079
+* @param poseMeters The pose to reset to.
+080
+*/
+081
+public void resetPose(Pose3d poseMeters) {
+082
+m_gyroOffset = m_gyroOffset.plus(poseMeters.getRotation().minus(m_poseMeters.getRotation()));
+083
+m_poseMeters = poseMeters;
+084
+m_previousAngle = m_poseMeters.getRotation();
+085
+}
+086
+087
+/**
+088
+* Resets the translation of the pose.
+089
+*
+090
+* @param translation The translation to reset to.
+091
+*/
+092
+public void resetTranslation(Translation3d translation) {
+093
+m_poseMeters = new Pose3d(translation, m_poseMeters.getRotation());
+094
+}
+095
+096
+/**
+097
+* Resets the rotation of the pose.
+098
+*
+099
+* @param rotation The rotation to reset to.
+100
+*/
+101
+public void resetRotation(Rotation3d rotation) {
+102
+m_gyroOffset = m_gyroOffset.plus(rotation.minus(m_poseMeters.getRotation()));
+103
+m_poseMeters = new Pose3d(m_poseMeters.getTranslation(), rotation);
+104
+m_previousAngle = m_poseMeters.getRotation();
+105
+}
+106
+107
+/**
+108
+* Returns the position of the robot on the field.
+109
+*
+110
+* @return The pose of the robot (x, y, and z are in meters).
+111
+*/
+112
+public Pose3d getPoseMeters() {
+113
+return m_poseMeters;
+114
+}
+115
+116
+/**
+117
+* Updates the robot's position on the field using forward kinematics and integration of the pose
+118
+* over time. This method takes in an angle parameter which is used instead of the angular rate
+119
+* that is calculated from forward kinematics, in addition to the current distance measurement at
+120
+* each wheel.
+121
+*
+122
+* @param gyroAngle The angle reported by the gyroscope.
+123
+* @param wheelPositions The current encoder readings.
+124
+* @return The new pose of the robot.
+125
+*/
+126
+public Pose3d update(Rotation3d gyroAngle, T wheelPositions) {
+127
+var angle = gyroAngle.plus(m_gyroOffset);
+128
+var angle_difference = angle.minus(m_previousAngle).toVector();
+129
+130
+var twist2d = m_kinematics.toTwist2d(m_previousWheelPositions, wheelPositions);
+131
+var twist =
+132
+new Twist3d(
+133
+twist2d.dx,
+134
+twist2d.dy,
+135
+0,
+136
+angle_difference.get(0),
+137
+angle_difference.get(1),
+138
+angle_difference.get(2));
+139
+140
+var newPose = m_poseMeters.exp(twist);
+141
+142
+m_kinematics.copyInto(wheelPositions, m_previousWheelPositions);
+143
+m_previousAngle = angle;
+144
+m_poseMeters = new Pose3d(newPose.getTranslation(), angle);
+145
+146
+return m_poseMeters;
+147
+}
+148
+}

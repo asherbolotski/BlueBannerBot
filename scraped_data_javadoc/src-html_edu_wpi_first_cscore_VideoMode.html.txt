@@ -1,0 +1,139 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cscore;
+006
+007
+import edu.wpi.first.util.PixelFormat;
+008
+import java.util.Objects;
+009
+010
+/** Video mode. */
+011
+@SuppressWarnings("MemberName")
+012
+public class VideoMode {
+013
+/**
+014
+* Create a new video mode.
+015
+*
+016
+* @param pixelFormat The pixel format enum as an integer.
+017
+* @param width The image width in pixels.
+018
+* @param height The image height in pixels.
+019
+* @param fps The camera's frames per second.
+020
+*/
+021
+public VideoMode(int pixelFormat, int width, int height, int fps) {
+022
+this.pixelFormat = PixelFormat.getFromInt(pixelFormat);
+023
+this.width = width;
+024
+this.height = height;
+025
+this.fps = fps;
+026
+}
+027
+028
+/**
+029
+* Create a new video mode.
+030
+*
+031
+* @param pixelFormat The pixel format.
+032
+* @param width The image width in pixels.
+033
+* @param height The image height in pixels.
+034
+* @param fps The camera's frames per second.
+035
+*/
+036
+public VideoMode(PixelFormat pixelFormat, int width, int height, int fps) {
+037
+this.pixelFormat = pixelFormat;
+038
+this.width = width;
+039
+this.height = height;
+040
+this.fps = fps;
+041
+}
+042
+043
+/** Pixel format. */
+044
+public PixelFormat pixelFormat;
+045
+046
+/** Width in pixels. */
+047
+public int width;
+048
+049
+/** Height in pixels. */
+050
+public int height;
+051
+052
+/** Frames per second. */
+053
+public int fps;
+054
+055
+@Override
+056
+public boolean equals(Object other) {
+057
+if (this == other) {
+058
+return true;
+059
+}
+060
+if (other == null) {
+061
+return false;
+062
+}
+063
+064
+return other instanceof VideoMode mode
+065
+&& pixelFormat == mode.pixelFormat
+066
+&& width == mode.width
+067
+&& height == mode.height
+068
+&& fps == mode.fps;
+069
+}
+070
+071
+@Override
+072
+public int hashCode() {
+073
+return Objects.hash(pixelFormat, width, height, fps);
+074
+}
+075
+}

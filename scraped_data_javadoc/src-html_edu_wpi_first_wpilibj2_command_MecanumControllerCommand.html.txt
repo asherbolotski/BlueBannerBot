@@ -1,0 +1,1106 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.math.controller.HolonomicDriveController;
+010
+import edu.wpi.first.math.controller.PIDController;
+011
+import edu.wpi.first.math.controller.ProfiledPIDController;
+012
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+013
+import edu.wpi.first.math.geometry.Pose2d;
+014
+import edu.wpi.first.math.geometry.Rotation2d;
+015
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+016
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+017
+import edu.wpi.first.math.kinematics.MecanumDriveMotorVoltages;
+018
+import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+019
+import edu.wpi.first.math.trajectory.Trajectory;
+020
+import edu.wpi.first.wpilibj.Timer;
+021
+import java.util.function.Consumer;
+022
+import java.util.function.Supplier;
+023
+024
+/**
+025
+* A command that uses two PID controllers ({@link PIDController}) and a ProfiledPIDController
+026
+* ({@link ProfiledPIDController}) to follow a trajectory {@link Trajectory} with a mecanum drive.
+027
+*
+028
+* <p>The command handles trajectory-following, Velocity PID calculations, and feedforwards
+029
+* internally. This is intended to be a more-or-less "complete solution" that can be used by teams
+030
+* without a great deal of controls expertise.
+031
+*
+032
+* <p>Advanced teams seeking more flexibility (for example, those who wish to use the onboard PID
+033
+* functionality of a "smart" motor controller) may use the secondary constructor that omits the PID
+034
+* and feedforward functionality, returning only the raw wheel speeds from the PID controllers.
+035
+*
+036
+* <p>The robot angle controller does not follow the angle given by the trajectory but rather goes
+037
+* to the angle given in the final state of the trajectory.
+038
+*
+039
+* <p>This class is provided by the NewCommands VendorDep
+040
+*/
+041
+@SuppressWarnings("removal")
+042
+public class MecanumControllerCommand extends Command {
+043
+private final Timer m_timer = new Timer();
+044
+private final boolean m_usePID;
+045
+private final Trajectory m_trajectory;
+046
+private final Supplier<Pose2d> m_pose;
+047
+private final SimpleMotorFeedforward m_feedforward;
+048
+private final MecanumDriveKinematics m_kinematics;
+049
+private final HolonomicDriveController m_controller;
+050
+private final Supplier<Rotation2d> m_desiredRotation;
+051
+private final double m_maxWheelVelocityMetersPerSecond;
+052
+private final PIDController m_frontLeftController;
+053
+private final PIDController m_rearLeftController;
+054
+private final PIDController m_frontRightController;
+055
+private final PIDController m_rearRightController;
+056
+private final Supplier<MecanumDriveWheelSpeeds> m_currentWheelSpeeds;
+057
+private final MecanumVoltagesConsumer m_outputDriveVoltages;
+058
+private final Consumer<MecanumDriveWheelSpeeds> m_outputWheelSpeeds;
+059
+private double m_prevFrontLeftSpeedSetpoint; // m/s
+060
+private double m_prevRearLeftSpeedSetpoint; // m/s
+061
+private double m_prevFrontRightSpeedSetpoint; // m/s
+062
+private double m_prevRearRightSpeedSetpoint; // m/s
+063
+064
+/**
+065
+* Constructs a new MecanumControllerCommand that when executed will follow the provided
+066
+* trajectory. PID control and feedforward are handled internally. Outputs are scaled from -12 to
+067
+* 12 as a voltage output to the motor.
+068
+*
+069
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path
+070
+* this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+071
+*
+072
+* @param trajectory The trajectory to follow.
+073
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+074
+*     provide this.
+075
+* @param feedforward The feedforward to use for the drivetrain.
+076
+* @param kinematics The kinematics for the robot drivetrain.
+077
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+078
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+079
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+080
+* @param desiredRotation The angle that the robot should be facing. This is sampled at each time
+081
+*     step.
+082
+* @param maxWheelVelocityMetersPerSecond The maximum velocity of a drivetrain wheel.
+083
+* @param frontLeftController The front left wheel velocity PID.
+084
+* @param rearLeftController The rear left wheel velocity PID.
+085
+* @param frontRightController The front right wheel velocity PID.
+086
+* @param rearRightController The rear right wheel velocity PID.
+087
+* @param currentWheelSpeeds A MecanumDriveWheelSpeeds object containing the current wheel speeds.
+088
+* @param outputDriveVoltages A MecanumVoltagesConsumer that consumes voltages of mecanum motors.
+089
+* @param requirements The subsystems to require.
+090
+*/
+091
+@SuppressWarnings("this-escape")
+092
+public MecanumControllerCommand(
+093
+Trajectory trajectory,
+094
+Supplier<Pose2d> pose,
+095
+SimpleMotorFeedforward feedforward,
+096
+MecanumDriveKinematics kinematics,
+097
+PIDController xController,
+098
+PIDController yController,
+099
+ProfiledPIDController thetaController,
+100
+Supplier<Rotation2d> desiredRotation,
+101
+double maxWheelVelocityMetersPerSecond,
+102
+PIDController frontLeftController,
+103
+PIDController rearLeftController,
+104
+PIDController frontRightController,
+105
+PIDController rearRightController,
+106
+Supplier<MecanumDriveWheelSpeeds> currentWheelSpeeds,
+107
+MecanumVoltagesConsumer outputDriveVoltages,
+108
+Subsystem... requirements) {
+109
+m_trajectory = requireNonNullParam(trajectory, "trajectory", "MecanumControllerCommand");
+110
+m_pose = requireNonNullParam(pose, "pose", "MecanumControllerCommand");
+111
+m_feedforward = requireNonNullParam(feedforward, "feedforward", "MecanumControllerCommand");
+112
+m_kinematics = requireNonNullParam(kinematics, "kinematics", "MecanumControllerCommand");
+113
+114
+m_controller =
+115
+new HolonomicDriveController(
+116
+requireNonNullParam(xController, "xController", "MecanumControllerCommand"),
+117
+requireNonNullParam(yController, "yController", "MecanumControllerCommand"),
+118
+requireNonNullParam(thetaController, "thetaController", "MecanumControllerCommand"));
+119
+120
+m_desiredRotation =
+121
+requireNonNullParam(desiredRotation, "desiredRotation", "MecanumControllerCommand");
+122
+123
+m_maxWheelVelocityMetersPerSecond = maxWheelVelocityMetersPerSecond;
+124
+125
+m_frontLeftController =
+126
+requireNonNullParam(frontLeftController, "frontLeftController", "MecanumControllerCommand");
+127
+m_rearLeftController =
+128
+requireNonNullParam(rearLeftController, "rearLeftController", "MecanumControllerCommand");
+129
+m_frontRightController =
+130
+requireNonNullParam(
+131
+frontRightController, "frontRightController", "MecanumControllerCommand");
+132
+m_rearRightController =
+133
+requireNonNullParam(rearRightController, "rearRightController", "MecanumControllerCommand");
+134
+135
+m_currentWheelSpeeds =
+136
+requireNonNullParam(currentWheelSpeeds, "currentWheelSpeeds", "MecanumControllerCommand");
+137
+138
+m_outputDriveVoltages =
+139
+requireNonNullParam(outputDriveVoltages, "outputDriveVoltages", "MecanumControllerCommand");
+140
+141
+m_outputWheelSpeeds = null;
+142
+143
+m_usePID = true;
+144
+145
+addRequirements(requirements);
+146
+}
+147
+148
+/**
+149
+* Constructs a new MecanumControllerCommand that when executed will follow the provided
+150
+* trajectory. PID control and feedforward are handled internally. Outputs are scaled from -12 to
+151
+* 12 as a voltage output to the motor.
+152
+*
+153
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path
+154
+* this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+155
+*
+156
+* @param trajectory The trajectory to follow.
+157
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+158
+*     provide this.
+159
+* @param feedforward The feedforward to use for the drivetrain.
+160
+* @param kinematics The kinematics for the robot drivetrain.
+161
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+162
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+163
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+164
+* @param desiredRotation The angle that the robot should be facing. This is sampled at each time
+165
+*     step.
+166
+* @param maxWheelVelocityMetersPerSecond The maximum velocity of a drivetrain wheel.
+167
+* @param frontLeftController The front left wheel velocity PID.
+168
+* @param rearLeftController The rear left wheel velocity PID.
+169
+* @param frontRightController The front right wheel velocity PID.
+170
+* @param rearRightController The rear right wheel velocity PID.
+171
+* @param currentWheelSpeeds A MecanumDriveWheelSpeeds object containing the current wheel speeds.
+172
+* @param outputDriveVoltages A MecanumDriveMotorVoltages object containing the output motor
+173
+*     voltages.
+174
+* @param requirements The subsystems to require.
+175
+*/
+176
+@Deprecated(since = "2025", forRemoval = true)
+177
+public MecanumControllerCommand(
+178
+Trajectory trajectory,
+179
+Supplier<Pose2d> pose,
+180
+SimpleMotorFeedforward feedforward,
+181
+MecanumDriveKinematics kinematics,
+182
+PIDController xController,
+183
+PIDController yController,
+184
+ProfiledPIDController thetaController,
+185
+Supplier<Rotation2d> desiredRotation,
+186
+double maxWheelVelocityMetersPerSecond,
+187
+PIDController frontLeftController,
+188
+PIDController rearLeftController,
+189
+PIDController frontRightController,
+190
+PIDController rearRightController,
+191
+Supplier<MecanumDriveWheelSpeeds> currentWheelSpeeds,
+192
+Consumer<MecanumDriveMotorVoltages> outputDriveVoltages,
+193
+Subsystem... requirements) {
+194
+this(
+195
+trajectory,
+196
+pose,
+197
+feedforward,
+198
+kinematics,
+199
+xController,
+200
+yController,
+201
+thetaController,
+202
+desiredRotation,
+203
+maxWheelVelocityMetersPerSecond,
+204
+frontLeftController,
+205
+rearLeftController,
+206
+frontRightController,
+207
+rearRightController,
+208
+currentWheelSpeeds,
+209
+(frontLeft, frontRight, rearLeft, rearRight) ->
+210
+outputDriveVoltages.accept(
+211
+new MecanumDriveMotorVoltages(frontLeft, frontRight, rearLeft, rearRight)),
+212
+requirements);
+213
+}
+214
+215
+/**
+216
+* Constructs a new MecanumControllerCommand that when executed will follow the provided
+217
+* trajectory. PID control and feedforward are handled internally. Outputs are scaled from -12 to
+218
+* 12 as a voltage output to the motor.
+219
+*
+220
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path
+221
+* this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+222
+*
+223
+* <p>Note 2: The final rotation of the robot will be set to the rotation of the final pose in the
+224
+* trajectory. The robot will not follow the rotations from the poses at each timestep. If
+225
+* alternate rotation behavior is desired, the other constructor with a supplier for rotation
+226
+* should be used.
+227
+*
+228
+* @param trajectory The trajectory to follow.
+229
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+230
+*     provide this.
+231
+* @param feedforward The feedforward to use for the drivetrain.
+232
+* @param kinematics The kinematics for the robot drivetrain.
+233
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+234
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+235
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+236
+* @param maxWheelVelocityMetersPerSecond The maximum velocity of a drivetrain wheel.
+237
+* @param frontLeftController The front left wheel velocity PID.
+238
+* @param rearLeftController The rear left wheel velocity PID.
+239
+* @param frontRightController The front right wheel velocity PID.
+240
+* @param rearRightController The rear right wheel velocity PID.
+241
+* @param currentWheelSpeeds A MecanumDriveWheelSpeeds object containing the current wheel speeds.
+242
+* @param outputDriveVoltages A MecanumVoltagesConsumer that consumes voltages of mecanum motors.
+243
+* @param requirements The subsystems to require.
+244
+*/
+245
+public MecanumControllerCommand(
+246
+Trajectory trajectory,
+247
+Supplier<Pose2d> pose,
+248
+SimpleMotorFeedforward feedforward,
+249
+MecanumDriveKinematics kinematics,
+250
+PIDController xController,
+251
+PIDController yController,
+252
+ProfiledPIDController thetaController,
+253
+double maxWheelVelocityMetersPerSecond,
+254
+PIDController frontLeftController,
+255
+PIDController rearLeftController,
+256
+PIDController frontRightController,
+257
+PIDController rearRightController,
+258
+Supplier<MecanumDriveWheelSpeeds> currentWheelSpeeds,
+259
+MecanumVoltagesConsumer outputDriveVoltages,
+260
+Subsystem... requirements) {
+261
+this(
+262
+trajectory,
+263
+pose,
+264
+feedforward,
+265
+kinematics,
+266
+xController,
+267
+yController,
+268
+thetaController,
+269
+() ->
+270
+trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
+271
+maxWheelVelocityMetersPerSecond,
+272
+frontLeftController,
+273
+rearLeftController,
+274
+frontRightController,
+275
+rearRightController,
+276
+currentWheelSpeeds,
+277
+outputDriveVoltages,
+278
+requirements);
+279
+}
+280
+281
+/**
+282
+* Constructs a new MecanumControllerCommand that when executed will follow the provided
+283
+* trajectory. PID control and feedforward are handled internally. Outputs are scaled from -12 to
+284
+* 12 as a voltage output to the motor.
+285
+*
+286
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path
+287
+* this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+288
+*
+289
+* <p>Note 2: The final rotation of the robot will be set to the rotation of the final pose in the
+290
+* trajectory. The robot will not follow the rotations from the poses at each timestep. If
+291
+* alternate rotation behavior is desired, the other constructor with a supplier for rotation
+292
+* should be used.
+293
+*
+294
+* @param trajectory The trajectory to follow.
+295
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+296
+*     provide this.
+297
+* @param feedforward The feedforward to use for the drivetrain.
+298
+* @param kinematics The kinematics for the robot drivetrain.
+299
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+300
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+301
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+302
+* @param maxWheelVelocityMetersPerSecond The maximum velocity of a drivetrain wheel.
+303
+* @param frontLeftController The front left wheel velocity PID.
+304
+* @param rearLeftController The rear left wheel velocity PID.
+305
+* @param frontRightController The front right wheel velocity PID.
+306
+* @param rearRightController The rear right wheel velocity PID.
+307
+* @param currentWheelSpeeds A MecanumDriveWheelSpeeds object containing the current wheel speeds.
+308
+* @param outputDriveVoltages A MecanumDriveMotorVoltages object containing the output motor
+309
+*     voltages.
+310
+* @param requirements The subsystems to require.
+311
+*/
+312
+@Deprecated(since = "2025", forRemoval = true)
+313
+public MecanumControllerCommand(
+314
+Trajectory trajectory,
+315
+Supplier<Pose2d> pose,
+316
+SimpleMotorFeedforward feedforward,
+317
+MecanumDriveKinematics kinematics,
+318
+PIDController xController,
+319
+PIDController yController,
+320
+ProfiledPIDController thetaController,
+321
+double maxWheelVelocityMetersPerSecond,
+322
+PIDController frontLeftController,
+323
+PIDController rearLeftController,
+324
+PIDController frontRightController,
+325
+PIDController rearRightController,
+326
+Supplier<MecanumDriveWheelSpeeds> currentWheelSpeeds,
+327
+Consumer<MecanumDriveMotorVoltages> outputDriveVoltages,
+328
+Subsystem... requirements) {
+329
+this(
+330
+trajectory,
+331
+pose,
+332
+feedforward,
+333
+kinematics,
+334
+xController,
+335
+yController,
+336
+thetaController,
+337
+maxWheelVelocityMetersPerSecond,
+338
+frontLeftController,
+339
+rearLeftController,
+340
+frontRightController,
+341
+rearRightController,
+342
+currentWheelSpeeds,
+343
+(frontLeft, frontRight, rearLeft, rearRight) ->
+344
+outputDriveVoltages.accept(
+345
+new MecanumDriveMotorVoltages(frontLeft, frontRight, rearLeft, rearRight)),
+346
+requirements);
+347
+}
+348
+349
+/**
+350
+* Constructs a new MecanumControllerCommand that when executed will follow the provided
+351
+* trajectory. The user should implement a velocity PID on the desired output wheel velocities.
+352
+*
+353
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path -
+354
+* this is left to the user, since it is not appropriate for paths with nonstationary end-states.
+355
+*
+356
+* @param trajectory The trajectory to follow.
+357
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+358
+*     provide this.
+359
+* @param kinematics The kinematics for the robot drivetrain.
+360
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+361
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+362
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+363
+* @param desiredRotation The angle that the robot should be facing. This is sampled at each time
+364
+*     step.
+365
+* @param maxWheelVelocityMetersPerSecond The maximum velocity of a drivetrain wheel.
+366
+* @param outputWheelSpeeds A MecanumDriveWheelSpeeds object containing the output wheel speeds.
+367
+* @param requirements The subsystems to require.
+368
+*/
+369
+@SuppressWarnings("this-escape")
+370
+public MecanumControllerCommand(
+371
+Trajectory trajectory,
+372
+Supplier<Pose2d> pose,
+373
+MecanumDriveKinematics kinematics,
+374
+PIDController xController,
+375
+PIDController yController,
+376
+ProfiledPIDController thetaController,
+377
+Supplier<Rotation2d> desiredRotation,
+378
+double maxWheelVelocityMetersPerSecond,
+379
+Consumer<MecanumDriveWheelSpeeds> outputWheelSpeeds,
+380
+Subsystem... requirements) {
+381
+m_trajectory = requireNonNullParam(trajectory, "trajectory", "MecanumControllerCommand");
+382
+m_pose = requireNonNullParam(pose, "pose", "MecanumControllerCommand");
+383
+m_feedforward = new SimpleMotorFeedforward(0, 0, 0);
+384
+m_kinematics = requireNonNullParam(kinematics, "kinematics", "MecanumControllerCommand");
+385
+386
+m_controller =
+387
+new HolonomicDriveController(
+388
+requireNonNullParam(xController, "xController", "MecanumControllerCommand"),
+389
+requireNonNullParam(yController, "yController", "MecanumControllerCommand"),
+390
+requireNonNullParam(thetaController, "thetaController", "MecanumControllerCommand"));
+391
+392
+m_desiredRotation =
+393
+requireNonNullParam(desiredRotation, "desiredRotation", "MecanumControllerCommand");
+394
+395
+m_maxWheelVelocityMetersPerSecond = maxWheelVelocityMetersPerSecond;
+396
+397
+m_frontLeftController = null;
+398
+m_rearLeftController = null;
+399
+m_frontRightController = null;
+400
+m_rearRightController = null;
+401
+402
+m_currentWheelSpeeds = null;
+403
+404
+m_outputWheelSpeeds =
+405
+requireNonNullParam(outputWheelSpeeds, "outputWheelSpeeds", "MecanumControllerCommand");
+406
+407
+m_outputDriveVoltages = null;
+408
+409
+m_usePID = false;
+410
+411
+addRequirements(requirements);
+412
+}
+413
+414
+/**
+415
+* Constructs a new MecanumControllerCommand that when executed will follow the provided
+416
+* trajectory. The user should implement a velocity PID on the desired output wheel velocities.
+417
+*
+418
+* <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path -
+419
+* this is left to the user, since it is not appropriate for paths with nonstationary end-states.
+420
+*
+421
+* <p>Note 2: The final rotation of the robot will be set to the rotation of the final pose in the
+422
+* trajectory. The robot will not follow the rotations from the poses at each timestep. If
+423
+* alternate rotation behavior is desired, the other constructor with a supplier for rotation
+424
+* should be used.
+425
+*
+426
+* @param trajectory The trajectory to follow.
+427
+* @param pose A function that supplies the robot pose - use one of the odometry classes to
+428
+*     provide this.
+429
+* @param kinematics The kinematics for the robot drivetrain.
+430
+* @param xController The Trajectory Tracker PID controller for the robot's x position.
+431
+* @param yController The Trajectory Tracker PID controller for the robot's y position.
+432
+* @param thetaController The Trajectory Tracker PID controller for angle for the robot.
+433
+* @param maxWheelVelocityMetersPerSecond The maximum velocity of a drivetrain wheel.
+434
+* @param outputWheelSpeeds A MecanumDriveWheelSpeeds object containing the output wheel speeds.
+435
+* @param requirements The subsystems to require.
+436
+*/
+437
+public MecanumControllerCommand(
+438
+Trajectory trajectory,
+439
+Supplier<Pose2d> pose,
+440
+MecanumDriveKinematics kinematics,
+441
+PIDController xController,
+442
+PIDController yController,
+443
+ProfiledPIDController thetaController,
+444
+double maxWheelVelocityMetersPerSecond,
+445
+Consumer<MecanumDriveWheelSpeeds> outputWheelSpeeds,
+446
+Subsystem... requirements) {
+447
+this(
+448
+trajectory,
+449
+pose,
+450
+kinematics,
+451
+xController,
+452
+yController,
+453
+thetaController,
+454
+() ->
+455
+trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
+456
+maxWheelVelocityMetersPerSecond,
+457
+outputWheelSpeeds,
+458
+requirements);
+459
+}
+460
+461
+@Override
+462
+public void initialize() {
+463
+var initialState = m_trajectory.sample(0);
+464
+465
+var initialXVelocity =
+466
+initialState.velocityMetersPerSecond * initialState.poseMeters.getRotation().getCos();
+467
+var initialYVelocity =
+468
+initialState.velocityMetersPerSecond * initialState.poseMeters.getRotation().getSin();
+469
+470
+MecanumDriveWheelSpeeds prevSpeeds =
+471
+m_kinematics.toWheelSpeeds(new ChassisSpeeds(initialXVelocity, initialYVelocity, 0.0));
+472
+473
+m_prevFrontLeftSpeedSetpoint = prevSpeeds.frontLeftMetersPerSecond;
+474
+m_prevRearLeftSpeedSetpoint = prevSpeeds.rearLeftMetersPerSecond;
+475
+m_prevFrontRightSpeedSetpoint = prevSpeeds.frontRightMetersPerSecond;
+476
+m_prevRearRightSpeedSetpoint = prevSpeeds.rearRightMetersPerSecond;
+477
+478
+m_timer.restart();
+479
+}
+480
+481
+@Override
+482
+public void execute() {
+483
+double curTime = m_timer.get();
+484
+485
+var desiredState = m_trajectory.sample(curTime);
+486
+487
+var targetChassisSpeeds =
+488
+m_controller.calculate(m_pose.get(), desiredState, m_desiredRotation.get());
+489
+var targetWheelSpeeds = m_kinematics.toWheelSpeeds(targetChassisSpeeds);
+490
+491
+targetWheelSpeeds.desaturate(m_maxWheelVelocityMetersPerSecond);
+492
+493
+double frontLeftSpeedSetpoint = targetWheelSpeeds.frontLeftMetersPerSecond;
+494
+double rearLeftSpeedSetpoint = targetWheelSpeeds.rearLeftMetersPerSecond;
+495
+double frontRightSpeedSetpoint = targetWheelSpeeds.frontRightMetersPerSecond;
+496
+double rearRightSpeedSetpoint = targetWheelSpeeds.rearRightMetersPerSecond;
+497
+498
+double frontLeftOutput;
+499
+double rearLeftOutput;
+500
+double frontRightOutput;
+501
+double rearRightOutput;
+502
+503
+if (m_usePID) {
+504
+final double frontLeftFeedforward =
+505
+m_feedforward.calculateWithVelocities(
+506
+m_prevFrontLeftSpeedSetpoint, frontLeftSpeedSetpoint);
+507
+508
+final double rearLeftFeedforward =
+509
+m_feedforward.calculateWithVelocities(m_prevRearLeftSpeedSetpoint, rearLeftSpeedSetpoint);
+510
+511
+final double frontRightFeedforward =
+512
+m_feedforward.calculateWithVelocities(
+513
+m_prevFrontRightSpeedSetpoint, frontRightSpeedSetpoint);
+514
+515
+final double rearRightFeedforward =
+516
+m_feedforward.calculateWithVelocities(
+517
+m_prevRearRightSpeedSetpoint, rearRightSpeedSetpoint);
+518
+519
+frontLeftOutput =
+520
+frontLeftFeedforward
+521
++ m_frontLeftController.calculate(
+522
+m_currentWheelSpeeds.get().frontLeftMetersPerSecond, frontLeftSpeedSetpoint);
+523
+524
+rearLeftOutput =
+525
+rearLeftFeedforward
+526
++ m_rearLeftController.calculate(
+527
+m_currentWheelSpeeds.get().rearLeftMetersPerSecond, rearLeftSpeedSetpoint);
+528
+529
+frontRightOutput =
+530
+frontRightFeedforward
+531
++ m_frontRightController.calculate(
+532
+m_currentWheelSpeeds.get().frontRightMetersPerSecond, frontRightSpeedSetpoint);
+533
+534
+rearRightOutput =
+535
+rearRightFeedforward
+536
++ m_rearRightController.calculate(
+537
+m_currentWheelSpeeds.get().rearRightMetersPerSecond, rearRightSpeedSetpoint);
+538
+539
+m_outputDriveVoltages.accept(
+540
+frontLeftOutput, frontRightOutput, rearLeftOutput, rearRightOutput);
+541
+542
+} else {
+543
+m_outputWheelSpeeds.accept(
+544
+new MecanumDriveWheelSpeeds(
+545
+frontLeftSpeedSetpoint,
+546
+frontRightSpeedSetpoint,
+547
+rearLeftSpeedSetpoint,
+548
+rearRightSpeedSetpoint));
+549
+}
+550
+}
+551
+552
+@Override
+553
+public void end(boolean interrupted) {
+554
+m_timer.stop();
+555
+}
+556
+557
+@Override
+558
+public boolean isFinished() {
+559
+return m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
+560
+}
+561
+562
+/** A consumer to represent an operation on the voltages of a mecanum drive. */
+563
+@FunctionalInterface
+564
+public interface MecanumVoltagesConsumer {
+565
+/**
+566
+* Accepts the voltages to perform some operation with them.
+567
+*
+568
+* @param frontLeftVoltage The voltage of the front left motor.
+569
+* @param frontRightVoltage The voltage of the front right motor.
+570
+* @param rearLeftVoltage The voltage of the rear left motor.
+571
+* @param rearRightVoltage The voltage of the rear left motor.
+572
+*/
+573
+void accept(
+574
+double frontLeftVoltage,
+575
+double frontRightVoltage,
+576
+double rearLeftVoltage,
+577
+double rearRightVoltage);
+578
+}
+579
+}

@@ -1,0 +1,241 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.trajectory.constraint;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+010
+import edu.wpi.first.math.geometry.Pose2d;
+011
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+012
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+013
+014
+/**
+015
+* A class that enforces constraints on differential drive voltage expenditure based on the motor
+016
+* dynamics and the drive kinematics. Ensures that the acceleration of any wheel of the robot while
+017
+* following the trajectory is never higher than what can be achieved with the given maximum
+018
+* voltage.
+019
+*/
+020
+public class DifferentialDriveVoltageConstraint implements TrajectoryConstraint {
+021
+private final SimpleMotorFeedforward m_feedforward;
+022
+private final DifferentialDriveKinematics m_kinematics;
+023
+private final double m_maxVoltage;
+024
+025
+/**
+026
+* Creates a new DifferentialDriveVoltageConstraint.
+027
+*
+028
+* @param feedforward A feedforward component describing the behavior of the drive.
+029
+* @param kinematics A kinematics component describing the drive geometry.
+030
+* @param maxVoltage The maximum voltage available to the motors while following the path. Should
+031
+*     be somewhat less than the nominal battery voltage (12V) to account for "voltage sag" due to
+032
+*     current draw.
+033
+*/
+034
+public DifferentialDriveVoltageConstraint(
+035
+SimpleMotorFeedforward feedforward,
+036
+DifferentialDriveKinematics kinematics,
+037
+double maxVoltage) {
+038
+m_feedforward =
+039
+requireNonNullParam(feedforward, "feedforward", "DifferentialDriveVoltageConstraint");
+040
+m_kinematics =
+041
+requireNonNullParam(kinematics, "kinematics", "DifferentialDriveVoltageConstraint");
+042
+m_maxVoltage = maxVoltage;
+043
+}
+044
+045
+@Override
+046
+public double getMaxVelocityMetersPerSecond(
+047
+Pose2d poseMeters, double curvatureRadPerMeter, double velocityMetersPerSecond) {
+048
+return Double.POSITIVE_INFINITY;
+049
+}
+050
+051
+@Override
+052
+public MinMax getMinMaxAccelerationMetersPerSecondSq(
+053
+Pose2d poseMeters, double curvatureRadPerMeter, double velocityMetersPerSecond) {
+054
+var wheelSpeeds =
+055
+m_kinematics.toWheelSpeeds(
+056
+new ChassisSpeeds(
+057
+velocityMetersPerSecond, 0, velocityMetersPerSecond * curvatureRadPerMeter));
+058
+059
+double maxWheelSpeed =
+060
+Math.max(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+061
+double minWheelSpeed =
+062
+Math.min(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+063
+064
+// Calculate maximum/minimum possible accelerations from motor dynamics
+065
+// and max/min wheel speeds
+066
+double maxWheelAcceleration =
+067
+m_feedforward.maxAchievableAcceleration(m_maxVoltage, maxWheelSpeed);
+068
+double minWheelAcceleration =
+069
+m_feedforward.minAchievableAcceleration(m_maxVoltage, minWheelSpeed);
+070
+071
+// Robot chassis turning on radius = 1/|curvature|.  Outer wheel has radius
+072
+// increased by half of the trackwidth T.  Inner wheel has radius decreased
+073
+// by half of the trackwidth.  Achassis / radius = Aouter / (radius + T/2), so
+074
+// Achassis = Aouter * radius / (radius + T/2) = Aouter / (1 + |curvature|T/2).
+075
+// Inner wheel is similar.
+076
+077
+// sgn(speed) term added to correctly account for which wheel is on
+078
+// outside of turn:
+079
+// If moving forward, max acceleration constraint corresponds to wheel on outside of turn
+080
+// If moving backward, max acceleration constraint corresponds to wheel on inside of turn
+081
+082
+// When velocity is zero, then wheel velocities are uniformly zero (robot cannot be
+083
+// turning on its center) - we have to treat this as a special case, as it breaks
+084
+// the signum function.  Both max and min acceleration are *reduced in magnitude*
+085
+// in this case.
+086
+087
+double maxChassisAcceleration;
+088
+double minChassisAcceleration;
+089
+090
+if (velocityMetersPerSecond == 0) {
+091
+maxChassisAcceleration =
+092
+maxWheelAcceleration
+093
+/ (1 + m_kinematics.trackWidthMeters * Math.abs(curvatureRadPerMeter) / 2);
+094
+minChassisAcceleration =
+095
+minWheelAcceleration
+096
+/ (1 + m_kinematics.trackWidthMeters * Math.abs(curvatureRadPerMeter) / 2);
+097
+} else {
+098
+maxChassisAcceleration =
+099
+maxWheelAcceleration
+100
+/ (1
+101
++ m_kinematics.trackWidthMeters
+102
+* Math.abs(curvatureRadPerMeter)
+103
+* Math.signum(velocityMetersPerSecond)
+104
+/ 2);
+105
+minChassisAcceleration =
+106
+minWheelAcceleration
+107
+/ (1
+108
+- m_kinematics.trackWidthMeters
+109
+* Math.abs(curvatureRadPerMeter)
+110
+* Math.signum(velocityMetersPerSecond)
+111
+/ 2);
+112
+}
+113
+114
+// When turning about a point inside the wheelbase (i.e. radius less than half
+115
+// the trackwidth), the inner wheel's direction changes, but the magnitude remains
+116
+// the same.  The formula above changes sign for the inner wheel when this happens.
+117
+// We can accurately account for this by simply negating the inner wheel.
+118
+119
+if ((m_kinematics.trackWidthMeters / 2) > (1 / Math.abs(curvatureRadPerMeter))) {
+120
+if (velocityMetersPerSecond > 0) {
+121
+minChassisAcceleration = -minChassisAcceleration;
+122
+} else if (velocityMetersPerSecond < 0) {
+123
+maxChassisAcceleration = -maxChassisAcceleration;
+124
+}
+125
+}
+126
+127
+return new MinMax(minChassisAcceleration, maxChassisAcceleration);
+128
+}
+129
+}

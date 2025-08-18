@@ -1,0 +1,209 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+008
+import edu.wpi.first.hal.HAL;
+009
+import edu.wpi.first.util.sendable.SendableBuilder;
+010
+import edu.wpi.first.util.sendable.SendableRegistry;
+011
+012
+/**
+013
+* Standard hobby style servo.
+014
+*
+015
+* <p>The range parameters default to the appropriate values for the Hitec HS-322HD servo provided
+016
+* in the FIRST Kit of Parts in 2008.
+017
+*/
+018
+public class Servo extends PWM {
+019
+private static final double kMaxServoAngle = 180.0;
+020
+private static final double kMinServoAngle = 0.0;
+021
+022
+private static final int kDefaultMaxServoPWM = 2400;
+023
+private static final int kDefaultMinServoPWM = 600;
+024
+025
+/**
+026
+* Constructor.
+027
+*
+028
+* <p>By default, {@value #kDefaultMaxServoPWM} ms is used as the max PWM value and {@value
+029
+* #kDefaultMinServoPWM} ms is used as the minPWM value.
+030
+*
+031
+* @param channel The PWM channel to which the servo is attached. 0-9 are on-board, 10-19 are on
+032
+*     the MXP port
+033
+*/
+034
+@SuppressWarnings("this-escape")
+035
+public Servo(final int channel) {
+036
+super(channel);
+037
+setBoundsMicroseconds(kDefaultMaxServoPWM, 0, 0, 0, kDefaultMinServoPWM);
+038
+setPeriodMultiplier(PeriodMultiplier.k4X);
+039
+040
+HAL.report(tResourceType.kResourceType_Servo, getChannel() + 1);
+041
+SendableRegistry.setName(this, "Servo", getChannel());
+042
+}
+043
+044
+/**
+045
+* Set the servo position.
+046
+*
+047
+* <p>Servo values range from 0.0 to 1.0 corresponding to the range of full left to full right.
+048
+*
+049
+* @param value Position from 0.0 to 1.0.
+050
+*/
+051
+public void set(double value) {
+052
+setPosition(value);
+053
+}
+054
+055
+/**
+056
+* Get the servo position.
+057
+*
+058
+* <p>Servo values range from 0.0 to 1.0 corresponding to the range of full left to full right.
+059
+* This returns the commanded position, not the position that the servo is actually at, as the
+060
+* servo does not report its own position.
+061
+*
+062
+* @return Position from 0.0 to 1.0.
+063
+*/
+064
+public double get() {
+065
+return getPosition();
+066
+}
+067
+068
+/**
+069
+* Set the servo angle.
+070
+*
+071
+* <p>The angles are based on the HS-322HD Servo, and have a range of 0 to 180 degrees.
+072
+*
+073
+* <p>Servo angles that are out of the supported range of the servo simply "saturate" in that
+074
+* direction In other words, if the servo has a range of (X degrees to Y degrees) than angles of
+075
+* less than X result in an angle of X being set and angles of more than Y degrees result in an
+076
+* angle of Y being set.
+077
+*
+078
+* @param degrees The angle in degrees to set the servo.
+079
+*/
+080
+public void setAngle(double degrees) {
+081
+if (degrees < kMinServoAngle) {
+082
+degrees = kMinServoAngle;
+083
+} else if (degrees > kMaxServoAngle) {
+084
+degrees = kMaxServoAngle;
+085
+}
+086
+087
+setPosition((degrees - kMinServoAngle) / getServoAngleRange());
+088
+}
+089
+090
+/**
+091
+* Get the servo angle.
+092
+*
+093
+* <p>This returns the commanded angle, not the angle that the servo is actually at, as the servo
+094
+* does not report its own angle.
+095
+*
+096
+* @return The angle in degrees to which the servo is set.
+097
+*/
+098
+public double getAngle() {
+099
+return getPosition() * getServoAngleRange() + kMinServoAngle;
+100
+}
+101
+102
+private double getServoAngleRange() {
+103
+return kMaxServoAngle - kMinServoAngle;
+104
+}
+105
+106
+@Override
+107
+public void initSendable(SendableBuilder builder) {
+108
+builder.setSmartDashboardType("Servo");
+109
+builder.addDoubleProperty("Value", this::get, this::set);
+110
+}
+111
+}

@@ -1,0 +1,302 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.struct;
+006
+007
+import java.util.ArrayList;
+008
+import java.util.HashMap;
+009
+import java.util.HashSet;
+010
+import java.util.List;
+011
+import java.util.Map;
+012
+import java.util.Set;
+013
+import java.util.Stack;
+014
+015
+/** Raw struct dynamic struct descriptor. */
+016
+public class StructDescriptor {
+017
+StructDescriptor(String name) {
+018
+m_name = name;
+019
+}
+020
+021
+/**
+022
+* Gets the struct name.
+023
+*
+024
+* @return name
+025
+*/
+026
+public String getName() {
+027
+return m_name;
+028
+}
+029
+030
+/**
+031
+* Gets the struct schema.
+032
+*
+033
+* @return schema
+034
+*/
+035
+public String getSchema() {
+036
+return m_schema;
+037
+}
+038
+039
+/**
+040
+* Returns whether the struct is valid (e.g. the struct is fully defined and field offsets
+041
+* computed).
+042
+*
+043
+* @return true if valid
+044
+*/
+045
+public boolean isValid() {
+046
+return m_valid;
+047
+}
+048
+049
+/**
+050
+* Returns the struct size, in bytes. Not valid unless IsValid() is true.
+051
+*
+052
+* @return size in bytes
+053
+* @throws IllegalStateException if descriptor is invalid
+054
+*/
+055
+public int getSize() {
+056
+if (!m_valid) {
+057
+throw new IllegalStateException("descriptor is invalid");
+058
+}
+059
+return m_size;
+060
+}
+061
+062
+/**
+063
+* Gets a field descriptor by name. Note the field cannot be accessed until the struct is valid.
+064
+*
+065
+* @param name field name
+066
+* @return field descriptor, or nullptr if not found
+067
+*/
+068
+public StructFieldDescriptor findFieldByName(String name) {
+069
+return m_fieldsByName.get(name);
+070
+}
+071
+072
+/**
+073
+* Gets all field descriptors. Note fields cannot be accessed until the struct is valid.
+074
+*
+075
+* @return field descriptors
+076
+*/
+077
+public List<StructFieldDescriptor> getFields() {
+078
+return m_fields;
+079
+}
+080
+081
+boolean checkCircular(Stack<StructDescriptor> stack) {
+082
+stack.push(this);
+083
+for (StructDescriptor ref : m_references) {
+084
+if (stack.contains(ref)) {
+085
+return false;
+086
+}
+087
+if (!ref.checkCircular(stack)) {
+088
+return false;
+089
+}
+090
+}
+091
+stack.pop();
+092
+return true;
+093
+}
+094
+095
+void calculateOffsets(Stack<StructDescriptor> stack) {
+096
+int offset = 0;
+097
+int shift = 0;
+098
+int prevBitfieldSize = 0;
+099
+for (StructFieldDescriptor field : m_fields) {
+100
+if (!field.isBitField()) {
+101
+shift = 0; // reset shift on non-bitfield element
+102
+offset += prevBitfieldSize; // finish bitfield if active
+103
+prevBitfieldSize = 0; // previous is now not bitfield
+104
+field.m_offset = offset;
+105
+StructDescriptor struct = field.getStruct();
+106
+if (struct != null) {
+107
+if (!struct.isValid()) {
+108
+m_valid = false;
+109
+return;
+110
+}
+111
+field.m_size = struct.m_size;
+112
+}
+113
+offset += field.m_size * field.m_arraySize;
+114
+} else {
+115
+int bitWidth = field.getBitWidth();
+116
+if (field.getType() == StructFieldType.kBool
+117
+&& prevBitfieldSize != 0
+118
+&& (shift + 1) <= (prevBitfieldSize * 8)) {
+119
+// bool takes on size of preceding bitfield type (if it fits)
+120
+field.m_size = prevBitfieldSize;
+121
+} else if (field.m_size != prevBitfieldSize || (shift + bitWidth) > (field.m_size * 8)) {
+122
+shift = 0;
+123
+offset += prevBitfieldSize;
+124
+}
+125
+prevBitfieldSize = field.m_size;
+126
+field.m_offset = offset;
+127
+field.m_bitShift = shift;
+128
+shift += bitWidth;
+129
+}
+130
+}
+131
+132
+// update struct size
+133
+m_size = offset + prevBitfieldSize;
+134
+m_valid = true;
+135
+136
+// now that we're valid, referring types may be too
+137
+stack.push(this);
+138
+for (StructDescriptor ref : m_references) {
+139
+if (stack.contains(ref)) {
+140
+throw new IllegalStateException(
+141
+"internal error (inconsistent data): circular struct reference between "
+142
++ m_name
+143
++ " and "
+144
++ ref.m_name);
+145
+}
+146
+ref.calculateOffsets(stack);
+147
+}
+148
+stack.pop();
+149
+}
+150
+151
+private final String m_name;
+152
+String m_schema;
+153
+final Set<StructDescriptor> m_references = new HashSet<>();
+154
+final List<StructFieldDescriptor> m_fields = new ArrayList<>();
+155
+final Map<String, StructFieldDescriptor> m_fieldsByName = new HashMap<>();
+156
+int m_size;
+157
+boolean m_valid;
+158
+}

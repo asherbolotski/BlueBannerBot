@@ -1,0 +1,78 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.SimDouble;
+008
+import edu.wpi.first.wpilibj.AnalogEncoder;
+009
+010
+/** Class to control a simulated analog encoder. */
+011
+public class AnalogEncoderSim {
+012
+private final SimDouble m_simPosition;
+013
+014
+/**
+015
+* Constructs from an AnalogEncoder object.
+016
+*
+017
+* @param encoder AnalogEncoder to simulate
+018
+*/
+019
+public AnalogEncoderSim(AnalogEncoder encoder) {
+020
+SimDeviceSim wrappedSimDevice =
+021
+new SimDeviceSim("AnalogEncoder" + "[" + encoder.getChannel() + "]");
+022
+m_simPosition = wrappedSimDevice.getDouble("Position");
+023
+}
+024
+025
+/**
+026
+* Set the position.
+027
+*
+028
+* @param value The position.
+029
+*/
+030
+public void set(double value) {
+031
+m_simPosition.set(value);
+032
+}
+033
+034
+/**
+035
+* Get the simulated position.
+036
+*
+037
+* @return The simulated position.
+038
+*/
+039
+public double get() {
+040
+return m_simPosition.get();
+041
+}
+042
+}

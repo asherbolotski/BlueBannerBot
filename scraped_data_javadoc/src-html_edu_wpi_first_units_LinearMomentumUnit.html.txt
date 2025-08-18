@@ -1,0 +1,206 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.ImmutableLinearMomentum;
+008
+import edu.wpi.first.units.measure.LinearMomentum;
+009
+import edu.wpi.first.units.measure.MutLinearMomentum;
+010
+011
+/** A unit of linear momentum like {@link edu.wpi.first.units.Units#KilogramMetersPerSecond}. */
+012
+public final class LinearMomentumUnit extends MultUnit<MassUnit, LinearVelocityUnit> {
+013
+private static final CombinatoryUnitCache<MassUnit, LinearVelocityUnit, LinearMomentumUnit>
+014
+cache = new CombinatoryUnitCache<>(LinearMomentumUnit::new);
+015
+016
+LinearMomentumUnit(MassUnit unit, LinearVelocityUnit linearVelocityUnit) {
+017
+super(
+018
+unit.isBaseUnit() && linearVelocityUnit.isBaseUnit()
+019
+? null
+020
+: combine(unit.getBaseUnit(), linearVelocityUnit.getBaseUnit()),
+021
+unit,
+022
+linearVelocityUnit);
+023
+}
+024
+025
+LinearMomentumUnit(
+026
+MultUnit<MassUnit, LinearVelocityUnit> baseUnit,
+027
+UnaryFunction toBaseConverter,
+028
+UnaryFunction fromBaseConverter,
+029
+String name,
+030
+String symbol) {
+031
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+032
+}
+033
+034
+/**
+035
+* Combines a mass and linear velocity unit to form a combined linear momentum unit.
+036
+*
+037
+* @param mass the unit of mass
+038
+* @param velocity the unit of velocity
+039
+* @return the combined unit of momentum
+040
+*/
+041
+public static LinearMomentumUnit combine(MassUnit mass, LinearVelocityUnit velocity) {
+042
+return cache.combine(mass, velocity);
+043
+}
+044
+045
+@Override
+046
+public LinearMomentumUnit getBaseUnit() {
+047
+return (LinearMomentumUnit) super.getBaseUnit();
+048
+}
+049
+050
+@Override
+051
+public LinearMomentum of(double magnitude) {
+052
+return new ImmutableLinearMomentum(magnitude, toBaseUnits(magnitude), this);
+053
+}
+054
+055
+@Override
+056
+public LinearMomentum ofBaseUnits(double baseUnitMagnitude) {
+057
+return new ImmutableLinearMomentum(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+058
+}
+059
+060
+@Override
+061
+public LinearMomentum zero() {
+062
+return (LinearMomentum) super.zero();
+063
+}
+064
+065
+@Override
+066
+public LinearMomentum one() {
+067
+return (LinearMomentum) super.one();
+068
+}
+069
+070
+@Override
+071
+public MutLinearMomentum mutable(double initialMagnitude) {
+072
+return new MutLinearMomentum(initialMagnitude, toBaseUnits(initialMagnitude), this);
+073
+}
+074
+075
+@Override
+076
+public VelocityUnit<LinearMomentumUnit> per(TimeUnit time) {
+077
+return VelocityUnit.combine(this, time);
+078
+}
+079
+080
+/**
+081
+* Creates a ratio unit between this unit and an arbitrary other unit.
+082
+*
+083
+* @param other the other unit
+084
+* @param <U> the type of the other unit
+085
+* @return the ratio unit
+086
+*/
+087
+public <U extends Unit> PerUnit<LinearMomentumUnit, U> per(U other) {
+088
+return PerUnit.combine(this, other);
+089
+}
+090
+091
+/**
+092
+* Converts a measurement value in terms of another unit to this unit.
+093
+*
+094
+* @param magnitude the magnitude of the measurement in terms of the other unit
+095
+* @param otherUnit the other unit
+096
+* @return the value of the measurement in terms of this unit
+097
+*/
+098
+public double convertFrom(double magnitude, LinearMomentumUnit otherUnit) {
+099
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+100
+}
+101
+102
+/**
+103
+* Multiplies this unit by distance to form a unit of angular momentum.
+104
+*
+105
+* @param distance the unit of distance
+106
+* @return the combined unit of angular momentum
+107
+*/
+108
+public AngularMomentumUnit mult(DistanceUnit distance) {
+109
+return AngularMomentumUnit.combine(this, distance);
+110
+}
+111
+}

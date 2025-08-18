@@ -1,0 +1,297 @@
+Package
+edu.wpi.first.hal
+Class HALValue
+java.lang.Object
+edu.wpi.first.hal.HALValue
+public final class
+HALValue
+extends
+Object
+Represents a HAL entry value.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final int
+kBoolean
+Boolean.
+static final int
+kDouble
+Double.
+static final int
+kEnum
+Enum.
+static final int
+kInt
+Int.
+static final int
+kLong
+Long.
+static final int
+kUnassigned
+Unassigned type.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+HALValue
+fromNative
+(int type,
+ long value1,
+ double value2)
+Build a HAL value from its native components.
+boolean
+getBoolean
+()
+Get the value as a boolean.
+double
+getDouble
+()
+Get the value as a double.
+long
+getLong
+()
+Get the value as a long.
+double
+getNativeDouble
+()
+Get the native double value.
+long
+getNativeLong
+()
+Get the native long value.
+int
+getType
+()
+Get the type of the value.
+static
+HALValue
+makeBoolean
+(boolean value)
+Build a HAL boolean value.
+static
+HALValue
+makeDouble
+(double value)
+Build a HAL double value.
+static
+HALValue
+makeEnum
+(int value)
+Build a HAL enum value.
+static
+HALValue
+makeInt
+(int value)
+Build a HAL integer value.
+static
+HALValue
+makeLong
+(long value)
+Build a HAL long value.
+static
+HALValue
+makeUnassigned
+()
+Build a HAL unassigned value.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kUnassigned
+public static final
+int
+kUnassigned
+Unassigned type.
+See Also:
+Constant Field Values
+kBoolean
+public static final
+int
+kBoolean
+Boolean.
+See Also:
+Constant Field Values
+kDouble
+public static final
+int
+kDouble
+Double.
+See Also:
+Constant Field Values
+kEnum
+public static final
+int
+kEnum
+Enum.
+See Also:
+Constant Field Values
+kInt
+public static final
+int
+kInt
+Int.
+See Also:
+Constant Field Values
+kLong
+public static final
+int
+kLong
+Long.
+See Also:
+Constant Field Values
+Method Details
+getType
+public
+int
+getType
+()
+Get the type of the value.
+Returns:
+Type (e.g. kBoolean).
+getBoolean
+public
+boolean
+getBoolean
+()
+Get the value as a boolean. Does not perform type checking.
+Returns:
+value contents
+getLong
+public
+long
+getLong
+()
+Get the value as a long. Does not perform type checking.
+Returns:
+value contents
+getDouble
+public
+double
+getDouble
+()
+Get the value as a double. Does not perform type checking.
+Returns:
+value contents
+getNativeLong
+public
+long
+getNativeLong
+()
+Get the native long value. Does not perform type checking.
+Returns:
+value contents
+getNativeDouble
+public
+double
+getNativeDouble
+()
+Get the native double value. Does not perform type checking.
+Returns:
+value contents
+makeBoolean
+public static
+HALValue
+makeBoolean
+(boolean value)
+Build a HAL boolean value.
+Parameters:
+value
+- value
+Returns:
+HAL value
+makeEnum
+public static
+HALValue
+makeEnum
+(int value)
+Build a HAL enum value.
+Parameters:
+value
+- value
+Returns:
+HAL value
+makeInt
+public static
+HALValue
+makeInt
+(int value)
+Build a HAL integer value.
+Parameters:
+value
+- value
+Returns:
+HAL value
+makeLong
+public static
+HALValue
+makeLong
+(long value)
+Build a HAL long value.
+Parameters:
+value
+- value
+Returns:
+HAL value
+makeDouble
+public static
+HALValue
+makeDouble
+(double value)
+Build a HAL double value.
+Parameters:
+value
+- value
+Returns:
+HAL value
+makeUnassigned
+public static
+HALValue
+makeUnassigned
+()
+Build a HAL unassigned value.
+Returns:
+HAL value
+fromNative
+public static
+HALValue
+fromNative
+(int type,
+ long value1,
+ double value2)
+Build a HAL value from its native components.
+Parameters:
+type
+- type
+value1
+- long value (all except double)
+value2
+- double value (for double only)
+Returns:
+HAL value

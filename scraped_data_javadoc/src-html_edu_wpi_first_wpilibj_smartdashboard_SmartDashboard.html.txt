@@ -1,0 +1,992 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.smartdashboard;
+006
+007
+import edu.wpi.first.hal.FRCNetComm.tInstances;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.networktables.NetworkTable;
+011
+import edu.wpi.first.networktables.NetworkTableEntry;
+012
+import edu.wpi.first.networktables.NetworkTableInstance;
+013
+import edu.wpi.first.util.sendable.Sendable;
+014
+import edu.wpi.first.util.sendable.SendableRegistry;
+015
+import java.util.HashMap;
+016
+import java.util.Map;
+017
+import java.util.Set;
+018
+019
+/**
+020
+* The {@link SmartDashboard} class is the bridge between robot programs and the SmartDashboard on
+021
+* the laptop.
+022
+*
+023
+* <p>When a value is put into the SmartDashboard here, it pops up on the SmartDashboard on the
+024
+* laptop. Users can put values into and get values from the SmartDashboard.
+025
+*/
+026
+public final class SmartDashboard {
+027
+/** The {@link NetworkTable} used by {@link SmartDashboard}. */
+028
+private static NetworkTable table;
+029
+030
+/**
+031
+* A table linking tables in the SmartDashboard to the {@link Sendable} objects they came from.
+032
+*/
+033
+@SuppressWarnings("PMD.UseConcurrentHashMap")
+034
+private static final Map<String, Sendable> tablesToData = new HashMap<>();
+035
+036
+/** The executor for listener tasks; calls listener tasks synchronously from main thread. */
+037
+private static final ListenerExecutor listenerExecutor = new ListenerExecutor();
+038
+039
+private static boolean m_reported = false; // NOPMD redundant field initializer
+040
+041
+static {
+042
+setNetworkTableInstance(NetworkTableInstance.getDefault());
+043
+}
+044
+045
+private SmartDashboard() {
+046
+throw new UnsupportedOperationException("This is a utility class!");
+047
+}
+048
+049
+/**
+050
+* Set the NetworkTable instance used for entries. For testing purposes; use with caution.
+051
+*
+052
+* @param inst NetworkTable instance
+053
+*/
+054
+public static synchronized void setNetworkTableInstance(NetworkTableInstance inst) {
+055
+SmartDashboard.table = inst.getTable("SmartDashboard");
+056
+tablesToData.clear();
+057
+}
+058
+059
+/**
+060
+* Maps the specified key to the specified value in this table. The key can not be null. The value
+061
+* can be retrieved by calling the get method with a key that is equal to the original key.
+062
+*
+063
+* @param key the key
+064
+* @param data the value
+065
+* @throws IllegalArgumentException If key is null
+066
+*/
+067
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
+068
+public static synchronized void putData(String key, Sendable data) {
+069
+if (!m_reported) {
+070
+HAL.report(tResourceType.kResourceType_SmartDashboard, tInstances.kSmartDashboard_Instance);
+071
+m_reported = true;
+072
+}
+073
+Sendable sddata = tablesToData.get(key);
+074
+if (sddata == null || sddata != data) {
+075
+tablesToData.put(key, data);
+076
+NetworkTable dataTable = table.getSubTable(key);
+077
+SendableBuilderImpl builder = new SendableBuilderImpl();
+078
+builder.setTable(dataTable);
+079
+SendableRegistry.publish(data, builder);
+080
+builder.startListeners();
+081
+dataTable.getEntry(".name").setString(key);
+082
+}
+083
+}
+084
+085
+/**
+086
+* Maps the specified key (where the key is the name of the {@link Sendable}) to the specified
+087
+* value in this table. The value can be retrieved by calling the get method with a key that is
+088
+* equal to the original key.
+089
+*
+090
+* @param value the value
+091
+* @throws IllegalArgumentException If key is null
+092
+*/
+093
+public static void putData(Sendable value) {
+094
+String name = SendableRegistry.getName(value);
+095
+if (!name.isEmpty()) {
+096
+putData(name, value);
+097
+}
+098
+}
+099
+100
+/**
+101
+* Returns the value at the specified key.
+102
+*
+103
+* @param key the key
+104
+* @return the value
+105
+* @throws IllegalArgumentException if the key is null
+106
+*/
+107
+public static synchronized Sendable getData(String key) {
+108
+Sendable data = tablesToData.get(key);
+109
+if (data == null) {
+110
+throw new IllegalArgumentException("SmartDashboard data does not exist: " + key);
+111
+} else {
+112
+return data;
+113
+}
+114
+}
+115
+116
+/**
+117
+* Gets the entry for the specified key.
+118
+*
+119
+* @param key the key name
+120
+* @return Network table entry.
+121
+*/
+122
+public static NetworkTableEntry getEntry(String key) {
+123
+if (!m_reported) {
+124
+HAL.report(tResourceType.kResourceType_SmartDashboard, tInstances.kSmartDashboard_Instance);
+125
+m_reported = true;
+126
+}
+127
+return table.getEntry(key);
+128
+}
+129
+130
+/**
+131
+* Checks the table and tells if it contains the specified key.
+132
+*
+133
+* @param key the key to search for
+134
+* @return true if the table as a value assigned to the given key
+135
+*/
+136
+public static boolean containsKey(String key) {
+137
+return table.containsKey(key);
+138
+}
+139
+140
+/**
+141
+* Get the keys stored in the SmartDashboard table of NetworkTables.
+142
+*
+143
+* @param types bitmask of types; 0 is treated as a "don't care".
+144
+* @return keys currently in the table
+145
+*/
+146
+public static Set<String> getKeys(int types) {
+147
+return table.getKeys(types);
+148
+}
+149
+150
+/**
+151
+* Get the keys stored in the SmartDashboard table of NetworkTables.
+152
+*
+153
+* @return keys currently in the table.
+154
+*/
+155
+public static Set<String> getKeys() {
+156
+return table.getKeys();
+157
+}
+158
+159
+/**
+160
+* Makes a key's value persistent through program restarts. The key cannot be null.
+161
+*
+162
+* @param key the key name
+163
+*/
+164
+public static void setPersistent(String key) {
+165
+getEntry(key).setPersistent();
+166
+}
+167
+168
+/**
+169
+* Stop making a key's value persistent through program restarts. The key cannot be null.
+170
+*
+171
+* @param key the key name
+172
+*/
+173
+public static void clearPersistent(String key) {
+174
+getEntry(key).clearPersistent();
+175
+}
+176
+177
+/**
+178
+* Returns whether the value is persistent through program restarts. The key cannot be null.
+179
+*
+180
+* @param key the key name
+181
+* @return True if the value is persistent.
+182
+*/
+183
+public static boolean isPersistent(String key) {
+184
+return getEntry(key).isPersistent();
+185
+}
+186
+187
+/**
+188
+* Put a boolean in the table.
+189
+*
+190
+* @param key the key to be assigned to
+191
+* @param value the value that will be assigned
+192
+* @return False if the table key already exists with a different type
+193
+*/
+194
+public static boolean putBoolean(String key, boolean value) {
+195
+return getEntry(key).setBoolean(value);
+196
+}
+197
+198
+/**
+199
+* Set the value in the table if key does not exist.
+200
+*
+201
+* @param key the key
+202
+* @param defaultValue the value to set if key does not exist
+203
+* @return True if the key did not already exist, otherwise False
+204
+*/
+205
+public static boolean setDefaultBoolean(String key, boolean defaultValue) {
+206
+return getEntry(key).setDefaultBoolean(defaultValue);
+207
+}
+208
+209
+/**
+210
+* Returns the boolean the key maps to. If the key does not exist or is of different type, it will
+211
+* return the default value.
+212
+*
+213
+* @param key the key to look up
+214
+* @param defaultValue the value to be returned if no value is found
+215
+* @return the value associated with the given key or the given default value if there is no value
+216
+*     associated with the key
+217
+*/
+218
+public static boolean getBoolean(String key, boolean defaultValue) {
+219
+return getEntry(key).getBoolean(defaultValue);
+220
+}
+221
+222
+/**
+223
+* Put a number in the table.
+224
+*
+225
+* @param key the key to be assigned to
+226
+* @param value the value that will be assigned
+227
+* @return False if the table key already exists with a different type
+228
+*/
+229
+public static boolean putNumber(String key, double value) {
+230
+return getEntry(key).setDouble(value);
+231
+}
+232
+233
+/**
+234
+* Set the value in the table if key does not exist.
+235
+*
+236
+* @param key the key
+237
+* @param defaultValue the value to set if key does not exist
+238
+* @return True if the key did not already exist, otherwise False
+239
+*/
+240
+public static boolean setDefaultNumber(String key, double defaultValue) {
+241
+return getEntry(key).setDefaultDouble(defaultValue);
+242
+}
+243
+244
+/**
+245
+* Returns the number the key maps to. If the key does not exist or is of different type, it will
+246
+* return the default value.
+247
+*
+248
+* @param key the key to look up
+249
+* @param defaultValue the value to be returned if no value is found
+250
+* @return the value associated with the given key or the given default value if there is no value
+251
+*     associated with the key
+252
+*/
+253
+public static double getNumber(String key, double defaultValue) {
+254
+return getEntry(key).getDouble(defaultValue);
+255
+}
+256
+257
+/**
+258
+* Put a string in the table.
+259
+*
+260
+* @param key the key to be assigned to
+261
+* @param value the value that will be assigned
+262
+* @return False if the table key already exists with a different type
+263
+*/
+264
+public static boolean putString(String key, String value) {
+265
+return getEntry(key).setString(value);
+266
+}
+267
+268
+/**
+269
+* Set the value in the table if key does not exist.
+270
+*
+271
+* @param key the key
+272
+* @param defaultValue the value to set if key does not exist
+273
+* @return True if the key did not already exist, otherwise False
+274
+*/
+275
+public static boolean setDefaultString(String key, String defaultValue) {
+276
+return getEntry(key).setDefaultString(defaultValue);
+277
+}
+278
+279
+/**
+280
+* Returns the string the key maps to. If the key does not exist or is of different type, it will
+281
+* return the default value.
+282
+*
+283
+* @param key the key to look up
+284
+* @param defaultValue the value to be returned if no value is found
+285
+* @return the value associated with the given key or the given default value if there is no value
+286
+*     associated with the key
+287
+*/
+288
+public static String getString(String key, String defaultValue) {
+289
+return getEntry(key).getString(defaultValue);
+290
+}
+291
+292
+/**
+293
+* Put a boolean array in the table.
+294
+*
+295
+* @param key the key to be assigned to
+296
+* @param value the value that will be assigned
+297
+* @return False if the table key already exists with a different type
+298
+*/
+299
+public static boolean putBooleanArray(String key, boolean[] value) {
+300
+return getEntry(key).setBooleanArray(value);
+301
+}
+302
+303
+/**
+304
+* Put a boolean array in the table.
+305
+*
+306
+* @param key the key to be assigned to
+307
+* @param value the value that will be assigned
+308
+* @return False if the table key already exists with a different type
+309
+*/
+310
+public static boolean putBooleanArray(String key, Boolean[] value) {
+311
+return getEntry(key).setBooleanArray(value);
+312
+}
+313
+314
+/**
+315
+* Set the value in the table if key does not exist.
+316
+*
+317
+* @param key the key
+318
+* @param defaultValue the value to set if key does not exist
+319
+* @return True if the key did not already exist, otherwise False
+320
+*/
+321
+public static boolean setDefaultBooleanArray(String key, boolean[] defaultValue) {
+322
+return getEntry(key).setDefaultBooleanArray(defaultValue);
+323
+}
+324
+325
+/**
+326
+* Set the value in the table if key does not exist.
+327
+*
+328
+* @param key the key
+329
+* @param defaultValue the value to set if key does not exist
+330
+* @return True if the key did not already exist, otherwise False
+331
+*/
+332
+public static boolean setDefaultBooleanArray(String key, Boolean[] defaultValue) {
+333
+return getEntry(key).setDefaultBooleanArray(defaultValue);
+334
+}
+335
+336
+/**
+337
+* Returns the boolean array the key maps to. If the key does not exist or is of different type,
+338
+* it will return the default value.
+339
+*
+340
+* @param key the key to look up
+341
+* @param defaultValue the value to be returned if no value is found
+342
+* @return the value associated with the given key or the given default value if there is no value
+343
+*     associated with the key
+344
+*/
+345
+public static boolean[] getBooleanArray(String key, boolean[] defaultValue) {
+346
+return getEntry(key).getBooleanArray(defaultValue);
+347
+}
+348
+349
+/**
+350
+* Returns the boolean array the key maps to. If the key does not exist or is of different type,
+351
+* it will return the default value.
+352
+*
+353
+* @param key the key to look up
+354
+* @param defaultValue the value to be returned if no value is found
+355
+* @return the value associated with the given key or the given default value if there is no value
+356
+*     associated with the key
+357
+*/
+358
+public static Boolean[] getBooleanArray(String key, Boolean[] defaultValue) {
+359
+return getEntry(key).getBooleanArray(defaultValue);
+360
+}
+361
+362
+/**
+363
+* Put a number array in the table.
+364
+*
+365
+* @param key the key to be assigned to
+366
+* @param value the value that will be assigned
+367
+* @return False if the table key already exists with a different type
+368
+*/
+369
+public static boolean putNumberArray(String key, double[] value) {
+370
+return getEntry(key).setDoubleArray(value);
+371
+}
+372
+373
+/**
+374
+* Put a number array in the table.
+375
+*
+376
+* @param key the key to be assigned to
+377
+* @param value the value that will be assigned
+378
+* @return False if the table key already exists with a different type
+379
+*/
+380
+public static boolean putNumberArray(String key, Double[] value) {
+381
+return getEntry(key).setNumberArray(value);
+382
+}
+383
+384
+/**
+385
+* Set the value in the table if key does not exist.
+386
+*
+387
+* @param key the key
+388
+* @param defaultValue the value to set if key does not exist
+389
+* @return True if the key did not already exist, otherwise False
+390
+*/
+391
+public static boolean setDefaultNumberArray(String key, double[] defaultValue) {
+392
+return getEntry(key).setDefaultDoubleArray(defaultValue);
+393
+}
+394
+395
+/**
+396
+* Set the value in the table if key does not exist.
+397
+*
+398
+* @param key the key
+399
+* @param defaultValue the value to set if key does not exist
+400
+* @return True if the key did not already exist, otherwise False
+401
+*/
+402
+public static boolean setDefaultNumberArray(String key, Double[] defaultValue) {
+403
+return getEntry(key).setDefaultNumberArray(defaultValue);
+404
+}
+405
+406
+/**
+407
+* Returns the number array the key maps to. If the key does not exist or is of different type, it
+408
+* will return the default value.
+409
+*
+410
+* @param key the key to look up
+411
+* @param defaultValue the value to be returned if no value is found
+412
+* @return the value associated with the given key or the given default value if there is no value
+413
+*     associated with the key
+414
+*/
+415
+public static double[] getNumberArray(String key, double[] defaultValue) {
+416
+return getEntry(key).getDoubleArray(defaultValue);
+417
+}
+418
+419
+/**
+420
+* Returns the number array the key maps to. If the key does not exist or is of different type, it
+421
+* will return the default value.
+422
+*
+423
+* @param key the key to look up
+424
+* @param defaultValue the value to be returned if no value is found
+425
+* @return the value associated with the given key or the given default value if there is no value
+426
+*     associated with the key
+427
+*/
+428
+public static Double[] getNumberArray(String key, Double[] defaultValue) {
+429
+return getEntry(key).getDoubleArray(defaultValue);
+430
+}
+431
+432
+/**
+433
+* Put a string array in the table.
+434
+*
+435
+* @param key the key to be assigned to
+436
+* @param value the value that will be assigned
+437
+* @return False if the table key already exists with a different type
+438
+*/
+439
+public static boolean putStringArray(String key, String[] value) {
+440
+return getEntry(key).setStringArray(value);
+441
+}
+442
+443
+/**
+444
+* Set the value in the table if key does not exist.
+445
+*
+446
+* @param key the key
+447
+* @param defaultValue the value to set if key does not exist
+448
+* @return True if the key did not already exist, otherwise False
+449
+*/
+450
+public static boolean setDefaultStringArray(String key, String[] defaultValue) {
+451
+return getEntry(key).setDefaultStringArray(defaultValue);
+452
+}
+453
+454
+/**
+455
+* Returns the string array the key maps to. If the key does not exist or is of different type, it
+456
+* will return the default value.
+457
+*
+458
+* @param key the key to look up
+459
+* @param defaultValue the value to be returned if no value is found
+460
+* @return the value associated with the given key or the given default value if there is no value
+461
+*     associated with the key
+462
+*/
+463
+public static String[] getStringArray(String key, String[] defaultValue) {
+464
+return getEntry(key).getStringArray(defaultValue);
+465
+}
+466
+467
+/**
+468
+* Put a raw value (byte array) in the table.
+469
+*
+470
+* @param key the key to be assigned to
+471
+* @param value the value that will be assigned
+472
+* @return False if the table key already exists with a different type
+473
+*/
+474
+public static boolean putRaw(String key, byte[] value) {
+475
+return getEntry(key).setRaw(value);
+476
+}
+477
+478
+/**
+479
+* Set the value in the table if key does not exist.
+480
+*
+481
+* @param key the key
+482
+* @param defaultValue the value to set if key does not exist
+483
+* @return True if the key did not already exist, otherwise False
+484
+*/
+485
+public static boolean setDefaultRaw(String key, byte[] defaultValue) {
+486
+return getEntry(key).setDefaultRaw(defaultValue);
+487
+}
+488
+489
+/**
+490
+* Returns the raw value (byte array) the key maps to. If the key does not exist or is of
+491
+* different type, it will return the default value.
+492
+*
+493
+* @param key the key to look up
+494
+* @param defaultValue the value to be returned if no value is found
+495
+* @return the value associated with the given key or the given default value if there is no value
+496
+*     associated with the key
+497
+*/
+498
+public static byte[] getRaw(String key, byte[] defaultValue) {
+499
+return getEntry(key).getRaw(defaultValue);
+500
+}
+501
+502
+/**
+503
+* Posts a task from a listener to the ListenerExecutor, so that it can be run synchronously from
+504
+* the main loop on the next call to {@link SmartDashboard#updateValues()}.
+505
+*
+506
+* @param task The task to run synchronously from the main thread.
+507
+*/
+508
+public static void postListenerTask(Runnable task) {
+509
+listenerExecutor.execute(task);
+510
+}
+511
+512
+/** Puts all sendable data to the dashboard. */
+513
+public static synchronized void updateValues() {
+514
+// Execute posted listener tasks
+515
+listenerExecutor.runListenerTasks();
+516
+for (Sendable data : tablesToData.values()) {
+517
+SendableRegistry.update(data);
+518
+}
+519
+}
+520
+}

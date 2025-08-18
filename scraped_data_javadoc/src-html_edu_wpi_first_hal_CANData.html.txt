@@ -1,0 +1,64 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/** Represents a received CAN message. */
+008
+@SuppressWarnings("MemberName")
+009
+public class CANData {
+010
+/** Contents of the CAN frame. */
+011
+public final byte[] data = new byte[8];
+012
+013
+/** Length of the frame in bytes. */
+014
+public int length;
+015
+016
+/** CAN frame timestamp in milliseconds. */
+017
+public long timestamp;
+018
+019
+/** Default constructor. */
+020
+public CANData() {}
+021
+022
+/**
+023
+* API used from JNI to set the data.
+024
+*
+025
+* @param length Length of packet in bytes.
+026
+* @param timestamp CAN frame timestamp in milliseconds.
+027
+* @return Buffer to place CAN frame data in.
+028
+*/
+029
+@SuppressWarnings("PMD.MethodReturnsInternalArray")
+030
+public byte[] setData(int length, long timestamp) {
+031
+this.length = length;
+032
+this.timestamp = timestamp;
+033
+return data;
+034
+}
+035
+}

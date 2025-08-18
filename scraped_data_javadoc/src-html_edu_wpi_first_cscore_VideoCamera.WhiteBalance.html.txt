@@ -1,0 +1,172 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cscore;
+006
+007
+/** A source that represents a video camera. */
+008
+public class VideoCamera extends VideoSource {
+009
+/** White balance. */
+010
+public static class WhiteBalance {
+011
+/** Fixed indoor white balance. */
+012
+public static final int kFixedIndoor = 3000;
+013
+014
+/** Fixed outdoor white balance 1. */
+015
+public static final int kFixedOutdoor1 = 4000;
+016
+017
+/** Fixed outdoor white balance 2. */
+018
+public static final int kFixedOutdoor2 = 5000;
+019
+020
+/** Fixed fluorescent white balance 1. */
+021
+public static final int kFixedFluorescent1 = 5100;
+022
+023
+/** Fixed fluorescent white balance 2. */
+024
+public static final int kFixedFlourescent2 = 5200;
+025
+026
+/** Default constructor. */
+027
+public WhiteBalance() {}
+028
+}
+029
+030
+/**
+031
+* Constructs a VideoCamera.
+032
+*
+033
+* @param handle The video camera handle.
+034
+*/
+035
+protected VideoCamera(int handle) {
+036
+super(handle);
+037
+}
+038
+039
+/**
+040
+* Set the brightness, as a percentage (0-100).
+041
+*
+042
+* @param brightness Brightness as a percentage (0-100).
+043
+*/
+044
+public synchronized void setBrightness(int brightness) {
+045
+CameraServerJNI.setCameraBrightness(m_handle, brightness);
+046
+}
+047
+048
+/**
+049
+* Get the brightness, as a percentage (0-100).
+050
+*
+051
+* @return The brightness as a percentage (0-100).
+052
+*/
+053
+public synchronized int getBrightness() {
+054
+return CameraServerJNI.getCameraBrightness(m_handle);
+055
+}
+056
+057
+/** Set the white balance to auto. */
+058
+public synchronized void setWhiteBalanceAuto() {
+059
+CameraServerJNI.setCameraWhiteBalanceAuto(m_handle);
+060
+}
+061
+062
+/** Set the white balance to hold current. */
+063
+public synchronized void setWhiteBalanceHoldCurrent() {
+064
+CameraServerJNI.setCameraWhiteBalanceHoldCurrent(m_handle);
+065
+}
+066
+067
+/**
+068
+* Set the white balance to manual, with specified color temperature.
+069
+*
+070
+* @param value The specified color temperature.
+071
+*/
+072
+public synchronized void setWhiteBalanceManual(int value) {
+073
+CameraServerJNI.setCameraWhiteBalanceManual(m_handle, value);
+074
+}
+075
+076
+/** Set the exposure to auto aperture. */
+077
+public synchronized void setExposureAuto() {
+078
+CameraServerJNI.setCameraExposureAuto(m_handle);
+079
+}
+080
+081
+/** Set the exposure to hold current. */
+082
+public synchronized void setExposureHoldCurrent() {
+083
+CameraServerJNI.setCameraExposureHoldCurrent(m_handle);
+084
+}
+085
+086
+/**
+087
+* Set the exposure to manual, as a percentage (0-100).
+088
+*
+089
+* @param value The exposure as a percentage (0-100).
+090
+*/
+091
+public synchronized void setExposureManual(int value) {
+092
+CameraServerJNI.setCameraExposureManual(m_handle, value);
+093
+}
+094
+}

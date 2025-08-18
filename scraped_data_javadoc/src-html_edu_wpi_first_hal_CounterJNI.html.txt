@@ -1,0 +1,554 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+import java.nio.IntBuffer;
+008
+009
+/**
+010
+* Counter HAL JNI functions.
+011
+*
+012
+* @see "hal/Counter.h"
+013
+*/
+014
+public class CounterJNI extends JNIWrapper {
+015
+/** Two pulse mode. */
+016
+public static final int TWO_PULSE = 0;
+017
+018
+/** Semi-period mode. */
+019
+public static final int SEMI_PERIOD = 1;
+020
+021
+/** Pulse length mode. */
+022
+public static final int PULSE_LENGTH = 2;
+023
+024
+/** External direction mode. */
+025
+public static final int EXTERNAL_DIRECTION = 3;
+026
+027
+/**
+028
+* Initializes a counter.
+029
+*
+030
+* @param mode the counter mode
+031
+* @param index the compressor index (output)
+032
+* @return the created handle
+033
+* @see "HAL_InitializeCounter"
+034
+*/
+035
+public static native int initializeCounter(int mode, IntBuffer index);
+036
+037
+/**
+038
+* Frees a counter.
+039
+*
+040
+* @param counterHandle the counter handle
+041
+* @see "HAL_FreeCounter"
+042
+*/
+043
+public static native void freeCounter(int counterHandle);
+044
+045
+/**
+046
+* Sets the average sample size of a counter.
+047
+*
+048
+* @param counterHandle the counter handle
+049
+* @param size the size of samples to average
+050
+* @see "HAL_SetCounterAverageSize"
+051
+*/
+052
+public static native void setCounterAverageSize(int counterHandle, int size);
+053
+054
+/**
+055
+* Sets the source object that causes the counter to count up.
+056
+*
+057
+* @param counterHandle the counter handle
+058
+* @param digitalSourceHandle the digital source handle (either a HAL_AnalogTriggerHandle or a
+059
+*     HAL_DigitalHandle)
+060
+* @param analogTriggerType the analog trigger type if the source is an analog trigger
+061
+* @see "HAL_SetCounterUpSource"
+062
+*/
+063
+public static native void setCounterUpSource(
+064
+int counterHandle, int digitalSourceHandle, int analogTriggerType);
+065
+066
+/**
+067
+* Sets the up source to either detect rising edges or falling edges.
+068
+*
+069
+* <p>Note that both are allowed to be set true at the same time without issues.
+070
+*
+071
+* @param counterHandle the counter handle
+072
+* @param risingEdge true to trigger on rising
+073
+* @param fallingEdge true to trigger on falling
+074
+* @see "HAL_SetCounterUpSourceEdge"
+075
+*/
+076
+public static native void setCounterUpSourceEdge(
+077
+int counterHandle, boolean risingEdge, boolean fallingEdge);
+078
+079
+/**
+080
+* Disables the up counting source to the counter.
+081
+*
+082
+* @param counterHandle the counter handle
+083
+* @see "HAL_ClearCounterUpSource"
+084
+*/
+085
+public static native void clearCounterUpSource(int counterHandle);
+086
+087
+/**
+088
+* Sets the source object that causes the counter to count down.
+089
+*
+090
+* @param counterHandle the counter handle
+091
+* @param digitalSourceHandle the digital source handle (either a HAL_AnalogTriggerHandle or a
+092
+*     HAL_DigitalHandle)
+093
+* @param analogTriggerType the analog trigger type if the source is an analog trigger
+094
+* @see "HAL_SetCounterDownSource"
+095
+*/
+096
+public static native void setCounterDownSource(
+097
+int counterHandle, int digitalSourceHandle, int analogTriggerType);
+098
+099
+/**
+100
+* Sets the down source to either detect rising edges or falling edges. Note that both are allowed
+101
+* to be set true at the same time without issues.
+102
+*
+103
+* @param counterHandle the counter handle
+104
+* @param risingEdge true to trigger on rising
+105
+* @param fallingEdge true to trigger on falling
+106
+* @see "HAL_SetCounterDownSourceEdge"
+107
+*/
+108
+public static native void setCounterDownSourceEdge(
+109
+int counterHandle, boolean risingEdge, boolean fallingEdge);
+110
+111
+/**
+112
+* Disables the down counting source to the counter.
+113
+*
+114
+* @param counterHandle the counter handle
+115
+* @see "HAL_ClearCounterDownSource"
+116
+*/
+117
+public static native void clearCounterDownSource(int counterHandle);
+118
+119
+/**
+120
+* Sets standard up / down counting mode on this counter.
+121
+*
+122
+* <p>Up and down counts are sourced independently from two inputs.
+123
+*
+124
+* @param counterHandle the counter handle
+125
+* @see "HAL_SetCounterUpDownMode"
+126
+*/
+127
+public static native void setCounterUpDownMode(int counterHandle);
+128
+129
+/**
+130
+* Sets directional counting mode on this counter.
+131
+*
+132
+* <p>The direction is determined by the B input, with counting happening with the A input.
+133
+*
+134
+* @param counterHandle the counter handle
+135
+* @see "HAL_SetCounterExternalDirectionMode"
+136
+*/
+137
+public static native void setCounterExternalDirectionMode(int counterHandle);
+138
+139
+/**
+140
+* Sets Semi-period mode on this counter.
+141
+*
+142
+* <p>The counter counts up based on the time the input is triggered. High or Low depends on the
+143
+* highSemiPeriod parameter.
+144
+*
+145
+* @param counterHandle the counter handle
+146
+* @param highSemiPeriod true for counting when the input is high, false for low
+147
+* @see "HAL_SetCounterSemiPeriodMode"
+148
+*/
+149
+public static native void setCounterSemiPeriodMode(int counterHandle, boolean highSemiPeriod);
+150
+151
+/**
+152
+* Configures the counter to count in up or down based on the length of the input pulse.
+153
+*
+154
+* <p>This mode is most useful for direction sensitive gear tooth sensors.
+155
+*
+156
+* @param counterHandle the counter handle
+157
+* @param threshold The pulse length beyond which the counter counts the opposite direction
+158
+*     (seconds)
+159
+* @see "HAL_SetCounterPulseLengthMode"
+160
+*/
+161
+public static native void setCounterPulseLengthMode(int counterHandle, double threshold);
+162
+163
+/**
+164
+* Gets the Samples to Average which specifies the number of samples of the timer to average when
+165
+* calculating the period. Perform averaging to account for mechanical imperfections or as
+166
+* oversampling to increase resolution.
+167
+*
+168
+* @param counterHandle the counter handle
+169
+* @return SamplesToAverage The number of samples being averaged (from 1 to 127)
+170
+* @see "HAL_GetCounterSamplesToAverage"
+171
+*/
+172
+public static native int getCounterSamplesToAverage(int counterHandle);
+173
+174
+/**
+175
+* Sets the Samples to Average which specifies the number of samples of the timer to average when
+176
+* calculating the period. Perform averaging to account for mechanical imperfections or as
+177
+* oversampling to increase resolution.
+178
+*
+179
+* @param counterHandle the counter handle
+180
+* @param samplesToAverage The number of samples to average from 1 to 127
+181
+* @see "HAL_SetCounterSamplesToAverage"
+182
+*/
+183
+public static native void setCounterSamplesToAverage(int counterHandle, int samplesToAverage);
+184
+185
+/**
+186
+* Resets the Counter to zero.
+187
+*
+188
+* <p>Sets the counter value to zero. This does not effect the running state of the counter, just
+189
+* sets the current value to zero.
+190
+*
+191
+* @param counterHandle the counter handle
+192
+* @see "HAL_ResetCounter"
+193
+*/
+194
+public static native void resetCounter(int counterHandle);
+195
+196
+/**
+197
+* Reads the current counter value.
+198
+*
+199
+* <p>Reads the value at this instant. It may still be running, so it reflects the current value.
+200
+* Next time it is read, it might have a different value.
+201
+*
+202
+* @param counterHandle the counter handle
+203
+* @return the current counter value
+204
+* @see "HAL_GetCounter"
+205
+*/
+206
+public static native int getCounter(int counterHandle);
+207
+208
+/**
+209
+* Gets the Period of the most recent count.
+210
+*
+211
+* <p>Returns the time interval of the most recent count. This can be used for velocity
+212
+* calculations to determine shaft speed.
+213
+*
+214
+* @param counterHandle the counter handle
+215
+* @return the period of the last two pulses in units of seconds
+216
+* @see "HAL_GetCounterPeriod"
+217
+*/
+218
+public static native double getCounterPeriod(int counterHandle);
+219
+220
+/**
+221
+* Sets the maximum period where the device is still considered "moving".
+222
+*
+223
+* <p>Sets the maximum period where the device is considered moving. This value is used to
+224
+* determine the "stopped" state of the counter using the HAL_GetCounterStopped method.
+225
+*
+226
+* @param counterHandle the counter handle
+227
+* @param maxPeriod the maximum period where the counted device is considered moving in seconds
+228
+* @see "HAL_SetCounterMaxPeriod"
+229
+*/
+230
+public static native void setCounterMaxPeriod(int counterHandle, double maxPeriod);
+231
+232
+/**
+233
+* Selects whether you want to continue updating the event timer output when there are no samples
+234
+* captured.
+235
+*
+236
+* <p>The output of the event timer has a buffer of periods that are averaged and posted to a
+237
+* register on the FPGA. When the timer detects that the event source has stopped (based on the
+238
+* MaxPeriod) the buffer of samples to be averaged is emptied.
+239
+*
+240
+* <p>If you enable the update when empty, you will be notified of the stopped source and the
+241
+* event time will report 0 samples.
+242
+*
+243
+* <p>If you disable update when empty, the most recent average will remain on the output until a
+244
+* new sample is acquired.
+245
+*
+246
+* <p>You will never see 0 samples output (except when there have been no events since an FPGA
+247
+* reset) and you will likely not see the stopped bit become true (since it is updated at the end
+248
+* of an average and there are no samples to average).
+249
+*
+250
+* @param counterHandle the counter handle
+251
+* @param enabled true to enable counter updating with no samples
+252
+* @see "HAL_SetCounterUpdateWhenEmpty"
+253
+*/
+254
+public static native void setCounterUpdateWhenEmpty(int counterHandle, boolean enabled);
+255
+256
+/**
+257
+* Determines if the clock is stopped.
+258
+*
+259
+* <p>Determine if the clocked input is stopped based on the MaxPeriod value set using the
+260
+* SetMaxPeriod method. If the clock exceeds the MaxPeriod, then the device (and counter) are
+261
+* assumed to be stopped and it returns true.
+262
+*
+263
+* @param counterHandle the counter handle
+264
+* @return true if the most recent counter period exceeds the MaxPeriod value set by SetMaxPeriod
+265
+* @see "HAL_GetCounterStopped"
+266
+*/
+267
+public static native boolean getCounterStopped(int counterHandle);
+268
+269
+/**
+270
+* Gets the last direction the counter value changed.
+271
+*
+272
+* @param counterHandle the counter handle
+273
+* @return the last direction the counter value changed
+274
+* @see "HAL_GetCounterDirection"
+275
+*/
+276
+public static native boolean getCounterDirection(int counterHandle);
+277
+278
+/**
+279
+* Sets the Counter to return reversed sensing on the direction.
+280
+*
+281
+* <p>This allows counters to change the direction they are counting in the case of 1X and 2X
+282
+* quadrature encoding only. Any other counter mode isn't supported.
+283
+*
+284
+* @param counterHandle the counter handle
+285
+* @param reverseDirection true if the value counted should be negated.
+286
+* @see "HAL_SetCounterReverseDirection"
+287
+*/
+288
+public static native void setCounterReverseDirection(int counterHandle, boolean reverseDirection);
+289
+290
+/** Utility class. */
+291
+private CounterJNI() {}
+292
+}

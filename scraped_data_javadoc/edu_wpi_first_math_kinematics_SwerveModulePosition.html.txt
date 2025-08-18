@@ -1,0 +1,266 @@
+Package
+edu.wpi.first.math.kinematics
+Class SwerveModulePosition
+java.lang.Object
+edu.wpi.first.math.kinematics.SwerveModulePosition
+All Implemented Interfaces:
+Interpolatable
+<
+SwerveModulePosition
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+,
+Comparable
+<
+SwerveModulePosition
+>
+public class
+SwerveModulePosition
+extends
+Object
+implements
+Comparable
+<
+SwerveModulePosition
+>,
+Interpolatable
+<
+SwerveModulePosition
+>,
+ProtobufSerializable
+,
+StructSerializable
+Represents the state of one swerve module.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+Rotation2d
+angle
+Angle of the module.
+double
+distanceMeters
+Distance measured by the wheel of the module.
+static final
+SwerveModulePositionProto
+proto
+SwerveModulePosition protobuf for serialization.
+static final
+SwerveModulePositionStruct
+struct
+SwerveModulePosition struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+SwerveModulePosition
+()
+Constructs a SwerveModulePosition with zeros for distance and angle.
+SwerveModulePosition
+(double distanceMeters,
+Rotation2d
+angle)
+Constructs a SwerveModulePosition.
+SwerveModulePosition
+(
+Distance
+distance,
+Rotation2d
+angle)
+Constructs a SwerveModulePosition.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+int
+compareTo
+(
+SwerveModulePosition
+other)
+Compares two swerve module positions.
+SwerveModulePosition
+copy
+()
+Returns a copy of this swerve module position.
+boolean
+equals
+(
+Object
+obj)
+int
+hashCode
+()
+SwerveModulePosition
+interpolate
+(
+SwerveModulePosition
+endValue,
+ double t)
+Return the interpolated value.
+String
+toString
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+distanceMeters
+public
+double
+distanceMeters
+Distance measured by the wheel of the module.
+angle
+public
+Rotation2d
+angle
+Angle of the module.
+proto
+public static final
+SwerveModulePositionProto
+proto
+SwerveModulePosition protobuf for serialization.
+struct
+public static final
+SwerveModulePositionStruct
+struct
+SwerveModulePosition struct for serialization.
+Constructor Details
+SwerveModulePosition
+public
+SwerveModulePosition
+()
+Constructs a SwerveModulePosition with zeros for distance and angle.
+SwerveModulePosition
+public
+SwerveModulePosition
+(double distanceMeters,
+Rotation2d
+angle)
+Constructs a SwerveModulePosition.
+Parameters:
+distanceMeters
+- The distance measured by the wheel of the module.
+angle
+- The angle of the module.
+SwerveModulePosition
+public
+SwerveModulePosition
+(
+Distance
+distance,
+Rotation2d
+angle)
+Constructs a SwerveModulePosition.
+Parameters:
+distance
+- The distance measured by the wheel of the module.
+angle
+- The angle of the module.
+Method Details
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+compareTo
+public
+int
+compareTo
+(
+SwerveModulePosition
+other)
+Compares two swerve module positions. One swerve module is "greater" than the other if its
+ distance is higher than the other.
+Specified by:
+compareTo
+in interface
+Comparable
+<
+SwerveModulePosition
+>
+Parameters:
+other
+- The other swerve module.
+Returns:
+1 if this is greater, 0 if both are equal, -1 if other is greater.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+copy
+public
+SwerveModulePosition
+copy
+()
+Returns a copy of this swerve module position.
+Returns:
+A copy.
+interpolate
+public
+SwerveModulePosition
+interpolate
+(
+SwerveModulePosition
+endValue,
+ double t)
+Description copied from interface:
+Interpolatable
+Return the interpolated value. This object is assumed to be the starting position, or lower
+ bound.
+Specified by:
+interpolate
+in interface
+Interpolatable
+<
+SwerveModulePosition
+>
+Parameters:
+endValue
+- The upper bound, or end.
+t
+- How far between the lower and upper bound we are. This should be bounded in [0, 1].
+Returns:
+The interpolated value.

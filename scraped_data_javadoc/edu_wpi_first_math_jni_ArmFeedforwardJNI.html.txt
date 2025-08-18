@@ -1,0 +1,93 @@
+Package
+edu.wpi.first.math.jni
+Class ArmFeedforwardJNI
+java.lang.Object
+edu.wpi.first.math.jni.WPIMathJNI
+edu.wpi.first.math.jni.ArmFeedforwardJNI
+public final class
+ArmFeedforwardJNI
+extends
+WPIMathJNI
+ArmFeedforward JNI.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.math.jni.
+WPIMathJNI
+WPIMathJNI.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static double
+calculate
+(double ks,
+ double kv,
+ double ka,
+ double kg,
+ double currentAngle,
+ double currentVelocity,
+ double nextVelocity,
+ double dt)
+Obtain a feedforward voltage from a single jointed arm feedforward object.
+Methods inherited from class edu.wpi.first.math.jni.
+WPIMathJNI
+forceLoad
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+calculate
+public static
+double
+calculate
+(double ks,
+ double kv,
+ double ka,
+ double kg,
+ double currentAngle,
+ double currentVelocity,
+ double nextVelocity,
+ double dt)
+Obtain a feedforward voltage from a single jointed arm feedforward object.
+Constructs an ArmFeedforward object and runs its currentVelocity and nextVelocity overload
+Parameters:
+ks
+- The ArmFeedforward's static gain in volts.
+kv
+- The ArmFeedforward's velocity gain in volt seconds per radian.
+ka
+- The ArmFeedforward's acceleration gain in volt seconds² per radian.
+kg
+- The ArmFeedforward's gravity gain in volts.
+currentAngle
+- The current angle in the calculation in radians.
+currentVelocity
+- The current velocity in the calculation in radians per second.
+nextVelocity
+- The next velocity in the calculation in radians per second.
+dt
+- The time between velocity setpoints in seconds.
+Returns:
+The calculated feedforward in volts.

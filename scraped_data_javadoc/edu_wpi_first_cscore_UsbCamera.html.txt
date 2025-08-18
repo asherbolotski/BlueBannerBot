@@ -1,0 +1,226 @@
+Package
+edu.wpi.first.cscore
+Class UsbCamera
+java.lang.Object
+edu.wpi.first.cscore.VideoSource
+edu.wpi.first.cscore.VideoCamera
+edu.wpi.first.cscore.UsbCamera
+All Implemented Interfaces:
+AutoCloseable
+public class
+UsbCamera
+extends
+VideoCamera
+A source that represents a USB camera.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.cscore.
+VideoCamera
+VideoCamera.WhiteBalance
+Nested classes/interfaces inherited from class edu.wpi.first.cscore.
+VideoSource
+VideoSource.ConnectionStrategy
+,
+VideoSource.Kind
+Field Summary
+Fields inherited from class edu.wpi.first.cscore.
+VideoSource
+m_handle
+Constructor Summary
+Constructors
+Constructor
+Description
+UsbCamera
+(
+String
+name,
+ int dev)
+Create a source for a USB camera based on device number.
+UsbCamera
+(
+String
+name,
+String
+path)
+Create a source for a USB camera based on device path.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+UsbCameraInfo
+[]
+enumerateUsbCameras
+()
+Enumerate USB cameras on the local system.
+UsbCameraInfo
+getInfo
+()
+Get the full camera information for the device.
+String
+getPath
+()
+Get the path to the device.
+void
+setConnectVerbose
+(int level)
+Set how verbose the camera connection messages are.
+Methods inherited from class edu.wpi.first.cscore.
+VideoCamera
+getBrightness
+,
+setBrightness
+,
+setExposureAuto
+,
+setExposureHoldCurrent
+,
+setExposureManual
+,
+setWhiteBalanceAuto
+,
+setWhiteBalanceHoldCurrent
+,
+setWhiteBalanceManual
+Methods inherited from class edu.wpi.first.cscore.
+VideoSource
+close
+,
+enumerateProperties
+,
+enumerateSinks
+,
+enumerateSources
+,
+enumerateVideoModes
+,
+equals
+,
+getActualDataRate
+,
+getActualFPS
+,
+getConfigJson
+,
+getDescription
+,
+getHandle
+,
+getKind
+,
+getKindFromInt
+,
+getLastFrameTime
+,
+getName
+,
+getProperty
+,
+getVideoMode
+,
+hashCode
+,
+isConnected
+,
+isEnabled
+,
+isValid
+,
+setConfigJson
+,
+setConnectionStrategy
+,
+setFPS
+,
+setPixelFormat
+,
+setResolution
+,
+setVideoMode
+,
+setVideoMode
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+UsbCamera
+public
+UsbCamera
+(
+String
+name,
+ int dev)
+Create a source for a USB camera based on device number.
+Parameters:
+name
+- Source name (arbitrary unique identifier)
+dev
+- Device number (e.g. 0 for /dev/video0)
+UsbCamera
+public
+UsbCamera
+(
+String
+name,
+String
+path)
+Create a source for a USB camera based on device path.
+Parameters:
+name
+- Source name (arbitrary unique identifier)
+path
+- Path to device (e.g. "/dev/video0" on Linux)
+Method Details
+enumerateUsbCameras
+public static
+UsbCameraInfo
+[]
+enumerateUsbCameras
+()
+Enumerate USB cameras on the local system.
+Returns:
+Vector of USB camera information (one for each camera)
+getPath
+public
+String
+getPath
+()
+Get the path to the device.
+Returns:
+The device path.
+getInfo
+public
+UsbCameraInfo
+getInfo
+()
+Get the full camera information for the device.
+Returns:
+The camera information.
+setConnectVerbose
+public
+void
+setConnectVerbose
+(int level)
+Set how verbose the camera connection messages are.
+Parameters:
+level
+- 0=don't display Connecting message, 1=do display message

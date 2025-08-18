@@ -1,0 +1,358 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Ports HAL JNI functions.
+009
+*
+010
+* @see "hal/Ports.h"
+011
+*/
+012
+public class PortsJNI extends JNIWrapper {
+013
+/**
+014
+* Gets the number of analog accumulators in the current system.
+015
+*
+016
+* @return the number of analog accumulators
+017
+* @see "HAL_GetNumAccumulators"
+018
+*/
+019
+public static native int getNumAccumulators();
+020
+021
+/**
+022
+* Gets the number of analog triggers in the current system.
+023
+*
+024
+* @return the number of analog triggers
+025
+* @see "HAL_GetNumAnalogTriggers"
+026
+*/
+027
+public static native int getNumAnalogTriggers();
+028
+029
+/**
+030
+* Gets the number of analog inputs in the current system.
+031
+*
+032
+* @return the number of analog inputs
+033
+* @see "HAL_GetNumAnalogInputs"
+034
+*/
+035
+public static native int getNumAnalogInputs();
+036
+037
+/**
+038
+* Gets the number of analog outputs in the current system.
+039
+*
+040
+* @return the number of analog outputs
+041
+* @see "HAL_GetNumAnalogOutputs"
+042
+*/
+043
+public static native int getNumAnalogOutputs();
+044
+045
+/**
+046
+* Gets the number of counters in the current system.
+047
+*
+048
+* @return the number of counters
+049
+* @see "HAL_GetNumCounters"
+050
+*/
+051
+public static native int getNumCounters();
+052
+053
+/**
+054
+* Gets the number of digital headers in the current system.
+055
+*
+056
+* @return the number of digital headers
+057
+* @see "HAL_GetNumDigitalHeaders"
+058
+*/
+059
+public static native int getNumDigitalHeaders();
+060
+061
+/**
+062
+* Gets the number of PWM headers in the current system.
+063
+*
+064
+* @return the number of PWM headers
+065
+* @see "HAL_GetNumPWMHeaders"
+066
+*/
+067
+public static native int getNumPWMHeaders();
+068
+069
+/**
+070
+* Gets the number of digital channels in the current system.
+071
+*
+072
+* @return the number of digital channels
+073
+* @see "HAL_GetNumDigitalChannels"
+074
+*/
+075
+public static native int getNumDigitalChannels();
+076
+077
+/**
+078
+* Gets the number of PWM channels in the current system.
+079
+*
+080
+* @return the number of PWM channels
+081
+* @see "HAL_GetNumPWMChannels"
+082
+*/
+083
+public static native int getNumPWMChannels();
+084
+085
+/**
+086
+* Gets the number of digital IO PWM outputs in the current system.
+087
+*
+088
+* @return the number of digital IO PWM outputs
+089
+* @see "HAL_GetNumDigitalPWMOutputs"
+090
+*/
+091
+public static native int getNumDigitalPWMOutputs();
+092
+093
+/**
+094
+* Gets the number of quadrature encoders in the current system.
+095
+*
+096
+* @return the number of quadrature encoders
+097
+* @see "HAL_GetNumEncoders"
+098
+*/
+099
+public static native int getNumEncoders();
+100
+101
+/**
+102
+* Gets the number of interrupts in the current system.
+103
+*
+104
+* @return the number of interrupts
+105
+* @see "HAL_GetNumInterrupts"
+106
+*/
+107
+public static native int getNumInterrupts();
+108
+109
+/**
+110
+* Gets the number of relay channels in the current system.
+111
+*
+112
+* @return the number of relay channels
+113
+* @see "HAL_GetNumRelayChannels"
+114
+*/
+115
+public static native int getNumRelayChannels();
+116
+117
+/**
+118
+* Gets the number of relay headers in the current system.
+119
+*
+120
+* @return the number of relay headers
+121
+* @see "HAL_GetNumRelayHeaders"
+122
+*/
+123
+public static native int getNumRelayHeaders();
+124
+125
+/**
+126
+* Gets the number of PCM modules in the current system.
+127
+*
+128
+* @return the number of PCM modules
+129
+* @see "HAL_GetNumCTREPCMModules"
+130
+*/
+131
+public static native int getNumCTREPCMModules();
+132
+133
+/**
+134
+* Gets the number of solenoid channels in the current system.
+135
+*
+136
+* @return the number of solenoid channels
+137
+* @see "HAL_GetNumCTRESolenoidChannels"
+138
+*/
+139
+public static native int getNumCTRESolenoidChannels();
+140
+141
+/**
+142
+* Gets the number of PDP modules in the current system.
+143
+*
+144
+* @return the number of PDP modules
+145
+* @see "HAL_GetNumCTREPDPModules"
+146
+*/
+147
+public static native int getNumCTREPDPModules();
+148
+149
+/**
+150
+* Gets the number of PDP channels in the current system.
+151
+*
+152
+* @return the number of PDP channels
+153
+* @see "HAL_GetNumCTREPDPChannels"
+154
+*/
+155
+public static native int getNumCTREPDPChannels();
+156
+157
+/**
+158
+* Gets the number of PDH modules in the current system.
+159
+*
+160
+* @return the number of PDH modules
+161
+* @see "HAL_GetNumREVPDHModules"
+162
+*/
+163
+public static native int getNumREVPDHModules();
+164
+165
+/**
+166
+* Gets the number of PDH channels in the current system.
+167
+*
+168
+* @return the number of PDH channels
+169
+* @see "HAL_GetNumREVPDHChannels"
+170
+*/
+171
+public static native int getNumREVPDHChannels();
+172
+173
+/**
+174
+* Gets the number of PH modules in the current system.
+175
+*
+176
+* @return the number of PH modules
+177
+* @see "HAL_GetNumREVPHModules"
+178
+*/
+179
+public static native int getNumREVPHModules();
+180
+181
+/**
+182
+* Gets the number of PH channels in the current system.
+183
+*
+184
+* @return the number of PH channels
+185
+* @see "HAL_GetNumREVPHChannels"
+186
+*/
+187
+public static native int getNumREVPHChannels();
+188
+189
+/** Utility class. */
+190
+private PortsJNI() {}
+191
+}

@@ -1,0 +1,437 @@
+Package
+edu.wpi.first.hal
+Class SimDevice
+java.lang.Object
+edu.wpi.first.hal.SimDevice
+All Implemented Interfaces:
+AutoCloseable
+public class
+SimDevice
+extends
+Object
+implements
+AutoCloseable
+A wrapper around a simulator device handle.
+Teams: if you are using this class, you are likely confusing it for
+SimDeviceSim
+.
+Vendors: This class should be used from inside the device class to define the
+ properties/fields of the device. Use
+create(java.lang.String)
+to get a SimDevice object, then use
+createDouble(String, Direction, double)
+or similar to define the device's fields. See
+ADXRS450_Gyro
+for an example implementation.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+SimDevice.Direction
+Sim device direction.
+Constructor Summary
+Constructors
+Constructor
+Description
+SimDevice
+(int handle)
+Wraps a simulated device handle as returned by SimDeviceJNI.createSimDevice().
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+static
+SimDevice
+create
+(
+String
+name)
+Creates a simulated device.
+static
+SimDevice
+create
+(
+String
+name,
+ int index)
+Creates a simulated device.
+static
+SimDevice
+create
+(
+String
+name,
+ int index,
+ int channel)
+Creates a simulated device.
+SimBoolean
+createBoolean
+(
+String
+name,
+SimDevice.Direction
+direction,
+ boolean initialValue)
+Creates a boolean value on the simulated device.
+SimDouble
+createDouble
+(
+String
+name,
+SimDevice.Direction
+direction,
+ double initialValue)
+Creates a double value on the simulated device.
+SimEnum
+createEnum
+(
+String
+name,
+SimDevice.Direction
+direction,
+String
+[] options,
+ int initialValue)
+Creates an enumerated value on the simulated device.
+SimEnum
+createEnumDouble
+(
+String
+name,
+SimDevice.Direction
+direction,
+String
+[] options,
+ double[] optionValues,
+ int initialValue)
+Creates an enumerated value on the simulated device with double values.
+SimInt
+createInt
+(
+String
+name,
+SimDevice.Direction
+direction,
+ int initialValue)
+Creates an int value on the simulated device.
+SimLong
+createLong
+(
+String
+name,
+SimDevice.Direction
+direction,
+ long initialValue)
+Creates a long value on the simulated device.
+SimValue
+createValue
+(
+String
+name,
+SimDevice.Direction
+direction,
+HALValue
+initialValue)
+Creates a value on the simulated device.
+String
+getName
+()
+Get the name of the simulated device.
+int
+getNativeHandle
+()
+Get the internal device handle.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SimDevice
+public
+SimDevice
+(int handle)
+Wraps a simulated device handle as returned by SimDeviceJNI.createSimDevice().
+Parameters:
+handle
+- simulated device handle
+Method Details
+create
+public static
+SimDevice
+create
+(
+String
+name)
+Creates a simulated device.
+The device name must be unique. Returns null if the device name already exists. If multiple
+ instances of the same device are desired, recommend appending the instance/unique identifier in
+ brackets to the base name, e.g. "device[1]".
+Using a device name of the form "Type:Name" will create a WebSockets node with a type value
+ of "Type" and a device value of "Name"
+null is returned if not in simulation.
+Parameters:
+name
+- device name
+Returns:
+simulated device object
+create
+public static
+SimDevice
+create
+(
+String
+name,
+ int index)
+Creates a simulated device.
+The device name must be unique. Returns null if the device name already exists. This is a
+ convenience method that appends index in brackets to the device name, e.g. passing index=1
+ results in "device[1]" for the device name.
+Using a device name of the form "Type:Name" will create a WebSockets node with a type value
+ of "Type" and a device value of "Name"
+null is returned if not in simulation.
+Parameters:
+name
+- device name
+index
+- device index number to append to name
+Returns:
+simulated device object
+create
+public static
+SimDevice
+create
+(
+String
+name,
+ int index,
+ int channel)
+Creates a simulated device.
+The device name must be unique. Returns null if the device name already exists. This is a
+ convenience method that appends index and channel in brackets to the device name, e.g. passing
+ index=1 and channel=2 results in "device[1,2]" for the device name.
+Using a device name of the form "Type:Name" will create a WebSockets node with a type value
+ of "Type" and a device value of "Name"
+null is returned if not in simulation.
+Parameters:
+name
+- device name
+index
+- device index number to append to name
+channel
+- device channel number to append to name
+Returns:
+simulated device object
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getNativeHandle
+public
+int
+getNativeHandle
+()
+Get the internal device handle.
+Returns:
+internal handle
+getName
+public
+String
+getName
+()
+Get the name of the simulated device.
+Returns:
+the name
+createValue
+public
+SimValue
+createValue
+(
+String
+name,
+SimDevice.Direction
+direction,
+HALValue
+initialValue)
+Creates a value on the simulated device.
+Returns null if not in simulation.
+Parameters:
+name
+- value name
+direction
+- input/output/bidir (from perspective of user code)
+initialValue
+- initial value
+Returns:
+simulated value object
+createInt
+public
+SimInt
+createInt
+(
+String
+name,
+SimDevice.Direction
+direction,
+ int initialValue)
+Creates an int value on the simulated device.
+Returns null if not in simulation.
+Parameters:
+name
+- value name
+direction
+- input/output/bidir (from perspective of user code)
+initialValue
+- initial value
+Returns:
+simulated double value object
+createLong
+public
+SimLong
+createLong
+(
+String
+name,
+SimDevice.Direction
+direction,
+ long initialValue)
+Creates a long value on the simulated device.
+Returns null if not in simulation.
+Parameters:
+name
+- value name
+direction
+- input/output/bidir (from perspective of user code)
+initialValue
+- initial value
+Returns:
+simulated double value object
+createDouble
+public
+SimDouble
+createDouble
+(
+String
+name,
+SimDevice.Direction
+direction,
+ double initialValue)
+Creates a double value on the simulated device.
+Returns null if not in simulation.
+Parameters:
+name
+- value name
+direction
+- input/output/bidir (from perspective of user code)
+initialValue
+- initial value
+Returns:
+simulated double value object
+createEnum
+public
+SimEnum
+createEnum
+(
+String
+name,
+SimDevice.Direction
+direction,
+String
+[] options,
+ int initialValue)
+Creates an enumerated value on the simulated device.
+Enumerated values are always in the range 0 to numOptions-1.
+Returns null if not in simulation.
+Parameters:
+name
+- value name
+direction
+- input/output/bidir (from perspective of user code)
+options
+- array of option descriptions
+initialValue
+- initial value (selection)
+Returns:
+simulated enum value object
+createEnumDouble
+public
+SimEnum
+createEnumDouble
+(
+String
+name,
+SimDevice.Direction
+direction,
+String
+[] options,
+ double[] optionValues,
+ int initialValue)
+Creates an enumerated value on the simulated device with double values.
+Enumerated values are always in the range 0 to numOptions-1.
+Returns null if not in simulation.
+Parameters:
+name
+- value name
+direction
+- input/output/bidir (from perspective of user code)
+options
+- array of option descriptions
+optionValues
+- array of option values (must be the same size as options)
+initialValue
+- initial value (selection)
+Returns:
+simulated enum value object
+createBoolean
+public
+SimBoolean
+createBoolean
+(
+String
+name,
+SimDevice.Direction
+direction,
+ boolean initialValue)
+Creates a boolean value on the simulated device.
+Returns null if not in simulation.
+Parameters:
+name
+- value name
+direction
+- input/output/bidir (from perspective of user code)
+initialValue
+- initial value
+Returns:
+simulated boolean value object

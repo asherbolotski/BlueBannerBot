@@ -1,0 +1,28 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/**
+008
+* NetworkTables generic entry.
+009
+*
+010
+* <p>Unlike NetworkTableEntry, the entry goes away when close() is called.
+011
+*/
+012
+public interface GenericEntry extends GenericSubscriber, GenericPublisher {
+013
+/** Stops publishing the entry if it's published. */
+014
+void unpublish();
+015
+}

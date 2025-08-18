@@ -1,0 +1,886 @@
+Package
+edu.wpi.first.util.struct
+Class DynamicStruct
+java.lang.Object
+edu.wpi.first.util.struct.DynamicStruct
+public final class
+DynamicStruct
+extends
+Object
+Dynamic (run-time) access to a serialized raw struct.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+DynamicStruct
+allocate
+(
+StructDescriptor
+desc)
+Constructs a new dynamic struct object with internal storage.
+static
+DynamicStruct
+allocateDirect
+(
+StructDescriptor
+desc)
+Constructs a new dynamic struct object with internal storage.
+StructFieldDescriptor
+findField
+(
+String
+name)
+Gets a struct field descriptor by name.
+boolean
+getBoolField
+(
+StructFieldDescriptor
+field)
+Gets the value of a boolean field.
+boolean
+getBoolField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a boolean field.
+ByteBuffer
+getBuffer
+()
+Gets the serialized backing data buffer.
+StructDescriptor
+getDescriptor
+()
+Gets the struct descriptor.
+double
+getDoubleField
+(
+StructFieldDescriptor
+field)
+Gets the value of a double field.
+double
+getDoubleField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a double field.
+float
+getFloatField
+(
+StructFieldDescriptor
+field)
+Gets the value of a float field.
+float
+getFloatField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a float field.
+long
+getIntField
+(
+StructFieldDescriptor
+field)
+Gets the value of an integer field.
+long
+getIntField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of an integer field.
+String
+getStringField
+(
+StructFieldDescriptor
+field)
+Gets the value of a character or character array field.
+DynamicStruct
+getStructField
+(
+StructFieldDescriptor
+field)
+Gets the value of a struct field.
+DynamicStruct
+getStructField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a struct field.
+void
+setBoolField
+(
+StructFieldDescriptor
+field,
+ boolean value)
+Sets the value of a boolean field.
+void
+setBoolField
+(
+StructFieldDescriptor
+field,
+ boolean value,
+ int arrIndex)
+Sets the value of a boolean field.
+void
+setData
+(byte[] data)
+Overwrites the entire serialized struct by copying data from a byte array.
+void
+setData
+(
+ByteBuffer
+data)
+Overwrites the entire serialized struct by copying data from a byte buffer.
+void
+setDoubleField
+(
+StructFieldDescriptor
+field,
+ double value)
+Sets the value of a double field.
+void
+setDoubleField
+(
+StructFieldDescriptor
+field,
+ double value,
+ int arrIndex)
+Sets the value of a double field.
+void
+setFloatField
+(
+StructFieldDescriptor
+field,
+ float value)
+Sets the value of a float field.
+void
+setFloatField
+(
+StructFieldDescriptor
+field,
+ float value,
+ int arrIndex)
+Sets the value of a float field.
+void
+setIntField
+(
+StructFieldDescriptor
+field,
+ long value)
+Sets the value of an integer field.
+void
+setIntField
+(
+StructFieldDescriptor
+field,
+ long value,
+ int arrIndex)
+Sets the value of an integer field.
+boolean
+setStringField
+(
+StructFieldDescriptor
+field,
+String
+value)
+Sets the value of a character or character array field.
+void
+setStructField
+(
+StructFieldDescriptor
+field,
+DynamicStruct
+value)
+Sets the value of a struct field.
+void
+setStructField
+(
+StructFieldDescriptor
+field,
+DynamicStruct
+value,
+ int arrIndex)
+Sets the value of a struct field.
+static
+DynamicStruct
+wrap
+(
+StructDescriptor
+desc,
+ByteBuffer
+data)
+Constructs a new dynamic struct object.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+allocate
+public static
+DynamicStruct
+allocate
+(
+StructDescriptor
+desc)
+Constructs a new dynamic struct object with internal storage. The descriptor must be valid. The
+ internal storage is allocated using ByteBuffer.allocate().
+Parameters:
+desc
+- struct descriptor
+Returns:
+dynamic struct object
+Throws:
+IllegalStateException
+- if struct descriptor is invalid
+allocateDirect
+public static
+DynamicStruct
+allocateDirect
+(
+StructDescriptor
+desc)
+Constructs a new dynamic struct object with internal storage. The descriptor must be valid. The
+ internal storage is allocated using ByteBuffer.allocateDirect().
+Parameters:
+desc
+- struct descriptor
+Returns:
+dynamic struct object
+Throws:
+IllegalStateException
+- if struct descriptor is invalid
+wrap
+public static
+DynamicStruct
+wrap
+(
+StructDescriptor
+desc,
+ByteBuffer
+data)
+Constructs a new dynamic struct object. Note: the passed data buffer is not copied.
+ Modifications to the passed buffer will be reflected in the struct and vice-versa.
+Parameters:
+desc
+- struct descriptor
+data
+- byte buffer containing serialized data starting at current position
+Returns:
+dynamic struct object
+getDescriptor
+public
+StructDescriptor
+getDescriptor
+()
+Gets the struct descriptor.
+Returns:
+struct descriptor
+getBuffer
+public
+ByteBuffer
+getBuffer
+()
+Gets the serialized backing data buffer.
+Returns:
+data buffer
+setData
+public
+void
+setData
+(byte[] data)
+Overwrites the entire serialized struct by copying data from a byte array.
+Parameters:
+data
+- replacement data for the struct
+Throws:
+BufferUnderflowException
+- if data is smaller than the struct size
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+IllegalStateException
+- if struct descriptor is invalid
+setData
+public
+void
+setData
+(
+ByteBuffer
+data)
+Overwrites the entire serialized struct by copying data from a byte buffer.
+Parameters:
+data
+- replacement data for the struct; copy starts from current position
+Throws:
+BufferUnderflowException
+- if remaining data is smaller than the struct size
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+IllegalStateException
+- if struct descriptor is invalid
+findField
+public
+StructFieldDescriptor
+findField
+(
+String
+name)
+Gets a struct field descriptor by name.
+Parameters:
+name
+- field name
+Returns:
+field descriptor, or null if no field with that name exists
+getBoolField
+public
+boolean
+getBoolField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a boolean field.
+Parameters:
+field
+- field descriptor
+arrIndex
+- array index (must be less than field array size)
+Returns:
+boolean field value
+Throws:
+UnsupportedOperationException
+- if field is not bool type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+getBoolField
+public
+boolean
+getBoolField
+(
+StructFieldDescriptor
+field)
+Gets the value of a boolean field.
+Parameters:
+field
+- field descriptor
+Returns:
+boolean field value
+Throws:
+UnsupportedOperationException
+- if field is not bool type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+setBoolField
+public
+void
+setBoolField
+(
+StructFieldDescriptor
+field,
+ boolean value,
+ int arrIndex)
+Sets the value of a boolean field.
+Parameters:
+field
+- field descriptor
+value
+- boolean value
+arrIndex
+- array index (must be less than field array size)
+Throws:
+UnsupportedOperationException
+- if field is not bool type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+setBoolField
+public
+void
+setBoolField
+(
+StructFieldDescriptor
+field,
+ boolean value)
+Sets the value of a boolean field.
+Parameters:
+field
+- field descriptor
+value
+- boolean value
+Throws:
+UnsupportedOperationException
+- if field is not bool type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+getIntField
+public
+long
+getIntField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of an integer field.
+Parameters:
+field
+- field descriptor
+arrIndex
+- array index (must be less than field array size)
+Returns:
+integer field value
+Throws:
+UnsupportedOperationException
+- if field is not integer type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+getIntField
+public
+long
+getIntField
+(
+StructFieldDescriptor
+field)
+Gets the value of an integer field.
+Parameters:
+field
+- field descriptor
+Returns:
+integer field value
+Throws:
+UnsupportedOperationException
+- if field is not integer type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+setIntField
+public
+void
+setIntField
+(
+StructFieldDescriptor
+field,
+ long value,
+ int arrIndex)
+Sets the value of an integer field.
+Parameters:
+field
+- field descriptor
+value
+- integer value
+arrIndex
+- array index (must be less than field array size)
+Throws:
+UnsupportedOperationException
+- if field is not integer type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+setIntField
+public
+void
+setIntField
+(
+StructFieldDescriptor
+field,
+ long value)
+Sets the value of an integer field.
+Parameters:
+field
+- field descriptor
+value
+- integer value
+Throws:
+UnsupportedOperationException
+- if field is not integer type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+getFloatField
+public
+float
+getFloatField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a float field.
+Parameters:
+field
+- field descriptor
+arrIndex
+- array index (must be less than field array size)
+Returns:
+float field value
+Throws:
+UnsupportedOperationException
+- if field is not float type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+getFloatField
+public
+float
+getFloatField
+(
+StructFieldDescriptor
+field)
+Gets the value of a float field.
+Parameters:
+field
+- field descriptor
+Returns:
+float field value
+Throws:
+UnsupportedOperationException
+- if field is not float type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+setFloatField
+public
+void
+setFloatField
+(
+StructFieldDescriptor
+field,
+ float value,
+ int arrIndex)
+Sets the value of a float field.
+Parameters:
+field
+- field descriptor
+value
+- float value
+arrIndex
+- array index (must be less than field array size)
+Throws:
+UnsupportedOperationException
+- if field is not float type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+setFloatField
+public
+void
+setFloatField
+(
+StructFieldDescriptor
+field,
+ float value)
+Sets the value of a float field.
+Parameters:
+field
+- field descriptor
+value
+- float value
+Throws:
+UnsupportedOperationException
+- if field is not float type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+getDoubleField
+public
+double
+getDoubleField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a double field.
+Parameters:
+field
+- field descriptor
+arrIndex
+- array index (must be less than field array size)
+Returns:
+double field value
+Throws:
+UnsupportedOperationException
+- if field is not double type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+getDoubleField
+public
+double
+getDoubleField
+(
+StructFieldDescriptor
+field)
+Gets the value of a double field.
+Parameters:
+field
+- field descriptor
+Returns:
+double field value
+Throws:
+UnsupportedOperationException
+- if field is not double type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+setDoubleField
+public
+void
+setDoubleField
+(
+StructFieldDescriptor
+field,
+ double value,
+ int arrIndex)
+Sets the value of a double field.
+Parameters:
+field
+- field descriptor
+value
+- double value
+arrIndex
+- array index (must be less than field array size)
+Throws:
+UnsupportedOperationException
+- if field is not double type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+setDoubleField
+public
+void
+setDoubleField
+(
+StructFieldDescriptor
+field,
+ double value)
+Sets the value of a double field.
+Parameters:
+field
+- field descriptor
+value
+- double value
+Throws:
+UnsupportedOperationException
+- if field is not double type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+getStringField
+public
+String
+getStringField
+(
+StructFieldDescriptor
+field)
+Gets the value of a character or character array field.
+Parameters:
+field
+- field descriptor
+Returns:
+field value
+Throws:
+UnsupportedOperationException
+- if field is not char type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+setStringField
+public
+boolean
+setStringField
+(
+StructFieldDescriptor
+field,
+String
+value)
+Sets the value of a character or character array field.
+Parameters:
+field
+- field descriptor
+value
+- field value
+Returns:
+true if the full value fit in the struct, false if truncated
+Throws:
+UnsupportedOperationException
+- if field is not char type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+getStructField
+public
+DynamicStruct
+getStructField
+(
+StructFieldDescriptor
+field,
+ int arrIndex)
+Gets the value of a struct field.
+Parameters:
+field
+- field descriptor
+arrIndex
+- array index (must be less than field array size)
+Returns:
+field value
+Throws:
+UnsupportedOperationException
+- if field is not of struct type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+getStructField
+public
+DynamicStruct
+getStructField
+(
+StructFieldDescriptor
+field)
+Gets the value of a struct field.
+Parameters:
+field
+- field descriptor
+Returns:
+field value
+Throws:
+UnsupportedOperationException
+- if field is not of struct type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+setStructField
+public
+void
+setStructField
+(
+StructFieldDescriptor
+field,
+DynamicStruct
+value,
+ int arrIndex)
+Sets the value of a struct field.
+Parameters:
+field
+- field descriptor
+value
+- struct value
+arrIndex
+- array index (must be less than field array size)
+Throws:
+UnsupportedOperationException
+- if field is not struct type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ArrayIndexOutOfBoundsException
+- if array index is out of bounds
+ReadOnlyBufferException
+- if the underlying buffer is read-only
+setStructField
+public
+void
+setStructField
+(
+StructFieldDescriptor
+field,
+DynamicStruct
+value)
+Sets the value of a struct field.
+Parameters:
+field
+- field descriptor
+value
+- struct value
+Throws:
+UnsupportedOperationException
+- if field is not struct type
+IllegalArgumentException
+- if field is not a member of this struct
+IllegalStateException
+- if struct descriptor is invalid
+ReadOnlyBufferException
+- if the underlying buffer is read-only

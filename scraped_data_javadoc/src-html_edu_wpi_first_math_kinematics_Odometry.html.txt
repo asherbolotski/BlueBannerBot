@@ -1,0 +1,247 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.kinematics;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.geometry.Rotation2d;
+009
+import edu.wpi.first.math.geometry.Translation2d;
+010
+011
+/**
+012
+* Class for odometry. Robot code should not use this directly- Instead, use the particular type for
+013
+* your drivetrain (e.g., {@link DifferentialDriveOdometry}). Odometry allows you to track the
+014
+* robot's position on the field over the course of a match using readings from encoders and a
+015
+* gyroscope.
+016
+*
+017
+* <p>Teams can use odometry during the autonomous period for complex tasks like path following.
+018
+* Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+019
+*
+020
+* @param <T> Wheel positions type.
+021
+*/
+022
+public class Odometry<T> {
+023
+private final Kinematics<?, T> m_kinematics;
+024
+private Pose2d m_poseMeters;
+025
+026
+private Rotation2d m_gyroOffset;
+027
+private Rotation2d m_previousAngle;
+028
+private final T m_previousWheelPositions;
+029
+030
+/**
+031
+* Constructs an Odometry object.
+032
+*
+033
+* @param kinematics The kinematics of the drivebase.
+034
+* @param gyroAngle The angle reported by the gyroscope.
+035
+* @param wheelPositions The current encoder readings.
+036
+* @param initialPoseMeters The starting position of the robot on the field.
+037
+*/
+038
+public Odometry(
+039
+Kinematics<?, T> kinematics,
+040
+Rotation2d gyroAngle,
+041
+T wheelPositions,
+042
+Pose2d initialPoseMeters) {
+043
+m_kinematics = kinematics;
+044
+m_poseMeters = initialPoseMeters;
+045
+m_gyroOffset = m_poseMeters.getRotation().minus(gyroAngle);
+046
+m_previousAngle = m_poseMeters.getRotation();
+047
+m_previousWheelPositions = m_kinematics.copy(wheelPositions);
+048
+}
+049
+050
+/**
+051
+* Resets the robot's position on the field.
+052
+*
+053
+* <p>The gyroscope angle does not need to be reset here on the user's robot code. The library
+054
+* automatically takes care of offsetting the gyro angle.
+055
+*
+056
+* @param gyroAngle The angle reported by the gyroscope.
+057
+* @param wheelPositions The current encoder readings.
+058
+* @param poseMeters The position on the field that your robot is at.
+059
+*/
+060
+public void resetPosition(Rotation2d gyroAngle, T wheelPositions, Pose2d poseMeters) {
+061
+m_poseMeters = poseMeters;
+062
+m_previousAngle = m_poseMeters.getRotation();
+063
+m_gyroOffset = m_poseMeters.getRotation().minus(gyroAngle);
+064
+m_kinematics.copyInto(wheelPositions, m_previousWheelPositions);
+065
+}
+066
+067
+/**
+068
+* Resets the pose.
+069
+*
+070
+* @param poseMeters The pose to reset to.
+071
+*/
+072
+public void resetPose(Pose2d poseMeters) {
+073
+m_gyroOffset = m_gyroOffset.plus(poseMeters.getRotation().minus(m_poseMeters.getRotation()));
+074
+m_poseMeters = poseMeters;
+075
+m_previousAngle = m_poseMeters.getRotation();
+076
+}
+077
+078
+/**
+079
+* Resets the translation of the pose.
+080
+*
+081
+* @param translation The translation to reset to.
+082
+*/
+083
+public void resetTranslation(Translation2d translation) {
+084
+m_poseMeters = new Pose2d(translation, m_poseMeters.getRotation());
+085
+}
+086
+087
+/**
+088
+* Resets the rotation of the pose.
+089
+*
+090
+* @param rotation The rotation to reset to.
+091
+*/
+092
+public void resetRotation(Rotation2d rotation) {
+093
+m_gyroOffset = m_gyroOffset.plus(rotation.minus(m_poseMeters.getRotation()));
+094
+m_poseMeters = new Pose2d(m_poseMeters.getTranslation(), rotation);
+095
+m_previousAngle = m_poseMeters.getRotation();
+096
+}
+097
+098
+/**
+099
+* Returns the position of the robot on the field.
+100
+*
+101
+* @return The pose of the robot (x and y are in meters).
+102
+*/
+103
+public Pose2d getPoseMeters() {
+104
+return m_poseMeters;
+105
+}
+106
+107
+/**
+108
+* Updates the robot's position on the field using forward kinematics and integration of the pose
+109
+* over time. This method takes in an angle parameter which is used instead of the angular rate
+110
+* that is calculated from forward kinematics, in addition to the current distance measurement at
+111
+* each wheel.
+112
+*
+113
+* @param gyroAngle The angle reported by the gyroscope.
+114
+* @param wheelPositions The current encoder readings.
+115
+* @return The new pose of the robot.
+116
+*/
+117
+public Pose2d update(Rotation2d gyroAngle, T wheelPositions) {
+118
+var angle = gyroAngle.plus(m_gyroOffset);
+119
+120
+var twist = m_kinematics.toTwist2d(m_previousWheelPositions, wheelPositions);
+121
+twist.dtheta = angle.minus(m_previousAngle).getRadians();
+122
+123
+var newPose = m_poseMeters.exp(twist);
+124
+125
+m_kinematics.copyInto(wheelPositions, m_previousWheelPositions);
+126
+m_previousAngle = angle;
+127
+m_poseMeters = new Pose2d(newPose.getTranslation(), angle);
+128
+129
+return m_poseMeters;
+130
+}
+131
+}

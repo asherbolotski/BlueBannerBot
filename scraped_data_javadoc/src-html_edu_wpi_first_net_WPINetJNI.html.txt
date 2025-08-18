@@ -1,0 +1,366 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.net;
+006
+007
+import edu.wpi.first.util.RuntimeLoader;
+008
+import java.io.IOException;
+009
+import java.util.concurrent.atomic.AtomicBoolean;
+010
+011
+/** WPINet JNI. */
+012
+public class WPINetJNI {
+013
+static boolean libraryLoaded = false;
+014
+015
+/** Sets whether JNI should be loaded in the static block. */
+016
+public static class Helper {
+017
+private static AtomicBoolean extractOnStaticLoad = new AtomicBoolean(true);
+018
+019
+/**
+020
+* Returns true if the JNI should be loaded in the static block.
+021
+*
+022
+* @return True if the JNI should be loaded in the static block.
+023
+*/
+024
+public static boolean getExtractOnStaticLoad() {
+025
+return extractOnStaticLoad.get();
+026
+}
+027
+028
+/**
+029
+* Sets whether the JNI should be loaded in the static block.
+030
+*
+031
+* @param load Whether the JNI should be loaded in the static block.
+032
+*/
+033
+public static void setExtractOnStaticLoad(boolean load) {
+034
+extractOnStaticLoad.set(load);
+035
+}
+036
+037
+/** Utility class. */
+038
+private Helper() {}
+039
+}
+040
+041
+static {
+042
+if (Helper.getExtractOnStaticLoad()) {
+043
+try {
+044
+RuntimeLoader.loadLibrary("wpinetjni");
+045
+} catch (Exception ex) {
+046
+ex.printStackTrace();
+047
+System.exit(1);
+048
+}
+049
+libraryLoaded = true;
+050
+}
+051
+}
+052
+053
+/**
+054
+* Force load the library.
+055
+*
+056
+* @throws IOException if the library failed to load
+057
+*/
+058
+public static synchronized void forceLoad() throws IOException {
+059
+if (libraryLoaded) {
+060
+return;
+061
+}
+062
+RuntimeLoader.loadLibrary("wpinetjni");
+063
+libraryLoaded = true;
+064
+}
+065
+066
+/**
+067
+* Forward a local TCP port to a remote host and port. Note that local ports less than 1024 won't
+068
+* work as a normal user.
+069
+*
+070
+* @param port local port number
+071
+* @param remoteHost remote IP address / DNS name
+072
+* @param remotePort remote port number
+073
+*/
+074
+public static native void addPortForwarder(int port, String remoteHost, int remotePort);
+075
+076
+/**
+077
+* Stop TCP forwarding on a port.
+078
+*
+079
+* @param port local port number
+080
+*/
+081
+public static native void removePortForwarder(int port);
+082
+083
+/**
+084
+* Create a web server at the given port. Note that local ports less than 1024 won't work as a
+085
+* normal user.
+086
+*
+087
+* @param port local port number
+088
+* @param path local path to document root
+089
+*/
+090
+public static native void startWebServer(int port, String path);
+091
+092
+/**
+093
+* Stop web server running at the given port.
+094
+*
+095
+* @param port local port number
+096
+*/
+097
+public static native void stopWebServer(int port);
+098
+099
+/**
+100
+* Creates a MulticastServiceAnnouncer.
+101
+*
+102
+* @param serviceName service name
+103
+* @param serviceType service type
+104
+* @param port port
+105
+* @param keys keys
+106
+* @param values values
+107
+* @return MulticastServiceAnnouncer handle.
+108
+*/
+109
+public static native int createMulticastServiceAnnouncer(
+110
+String serviceName, String serviceType, int port, String[] keys, String[] values);
+111
+112
+/**
+113
+* Frees a MulticastServiceAnnouncer.
+114
+*
+115
+* @param handle MulticastServiceAnnouncer handle.
+116
+*/
+117
+public static native void freeMulticastServiceAnnouncer(int handle);
+118
+119
+/**
+120
+* Starts MulticastServiceAnnouncer.
+121
+*
+122
+* @param handle MulticastServiceAnnouncer handle.
+123
+*/
+124
+public static native void startMulticastServiceAnnouncer(int handle);
+125
+126
+/**
+127
+* Stops MulticastServiceAnnouncer.
+128
+*
+129
+* @param handle MulticastServiceAnnouncer handle.
+130
+*/
+131
+public static native void stopMulticastServiceAnnouncer(int handle);
+132
+133
+/**
+134
+* Returns true if MulticastServiceAnnouncer has an implementation.
+135
+*
+136
+* @param handle MulticastServiceAnnouncer handle.
+137
+* @return True if MulticastServiceAnnouncer has an implementation.
+138
+*/
+139
+public static native boolean getMulticastServiceAnnouncerHasImplementation(int handle);
+140
+141
+/**
+142
+* Creates a MulticastServiceResolver.
+143
+*
+144
+* @param serviceType Service type.
+145
+* @return MulticastServiceResolver handle.
+146
+*/
+147
+public static native int createMulticastServiceResolver(String serviceType);
+148
+149
+/**
+150
+* Frees MulticastServiceResolver.
+151
+*
+152
+* @param handle MulticastServiceResolver handle.
+153
+*/
+154
+public static native void freeMulticastServiceResolver(int handle);
+155
+156
+/**
+157
+* Starts MulticastServiceResolver.
+158
+*
+159
+* @param handle MulticastServiceResolver handle.
+160
+*/
+161
+public static native void startMulticastServiceResolver(int handle);
+162
+163
+/**
+164
+* Stops MulticastServiceResolver.
+165
+*
+166
+* @param handle MulticastServiceResolver handle.
+167
+*/
+168
+public static native void stopMulticastServiceResolver(int handle);
+169
+170
+/**
+171
+* Returns true if MulticastServiceResolver has an implementation.
+172
+*
+173
+* @param handle MulticastServiceResolver handle.
+174
+* @return True if MulticastServiceResolver has an implementation.
+175
+*/
+176
+public static native boolean getMulticastServiceResolverHasImplementation(int handle);
+177
+178
+/**
+179
+* Returns event handle for MulticastServiceResolver.
+180
+*
+181
+* @param handle MulticastServiceResolver handle.
+182
+* @return Event handle for MulticastServiceResolver.
+183
+*/
+184
+public static native int getMulticastServiceResolverEventHandle(int handle);
+185
+186
+/**
+187
+* Returns service data for MulticastServiceResolver.
+188
+*
+189
+* @param handle MulticastServiceResolver handle.
+190
+* @return Service data for MulticastServiceResolver.
+191
+*/
+192
+public static native ServiceData[] getMulticastServiceResolverData(int handle);
+193
+194
+/** Utility class. */
+195
+private WPINetJNI() {}
+196
+}

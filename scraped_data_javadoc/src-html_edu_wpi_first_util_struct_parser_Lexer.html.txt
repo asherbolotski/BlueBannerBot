@@ -1,0 +1,215 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.struct.parser;
+006
+007
+/** Raw struct schema lexer. */
+008
+public class Lexer {
+009
+/**
+010
+* Construct a raw struct schema lexer.
+011
+*
+012
+* @param in schema
+013
+*/
+014
+public Lexer(String in) {
+015
+m_in = in;
+016
+}
+017
+018
+/**
+019
+* Gets the next token.
+020
+*
+021
+* @return Token kind; the token text can be retrieved using getTokenText()
+022
+*/
+023
+public TokenKind scan() {
+024
+// skip whitespace
+025
+do {
+026
+get();
+027
+} while (m_current == ' ' || m_current == '\t' || m_current == '\n' || m_current == '\r');
+028
+m_tokenStart = m_pos - 1;
+029
+030
+return switch (m_current) {
+031
+case '[' -> TokenKind.kLeftBracket;
+032
+case ']' -> TokenKind.kRightBracket;
+033
+case '{' -> TokenKind.kLeftBrace;
+034
+case '}' -> TokenKind.kRightBrace;
+035
+case ':' -> TokenKind.kColon;
+036
+case ';' -> TokenKind.kSemicolon;
+037
+case ',' -> TokenKind.kComma;
+038
+case '=' -> TokenKind.kEquals;
+039
+case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> scanInteger();
+040
+case '\0' -> TokenKind.kEndOfInput;
+041
+default -> {
+042
+if (Character.isLetter(m_current) || m_current == '_') {
+043
+yield scanIdentifier();
+044
+}
+045
+yield TokenKind.kUnknown;
+046
+}
+047
+};
+048
+}
+049
+050
+/**
+051
+* Gets the text of the last lexed token.
+052
+*
+053
+* @return token text
+054
+*/
+055
+public String getTokenText() {
+056
+if (m_tokenStart >= m_in.length()) {
+057
+return "";
+058
+}
+059
+return m_in.substring(m_tokenStart, m_pos);
+060
+}
+061
+062
+/**
+063
+* Gets the starting position of the last lexed token.
+064
+*
+065
+* @return position (0 = first character)
+066
+*/
+067
+public int getPosition() {
+068
+return m_tokenStart;
+069
+}
+070
+071
+private TokenKind scanInteger() {
+072
+do {
+073
+get();
+074
+} while (Character.isDigit(m_current));
+075
+unget();
+076
+return TokenKind.kInteger;
+077
+}
+078
+079
+private TokenKind scanIdentifier() {
+080
+do {
+081
+get();
+082
+} while (Character.isLetterOrDigit(m_current) || m_current == '_');
+083
+unget();
+084
+return TokenKind.kIdentifier;
+085
+}
+086
+087
+private void get() {
+088
+if (m_pos < m_in.length()) {
+089
+m_current = m_in.charAt(m_pos);
+090
+} else {
+091
+m_current = '\0';
+092
+}
+093
+++m_pos;
+094
+}
+095
+096
+private void unget() {
+097
+if (m_pos > 0) {
+098
+m_pos--;
+099
+if (m_pos < m_in.length()) {
+100
+m_current = m_in.charAt(m_pos);
+101
+} else {
+102
+m_current = '\0';
+103
+}
+104
+} else {
+105
+m_current = '\0';
+106
+}
+107
+}
+108
+109
+final String m_in;
+110
+char m_current;
+111
+int m_tokenStart;
+112
+int m_pos;
+113
+}

@@ -1,0 +1,167 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.JNIWrapper;
+008
+009
+/** JNI for encoder data. */
+010
+public class EncoderDataJNI extends JNIWrapper {
+011
+public static native int registerInitializedCallback(
+012
+int index, NotifyCallback callback, boolean initialNotify);
+013
+014
+public static native void cancelInitializedCallback(int index, int uid);
+015
+016
+public static native boolean getInitialized(int index);
+017
+018
+public static native void setInitialized(int index, boolean initialized);
+019
+020
+public static native int registerCountCallback(
+021
+int index, NotifyCallback callback, boolean initialNotify);
+022
+023
+public static native void cancelCountCallback(int index, int uid);
+024
+025
+public static native int getCount(int index);
+026
+027
+public static native void setCount(int index, int count);
+028
+029
+public static native int registerPeriodCallback(
+030
+int index, NotifyCallback callback, boolean initialNotify);
+031
+032
+public static native void cancelPeriodCallback(int index, int uid);
+033
+034
+public static native double getPeriod(int index);
+035
+036
+public static native void setPeriod(int index, double period);
+037
+038
+public static native int registerResetCallback(
+039
+int index, NotifyCallback callback, boolean initialNotify);
+040
+041
+public static native void cancelResetCallback(int index, int uid);
+042
+043
+public static native boolean getReset(int index);
+044
+045
+public static native void setReset(int index, boolean reset);
+046
+047
+public static native int registerMaxPeriodCallback(
+048
+int index, NotifyCallback callback, boolean initialNotify);
+049
+050
+public static native void cancelMaxPeriodCallback(int index, int uid);
+051
+052
+public static native double getMaxPeriod(int index);
+053
+054
+public static native void setMaxPeriod(int index, double maxPeriod);
+055
+056
+public static native int registerDirectionCallback(
+057
+int index, NotifyCallback callback, boolean initialNotify);
+058
+059
+public static native void cancelDirectionCallback(int index, int uid);
+060
+061
+public static native boolean getDirection(int index);
+062
+063
+public static native void setDirection(int index, boolean direction);
+064
+065
+public static native int registerReverseDirectionCallback(
+066
+int index, NotifyCallback callback, boolean initialNotify);
+067
+068
+public static native void cancelReverseDirectionCallback(int index, int uid);
+069
+070
+public static native boolean getReverseDirection(int index);
+071
+072
+public static native void setReverseDirection(int index, boolean reverseDirection);
+073
+074
+public static native int registerSamplesToAverageCallback(
+075
+int index, NotifyCallback callback, boolean initialNotify);
+076
+077
+public static native void cancelSamplesToAverageCallback(int index, int uid);
+078
+079
+public static native int getSamplesToAverage(int index);
+080
+081
+public static native void setSamplesToAverage(int index, int samplesToAverage);
+082
+083
+public static native int registerDistancePerPulseCallback(
+084
+int index, NotifyCallback callback, boolean initialNotify);
+085
+086
+public static native void cancelDistancePerPulseCallback(int index, int uid);
+087
+088
+public static native double getDistancePerPulse(int index);
+089
+090
+public static native void setDistancePerPulse(int index, double distancePerPulse);
+091
+092
+public static native void setDistance(int index, double distance);
+093
+094
+public static native double getDistance(int index);
+095
+096
+public static native void setRate(int index, double rate);
+097
+098
+public static native double getRate(int index);
+099
+100
+public static native void resetData(int index);
+101
+102
+public static native int findForChannel(int channel);
+103
+104
+/** Utility class. */
+105
+private EncoderDataJNI() {}
+106
+}

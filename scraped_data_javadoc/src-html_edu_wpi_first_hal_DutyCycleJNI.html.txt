@@ -1,0 +1,159 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* DutyCycle HAL JNI functions.
+009
+*
+010
+* @see "DutyCycle.h"
+011
+*/
+012
+public class DutyCycleJNI extends JNIWrapper {
+013
+/**
+014
+* Initialize a DutyCycle input.
+015
+*
+016
+* @param digitalSourceHandle the digital source to use (either a Digital Handle or a
+017
+*     AnalogTrigger Handle)
+018
+* @param analogTriggerType the analog trigger type of the source if it is an analog trigger
+019
+* @return the created duty cycle handle
+020
+* @see "HAL_InitializeDutyCycle"
+021
+*/
+022
+public static native int initialize(int digitalSourceHandle, int analogTriggerType);
+023
+024
+/**
+025
+* Free a DutyCycle.
+026
+*
+027
+* @param handle the duty cycle handle
+028
+* @see "HAL_FreeDutyCycle"
+029
+*/
+030
+public static native void free(int handle);
+031
+032
+/**
+033
+* Get the frequency of the duty cycle signal.
+034
+*
+035
+* @param handle the duty cycle handle
+036
+* @return frequency in Hertz
+037
+* @see "HAL_GetDutyCycleFrequency"
+038
+*/
+039
+public static native int getFrequency(int handle);
+040
+041
+/**
+042
+* Get the output ratio of the duty cycle signal.
+043
+*
+044
+* <p>0 means always low, 1 means always high.
+045
+*
+046
+* @param handle the duty cycle handle
+047
+* @return output ratio between 0 and 1
+048
+* @see "HAL_GetDutyCycleOutput"
+049
+*/
+050
+public static native double getOutput(int handle);
+051
+052
+/**
+053
+* Get the raw high time of the duty cycle signal.
+054
+*
+055
+* @param handle the duty cycle handle
+056
+* @return high time of last pulse in nanoseconds
+057
+* @see "HAL_GetDutyCycleHighTime"
+058
+*/
+059
+public static native int getHighTime(int handle);
+060
+061
+/**
+062
+* Get the scale factor of the output.
+063
+*
+064
+* <p>An output equal to this value is always high, and then linearly scales down to 0. Divide a
+065
+* raw result by this in order to get the percentage between 0 and 1. Used by DMA.
+066
+*
+067
+* @param handle the duty cycle handle
+068
+* @return the output scale factor
+069
+* @see "HAL_GetDutyCycleOutputScaleFactor"
+070
+*/
+071
+public static native int getOutputScaleFactor(int handle);
+072
+073
+/**
+074
+* Get the FPGA index for the DutyCycle.
+075
+*
+076
+* @param handle the duty cycle handle
+077
+* @return the FPGA index
+078
+* @see "HAL_GetDutyCycleFPGAIndex"
+079
+*/
+080
+public static native int getFPGAIndex(int handle);
+081
+082
+/** Utility class. */
+083
+private DutyCycleJNI() {}
+084
+}

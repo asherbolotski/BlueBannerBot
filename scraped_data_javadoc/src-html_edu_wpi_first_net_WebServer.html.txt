@@ -1,0 +1,62 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.net;
+006
+007
+/** A web server using the HTTP protocol. */
+008
+public final class WebServer {
+009
+private WebServer() {
+010
+throw new UnsupportedOperationException("This is a utility class!");
+011
+}
+012
+013
+/**
+014
+* Create a web server at the given port. Note that local ports less than 1024 won't work as a
+015
+* normal user. Also, many ports are blocked by the FRC robot radio; check the game manual for
+016
+* what is allowed through the radio firewall.
+017
+*
+018
+* @param port local port number
+019
+* @param path local path to document root
+020
+*/
+021
+public static void start(int port, String path) {
+022
+WPINetJNI.startWebServer(port, path);
+023
+}
+024
+025
+/**
+026
+* Stop web server running at the given port.
+027
+*
+028
+* @param port local port number
+029
+*/
+030
+public static void stop(int port) {
+031
+WPINetJNI.stopWebServer(port);
+032
+}
+033
+}

@@ -1,0 +1,130 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.epilogue.logging.errors;
+006
+007
+import edu.wpi.first.epilogue.logging.ClassSpecificLogger;
+008
+import java.util.HashMap;
+009
+import java.util.Map;
+010
+011
+/**
+012
+* An error handler that disables loggers after too many exceptions are raised. Useful when playing
+013
+* in matches, where data logging is less important than reliable control. Setting the threshold to
+014
+* ≤0 will cause any logger that encounters an exception whilst logging to immediately be disabled.
+015
+* Setting to higher values means your program is more tolerant of errors, but takes longer to
+016
+* disable, and therefore may have more sets of partial or incomplete data and may have more CPU
+017
+* overhead due to the cost of throwing exceptions.
+018
+*/
+019
+public class LoggerDisabler implements ErrorHandler {
+020
+private final int m_threshold;
+021
+private final Map<ClassSpecificLogger<?>, Integer> m_errorCounts = new HashMap<>();
+022
+023
+/**
+024
+* Creates a new logger-disabling error handler.
+025
+*
+026
+* @param threshold how many errors any one logger is allowed to encounter before it is disabled.
+027
+*/
+028
+public LoggerDisabler(int threshold) {
+029
+this.m_threshold = threshold;
+030
+}
+031
+032
+/**
+033
+* Creates a disabler that kicks in after a logger raises more than {@code threshold} exceptions.
+034
+*
+035
+* @param threshold the threshold value for the maximum number of exceptions loggers are permitted
+036
+*     to encounter before they are disabled
+037
+* @return the disabler
+038
+*/
+039
+public static LoggerDisabler forLimit(int threshold) {
+040
+return new LoggerDisabler(threshold);
+041
+}
+042
+043
+@Override
+044
+public void handle(Throwable exception, ClassSpecificLogger<?> logger) {
+045
+var errorCount = m_errorCounts.getOrDefault(logger, 0) + 1;
+046
+m_errorCounts.put(logger, errorCount);
+047
+048
+if (errorCount > m_threshold) {
+049
+logger.disable();
+050
+System.err.println(
+051
+"[EPILOGUE] Too many errors detected in "
+052
++ logger.getClass().getName()
+053
++ " (maximum allowed: "
+054
++ m_threshold
+055
++ "). The most recent error follows:");
+056
+System.err.println(exception.getMessage());
+057
+exception.printStackTrace(System.err);
+058
+}
+059
+}
+060
+061
+/** Resets all error counts and reenables all loggers. */
+062
+public void reset() {
+063
+for (var logger : m_errorCounts.keySet()) {
+064
+// Safe. This is a no-op on loggers that are already enabled
+065
+logger.reenable();
+066
+}
+067
+m_errorCounts.clear();
+068
+}
+069
+}

@@ -1,0 +1,95 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+/** Exception thrown due to a bad MSVC Runtime. */
+008
+public class MsvcRuntimeException extends RuntimeException {
+009
+private static final long serialVersionUID = -9155939328084105142L;
+010
+011
+private static String generateMessage(
+012
+int foundMajor, int foundMinor, int expectedMajor, int expectedMinor, String runtimePath) {
+013
+String jvmLocation = ProcessHandle.current().info().command().orElse("Unknown");
+014
+015
+StringBuilder builder = new StringBuilder(100);
+016
+builder
+017
+.append("Invalid MSVC Runtime Detected.\n")
+018
+.append(
+019
+String.format(
+020
+"Expected at least %d.%d, but found %d.%d\n",
+021
+expectedMajor, expectedMinor, foundMajor, foundMinor))
+022
+.append(String.format("JVM Location: %s\n", jvmLocation))
+023
+.append(String.format("Runtime DLL Location: %s\n", runtimePath))
+024
+.append("See https://wpilib.org/jvmruntime for more information\n");
+025
+026
+return builder.toString();
+027
+}
+028
+029
+/**
+030
+* Constructs a runtime exception.
+031
+*
+032
+* @param foundMajor found major
+033
+* @param foundMinor found minor
+034
+* @param expectedMajor expected major
+035
+* @param expectedMinor expected minor
+036
+* @param runtimePath path of runtime
+037
+*/
+038
+public MsvcRuntimeException(
+039
+int foundMajor, int foundMinor, int expectedMajor, int expectedMinor, String runtimePath) {
+040
+super(generateMessage(foundMajor, foundMinor, expectedMajor, expectedMinor, runtimePath));
+041
+}
+042
+043
+/**
+044
+* Constructs a runtime exception.
+045
+*
+046
+* @param msg message
+047
+*/
+048
+public MsvcRuntimeException(String msg) {
+049
+super(msg);
+050
+}
+051
+}

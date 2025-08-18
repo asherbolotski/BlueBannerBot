@@ -1,0 +1,258 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class DutyCycleSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.DutyCycleSim
+public class
+DutyCycleSim
+extends
+Object
+Class to control a simulated duty cycle digital input.
+Constructor Summary
+Constructors
+Constructor
+Description
+DutyCycleSim
+(
+DutyCycle
+dutyCycle)
+Constructs from a DutyCycle object.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+DutyCycleSim
+createForChannel
+(int channel)
+Creates a DutyCycleSim for a digital input channel.
+static
+DutyCycleSim
+createForIndex
+(int index)
+Creates a DutyCycleSim for a simulated index.
+int
+getFrequency
+()
+Measure the frequency.
+boolean
+getInitialized
+()
+Check whether this duty cycle input has been initialized.
+double
+getOutput
+()
+Measure the output from this duty cycle port.
+CallbackStore
+registerFrequencyCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the frequency changes.
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when this duty cycle input is initialized.
+CallbackStore
+registerOutputCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the output changes.
+void
+resetData
+()
+Reset all simulation data for the duty cycle output.
+void
+setFrequency
+(int frequency)
+Change the duty cycle frequency.
+void
+setInitialized
+(boolean initialized)
+Define whether this duty cycle input has been initialized.
+void
+setOutput
+(double output)
+Change the duty cycle output.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DutyCycleSim
+public
+DutyCycleSim
+(
+DutyCycle
+dutyCycle)
+Constructs from a DutyCycle object.
+Parameters:
+dutyCycle
+- DutyCycle to simulate
+Method Details
+createForChannel
+public static
+DutyCycleSim
+createForChannel
+(int channel)
+Creates a DutyCycleSim for a digital input channel.
+Parameters:
+channel
+- digital input channel
+Returns:
+Simulated object
+Throws:
+NoSuchElementException
+- if no DutyCycle is configured for that channel
+createForIndex
+public static
+DutyCycleSim
+createForIndex
+(int index)
+Creates a DutyCycleSim for a simulated index. The index is incremented for each simulated
+ DutyCycle.
+Parameters:
+index
+- simulator index
+Returns:
+Simulated object
+registerInitializedCallback
+public
+CallbackStore
+registerInitializedCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run when this duty cycle input is initialized.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to run the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getInitialized
+public
+boolean
+getInitialized
+()
+Check whether this duty cycle input has been initialized.
+Returns:
+true if initialized
+setInitialized
+public
+void
+setInitialized
+(boolean initialized)
+Define whether this duty cycle input has been initialized.
+Parameters:
+initialized
+- whether this object is initialized
+registerFrequencyCallback
+public
+CallbackStore
+registerFrequencyCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the frequency changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getFrequency
+public
+int
+getFrequency
+()
+Measure the frequency.
+Returns:
+the duty cycle frequency
+setFrequency
+public
+void
+setFrequency
+(int frequency)
+Change the duty cycle frequency.
+Parameters:
+frequency
+- the new frequency
+registerOutputCallback
+public
+CallbackStore
+registerOutputCallback
+(
+NotifyCallback
+callback,
+ boolean initialNotify)
+Register a callback to be run whenever the output changes.
+Parameters:
+callback
+- the callback
+initialNotify
+- whether to call the callback with the initial state
+Returns:
+the
+CallbackStore
+object associated with this callback.
+getOutput
+public
+double
+getOutput
+()
+Measure the output from this duty cycle port.
+Returns:
+the output value
+setOutput
+public
+void
+setOutput
+(double output)
+Change the duty cycle output.
+Parameters:
+output
+- the new output value
+resetData
+public
+void
+resetData
+()
+Reset all simulation data for the duty cycle output.

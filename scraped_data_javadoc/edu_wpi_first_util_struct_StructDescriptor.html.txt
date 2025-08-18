@@ -1,0 +1,130 @@
+Package
+edu.wpi.first.util.struct
+Class StructDescriptor
+java.lang.Object
+edu.wpi.first.util.struct.StructDescriptor
+public class
+StructDescriptor
+extends
+Object
+Raw struct dynamic struct descriptor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+StructFieldDescriptor
+findFieldByName
+(
+String
+name)
+Gets a field descriptor by name.
+List
+<
+StructFieldDescriptor
+>
+getFields
+()
+Gets all field descriptors.
+String
+getName
+()
+Gets the struct name.
+String
+getSchema
+()
+Gets the struct schema.
+int
+getSize
+()
+Returns the struct size, in bytes.
+boolean
+isValid
+()
+Returns whether the struct is valid (e.g.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getName
+public
+String
+getName
+()
+Gets the struct name.
+Returns:
+name
+getSchema
+public
+String
+getSchema
+()
+Gets the struct schema.
+Returns:
+schema
+isValid
+public
+boolean
+isValid
+()
+Returns whether the struct is valid (e.g. the struct is fully defined and field offsets
+ computed).
+Returns:
+true if valid
+getSize
+public
+int
+getSize
+()
+Returns the struct size, in bytes. Not valid unless IsValid() is true.
+Returns:
+size in bytes
+Throws:
+IllegalStateException
+- if descriptor is invalid
+findFieldByName
+public
+StructFieldDescriptor
+findFieldByName
+(
+String
+name)
+Gets a field descriptor by name. Note the field cannot be accessed until the struct is valid.
+Parameters:
+name
+- field name
+Returns:
+field descriptor, or nullptr if not found
+getFields
+public
+List
+<
+StructFieldDescriptor
+>
+getFields
+()
+Gets all field descriptors. Note fields cannot be accessed until the struct is valid.
+Returns:
+field descriptors

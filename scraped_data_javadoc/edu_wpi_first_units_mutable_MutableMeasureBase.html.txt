@@ -1,0 +1,662 @@
+Package
+edu.wpi.first.units.mutable
+Class MutableMeasureBase<U extends
+Unit
+,
+Base extends
+Measure
+<U>,
+MutSelf extends
+MutableMeasure
+<U,
+Base,
+MutSelf>>
+java.lang.Object
+edu.wpi.first.units.mutable.MutableMeasureBase<U,
+Base,
+MutSelf>
+Type Parameters:
+U
+- The dimension of measurement.
+Base
+- The base measure type.
+MutSelf
+- The self type. This MUST inherit from the base measure type.
+All Implemented Interfaces:
+Measure
+<U>
+,
+MutableMeasure
+<U,
+Base,
+MutSelf>
+,
+Comparable
+<
+Measure
+<U>>
+Direct Known Subclasses:
+GenericMutableMeasureImpl
+,
+MutAcceleration
+,
+MutAngle
+,
+MutAngularAcceleration
+,
+MutAngularMomentum
+,
+MutAngularVelocity
+,
+MutCurrent
+,
+MutDimensionless
+,
+MutDistance
+,
+MutEnergy
+,
+MutForce
+,
+MutFrequency
+,
+MutLinearAcceleration
+,
+MutLinearMomentum
+,
+MutLinearVelocity
+,
+MutMass
+,
+MutMomentOfInertia
+,
+MutMult
+,
+MutPer
+,
+MutPower
+,
+MutResistance
+,
+MutTemperature
+,
+MutTime
+,
+MutTorque
+,
+MutVelocity
+,
+MutVoltage
+public abstract class
+MutableMeasureBase
+<U extends
+Unit
+,
+Base extends
+Measure
+<U>,
+MutSelf extends
+MutableMeasure
+<U,
+Base,
+MutSelf>>
+extends
+Object
+implements
+Measure
+<U>,
+MutableMeasure
+<U,
+Base,
+MutSelf>
+A partial implementation of
+MutableMeasure
+to handle most of the state and Java object-
+ related implementations.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected double
+m_baseUnitMagnitude
+The magnitude of the measurement, in terms of
+m_unit
+'s base unit.
+protected double
+m_magnitude
+The magnitude of the measurement, in terms of
+m_unit
+.
+protected
+U
+m_unit
+The unit of measurement.
+Fields inherited from interface edu.wpi.first.units.
+Measure
+EQUIVALENCE_THRESHOLD
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+MutableMeasureBase
+(double magnitude,
+ double baseUnitMagnitude,
+U
+unit)
+Initializes the mutable measure with initial conditions.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+baseUnitMagnitude
+()
+Gets the magnitude of this measure in terms of the base unit.
+boolean
+equals
+(
+Object
+o)
+int
+hashCode
+()
+double
+magnitude
+()
+Gets the unitless magnitude of this measure.
+MutSelf
+mut_replace
+(double magnitude,
+U
+newUnit)
+Overwrites the state of this measure with new values.
+String
+toString
+()
+U
+unit
+()
+Gets the units of this measure.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.units.
+Measure
+abs
+,
+baseUnit
+,
+compareTo
+,
+copySign
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+div
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divide
+,
+divideRatio
+,
+gt
+,
+gte
+,
+in
+,
+isEquivalent
+,
+isNear
+,
+isNear
+,
+lt
+,
+lte
+,
+minus
+,
+mutableCopy
+,
+negate
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+per
+,
+plus
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+times
+,
+timesConversionFactor
+,
+timesInverse
+,
+timesRatio
+,
+toLongString
+,
+toShortString
+,
+unaryMinus
+Methods inherited from interface edu.wpi.first.units.
+MutableMeasure
+copy
+,
+mut_acc
+,
+mut_acc
+,
+mut_divide
+,
+mut_divide
+,
+mut_minus
+,
+mut_minus
+,
+mut_plus
+,
+mut_plus
+,
+mut_replace
+,
+mut_setBaseUnitMagnitude
+,
+mut_setMagnitude
+,
+mut_times
+,
+mut_times
+Field Details
+m_magnitude
+protected
+double
+m_magnitude
+The magnitude of the measurement, in terms of
+m_unit
+.
+m_baseUnitMagnitude
+protected
+double
+m_baseUnitMagnitude
+The magnitude of the measurement, in terms of
+m_unit
+'s base unit.
+m_unit
+protected
+U
+extends
+Unit
+m_unit
+The unit of measurement.
+Constructor Details
+MutableMeasureBase
+protected
+MutableMeasureBase
+(double magnitude,
+ double baseUnitMagnitude,
+U
+unit)
+Initializes the mutable measure with initial conditions. Both relative and base unit magnitudes
+ are required to avoid unnecessary calculations. It is up to the caller to ensure they are
+ correct.
+Parameters:
+magnitude
+- the initial magnitude of the measure, in terms of the unit
+baseUnitMagnitude
+- the initial magnitude of the measure, in terms of the base unit
+unit
+- the initial unit of measure
+Method Details
+magnitude
+public
+double
+magnitude
+()
+Description copied from interface:
+Measure
+Gets the unitless magnitude of this measure.
+Specified by:
+magnitude
+in interface
+Measure
+<
+U
+extends
+Unit
+>
+Returns:
+the magnitude in terms of
+the unit
+.
+baseUnitMagnitude
+public
+double
+baseUnitMagnitude
+()
+Description copied from interface:
+Measure
+Gets the magnitude of this measure in terms of the base unit. If the unit is the base unit for
+ its system of measure, then the value will be equivalent to
+Measure.magnitude()
+.
+Specified by:
+baseUnitMagnitude
+in interface
+Measure
+<
+U
+extends
+Unit
+>
+Returns:
+the magnitude in terms of the base unit
+unit
+public
+U
+unit
+()
+Description copied from interface:
+Measure
+Gets the units of this measure.
+Specified by:
+unit
+in interface
+Measure
+<
+U
+extends
+Unit
+>
+Returns:
+the unit
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+o)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+mut_replace
+public
+MutSelf
+mut_replace
+(double magnitude,
+U
+newUnit)
+Description copied from interface:
+MutableMeasure
+Overwrites the state of this measure with new values.
+Specified by:
+mut_replace
+in interface
+MutableMeasure
+<
+U
+extends
+Unit
+,
+Base
+extends
+Measure
+<
+U
+>,
+MutSelf
+extends
+MutableMeasure
+<
+U
+,
+Base
+,
+MutSelf
+>>
+Parameters:
+magnitude
+- the new magnitude in terms of the new unit
+newUnit
+- the new unit
+Returns:
+this measure

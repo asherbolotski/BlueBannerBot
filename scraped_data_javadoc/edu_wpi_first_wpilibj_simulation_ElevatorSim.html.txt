@@ -1,0 +1,428 @@
+Package
+edu.wpi.first.wpilibj.simulation
+Class ElevatorSim
+java.lang.Object
+edu.wpi.first.wpilibj.simulation.LinearSystemSim
+<
+N2
+,
+N1
+,
+N2
+>
+edu.wpi.first.wpilibj.simulation.ElevatorSim
+public class
+ElevatorSim
+extends
+LinearSystemSim
+<
+N2
+,
+N1
+,
+N2
+>
+Represents a simulated elevator mechanism.
+Field Summary
+Fields inherited from class edu.wpi.first.wpilibj.simulation.
+LinearSystemSim
+m_measurementStdDevs
+,
+m_plant
+,
+m_u
+,
+m_x
+,
+m_y
+Constructor Summary
+Constructors
+Constructor
+Description
+ElevatorSim
+(double kV,
+ double kA,
+DCMotor
+gearbox,
+ double minHeightMeters,
+ double maxHeightMeters,
+ boolean simulateGravity,
+ double startingHeightMeters,
+ double... measurementStdDevs)
+Creates a simulated elevator mechanism.
+ElevatorSim
+(
+LinearSystem
+<
+N2
+,
+N1
+,
+N2
+> plant,
+DCMotor
+gearbox,
+ double minHeightMeters,
+ double maxHeightMeters,
+ boolean simulateGravity,
+ double startingHeightMeters,
+ double... measurementStdDevs)
+Creates a simulated elevator mechanism.
+ElevatorSim
+(
+DCMotor
+gearbox,
+ double gearing,
+ double carriageMassKg,
+ double drumRadiusMeters,
+ double minHeightMeters,
+ double maxHeightMeters,
+ boolean simulateGravity,
+ double startingHeightMeters,
+ double... measurementStdDevs)
+Creates a simulated elevator mechanism.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+getCurrentDrawAmps
+()
+Returns the elevator current draw.
+double
+getPositionMeters
+()
+Returns the position of the elevator.
+double
+getVelocityMetersPerSecond
+()
+Returns the velocity of the elevator.
+boolean
+hasHitLowerLimit
+()
+Returns whether the elevator has hit the lower limit.
+boolean
+hasHitUpperLimit
+()
+Returns whether the elevator has hit the upper limit.
+void
+setInputVoltage
+(double volts)
+Sets the input voltage for the elevator.
+final void
+setState
+(double positionMeters,
+ double velocityMetersPerSecond)
+Sets the elevator's state.
+protected
+Matrix
+<
+N2
+,
+N1
+>
+updateX
+(
+Matrix
+<
+N2
+,
+N1
+> currentXhat,
+Matrix
+<
+N1
+,
+N1
+> u,
+ double dtSeconds)
+Updates the state of the elevator.
+boolean
+wouldHitLowerLimit
+(double elevatorHeightMeters)
+Returns whether the elevator would hit the lower limit.
+boolean
+wouldHitUpperLimit
+(double elevatorHeightMeters)
+Returns whether the elevator would hit the upper limit.
+Methods inherited from class edu.wpi.first.wpilibj.simulation.
+LinearSystemSim
+clampInput
+,
+getInput
+,
+getInput
+,
+getOutput
+,
+getOutput
+,
+setInput
+,
+setInput
+,
+setInput
+,
+setState
+,
+update
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ElevatorSim
+public
+ElevatorSim
+(
+LinearSystem
+<
+N2
+,
+N1
+,
+N2
+> plant,
+DCMotor
+gearbox,
+ double minHeightMeters,
+ double maxHeightMeters,
+ boolean simulateGravity,
+ double startingHeightMeters,
+ double... measurementStdDevs)
+Creates a simulated elevator mechanism.
+Parameters:
+plant
+- The linear system that represents the elevator. This system can be created with
+LinearSystemId.createElevatorSystem(DCMotor, double, double, double)
+.
+gearbox
+- The type of and number of motors in the elevator gearbox.
+minHeightMeters
+- The min allowable height of the elevator.
+maxHeightMeters
+- The max allowable height of the elevator.
+simulateGravity
+- Whether gravity should be simulated or not.
+startingHeightMeters
+- The starting height of the elevator.
+measurementStdDevs
+- The standard deviations of the measurements. Can be omitted if no
+     noise is desired. If present must have 1 element for position.
+ElevatorSim
+public
+ElevatorSim
+(double kV,
+ double kA,
+DCMotor
+gearbox,
+ double minHeightMeters,
+ double maxHeightMeters,
+ boolean simulateGravity,
+ double startingHeightMeters,
+ double... measurementStdDevs)
+Creates a simulated elevator mechanism.
+Parameters:
+kV
+- The velocity gain.
+kA
+- The acceleration gain.
+gearbox
+- The type of and number of motors in the elevator gearbox.
+minHeightMeters
+- The min allowable height of the elevator.
+maxHeightMeters
+- The max allowable height of the elevator.
+simulateGravity
+- Whether gravity should be simulated or not.
+startingHeightMeters
+- The starting height of the elevator.
+measurementStdDevs
+- The standard deviations of the measurements. Can be omitted if no
+     noise is desired. If present must have 1 element for position.
+ElevatorSim
+public
+ElevatorSim
+(
+DCMotor
+gearbox,
+ double gearing,
+ double carriageMassKg,
+ double drumRadiusMeters,
+ double minHeightMeters,
+ double maxHeightMeters,
+ boolean simulateGravity,
+ double startingHeightMeters,
+ double... measurementStdDevs)
+Creates a simulated elevator mechanism.
+Parameters:
+gearbox
+- The type of and number of motors in the elevator gearbox.
+gearing
+- The gearing of the elevator (numbers greater than 1 represent reductions).
+carriageMassKg
+- The mass of the elevator carriage.
+drumRadiusMeters
+- The radius of the drum that the elevator spool is wrapped around.
+minHeightMeters
+- The min allowable height of the elevator.
+maxHeightMeters
+- The max allowable height of the elevator.
+simulateGravity
+- Whether gravity should be simulated or not.
+startingHeightMeters
+- The starting height of the elevator.
+measurementStdDevs
+- The standard deviations of the measurements. Can be omitted if no
+     noise is desired. If present must have 1 element for position.
+Method Details
+setState
+public final
+void
+setState
+(double positionMeters,
+ double velocityMetersPerSecond)
+Sets the elevator's state. The new position will be limited between the minimum and maximum
+ allowed heights.
+Parameters:
+positionMeters
+- The new position in meters.
+velocityMetersPerSecond
+- New velocity in meters per second.
+wouldHitLowerLimit
+public
+boolean
+wouldHitLowerLimit
+(double elevatorHeightMeters)
+Returns whether the elevator would hit the lower limit.
+Parameters:
+elevatorHeightMeters
+- The elevator height.
+Returns:
+Whether the elevator would hit the lower limit.
+wouldHitUpperLimit
+public
+boolean
+wouldHitUpperLimit
+(double elevatorHeightMeters)
+Returns whether the elevator would hit the upper limit.
+Parameters:
+elevatorHeightMeters
+- The elevator height.
+Returns:
+Whether the elevator would hit the upper limit.
+hasHitLowerLimit
+public
+boolean
+hasHitLowerLimit
+()
+Returns whether the elevator has hit the lower limit.
+Returns:
+Whether the elevator has hit the lower limit.
+hasHitUpperLimit
+public
+boolean
+hasHitUpperLimit
+()
+Returns whether the elevator has hit the upper limit.
+Returns:
+Whether the elevator has hit the upper limit.
+getPositionMeters
+public
+double
+getPositionMeters
+()
+Returns the position of the elevator.
+Returns:
+The position of the elevator.
+getVelocityMetersPerSecond
+public
+double
+getVelocityMetersPerSecond
+()
+Returns the velocity of the elevator.
+Returns:
+The velocity of the elevator.
+getCurrentDrawAmps
+public
+double
+getCurrentDrawAmps
+()
+Returns the elevator current draw.
+Returns:
+The elevator current draw.
+setInputVoltage
+public
+void
+setInputVoltage
+(double volts)
+Sets the input voltage for the elevator.
+Parameters:
+volts
+- The input voltage.
+updateX
+protected
+Matrix
+<
+N2
+,
+N1
+>
+updateX
+(
+Matrix
+<
+N2
+,
+N1
+> currentXhat,
+Matrix
+<
+N1
+,
+N1
+> u,
+ double dtSeconds)
+Updates the state of the elevator.
+Overrides:
+updateX
+in class
+LinearSystemSim
+<
+N2
+,
+N1
+,
+N2
+>
+Parameters:
+currentXhat
+- The current state estimate.
+u
+- The system inputs (voltage).
+dtSeconds
+- The time difference between controller updates.
+Returns:
+The new state.

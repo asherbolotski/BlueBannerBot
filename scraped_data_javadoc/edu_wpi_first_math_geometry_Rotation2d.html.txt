@@ -1,0 +1,583 @@
+Package
+edu.wpi.first.math.geometry
+Class Rotation2d
+java.lang.Object
+edu.wpi.first.math.geometry.Rotation2d
+All Implemented Interfaces:
+Interpolatable
+<
+Rotation2d
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Rotation2d
+extends
+Object
+implements
+Interpolatable
+<
+Rotation2d
+>,
+ProtobufSerializable
+,
+StructSerializable
+A rotation in a 2D coordinate frame represented by a point on the unit circle (cosine and sine).
+The angle is continuous, that is if a Rotation2d is constructed with 361 degrees, it will
+ return 361 degrees. This allows algorithms that wouldn't want to see a discontinuity in the
+ rotations as it sweeps past from 360 to 0 on the second time around.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+Rotation2d
+k180deg
+A preallocated Rotation2d representing a counterclockwise rotation by 180° (π rad).
+static final
+Rotation2d
+kCCW_90deg
+A preallocated Rotation2d representing a counterclockwise rotation by 90° (π/2 rad).
+static final
+Rotation2d
+kCCW_Pi_2
+A preallocated Rotation2d representing a counterclockwise rotation by π/2 rad (90°).
+static final
+Rotation2d
+kCW_90deg
+A preallocated Rotation2d representing a clockwise rotation by 90° (π/2 rad).
+static final
+Rotation2d
+kCW_Pi_2
+A preallocated Rotation2d representing a clockwise rotation by π/2 rad (90°).
+static final
+Rotation2d
+kPi
+A preallocated Rotation2d representing a counterclockwise rotation by π rad (180°).
+static final
+Rotation2d
+kZero
+A preallocated Rotation2d representing no rotation.
+static final
+Rotation2dProto
+proto
+Rotation2d protobuf for serialization.
+static final
+Rotation2dStruct
+struct
+Rotation2d struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+Rotation2d
+()
+Constructs a Rotation2d with a default angle of 0 degrees.
+Rotation2d
+(double value)
+Constructs a Rotation2d with the given radian value.
+Rotation2d
+(double x,
+ double y)
+Constructs a Rotation2d with the given x and y (cosine and sine) components.
+Rotation2d
+(
+Matrix
+<
+N2
+,
+N2
+> rotationMatrix)
+Constructs a Rotation2d from a rotation matrix.
+Rotation2d
+(
+Angle
+angle)
+Constructs a Rotation2d with the given angle.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Rotation2d
+div
+(double scalar)
+Divides the current rotation by a scalar.
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Rotation2d and another object.
+static
+Rotation2d
+fromDegrees
+(double degrees)
+Constructs and returns a Rotation2d with the given degree value.
+static
+Rotation2d
+fromRadians
+(double radians)
+Constructs and returns a Rotation2d with the given radian value.
+static
+Rotation2d
+fromRotations
+(double rotations)
+Constructs and returns a Rotation2d with the given number of rotations.
+double
+getCos
+()
+Returns the cosine of the Rotation2d.
+double
+getDegrees
+()
+Returns the degree value of the Rotation2d.
+Angle
+getMeasure
+()
+Returns the measure of the Rotation2d.
+double
+getRadians
+()
+Returns the radian value of the Rotation2d.
+double
+getRotations
+()
+Returns the number of rotations of the Rotation2d.
+double
+getSin
+()
+Returns the sine of the Rotation2d.
+double
+getTan
+()
+Returns the tangent of the Rotation2d.
+int
+hashCode
+()
+Rotation2d
+interpolate
+(
+Rotation2d
+endValue,
+ double t)
+Return the interpolated value.
+Rotation2d
+minus
+(
+Rotation2d
+other)
+Subtracts the new rotation from the current rotation and returns the new rotation.
+Rotation2d
+plus
+(
+Rotation2d
+other)
+Adds two rotations together, with the result being bounded between -π and π.
+Rotation2d
+rotateBy
+(
+Rotation2d
+other)
+Adds the new rotation to the current rotation using a rotation matrix.
+Rotation2d
+times
+(double scalar)
+Multiplies the current rotation by a scalar.
+Matrix
+<
+N2
+,
+N2
+>
+toMatrix
+()
+Returns matrix representation of this rotation.
+String
+toString
+()
+Rotation2d
+unaryMinus
+()
+Takes the inverse of the current rotation.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kZero
+public static final
+Rotation2d
+kZero
+A preallocated Rotation2d representing no rotation.
+This exists to avoid allocations for common rotations.
+kCW_Pi_2
+public static final
+Rotation2d
+kCW_Pi_2
+A preallocated Rotation2d representing a clockwise rotation by π/2 rad (90°).
+This exists to avoid allocations for common rotations.
+kCW_90deg
+public static final
+Rotation2d
+kCW_90deg
+A preallocated Rotation2d representing a clockwise rotation by 90° (π/2 rad).
+This exists to avoid allocations for common rotations.
+kCCW_Pi_2
+public static final
+Rotation2d
+kCCW_Pi_2
+A preallocated Rotation2d representing a counterclockwise rotation by π/2 rad (90°).
+This exists to avoid allocations for common rotations.
+kCCW_90deg
+public static final
+Rotation2d
+kCCW_90deg
+A preallocated Rotation2d representing a counterclockwise rotation by 90° (π/2 rad).
+This exists to avoid allocations for common rotations.
+kPi
+public static final
+Rotation2d
+kPi
+A preallocated Rotation2d representing a counterclockwise rotation by π rad (180°).
+This exists to avoid allocations for common rotations.
+k180deg
+public static final
+Rotation2d
+k180deg
+A preallocated Rotation2d representing a counterclockwise rotation by 180° (π rad).
+This exists to avoid allocations for common rotations.
+proto
+public static final
+Rotation2dProto
+proto
+Rotation2d protobuf for serialization.
+struct
+public static final
+Rotation2dStruct
+struct
+Rotation2d struct for serialization.
+Constructor Details
+Rotation2d
+public
+Rotation2d
+()
+Constructs a Rotation2d with a default angle of 0 degrees.
+Rotation2d
+public
+Rotation2d
+(double value)
+Constructs a Rotation2d with the given radian value.
+Parameters:
+value
+- The value of the angle in radians.
+Rotation2d
+public
+Rotation2d
+(double x,
+ double y)
+Constructs a Rotation2d with the given x and y (cosine and sine) components.
+Parameters:
+x
+- The x component or cosine of the rotation.
+y
+- The y component or sine of the rotation.
+Rotation2d
+public
+Rotation2d
+(
+Angle
+angle)
+Constructs a Rotation2d with the given angle.
+Parameters:
+angle
+- The angle of the rotation.
+Rotation2d
+public
+Rotation2d
+(
+Matrix
+<
+N2
+,
+N2
+> rotationMatrix)
+Constructs a Rotation2d from a rotation matrix.
+Parameters:
+rotationMatrix
+- The rotation matrix.
+Throws:
+IllegalArgumentException
+- if the rotation matrix isn't special orthogonal.
+Method Details
+fromRadians
+public static
+Rotation2d
+fromRadians
+(double radians)
+Constructs and returns a Rotation2d with the given radian value.
+Parameters:
+radians
+- The value of the angle in radians.
+Returns:
+The rotation object with the desired angle value.
+fromDegrees
+public static
+Rotation2d
+fromDegrees
+(double degrees)
+Constructs and returns a Rotation2d with the given degree value.
+Parameters:
+degrees
+- The value of the angle in degrees.
+Returns:
+The rotation object with the desired angle value.
+fromRotations
+public static
+Rotation2d
+fromRotations
+(double rotations)
+Constructs and returns a Rotation2d with the given number of rotations.
+Parameters:
+rotations
+- The value of the angle in rotations.
+Returns:
+The rotation object with the desired angle value.
+plus
+public
+Rotation2d
+plus
+(
+Rotation2d
+other)
+Adds two rotations together, with the result being bounded between -π and π.
+For example,
+Rotation2d.fromDegrees(30).plus(Rotation2d.fromDegrees(60))
+equals
+Rotation2d(Math.PI/2.0)
+Parameters:
+other
+- The rotation to add.
+Returns:
+The sum of the two rotations.
+minus
+public
+Rotation2d
+minus
+(
+Rotation2d
+other)
+Subtracts the new rotation from the current rotation and returns the new rotation.
+For example,
+Rotation2d.fromDegrees(10).minus(Rotation2d.fromDegrees(100))
+equals
+Rotation2d(-Math.PI/2.0)
+Parameters:
+other
+- The rotation to subtract.
+Returns:
+The difference between the two rotations.
+unaryMinus
+public
+Rotation2d
+unaryMinus
+()
+Takes the inverse of the current rotation. This is simply the negative of the current angular
+ value.
+Returns:
+The inverse of the current rotation.
+times
+public
+Rotation2d
+times
+(double scalar)
+Multiplies the current rotation by a scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The new scaled Rotation2d.
+div
+public
+Rotation2d
+div
+(double scalar)
+Divides the current rotation by a scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The new scaled Rotation2d.
+rotateBy
+public
+Rotation2d
+rotateBy
+(
+Rotation2d
+other)
+Adds the new rotation to the current rotation using a rotation matrix.
+The matrix multiplication is as follows:
+[cos_new]   [other.cos, -other.sin][cos]
+ [sin_new] = [other.sin,  other.cos][sin]
+ value_new = atan2(sin_new, cos_new)
+Parameters:
+other
+- The rotation to rotate by.
+Returns:
+The new rotated Rotation2d.
+toMatrix
+public
+Matrix
+<
+N2
+,
+N2
+>
+toMatrix
+()
+Returns matrix representation of this rotation.
+Returns:
+Matrix representation of this rotation.
+getMeasure
+public
+Angle
+getMeasure
+()
+Returns the measure of the Rotation2d.
+Returns:
+The measure of the Rotation2d.
+getRadians
+public
+double
+getRadians
+()
+Returns the radian value of the Rotation2d.
+Returns:
+The radian value of the Rotation2d.
+See Also:
+to constrain the angle within (-π, π]
+getDegrees
+public
+double
+getDegrees
+()
+Returns the degree value of the Rotation2d.
+Returns:
+The degree value of the Rotation2d.
+See Also:
+to constrain the angle
+     within (-180, 180]
+getRotations
+public
+double
+getRotations
+()
+Returns the number of rotations of the Rotation2d.
+Returns:
+The number of rotations of the Rotation2d.
+getCos
+public
+double
+getCos
+()
+Returns the cosine of the Rotation2d.
+Returns:
+The cosine of the Rotation2d.
+getSin
+public
+double
+getSin
+()
+Returns the sine of the Rotation2d.
+Returns:
+The sine of the Rotation2d.
+getTan
+public
+double
+getTan
+()
+Returns the tangent of the Rotation2d.
+Returns:
+The tangent of the Rotation2d.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Rotation2d and another object.
+Overrides:
+equals
+in class
+Object
+Parameters:
+obj
+- The other object.
+Returns:
+Whether the two objects are equal or not.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+interpolate
+public
+Rotation2d
+interpolate
+(
+Rotation2d
+endValue,
+ double t)
+Description copied from interface:
+Interpolatable
+Return the interpolated value. This object is assumed to be the starting position, or lower
+ bound.
+Specified by:
+interpolate
+in interface
+Interpolatable
+<
+Rotation2d
+>
+Parameters:
+endValue
+- The upper bound, or end.
+t
+- How far between the lower and upper bound we are. This should be bounded in [0, 1].
+Returns:
+The interpolated value.

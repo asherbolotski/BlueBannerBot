@@ -1,0 +1,232 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.xrp;
+006
+007
+import edu.wpi.first.hal.SimDevice;
+008
+import edu.wpi.first.hal.SimDevice.Direction;
+009
+import edu.wpi.first.hal.SimDouble;
+010
+import java.util.HashMap;
+011
+import java.util.HashSet;
+012
+013
+/**
+014
+* XRPServo.
+015
+*
+016
+* <p>A SimDevice based servo
+017
+*/
+018
+public class XRPServo {
+019
+private static HashMap<Integer, String> s_simDeviceNameMap = new HashMap<>();
+020
+private static HashSet<Integer> s_registeredDevices = new HashSet<>();
+021
+022
+private static void checkDeviceAllocation(int deviceNum) {
+023
+if (!s_simDeviceNameMap.containsKey(deviceNum)) {
+024
+throw new IllegalArgumentException("Invalid XRPServo device number. Should be 4-5");
+025
+}
+026
+027
+if (s_registeredDevices.contains(deviceNum)) {
+028
+throw new IllegalArgumentException("XRPServo " + deviceNum + " already allocated");
+029
+}
+030
+031
+s_registeredDevices.add(deviceNum);
+032
+}
+033
+034
+static {
+035
+s_simDeviceNameMap.put(4, "servo1");
+036
+s_simDeviceNameMap.put(5, "servo2");
+037
+}
+038
+039
+private final SimDouble m_simPosition;
+040
+041
+/**
+042
+* Constructs an XRPServo.
+043
+*
+044
+* @param deviceNum the servo channel
+045
+*/
+046
+public XRPServo(int deviceNum) {
+047
+checkDeviceAllocation(deviceNum);
+048
+049
+// We want this to appear on WS as type: "XRPServo", device: <servo name>
+050
+String simDeviceName = "XRPServo:" + s_simDeviceNameMap.get(deviceNum);
+051
+SimDevice xrpServoSimDevice = SimDevice.create(simDeviceName);
+052
+053
+if (xrpServoSimDevice != null) {
+054
+xrpServoSimDevice.createBoolean("init", Direction.kOutput, true);
+055
+// This should mimic PWM position [0.0, 1.0]
+056
+m_simPosition = xrpServoSimDevice.createDouble("position", Direction.kOutput, 0.5);
+057
+} else {
+058
+m_simPosition = null;
+059
+}
+060
+}
+061
+062
+/**
+063
+* Set the servo angle.
+064
+*
+065
+* @param angleDegrees Desired angle in degrees
+066
+*/
+067
+public void setAngle(double angleDegrees) {
+068
+if (angleDegrees < 0.0) {
+069
+angleDegrees = 0.0;
+070
+}
+071
+072
+if (angleDegrees > 180.0) {
+073
+angleDegrees = 180.0;
+074
+}
+075
+076
+double pos = angleDegrees / 180.0;
+077
+078
+if (m_simPosition != null) {
+079
+m_simPosition.set(pos);
+080
+}
+081
+}
+082
+083
+/**
+084
+* Get the servo angle.
+085
+*
+086
+* @return Current servo angle
+087
+*/
+088
+public double getAngle() {
+089
+if (m_simPosition != null) {
+090
+return m_simPosition.get() * 180.0;
+091
+}
+092
+093
+return 90.0;
+094
+}
+095
+096
+/**
+097
+* Set the servo position.
+098
+*
+099
+* @param position Desired position (Between 0.0 and 1.0)
+100
+*/
+101
+public void setPosition(double position) {
+102
+if (position < 0.0) {
+103
+position = 0.0;
+104
+}
+105
+106
+if (position > 1.0) {
+107
+position = 1.0;
+108
+}
+109
+110
+if (m_simPosition != null) {
+111
+m_simPosition.set(position);
+112
+}
+113
+}
+114
+115
+/**
+116
+* Get the servo position.
+117
+*
+118
+* @return Current servo position
+119
+*/
+120
+public double getPosition() {
+121
+if (m_simPosition != null) {
+122
+return m_simPosition.get();
+123
+}
+124
+125
+return 0.5;
+126
+}
+127
+}

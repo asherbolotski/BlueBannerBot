@@ -1,0 +1,153 @@
+Package
+edu.wpi.first.networktables
+Interface RawSubscriber
+All Superinterfaces:
+AutoCloseable
+,
+PubSub
+,
+Subscriber
+,
+Supplier
+<byte[]>
+All Known Subinterfaces:
+RawEntry
+public interface
+RawSubscriber
+extends
+Subscriber
+,
+Supplier
+<byte[]>
+NetworkTables Raw subscriber.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+byte[]
+get
+()
+Get the last published value.
+byte[]
+get
+(byte[] defaultValue)
+Get the last published value.
+TimestampedRaw
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+TimestampedRaw
+getAtomic
+(byte[] defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+RawTopic
+getTopic
+()
+Get the corresponding topic.
+TimestampedRaw
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+byte[][]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+getTopic
+RawTopic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+get
+byte[]
+get
+()
+Get the last published value.
+ If no value has been published, returns the stored default value.
+Specified by:
+get
+in interface
+Supplier
+<byte[]>
+Returns:
+value
+get
+byte[]
+get
+(byte[] defaultValue)
+Get the last published value.
+ If no value has been published, returns the passed defaultValue.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+value
+getAtomic
+TimestampedRaw
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+Returns:
+timestamped value
+getAtomic
+TimestampedRaw
+getAtomic
+(byte[] defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+timestamped value
+readQueue
+TimestampedRaw
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+ Also provides a timestamp for each value.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of timestamped values; empty array if no new changes have
+     been published since the previous call.
+readQueueValues
+byte[][]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of values; empty array if no new changes have been
+     published since the previous call.

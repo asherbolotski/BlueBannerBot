@@ -1,0 +1,280 @@
+Package
+edu.wpi.first.util
+Class RawFrame
+java.lang.Object
+edu.wpi.first.util.RawFrame
+All Implemented Interfaces:
+AutoCloseable
+public class
+RawFrame
+extends
+Object
+implements
+AutoCloseable
+Class for storing raw frame data between image read call.
+Data is reused for each frame read, rather then reallocating every frame.
+Constructor Summary
+Constructors
+Constructor
+Description
+RawFrame
+()
+Construct a new empty RawFrame.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Close the RawFrame, releasing native resources.
+ByteBuffer
+getData
+()
+Get a ByteBuffer pointing to the frame data.
+long
+getDataPtr
+()
+Get a long (is a uint8_t* in native code) pointing to the frame data.
+int
+getHeight
+()
+Get the height of the image.
+long
+getNativeObj
+()
+Get the pointer to native representation of this frame.
+PixelFormat
+getPixelFormat
+()
+Get the PixelFormat of the frame.
+int
+getSize
+()
+Get the total size of the data stored in the frame, in bytes.
+int
+getStride
+()
+Get the number of bytes in each row of image data.
+long
+getTimestamp
+()
+Get the time this frame was grabbed at.
+TimestampSource
+getTimestampSource
+()
+Get the time source for the timestamp this frame was grabbed at.
+int
+getWidth
+()
+Get the width of the image.
+void
+setData
+(
+ByteBuffer
+data,
+ int width,
+ int height,
+ int stride,
+PixelFormat
+pixelFormat)
+Set frame data.
+void
+setInfo
+(int width,
+ int height,
+ int stride,
+PixelFormat
+pixelFormat)
+Call to set frame information.
+void
+setTimeInfo
+(long frameTime,
+TimestampSource
+frameTimeSource)
+Update this frame's timestamp info.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+RawFrame
+public
+RawFrame
+()
+Construct a new empty RawFrame.
+Method Details
+close
+public
+void
+close
+()
+Close the RawFrame, releasing native resources. Any images currently using the data will be
+ invalidated.
+Specified by:
+close
+in interface
+AutoCloseable
+setData
+public
+void
+setData
+(
+ByteBuffer
+data,
+ int width,
+ int height,
+ int stride,
+PixelFormat
+pixelFormat)
+Set frame data.
+Parameters:
+data
+- A native ByteBuffer pointing to the frame data.
+width
+- The width of the frame, in pixels
+height
+- The height of the frame, in pixels
+stride
+- The number of bytes in each row of image data
+pixelFormat
+- The PixelFormat of the frame
+setInfo
+public
+void
+setInfo
+(int width,
+ int height,
+ int stride,
+PixelFormat
+pixelFormat)
+Call to set frame information.
+Parameters:
+width
+- The width of the frame, in pixels
+height
+- The height of the frame, in pixels
+stride
+- The number of bytes in each row of image data
+pixelFormat
+- The PixelFormat of the frame
+setTimeInfo
+public
+void
+setTimeInfo
+(long frameTime,
+TimestampSource
+frameTimeSource)
+Update this frame's timestamp info.
+Parameters:
+frameTime
+- the time this frame was grabbed at. This uses the same time base as
+     wpi::Now(), in us.
+frameTimeSource
+- the time source for the timestamp this frame was grabbed at.
+getNativeObj
+public
+long
+getNativeObj
+()
+Get the pointer to native representation of this frame.
+Returns:
+The pointer to native representation of this frame.
+getData
+public
+ByteBuffer
+getData
+()
+Get a ByteBuffer pointing to the frame data. This ByteBuffer is backed by the frame directly.
+ Its lifetime is controlled by the frame. If a new frame gets read, it will overwrite the
+ current one.
+Returns:
+A ByteBuffer pointing to the frame data.
+getDataPtr
+public
+long
+getDataPtr
+()
+Get a long (is a uint8_t* in native code) pointing to the frame data. This pointer is backed by
+ the frame directly. Its lifetime is controlled by the frame. If a new frame gets read, it will
+ overwrite the current one.
+Returns:
+A long pointing to the frame data.
+getSize
+public
+int
+getSize
+()
+Get the total size of the data stored in the frame, in bytes.
+Returns:
+The total size of the data stored in the frame.
+getWidth
+public
+int
+getWidth
+()
+Get the width of the image.
+Returns:
+The width of the image, in pixels.
+getHeight
+public
+int
+getHeight
+()
+Get the height of the image.
+Returns:
+The height of the image, in pixels.
+getStride
+public
+int
+getStride
+()
+Get the number of bytes in each row of image data.
+Returns:
+The image data stride, in bytes.
+getPixelFormat
+public
+PixelFormat
+getPixelFormat
+()
+Get the PixelFormat of the frame.
+Returns:
+The PixelFormat of the frame.
+getTimestamp
+public
+long
+getTimestamp
+()
+Get the time this frame was grabbed at. This uses the same time base as wpi::Now(), in us.
+Returns:
+Time in 1 us increments.
+getTimestampSource
+public
+TimestampSource
+getTimestampSource
+()
+Get the time source for the timestamp this frame was grabbed at.
+Returns:
+Time source

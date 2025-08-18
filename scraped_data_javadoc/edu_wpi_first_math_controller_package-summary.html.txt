@@ -1,0 +1,90 @@
+Package edu.wpi.first.math.controller
+package
+edu.wpi.first.math.controller
+Related Packages
+Package
+Description
+edu.wpi.first.math
+edu.wpi.first.math.controller.proto
+edu.wpi.first.math.controller.struct
+Classes
+Class
+Description
+ArmFeedforward
+A helper class that computes feedforward outputs for a simple arm (modeled as a motor acting
+ against the force of gravity on a beam suspended at an angle).
+BangBangController
+Implements a bang-bang controller, which outputs either 0 or 1 depending on whether the
+ measurement is less than the setpoint.
+ControlAffinePlantInversionFeedforward
+<States extends
+Num
+,
+Inputs extends
+Num
+>
+Constructs a control-affine plant inversion model-based feedforward from given model dynamics.
+DifferentialDriveAccelerationLimiter
+Filters the provided voltages to limit a differential drive's linear and angular acceleration.
+DifferentialDriveFeedforward
+A helper class which computes the feedforward outputs for a differential drive drivetrain.
+DifferentialDriveWheelVoltages
+Motor voltages for a differential drive.
+ElevatorFeedforward
+A helper class that computes feedforward outputs for a simple elevator (modeled as a motor acting
+ against the force of gravity).
+HolonomicDriveController
+This holonomic drive controller can be used to follow trajectories using a holonomic drivetrain
+ (i.e.
+ImplicitModelFollower
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+Contains the controller coefficients and logic for an implicit model follower.
+LinearPlantInversionFeedforward
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+Constructs a plant inversion model-based feedforward from a
+LinearSystem
+.
+LinearQuadraticRegulator
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+Contains the controller coefficients and logic for a linear-quadratic regulator (LQR).
+LTVDifferentialDriveController
+The linear time-varying differential drive controller has a similar form to the LQR, but the
+ model used to compute the controller gain is the nonlinear differential drive model linearized
+ around the drivetrain's current state.
+LTVUnicycleController
+The linear time-varying unicycle controller has a similar form to the LQR, but the model used to
+ compute the controller gain is the nonlinear unicycle model linearized around the drivetrain's
+ current state.
+PIDController
+Implements a PID control loop.
+ProfiledPIDController
+Implements a PID control loop whose setpoint is constrained by a trapezoid profile.
+RamseteController
+Ramsete is a nonlinear time-varying feedback controller for unicycle models that drives the model
+ to a desired pose along a two-dimensional trajectory.
+SimpleMotorFeedforward
+A helper class that computes feedforward outputs for a simple permanent-magnet DC motor.

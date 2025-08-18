@@ -1,0 +1,230 @@
+Package
+edu.wpi.first.wpilibj
+Class ADXL345_SPI
+java.lang.Object
+edu.wpi.first.wpilibj.ADXL345_SPI
+All Implemented Interfaces:
+NTSendable
+,
+Sendable
+,
+AutoCloseable
+public class
+ADXL345_SPI
+extends
+Object
+implements
+NTSendable
+,
+AutoCloseable
+ADXL345 SPI Accelerometer.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static class
+ADXL345_SPI.AllAxes
+Container type for accelerations from all axes.
+static enum
+ADXL345_SPI.Axes
+Accelerometer axes.
+static enum
+ADXL345_SPI.Range
+Accelerometer range.
+Constructor Summary
+Constructors
+Constructor
+Description
+ADXL345_SPI
+(
+SPI.Port
+port,
+ADXL345_SPI.Range
+range)
+Constructor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+double
+getAcceleration
+(
+ADXL345_SPI.Axes
+axis)
+Get the acceleration of one axis in Gs.
+ADXL345_SPI.AllAxes
+getAccelerations
+()
+Get the acceleration of all axes in Gs.
+int
+getPort
+()
+Returns the SPI port.
+double
+getX
+()
+Returns the acceleration along the X axis in g-forces.
+double
+getY
+()
+Returns the acceleration along the Y axis in g-forces.
+double
+getZ
+()
+Returns the acceleration along the Z axis in g-forces.
+void
+initSendable
+(
+NTSendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+void
+setRange
+(
+ADXL345_SPI.Range
+range)
+Set the measuring range of the accelerometer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.networktables.
+NTSendable
+initSendable
+Constructor Details
+ADXL345_SPI
+public
+ADXL345_SPI
+(
+SPI.Port
+port,
+ADXL345_SPI.Range
+range)
+Constructor.
+Parameters:
+port
+- The SPI port that the accelerometer is connected to
+range
+- The range (+ or -) that the accelerometer will measure.
+Method Details
+getPort
+public
+int
+getPort
+()
+Returns the SPI port.
+Returns:
+The SPI port.
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+setRange
+public
+void
+setRange
+(
+ADXL345_SPI.Range
+range)
+Set the measuring range of the accelerometer.
+Parameters:
+range
+- The maximum acceleration, positive or negative, that the accelerometer will
+     measure.
+getX
+public
+double
+getX
+()
+Returns the acceleration along the X axis in g-forces.
+Returns:
+The acceleration along the X axis in g-forces.
+getY
+public
+double
+getY
+()
+Returns the acceleration along the Y axis in g-forces.
+Returns:
+The acceleration along the Y axis in g-forces.
+getZ
+public
+double
+getZ
+()
+Returns the acceleration along the Z axis in g-forces.
+Returns:
+The acceleration along the Z axis in g-forces.
+getAcceleration
+public
+double
+getAcceleration
+(
+ADXL345_SPI.Axes
+axis)
+Get the acceleration of one axis in Gs.
+Parameters:
+axis
+- The axis to read from.
+Returns:
+Acceleration of the ADXL345 in Gs.
+getAccelerations
+public
+ADXL345_SPI.AllAxes
+getAccelerations
+()
+Get the acceleration of all axes in Gs.
+Returns:
+An object containing the acceleration measured on each axis of the ADXL345 in Gs.
+initSendable
+public
+void
+initSendable
+(
+NTSendableBuilder
+builder)
+Description copied from interface:
+NTSendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+NTSendable
+Parameters:
+builder
+- sendable builder

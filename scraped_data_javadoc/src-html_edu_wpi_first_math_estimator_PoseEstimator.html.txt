@@ -1,0 +1,758 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.estimator;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+import edu.wpi.first.math.MathUtil;
+009
+import edu.wpi.first.math.Matrix;
+010
+import edu.wpi.first.math.Nat;
+011
+import edu.wpi.first.math.VecBuilder;
+012
+import edu.wpi.first.math.geometry.Pose2d;
+013
+import edu.wpi.first.math.geometry.Rotation2d;
+014
+import edu.wpi.first.math.geometry.Translation2d;
+015
+import edu.wpi.first.math.geometry.Twist2d;
+016
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
+017
+import edu.wpi.first.math.kinematics.Kinematics;
+018
+import edu.wpi.first.math.kinematics.Odometry;
+019
+import edu.wpi.first.math.numbers.N1;
+020
+import edu.wpi.first.math.numbers.N3;
+021
+import java.util.NavigableMap;
+022
+import java.util.Optional;
+023
+import java.util.TreeMap;
+024
+025
+/**
+026
+* This class wraps {@link Odometry} to fuse latency-compensated vision measurements with encoder
+027
+* measurements. Robot code should not use this directly- Instead, use the particular type for your
+028
+* drivetrain (e.g., {@link DifferentialDrivePoseEstimator}). It is intended to be a drop-in
+029
+* replacement for {@link Odometry}; in fact, if you never call {@link
+030
+* PoseEstimator#addVisionMeasurement} and only call {@link PoseEstimator#update} then this will
+031
+* behave exactly the same as Odometry.
+032
+*
+033
+* <p>{@link PoseEstimator#update} should be called every robot loop.
+034
+*
+035
+* <p>{@link PoseEstimator#addVisionMeasurement} can be called as infrequently as you want; if you
+036
+* never call it then this class will behave exactly like regular encoder odometry.
+037
+*
+038
+* @param <T> Wheel positions type.
+039
+*/
+040
+public class PoseEstimator<T> {
+041
+private final Odometry<T> m_odometry;
+042
+private final Matrix<N3, N1> m_q = new Matrix<>(Nat.N3(), Nat.N1());
+043
+private final Matrix<N3, N3> m_visionK = new Matrix<>(Nat.N3(), Nat.N3());
+044
+045
+private static final double kBufferDuration = 1.5;
+046
+// Maps timestamps to odometry-only pose estimates
+047
+private final TimeInterpolatableBuffer<Pose2d> m_odometryPoseBuffer =
+048
+TimeInterpolatableBuffer.createBuffer(kBufferDuration);
+049
+// Maps timestamps to vision updates
+050
+// Always contains one entry before the oldest entry in m_odometryPoseBuffer, unless there have
+051
+// been no vision measurements after the last reset
+052
+private final NavigableMap<Double, VisionUpdate> m_visionUpdates = new TreeMap<>();
+053
+054
+private Pose2d m_poseEstimate;
+055
+056
+/**
+057
+* Constructs a PoseEstimator.
+058
+*
+059
+* @param kinematics A correctly-configured kinematics object for your drivetrain.
+060
+* @param odometry A correctly-configured odometry object for your drivetrain.
+061
+* @param stateStdDevs Standard deviations of the pose estimate (x position in meters, y position
+062
+*     in meters, and heading in radians). Increase these numbers to trust your state estimate
+063
+*     less.
+064
+* @param visionMeasurementStdDevs Standard deviations of the vision pose measurement (x position
+065
+*     in meters, y position in meters, and heading in radians). Increase these numbers to trust
+066
+*     the vision pose measurement less.
+067
+*/
+068
+@SuppressWarnings("PMD.UnusedFormalParameter")
+069
+public PoseEstimator(
+070
+Kinematics<?, T> kinematics,
+071
+Odometry<T> odometry,
+072
+Matrix<N3, N1> stateStdDevs,
+073
+Matrix<N3, N1> visionMeasurementStdDevs) {
+074
+m_odometry = odometry;
+075
+076
+m_poseEstimate = m_odometry.getPoseMeters();
+077
+078
+for (int i = 0; i < 3; ++i) {
+079
+m_q.set(i, 0, stateStdDevs.get(i, 0) * stateStdDevs.get(i, 0));
+080
+}
+081
+setVisionMeasurementStdDevs(visionMeasurementStdDevs);
+082
+}
+083
+084
+/**
+085
+* Sets the pose estimator's trust of global measurements. This might be used to change trust in
+086
+* vision measurements after the autonomous period, or to change trust as distance to a vision
+087
+* target increases.
+088
+*
+089
+* @param visionMeasurementStdDevs Standard deviations of the vision measurements. Increase these
+090
+*     numbers to trust global measurements from vision less. This matrix is in the form [x, y,
+091
+*     theta]ᵀ, with units in meters and radians.
+092
+*/
+093
+public final void setVisionMeasurementStdDevs(Matrix<N3, N1> visionMeasurementStdDevs) {
+094
+var r = new double[3];
+095
+for (int i = 0; i < 3; ++i) {
+096
+r[i] = visionMeasurementStdDevs.get(i, 0) * visionMeasurementStdDevs.get(i, 0);
+097
+}
+098
+099
+// Solve for closed form Kalman gain for continuous Kalman filter with A = 0
+100
+// and C = I. See wpimath/algorithms.md.
+101
+for (int row = 0; row < 3; ++row) {
+102
+if (m_q.get(row, 0) == 0.0) {
+103
+m_visionK.set(row, row, 0.0);
+104
+} else {
+105
+m_visionK.set(
+106
+row, row, m_q.get(row, 0) / (m_q.get(row, 0) + Math.sqrt(m_q.get(row, 0) * r[row])));
+107
+}
+108
+}
+109
+}
+110
+111
+/**
+112
+* Resets the robot's position on the field.
+113
+*
+114
+* <p>The gyroscope angle does not need to be reset here on the user's robot code. The library
+115
+* automatically takes care of offsetting the gyro angle.
+116
+*
+117
+* @param gyroAngle The angle reported by the gyroscope.
+118
+* @param wheelPositions The current encoder readings.
+119
+* @param poseMeters The position on the field that your robot is at.
+120
+*/
+121
+public void resetPosition(Rotation2d gyroAngle, T wheelPositions, Pose2d poseMeters) {
+122
+// Reset state estimate and error covariance
+123
+m_odometry.resetPosition(gyroAngle, wheelPositions, poseMeters);
+124
+m_odometryPoseBuffer.clear();
+125
+m_visionUpdates.clear();
+126
+m_poseEstimate = m_odometry.getPoseMeters();
+127
+}
+128
+129
+/**
+130
+* Resets the robot's pose.
+131
+*
+132
+* @param pose The pose to reset to.
+133
+*/
+134
+public void resetPose(Pose2d pose) {
+135
+m_odometry.resetPose(pose);
+136
+m_odometryPoseBuffer.clear();
+137
+m_visionUpdates.clear();
+138
+m_poseEstimate = m_odometry.getPoseMeters();
+139
+}
+140
+141
+/**
+142
+* Resets the robot's translation.
+143
+*
+144
+* @param translation The pose to translation to.
+145
+*/
+146
+public void resetTranslation(Translation2d translation) {
+147
+m_odometry.resetTranslation(translation);
+148
+m_odometryPoseBuffer.clear();
+149
+m_visionUpdates.clear();
+150
+m_poseEstimate = m_odometry.getPoseMeters();
+151
+}
+152
+153
+/**
+154
+* Resets the robot's rotation.
+155
+*
+156
+* @param rotation The rotation to reset to.
+157
+*/
+158
+public void resetRotation(Rotation2d rotation) {
+159
+m_odometry.resetRotation(rotation);
+160
+m_odometryPoseBuffer.clear();
+161
+m_visionUpdates.clear();
+162
+m_poseEstimate = m_odometry.getPoseMeters();
+163
+}
+164
+165
+/**
+166
+* Gets the estimated robot pose.
+167
+*
+168
+* @return The estimated robot pose in meters.
+169
+*/
+170
+public Pose2d getEstimatedPosition() {
+171
+return m_poseEstimate;
+172
+}
+173
+174
+/**
+175
+* Return the pose at a given timestamp, if the buffer is not empty.
+176
+*
+177
+* @param timestampSeconds The pose's timestamp in seconds.
+178
+* @return The pose at the given timestamp (or Optional.empty() if the buffer is empty).
+179
+*/
+180
+public Optional<Pose2d> sampleAt(double timestampSeconds) {
+181
+// Step 0: If there are no odometry updates to sample, skip.
+182
+if (m_odometryPoseBuffer.getInternalBuffer().isEmpty()) {
+183
+return Optional.empty();
+184
+}
+185
+186
+// Step 1: Make sure timestamp matches the sample from the odometry pose buffer. (When sampling,
+187
+// the buffer will always use a timestamp between the first and last timestamps)
+188
+double oldestOdometryTimestamp = m_odometryPoseBuffer.getInternalBuffer().firstKey();
+189
+double newestOdometryTimestamp = m_odometryPoseBuffer.getInternalBuffer().lastKey();
+190
+timestampSeconds =
+191
+MathUtil.clamp(timestampSeconds, oldestOdometryTimestamp, newestOdometryTimestamp);
+192
+193
+// Step 2: If there are no applicable vision updates, use the odometry-only information.
+194
+if (m_visionUpdates.isEmpty() || timestampSeconds < m_visionUpdates.firstKey()) {
+195
+return m_odometryPoseBuffer.getSample(timestampSeconds);
+196
+}
+197
+198
+// Step 3: Get the latest vision update from before or at the timestamp to sample at.
+199
+double floorTimestamp = m_visionUpdates.floorKey(timestampSeconds);
+200
+var visionUpdate = m_visionUpdates.get(floorTimestamp);
+201
+202
+// Step 4: Get the pose measured by odometry at the time of the sample.
+203
+var odometryEstimate = m_odometryPoseBuffer.getSample(timestampSeconds);
+204
+205
+// Step 5: Apply the vision compensation to the odometry pose.
+206
+return odometryEstimate.map(odometryPose -> visionUpdate.compensate(odometryPose));
+207
+}
+208
+209
+/** Removes stale vision updates that won't affect sampling. */
+210
+private void cleanUpVisionUpdates() {
+211
+// Step 0: If there are no odometry samples, skip.
+212
+if (m_odometryPoseBuffer.getInternalBuffer().isEmpty()) {
+213
+return;
+214
+}
+215
+216
+// Step 1: Find the oldest timestamp that needs a vision update.
+217
+double oldestOdometryTimestamp = m_odometryPoseBuffer.getInternalBuffer().firstKey();
+218
+219
+// Step 2: If there are no vision updates before that timestamp, skip.
+220
+if (m_visionUpdates.isEmpty() || oldestOdometryTimestamp < m_visionUpdates.firstKey()) {
+221
+return;
+222
+}
+223
+224
+// Step 3: Find the newest vision update timestamp before or at the oldest timestamp.
+225
+double newestNeededVisionUpdateTimestamp = m_visionUpdates.floorKey(oldestOdometryTimestamp);
+226
+227
+// Step 4: Remove all entries strictly before the newest timestamp we need.
+228
+m_visionUpdates.headMap(newestNeededVisionUpdateTimestamp, false).clear();
+229
+}
+230
+231
+/**
+232
+* Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+233
+* while still accounting for measurement noise.
+234
+*
+235
+* <p>This method can be called as infrequently as you want, as long as you are calling {@link
+236
+* PoseEstimator#update} every loop.
+237
+*
+238
+* <p>To promote stability of the pose estimate and make it robust to bad vision data, we
+239
+* recommend only adding vision measurements that are already within one meter or so of the
+240
+* current pose estimate.
+241
+*
+242
+* @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+243
+* @param timestampSeconds The timestamp of the vision measurement in seconds. Note that if you
+244
+*     don't use your own time source by calling {@link
+245
+*     PoseEstimator#updateWithTime(double,Rotation2d,Object)} then you must use a timestamp with
+246
+*     an epoch since FPGA startup (i.e., the epoch of this timestamp is the same epoch as {@link
+247
+*     edu.wpi.first.wpilibj.Timer#getFPGATimestamp()}.) This means that you should use {@link
+248
+*     edu.wpi.first.wpilibj.Timer#getFPGATimestamp()} as your time source or sync the epochs.
+249
+*/
+250
+public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+251
+// Step 0: If this measurement is old enough to be outside the pose buffer's timespan, skip.
+252
+if (m_odometryPoseBuffer.getInternalBuffer().isEmpty()
+253
+|| m_odometryPoseBuffer.getInternalBuffer().lastKey() - kBufferDuration
+254
+> timestampSeconds) {
+255
+return;
+256
+}
+257
+258
+// Step 1: Clean up any old entries
+259
+cleanUpVisionUpdates();
+260
+261
+// Step 2: Get the pose measured by odometry at the moment the vision measurement was made.
+262
+var odometrySample = m_odometryPoseBuffer.getSample(timestampSeconds);
+263
+264
+if (odometrySample.isEmpty()) {
+265
+return;
+266
+}
+267
+268
+// Step 3: Get the vision-compensated pose estimate at the moment the vision measurement was
+269
+// made.
+270
+var visionSample = sampleAt(timestampSeconds);
+271
+272
+if (visionSample.isEmpty()) {
+273
+return;
+274
+}
+275
+276
+// Step 4: Measure the twist between the old pose estimate and the vision pose.
+277
+var twist = visionSample.get().log(visionRobotPoseMeters);
+278
+279
+// Step 5: We should not trust the twist entirely, so instead we scale this twist by a Kalman
+280
+// gain matrix representing how much we trust vision measurements compared to our current pose.
+281
+var k_times_twist = m_visionK.times(VecBuilder.fill(twist.dx, twist.dy, twist.dtheta));
+282
+283
+// Step 6: Convert back to Twist2d.
+284
+var scaledTwist =
+285
+new Twist2d(k_times_twist.get(0, 0), k_times_twist.get(1, 0), k_times_twist.get(2, 0));
+286
+287
+// Step 7: Calculate and record the vision update.
+288
+var visionUpdate = new VisionUpdate(visionSample.get().exp(scaledTwist), odometrySample.get());
+289
+m_visionUpdates.put(timestampSeconds, visionUpdate);
+290
+291
+// Step 8: Remove later vision measurements. (Matches previous behavior)
+292
+m_visionUpdates.tailMap(timestampSeconds, false).entrySet().clear();
+293
+294
+// Step 9: Update latest pose estimate. Since we cleared all updates after this vision update,
+295
+// it's guaranteed to be the latest vision update.
+296
+m_poseEstimate = visionUpdate.compensate(m_odometry.getPoseMeters());
+297
+}
+298
+299
+/**
+300
+* Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+301
+* while still accounting for measurement noise.
+302
+*
+303
+* <p>This method can be called as infrequently as you want, as long as you are calling {@link
+304
+* PoseEstimator#update} every loop.
+305
+*
+306
+* <p>To promote stability of the pose estimate and make it robust to bad vision data, we
+307
+* recommend only adding vision measurements that are already within one meter or so of the
+308
+* current pose estimate.
+309
+*
+310
+* <p>Note that the vision measurement standard deviations passed into this method will continue
+311
+* to apply to future measurements until a subsequent call to {@link
+312
+* PoseEstimator#setVisionMeasurementStdDevs(Matrix)} or this method.
+313
+*
+314
+* @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
+315
+* @param timestampSeconds The timestamp of the vision measurement in seconds. Note that if you
+316
+*     don't use your own time source by calling {@link #updateWithTime}, then you must use a
+317
+*     timestamp with an epoch since FPGA startup (i.e., the epoch of this timestamp is the same
+318
+*     epoch as {@link edu.wpi.first.wpilibj.Timer#getFPGATimestamp()}). This means that you
+319
+*     should use {@link edu.wpi.first.wpilibj.Timer#getFPGATimestamp()} as your time source in
+320
+*     this case.
+321
+* @param visionMeasurementStdDevs Standard deviations of the vision pose measurement (x position
+322
+*     in meters, y position in meters, and heading in radians). Increase these numbers to trust
+323
+*     the vision pose measurement less.
+324
+*/
+325
+public void addVisionMeasurement(
+326
+Pose2d visionRobotPoseMeters,
+327
+double timestampSeconds,
+328
+Matrix<N3, N1> visionMeasurementStdDevs) {
+329
+setVisionMeasurementStdDevs(visionMeasurementStdDevs);
+330
+addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+331
+}
+332
+333
+/**
+334
+* Updates the pose estimator with wheel encoder and gyro information. This should be called every
+335
+* loop.
+336
+*
+337
+* @param gyroAngle The current gyro angle.
+338
+* @param wheelPositions The current encoder readings.
+339
+* @return The estimated pose of the robot in meters.
+340
+*/
+341
+public Pose2d update(Rotation2d gyroAngle, T wheelPositions) {
+342
+return updateWithTime(MathSharedStore.getTimestamp(), gyroAngle, wheelPositions);
+343
+}
+344
+345
+/**
+346
+* Updates the pose estimator with wheel encoder and gyro information. This should be called every
+347
+* loop.
+348
+*
+349
+* @param currentTimeSeconds Time at which this method was called, in seconds.
+350
+* @param gyroAngle The current gyro angle.
+351
+* @param wheelPositions The current encoder readings.
+352
+* @return The estimated pose of the robot in meters.
+353
+*/
+354
+public Pose2d updateWithTime(double currentTimeSeconds, Rotation2d gyroAngle, T wheelPositions) {
+355
+var odometryEstimate = m_odometry.update(gyroAngle, wheelPositions);
+356
+357
+m_odometryPoseBuffer.addSample(currentTimeSeconds, odometryEstimate);
+358
+359
+if (m_visionUpdates.isEmpty()) {
+360
+m_poseEstimate = odometryEstimate;
+361
+} else {
+362
+var visionUpdate = m_visionUpdates.get(m_visionUpdates.lastKey());
+363
+m_poseEstimate = visionUpdate.compensate(odometryEstimate);
+364
+}
+365
+366
+return getEstimatedPosition();
+367
+}
+368
+369
+/**
+370
+* Represents a vision update record. The record contains the vision-compensated pose estimate as
+371
+* well as the corresponding odometry pose estimate.
+372
+*/
+373
+private static final class VisionUpdate {
+374
+// The vision-compensated pose estimate.
+375
+private final Pose2d visionPose;
+376
+377
+// The pose estimated based solely on odometry.
+378
+private final Pose2d odometryPose;
+379
+380
+/**
+381
+* Constructs a vision update record with the specified parameters.
+382
+*
+383
+* @param visionPose The vision-compensated pose estimate.
+384
+* @param odometryPose The pose estimate based solely on odometry.
+385
+*/
+386
+private VisionUpdate(Pose2d visionPose, Pose2d odometryPose) {
+387
+this.visionPose = visionPose;
+388
+this.odometryPose = odometryPose;
+389
+}
+390
+391
+/**
+392
+* Returns the vision-compensated version of the pose. Specifically, changes the pose from being
+393
+* relative to this record's odometry pose to being relative to this record's vision pose.
+394
+*
+395
+* @param pose The pose to compensate.
+396
+* @return The compensated pose.
+397
+*/
+398
+public Pose2d compensate(Pose2d pose) {
+399
+var delta = pose.minus(this.odometryPose);
+400
+return this.visionPose.plus(delta);
+401
+}
+402
+}
+403
+}

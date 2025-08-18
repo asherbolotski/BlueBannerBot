@@ -1,0 +1,412 @@
+Package
+edu.wpi.first.math.geometry
+Class Transform2d
+java.lang.Object
+edu.wpi.first.math.geometry.Transform2d
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Transform2d
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+Represents a transformation for a Pose2d in the pose's frame.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+Transform2d
+kZero
+A preallocated Transform2d representing no transformation.
+static final
+Transform2dProto
+proto
+Transform2d protobuf for serialization.
+static final
+Transform2dStruct
+struct
+Transform2d struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+Transform2d
+()
+Constructs the identity transform -- maps an initial pose to itself.
+Transform2d
+(double x,
+ double y,
+Rotation2d
+rotation)
+Constructs a transform with x and y translations instead of a separate Translation2d.
+Transform2d
+(
+Pose2d
+initial,
+Pose2d
+last)
+Constructs the transform that maps the initial pose to the final pose.
+Transform2d
+(
+Translation2d
+translation,
+Rotation2d
+rotation)
+Constructs a transform with the given translation and rotation components.
+Transform2d
+(
+Matrix
+<
+N3
+,
+N3
+> matrix)
+Constructs a transform with the specified affine transformation matrix.
+Transform2d
+(
+Distance
+x,
+Distance
+y,
+Rotation2d
+rotation)
+Constructs a transform with x and y translations instead of a separate Translation2d.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Transform2d
+div
+(double scalar)
+Divides the transform by the scalar.
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Transform2d and another object.
+Distance
+getMeasureX
+()
+Returns the X component of the transformation's translation in a measure.
+Distance
+getMeasureY
+()
+Returns the Y component of the transformation's translation in a measure.
+Rotation2d
+getRotation
+()
+Returns the rotational component of the transformation.
+Translation2d
+getTranslation
+()
+Returns the translation component of the transformation.
+double
+getX
+()
+Returns the X component of the transformation's translation.
+double
+getY
+()
+Returns the Y component of the transformation's translation.
+int
+hashCode
+()
+Transform2d
+inverse
+()
+Invert the transformation.
+Transform2d
+plus
+(
+Transform2d
+other)
+Composes two transformations.
+Transform2d
+times
+(double scalar)
+Multiplies the transform by the scalar.
+Matrix
+<
+N3
+,
+N3
+>
+toMatrix
+()
+Returns an affine transformation matrix representation of this transformation.
+String
+toString
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kZero
+public static final
+Transform2d
+kZero
+A preallocated Transform2d representing no transformation.
+This exists to avoid allocations for common transformations.
+proto
+public static final
+Transform2dProto
+proto
+Transform2d protobuf for serialization.
+struct
+public static final
+Transform2dStruct
+struct
+Transform2d struct for serialization.
+Constructor Details
+Transform2d
+public
+Transform2d
+(
+Pose2d
+initial,
+Pose2d
+last)
+Constructs the transform that maps the initial pose to the final pose.
+Parameters:
+initial
+- The initial pose for the transformation.
+last
+- The final pose for the transformation.
+Transform2d
+public
+Transform2d
+(
+Translation2d
+translation,
+Rotation2d
+rotation)
+Constructs a transform with the given translation and rotation components.
+Parameters:
+translation
+- Translational component of the transform.
+rotation
+- Rotational component of the transform.
+Transform2d
+public
+Transform2d
+(double x,
+ double y,
+Rotation2d
+rotation)
+Constructs a transform with x and y translations instead of a separate Translation2d.
+Parameters:
+x
+- The x component of the translational component of the transform.
+y
+- The y component of the translational component of the transform.
+rotation
+- The rotational component of the transform.
+Transform2d
+public
+Transform2d
+(
+Distance
+x,
+Distance
+y,
+Rotation2d
+rotation)
+Constructs a transform with x and y translations instead of a separate Translation2d. The X and
+ Y translations will be converted to and tracked as meters.
+Parameters:
+x
+- The x component of the translational component of the transform.
+y
+- The y component of the translational component of the transform.
+rotation
+- The rotational component of the transform.
+Transform2d
+public
+Transform2d
+(
+Matrix
+<
+N3
+,
+N3
+> matrix)
+Constructs a transform with the specified affine transformation matrix.
+Parameters:
+matrix
+- The affine transformation matrix.
+Throws:
+IllegalArgumentException
+- if the affine transformation matrix is invalid.
+Transform2d
+public
+Transform2d
+()
+Constructs the identity transform -- maps an initial pose to itself.
+Method Details
+times
+public
+Transform2d
+times
+(double scalar)
+Multiplies the transform by the scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The scaled Transform2d.
+div
+public
+Transform2d
+div
+(double scalar)
+Divides the transform by the scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The scaled Transform2d.
+plus
+public
+Transform2d
+plus
+(
+Transform2d
+other)
+Composes two transformations. The second transform is applied relative to the orientation of
+ the first.
+Parameters:
+other
+- The transform to compose with this one.
+Returns:
+The composition of the two transformations.
+getTranslation
+public
+Translation2d
+getTranslation
+()
+Returns the translation component of the transformation.
+Returns:
+The translational component of the transform.
+getX
+public
+double
+getX
+()
+Returns the X component of the transformation's translation.
+Returns:
+The x component of the transformation's translation.
+getY
+public
+double
+getY
+()
+Returns the Y component of the transformation's translation.
+Returns:
+The y component of the transformation's translation.
+getMeasureX
+public
+Distance
+getMeasureX
+()
+Returns the X component of the transformation's translation in a measure.
+Returns:
+The x component of the transformation's translation in a measure.
+getMeasureY
+public
+Distance
+getMeasureY
+()
+Returns the Y component of the transformation's translation in a measure.
+Returns:
+The y component of the transformation's translation in a measure.
+toMatrix
+public
+Matrix
+<
+N3
+,
+N3
+>
+toMatrix
+()
+Returns an affine transformation matrix representation of this transformation.
+Returns:
+An affine transformation matrix representation of this transformation.
+getRotation
+public
+Rotation2d
+getRotation
+()
+Returns the rotational component of the transformation.
+Returns:
+Reference to the rotational component of the transform.
+inverse
+public
+Transform2d
+inverse
+()
+Invert the transformation. This is useful for undoing a transformation.
+Returns:
+The inverted transformation.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Transform2d and another object.
+Overrides:
+equals
+in class
+Object
+Parameters:
+obj
+- The other object.
+Returns:
+Whether the two objects are equal or not.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object

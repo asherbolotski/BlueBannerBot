@@ -1,0 +1,55 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.counter;
+006
+007
+/** Edge configuration. */
+008
+public enum EdgeConfiguration {
+009
+/** No edge configuration (neither rising nor falling). */
+010
+kNone(false, false),
+011
+/** Rising edge configuration. */
+012
+kRisingEdge(true, false),
+013
+/** Falling edge configuration. */
+014
+kFallingEdge(false, true),
+015
+/** Both rising and falling edge configuration. */
+016
+kBoth(true, true);
+017
+018
+/** True if triggering on rising edge. */
+019
+@SuppressWarnings("MemberName")
+020
+public final boolean rising;
+021
+022
+/** True if triggering on falling edge. */
+023
+@SuppressWarnings("MemberName")
+024
+public final boolean falling;
+025
+026
+EdgeConfiguration(boolean rising, boolean falling) {
+027
+this.rising = rising;
+028
+this.falling = falling;
+029
+}
+030
+}

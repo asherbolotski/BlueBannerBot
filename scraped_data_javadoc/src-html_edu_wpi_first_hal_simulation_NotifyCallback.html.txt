@@ -1,0 +1,26 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.HALValue;
+008
+009
+public interface NotifyCallback {
+010
+void callback(String name, HALValue value);
+011
+012
+default void callbackNative(String name, int type, long value1, double value2) {
+013
+callback(name, HALValue.fromNative(type, value1, value2));
+014
+}
+015
+}

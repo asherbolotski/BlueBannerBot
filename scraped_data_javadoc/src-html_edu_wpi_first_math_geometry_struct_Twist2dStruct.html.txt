@@ -1,0 +1,84 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.struct;
+006
+007
+import edu.wpi.first.math.geometry.Twist2d;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class Twist2dStruct implements Struct<Twist2d> {
+012
+@Override
+013
+public Class<Twist2d> getTypeClass() {
+014
+return Twist2d.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "Twist2d";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble * 3;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double dx;double dy;double dtheta";
+030
+}
+031
+032
+@Override
+033
+public Twist2d unpack(ByteBuffer bb) {
+034
+double dx = bb.getDouble();
+035
+double dy = bb.getDouble();
+036
+double dtheta = bb.getDouble();
+037
+return new Twist2d(dx, dy, dtheta);
+038
+}
+039
+040
+@Override
+041
+public void pack(ByteBuffer bb, Twist2d value) {
+042
+bb.putDouble(value.dx);
+043
+bb.putDouble(value.dy);
+044
+bb.putDouble(value.dtheta);
+045
+}
+046
+}

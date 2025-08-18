@@ -1,0 +1,140 @@
+Package
+edu.wpi.first.networktables
+Interface StructArrayPublisher<T>
+Type Parameters:
+T
+- value class
+All Superinterfaces:
+AutoCloseable
+,
+Consumer
+<T[]>
+,
+Publisher
+,
+PubSub
+All Known Subinterfaces:
+StructArrayEntry
+<T>
+public interface
+StructArrayPublisher
+<T>
+extends
+Publisher
+,
+Consumer
+<T[]>
+NetworkTables struct-encoded array value publisher.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default void
+accept
+(
+T
+[] value)
+StructArrayTopic
+<
+T
+>
+getTopic
+()
+Get the corresponding topic.
+default void
+set
+(
+T
+[] value)
+Publish a new value using current NT time.
+void
+set
+(
+T
+[] value,
+ long time)
+Publish a new value.
+void
+setDefault
+(
+T
+[] value)
+Publish a default value.
+Methods inherited from interface java.util.function.
+Consumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Method Details
+getTopic
+StructArrayTopic
+<
+T
+>
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+set
+default
+void
+set
+(
+T
+[] value)
+Publish a new value using current NT time.
+Parameters:
+value
+- value to publish
+set
+void
+set
+(
+T
+[] value,
+ long time)
+Publish a new value.
+Parameters:
+value
+- value to publish
+time
+- timestamp; 0 indicates current NT time should be used
+setDefault
+void
+setDefault
+(
+T
+[] value)
+Publish a default value. On reconnect, a default value will never be used in preference to a
+ published value.
+Parameters:
+value
+- value
+accept
+default
+void
+accept
+(
+T
+[] value)
+Specified by:
+accept
+in interface
+Consumer
+<
+T
+>

@@ -1,0 +1,311 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.estimator;
+006
+007
+import edu.wpi.first.math.Matrix;
+008
+import edu.wpi.first.math.VecBuilder;
+009
+import edu.wpi.first.math.geometry.Pose2d;
+010
+import edu.wpi.first.math.geometry.Pose3d;
+011
+import edu.wpi.first.math.geometry.Rotation2d;
+012
+import edu.wpi.first.math.geometry.Rotation3d;
+013
+import edu.wpi.first.math.geometry.Translation2d;
+014
+import edu.wpi.first.math.geometry.Translation3d;
+015
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+016
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry3d;
+017
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
+018
+import edu.wpi.first.math.numbers.N1;
+019
+import edu.wpi.first.math.numbers.N4;
+020
+021
+/**
+022
+* This class wraps {@link DifferentialDriveOdometry3d Differential Drive Odometry} to fuse
+023
+* latency-compensated vision measurements with differential drive encoder measurements. It is
+024
+* intended to be a drop-in replacement for {@link DifferentialDriveOdometry3d}; in fact, if you
+025
+* never call {@link DifferentialDrivePoseEstimator3d#addVisionMeasurement} and only call {@link
+026
+* DifferentialDrivePoseEstimator3d#update} then this will behave exactly the same as
+027
+* DifferentialDriveOdometry3d. It is also intended to be an easy replacement for {@link
+028
+* DifferentialDrivePoseEstimator}, only requiring the addition of a standard deviation for Z and
+029
+* appropriate conversions between 2D and 3D versions of geometry classes. (See {@link
+030
+* Pose3d#Pose3d(Pose2d)}, {@link Rotation3d#Rotation3d(Rotation2d)}, {@link
+031
+* Translation3d#Translation3d(Translation2d)}, and {@link Pose3d#toPose2d()}.)
+032
+*
+033
+* <p>{@link DifferentialDrivePoseEstimator3d#update} should be called every robot loop.
+034
+*
+035
+* <p>{@link DifferentialDrivePoseEstimator3d#addVisionMeasurement} can be called as infrequently as
+036
+* you want; if you never call it then this class will behave exactly like regular encoder odometry.
+037
+*/
+038
+public class DifferentialDrivePoseEstimator3d
+039
+extends PoseEstimator3d<DifferentialDriveWheelPositions> {
+040
+/**
+041
+* Constructs a DifferentialDrivePoseEstimator3d with default standard deviations for the model
+042
+* and vision measurements.
+043
+*
+044
+* <p>The default standard deviations of the model states are 0.02 meters for x, 0.02 meters for
+045
+* y, 0.02 meters for z, and 0.01 radians for angle. The default standard deviations of the vision
+046
+* measurements are 0.1 meters for x, 0.1 meters for y, 0.1 meters for z, and 0.1 radians for
+047
+* angle.
+048
+*
+049
+* @param kinematics A correctly-configured kinematics object for your drivetrain.
+050
+* @param gyroAngle The current gyro angle.
+051
+* @param leftDistanceMeters The distance traveled by the left encoder.
+052
+* @param rightDistanceMeters The distance traveled by the right encoder.
+053
+* @param initialPoseMeters The starting pose estimate.
+054
+*/
+055
+public DifferentialDrivePoseEstimator3d(
+056
+DifferentialDriveKinematics kinematics,
+057
+Rotation3d gyroAngle,
+058
+double leftDistanceMeters,
+059
+double rightDistanceMeters,
+060
+Pose3d initialPoseMeters) {
+061
+this(
+062
+kinematics,
+063
+gyroAngle,
+064
+leftDistanceMeters,
+065
+rightDistanceMeters,
+066
+initialPoseMeters,
+067
+VecBuilder.fill(0.02, 0.02, 0.02, 0.01),
+068
+VecBuilder.fill(0.1, 0.1, 0.1, 0.1));
+069
+}
+070
+071
+/**
+072
+* Constructs a DifferentialDrivePoseEstimator3d.
+073
+*
+074
+* @param kinematics A correctly-configured kinematics object for your drivetrain.
+075
+* @param gyroAngle The gyro angle of the robot.
+076
+* @param leftDistanceMeters The distance traveled by the left encoder.
+077
+* @param rightDistanceMeters The distance traveled by the right encoder.
+078
+* @param initialPoseMeters The estimated initial pose.
+079
+* @param stateStdDevs Standard deviations of the pose estimate (x position in meters, y position
+080
+*     in meters, and heading in radians). Increase these numbers to trust your state estimate
+081
+*     less.
+082
+* @param visionMeasurementStdDevs Standard deviations of the vision pose measurement (x position
+083
+*     in meters, y position in meters, and heading in radians). Increase these numbers to trust
+084
+*     the vision pose measurement less.
+085
+*/
+086
+public DifferentialDrivePoseEstimator3d(
+087
+DifferentialDriveKinematics kinematics,
+088
+Rotation3d gyroAngle,
+089
+double leftDistanceMeters,
+090
+double rightDistanceMeters,
+091
+Pose3d initialPoseMeters,
+092
+Matrix<N4, N1> stateStdDevs,
+093
+Matrix<N4, N1> visionMeasurementStdDevs) {
+094
+super(
+095
+kinematics,
+096
+new DifferentialDriveOdometry3d(
+097
+gyroAngle, leftDistanceMeters, rightDistanceMeters, initialPoseMeters),
+098
+stateStdDevs,
+099
+visionMeasurementStdDevs);
+100
+}
+101
+102
+/**
+103
+* Resets the robot's position on the field.
+104
+*
+105
+* <p>The gyroscope angle does not need to be reset here on the user's robot code. The library
+106
+* automatically takes care of offsetting the gyro angle.
+107
+*
+108
+* @param gyroAngle The angle reported by the gyroscope.
+109
+* @param leftPositionMeters The distance traveled by the left encoder.
+110
+* @param rightPositionMeters The distance traveled by the right encoder.
+111
+* @param poseMeters The position on the field that your robot is at.
+112
+*/
+113
+public void resetPosition(
+114
+Rotation3d gyroAngle,
+115
+double leftPositionMeters,
+116
+double rightPositionMeters,
+117
+Pose3d poseMeters) {
+118
+resetPosition(
+119
+gyroAngle,
+120
+new DifferentialDriveWheelPositions(leftPositionMeters, rightPositionMeters),
+121
+poseMeters);
+122
+}
+123
+124
+/**
+125
+* Updates the pose estimator with wheel encoder and gyro information. This should be called every
+126
+* loop.
+127
+*
+128
+* @param gyroAngle The current gyro angle.
+129
+* @param distanceLeftMeters The total distance travelled by the left wheel in meters.
+130
+* @param distanceRightMeters The total distance travelled by the right wheel in meters.
+131
+* @return The estimated pose of the robot in meters.
+132
+*/
+133
+public Pose3d update(
+134
+Rotation3d gyroAngle, double distanceLeftMeters, double distanceRightMeters) {
+135
+return update(
+136
+gyroAngle, new DifferentialDriveWheelPositions(distanceLeftMeters, distanceRightMeters));
+137
+}
+138
+139
+/**
+140
+* Updates the pose estimator with wheel encoder and gyro information. This should be called every
+141
+* loop.
+142
+*
+143
+* @param currentTimeSeconds Time at which this method was called, in seconds.
+144
+* @param gyroAngle The current gyro angle.
+145
+* @param distanceLeftMeters The total distance travelled by the left wheel in meters.
+146
+* @param distanceRightMeters The total distance travelled by the right wheel in meters.
+147
+* @return The estimated pose of the robot in meters.
+148
+*/
+149
+public Pose3d updateWithTime(
+150
+double currentTimeSeconds,
+151
+Rotation3d gyroAngle,
+152
+double distanceLeftMeters,
+153
+double distanceRightMeters) {
+154
+return updateWithTime(
+155
+currentTimeSeconds,
+156
+gyroAngle,
+157
+new DifferentialDriveWheelPositions(distanceLeftMeters, distanceRightMeters));
+158
+}
+159
+}

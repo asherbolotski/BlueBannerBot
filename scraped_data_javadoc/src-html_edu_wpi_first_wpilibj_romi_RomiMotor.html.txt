@@ -1,0 +1,62 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.romi;
+006
+007
+import edu.wpi.first.wpilibj.PWM;
+008
+import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
+009
+010
+/**
+011
+* RomiMotor.
+012
+*
+013
+* <p>A general use PWM motor controller representing the motors on a Romi robot
+014
+*/
+015
+public class RomiMotor extends PWMMotorController {
+016
+/** Common initialization code called by all constructors. */
+017
+protected final void initRomiMotor() {
+018
+m_pwm.setPeriodMultiplier(PWM.PeriodMultiplier.k1X);
+019
+m_pwm.setSpeed(0.0);
+020
+m_pwm.setZeroLatch();
+021
+}
+022
+023
+/**
+024
+* Constructor.
+025
+*
+026
+* @param channel The PWM channel that the RomiMotor is attached to. 0 is the left motor, 1 is the
+027
+*     right.
+028
+*/
+029
+public RomiMotor(final int channel) {
+030
+super("Romi Motor", channel);
+031
+initRomiMotor();
+032
+}
+033
+}

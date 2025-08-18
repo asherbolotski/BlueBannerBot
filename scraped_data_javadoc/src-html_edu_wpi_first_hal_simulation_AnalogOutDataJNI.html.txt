@@ -1,0 +1,54 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.JNIWrapper;
+008
+009
+/** JNI for analog output data. */
+010
+public class AnalogOutDataJNI extends JNIWrapper {
+011
+public static native int registerVoltageCallback(
+012
+int index, NotifyCallback callback, boolean initialNotify);
+013
+014
+public static native void cancelVoltageCallback(int index, int uid);
+015
+016
+public static native double getVoltage(int index);
+017
+018
+public static native void setVoltage(int index, double voltage);
+019
+020
+public static native int registerInitializedCallback(
+021
+int index, NotifyCallback callback, boolean initialNotify);
+022
+023
+public static native void cancelInitializedCallback(int index, int uid);
+024
+025
+public static native boolean getInitialized(int index);
+026
+027
+public static native void setInitialized(int index, boolean initialized);
+028
+029
+public static native void resetData(int index);
+030
+031
+/** Utility class. */
+032
+private AnalogOutDataJNI() {}
+033
+}

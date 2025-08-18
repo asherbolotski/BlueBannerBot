@@ -1,0 +1,293 @@
+Package
+edu.wpi.first.util.struct
+Class StructFieldDescriptor
+java.lang.Object
+edu.wpi.first.util.struct.StructFieldDescriptor
+public class
+StructFieldDescriptor
+extends
+Object
+Raw struct dynamic field descriptor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+int
+getArraySize
+()
+Gets the array size.
+long
+getBitMask
+()
+Gets the bit mask for the field.
+int
+getBitShift
+()
+Gets the bit shift for the field (LSB=0).
+int
+getBitWidth
+()
+Gets the bit width of the field, in bits.
+Map
+<
+String
+,
+Long
+>
+getEnumValues
+()
+Gets the enumerated values.
+long
+getIntMax
+()
+Gets the maximum signed integer value that can be stored in this field.
+long
+getIntMin
+()
+Gets the minimum signed integer value that can be stored in this field.
+String
+getName
+()
+Gets the field name.
+int
+getOffset
+()
+Gets the storage offset of the field, in bytes.
+StructDescriptor
+getParent
+()
+Gets the dynamic struct this field is contained in.
+int
+getSize
+()
+Gets the underlying storage size of the field, in bytes.
+StructDescriptor
+getStruct
+()
+Gets the struct descriptor for a struct data type.
+StructFieldType
+getType
+()
+Gets the field type.
+long
+getUintMax
+()
+Gets the maximum unsigned integer value that can be stored in this field.
+long
+getUintMin
+()
+Gets the minimum unsigned integer value that can be stored in this field.
+boolean
+hasEnum
+()
+Returns whether the field has enumerated values.
+boolean
+isArray
+()
+Returns whether the field is an array.
+boolean
+isBitField
+()
+Returns whether the field is a bitfield.
+boolean
+isInt
+()
+Returns whether the field type is a signed integer.
+boolean
+isUint
+()
+Returns whether the field type is an unsigned integer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getParent
+public
+StructDescriptor
+getParent
+()
+Gets the dynamic struct this field is contained in.
+Returns:
+struct descriptor
+getName
+public
+String
+getName
+()
+Gets the field name.
+Returns:
+field name
+getType
+public
+StructFieldType
+getType
+()
+Gets the field type.
+Returns:
+field type
+isInt
+public
+boolean
+isInt
+()
+Returns whether the field type is a signed integer.
+Returns:
+true if signed integer, false otherwise
+isUint
+public
+boolean
+isUint
+()
+Returns whether the field type is an unsigned integer.
+Returns:
+true if unsigned integer, false otherwise
+getSize
+public
+int
+getSize
+()
+Gets the underlying storage size of the field, in bytes.
+Returns:
+number of bytes
+getOffset
+public
+int
+getOffset
+()
+Gets the storage offset of the field, in bytes.
+Returns:
+number of bytes from the start of the struct
+getBitWidth
+public
+int
+getBitWidth
+()
+Gets the bit width of the field, in bits.
+Returns:
+number of bits
+getBitMask
+public
+long
+getBitMask
+()
+Gets the bit mask for the field. The mask is always the least significant bits (it is not
+ shifted).
+Returns:
+bit mask
+getBitShift
+public
+int
+getBitShift
+()
+Gets the bit shift for the field (LSB=0).
+Returns:
+number of bits
+isArray
+public
+boolean
+isArray
+()
+Returns whether the field is an array.
+Returns:
+true if array
+getArraySize
+public
+int
+getArraySize
+()
+Gets the array size. Returns 1 if non-array.
+Returns:
+number of elements
+hasEnum
+public
+boolean
+hasEnum
+()
+Returns whether the field has enumerated values.
+Returns:
+true if there are enumerated values
+getEnumValues
+public
+Map
+<
+String
+,
+Long
+>
+getEnumValues
+()
+Gets the enumerated values.
+Returns:
+set of enumerated values
+getStruct
+public
+StructDescriptor
+getStruct
+()
+Gets the struct descriptor for a struct data type.
+Returns:
+struct descriptor; returns null for non-struct
+getUintMin
+public
+long
+getUintMin
+()
+Gets the minimum unsigned integer value that can be stored in this field.
+Returns:
+minimum value
+getUintMax
+public
+long
+getUintMax
+()
+Gets the maximum unsigned integer value that can be stored in this field. Note this is not the
+ actual maximum for uint64 (due to Java lacking support for 64-bit unsigned integers).
+Returns:
+maximum value
+getIntMin
+public
+long
+getIntMin
+()
+Gets the minimum signed integer value that can be stored in this field.
+Returns:
+minimum value
+getIntMax
+public
+long
+getIntMax
+()
+Gets the maximum signed integer value that can be stored in this field.
+Returns:
+maximum value
+isBitField
+public
+boolean
+isBitField
+()
+Returns whether the field is a bitfield.
+Returns:
+true if bitfield

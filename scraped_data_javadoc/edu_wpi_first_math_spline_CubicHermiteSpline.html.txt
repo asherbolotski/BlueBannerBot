@@ -1,0 +1,192 @@
+Package
+edu.wpi.first.math.spline
+Class CubicHermiteSpline
+java.lang.Object
+edu.wpi.first.math.spline.Spline
+edu.wpi.first.math.spline.CubicHermiteSpline
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+CubicHermiteSpline
+extends
+Spline
+implements
+ProtobufSerializable
+,
+StructSerializable
+Represents a hermite spline of degree 3.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.math.spline.
+Spline
+Spline.ControlVector
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+CubicHermiteSplineProto
+proto
+CubicHermiteSpline struct for serialization.
+static final
+CubicHermiteSplineStruct
+struct
+CubicHermiteSpline protobuf for serialization.
+final double[]
+xFinalControlVector
+The control vector for the final point in the x dimension.
+final double[]
+xInitialControlVector
+The control vector for the initial point in the x dimension.
+final double[]
+yFinalControlVector
+The control vector for the final point in the y dimension.
+final double[]
+yInitialControlVector
+The control vector for the initial point in the y dimension.
+Constructor Summary
+Constructors
+Constructor
+Description
+CubicHermiteSpline
+(double[] xInitialControlVector,
+ double[] xFinalControlVector,
+ double[] yInitialControlVector,
+ double[] yFinalControlVector)
+Constructs a cubic hermite spline with the specified control vectors.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+org.ejml.simple.SimpleMatrix
+getCoefficients
+()
+Returns the coefficients matrix.
+Spline.ControlVector
+getFinalControlVector
+()
+Returns the final control vector that created this spline.
+Spline.ControlVector
+getInitialControlVector
+()
+Returns the initial control vector that created this spline.
+Methods inherited from class edu.wpi.first.math.spline.
+Spline
+getPoint
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+xInitialControlVector
+public final
+double[]
+xInitialControlVector
+The control vector for the initial point in the x dimension. DO NOT MODIFY THIS ARRAY!
+xFinalControlVector
+public final
+double[]
+xFinalControlVector
+The control vector for the final point in the x dimension. DO NOT MODIFY THIS ARRAY!
+yInitialControlVector
+public final
+double[]
+yInitialControlVector
+The control vector for the initial point in the y dimension. DO NOT MODIFY THIS ARRAY!
+yFinalControlVector
+public final
+double[]
+yFinalControlVector
+The control vector for the final point in the y dimension. DO NOT MODIFY THIS ARRAY!
+proto
+public static final
+CubicHermiteSplineProto
+proto
+CubicHermiteSpline struct for serialization.
+struct
+public static final
+CubicHermiteSplineStruct
+struct
+CubicHermiteSpline protobuf for serialization.
+Constructor Details
+CubicHermiteSpline
+public
+CubicHermiteSpline
+(double[] xInitialControlVector,
+ double[] xFinalControlVector,
+ double[] yInitialControlVector,
+ double[] yFinalControlVector)
+Constructs a cubic hermite spline with the specified control vectors. Each control vector
+ contains info about the location of the point and its first derivative.
+Parameters:
+xInitialControlVector
+- The control vector for the initial point in the x dimension.
+xFinalControlVector
+- The control vector for the final point in the x dimension.
+yInitialControlVector
+- The control vector for the initial point in the y dimension.
+yFinalControlVector
+- The control vector for the final point in the y dimension.
+Method Details
+getCoefficients
+public
+org.ejml.simple.SimpleMatrix
+getCoefficients
+()
+Returns the coefficients matrix.
+Specified by:
+getCoefficients
+in class
+Spline
+Returns:
+The coefficients matrix.
+getInitialControlVector
+public
+Spline.ControlVector
+getInitialControlVector
+()
+Returns the initial control vector that created this spline.
+Specified by:
+getInitialControlVector
+in class
+Spline
+Returns:
+The initial control vector that created this spline.
+getFinalControlVector
+public
+Spline.ControlVector
+getFinalControlVector
+()
+Returns the final control vector that created this spline.
+Specified by:
+getFinalControlVector
+in class
+Spline
+Returns:
+The final control vector that created this spline.

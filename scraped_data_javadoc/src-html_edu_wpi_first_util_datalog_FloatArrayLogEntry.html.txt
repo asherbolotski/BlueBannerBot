@@ -1,0 +1,286 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.datalog;
+006
+007
+import java.util.Arrays;
+008
+009
+/** Log array of float values. */
+010
+public class FloatArrayLogEntry extends DataLogEntry {
+011
+/** The data type for float array values. */
+012
+public static final String kDataType = "float[]";
+013
+014
+/**
+015
+* Constructs a float array log entry.
+016
+*
+017
+* @param log datalog
+018
+* @param name name of the entry
+019
+* @param metadata metadata
+020
+* @param timestamp entry creation timestamp (0=now)
+021
+*/
+022
+public FloatArrayLogEntry(DataLog log, String name, String metadata, long timestamp) {
+023
+super(log, name, kDataType, metadata, timestamp);
+024
+}
+025
+026
+/**
+027
+* Constructs a float array log entry.
+028
+*
+029
+* @param log datalog
+030
+* @param name name of the entry
+031
+* @param metadata metadata
+032
+*/
+033
+public FloatArrayLogEntry(DataLog log, String name, String metadata) {
+034
+this(log, name, metadata, 0);
+035
+}
+036
+037
+/**
+038
+* Constructs a float array log entry.
+039
+*
+040
+* @param log datalog
+041
+* @param name name of the entry
+042
+* @param timestamp entry creation timestamp (0=now)
+043
+*/
+044
+public FloatArrayLogEntry(DataLog log, String name, long timestamp) {
+045
+this(log, name, "", timestamp);
+046
+}
+047
+048
+/**
+049
+* Constructs a float array log entry.
+050
+*
+051
+* @param log datalog
+052
+* @param name name of the entry
+053
+*/
+054
+public FloatArrayLogEntry(DataLog log, String name) {
+055
+this(log, name, 0);
+056
+}
+057
+058
+/**
+059
+* Appends a record to the log.
+060
+*
+061
+* @param value Value to record
+062
+* @param timestamp Time stamp (0 to indicate now)
+063
+*/
+064
+public void append(float[] value, long timestamp) {
+065
+m_log.appendFloatArray(m_entry, value, timestamp);
+066
+}
+067
+068
+/**
+069
+* Appends a record to the log.
+070
+*
+071
+* @param value Value to record
+072
+*/
+073
+public void append(float[] value) {
+074
+m_log.appendFloatArray(m_entry, value, 0);
+075
+}
+076
+077
+/**
+078
+* Updates the last value and appends a record to the log if it has changed.
+079
+*
+080
+* <p>Note: the last value is local to this class instance; using update() with two instances
+081
+* pointing to the same underlying log entry name will likely result in unexpected results.
+082
+*
+083
+* @param value Value to record
+084
+* @param timestamp Time stamp (0 to indicate now)
+085
+*/
+086
+public synchronized void update(float[] value, long timestamp) {
+087
+if (!equalsLast(value)) {
+088
+copyToLast(value);
+089
+append(value, timestamp);
+090
+}
+091
+}
+092
+093
+/**
+094
+* Updates the last value and appends a record to the log if it has changed.
+095
+*
+096
+* <p>Note: the last value is local to this class instance; using update() with two instances
+097
+* pointing to the same underlying log entry name will likely result in unexpected results.
+098
+*
+099
+* @param value Value to record
+100
+*/
+101
+public void update(float[] value) {
+102
+update(value, 0);
+103
+}
+104
+105
+/**
+106
+* Gets whether there is a last value.
+107
+*
+108
+* <p>Note: the last value is local to this class instance and updated only with update(), not
+109
+* append().
+110
+*
+111
+* @return True if last value exists, false otherwise.
+112
+*/
+113
+public synchronized boolean hasLastValue() {
+114
+return m_lastValue != null;
+115
+}
+116
+117
+/**
+118
+* Gets the last value.
+119
+*
+120
+* <p>Note: the last value is local to this class instance and updated only with update(), not
+121
+* append().
+122
+*
+123
+* @return Last value, or false if none.
+124
+*/
+125
+@SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
+126
+public synchronized float[] getLastValue() {
+127
+if (m_lastValue == null) {
+128
+return null;
+129
+}
+130
+return Arrays.copyOf(m_lastValue, m_lastValueLen);
+131
+}
+132
+133
+private boolean equalsLast(float[] value) {
+134
+if (m_lastValue == null || m_lastValueLen != value.length) {
+135
+return false;
+136
+}
+137
+return Arrays.equals(m_lastValue, 0, value.length, value, 0, value.length);
+138
+}
+139
+140
+private void copyToLast(float[] value) {
+141
+if (m_lastValue == null || m_lastValue.length < value.length) {
+142
+m_lastValue = Arrays.copyOf(value, value.length);
+143
+} else {
+144
+System.arraycopy(value, 0, m_lastValue, 0, value.length);
+145
+}
+146
+m_lastValueLen = value.length;
+147
+}
+148
+149
+private float[] m_lastValue;
+150
+private int m_lastValueLen;
+151
+}

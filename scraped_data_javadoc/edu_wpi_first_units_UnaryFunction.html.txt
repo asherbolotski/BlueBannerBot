@@ -1,0 +1,189 @@
+Package
+edu.wpi.first.units
+Interface UnaryFunction
+Functional Interface:
+This is a functional interface and can therefore be used as the assignment target for a lambda expression or method reference.
+@FunctionalInterface
+public interface
+UnaryFunction
+A function that accepts a single
+double
+and returns a
+double
+result. This is used
+ to represent arbitrary mapping functions for converting units to and from a base unit
+ representation. Temperature units, in particular, typically have an offset from a value in Kelvin
+ and may have a multiplication factor added in, which means that units cannot always be
+ represented as simple ratios of their base units.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+UnaryFunction
+IDENTITY
+The identity function that simply returns the input value.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+double
+apply
+(double input)
+Applies this function to the input value and returns the result.
+default
+UnaryFunction
+div
+(double divisor)
+Creates a composite function h(x) such that h(x) = 1/k * f(x).
+default
+UnaryFunction
+div
+(
+UnaryFunction
+divisor)
+Creates a composite function h(x) such that h(x) = f(x) / g(x).
+default
+UnaryFunction
+exp
+(double exponent)
+Creates a composite function h(x) such that h(x) = f(x) ^ k.
+default
+UnaryFunction
+exp
+(
+UnaryFunction
+exponent)
+Creates a composite function h(x) such that h(x) = f(x) ^ g(x).
+default
+UnaryFunction
+mult
+(double multiplier)
+Creates a composite function h(x) such that h(x) = k * f(x).
+default
+UnaryFunction
+mult
+(
+UnaryFunction
+multiplier)
+Creates a composite function h(x) such that h(x) = f(x) * g(x).
+default
+UnaryFunction
+pipeTo
+(
+UnaryFunction
+next)
+Constructs a new function that first calls this function, then passes the result to another as
+ input.
+Field Details
+IDENTITY
+static final
+UnaryFunction
+IDENTITY
+The identity function that simply returns the input value.
+Method Details
+apply
+double
+apply
+(double input)
+Applies this function to the input value and returns the result.
+Parameters:
+input
+- the input value to the function
+Returns:
+the result
+pipeTo
+default
+UnaryFunction
+pipeTo
+(
+UnaryFunction
+next)
+Constructs a new function that first calls this function, then passes the result to another as
+ input.
+f = x -> x + 1 // f(x) = x + 1
+ g = x -> 2 * x // g(x) = 2x
+
+ h = f.pipeTo(g) // h(x) = g(f(x))
+Parameters:
+next
+- the next operation to pipe to
+Returns:
+the composite function g(f(x))
+mult
+default
+UnaryFunction
+mult
+(
+UnaryFunction
+multiplier)
+Creates a composite function h(x) such that h(x) = f(x) * g(x).
+Parameters:
+multiplier
+- the function to multiply this one by
+Returns:
+the composite function f(x) * g(x)
+mult
+default
+UnaryFunction
+mult
+(double multiplier)
+Creates a composite function h(x) such that h(x) = k * f(x).
+Parameters:
+multiplier
+- the constant value to multiply this function's results by
+Returns:
+the composite function k * f(x)
+div
+default
+UnaryFunction
+div
+(
+UnaryFunction
+divisor)
+Creates a composite function h(x) such that h(x) = f(x) / g(x).
+Parameters:
+divisor
+- the function to divide this one by
+Returns:
+the composite function f(x) / g(x)
+div
+default
+UnaryFunction
+div
+(double divisor)
+Creates a composite function h(x) such that h(x) = 1/k * f(x).
+Parameters:
+divisor
+- the constant value to divide this function's results by
+Returns:
+the composite function 1/k * f(x)
+exp
+default
+UnaryFunction
+exp
+(
+UnaryFunction
+exponent)
+Creates a composite function h(x) such that h(x) = f(x) ^ g(x).
+Parameters:
+exponent
+- the function to exponentiate this function's results by
+Returns:
+the composite function f(x) ^ g(x)
+exp
+default
+UnaryFunction
+exp
+(double exponent)
+Creates a composite function h(x) such that h(x) = f(x) ^ k.
+Parameters:
+exponent
+- the constant value to exponentiate this function's results by
+Returns:
+the composite function f(x) ^ k

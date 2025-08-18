@@ -1,0 +1,871 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.trajectory;
+006
+007
+import java.util.Objects;
+008
+009
+/**
+010
+* A exponential curve-shaped velocity profile.
+011
+*
+012
+* <p>While this class can be used for a profiled movement from start to finish, the intended usage
+013
+* is to filter a reference's dynamics based on state-space model dynamics. To compute the reference
+014
+* obeying this constraint, do the following.
+015
+*
+016
+* <p>Initialization:
+017
+*
+018
+* <pre><code>
+019
+* ExponentialProfile.Constraints constraints =
+020
+*   ExponentialProfile.Constraints.fromCharacteristics(kMaxV, kV, kA);
+021
+* ExponentialProfile.State previousProfiledReference =
+022
+*   new ExponentialProfile.State(initialReference, 0.0);
+023
+* ExponentialProfile profile = new ExponentialProfile(constraints);
+024
+* </code></pre>
+025
+*
+026
+* <p>Run on update:
+027
+*
+028
+* <pre><code>
+029
+* previousProfiledReference =
+030
+* profile.calculate(timeSincePreviousUpdate, previousProfiledReference, unprofiledReference);
+031
+* </code></pre>
+032
+*
+033
+* <p>where `unprofiledReference` is free to change between calls. Note that when the unprofiled
+034
+* reference is within the constraints, `calculate()` returns the unprofiled reference unchanged.
+035
+*
+036
+* <p>Otherwise, a timer can be started to provide monotonic values for `calculate()` and to
+037
+* determine when the profile has completed via `isFinished()`.
+038
+*/
+039
+public class ExponentialProfile {
+040
+private final Constraints m_constraints;
+041
+042
+/** Profile timing. */
+043
+public static class ProfileTiming {
+044
+/** Profile inflection time. */
+045
+public final double inflectionTime;
+046
+047
+/** Total profile time. */
+048
+public final double totalTime;
+049
+050
+/**
+051
+* Constructs a ProfileTiming.
+052
+*
+053
+* @param inflectionTime Profile inflection time.
+054
+* @param totalTime Total profile time.
+055
+*/
+056
+protected ProfileTiming(double inflectionTime, double totalTime) {
+057
+this.inflectionTime = inflectionTime;
+058
+this.totalTime = totalTime;
+059
+}
+060
+061
+/**
+062
+* Decides if the profile is finished by time t.
+063
+*
+064
+* @param t The time since the beginning of the profile.
+065
+* @return if the profile is finished at time t.
+066
+*/
+067
+public boolean isFinished(double t) {
+068
+return t >= inflectionTime;
+069
+}
+070
+}
+071
+072
+/** Profile constraints. */
+073
+public static final class Constraints {
+074
+/** Maximum unsigned input voltage. */
+075
+public final double maxInput;
+076
+077
+/** The State-Space 1x1 system matrix. */
+078
+public final double A;
+079
+080
+/** The State-Space 1x1 input matrix. */
+081
+public final double B;
+082
+083
+/**
+084
+* Constructs constraints for an ExponentialProfile.
+085
+*
+086
+* @param maxInput maximum unsigned input voltage
+087
+* @param A The State-Space 1x1 system matrix.
+088
+* @param B The State-Space 1x1 input matrix.
+089
+*/
+090
+private Constraints(double maxInput, double A, double B) {
+091
+this.maxInput = maxInput;
+092
+this.A = A;
+093
+this.B = B;
+094
+}
+095
+096
+/**
+097
+* Computes the max achievable velocity for an Exponential Profile.
+098
+*
+099
+* @return The steady-state velocity achieved by this profile.
+100
+*/
+101
+public double maxVelocity() {
+102
+return -maxInput * B / A;
+103
+}
+104
+105
+/**
+106
+* Constructs constraints for an ExponentialProfile from characteristics.
+107
+*
+108
+* @param maxInput maximum unsigned input voltage
+109
+* @param kV The velocity gain.
+110
+* @param kA The acceleration gain.
+111
+* @return The Constraints object.
+112
+*/
+113
+public static Constraints fromCharacteristics(double maxInput, double kV, double kA) {
+114
+return new Constraints(maxInput, -kV / kA, 1.0 / kA);
+115
+}
+116
+117
+/**
+118
+* Constructs constraints for an ExponentialProfile from State-Space parameters.
+119
+*
+120
+* @param maxInput maximum unsigned input voltage
+121
+* @param A The State-Space 1x1 system matrix.
+122
+* @param B The State-Space 1x1 input matrix.
+123
+* @return The Constraints object.
+124
+*/
+125
+public static Constraints fromStateSpace(double maxInput, double A, double B) {
+126
+return new Constraints(maxInput, A, B);
+127
+}
+128
+}
+129
+130
+/** Profile state. */
+131
+public static class State {
+132
+/** The position at this state. */
+133
+public double position;
+134
+135
+/** The velocity at this state. */
+136
+public double velocity;
+137
+138
+/** Default constructor. */
+139
+public State() {}
+140
+141
+/**
+142
+* Constructs a state within an exponential profile.
+143
+*
+144
+* @param position The position at this state.
+145
+* @param velocity The velocity at this state.
+146
+*/
+147
+public State(double position, double velocity) {
+148
+this.position = position;
+149
+this.velocity = velocity;
+150
+}
+151
+152
+@Override
+153
+public boolean equals(Object other) {
+154
+return other instanceof State rhs
+155
+&& this.position == rhs.position
+156
+&& this.velocity == rhs.velocity;
+157
+}
+158
+159
+@Override
+160
+public int hashCode() {
+161
+return Objects.hash(position, velocity);
+162
+}
+163
+}
+164
+165
+/**
+166
+* Constructs an ExponentialProfile.
+167
+*
+168
+* @param constraints The constraints on the profile, like maximum input.
+169
+*/
+170
+public ExponentialProfile(Constraints constraints) {
+171
+m_constraints = constraints;
+172
+}
+173
+174
+/**
+175
+* Calculates the position and velocity for the profile at a time t where the current state is at
+176
+* time t = 0.
+177
+*
+178
+* @param t How long to advance from the current state toward the desired state.
+179
+* @param current The current state.
+180
+* @param goal The desired state when the profile is complete.
+181
+* @return The position and velocity of the profile at time t.
+182
+*/
+183
+public State calculate(double t, State current, State goal) {
+184
+var direction = shouldFlipInput(current, goal) ? -1 : 1;
+185
+var u = direction * m_constraints.maxInput;
+186
+187
+var inflectionPoint = calculateInflectionPoint(current, goal, u);
+188
+var timing = calculateProfileTiming(current, inflectionPoint, goal, u);
+189
+190
+if (t < 0) {
+191
+return new State(current.position, current.velocity);
+192
+} else if (t < timing.inflectionTime) {
+193
+return new State(
+194
+computeDistanceFromTime(t, u, current), computeVelocityFromTime(t, u, current));
+195
+} else if (t < timing.totalTime) {
+196
+return new State(
+197
+computeDistanceFromTime(t - timing.totalTime, -u, goal),
+198
+computeVelocityFromTime(t - timing.totalTime, -u, goal));
+199
+} else {
+200
+return new State(goal.position, goal.velocity);
+201
+}
+202
+}
+203
+204
+/**
+205
+* Calculates the point after which the fastest way to reach the goal state is to apply input in
+206
+* the opposite direction.
+207
+*
+208
+* @param current The current state.
+209
+* @param goal The desired state when the profile is complete.
+210
+* @return The position and velocity of the profile at the inflection point.
+211
+*/
+212
+public State calculateInflectionPoint(State current, State goal) {
+213
+var direction = shouldFlipInput(current, goal) ? -1 : 1;
+214
+var u = direction * m_constraints.maxInput;
+215
+216
+return calculateInflectionPoint(current, goal, u);
+217
+}
+218
+219
+/**
+220
+* Calculates the point after which the fastest way to reach the goal state is to apply input in
+221
+* the opposite direction.
+222
+*
+223
+* @param current The current state.
+224
+* @param goal The desired state when the profile is complete.
+225
+* @param input The signed input applied to this profile from the current state.
+226
+* @return The position and velocity of the profile at the inflection point.
+227
+*/
+228
+private State calculateInflectionPoint(State current, State goal, double input) {
+229
+var u = input;
+230
+231
+if (current.equals(goal)) {
+232
+return current;
+233
+}
+234
+235
+var inflectionVelocity = solveForInflectionVelocity(u, current, goal);
+236
+var inflectionPosition = computeDistanceFromVelocity(inflectionVelocity, -u, goal);
+237
+238
+return new State(inflectionPosition, inflectionVelocity);
+239
+}
+240
+241
+/**
+242
+* Calculates the time it will take for this profile to reach the goal state.
+243
+*
+244
+* @param current The current state.
+245
+* @param goal The desired state when the profile is complete.
+246
+* @return The total duration of this profile.
+247
+*/
+248
+public double timeLeftUntil(State current, State goal) {
+249
+var timing = calculateProfileTiming(current, goal);
+250
+251
+return timing.totalTime;
+252
+}
+253
+254
+/**
+255
+* Calculates the time it will take for this profile to reach the inflection point, and the time
+256
+* it will take for this profile to reach the goal state.
+257
+*
+258
+* @param current The current state.
+259
+* @param goal The desired state when the profile is complete.
+260
+* @return The timing information for this profile.
+261
+*/
+262
+public ProfileTiming calculateProfileTiming(State current, State goal) {
+263
+var direction = shouldFlipInput(current, goal) ? -1 : 1;
+264
+var u = direction * m_constraints.maxInput;
+265
+266
+var inflectionPoint = calculateInflectionPoint(current, goal, u);
+267
+return calculateProfileTiming(current, inflectionPoint, goal, u);
+268
+}
+269
+270
+/**
+271
+* Calculates the time it will take for this profile to reach the inflection point, and the time
+272
+* it will take for this profile to reach the goal state.
+273
+*
+274
+* @param current The current state.
+275
+* @param inflectionPoint The inflection point of this profile.
+276
+* @param goal The desired state when the profile is complete.
+277
+* @param input The signed input applied to this profile from the current state.
+278
+* @return The timing information for this profile.
+279
+*/
+280
+private ProfileTiming calculateProfileTiming(
+281
+State current, State inflectionPoint, State goal, double input) {
+282
+var u = input;
+283
+284
+double inflectionT_forward;
+285
+286
+// We need to handle 5 cases here:
+287
+//
+288
+// - Approaching -maxVelocity from below
+289
+// - Approaching -maxVelocity from above
+290
+// - Approaching maxVelocity from below
+291
+// - Approaching maxVelocity from above
+292
+// - At +-maxVelocity
+293
+//
+294
+// For cases 1 and 3, we want to subtract epsilon from the inflection point velocity.
+295
+// For cases 2 and 4, we want to add epsilon to the inflection point velocity.
+296
+// For case 5, we have reached inflection point velocity.
+297
+double epsilon = 1e-9;
+298
+if (Math.abs(Math.signum(input) * m_constraints.maxVelocity() - inflectionPoint.velocity)
+299
+< epsilon) {
+300
+double solvableV = inflectionPoint.velocity;
+301
+double t_to_solvable_v;
+302
+double x_at_solvable_v;
+303
+if (Math.abs(current.velocity - inflectionPoint.velocity) < epsilon) {
+304
+t_to_solvable_v = 0;
+305
+x_at_solvable_v = current.position;
+306
+} else {
+307
+if (Math.abs(current.velocity) > m_constraints.maxVelocity()) {
+308
+solvableV += Math.signum(u) * epsilon;
+309
+} else {
+310
+solvableV -= Math.signum(u) * epsilon;
+311
+}
+312
+313
+t_to_solvable_v = computeTimeFromVelocity(solvableV, u, current.velocity);
+314
+x_at_solvable_v = computeDistanceFromVelocity(solvableV, u, current);
+315
+}
+316
+317
+inflectionT_forward =
+318
+t_to_solvable_v
+319
++ Math.signum(input)
+320
+* (inflectionPoint.position - x_at_solvable_v)
+321
+/ m_constraints.maxVelocity();
+322
+} else {
+323
+inflectionT_forward = computeTimeFromVelocity(inflectionPoint.velocity, u, current.velocity);
+324
+}
+325
+326
+var inflectionT_backward = computeTimeFromVelocity(inflectionPoint.velocity, -u, goal.velocity);
+327
+328
+return new ProfileTiming(inflectionT_forward, inflectionT_forward - inflectionT_backward);
+329
+}
+330
+331
+/**
+332
+* Calculates the position reached after t seconds when applying an input from the initial state.
+333
+*
+334
+* @param t The time since the initial state.
+335
+* @param input The signed input applied to this profile from the initial state.
+336
+* @param initial The initial state.
+337
+* @return The distance travelled by this profile.
+338
+*/
+339
+private double computeDistanceFromTime(double t, double input, State initial) {
+340
+var A = m_constraints.A;
+341
+var B = m_constraints.B;
+342
+var u = input;
+343
+344
+return initial.position
+345
++ (-B * u * t + (initial.velocity + B * u / A) * (Math.exp(A * t) - 1)) / A;
+346
+}
+347
+348
+/**
+349
+* Calculates the velocity reached after t seconds when applying an input from the initial state.
+350
+*
+351
+* @param t The time since the initial state.
+352
+* @param input The signed input applied to this profile from the initial state.
+353
+* @param initial The initial state.
+354
+* @return The distance travelled by this profile.
+355
+*/
+356
+private double computeVelocityFromTime(double t, double input, State initial) {
+357
+var A = m_constraints.A;
+358
+var B = m_constraints.B;
+359
+var u = input;
+360
+361
+return (initial.velocity + B * u / A) * Math.exp(A * t) - B * u / A;
+362
+}
+363
+364
+/**
+365
+* Calculates the time required to reach a specified velocity given the initial velocity.
+366
+*
+367
+* @param velocity The goal velocity.
+368
+* @param input The signed input applied to this profile from the initial state.
+369
+* @param initial The initial velocity.
+370
+* @return The time required to reach the goal velocity.
+371
+*/
+372
+private double computeTimeFromVelocity(double velocity, double input, double initial) {
+373
+var A = m_constraints.A;
+374
+var B = m_constraints.B;
+375
+var u = input;
+376
+377
+return Math.log((A * velocity + B * u) / (A * initial + B * u)) / A;
+378
+}
+379
+380
+/**
+381
+* Calculates the distance reached at the same time as the given velocity when applying the given
+382
+* input from the initial state.
+383
+*
+384
+* @param velocity The velocity reached by this profile
+385
+* @param input The signed input applied to this profile from the initial state.
+386
+* @param initial The initial state.
+387
+* @return The distance reached when the given velocity is reached.
+388
+*/
+389
+private double computeDistanceFromVelocity(double velocity, double input, State initial) {
+390
+var A = m_constraints.A;
+391
+var B = m_constraints.B;
+392
+var u = input;
+393
+394
+return initial.position
+395
++ (velocity - initial.velocity) / A
+396
+- B * u / (A * A) * Math.log((A * velocity + B * u) / (A * initial.velocity + B * u));
+397
+}
+398
+399
+/**
+400
+* Calculates the velocity at which input should be reversed in order to reach the goal state from
+401
+* the current state.
+402
+*
+403
+* @param input The signed input applied to this profile from the current state.
+404
+* @param current The current state.
+405
+* @param goal The goal state.
+406
+* @return The inflection velocity.
+407
+*/
+408
+private double solveForInflectionVelocity(double input, State current, State goal) {
+409
+var A = m_constraints.A;
+410
+var B = m_constraints.B;
+411
+var u = input;
+412
+413
+var U_dir = Math.signum(u);
+414
+415
+var position_delta = goal.position - current.position;
+416
+var velocity_delta = goal.velocity - current.velocity;
+417
+418
+var scalar = (A * current.velocity + B * u) * (A * goal.velocity - B * u);
+419
+var power = -A / B / u * (A * position_delta - velocity_delta);
+420
+421
+var a = -A * A;
+422
+var c = (B * B) * (u * u) + scalar * Math.exp(power);
+423
+424
+if (-1e-9 < c && c < 0) {
+425
+// Numerical stability issue - the heuristic gets it right but c is around -1e-13
+426
+return 0;
+427
+}
+428
+429
+return U_dir * Math.sqrt(-c / a);
+430
+}
+431
+432
+/**
+433
+* Returns true if the profile should be inverted.
+434
+*
+435
+* <p>The profile is inverted if we should first apply negative input in order to reach the goal
+436
+* state.
+437
+*
+438
+* @param current The initial state (usually the current state).
+439
+* @param goal The desired state when the profile is complete.
+440
+*/
+441
+@SuppressWarnings("UnnecessaryParentheses")
+442
+private boolean shouldFlipInput(State current, State goal) {
+443
+var u = m_constraints.maxInput;
+444
+445
+var xf = goal.position;
+446
+var v0 = current.velocity;
+447
+var vf = goal.velocity;
+448
+449
+var x_forward = computeDistanceFromVelocity(vf, u, current);
+450
+var x_reverse = computeDistanceFromVelocity(vf, -u, current);
+451
+452
+if (v0 >= m_constraints.maxVelocity()) {
+453
+return xf < x_reverse;
+454
+}
+455
+456
+if (v0 <= -m_constraints.maxVelocity()) {
+457
+return xf < x_forward;
+458
+}
+459
+460
+var a = v0 >= 0;
+461
+var b = vf >= 0;
+462
+var c = xf >= x_forward;
+463
+var d = xf >= x_reverse;
+464
+465
+return (a && !d) || (b && !c) || (!c && !d);
+466
+}
+467
+}

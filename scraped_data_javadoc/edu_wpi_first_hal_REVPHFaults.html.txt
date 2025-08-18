@@ -1,0 +1,258 @@
+Package
+edu.wpi.first.hal
+Class REVPHFaults
+java.lang.Object
+edu.wpi.first.hal.REVPHFaults
+public class
+REVPHFaults
+extends
+Object
+Faults for a REV PH. These faults are only active while the condition is active.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final boolean
+Brownout
+The input voltage is below the minimum voltage.
+final boolean
+CanWarning
+A warning was raised by the device's CAN controller.
+final boolean
+Channel0Fault
+Fault on channel 0.
+final boolean
+Channel10Fault
+Fault on channel 10.
+final boolean
+Channel11Fault
+Fault on channel 11.
+final boolean
+Channel12Fault
+Fault on channel 12.
+final boolean
+Channel13Fault
+Fault on channel 13.
+final boolean
+Channel14Fault
+Fault on channel 14.
+final boolean
+Channel15Fault
+Fault on channel 15.
+final boolean
+Channel1Fault
+Fault on channel 1.
+final boolean
+Channel2Fault
+Fault on channel 2.
+final boolean
+Channel3Fault
+Fault on channel 3.
+final boolean
+Channel4Fault
+Fault on channel 4.
+final boolean
+Channel5Fault
+Fault on channel 5.
+final boolean
+Channel6Fault
+Fault on channel 6.
+final boolean
+Channel7Fault
+Fault on channel 7.
+final boolean
+Channel8Fault
+Fault on channel 8.
+final boolean
+Channel9Fault
+Fault on channel 9.
+final boolean
+CompressorOpen
+The compressor output has an open circuit.
+final boolean
+CompressorOverCurrent
+An overcurrent event occurred on the compressor output.
+final boolean
+HardwareFault
+The hardware on the device has malfunctioned.
+final boolean
+SolenoidOverCurrent
+An overcurrent event occurred on a solenoid output.
+Constructor Summary
+Constructors
+Constructor
+Description
+REVPHFaults
+(int faults)
+Called from HAL to construct.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+final boolean
+getChannelFault
+(int channel)
+Gets whether there is a fault at the specified channel.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+Channel0Fault
+public final
+boolean
+Channel0Fault
+Fault on channel 0.
+Channel1Fault
+public final
+boolean
+Channel1Fault
+Fault on channel 1.
+Channel2Fault
+public final
+boolean
+Channel2Fault
+Fault on channel 2.
+Channel3Fault
+public final
+boolean
+Channel3Fault
+Fault on channel 3.
+Channel4Fault
+public final
+boolean
+Channel4Fault
+Fault on channel 4.
+Channel5Fault
+public final
+boolean
+Channel5Fault
+Fault on channel 5.
+Channel6Fault
+public final
+boolean
+Channel6Fault
+Fault on channel 6.
+Channel7Fault
+public final
+boolean
+Channel7Fault
+Fault on channel 7.
+Channel8Fault
+public final
+boolean
+Channel8Fault
+Fault on channel 8.
+Channel9Fault
+public final
+boolean
+Channel9Fault
+Fault on channel 9.
+Channel10Fault
+public final
+boolean
+Channel10Fault
+Fault on channel 10.
+Channel11Fault
+public final
+boolean
+Channel11Fault
+Fault on channel 11.
+Channel12Fault
+public final
+boolean
+Channel12Fault
+Fault on channel 12.
+Channel13Fault
+public final
+boolean
+Channel13Fault
+Fault on channel 13.
+Channel14Fault
+public final
+boolean
+Channel14Fault
+Fault on channel 14.
+Channel15Fault
+public final
+boolean
+Channel15Fault
+Fault on channel 15.
+CompressorOverCurrent
+public final
+boolean
+CompressorOverCurrent
+An overcurrent event occurred on the compressor output.
+CompressorOpen
+public final
+boolean
+CompressorOpen
+The compressor output has an open circuit.
+SolenoidOverCurrent
+public final
+boolean
+SolenoidOverCurrent
+An overcurrent event occurred on a solenoid output.
+Brownout
+public final
+boolean
+Brownout
+The input voltage is below the minimum voltage.
+CanWarning
+public final
+boolean
+CanWarning
+A warning was raised by the device's CAN controller.
+HardwareFault
+public final
+boolean
+HardwareFault
+The hardware on the device has malfunctioned.
+Constructor Details
+REVPHFaults
+public
+REVPHFaults
+(int faults)
+Called from HAL to construct.
+Parameters:
+faults
+- the fault bitfields
+Method Details
+getChannelFault
+public final
+boolean
+getChannelFault
+(int channel)
+Gets whether there is a fault at the specified channel.
+Parameters:
+channel
+- Channel to check for faults.
+Returns:
+True if a a fault exists at the channel, otherwise false.
+Throws:
+IndexOutOfBoundsException
+- if the provided channel is outside of the range supported by
+     the hardware.

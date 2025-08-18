@@ -1,0 +1,245 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/** Faults for a REV PH. These faults are only active while the condition is active. */
+008
+@SuppressWarnings("MemberName")
+009
+public class REVPHFaults {
+010
+/** Fault on channel 0. */
+011
+public final boolean Channel0Fault;
+012
+013
+/** Fault on channel 1. */
+014
+public final boolean Channel1Fault;
+015
+016
+/** Fault on channel 2. */
+017
+public final boolean Channel2Fault;
+018
+019
+/** Fault on channel 3. */
+020
+public final boolean Channel3Fault;
+021
+022
+/** Fault on channel 4. */
+023
+public final boolean Channel4Fault;
+024
+025
+/** Fault on channel 5. */
+026
+public final boolean Channel5Fault;
+027
+028
+/** Fault on channel 6. */
+029
+public final boolean Channel6Fault;
+030
+031
+/** Fault on channel 7. */
+032
+public final boolean Channel7Fault;
+033
+034
+/** Fault on channel 8. */
+035
+public final boolean Channel8Fault;
+036
+037
+/** Fault on channel 9. */
+038
+public final boolean Channel9Fault;
+039
+040
+/** Fault on channel 10. */
+041
+public final boolean Channel10Fault;
+042
+043
+/** Fault on channel 11. */
+044
+public final boolean Channel11Fault;
+045
+046
+/** Fault on channel 12. */
+047
+public final boolean Channel12Fault;
+048
+049
+/** Fault on channel 13. */
+050
+public final boolean Channel13Fault;
+051
+052
+/** Fault on channel 14. */
+053
+public final boolean Channel14Fault;
+054
+055
+/** Fault on channel 15. */
+056
+public final boolean Channel15Fault;
+057
+058
+/** An overcurrent event occurred on the compressor output. */
+059
+public final boolean CompressorOverCurrent;
+060
+061
+/** The compressor output has an open circuit. */
+062
+public final boolean CompressorOpen;
+063
+064
+/** An overcurrent event occurred on a solenoid output. */
+065
+public final boolean SolenoidOverCurrent;
+066
+067
+/** The input voltage is below the minimum voltage. */
+068
+public final boolean Brownout;
+069
+070
+/** A warning was raised by the device's CAN controller. */
+071
+public final boolean CanWarning;
+072
+073
+/** The hardware on the device has malfunctioned. */
+074
+public final boolean HardwareFault;
+075
+076
+/**
+077
+* Gets whether there is a fault at the specified channel.
+078
+*
+079
+* @param channel Channel to check for faults.
+080
+* @return True if a a fault exists at the channel, otherwise false.
+081
+* @throws IndexOutOfBoundsException if the provided channel is outside of the range supported by
+082
+*     the hardware.
+083
+*/
+084
+public final boolean getChannelFault(int channel) {
+085
+return switch (channel) {
+086
+case 0 -> Channel0Fault;
+087
+case 1 -> Channel1Fault;
+088
+case 2 -> Channel2Fault;
+089
+case 3 -> Channel3Fault;
+090
+case 4 -> Channel4Fault;
+091
+case 5 -> Channel5Fault;
+092
+case 6 -> Channel6Fault;
+093
+case 7 -> Channel7Fault;
+094
+case 8 -> Channel8Fault;
+095
+case 9 -> Channel9Fault;
+096
+case 10 -> Channel10Fault;
+097
+case 11 -> Channel11Fault;
+098
+case 12 -> Channel12Fault;
+099
+case 13 -> Channel13Fault;
+100
+case 14 -> Channel14Fault;
+101
+case 15 -> Channel15Fault;
+102
+default -> throw new IndexOutOfBoundsException("Pneumatics fault channel out of bounds!");
+103
+};
+104
+}
+105
+106
+/**
+107
+* Called from HAL to construct.
+108
+*
+109
+* @param faults the fault bitfields
+110
+*/
+111
+public REVPHFaults(int faults) {
+112
+Channel0Fault = (faults & (1 << 0)) != 0;
+113
+Channel1Fault = (faults & (1 << 1)) != 0;
+114
+Channel2Fault = (faults & (1 << 2)) != 0;
+115
+Channel3Fault = (faults & (1 << 3)) != 0;
+116
+Channel4Fault = (faults & (1 << 4)) != 0;
+117
+Channel5Fault = (faults & (1 << 5)) != 0;
+118
+Channel6Fault = (faults & (1 << 6)) != 0;
+119
+Channel7Fault = (faults & (1 << 7)) != 0;
+120
+Channel8Fault = (faults & (1 << 8)) != 0;
+121
+Channel9Fault = (faults & (1 << 9)) != 0;
+122
+Channel10Fault = (faults & (1 << 10)) != 0;
+123
+Channel11Fault = (faults & (1 << 11)) != 0;
+124
+Channel12Fault = (faults & (1 << 12)) != 0;
+125
+Channel13Fault = (faults & (1 << 13)) != 0;
+126
+Channel14Fault = (faults & (1 << 14)) != 0;
+127
+Channel15Fault = (faults & (1 << 15)) != 0;
+128
+CompressorOverCurrent = (faults & (1 << 16)) != 0;
+129
+CompressorOpen = (faults & (1 << 17)) != 0;
+130
+SolenoidOverCurrent = (faults & (1 << 18)) != 0;
+131
+Brownout = (faults & (1 << 19)) != 0;
+132
+CanWarning = (faults & (1 << 20)) != 0;
+133
+HardwareFault = (faults & (1 << 21)) != 0;
+134
+}
+135
+}

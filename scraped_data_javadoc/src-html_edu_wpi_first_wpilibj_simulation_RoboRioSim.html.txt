@@ -1,0 +1,1229 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.NotifyCallback;
+008
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+009
+import edu.wpi.first.wpilibj.RobotController;
+010
+import edu.wpi.first.wpilibj.RobotController.RadioLEDState;
+011
+012
+/** A utility class to control a simulated RoboRIO. */
+013
+public final class RoboRioSim {
+014
+private RoboRioSim() {
+015
+// Utility class
+016
+}
+017
+018
+/**
+019
+* Register a callback to be run when the FPGA button state changes.
+020
+*
+021
+* @param callback the callback
+022
+* @param initialNotify whether to run the callback with the initial state
+023
+* @return the {@link CallbackStore} object associated with this callback.
+024
+*/
+025
+public static CallbackStore registerFPGAButtonCallback(
+026
+NotifyCallback callback, boolean initialNotify) {
+027
+int uid = RoboRioDataJNI.registerFPGAButtonCallback(callback, initialNotify);
+028
+return new CallbackStore(uid, RoboRioDataJNI::cancelFPGAButtonCallback);
+029
+}
+030
+031
+/**
+032
+* Query the state of the FPGA button.
+033
+*
+034
+* @return the FPGA button state
+035
+*/
+036
+public static boolean getFPGAButton() {
+037
+return RoboRioDataJNI.getFPGAButton();
+038
+}
+039
+040
+/**
+041
+* Define the state of the FPGA button.
+042
+*
+043
+* @param fpgaButton the new state
+044
+*/
+045
+public static void setFPGAButton(boolean fpgaButton) {
+046
+RoboRioDataJNI.setFPGAButton(fpgaButton);
+047
+}
+048
+049
+/**
+050
+* Register a callback to be run whenever the Vin voltage changes.
+051
+*
+052
+* @param callback the callback
+053
+* @param initialNotify whether to call the callback with the initial state
+054
+* @return the {@link CallbackStore} object associated with this callback.
+055
+*/
+056
+public static CallbackStore registerVInVoltageCallback(
+057
+NotifyCallback callback, boolean initialNotify) {
+058
+int uid = RoboRioDataJNI.registerVInVoltageCallback(callback, initialNotify);
+059
+return new CallbackStore(uid, RoboRioDataJNI::cancelVInVoltageCallback);
+060
+}
+061
+062
+/**
+063
+* Measure the Vin voltage.
+064
+*
+065
+* @return the Vin voltage
+066
+*/
+067
+public static double getVInVoltage() {
+068
+return RoboRioDataJNI.getVInVoltage();
+069
+}
+070
+071
+/**
+072
+* Define the Vin voltage.
+073
+*
+074
+* @param vInVoltage the new voltage
+075
+*/
+076
+public static void setVInVoltage(double vInVoltage) {
+077
+RoboRioDataJNI.setVInVoltage(vInVoltage);
+078
+}
+079
+080
+/**
+081
+* Register a callback to be run whenever the Vin current changes.
+082
+*
+083
+* @param callback the callback
+084
+* @param initialNotify whether the callback should be called with the initial value
+085
+* @return the {@link CallbackStore} object associated with this callback.
+086
+*/
+087
+public static CallbackStore registerVInCurrentCallback(
+088
+NotifyCallback callback, boolean initialNotify) {
+089
+int uid = RoboRioDataJNI.registerVInCurrentCallback(callback, initialNotify);
+090
+return new CallbackStore(uid, RoboRioDataJNI::cancelVInCurrentCallback);
+091
+}
+092
+093
+/**
+094
+* Measure the Vin current.
+095
+*
+096
+* @return the Vin current
+097
+*/
+098
+public static double getVInCurrent() {
+099
+return RoboRioDataJNI.getVInCurrent();
+100
+}
+101
+102
+/**
+103
+* Define the Vin current.
+104
+*
+105
+* @param vInCurrent the new current
+106
+*/
+107
+public static void setVInCurrent(double vInCurrent) {
+108
+RoboRioDataJNI.setVInCurrent(vInCurrent);
+109
+}
+110
+111
+/**
+112
+* Register a callback to be run whenever the 6V rail voltage changes.
+113
+*
+114
+* @param callback the callback
+115
+* @param initialNotify whether the callback should be called with the initial value
+116
+* @return the {@link CallbackStore} object associated with this callback.
+117
+*/
+118
+public static CallbackStore registerUserVoltage6VCallback(
+119
+NotifyCallback callback, boolean initialNotify) {
+120
+int uid = RoboRioDataJNI.registerUserVoltage6VCallback(callback, initialNotify);
+121
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserVoltage6VCallback);
+122
+}
+123
+124
+/**
+125
+* Measure the 6V rail voltage.
+126
+*
+127
+* @return the 6V rail voltage
+128
+*/
+129
+public static double getUserVoltage6V() {
+130
+return RoboRioDataJNI.getUserVoltage6V();
+131
+}
+132
+133
+/**
+134
+* Define the 6V rail voltage.
+135
+*
+136
+* @param userVoltage6V the new voltage
+137
+*/
+138
+public static void setUserVoltage6V(double userVoltage6V) {
+139
+RoboRioDataJNI.setUserVoltage6V(userVoltage6V);
+140
+}
+141
+142
+/**
+143
+* Register a callback to be run whenever the 6V rail current changes.
+144
+*
+145
+* @param callback the callback
+146
+* @param initialNotify whether the callback should be called with the initial value
+147
+* @return the {@link CallbackStore} object associated with this callback.
+148
+*/
+149
+public static CallbackStore registerUserCurrent6VCallback(
+150
+NotifyCallback callback, boolean initialNotify) {
+151
+int uid = RoboRioDataJNI.registerUserCurrent6VCallback(callback, initialNotify);
+152
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserCurrent6VCallback);
+153
+}
+154
+155
+/**
+156
+* Measure the 6V rail current.
+157
+*
+158
+* @return the 6V rail current
+159
+*/
+160
+public static double getUserCurrent6V() {
+161
+return RoboRioDataJNI.getUserCurrent6V();
+162
+}
+163
+164
+/**
+165
+* Define the 6V rail current.
+166
+*
+167
+* @param userCurrent6V the new current
+168
+*/
+169
+public static void setUserCurrent6V(double userCurrent6V) {
+170
+RoboRioDataJNI.setUserCurrent6V(userCurrent6V);
+171
+}
+172
+173
+/**
+174
+* Register a callback to be run whenever the 6V rail active state changes.
+175
+*
+176
+* @param callback the callback
+177
+* @param initialNotify whether the callback should be called with the initial state
+178
+* @return the {@link CallbackStore} object associated with this callback.
+179
+*/
+180
+public static CallbackStore registerUserActive6VCallback(
+181
+NotifyCallback callback, boolean initialNotify) {
+182
+int uid = RoboRioDataJNI.registerUserActive6VCallback(callback, initialNotify);
+183
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserActive6VCallback);
+184
+}
+185
+186
+/**
+187
+* Get the 6V rail active state.
+188
+*
+189
+* @return true if the 6V rail is active
+190
+*/
+191
+public static boolean getUserActive6V() {
+192
+return RoboRioDataJNI.getUserActive6V();
+193
+}
+194
+195
+/**
+196
+* Set the 6V rail active state.
+197
+*
+198
+* @param userActive6V true to make rail active
+199
+*/
+200
+public static void setUserActive6V(boolean userActive6V) {
+201
+RoboRioDataJNI.setUserActive6V(userActive6V);
+202
+}
+203
+204
+/**
+205
+* Register a callback to be run whenever the 5V rail voltage changes.
+206
+*
+207
+* @param callback the callback
+208
+* @param initialNotify whether the callback should be called with the initial value
+209
+* @return the {@link CallbackStore} object associated with this callback.
+210
+*/
+211
+public static CallbackStore registerUserVoltage5VCallback(
+212
+NotifyCallback callback, boolean initialNotify) {
+213
+int uid = RoboRioDataJNI.registerUserVoltage5VCallback(callback, initialNotify);
+214
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserVoltage5VCallback);
+215
+}
+216
+217
+/**
+218
+* Measure the 5V rail voltage.
+219
+*
+220
+* @return the 5V rail voltage
+221
+*/
+222
+public static double getUserVoltage5V() {
+223
+return RoboRioDataJNI.getUserVoltage5V();
+224
+}
+225
+226
+/**
+227
+* Define the 5V rail voltage.
+228
+*
+229
+* @param userVoltage5V the new voltage
+230
+*/
+231
+public static void setUserVoltage5V(double userVoltage5V) {
+232
+RoboRioDataJNI.setUserVoltage5V(userVoltage5V);
+233
+}
+234
+235
+/**
+236
+* Register a callback to be run whenever the 5V rail current changes.
+237
+*
+238
+* @param callback the callback
+239
+* @param initialNotify whether the callback should be called with the initial value
+240
+* @return the {@link CallbackStore} object associated with this callback.
+241
+*/
+242
+public static CallbackStore registerUserCurrent5VCallback(
+243
+NotifyCallback callback, boolean initialNotify) {
+244
+int uid = RoboRioDataJNI.registerUserCurrent5VCallback(callback, initialNotify);
+245
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserCurrent5VCallback);
+246
+}
+247
+248
+/**
+249
+* Measure the 5V rail current.
+250
+*
+251
+* @return the 5V rail current
+252
+*/
+253
+public static double getUserCurrent5V() {
+254
+return RoboRioDataJNI.getUserCurrent5V();
+255
+}
+256
+257
+/**
+258
+* Define the 5V rail current.
+259
+*
+260
+* @param userCurrent5V the new current
+261
+*/
+262
+public static void setUserCurrent5V(double userCurrent5V) {
+263
+RoboRioDataJNI.setUserCurrent5V(userCurrent5V);
+264
+}
+265
+266
+/**
+267
+* Register a callback to be run whenever the 5V rail active state changes.
+268
+*
+269
+* @param callback the callback
+270
+* @param initialNotify whether the callback should be called with the initial state
+271
+* @return the {@link CallbackStore} object associated with this callback.
+272
+*/
+273
+public static CallbackStore registerUserActive5VCallback(
+274
+NotifyCallback callback, boolean initialNotify) {
+275
+int uid = RoboRioDataJNI.registerUserActive5VCallback(callback, initialNotify);
+276
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserActive5VCallback);
+277
+}
+278
+279
+/**
+280
+* Get the 5V rail active state.
+281
+*
+282
+* @return true if the 5V rail is active
+283
+*/
+284
+public static boolean getUserActive5V() {
+285
+return RoboRioDataJNI.getUserActive5V();
+286
+}
+287
+288
+/**
+289
+* Set the 5V rail active state.
+290
+*
+291
+* @param userActive5V true to make rail active
+292
+*/
+293
+public static void setUserActive5V(boolean userActive5V) {
+294
+RoboRioDataJNI.setUserActive5V(userActive5V);
+295
+}
+296
+297
+/**
+298
+* Register a callback to be run whenever the 3.3V rail voltage changes.
+299
+*
+300
+* @param callback the callback
+301
+* @param initialNotify whether the callback should be called with the initial value
+302
+* @return the {@link CallbackStore} object associated with this callback.
+303
+*/
+304
+public static CallbackStore registerUserVoltage3V3Callback(
+305
+NotifyCallback callback, boolean initialNotify) {
+306
+int uid = RoboRioDataJNI.registerUserVoltage3V3Callback(callback, initialNotify);
+307
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserVoltage3V3Callback);
+308
+}
+309
+310
+/**
+311
+* Measure the 3.3V rail voltage.
+312
+*
+313
+* @return the 3.3V rail voltage
+314
+*/
+315
+public static double getUserVoltage3V3() {
+316
+return RoboRioDataJNI.getUserVoltage3V3();
+317
+}
+318
+319
+/**
+320
+* Define the 3.3V rail voltage.
+321
+*
+322
+* @param userVoltage3V3 the new voltage
+323
+*/
+324
+public static void setUserVoltage3V3(double userVoltage3V3) {
+325
+RoboRioDataJNI.setUserVoltage3V3(userVoltage3V3);
+326
+}
+327
+328
+/**
+329
+* Register a callback to be run whenever the 3.3V rail current changes.
+330
+*
+331
+* @param callback the callback
+332
+* @param initialNotify whether the callback should be called with the initial value
+333
+* @return the {@link CallbackStore} object associated with this callback.
+334
+*/
+335
+public static CallbackStore registerUserCurrent3V3Callback(
+336
+NotifyCallback callback, boolean initialNotify) {
+337
+int uid = RoboRioDataJNI.registerUserCurrent3V3Callback(callback, initialNotify);
+338
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserCurrent3V3Callback);
+339
+}
+340
+341
+/**
+342
+* Measure the 3.3V rail current.
+343
+*
+344
+* @return the 3.3V rail current
+345
+*/
+346
+public static double getUserCurrent3V3() {
+347
+return RoboRioDataJNI.getUserCurrent3V3();
+348
+}
+349
+350
+/**
+351
+* Define the 3.3V rail current.
+352
+*
+353
+* @param userCurrent3V3 the new current
+354
+*/
+355
+public static void setUserCurrent3V3(double userCurrent3V3) {
+356
+RoboRioDataJNI.setUserCurrent3V3(userCurrent3V3);
+357
+}
+358
+359
+/**
+360
+* Register a callback to be run whenever the 3.3V rail active state changes.
+361
+*
+362
+* @param callback the callback
+363
+* @param initialNotify whether the callback should be called with the initial state
+364
+* @return the {@link CallbackStore} object associated with this callback.
+365
+*/
+366
+public static CallbackStore registerUserActive3V3Callback(
+367
+NotifyCallback callback, boolean initialNotify) {
+368
+int uid = RoboRioDataJNI.registerUserActive3V3Callback(callback, initialNotify);
+369
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserActive3V3Callback);
+370
+}
+371
+372
+/**
+373
+* Get the 3.3V rail active state.
+374
+*
+375
+* @return true if the 3.3V rail is active
+376
+*/
+377
+public static boolean getUserActive3V3() {
+378
+return RoboRioDataJNI.getUserActive3V3();
+379
+}
+380
+381
+/**
+382
+* Set the 3.3V rail active state.
+383
+*
+384
+* @param userActive3V3 true to make rail active
+385
+*/
+386
+public static void setUserActive3V3(boolean userActive3V3) {
+387
+RoboRioDataJNI.setUserActive3V3(userActive3V3);
+388
+}
+389
+390
+/**
+391
+* Register a callback to be run whenever the 6V rail number of faults changes.
+392
+*
+393
+* @param callback the callback
+394
+* @param initialNotify whether the callback should be called with the initial value
+395
+* @return the {@link CallbackStore} object associated with this callback.
+396
+*/
+397
+public static CallbackStore registerUserFaults6VCallback(
+398
+NotifyCallback callback, boolean initialNotify) {
+399
+int uid = RoboRioDataJNI.registerUserFaults6VCallback(callback, initialNotify);
+400
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserFaults6VCallback);
+401
+}
+402
+403
+/**
+404
+* Get the 6V rail number of faults.
+405
+*
+406
+* @return number of faults
+407
+*/
+408
+public static int getUserFaults6V() {
+409
+return RoboRioDataJNI.getUserFaults6V();
+410
+}
+411
+412
+/**
+413
+* Set the 6V rail number of faults.
+414
+*
+415
+* @param userFaults6V number of faults
+416
+*/
+417
+public static void setUserFaults6V(int userFaults6V) {
+418
+RoboRioDataJNI.setUserFaults6V(userFaults6V);
+419
+}
+420
+421
+/**
+422
+* Register a callback to be run whenever the 5V rail number of faults changes.
+423
+*
+424
+* @param callback the callback
+425
+* @param initialNotify whether the callback should be called with the initial value
+426
+* @return the {@link CallbackStore} object associated with this callback.
+427
+*/
+428
+public static CallbackStore registerUserFaults5VCallback(
+429
+NotifyCallback callback, boolean initialNotify) {
+430
+int uid = RoboRioDataJNI.registerUserFaults5VCallback(callback, initialNotify);
+431
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserFaults5VCallback);
+432
+}
+433
+434
+/**
+435
+* Get the 5V rail number of faults.
+436
+*
+437
+* @return number of faults
+438
+*/
+439
+public static int getUserFaults5V() {
+440
+return RoboRioDataJNI.getUserFaults5V();
+441
+}
+442
+443
+/**
+444
+* Set the 5V rail number of faults.
+445
+*
+446
+* @param userFaults5V number of faults
+447
+*/
+448
+public static void setUserFaults5V(int userFaults5V) {
+449
+RoboRioDataJNI.setUserFaults5V(userFaults5V);
+450
+}
+451
+452
+/**
+453
+* Register a callback to be run whenever the 3.3V rail number of faults changes.
+454
+*
+455
+* @param callback the callback
+456
+* @param initialNotify whether the callback should be called with the initial value
+457
+* @return the {@link CallbackStore} object associated with this callback.
+458
+*/
+459
+public static CallbackStore registerUserFaults3V3Callback(
+460
+NotifyCallback callback, boolean initialNotify) {
+461
+int uid = RoboRioDataJNI.registerUserFaults3V3Callback(callback, initialNotify);
+462
+return new CallbackStore(uid, RoboRioDataJNI::cancelUserFaults3V3Callback);
+463
+}
+464
+465
+/**
+466
+* Get the 3.3V rail number of faults.
+467
+*
+468
+* @return number of faults
+469
+*/
+470
+public static int getUserFaults3V3() {
+471
+return RoboRioDataJNI.getUserFaults3V3();
+472
+}
+473
+474
+/**
+475
+* Set the 3.3V rail number of faults.
+476
+*
+477
+* @param userFaults3V3 number of faults
+478
+*/
+479
+public static void setUserFaults3V3(int userFaults3V3) {
+480
+RoboRioDataJNI.setUserFaults3V3(userFaults3V3);
+481
+}
+482
+483
+/**
+484
+* Register a callback to be run whenever the Brownout voltage changes.
+485
+*
+486
+* @param callback the callback
+487
+* @param initialNotify whether to call the callback with the initial state
+488
+* @return the {@link CallbackStore} object associated with this callback.
+489
+*/
+490
+public static CallbackStore registerBrownoutVoltageCallback(
+491
+NotifyCallback callback, boolean initialNotify) {
+492
+int uid = RoboRioDataJNI.registerBrownoutVoltageCallback(callback, initialNotify);
+493
+return new CallbackStore(uid, RoboRioDataJNI::cancelBrownoutVoltageCallback);
+494
+}
+495
+496
+/**
+497
+* Measure the Brownout voltage.
+498
+*
+499
+* @return the Brownout voltage
+500
+*/
+501
+public static double getBrownoutVoltage() {
+502
+return RoboRioDataJNI.getBrownoutVoltage();
+503
+}
+504
+505
+/**
+506
+* Define the Brownout voltage.
+507
+*
+508
+* @param vInVoltage the new voltage
+509
+*/
+510
+public static void setBrownoutVoltage(double vInVoltage) {
+511
+RoboRioDataJNI.setBrownoutVoltage(vInVoltage);
+512
+}
+513
+514
+/**
+515
+* Register a callback to be run whenever the cpu temp changes.
+516
+*
+517
+* @param callback the callback
+518
+* @param initialNotify whether to call the callback with the initial state
+519
+* @return the {@link CallbackStore} object associated with this callback.
+520
+*/
+521
+public static CallbackStore registerCPUTempCallback(
+522
+NotifyCallback callback, boolean initialNotify) {
+523
+int uid = RoboRioDataJNI.registerCPUTempCallback(callback, initialNotify);
+524
+return new CallbackStore(uid, RoboRioDataJNI::cancelCPUTempCallback);
+525
+}
+526
+527
+/**
+528
+* Get the cpu temp.
+529
+*
+530
+* @return the cpu temp.
+531
+*/
+532
+public static double getCPUTemp() {
+533
+return RoboRioDataJNI.getCPUTemp();
+534
+}
+535
+536
+/**
+537
+* Set the cpu temp.
+538
+*
+539
+* @param cpuTemp the new cpu temp.
+540
+*/
+541
+public static void setCPUTemp(double cpuTemp) {
+542
+RoboRioDataJNI.setCPUTemp(cpuTemp);
+543
+}
+544
+545
+/**
+546
+* Register a callback to be run whenever the team number changes.
+547
+*
+548
+* @param callback the callback
+549
+* @param initialNotify whether to call the callback with the initial state
+550
+* @return the {@link CallbackStore} object associated with this callback.
+551
+*/
+552
+public static CallbackStore registerTeamNumberCallback(
+553
+NotifyCallback callback, boolean initialNotify) {
+554
+int uid = RoboRioDataJNI.registerTeamNumberCallback(callback, initialNotify);
+555
+return new CallbackStore(uid, RoboRioDataJNI::cancelTeamNumberCallback);
+556
+}
+557
+558
+/**
+559
+* Get the team number.
+560
+*
+561
+* @return the team number.
+562
+*/
+563
+public static int getTeamNumber() {
+564
+return RoboRioDataJNI.getTeamNumber();
+565
+}
+566
+567
+/**
+568
+* Set the team number.
+569
+*
+570
+* @param teamNumber the new team number.
+571
+*/
+572
+public static void setTeamNumber(int teamNumber) {
+573
+RoboRioDataJNI.setTeamNumber(teamNumber);
+574
+}
+575
+576
+/**
+577
+* Get the serial number.
+578
+*
+579
+* @return The serial number.
+580
+*/
+581
+public static String getSerialNumber() {
+582
+return RoboRioDataJNI.getSerialNumber();
+583
+}
+584
+585
+/**
+586
+* Set the serial number.
+587
+*
+588
+* @param serialNumber The serial number.
+589
+*/
+590
+public static void setSerialNumber(String serialNumber) {
+591
+RoboRioDataJNI.setSerialNumber(serialNumber);
+592
+}
+593
+594
+/**
+595
+* Get the comments string.
+596
+*
+597
+* @return The comments string.
+598
+*/
+599
+public static String getComments() {
+600
+return RoboRioDataJNI.getComments();
+601
+}
+602
+603
+/**
+604
+* Set the comments string.
+605
+*
+606
+* @param comments The comments string.
+607
+*/
+608
+public static void setComments(String comments) {
+609
+RoboRioDataJNI.setComments(comments);
+610
+}
+611
+612
+/**
+613
+* Register a callback to be run whenever the Radio led state changes.
+614
+*
+615
+* @param callback the callback
+616
+* @param initialNotify whether to call the callback with the initial state
+617
+* @return the {@link CallbackStore} object associated with this callback.
+618
+*/
+619
+public static CallbackStore registerRadioLEDStateCallback(
+620
+NotifyCallback callback, boolean initialNotify) {
+621
+int uid = RoboRioDataJNI.registerRadioLEDStateCallback(callback, initialNotify);
+622
+return new CallbackStore(uid, RoboRioDataJNI::cancelRadioLEDStateCallback);
+623
+}
+624
+625
+/**
+626
+* Get the state of the radio led.
+627
+*
+628
+* @return The state of the radio led.
+629
+*/
+630
+public static RadioLEDState getRadioLEDState() {
+631
+return RadioLEDState.fromValue(RoboRioDataJNI.getRadioLEDState());
+632
+}
+633
+634
+/**
+635
+* Set the state of the radio led.
+636
+*
+637
+* @param state The state of the radio led.
+638
+*/
+639
+public static void setRadioLEDState(RobotController.RadioLEDState state) {
+640
+RoboRioDataJNI.setRadioLEDState(state.value);
+641
+}
+642
+643
+/** Reset all simulation data. */
+644
+public static void resetData() {
+645
+RoboRioDataJNI.resetData();
+646
+}
+647
+}

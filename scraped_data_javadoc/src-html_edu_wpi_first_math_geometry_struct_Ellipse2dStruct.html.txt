@@ -1,0 +1,95 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.struct;
+006
+007
+import edu.wpi.first.math.geometry.Ellipse2d;
+008
+import edu.wpi.first.math.geometry.Pose2d;
+009
+import edu.wpi.first.util.struct.Struct;
+010
+import java.nio.ByteBuffer;
+011
+012
+public class Ellipse2dStruct implements Struct<Ellipse2d> {
+013
+@Override
+014
+public Class<Ellipse2d> getTypeClass() {
+015
+return Ellipse2d.class;
+016
+}
+017
+018
+@Override
+019
+public String getTypeName() {
+020
+return "Ellipse2d";
+021
+}
+022
+023
+@Override
+024
+public int getSize() {
+025
+return Pose2d.struct.getSize() + kSizeDouble + kSizeDouble;
+026
+}
+027
+028
+@Override
+029
+public String getSchema() {
+030
+return "Pose2d center;double xSemiAxis; double ySemiAxis";
+031
+}
+032
+033
+@Override
+034
+public Struct<?>[] getNested() {
+035
+return new Struct<?>[] {Pose2d.struct};
+036
+}
+037
+038
+@Override
+039
+public Ellipse2d unpack(ByteBuffer bb) {
+040
+Pose2d center = Pose2d.struct.unpack(bb);
+041
+double xSemiAxis = bb.getDouble();
+042
+double ySemiAxis = bb.getDouble();
+043
+return new Ellipse2d(center, xSemiAxis, ySemiAxis);
+044
+}
+045
+046
+@Override
+047
+public void pack(ByteBuffer bb, Ellipse2d value) {
+048
+Pose2d.struct.pack(bb, value.getCenter());
+049
+bb.putDouble(value.getXSemiAxis());
+050
+bb.putDouble(value.getYSemiAxis());
+051
+}
+052
+}

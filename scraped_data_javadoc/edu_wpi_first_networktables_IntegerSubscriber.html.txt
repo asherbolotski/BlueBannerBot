@@ -1,0 +1,159 @@
+Package
+edu.wpi.first.networktables
+Interface IntegerSubscriber
+All Superinterfaces:
+AutoCloseable
+,
+LongSupplier
+,
+PubSub
+,
+Subscriber
+All Known Subinterfaces:
+IntegerEntry
+public interface
+IntegerSubscriber
+extends
+Subscriber
+,
+LongSupplier
+NetworkTables Integer subscriber.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+long
+get
+()
+Get the last published value.
+long
+get
+(long defaultValue)
+Get the last published value.
+default long
+getAsLong
+()
+TimestampedInteger
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+TimestampedInteger
+getAtomic
+(long defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+IntegerTopic
+getTopic
+()
+Get the corresponding topic.
+TimestampedInteger
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+long[]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+getTopic
+IntegerTopic
+getTopic
+()
+Get the corresponding topic.
+Specified by:
+getTopic
+in interface
+PubSub
+Returns:
+Topic
+get
+long
+get
+()
+Get the last published value.
+ If no value has been published, returns the stored default value.
+Returns:
+value
+get
+long
+get
+(long defaultValue)
+Get the last published value.
+ If no value has been published, returns the passed defaultValue.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+value
+getAsLong
+default
+long
+getAsLong
+()
+Specified by:
+getAsLong
+in interface
+LongSupplier
+getAtomic
+TimestampedInteger
+getAtomic
+()
+Get the last published value along with its timestamp
+ If no value has been published, returns the stored default value and a
+ timestamp of 0.
+Returns:
+timestamped value
+getAtomic
+TimestampedInteger
+getAtomic
+(long defaultValue)
+Get the last published value along with its timestamp
+ If no value has been published, returns the passed defaultValue and a
+ timestamp of 0.
+Parameters:
+defaultValue
+- default value to return if no value has been published
+Returns:
+timestamped value
+readQueue
+TimestampedInteger
+[]
+readQueue
+()
+Get an array of all value changes since the last call to readQueue.
+ Also provides a timestamp for each value.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of timestamped values; empty array if no new changes have
+     been published since the previous call.
+readQueueValues
+long[]
+readQueueValues
+()
+Get an array of all value changes since the last call to readQueue.
+The "poll storage" subscribe option can be used to set the queue
+ depth.
+Returns:
+Array of values; empty array if no new changes have been
+     published since the previous call.

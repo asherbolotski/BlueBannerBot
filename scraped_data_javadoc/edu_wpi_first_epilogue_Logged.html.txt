@@ -1,0 +1,136 @@
+Package
+edu.wpi.first.epilogue
+Annotation Interface Logged
+@Retention
+(
+RUNTIME
+)
+@Target
+({
+FIELD
+,
+METHOD
+,
+TYPE
+})
+public @interface
+Logged
+Place this annotation on a class to automatically log every field and every public accessor
+ method (methods with no arguments and return a loggable data type). Use
+strategy()
+to
+ flag a class as logging everything it can, except for those elements tagged with
+@Logged(importance = NONE)
+; or for logging only specific items also tagged with
+@Logged
+.
+Logged fields may have any access modifier. Logged methods must be public; non-public methods
+ will be ignored.
+Epilogue can log all primitive types, arrays of primitive types (except char and short),
+ Strings, arrays of Strings, sendable objects, objects with a struct serializer, and arrays of
+ objects with struct serializers.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+Logged.Importance
+Data importance.
+static enum
+Logged.Naming
+Different behaviors for how Epilogue will generate the names of logged data points.
+static enum
+Logged.Strategy
+Opt-in or opt-out strategies for logging.
+Optional Element Summary
+Optional Elements
+Modifier and Type
+Optional Element
+Description
+Logged.Naming
+defaultNaming
+The default naming behavior to use.
+Logged.Importance
+importance
+The importance of the annotated data.
+String
+name
+The name for the annotated element to be logged as.
+Logged.Strategy
+strategy
+The strategy to use for logging.
+boolean
+warnForNonLoggableTypes
+Class-level only: if
+strategy()
+is
+Logged.Strategy.OPT_OUT
+, this can be used to quiet
+ the warnings that are printed for non-loggable fields and methods detected within the class.
+Element Details
+name
+String
+name
+The name for the annotated element to be logged as. Does nothing on class-level annotations.
+ Fields and methods will default to be logged using their in-code names; use this attribute to
+ set it to something custom.
+If the annotation is placed on a class, the specified name will not change logged data
+ (since that uses the names of the specific usages of the class in fields and methods); however,
+ it will be used to set the names of the generated logger that Logged will use to log instances
+ of the class. This can be used to avoid name conflicts if you have multiple classes with the
+ same name, but in different packages, and want to be able to log both.
+Returns:
+the name to use to log the field or method under; or the name of the generated
+     class-specific logger
+Default:
+""
+strategy
+Logged.Strategy
+strategy
+The strategy to use for logging. Only has an effect on annotations on class or interface
+ declarations.
+Returns:
+the strategy to use to determine which fields and methods in the class to log
+Default:
+OPT_OUT
+importance
+Logged.Importance
+importance
+The importance of the annotated data. If placed on a class or interface, this will be the
+ default importance of all data within that class; this can be overridden on a per-element basis
+ by annotating fields and methods with their own
+@Logged(importance = ...)
+annotation.
+Returns:
+the importance of the annotated element
+Default:
+DEBUG
+defaultNaming
+Logged.Naming
+defaultNaming
+The default naming behavior to use. Defaults to
+Logged.Naming.USE_CODE_NAME
+, which uses the
+ raw code name directly in logs. Any configuration of the
+name()
+attribute on logged
+ fields and methods will take precedence over an automatically generated name.
+Returns:
+the naming strategy for and annotated field or method, or the default naming strategy
+     for all logged fields and methods in an annotated class
+Default:
+USE_CODE_NAME
+warnForNonLoggableTypes
+boolean
+warnForNonLoggableTypes
+Class-level only: if
+strategy()
+is
+Logged.Strategy.OPT_OUT
+, this can be used to quiet
+ the warnings that are printed for non-loggable fields and methods detected within the class.
+Returns:
+true if warnings should be printed, or false if warnings should not be printed
+Default:
+false

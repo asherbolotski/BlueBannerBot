@@ -1,0 +1,97 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.cameraserver;
+006
+007
+/** CameraServer shared functions. */
+008
+public interface CameraServerShared {
+009
+/**
+010
+* get the main thread id func.
+011
+*
+012
+* @return the robotMainThreadId
+013
+*/
+014
+Long getRobotMainThreadId();
+015
+016
+/**
+017
+* Report an error to the driver station.
+018
+*
+019
+* @param error the error to set
+020
+*/
+021
+void reportDriverStationError(String error);
+022
+023
+/**
+024
+* Report an video server usage.
+025
+*
+026
+* @param id the usage id
+027
+*/
+028
+void reportVideoServer(int id);
+029
+030
+/**
+031
+* Report a usb camera usage.
+032
+*
+033
+* @param id the usage id
+034
+*/
+035
+void reportUsbCamera(int id);
+036
+037
+/**
+038
+* Report an axis camera usage.
+039
+*
+040
+* @param id the usage id
+041
+*/
+042
+void reportAxisCamera(int id);
+043
+044
+/**
+045
+* Get if running on a roboRIO.
+046
+*
+047
+* @return true if on roboRIO
+048
+*/
+049
+default boolean isRoboRIO() {
+050
+return false;
+051
+}
+052
+}

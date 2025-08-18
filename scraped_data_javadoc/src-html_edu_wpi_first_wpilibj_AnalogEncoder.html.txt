@@ -1,0 +1,325 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.SimDevice;
+008
+import edu.wpi.first.hal.SimDevice.Direction;
+009
+import edu.wpi.first.hal.SimDouble;
+010
+import edu.wpi.first.math.MathUtil;
+011
+import edu.wpi.first.util.sendable.Sendable;
+012
+import edu.wpi.first.util.sendable.SendableBuilder;
+013
+import edu.wpi.first.util.sendable.SendableRegistry;
+014
+015
+/** Class for supporting continuous analog encoders, such as the US Digital MA3. */
+016
+public class AnalogEncoder implements Sendable, AutoCloseable {
+017
+private final AnalogInput m_analogInput;
+018
+private boolean m_ownsAnalogInput;
+019
+private double m_fullRange;
+020
+private double m_expectedZero;
+021
+private double m_sensorMin;
+022
+private double m_sensorMax = 1.0;
+023
+private boolean m_isInverted;
+024
+025
+private SimDevice m_simDevice;
+026
+private SimDouble m_simPosition;
+027
+028
+/**
+029
+* Construct a new AnalogEncoder attached to a specific AnalogIn channel.
+030
+*
+031
+* @param channel the analog input channel to attach to
+032
+* @param fullRange the value to report at maximum travel
+033
+* @param expectedZero the reading where you would expect a 0 from get()
+034
+*/
+035
+public AnalogEncoder(int channel, double fullRange, double expectedZero) {
+036
+this(new AnalogInput(channel), fullRange, expectedZero);
+037
+m_ownsAnalogInput = true;
+038
+}
+039
+040
+/**
+041
+* Construct a new AnalogEncoder attached to a specific AnalogInput.
+042
+*
+043
+* @param analogInput the analog input to attach to
+044
+* @param fullRange the value to report at maximum travel
+045
+* @param expectedZero the reading where you would expect a 0 from get()
+046
+*/
+047
+@SuppressWarnings("this-escape")
+048
+public AnalogEncoder(AnalogInput analogInput, double fullRange, double expectedZero) {
+049
+m_analogInput = analogInput;
+050
+init(fullRange, expectedZero);
+051
+}
+052
+053
+/**
+054
+* Construct a new AnalogEncoder attached to a specific AnalogIn channel.
+055
+*
+056
+* <p>This has a fullRange of 1 and an expectedZero of 0.
+057
+*
+058
+* @param channel the analog input channel to attach to
+059
+*/
+060
+public AnalogEncoder(int channel) {
+061
+this(channel, 1.0, 0.0);
+062
+}
+063
+064
+/**
+065
+* Construct a new AnalogEncoder attached to a specific AnalogInput.
+066
+*
+067
+* <p>This has a fullRange of 1 and an expectedZero of 0.
+068
+*
+069
+* @param analogInput the analog input to attach to
+070
+*/
+071
+@SuppressWarnings("this-escape")
+072
+public AnalogEncoder(AnalogInput analogInput) {
+073
+this(analogInput, 1.0, 0.0);
+074
+}
+075
+076
+private void init(double fullRange, double expectedZero) {
+077
+m_simDevice = SimDevice.create("AnalogEncoder", m_analogInput.getChannel());
+078
+079
+if (m_simDevice != null) {
+080
+m_simPosition = m_simDevice.createDouble("Position", Direction.kInput, 0.0);
+081
+}
+082
+083
+m_fullRange = fullRange;
+084
+m_expectedZero = expectedZero;
+085
+086
+SendableRegistry.addLW(this, "Analog Encoder", m_analogInput.getChannel());
+087
+}
+088
+089
+private double mapSensorRange(double pos) {
+090
+// map sensor range
+091
+if (pos < m_sensorMin) {
+092
+pos = m_sensorMin;
+093
+}
+094
+if (pos > m_sensorMax) {
+095
+pos = m_sensorMax;
+096
+}
+097
+pos = (pos - m_sensorMin) / (m_sensorMax - m_sensorMin);
+098
+return pos;
+099
+}
+100
+101
+/**
+102
+* Get the encoder value.
+103
+*
+104
+* @return the encoder value scaled by the full range input
+105
+*/
+106
+public double get() {
+107
+if (m_simPosition != null) {
+108
+return m_simPosition.get();
+109
+}
+110
+111
+double analog = m_analogInput.getVoltage();
+112
+double pos = analog / RobotController.getVoltage5V();
+113
+114
+// Map sensor range if range isn't full
+115
+pos = mapSensorRange(pos);
+116
+117
+// Compute full range and offset
+118
+pos = pos * m_fullRange - m_expectedZero;
+119
+120
+// Map from 0 - Full Range
+121
+double result = MathUtil.inputModulus(pos, 0, m_fullRange);
+122
+// Invert if necessary
+123
+if (m_isInverted) {
+124
+return m_fullRange - result;
+125
+}
+126
+return result;
+127
+}
+128
+129
+/**
+130
+* Set the encoder voltage percentage range. Analog sensors are not always fully stable at the end
+131
+* of their travel ranges. Shrinking this range down can help mitigate issues with that.
+132
+*
+133
+* @param min minimum voltage percentage (0-1 range)
+134
+* @param max maximum voltage percentage (0-1 range)
+135
+*/
+136
+public void setVoltagePercentageRange(double min, double max) {
+137
+m_sensorMin = MathUtil.clamp(min, 0.0, 1.0);
+138
+m_sensorMax = MathUtil.clamp(max, 0.0, 1.0);
+139
+}
+140
+141
+/**
+142
+* Set if this encoder is inverted.
+143
+*
+144
+* @param inverted true to invert the encoder, false otherwise
+145
+*/
+146
+public void setInverted(boolean inverted) {
+147
+m_isInverted = inverted;
+148
+}
+149
+150
+/**
+151
+* Get the channel number.
+152
+*
+153
+* @return The channel number.
+154
+*/
+155
+public int getChannel() {
+156
+return m_analogInput.getChannel();
+157
+}
+158
+159
+@Override
+160
+public void close() {
+161
+if (m_ownsAnalogInput) {
+162
+m_analogInput.close();
+163
+}
+164
+if (m_simDevice != null) {
+165
+m_simDevice.close();
+166
+}
+167
+}
+168
+169
+@Override
+170
+public void initSendable(SendableBuilder builder) {
+171
+builder.setSmartDashboardType("AbsoluteEncoder");
+172
+builder.addDoubleProperty("Position", this::get, null);
+173
+}
+174
+}

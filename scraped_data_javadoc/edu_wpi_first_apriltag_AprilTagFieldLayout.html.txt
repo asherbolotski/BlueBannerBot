@@ -1,0 +1,394 @@
+Package
+edu.wpi.first.apriltag
+Class AprilTagFieldLayout
+java.lang.Object
+edu.wpi.first.apriltag.AprilTagFieldLayout
+public class
+AprilTagFieldLayout
+extends
+Object
+Class for representing a layout of AprilTags on a field and reading them from a JSON format.
+The JSON format contains two top-level objects, "tags" and "field". The "tags" object is a
+ list of all AprilTags contained within a layout. Each AprilTag serializes to a JSON object
+ containing an ID and a Pose3d. The "field" object is a descriptor of the size of the field in
+ meters with "width" and "length" values. This is to account for arbitrary field sizes when
+ transforming the poses.
+Pose3ds in the JSON are measured using the normal FRC coordinate system, NWU with the origin
+ at the bottom-right corner of the blue alliance wall.
+setOrigin(OriginPosition)
+can be
+ used to change the poses returned from
+getTagPose(int)
+to be from the
+ perspective of a specific alliance.
+Tag poses represent the center of the tag, with a zero rotation representing a tag that is
+ upright and facing away from the (blue) alliance wall (that is, towards the opposing alliance).
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+AprilTagFieldLayout.OriginPosition
+Common origin positions for the AprilTag coordinate system.
+Constructor Summary
+Constructors
+Constructor
+Description
+AprilTagFieldLayout
+(
+String
+path)
+Construct a new AprilTagFieldLayout with values imported from a JSON file.
+AprilTagFieldLayout
+(
+Path
+path)
+Construct a new AprilTagFieldLayout with values imported from a JSON file.
+AprilTagFieldLayout
+(
+List
+<
+AprilTag
+> apriltags,
+ double fieldLength,
+ double fieldWidth)
+Construct a new AprilTagFieldLayout from a list of
+AprilTag
+objects.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+equals
+(
+Object
+obj)
+double
+getFieldLength
+()
+Returns the length of the field the layout is representing in meters.
+double
+getFieldWidth
+()
+Returns the length of the field the layout is representing in meters.
+Pose3d
+getOrigin
+()
+Returns the origin used for tag pose transformation.
+Optional
+<
+Pose3d
+>
+getTagPose
+(int ID)
+Gets an AprilTag pose by its ID.
+List
+<
+AprilTag
+>
+getTags
+()
+Returns a List of the
+AprilTags
+used in this layout.
+int
+hashCode
+()
+static
+AprilTagFieldLayout
+loadField
+(
+AprilTagFields
+field)
+Get an official
+AprilTagFieldLayout
+.
+static
+AprilTagFieldLayout
+loadFromResource
+(
+String
+resourcePath)
+Deserializes a field layout from a resource within a internal jar file.
+void
+serialize
+(
+String
+path)
+Serializes a AprilTagFieldLayout to a JSON file.
+void
+serialize
+(
+Path
+path)
+Serializes a AprilTagFieldLayout to a JSON file.
+final void
+setOrigin
+(
+AprilTagFieldLayout.OriginPosition
+origin)
+Sets the origin based on a predefined enumeration of coordinate frame origins.
+final void
+setOrigin
+(
+Pose3d
+origin)
+Sets the origin for tag pose transformation.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AprilTagFieldLayout
+public
+AprilTagFieldLayout
+(
+String
+path)
+throws
+IOException
+Construct a new AprilTagFieldLayout with values imported from a JSON file.
+Parameters:
+path
+- Path of the JSON file to import from.
+Throws:
+IOException
+- If reading from the file fails.
+AprilTagFieldLayout
+public
+AprilTagFieldLayout
+(
+Path
+path)
+throws
+IOException
+Construct a new AprilTagFieldLayout with values imported from a JSON file.
+Parameters:
+path
+- Path of the JSON file to import from.
+Throws:
+IOException
+- If reading from the file fails.
+AprilTagFieldLayout
+public
+AprilTagFieldLayout
+(
+List
+<
+AprilTag
+> apriltags,
+ double fieldLength,
+ double fieldWidth)
+Construct a new AprilTagFieldLayout from a list of
+AprilTag
+objects.
+Parameters:
+apriltags
+- List of
+AprilTag
+.
+fieldLength
+- Length of the field the layout is representing in meters.
+fieldWidth
+- Width of the field the layout is representing in meters.
+Method Details
+getTags
+public
+List
+<
+AprilTag
+>
+getTags
+()
+Returns a List of the
+AprilTags
+used in this layout.
+Returns:
+The
+AprilTags
+used in this layout.
+getFieldLength
+public
+double
+getFieldLength
+()
+Returns the length of the field the layout is representing in meters.
+Returns:
+length, in meters
+getFieldWidth
+public
+double
+getFieldWidth
+()
+Returns the length of the field the layout is representing in meters.
+Returns:
+width, in meters
+setOrigin
+public final
+void
+setOrigin
+(
+AprilTagFieldLayout.OriginPosition
+origin)
+Sets the origin based on a predefined enumeration of coordinate frame origins. The origins are
+ calculated from the field dimensions.
+This transforms the Pose3d objects returned by
+getTagPose(int)
+to return the
+ correct pose relative to a predefined coordinate frame.
+Parameters:
+origin
+- The predefined origin
+setOrigin
+public final
+void
+setOrigin
+(
+Pose3d
+origin)
+Sets the origin for tag pose transformation.
+This transforms the Pose3d objects returned by
+getTagPose(int)
+to return the
+ correct pose relative to the provided origin.
+Parameters:
+origin
+- The new origin for tag transformations
+getOrigin
+public
+Pose3d
+getOrigin
+()
+Returns the origin used for tag pose transformation.
+Returns:
+the origin
+getTagPose
+public
+Optional
+<
+Pose3d
+>
+getTagPose
+(int ID)
+Gets an AprilTag pose by its ID.
+Parameters:
+ID
+- The ID of the tag.
+Returns:
+The pose corresponding to the ID passed in or an empty optional if a tag with that ID
+     was not found.
+serialize
+public
+void
+serialize
+(
+String
+path)
+throws
+IOException
+Serializes a AprilTagFieldLayout to a JSON file.
+Parameters:
+path
+- The path to write to.
+Throws:
+IOException
+- If writing to the file fails.
+serialize
+public
+void
+serialize
+(
+Path
+path)
+throws
+IOException
+Serializes a AprilTagFieldLayout to a JSON file.
+Parameters:
+path
+- The path to write to.
+Throws:
+IOException
+- If writing to the file fails.
+loadField
+public static
+AprilTagFieldLayout
+loadField
+(
+AprilTagFields
+field)
+Get an official
+AprilTagFieldLayout
+.
+Parameters:
+field
+- The loadable AprilTag field layout.
+Returns:
+AprilTagFieldLayout of the field.
+Throws:
+UncheckedIOException
+- If the layout does not exist.
+loadFromResource
+public static
+AprilTagFieldLayout
+loadFromResource
+(
+String
+resourcePath)
+throws
+IOException
+Deserializes a field layout from a resource within a internal jar file.
+Users should use
+AprilTagFields.loadAprilTagLayoutField()
+to load official layouts
+ and
+AprilTagFieldLayout(String)
+for custom layouts.
+Parameters:
+resourcePath
+- The absolute path of the resource
+Returns:
+The deserialized layout
+Throws:
+IOException
+- If the resource could not be loaded
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Overrides:
+equals
+in class
+Object
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object

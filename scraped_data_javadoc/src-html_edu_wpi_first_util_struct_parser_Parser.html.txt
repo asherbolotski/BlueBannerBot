@@ -1,0 +1,298 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.struct.parser;
+006
+007
+import java.util.HashMap;
+008
+import java.util.Map;
+009
+010
+/** Raw struct schema parser. */
+011
+public class Parser {
+012
+/**
+013
+* Construct a raw struct schema parser.
+014
+*
+015
+* @param in schema
+016
+*/
+017
+public Parser(String in) {
+018
+m_lexer = new Lexer(in);
+019
+}
+020
+021
+/**
+022
+* Parses the schema.
+023
+*
+024
+* @return parsed schema object
+025
+* @throws ParseException on parse error
+026
+*/
+027
+public ParsedSchema parse() throws ParseException {
+028
+ParsedSchema schema = new ParsedSchema();
+029
+do {
+030
+getNextToken();
+031
+if (m_token == TokenKind.kSemicolon) {
+032
+continue;
+033
+}
+034
+if (m_token == TokenKind.kEndOfInput) {
+035
+break;
+036
+}
+037
+schema.declarations.add(parseDeclaration());
+038
+} while (m_token != TokenKind.kEndOfInput);
+039
+return schema;
+040
+}
+041
+042
+private ParsedDeclaration parseDeclaration() throws ParseException {
+043
+ParsedDeclaration decl = new ParsedDeclaration();
+044
+045
+// optional enum specification
+046
+if (m_token == TokenKind.kIdentifier && "enum".equals(m_lexer.getTokenText())) {
+047
+getNextToken();
+048
+expect(TokenKind.kLeftBrace);
+049
+decl.enumValues = parseEnum();
+050
+getNextToken();
+051
+} else if (m_token == TokenKind.kLeftBrace) {
+052
+decl.enumValues = parseEnum();
+053
+getNextToken();
+054
+}
+055
+056
+// type name
+057
+expect(TokenKind.kIdentifier);
+058
+decl.typeString = m_lexer.getTokenText();
+059
+getNextToken();
+060
+061
+// identifier name
+062
+expect(TokenKind.kIdentifier);
+063
+decl.name = m_lexer.getTokenText();
+064
+getNextToken();
+065
+066
+// array or bit field
+067
+if (m_token == TokenKind.kLeftBracket) {
+068
+getNextToken();
+069
+expect(TokenKind.kInteger);
+070
+String valueStr = m_lexer.getTokenText();
+071
+int value;
+072
+try {
+073
+value = Integer.parseInt(valueStr);
+074
+} catch (NumberFormatException e) {
+075
+value = 0;
+076
+}
+077
+if (value > 0) {
+078
+decl.arraySize = value;
+079
+} else {
+080
+throw new ParseException(
+081
+m_lexer.m_pos, "array size '" + valueStr + "' is not a positive integer");
+082
+}
+083
+getNextToken();
+084
+expect(TokenKind.kRightBracket);
+085
+getNextToken();
+086
+} else if (m_token == TokenKind.kColon) {
+087
+getNextToken();
+088
+expect(TokenKind.kInteger);
+089
+String valueStr = m_lexer.getTokenText();
+090
+int value;
+091
+try {
+092
+value = Integer.parseInt(valueStr);
+093
+} catch (NumberFormatException e) {
+094
+value = 0;
+095
+}
+096
+if (value > 0) {
+097
+decl.bitWidth = value;
+098
+} else {
+099
+throw new ParseException(
+100
+m_lexer.m_pos, "bitfield width '" + valueStr + "' is not a positive integer");
+101
+}
+102
+getNextToken();
+103
+}
+104
+105
+// declaration must end with EOF or semicolon
+106
+if (m_token != TokenKind.kEndOfInput) {
+107
+expect(TokenKind.kSemicolon);
+108
+}
+109
+110
+return decl;
+111
+}
+112
+113
+private Map<String, Long> parseEnum() throws ParseException {
+114
+Map<String, Long> map = new HashMap<>();
+115
+116
+// we start with current = '{'
+117
+getNextToken();
+118
+while (m_token != TokenKind.kRightBrace) {
+119
+expect(TokenKind.kIdentifier);
+120
+final String name = m_lexer.getTokenText();
+121
+getNextToken();
+122
+expect(TokenKind.kEquals);
+123
+getNextToken();
+124
+expect(TokenKind.kInteger);
+125
+String valueStr = m_lexer.getTokenText();
+126
+long value;
+127
+try {
+128
+value = Long.parseLong(valueStr);
+129
+} catch (NumberFormatException e) {
+130
+throw new ParseException(m_lexer.m_pos, "could not parse enum value '" + valueStr + "'");
+131
+}
+132
+map.put(name, value);
+133
+getNextToken();
+134
+if (m_token == TokenKind.kRightBrace) {
+135
+break;
+136
+}
+137
+expect(TokenKind.kComma);
+138
+getNextToken();
+139
+}
+140
+return map;
+141
+}
+142
+143
+private TokenKind getNextToken() {
+144
+m_token = m_lexer.scan();
+145
+return m_token;
+146
+}
+147
+148
+private void expect(TokenKind kind) throws ParseException {
+149
+if (m_token != kind) {
+150
+throw new ParseException(
+151
+m_lexer.m_pos, "expected " + kind + ", got '" + m_lexer.getTokenText() + "'");
+152
+}
+153
+}
+154
+155
+final Lexer m_lexer;
+156
+TokenKind m_token;
+157
+}

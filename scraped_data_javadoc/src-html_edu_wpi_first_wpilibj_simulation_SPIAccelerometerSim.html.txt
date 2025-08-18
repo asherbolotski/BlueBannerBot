@@ -1,0 +1,334 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.NotifyCallback;
+008
+import edu.wpi.first.hal.simulation.SPIAccelerometerDataJNI;
+009
+010
+/** A class to control a simulated accelerometer over SPI. */
+011
+public class SPIAccelerometerSim {
+012
+private final int m_index;
+013
+014
+/**
+015
+* Construct a new simulation object.
+016
+*
+017
+* @param index the HAL index of the accelerometer
+018
+*/
+019
+public SPIAccelerometerSim(int index) {
+020
+m_index = index;
+021
+}
+022
+023
+/**
+024
+* Register a callback to be run when this accelerometer activates.
+025
+*
+026
+* @param callback the callback
+027
+* @param initialNotify whether to run the callback with the initial state
+028
+* @return the {@link CallbackStore} object associated with this callback.
+029
+*/
+030
+public CallbackStore registerActiveCallback(NotifyCallback callback, boolean initialNotify) {
+031
+int uid = SPIAccelerometerDataJNI.registerActiveCallback(m_index, callback, initialNotify);
+032
+return new CallbackStore(m_index, uid, SPIAccelerometerDataJNI::cancelActiveCallback);
+033
+}
+034
+035
+/**
+036
+* Check whether the accelerometer is active.
+037
+*
+038
+* @return true if active
+039
+*/
+040
+public boolean getActive() {
+041
+return SPIAccelerometerDataJNI.getActive(m_index);
+042
+}
+043
+044
+/**
+045
+* Define whether this accelerometer is active.
+046
+*
+047
+* @param active the new state
+048
+*/
+049
+public void setActive(boolean active) {
+050
+SPIAccelerometerDataJNI.setActive(m_index, active);
+051
+}
+052
+053
+/**
+054
+* Register a callback to be run whenever the range changes.
+055
+*
+056
+* @param callback the callback
+057
+* @param initialNotify whether to call the callback with the initial state
+058
+* @return the {@link CallbackStore} object associated with this callback.
+059
+*/
+060
+public CallbackStore registerRangeCallback(NotifyCallback callback, boolean initialNotify) {
+061
+int uid = SPIAccelerometerDataJNI.registerRangeCallback(m_index, callback, initialNotify);
+062
+return new CallbackStore(m_index, uid, SPIAccelerometerDataJNI::cancelRangeCallback);
+063
+}
+064
+065
+/**
+066
+* Check the range of this accelerometer.
+067
+*
+068
+* @return the accelerometer range
+069
+*/
+070
+public int getRange() {
+071
+return SPIAccelerometerDataJNI.getRange(m_index);
+072
+}
+073
+074
+/**
+075
+* Change the range of this accelerometer.
+076
+*
+077
+* @param range the new accelerometer range
+078
+*/
+079
+public void setRange(int range) {
+080
+SPIAccelerometerDataJNI.setRange(m_index, range);
+081
+}
+082
+083
+/**
+084
+* Register a callback to be run whenever the X axis value changes.
+085
+*
+086
+* @param callback the callback
+087
+* @param initialNotify whether to call the callback with the initial state
+088
+* @return the {@link CallbackStore} object associated with this callback.
+089
+*/
+090
+public CallbackStore registerXCallback(NotifyCallback callback, boolean initialNotify) {
+091
+int uid = SPIAccelerometerDataJNI.registerXCallback(m_index, callback, initialNotify);
+092
+return new CallbackStore(m_index, uid, SPIAccelerometerDataJNI::cancelXCallback);
+093
+}
+094
+095
+/**
+096
+* Measure the X axis value.
+097
+*
+098
+* @return the X axis measurement
+099
+*/
+100
+public double getX() {
+101
+return SPIAccelerometerDataJNI.getX(m_index);
+102
+}
+103
+104
+/**
+105
+* Change the X axis value of the accelerometer.
+106
+*
+107
+* @param x the new reading of the X axis
+108
+*/
+109
+public void setX(double x) {
+110
+SPIAccelerometerDataJNI.setX(m_index, x);
+111
+}
+112
+113
+/**
+114
+* Register a callback to be run whenever the Y axis value changes.
+115
+*
+116
+* @param callback the callback
+117
+* @param initialNotify whether to call the callback with the initial state
+118
+* @return the {@link CallbackStore} object associated with this callback.
+119
+*/
+120
+public CallbackStore registerYCallback(NotifyCallback callback, boolean initialNotify) {
+121
+int uid = SPIAccelerometerDataJNI.registerYCallback(m_index, callback, initialNotify);
+122
+return new CallbackStore(m_index, uid, SPIAccelerometerDataJNI::cancelYCallback);
+123
+}
+124
+125
+/**
+126
+* Measure the Y axis value.
+127
+*
+128
+* @return the Y axis measurement
+129
+*/
+130
+public double getY() {
+131
+return SPIAccelerometerDataJNI.getY(m_index);
+132
+}
+133
+134
+/**
+135
+* Change the Y axis value of the accelerometer.
+136
+*
+137
+* @param y the new reading of the Y axis
+138
+*/
+139
+public void setY(double y) {
+140
+SPIAccelerometerDataJNI.setY(m_index, y);
+141
+}
+142
+143
+/**
+144
+* Register a callback to be run whenever the Z axis value changes.
+145
+*
+146
+* @param callback the callback
+147
+* @param initialNotify whether to call the callback with the initial state
+148
+* @return the {@link CallbackStore} object associated with this callback.
+149
+*/
+150
+public CallbackStore registerZCallback(NotifyCallback callback, boolean initialNotify) {
+151
+int uid = SPIAccelerometerDataJNI.registerZCallback(m_index, callback, initialNotify);
+152
+return new CallbackStore(m_index, uid, SPIAccelerometerDataJNI::cancelZCallback);
+153
+}
+154
+155
+/**
+156
+* Measure the Z axis value.
+157
+*
+158
+* @return the Z axis measurement
+159
+*/
+160
+public double getZ() {
+161
+return SPIAccelerometerDataJNI.getZ(m_index);
+162
+}
+163
+164
+/**
+165
+* Change the Z axis value of the accelerometer.
+166
+*
+167
+* @param z the new reading of the Z axis
+168
+*/
+169
+public void setZ(double z) {
+170
+SPIAccelerometerDataJNI.setZ(m_index, z);
+171
+}
+172
+173
+/** Reset all simulation data of this object. */
+174
+public void resetData() {
+175
+SPIAccelerometerDataJNI.resetData(m_index);
+176
+}
+177
+}

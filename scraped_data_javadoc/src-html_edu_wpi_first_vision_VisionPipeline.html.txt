@@ -1,0 +1,45 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.vision;
+006
+007
+import org.opencv.core.Mat;
+008
+009
+/**
+010
+* A vision pipeline is responsible for running a group of OpenCV algorithms to extract data from an
+011
+* image.
+012
+*
+013
+* @see VisionRunner
+014
+* @see VisionThread
+015
+*/
+016
+public interface VisionPipeline {
+017
+/**
+018
+* Processes the image input and sets the result objects. Implementations should make these
+019
+* objects accessible.
+020
+*
+021
+* @param image The image to process.
+022
+*/
+023
+void process(Mat image);
+024
+}

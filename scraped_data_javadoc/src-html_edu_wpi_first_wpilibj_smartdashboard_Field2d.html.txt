@@ -1,0 +1,240 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.smartdashboard;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.geometry.Rotation2d;
+009
+import edu.wpi.first.networktables.NTSendable;
+010
+import edu.wpi.first.networktables.NTSendableBuilder;
+011
+import edu.wpi.first.networktables.NetworkTable;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+import java.util.ArrayList;
+014
+import java.util.List;
+015
+016
+/**
+017
+* 2D representation of game field for dashboards.
+018
+*
+019
+* <p>An object's pose is the location shown on the dashboard view. Note that for the robot, this
+020
+* may or may not match the internal odometry. For example, the robot is shown at a particular
+021
+* starting location, the pose in this class would represent the actual location on the field, but
+022
+* the robot's internal state might have a 0,0,0 pose (unless it's initialized to something
+023
+* different).
+024
+*
+025
+* <p>As the user is able to edit the pose, code performing updates should get the robot pose,
+026
+* transform it as appropriate (e.g. based on wheel odometry), and set the new pose.
+027
+*
+028
+* <p>This class provides methods to set the robot pose, but other objects can also be shown by
+029
+* using the getObject() function. Other objects can also have multiple poses (which will show the
+030
+* object at multiple locations).
+031
+*/
+032
+public class Field2d implements NTSendable, AutoCloseable {
+033
+/** Constructor. */
+034
+@SuppressWarnings("this-escape")
+035
+public Field2d() {
+036
+FieldObject2d obj = new FieldObject2d("Robot");
+037
+obj.setPose(Pose2d.kZero);
+038
+m_objects.add(obj);
+039
+SendableRegistry.add(this, "Field");
+040
+}
+041
+042
+@Override
+043
+public void close() {
+044
+for (FieldObject2d obj : m_objects) {
+045
+obj.close();
+046
+}
+047
+}
+048
+049
+/**
+050
+* Set the robot pose from a Pose object.
+051
+*
+052
+* @param pose 2D pose
+053
+*/
+054
+public synchronized void setRobotPose(Pose2d pose) {
+055
+m_objects.get(0).setPose(pose);
+056
+}
+057
+058
+/**
+059
+* Set the robot pose from x, y, and rotation.
+060
+*
+061
+* @param xMeters X location, in meters
+062
+* @param yMeters Y location, in meters
+063
+* @param rotation rotation
+064
+*/
+065
+public synchronized void setRobotPose(double xMeters, double yMeters, Rotation2d rotation) {
+066
+m_objects.get(0).setPose(xMeters, yMeters, rotation);
+067
+}
+068
+069
+/**
+070
+* Get the robot pose.
+071
+*
+072
+* @return 2D pose
+073
+*/
+074
+public synchronized Pose2d getRobotPose() {
+075
+return m_objects.get(0).getPose();
+076
+}
+077
+078
+/**
+079
+* Get or create a field object.
+080
+*
+081
+* @param name The field object's name.
+082
+* @return Field object
+083
+*/
+084
+public synchronized FieldObject2d getObject(String name) {
+085
+for (FieldObject2d obj : m_objects) {
+086
+if (obj.m_name.equals(name)) {
+087
+return obj;
+088
+}
+089
+}
+090
+FieldObject2d obj = new FieldObject2d(name);
+091
+m_objects.add(obj);
+092
+if (m_table != null) {
+093
+synchronized (obj) {
+094
+obj.m_entry = m_table.getDoubleArrayTopic(name).getEntry(new double[] {});
+095
+}
+096
+}
+097
+return obj;
+098
+}
+099
+100
+/**
+101
+* Get the robot object.
+102
+*
+103
+* @return Field object for robot
+104
+*/
+105
+public synchronized FieldObject2d getRobotObject() {
+106
+return m_objects.get(0);
+107
+}
+108
+109
+@Override
+110
+public void initSendable(NTSendableBuilder builder) {
+111
+builder.setSmartDashboardType("Field2d");
+112
+113
+synchronized (this) {
+114
+m_table = builder.getTable();
+115
+for (FieldObject2d obj : m_objects) {
+116
+synchronized (obj) {
+117
+obj.m_entry = m_table.getDoubleArrayTopic(obj.m_name).getEntry(new double[] {});
+118
+obj.updateEntry(true);
+119
+}
+120
+}
+121
+}
+122
+}
+123
+124
+private NetworkTable m_table;
+125
+private final List<FieldObject2d> m_objects = new ArrayList<>();
+126
+}

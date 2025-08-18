@@ -1,0 +1,147 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.trajectory.constraint;
+006
+007
+import edu.wpi.first.math.geometry.Pose2d;
+008
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+009
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+010
+011
+/**
+012
+* A class that enforces constraints on the swerve drive kinematics. This can be used to ensure that
+013
+* the trajectory is constructed so that the commanded velocities for all 4 wheels of the drivetrain
+014
+* stay below a certain limit.
+015
+*/
+016
+public class SwerveDriveKinematicsConstraint implements TrajectoryConstraint {
+017
+private final double m_maxSpeedMetersPerSecond;
+018
+private final SwerveDriveKinematics m_kinematics;
+019
+020
+/**
+021
+* Constructs a swerve drive kinematics constraint.
+022
+*
+023
+* @param kinematics Swerve drive kinematics.
+024
+* @param maxSpeedMetersPerSecond The max speed that a side of the robot can travel at.
+025
+*/
+026
+public SwerveDriveKinematicsConstraint(
+027
+final SwerveDriveKinematics kinematics, double maxSpeedMetersPerSecond) {
+028
+m_maxSpeedMetersPerSecond = maxSpeedMetersPerSecond;
+029
+m_kinematics = kinematics;
+030
+}
+031
+032
+/**
+033
+* Returns the max velocity given the current pose and curvature.
+034
+*
+035
+* @param poseMeters The pose at the current point in the trajectory.
+036
+* @param curvatureRadPerMeter The curvature at the current point in the trajectory.
+037
+* @param velocityMetersPerSecond The velocity at the current point in the trajectory before
+038
+*     constraints are applied.
+039
+* @return The absolute maximum velocity.
+040
+*/
+041
+@Override
+042
+public double getMaxVelocityMetersPerSecond(
+043
+Pose2d poseMeters, double curvatureRadPerMeter, double velocityMetersPerSecond) {
+044
+// Represents the velocity of the chassis in the x direction
+045
+var xdVelocity = velocityMetersPerSecond * poseMeters.getRotation().getCos();
+046
+047
+// Represents the velocity of the chassis in the y direction
+048
+var ydVelocity = velocityMetersPerSecond * poseMeters.getRotation().getSin();
+049
+050
+// Create an object to represent the current chassis speeds.
+051
+var chassisSpeeds =
+052
+new ChassisSpeeds(xdVelocity, ydVelocity, velocityMetersPerSecond * curvatureRadPerMeter);
+053
+054
+// Get the wheel speeds and normalize them to within the max velocity.
+055
+var wheelSpeeds = m_kinematics.toSwerveModuleStates(chassisSpeeds);
+056
+SwerveDriveKinematics.desaturateWheelSpeeds(wheelSpeeds, m_maxSpeedMetersPerSecond);
+057
+058
+// Convert normalized wheel speeds back to chassis speeds
+059
+var normSpeeds = m_kinematics.toChassisSpeeds(wheelSpeeds);
+060
+061
+// Return the new linear chassis speed.
+062
+return Math.hypot(normSpeeds.vxMetersPerSecond, normSpeeds.vyMetersPerSecond);
+063
+}
+064
+065
+/**
+066
+* Returns the minimum and maximum allowable acceleration for the trajectory given pose,
+067
+* curvature, and speed.
+068
+*
+069
+* @param poseMeters The pose at the current point in the trajectory.
+070
+* @param curvatureRadPerMeter The curvature at the current point in the trajectory.
+071
+* @param velocityMetersPerSecond The speed at the current point in the trajectory.
+072
+* @return The min and max acceleration bounds.
+073
+*/
+074
+@Override
+075
+public MinMax getMinMaxAccelerationMetersPerSecondSq(
+076
+Pose2d poseMeters, double curvatureRadPerMeter, double velocityMetersPerSecond) {
+077
+return new MinMax();
+078
+}
+079
+}

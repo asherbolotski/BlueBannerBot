@@ -1,0 +1,299 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.controller;
+006
+007
+import edu.wpi.first.math.MathSharedStore;
+008
+import edu.wpi.first.math.MathUsageId;
+009
+import edu.wpi.first.util.sendable.Sendable;
+010
+import edu.wpi.first.util.sendable.SendableBuilder;
+011
+import edu.wpi.first.util.sendable.SendableRegistry;
+012
+013
+/**
+014
+* Implements a bang-bang controller, which outputs either 0 or 1 depending on whether the
+015
+* measurement is less than the setpoint. This maximally-aggressive control approach works very well
+016
+* for velocity control of high-inertia mechanisms, and poorly on most other things.
+017
+*
+018
+* <p>Note that this is an *asymmetric* bang-bang controller - it will not exert any control effort
+019
+* in the reverse direction (e.g. it won't try to slow down an over-speeding shooter wheel). This
+020
+* asymmetry is *extremely important.* Bang-bang control is extremely simple, but also potentially
+021
+* hazardous. Always ensure that your motor controllers are set to "coast" before attempting to
+022
+* control them with a bang-bang controller.
+023
+*/
+024
+public class BangBangController implements Sendable {
+025
+private static int instances;
+026
+027
+private double m_tolerance;
+028
+029
+private double m_setpoint;
+030
+private double m_measurement;
+031
+032
+/**
+033
+* Creates a new bang-bang controller.
+034
+*
+035
+* <p>Always ensure that your motor controllers are set to "coast" before attempting to control
+036
+* them with a bang-bang controller.
+037
+*
+038
+* @param tolerance Tolerance for {@link #atSetpoint() atSetpoint}.
+039
+*/
+040
+@SuppressWarnings("this-escape")
+041
+public BangBangController(double tolerance) {
+042
+instances++;
+043
+044
+setTolerance(tolerance);
+045
+046
+SendableRegistry.addLW(this, "BangBangController", instances);
+047
+048
+MathSharedStore.reportUsage(MathUsageId.kController_BangBangController, instances);
+049
+}
+050
+051
+/**
+052
+* Creates a new bang-bang controller.
+053
+*
+054
+* <p>Always ensure that your motor controllers are set to "coast" before attempting to control
+055
+* them with a bang-bang controller.
+056
+*/
+057
+public BangBangController() {
+058
+this(Double.POSITIVE_INFINITY);
+059
+}
+060
+061
+/**
+062
+* Sets the setpoint for the bang-bang controller.
+063
+*
+064
+* @param setpoint The desired setpoint.
+065
+*/
+066
+public void setSetpoint(double setpoint) {
+067
+m_setpoint = setpoint;
+068
+}
+069
+070
+/**
+071
+* Returns the current setpoint of the bang-bang controller.
+072
+*
+073
+* @return The current setpoint.
+074
+*/
+075
+public double getSetpoint() {
+076
+return m_setpoint;
+077
+}
+078
+079
+/**
+080
+* Returns true if the error is within the tolerance of the setpoint.
+081
+*
+082
+* @return Whether the error is within the acceptable bounds.
+083
+*/
+084
+public boolean atSetpoint() {
+085
+return Math.abs(m_setpoint - m_measurement) < m_tolerance;
+086
+}
+087
+088
+/**
+089
+* Sets the error within which atSetpoint will return true.
+090
+*
+091
+* @param tolerance Position error which is tolerable.
+092
+*/
+093
+public final void setTolerance(double tolerance) {
+094
+m_tolerance = tolerance;
+095
+}
+096
+097
+/**
+098
+* Returns the current tolerance of the controller.
+099
+*
+100
+* @return The current tolerance.
+101
+*/
+102
+public double getTolerance() {
+103
+return m_tolerance;
+104
+}
+105
+106
+/**
+107
+* Returns the current measurement of the process variable.
+108
+*
+109
+* @return The current measurement of the process variable.
+110
+*/
+111
+public double getMeasurement() {
+112
+return m_measurement;
+113
+}
+114
+115
+/**
+116
+* Returns the current error.
+117
+*
+118
+* @return The current error.
+119
+*/
+120
+public double getError() {
+121
+return m_setpoint - m_measurement;
+122
+}
+123
+124
+/**
+125
+* Returns the calculated control output.
+126
+*
+127
+* <p>Always ensure that your motor controllers are set to "coast" before attempting to control
+128
+* them with a bang-bang controller.
+129
+*
+130
+* @param measurement The most recent measurement of the process variable.
+131
+* @param setpoint The setpoint for the process variable.
+132
+* @return The calculated motor output (0 or 1).
+133
+*/
+134
+public double calculate(double measurement, double setpoint) {
+135
+m_measurement = measurement;
+136
+m_setpoint = setpoint;
+137
+138
+return measurement < setpoint ? 1 : 0;
+139
+}
+140
+141
+/**
+142
+* Returns the calculated control output.
+143
+*
+144
+* @param measurement The most recent measurement of the process variable.
+145
+* @return The calculated motor output (0 or 1).
+146
+*/
+147
+public double calculate(double measurement) {
+148
+return calculate(measurement, m_setpoint);
+149
+}
+150
+151
+@Override
+152
+public void initSendable(SendableBuilder builder) {
+153
+builder.setSmartDashboardType("BangBangController");
+154
+builder.addDoubleProperty("tolerance", this::getTolerance, this::setTolerance);
+155
+builder.addDoubleProperty("setpoint", this::getSetpoint, this::setSetpoint);
+156
+builder.addDoubleProperty("measurement", this::getMeasurement, null);
+157
+builder.addDoubleProperty("error", this::getError, null);
+158
+builder.addBooleanProperty("atSetpoint", this::atSetpoint, null);
+159
+}
+160
+}

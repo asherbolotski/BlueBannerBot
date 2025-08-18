@@ -1,0 +1,315 @@
+Package
+edu.wpi.first.math.kinematics
+Class MecanumDriveWheelSpeeds
+java.lang.Object
+edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+MecanumDriveWheelSpeeds
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+Represents the wheel speeds for a mecanum drive drivetrain.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+double
+frontLeftMetersPerSecond
+Speed of the front left wheel.
+double
+frontRightMetersPerSecond
+Speed of the front right wheel.
+static final
+MecanumDriveWheelSpeedsProto
+proto
+MecanumDriveWheelSpeeds protobuf for serialization.
+double
+rearLeftMetersPerSecond
+Speed of the rear left wheel.
+double
+rearRightMetersPerSecond
+Speed of the rear right wheel.
+static final
+MecanumDriveWheelSpeedsStruct
+struct
+MecanumDriveWheelSpeeds struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+MecanumDriveWheelSpeeds
+()
+Constructs a MecanumDriveWheelSpeeds with zeros for all member fields.
+MecanumDriveWheelSpeeds
+(double frontLeftMetersPerSecond,
+ double frontRightMetersPerSecond,
+ double rearLeftMetersPerSecond,
+ double rearRightMetersPerSecond)
+Constructs a MecanumDriveWheelSpeeds.
+MecanumDriveWheelSpeeds
+(
+LinearVelocity
+frontLeft,
+LinearVelocity
+frontRight,
+LinearVelocity
+rearLeft,
+LinearVelocity
+rearRight)
+Constructs a MecanumDriveWheelSpeeds.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+desaturate
+(double attainableMaxSpeedMetersPerSecond)
+Renormalizes the wheel speeds if any individual speed is above the specified maximum.
+void
+desaturate
+(
+LinearVelocity
+attainableMaxSpeed)
+Renormalizes the wheel speeds if any individual speed is above the specified maximum.
+MecanumDriveWheelSpeeds
+div
+(double scalar)
+Divides the MecanumDriveWheelSpeeds by a scalar and returns the new MecanumDriveWheelSpeeds.
+MecanumDriveWheelSpeeds
+minus
+(
+MecanumDriveWheelSpeeds
+other)
+Subtracts the other MecanumDriveWheelSpeeds from the current MecanumDriveWheelSpeeds and
+ returns the difference.
+MecanumDriveWheelSpeeds
+plus
+(
+MecanumDriveWheelSpeeds
+other)
+Adds two MecanumDriveWheelSpeeds and returns the sum.
+MecanumDriveWheelSpeeds
+times
+(double scalar)
+Multiplies the MecanumDriveWheelSpeeds by a scalar and returns the new MecanumDriveWheelSpeeds.
+String
+toString
+()
+MecanumDriveWheelSpeeds
+unaryMinus
+()
+Returns the inverse of the current MecanumDriveWheelSpeeds.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+frontLeftMetersPerSecond
+public
+double
+frontLeftMetersPerSecond
+Speed of the front left wheel.
+frontRightMetersPerSecond
+public
+double
+frontRightMetersPerSecond
+Speed of the front right wheel.
+rearLeftMetersPerSecond
+public
+double
+rearLeftMetersPerSecond
+Speed of the rear left wheel.
+rearRightMetersPerSecond
+public
+double
+rearRightMetersPerSecond
+Speed of the rear right wheel.
+proto
+public static final
+MecanumDriveWheelSpeedsProto
+proto
+MecanumDriveWheelSpeeds protobuf for serialization.
+struct
+public static final
+MecanumDriveWheelSpeedsStruct
+struct
+MecanumDriveWheelSpeeds struct for serialization.
+Constructor Details
+MecanumDriveWheelSpeeds
+public
+MecanumDriveWheelSpeeds
+()
+Constructs a MecanumDriveWheelSpeeds with zeros for all member fields.
+MecanumDriveWheelSpeeds
+public
+MecanumDriveWheelSpeeds
+(double frontLeftMetersPerSecond,
+ double frontRightMetersPerSecond,
+ double rearLeftMetersPerSecond,
+ double rearRightMetersPerSecond)
+Constructs a MecanumDriveWheelSpeeds.
+Parameters:
+frontLeftMetersPerSecond
+- Speed of the front left wheel.
+frontRightMetersPerSecond
+- Speed of the front right wheel.
+rearLeftMetersPerSecond
+- Speed of the rear left wheel.
+rearRightMetersPerSecond
+- Speed of the rear right wheel.
+MecanumDriveWheelSpeeds
+public
+MecanumDriveWheelSpeeds
+(
+LinearVelocity
+frontLeft,
+LinearVelocity
+frontRight,
+LinearVelocity
+rearLeft,
+LinearVelocity
+rearRight)
+Constructs a MecanumDriveWheelSpeeds.
+Parameters:
+frontLeft
+- Speed of the front left wheel.
+frontRight
+- Speed of the front right wheel.
+rearLeft
+- Speed of the rear left wheel.
+rearRight
+- Speed of the rear right wheel.
+Method Details
+desaturate
+public
+void
+desaturate
+(double attainableMaxSpeedMetersPerSecond)
+Renormalizes the wheel speeds if any individual speed is above the specified maximum.
+Sometimes, after inverse kinematics, the requested speed from one or more wheels may be
+ above the max attainable speed for the driving motor on that wheel. To fix this issue, one can
+ reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+ absolute threshold, while maintaining the ratio of speeds between wheels.
+Parameters:
+attainableMaxSpeedMetersPerSecond
+- The absolute max speed that a wheel can reach.
+desaturate
+public
+void
+desaturate
+(
+LinearVelocity
+attainableMaxSpeed)
+Renormalizes the wheel speeds if any individual speed is above the specified maximum.
+Sometimes, after inverse kinematics, the requested speed from one or more wheels may be
+ above the max attainable speed for the driving motor on that wheel. To fix this issue, one can
+ reduce all the wheel speeds to make sure that all requested module speeds are at-or-below the
+ absolute threshold, while maintaining the ratio of speeds between wheels.
+Parameters:
+attainableMaxSpeed
+- The absolute max speed that a wheel can reach.
+plus
+public
+MecanumDriveWheelSpeeds
+plus
+(
+MecanumDriveWheelSpeeds
+other)
+Adds two MecanumDriveWheelSpeeds and returns the sum.
+For example, MecanumDriveWheelSpeeds{1.0, 0.5, 2.0, 1.5} + MecanumDriveWheelSpeeds{2.0, 1.5,
+ 0.5, 1.0} = MecanumDriveWheelSpeeds{3.0, 2.0, 2.5, 2.5}
+Parameters:
+other
+- The MecanumDriveWheelSpeeds to add.
+Returns:
+The sum of the MecanumDriveWheelSpeeds.
+minus
+public
+MecanumDriveWheelSpeeds
+minus
+(
+MecanumDriveWheelSpeeds
+other)
+Subtracts the other MecanumDriveWheelSpeeds from the current MecanumDriveWheelSpeeds and
+ returns the difference.
+For example, MecanumDriveWheelSpeeds{5.0, 4.0, 6.0, 2.5} - MecanumDriveWheelSpeeds{1.0, 2.0,
+ 3.0, 0.5} = MecanumDriveWheelSpeeds{4.0, 2.0, 3.0, 2.0}
+Parameters:
+other
+- The MecanumDriveWheelSpeeds to subtract.
+Returns:
+The difference between the two MecanumDriveWheelSpeeds.
+unaryMinus
+public
+MecanumDriveWheelSpeeds
+unaryMinus
+()
+Returns the inverse of the current MecanumDriveWheelSpeeds. This is equivalent to negating all
+ components of the MecanumDriveWheelSpeeds.
+Returns:
+The inverse of the current MecanumDriveWheelSpeeds.
+times
+public
+MecanumDriveWheelSpeeds
+times
+(double scalar)
+Multiplies the MecanumDriveWheelSpeeds by a scalar and returns the new MecanumDriveWheelSpeeds.
+For example, MecanumDriveWheelSpeeds{2.0, 2.5, 3.0, 3.5} * 2 = MecanumDriveWheelSpeeds{4.0,
+ 5.0, 6.0, 7.0}
+Parameters:
+scalar
+- The scalar to multiply by.
+Returns:
+The scaled MecanumDriveWheelSpeeds.
+div
+public
+MecanumDriveWheelSpeeds
+div
+(double scalar)
+Divides the MecanumDriveWheelSpeeds by a scalar and returns the new MecanumDriveWheelSpeeds.
+For example, MecanumDriveWheelSpeeds{2.0, 2.5, 1.5, 1.0} / 2 = MecanumDriveWheelSpeeds{1.0,
+ 1.25, 0.75, 0.5}
+Parameters:
+scalar
+- The scalar to divide by.
+Returns:
+The scaled MecanumDriveWheelSpeeds.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object

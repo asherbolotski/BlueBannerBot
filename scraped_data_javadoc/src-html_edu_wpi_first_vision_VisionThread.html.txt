@@ -1,0 +1,82 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.vision;
+006
+007
+import edu.wpi.first.cscore.VideoSource;
+008
+009
+/**
+010
+* A vision thread is a special thread that runs a vision pipeline. It is a <i>daemon</i> thread; it
+011
+* does not prevent the program from exiting when all other non-daemon threads have finished
+012
+* running.
+013
+*
+014
+* @see VisionPipeline
+015
+* @see VisionRunner
+016
+* @see Thread#setDaemon(boolean)
+017
+*/
+018
+public class VisionThread extends Thread {
+019
+/**
+020
+* Creates a vision thread that continuously runs a {@link VisionPipeline}.
+021
+*
+022
+* @param visionRunner the runner for a vision pipeline
+023
+*/
+024
+@SuppressWarnings("this-escape")
+025
+public VisionThread(VisionRunner<?> visionRunner) {
+026
+super(visionRunner::runForever, "WPILib Vision Thread");
+027
+setDaemon(true);
+028
+}
+029
+030
+/**
+031
+* Creates a new vision thread that continuously runs the given vision pipeline. This is
+032
+* equivalent to {@code new VisionThread(new VisionRunner<>(videoSource, pipeline, listener))}.
+033
+*
+034
+* @param videoSource the source for images the pipeline should process
+035
+* @param pipeline the pipeline to run
+036
+* @param listener the listener to copy outputs from the pipeline after it runs
+037
+* @param <P> the type of the pipeline
+038
+*/
+039
+public <P extends VisionPipeline> VisionThread(
+040
+VideoSource videoSource, P pipeline, VisionRunner.Listener<? super P> listener) {
+041
+this(new VisionRunner<>(videoSource, pipeline, listener));
+042
+}
+043
+}

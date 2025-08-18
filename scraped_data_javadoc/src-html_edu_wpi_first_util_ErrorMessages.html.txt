@@ -1,0 +1,78 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+import static java.util.Objects.requireNonNull;
+008
+009
+/** Utility class for common WPILib error messages. */
+010
+public final class ErrorMessages {
+011
+/** Utility class, so constructor is private. */
+012
+private ErrorMessages() {
+013
+throw new UnsupportedOperationException("This is a utility class!");
+014
+}
+015
+016
+/**
+017
+* Requires that a parameter of a method not be null; prints an error message with helpful
+018
+* debugging instructions if the parameter is null.
+019
+*
+020
+* @param <T> Type of object.
+021
+* @param obj The parameter that must not be null.
+022
+* @param paramName The name of the parameter.
+023
+* @param methodName The name of the method.
+024
+* @return The object parameter confirmed not to be null.
+025
+*/
+026
+public static <T> T requireNonNullParam(T obj, String paramName, String methodName) {
+027
+return requireNonNull(
+028
+obj,
+029
+"Parameter "
+030
++ paramName
+031
++ " in method "
+032
++ methodName
+033
++ " was null when it"
+034
++ " should not have been!  Check the stacktrace to find the responsible line of code - "
+035
++ "usually, it is the first line of user-written code indicated in the stacktrace.  "
+036
++ "Make sure all objects passed to the method in question were properly initialized -"
+037
++ " note that this may not be obvious if it is being called under "
+038
++ "dynamically-changing conditions!  Please do not seek additional technical assistance"
+039
++ " without doing this first!");
+040
+}
+041
+}

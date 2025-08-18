@@ -1,0 +1,96 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.struct;
+006
+007
+import edu.wpi.first.math.geometry.Twist3d;
+008
+import edu.wpi.first.util.struct.Struct;
+009
+import java.nio.ByteBuffer;
+010
+011
+public class Twist3dStruct implements Struct<Twist3d> {
+012
+@Override
+013
+public Class<Twist3d> getTypeClass() {
+014
+return Twist3d.class;
+015
+}
+016
+017
+@Override
+018
+public String getTypeName() {
+019
+return "Twist3d";
+020
+}
+021
+022
+@Override
+023
+public int getSize() {
+024
+return kSizeDouble * 6;
+025
+}
+026
+027
+@Override
+028
+public String getSchema() {
+029
+return "double dx;double dy;double dz;double rx;double ry;double rz";
+030
+}
+031
+032
+@Override
+033
+public Twist3d unpack(ByteBuffer bb) {
+034
+double dx = bb.getDouble();
+035
+double dy = bb.getDouble();
+036
+double dz = bb.getDouble();
+037
+double rx = bb.getDouble();
+038
+double ry = bb.getDouble();
+039
+double rz = bb.getDouble();
+040
+return new Twist3d(dx, dy, dz, rx, ry, rz);
+041
+}
+042
+043
+@Override
+044
+public void pack(ByteBuffer bb, Twist3d value) {
+045
+bb.putDouble(value.dx);
+046
+bb.putDouble(value.dy);
+047
+bb.putDouble(value.dz);
+048
+bb.putDouble(value.rx);
+049
+bb.putDouble(value.ry);
+050
+bb.putDouble(value.rz);
+051
+}
+052
+}

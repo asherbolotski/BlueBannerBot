@@ -1,0 +1,102 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.struct;
+006
+007
+import edu.wpi.first.math.geometry.Rotation2d;
+008
+import edu.wpi.first.math.geometry.Transform2d;
+009
+import edu.wpi.first.math.geometry.Translation2d;
+010
+import edu.wpi.first.util.struct.Struct;
+011
+import java.nio.ByteBuffer;
+012
+013
+public class Transform2dStruct implements Struct<Transform2d> {
+014
+@Override
+015
+public Class<Transform2d> getTypeClass() {
+016
+return Transform2d.class;
+017
+}
+018
+019
+@Override
+020
+public String getTypeName() {
+021
+return "Transform2d";
+022
+}
+023
+024
+@Override
+025
+public int getSize() {
+026
+return Translation2d.struct.getSize() + Rotation2d.struct.getSize();
+027
+}
+028
+029
+@Override
+030
+public String getSchema() {
+031
+return "Translation2d translation;Rotation2d rotation";
+032
+}
+033
+034
+@Override
+035
+public Struct<?>[] getNested() {
+036
+return new Struct<?>[] {Translation2d.struct, Rotation2d.struct};
+037
+}
+038
+039
+@Override
+040
+public Transform2d unpack(ByteBuffer bb) {
+041
+Translation2d translation = Translation2d.struct.unpack(bb);
+042
+Rotation2d rotation = Rotation2d.struct.unpack(bb);
+043
+return new Transform2d(translation, rotation);
+044
+}
+045
+046
+@Override
+047
+public void pack(ByteBuffer bb, Transform2d value) {
+048
+Translation2d.struct.pack(bb, value.getTranslation());
+049
+Rotation2d.struct.pack(bb, value.getRotation());
+050
+}
+051
+052
+@Override
+053
+public boolean isImmutable() {
+054
+return true;
+055
+}
+056
+}

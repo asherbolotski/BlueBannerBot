@@ -1,0 +1,203 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+010
+011
+/**
+012
+* A subsystem that generates and runs trapezoidal motion profiles automatically. The user specifies
+013
+* how to use the current state of the motion profile by overriding the `useState` method.
+014
+*
+015
+* <p>This class is provided by the NewCommands VendorDep
+016
+*
+017
+* @deprecated Use a TrapezoidProfile instead
+018
+*/
+019
+@Deprecated(forRemoval = true, since = "2025")
+020
+public abstract class TrapezoidProfileSubsystem extends SubsystemBase {
+021
+private final double m_period;
+022
+private final TrapezoidProfile m_profile;
+023
+024
+private TrapezoidProfile.State m_state;
+025
+private TrapezoidProfile.State m_goal;
+026
+027
+private boolean m_enabled = true;
+028
+029
+/**
+030
+* Creates a new TrapezoidProfileSubsystem.
+031
+*
+032
+* @param constraints The constraints (maximum velocity and acceleration) for the profiles.
+033
+* @param initialPosition The initial position of the controlled mechanism when the subsystem is
+034
+*     constructed.
+035
+* @param period The period of the main robot loop, in seconds.
+036
+*/
+037
+public TrapezoidProfileSubsystem(
+038
+TrapezoidProfile.Constraints constraints, double initialPosition, double period) {
+039
+requireNonNullParam(constraints, "constraints", "TrapezoidProfileSubsystem");
+040
+m_profile = new TrapezoidProfile(constraints);
+041
+m_state = new TrapezoidProfile.State(initialPosition, 0);
+042
+setGoal(initialPosition);
+043
+m_period = period;
+044
+}
+045
+046
+/**
+047
+* Creates a new TrapezoidProfileSubsystem.
+048
+*
+049
+* @param constraints The constraints (maximum velocity and acceleration) for the profiles.
+050
+* @param initialPosition The initial position of the controlled mechanism when the subsystem is
+051
+*     constructed.
+052
+*/
+053
+public TrapezoidProfileSubsystem(
+054
+TrapezoidProfile.Constraints constraints, double initialPosition) {
+055
+this(constraints, initialPosition, 0.02);
+056
+}
+057
+058
+/**
+059
+* Creates a new TrapezoidProfileSubsystem.
+060
+*
+061
+* @param constraints The constraints (maximum velocity and acceleration) for the profiles.
+062
+*/
+063
+public TrapezoidProfileSubsystem(TrapezoidProfile.Constraints constraints) {
+064
+this(constraints, 0, 0.02);
+065
+}
+066
+067
+@Override
+068
+public void periodic() {
+069
+m_state = m_profile.calculate(m_period, m_state, m_goal);
+070
+if (m_enabled) {
+071
+useState(m_state);
+072
+}
+073
+}
+074
+075
+/**
+076
+* Sets the goal state for the subsystem.
+077
+*
+078
+* @param goal The goal state for the subsystem's motion profile.
+079
+*/
+080
+public final void setGoal(TrapezoidProfile.State goal) {
+081
+m_goal = goal;
+082
+}
+083
+084
+/**
+085
+* Sets the goal state for the subsystem. Goal velocity assumed to be zero.
+086
+*
+087
+* @param goal The goal position for the subsystem's motion profile.
+088
+*/
+089
+public final void setGoal(double goal) {
+090
+setGoal(new TrapezoidProfile.State(goal, 0));
+091
+}
+092
+093
+/** Enable the TrapezoidProfileSubsystem's output. */
+094
+public void enable() {
+095
+m_enabled = true;
+096
+}
+097
+098
+/** Disable the TrapezoidProfileSubsystem's output. */
+099
+public void disable() {
+100
+m_enabled = false;
+101
+}
+102
+103
+/**
+104
+* Users should override this to consume the current state of the motion profile.
+105
+*
+106
+* @param state The current state of the motion profile.
+107
+*/
+108
+protected abstract void useState(TrapezoidProfile.State state);
+109
+}

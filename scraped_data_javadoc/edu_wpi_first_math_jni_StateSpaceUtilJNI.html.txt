@@ -1,0 +1,79 @@
+Package
+edu.wpi.first.math.jni
+Class StateSpaceUtilJNI
+java.lang.Object
+edu.wpi.first.math.jni.WPIMathJNI
+edu.wpi.first.math.jni.StateSpaceUtilJNI
+public final class
+StateSpaceUtilJNI
+extends
+WPIMathJNI
+StateSpaceUtil JNI.
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.math.jni.
+WPIMathJNI
+WPIMathJNI.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static boolean
+isStabilizable
+(int states,
+ int inputs,
+ double[] A,
+ double[] B)
+Returns true if (A, B) is a stabilizable pair.
+Methods inherited from class edu.wpi.first.math.jni.
+WPIMathJNI
+forceLoad
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+isStabilizable
+public static
+boolean
+isStabilizable
+(int states,
+ int inputs,
+ double[] A,
+ double[] B)
+Returns true if (A, B) is a stabilizable pair.
+(A, B) is stabilizable if and only if the uncontrollable eigenvalues of A, if any, have
+ absolute values less than one, where an eigenvalue is uncontrollable if rank(lambda * I - A, B)
+ < n where n is the number of states.
+Parameters:
+states
+- the number of states of the system.
+inputs
+- the number of inputs to the system.
+A
+- System matrix.
+B
+- Input matrix.
+Returns:
+If the system is stabilizable.

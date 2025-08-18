@@ -1,0 +1,109 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util;
+006
+007
+import java.util.ArrayList;
+008
+import java.util.List;
+009
+import java.util.concurrent.locks.ReentrantLock;
+010
+011
+/** A thread-safe container for handling events. */
+012
+public class EventVector {
+013
+private final ReentrantLock m_lock = new ReentrantLock();
+014
+private final List<Integer> m_events = new ArrayList<>();
+015
+016
+/** Default constructor. */
+017
+public EventVector() {}
+018
+019
+/**
+020
+* Adds an event to the event vector.
+021
+*
+022
+* @param handle The event to add
+023
+*/
+024
+public void add(int handle) {
+025
+m_lock.lock();
+026
+try {
+027
+m_events.add(handle);
+028
+} finally {
+029
+m_lock.unlock();
+030
+}
+031
+}
+032
+033
+/**
+034
+* Removes an event from the event vector.
+035
+*
+036
+* @param handle The event to remove
+037
+*/
+038
+public void remove(int handle) {
+039
+m_lock.lock();
+040
+try {
+041
+m_events.removeIf(x -> x == handle);
+042
+} finally {
+043
+m_lock.unlock();
+044
+}
+045
+}
+046
+047
+/** Wakes up all events in the event vector. */
+048
+public void wakeup() {
+049
+m_lock.lock();
+050
+try {
+051
+for (int eventHandle : m_events) {
+052
+WPIUtilJNI.setEvent(eventHandle);
+053
+}
+054
+} finally {
+055
+m_lock.unlock();
+056
+}
+057
+}
+058
+}

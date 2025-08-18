@@ -1,0 +1,91 @@
+Package
+edu.wpi.first.networktables
+Interface StringEntry
+All Superinterfaces:
+AutoCloseable
+,
+Consumer
+<
+String
+>
+,
+Publisher
+,
+PubSub
+,
+StringPublisher
+,
+StringSubscriber
+,
+Subscriber
+,
+Supplier
+<
+String
+>
+public interface
+StringEntry
+extends
+StringSubscriber
+,
+StringPublisher
+NetworkTables String entry.
+Unlike NetworkTableEntry, the entry goes away when close() is called.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+void
+unpublish
+()
+Stops publishing the entry if it's published.
+Methods inherited from interface java.util.function.
+Consumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+StringPublisher
+accept
+,
+getTopic
+,
+set
+,
+set
+,
+setDefault
+Methods inherited from interface edu.wpi.first.networktables.
+StringSubscriber
+get
+,
+get
+,
+getAtomic
+,
+getAtomic
+,
+getTopic
+,
+readQueue
+,
+readQueueValues
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+unpublish
+void
+unpublish
+()
+Stops publishing the entry if it's published.

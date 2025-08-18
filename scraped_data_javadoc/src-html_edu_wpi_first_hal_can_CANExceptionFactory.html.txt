@@ -1,0 +1,93 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.can;
+006
+007
+import edu.wpi.first.hal.communication.NIRioStatus;
+008
+import edu.wpi.first.hal.util.UncleanStatusException;
+009
+010
+/**
+011
+* Checks the status of a CAN message and throws an exception of the appropriate type if necessary.
+012
+*/
+013
+public final class CANExceptionFactory {
+014
+// FRC Error codes
+015
+static final int ERR_CANSessionMux_InvalidBuffer = -44086;
+016
+static final int ERR_CANSessionMux_MessageNotFound = -44087;
+017
+static final int ERR_CANSessionMux_NotAllowed = -44088;
+018
+static final int ERR_CANSessionMux_NotInitialized = -44089;
+019
+020
+/**
+021
+* Checks the status of a CAN message with the given message ID.
+022
+*
+023
+* @param status The CAN status.
+024
+* @param messageID The CAN message ID.
+025
+* @throws CANInvalidBufferException if the buffer is invalid.
+026
+* @throws CANMessageNotAllowedException if the message isn't allowed.
+027
+* @throws CANNotInitializedException if the CAN bus isn't initialized.
+028
+* @throws UncleanStatusException if the status code passed in reports an error.
+029
+*/
+030
+public static void checkStatus(int status, int messageID) {
+031
+switch (status) {
+032
+case NIRioStatus.kRioStatusSuccess -> {
+033
+// Everything is ok... don't throw.
+034
+}
+035
+case ERR_CANSessionMux_InvalidBuffer,
+036
+NIRioStatus.kRIOStatusBufferInvalidSize -> throw new CANInvalidBufferException();
+037
+case ERR_CANSessionMux_MessageNotFound,
+038
+NIRioStatus.kRIOStatusOperationTimedOut -> throw new CANMessageNotFoundException();
+039
+case ERR_CANSessionMux_NotAllowed,
+040
+NIRioStatus.kRIOStatusFeatureNotSupported -> throw new CANMessageNotAllowedException(
+041
+"MessageID = " + messageID);
+042
+case ERR_CANSessionMux_NotInitialized,
+043
+NIRioStatus.kRIOStatusResourceNotInitialized -> throw new CANNotInitializedException();
+044
+default -> throw new UncleanStatusException("Fatal status code detected:  " + status);
+045
+}
+046
+}
+047
+048
+private CANExceptionFactory() {}
+049
+}

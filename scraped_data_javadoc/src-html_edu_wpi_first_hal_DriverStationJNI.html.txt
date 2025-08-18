@@ -1,0 +1,751 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+import java.nio.ByteBuffer;
+008
+009
+/**
+010
+* Driver Station JNI Functions.
+011
+*
+012
+* @see "hal/DriverStation.h"
+013
+* @see "hal/FRCUsageReporting.h"
+014
+*/
+015
+public class DriverStationJNI extends JNIWrapper {
+016
+/**
+017
+* Sets the program starting flag in the DS.
+018
+*
+019
+* <p>This is what changes the DS to showing robot code ready.
+020
+*
+021
+* @see "HAL_ObserveUserProgramStarting"
+022
+*/
+023
+public static native void observeUserProgramStarting();
+024
+025
+/**
+026
+* Sets the disabled flag in the DS.
+027
+*
+028
+* <p>This is used for the DS to ensure the robot is properly responding to its state request.
+029
+* Ensure this gets called about every 50ms, or the robot will be disabled by the DS.
+030
+*
+031
+* @see "HAL_ObserveUserProgramDisabled"
+032
+*/
+033
+public static native void observeUserProgramDisabled();
+034
+035
+/**
+036
+* Sets the autonomous enabled flag in the DS.
+037
+*
+038
+* <p>This is used for the DS to ensure the robot is properly responding to its state request.
+039
+* Ensure this gets called about every 50ms, or the robot will be disabled by the DS.
+040
+*
+041
+* @see "HAL_ObserveUserProgramAutonomous"
+042
+*/
+043
+public static native void observeUserProgramAutonomous();
+044
+045
+/**
+046
+* Sets the teleoperated enabled flag in the DS.
+047
+*
+048
+* <p>This is used for the DS to ensure the robot is properly responding to its state request.
+049
+* Ensure this gets called about every 50ms, or the robot will be disabled by the DS.
+050
+*
+051
+* @see "HAL_ObserveUserProgramTeleop"
+052
+*/
+053
+public static native void observeUserProgramTeleop();
+054
+055
+/**
+056
+* Sets the test mode flag in the DS.
+057
+*
+058
+* <p>This is used for the DS to ensure the robot is properly responding to its state request.
+059
+* Ensure this gets called about every 50ms, or the robot will be disabled by the DS.
+060
+*
+061
+* @see "HAL_ObserveUserProgramTest"
+062
+*/
+063
+public static native void observeUserProgramTest();
+064
+065
+/**
+066
+* Report the usage of a resource of interest.
+067
+*
+068
+* <p>Original signature: <code>uint32_t report(tResourceType, uint8_t, uint8_t, const
+069
+* char*)</code>
+070
+*
+071
+* @param resource one of the values in the tResourceType above.
+072
+* @param instanceNumber an index that identifies the resource instance.
+073
+* @see "HAL_Report"
+074
+*/
+075
+public static void report(int resource, int instanceNumber) {
+076
+report(resource, instanceNumber, 0, "");
+077
+}
+078
+079
+/**
+080
+* Report the usage of a resource of interest.
+081
+*
+082
+* <p>Original signature: <code>uint32_t report(tResourceType, uint8_t, uint8_t, const
+083
+* char*)</code>
+084
+*
+085
+* @param resource one of the values in the tResourceType above.
+086
+* @param instanceNumber an index that identifies the resource instance.
+087
+* @param context an optional additional context number for some cases (such as module number).
+088
+*     Set to 0 to omit.
+089
+* @see "HAL_Report"
+090
+*/
+091
+public static void report(int resource, int instanceNumber, int context) {
+092
+report(resource, instanceNumber, context, "");
+093
+}
+094
+095
+/**
+096
+* Report the usage of a resource of interest.
+097
+*
+098
+* <p>Original signature: <code>uint32_t report(tResourceType, uint8_t, uint8_t, const
+099
+* char*)</code>
+100
+*
+101
+* @param resource one of the values in the tResourceType above.
+102
+* @param instanceNumber an index that identifies the resource instance.
+103
+* @param context an optional additional context number for some cases (such as module number).
+104
+*     Set to 0 to omit.
+105
+* @param feature a string to be included describing features in use on a specific resource.
+106
+*     Setting the same resource more than once allows you to change the feature string.
+107
+* @return the index of the added value in NetComm
+108
+* @see "HAL_Report"
+109
+*/
+110
+public static native int report(int resource, int instanceNumber, int context, String feature);
+111
+112
+/**
+113
+* Gets the current control word of the driver station.
+114
+*
+115
+* <p>The control word contains the robot state.
+116
+*
+117
+* @return the control word
+118
+* @see "HAL_GetControlWord"
+119
+* @see getControlWord for a version easier to parse
+120
+*/
+121
+public static native int nativeGetControlWord();
+122
+123
+/**
+124
+* Gets the current control word of the driver station.
+125
+*
+126
+* <p>The control work contains the robot state.
+127
+*
+128
+* @param controlWord the ControlWord to update
+129
+* @see "HAL_GetControlWord"
+130
+*/
+131
+public static void getControlWord(ControlWord controlWord) {
+132
+int word = nativeGetControlWord();
+133
+controlWord.update(
+134
+(word & 1) != 0,
+135
+((word >> 1) & 1) != 0,
+136
+((word >> 2) & 1) != 0,
+137
+((word >> 3) & 1) != 0,
+138
+((word >> 4) & 1) != 0,
+139
+((word >> 5) & 1) != 0);
+140
+}
+141
+142
+/**
+143
+* Gets the current alliance station ID.
+144
+*
+145
+* @return the alliance station ID int
+146
+* @see "HAL_GetAllianceStation"
+147
+*/
+148
+private static native int nativeGetAllianceStation();
+149
+150
+/** Unknown Alliance Station ID. */
+151
+public static final int kUnknownAllianceStation = 0;
+152
+153
+/** Red Alliance Station 1 ID. */
+154
+public static final int kRed1AllianceStation = 1;
+155
+156
+/** Red Alliance Station 2 ID. */
+157
+public static final int kRed2AllianceStation = 2;
+158
+159
+/** Red Alliance Station 3 ID. */
+160
+public static final int kRed3AllianceStation = 3;
+161
+162
+/** Blue Alliance Station 1 ID. */
+163
+public static final int kBlue1AllianceStation = 4;
+164
+165
+/** Blue Alliance Station 2 ID. */
+166
+public static final int kBlue2AllianceStation = 5;
+167
+168
+/** Blue Alliance Station 3 ID. */
+169
+public static final int kBlue3AllianceStation = 6;
+170
+171
+/**
+172
+* Gets the current alliance station ID.
+173
+*
+174
+* @return the alliance station ID as AllianceStationID
+175
+* @see "HAL_GetAllianceStation"
+176
+*/
+177
+public static AllianceStationID getAllianceStation() {
+178
+return switch (nativeGetAllianceStation()) {
+179
+case kUnknownAllianceStation -> AllianceStationID.Unknown;
+180
+case kRed1AllianceStation -> AllianceStationID.Red1;
+181
+case kRed2AllianceStation -> AllianceStationID.Red2;
+182
+case kRed3AllianceStation -> AllianceStationID.Red3;
+183
+case kBlue1AllianceStation -> AllianceStationID.Blue1;
+184
+case kBlue2AllianceStation -> AllianceStationID.Blue2;
+185
+case kBlue3AllianceStation -> AllianceStationID.Blue3;
+186
+default -> null;
+187
+};
+188
+}
+189
+190
+/** The maximum number of axes. */
+191
+public static final int kMaxJoystickAxes = 12;
+192
+193
+/** The maximum number of POVs. */
+194
+public static final int kMaxJoystickPOVs = 12;
+195
+196
+/** The maximum number of joysticks. */
+197
+public static final int kMaxJoysticks = 6;
+198
+199
+/**
+200
+* Gets the axes of a specific joystick.
+201
+*
+202
+* @param joystickNum the joystick number
+203
+* @param axesArray the axes values
+204
+* @return number of joystick axes, or 0 for error
+205
+* @see "HAL_GetJoystickAxes"
+206
+*/
+207
+public static native int getJoystickAxes(byte joystickNum, float[] axesArray);
+208
+209
+/**
+210
+* Gets the axes of a specific joystick.
+211
+*
+212
+* @param joystickNum the joystick number
+213
+* @param rawAxesArray the raw int axes values (0-255)
+214
+* @return number of joystick axes, or 0 for error
+215
+* @see "HAL_GetJoystickAxes"
+216
+*/
+217
+public static native int getJoystickAxesRaw(byte joystickNum, int[] rawAxesArray);
+218
+219
+/**
+220
+* Gets the POVs of a specific joystick.
+221
+*
+222
+* @param joystickNum the joystick number
+223
+* @param povsArray the POV values
+224
+* @return number of POVs, or 0 for error
+225
+* @see "HAL_GetJoystickPOVs"
+226
+*/
+227
+public static native int getJoystickPOVs(byte joystickNum, short[] povsArray);
+228
+229
+/**
+230
+* Gets the buttons of a specific joystick.
+231
+*
+232
+* @param joystickNum the joystick number
+233
+* @param count the count of buttons
+234
+* @return The joystick button values
+235
+* @see "HAL_GetJoystickButtons"
+236
+*/
+237
+public static native int getJoystickButtons(byte joystickNum, ByteBuffer count);
+238
+239
+/**
+240
+* Get all joystick data.
+241
+*
+242
+* @param axesArray all joystick axes
+243
+* @param rawAxesArray all joystick axes as int
+244
+* @param povsArray all povs
+245
+* @param buttonsAndMetadata array of long joystick axes count, long joystick povs count, long
+246
+*     joystick buttons count, long joystick buttons values
+247
+* @see "HAL_GetAllJoystickData"
+248
+*/
+249
+public static native void getAllJoystickData(
+250
+float[] axesArray, byte[] rawAxesArray, short[] povsArray, long[] buttonsAndMetadata);
+251
+252
+/**
+253
+* Set joystick outputs.
+254
+*
+255
+* @param joystickNum the joystick number
+256
+* @param outputs bitmask of outputs, 1 for on 0 for off
+257
+* @param leftRumble the left rumble value (0-FFFF)
+258
+* @param rightRumble the right rumble value (0-FFFF)
+259
+* @return the error code, or 0 for success
+260
+* @see "HAL_SetJoystickOutputs"
+261
+*/
+262
+public static native int setJoystickOutputs(
+263
+byte joystickNum, int outputs, int leftRumble, int rightRumble);
+264
+265
+/**
+266
+* Gets whether a specific joystick is considered to be an XBox controller.
+267
+*
+268
+* @param joystickNum the joystick number
+269
+* @return 1 if xbox, 0 otherwise
+270
+* @see "HAL_GetJoystickIsXbox"
+271
+*/
+272
+public static native int getJoystickIsXbox(byte joystickNum);
+273
+274
+/**
+275
+* Gets the type of joystick connected.
+276
+*
+277
+* <p>This is device specific, and different depending on what system input type the joystick
+278
+* uses.
+279
+*
+280
+* @param joystickNum the joystick number
+281
+* @return the enumerated joystick type
+282
+* @see "HAL_GetJoystickType"
+283
+*/
+284
+public static native int getJoystickType(byte joystickNum);
+285
+286
+/**
+287
+* Gets the name of a joystick.
+288
+*
+289
+* <p>The returned array must be freed with HAL_FreeJoystickName.
+290
+*
+291
+* @param joystickNum the joystick number
+292
+* @return the joystick name
+293
+* @see "HAL_GetJoystickName"
+294
+*/
+295
+public static native String getJoystickName(byte joystickNum);
+296
+297
+/**
+298
+* Gets the type of a specific joystick axis.
+299
+*
+300
+* <p>This is device specific, and different depending on what system input type the joystick
+301
+* uses.
+302
+*
+303
+* @param joystickNum the joystick number
+304
+* @param axis the axis number
+305
+* @return the enumerated axis type
+306
+* @see "HAL_GetJoystickAxisType"
+307
+*/
+308
+public static native int getJoystickAxisType(byte joystickNum, byte axis);
+309
+310
+/**
+311
+* Returns the approximate match time.
+312
+*
+313
+* <p>The FMS does not send an official match time to the robots, but does send an approximate
+314
+* match time. The value will count down the time remaining in the current period (auto or
+315
+* teleop).
+316
+*
+317
+* <p>Warning: This is not an official time (so it cannot be used to dispute ref calls or
+318
+* guarantee that a function will trigger before the match ends).
+319
+*
+320
+* <p>The Practice Match function of the DS approximates the behavior seen on the field.
+321
+*
+322
+* @return time remaining in current match period (auto or teleop)
+323
+* @see "HAL_GetMatchTime"
+324
+*/
+325
+public static native double getMatchTime();
+326
+327
+/**
+328
+* Gets info about a specific match.
+329
+*
+330
+* @param info the match info to populate
+331
+* @return the error code, or 0 for success
+332
+* @see "HAL_GetMatchInfo"
+333
+*/
+334
+public static native int getMatchInfo(MatchInfoData info);
+335
+336
+/**
+337
+* Sends an error to the driver station.
+338
+*
+339
+* @param isError true for error, false for warning
+340
+* @param errorCode the error code
+341
+* @param isLVCode true for a LV error code, false for a standard error code
+342
+* @param details the details of the error
+343
+* @param location the file location of the error
+344
+* @param callStack the callstack of the error
+345
+* @param printMsg true to print the error message to stdout as well as to the DS
+346
+* @return the error code, or 0 for success
+347
+* @see "HAL_SendError"
+348
+*/
+349
+public static native int sendError(
+350
+boolean isError,
+351
+int errorCode,
+352
+boolean isLVCode,
+353
+String details,
+354
+String location,
+355
+String callStack,
+356
+boolean printMsg);
+357
+358
+/**
+359
+* Sends a line to the driver station console.
+360
+*
+361
+* @param line the line to send
+362
+* @return the error code, or 0 for success
+363
+*/
+364
+public static native int sendConsoleLine(String line);
+365
+366
+/**
+367
+* Refresh the DS control word.
+368
+*
+369
+* @return true if updated
+370
+* @see "HAL_RefreshDSData"
+371
+*/
+372
+public static native boolean refreshDSData();
+373
+374
+/**
+375
+* Adds an event handle to be signalled when new data arrives.
+376
+*
+377
+* @param handle the event handle to be signalled
+378
+*/
+379
+public static native void provideNewDataEventHandle(int handle);
+380
+381
+/**
+382
+* Removes the event handle from being signalled when new data arrives.
+383
+*
+384
+* @param handle the event handle to remove
+385
+*/
+386
+public static native void removeNewDataEventHandle(int handle);
+387
+388
+/**
+389
+* Gets if outputs are enabled by the control system.
+390
+*
+391
+* @return true if outputs are enabled
+392
+*/
+393
+public static native boolean getOutputsActive();
+394
+395
+/** Utility class. */
+396
+private DriverStationJNI() {}
+397
+}

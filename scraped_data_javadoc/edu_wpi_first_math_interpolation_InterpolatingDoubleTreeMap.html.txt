@@ -1,0 +1,115 @@
+Package
+edu.wpi.first.math.interpolation
+Class InterpolatingDoubleTreeMap
+java.lang.Object
+edu.wpi.first.math.interpolation.InterpolatingTreeMap
+<
+Double
+,
+Double
+>
+edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap
+public class
+InterpolatingDoubleTreeMap
+extends
+InterpolatingTreeMap
+<
+Double
+,
+Double
+>
+Interpolating Tree Maps are used to get values at points that are not defined by making a guess
+ from points that are defined. This uses linear interpolation.
+Example of use:
+InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
+ table.put(0.0, 0.0);
+ table.put(1.0, 10.0);
+ table.put(2.0, 30.0);
+ // ...
+ double result = table.get(1.5); // Returns 20.0
+Constructor Summary
+Constructors
+Constructor
+Description
+InterpolatingDoubleTreeMap
+()
+Default constructor.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static
+InterpolatingDoubleTreeMap
+ofEntries
+(
+Map.Entry
+<
+Double
+,
+Double
+>... entries)
+Creates an
+InterpolatingDoubleTreeMap
+from the given entries.
+Methods inherited from class edu.wpi.first.math.interpolation.
+InterpolatingTreeMap
+clear
+,
+get
+,
+put
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+InterpolatingDoubleTreeMap
+public
+InterpolatingDoubleTreeMap
+()
+Default constructor.
+Method Details
+ofEntries
+@SafeVarargs
+public static
+InterpolatingDoubleTreeMap
+ofEntries
+(
+Map.Entry
+<
+Double
+,
+Double
+>... entries)
+Creates an
+InterpolatingDoubleTreeMap
+from the given entries.
+Parameters:
+entries
+- The entries to add to the map.
+Returns:
+The map filled with the
+entries
+.

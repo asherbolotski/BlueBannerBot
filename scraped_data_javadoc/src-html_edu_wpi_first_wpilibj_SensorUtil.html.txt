@@ -1,0 +1,298 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.AnalogJNI;
+008
+import edu.wpi.first.hal.ConstantsJNI;
+009
+import edu.wpi.first.hal.DIOJNI;
+010
+import edu.wpi.first.hal.PWMJNI;
+011
+import edu.wpi.first.hal.PortsJNI;
+012
+import edu.wpi.first.hal.RelayJNI;
+013
+014
+/**
+015
+* Stores most recent status information as well as containing utility functions for checking
+016
+* channels and error processing.
+017
+*/
+018
+public final class SensorUtil {
+019
+/** Ticks per microsecond. */
+020
+public static final int kSystemClockTicksPerMicrosecond =
+021
+ConstantsJNI.getSystemClockTicksPerMicrosecond();
+022
+023
+/** Number of digital channels per roboRIO. */
+024
+public static final int kDigitalChannels = PortsJNI.getNumDigitalChannels();
+025
+026
+/** Number of analog input channels per roboRIO. */
+027
+public static final int kAnalogInputChannels = PortsJNI.getNumAnalogInputs();
+028
+029
+/** Number of analog output channels per roboRIO. */
+030
+public static final int kAnalogOutputChannels = PortsJNI.getNumAnalogOutputs();
+031
+032
+/** Number of solenoid channels per module. */
+033
+public static final int kCTRESolenoidChannels = PortsJNI.getNumCTRESolenoidChannels();
+034
+035
+/** Number of PWM channels per roboRIO. */
+036
+public static final int kPwmChannels = PortsJNI.getNumPWMChannels();
+037
+038
+/** Number of relay channels per roboRIO. */
+039
+public static final int kRelayChannels = PortsJNI.getNumRelayHeaders();
+040
+041
+/** Number of power distribution channels per PDP. */
+042
+public static final int kCTREPDPChannels = PortsJNI.getNumCTREPDPChannels();
+043
+044
+/** Number of power distribution modules per PDP. */
+045
+public static final int kCTREPDPModules = PortsJNI.getNumCTREPDPModules();
+046
+047
+/** Number of PCM Modules. */
+048
+public static final int kCTREPCMModules = PortsJNI.getNumCTREPCMModules();
+049
+050
+/** Number of power distribution channels per PH. */
+051
+public static final int kREVPHChannels = PortsJNI.getNumREVPHChannels();
+052
+053
+/** Number of PH modules. */
+054
+public static final int kREVPHModules = PortsJNI.getNumREVPHModules();
+055
+056
+/**
+057
+* Check that the digital channel number is valid. Verify that the channel number is one of the
+058
+* legal channel numbers. Channel numbers are 0-based.
+059
+*
+060
+* @param channel The channel number to check.
+061
+*/
+062
+public static void checkDigitalChannel(final int channel) {
+063
+if (!DIOJNI.checkDIOChannel(channel)) {
+064
+String buf =
+065
+"Requested DIO channel is out of range. Minimum: 0, Maximum: "
+066
++ kDigitalChannels
+067
++ ", Requested: "
+068
++ channel;
+069
+throw new IllegalArgumentException(buf);
+070
+}
+071
+}
+072
+073
+/**
+074
+* Check that the digital channel number is valid. Verify that the channel number is one of the
+075
+* legal channel numbers. Channel numbers are 0-based.
+076
+*
+077
+* @param channel The channel number to check.
+078
+*/
+079
+public static void checkRelayChannel(final int channel) {
+080
+if (!RelayJNI.checkRelayChannel(channel)) {
+081
+String buf =
+082
+"Requested relay channel is out of range. Minimum: 0, Maximum: "
+083
++ kRelayChannels
+084
++ ", Requested: "
+085
++ channel;
+086
+throw new IllegalArgumentException(buf);
+087
+}
+088
+}
+089
+090
+/**
+091
+* Check that the digital channel number is valid. Verify that the channel number is one of the
+092
+* legal channel numbers. Channel numbers are 0-based.
+093
+*
+094
+* @param channel The channel number to check.
+095
+*/
+096
+public static void checkPWMChannel(final int channel) {
+097
+if (!PWMJNI.checkPWMChannel(channel)) {
+098
+String buf =
+099
+"Requested PWM channel is out of range. Minimum: 0, Maximum: "
+100
++ kPwmChannels
+101
++ ", Requested: "
+102
++ channel;
+103
+throw new IllegalArgumentException(buf);
+104
+}
+105
+}
+106
+107
+/**
+108
+* Check that the analog input number is value. Verify that the analog input number is one of the
+109
+* legal channel numbers. Channel numbers are 0-based.
+110
+*
+111
+* @param channel The channel number to check.
+112
+*/
+113
+public static void checkAnalogInputChannel(final int channel) {
+114
+if (!AnalogJNI.checkAnalogInputChannel(channel)) {
+115
+String buf =
+116
+"Requested analog input channel is out of range. Minimum: 0, Maximum: "
+117
++ kAnalogInputChannels
+118
++ ", Requested: "
+119
++ channel;
+120
+throw new IllegalArgumentException(buf);
+121
+}
+122
+}
+123
+124
+/**
+125
+* Check that the analog input number is value. Verify that the analog input number is one of the
+126
+* legal channel numbers. Channel numbers are 0-based.
+127
+*
+128
+* @param channel The channel number to check.
+129
+*/
+130
+public static void checkAnalogOutputChannel(final int channel) {
+131
+if (!AnalogJNI.checkAnalogOutputChannel(channel)) {
+132
+String buf =
+133
+"Requested analog output channel is out of range. Minimum: 0, Maximum: "
+134
++ kAnalogOutputChannels
+135
++ ", Requested: "
+136
++ channel;
+137
+throw new IllegalArgumentException(buf);
+138
+}
+139
+}
+140
+141
+/**
+142
+* Get the number of the default solenoid module.
+143
+*
+144
+* @return The number of the default solenoid module.
+145
+*/
+146
+public static int getDefaultCTREPCMModule() {
+147
+return 0;
+148
+}
+149
+150
+/**
+151
+* Get the number of the default solenoid module.
+152
+*
+153
+* @return The number of the default solenoid module.
+154
+*/
+155
+public static int getDefaultREVPHModule() {
+156
+return 1;
+157
+}
+158
+159
+private SensorUtil() {}
+160
+}

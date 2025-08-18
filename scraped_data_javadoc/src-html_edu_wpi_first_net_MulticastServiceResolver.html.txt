@@ -1,0 +1,131 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.net;
+006
+007
+import edu.wpi.first.util.WPICleaner;
+008
+import java.lang.ref.Cleaner.Cleanable;
+009
+010
+/** Class to resolve a service over mDNS. */
+011
+public class MulticastServiceResolver implements AutoCloseable {
+012
+private final int m_handle;
+013
+private final Cleanable m_cleanable;
+014
+015
+private static Runnable cleanupAction(int handle) {
+016
+return () -> WPINetJNI.freeMulticastServiceResolver(handle);
+017
+}
+018
+019
+/**
+020
+* Creates a MulticastServiceResolver.
+021
+*
+022
+* @param serviceType service type to look for
+023
+*/
+024
+@SuppressWarnings("this-escape")
+025
+public MulticastServiceResolver(String serviceType) {
+026
+m_handle = WPINetJNI.createMulticastServiceResolver(serviceType);
+027
+m_cleanable = WPICleaner.register(this, cleanupAction(m_handle));
+028
+}
+029
+030
+@Override
+031
+public void close() {
+032
+m_cleanable.clean();
+033
+}
+034
+035
+/** Starts multicast service resolver. */
+036
+public void start() {
+037
+WPINetJNI.startMulticastServiceResolver(m_handle);
+038
+}
+039
+040
+/** Stops multicast service resolver. */
+041
+public void stop() {
+042
+WPINetJNI.stopMulticastServiceResolver(m_handle);
+043
+}
+044
+045
+/**
+046
+* Returns true if there's a multicast service resolver implementation.
+047
+*
+048
+* @return True if there's a multicast service resolver implementation.
+049
+*/
+050
+public boolean hasImplementation() {
+051
+return WPINetJNI.getMulticastServiceResolverHasImplementation(m_handle);
+052
+}
+053
+054
+/**
+055
+* Returns event handle.
+056
+*
+057
+* @return Event handle.
+058
+*/
+059
+public int getEventHandle() {
+060
+return WPINetJNI.getMulticastServiceResolverEventHandle(m_handle);
+061
+}
+062
+063
+/**
+064
+* Returns multicast service resolver data.
+065
+*
+066
+* @return Multicast service resolver data.
+067
+*/
+068
+public ServiceData[] getData() {
+069
+return WPINetJNI.getMulticastServiceResolverData(m_handle);
+070
+}
+071
+}

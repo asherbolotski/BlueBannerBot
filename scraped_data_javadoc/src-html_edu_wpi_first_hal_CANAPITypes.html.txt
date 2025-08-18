@@ -1,0 +1,234 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* CAN API Types.
+009
+*
+010
+* <p>This class defines enums for CAN device types and manufacturer IDs as specified in the WPILib
+011
+* documentation: https://docs.wpilib.org/en/stable/docs/software/can-devices/can-addressing.html
+012
+*/
+013
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
+014
+public final class CANAPITypes {
+015
+/**
+016
+* FRC CAN device type.
+017
+*
+018
+* <p>This enum represents different types of CAN devices. Teams are encouraged to use the
+019
+* kMiscellaneous for custom or miscellaneous devices.
+020
+*
+021
+* @see <a href=
+022
+*     "https://docs.wpilib.org/en/stable/docs/software/can-devices/can-addressing.html">CAN
+023
+*     Device Types</a>
+024
+*/
+025
+public enum CANDeviceType {
+026
+/** Broadcast. */
+027
+kBroadcast(0),
+028
+/** Robot controller. */
+029
+kRobotController(1),
+030
+/** Motor controller. */
+031
+kMotorController(2),
+032
+/** Relay controller. */
+033
+kRelayController(3),
+034
+/** Gyro sensor. */
+035
+kGyroSensor(4),
+036
+/** Accelerometer. */
+037
+kAccelerometer(5),
+038
+/** Ultrasonic sensor. */
+039
+kUltrasonicSensor(6),
+040
+/** Gear tooth sensor. */
+041
+kGearToothSensor(7),
+042
+/** Power distribution. */
+043
+kPowerDistribution(8),
+044
+/** Pneumatics. */
+045
+kPneumatics(9),
+046
+/** Miscellaneous. */
+047
+kMiscellaneous(10),
+048
+/** IO breakout. */
+049
+kIOBreakout(11),
+050
+/** Servo Controller. */
+051
+kServoController(12),
+052
+/** Firmware update. */
+053
+kFirmwareUpdate(31);
+054
+055
+/** The device type ID. */
+056
+@SuppressWarnings("PMD.MemberName")
+057
+public final int id;
+058
+059
+CANDeviceType(int id) {
+060
+this.id = id;
+061
+}
+062
+}
+063
+064
+/**
+065
+* FRC CAN manufacturer ID.
+066
+*
+067
+* <p>This enum represents different manufacturer IDs for CAN devices. Teams are encouraged to use
+068
+* the kTeamUse manufacturer ID for custom or team-specific devices.
+069
+*
+070
+* @see <a href=
+071
+*     "https://docs.wpilib.org/en/stable/docs/software/can-devices/can-addressing.html">CAN
+072
+*     Manufacturer IDs</a>
+073
+*/
+074
+public enum CANManufacturer {
+075
+/** Broadcast. */
+076
+kBroadcast(0),
+077
+/** National Instruments. */
+078
+kNI(1),
+079
+/** Luminary Micro. */
+080
+kLM(2),
+081
+/** DEKA Research and Development Corp. */
+082
+kDEKA(3),
+083
+/** Cross the Road Electronics. */
+084
+kCTRE(4),
+085
+/** REV Robotics. */
+086
+kREV(5),
+087
+/** Grapple. */
+088
+kGrapple(6),
+089
+/** MindSensors. */
+090
+kMS(7),
+091
+/** Team use. */
+092
+kTeamUse(8),
+093
+/** Kauai Labs. */
+094
+kKauaiLabs(9),
+095
+/** Copperforge. */
+096
+kCopperforge(10),
+097
+/** Playing With Fusion. */
+098
+kPWF(11),
+099
+/** Studica. */
+100
+kStudica(12),
+101
+/** TheThriftyBot. */
+102
+kTheThriftyBot(13),
+103
+/** Redux Robotics. */
+104
+kReduxRobotics(14),
+105
+/** AndyMark. */
+106
+kAndyMark(15),
+107
+/** Vivid-Hosting. */
+108
+kVividHosting(16);
+109
+110
+/** The manufacturer ID. */
+111
+@SuppressWarnings("PMD.MemberName")
+112
+public final int id;
+113
+114
+CANManufacturer(int id) {
+115
+this.id = id;
+116
+}
+117
+}
+118
+119
+/** Utility class. */
+120
+private CANAPITypes() {}
+121
+}

@@ -1,0 +1,101 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.util;
+006
+007
+/** Exception for bad status codes from the chip object. */
+008
+public final class UncleanStatusException extends IllegalStateException {
+009
+/** The status code from the chip object. */
+010
+private final int m_statusCode;
+011
+012
+/**
+013
+* Create a new UncleanStatusException.
+014
+*
+015
+* @param status the status code that caused the exception
+016
+* @param message A message describing the exception
+017
+*/
+018
+public UncleanStatusException(int status, String message) {
+019
+super(message);
+020
+m_statusCode = status;
+021
+}
+022
+023
+/**
+024
+* Create a new UncleanStatusException.
+025
+*
+026
+* @param status the status code that caused the exception
+027
+*/
+028
+public UncleanStatusException(int status) {
+029
+this(status, "Status code was non-zero");
+030
+}
+031
+032
+/**
+033
+* Create a new UncleanStatusException.
+034
+*
+035
+* @param message a message describing the exception
+036
+*/
+037
+public UncleanStatusException(String message) {
+038
+this(-1, message);
+039
+}
+040
+041
+/** Create a new UncleanStatusException. */
+042
+public UncleanStatusException() {
+043
+this(-1, "Status code was non-zero");
+044
+}
+045
+046
+/**
+047
+* Create a new UncleanStatusException.
+048
+*
+049
+* @return the status code that caused the exception
+050
+*/
+051
+public int getStatus() {
+052
+return m_statusCode;
+053
+}
+054
+}

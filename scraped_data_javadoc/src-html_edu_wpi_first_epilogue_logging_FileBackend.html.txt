@@ -1,0 +1,265 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.epilogue.logging;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.util.datalog.BooleanArrayLogEntry;
+010
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+011
+import edu.wpi.first.util.datalog.DataLog;
+012
+import edu.wpi.first.util.datalog.DataLogEntry;
+013
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
+014
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+015
+import edu.wpi.first.util.datalog.FloatArrayLogEntry;
+016
+import edu.wpi.first.util.datalog.FloatLogEntry;
+017
+import edu.wpi.first.util.datalog.IntegerArrayLogEntry;
+018
+import edu.wpi.first.util.datalog.IntegerLogEntry;
+019
+import edu.wpi.first.util.datalog.RawLogEntry;
+020
+import edu.wpi.first.util.datalog.StringArrayLogEntry;
+021
+import edu.wpi.first.util.datalog.StringLogEntry;
+022
+import edu.wpi.first.util.datalog.StructArrayLogEntry;
+023
+import edu.wpi.first.util.datalog.StructLogEntry;
+024
+import edu.wpi.first.util.struct.Struct;
+025
+import java.util.HashMap;
+026
+import java.util.Map;
+027
+import java.util.function.BiFunction;
+028
+029
+/** A backend implementation that saves information to a WPILib {@link DataLog} file on disk. */
+030
+public class FileBackend implements EpilogueBackend {
+031
+private final DataLog m_dataLog;
+032
+private final Map<String, DataLogEntry> m_entries = new HashMap<>();
+033
+private final Map<String, NestedBackend> m_subLoggers = new HashMap<>();
+034
+035
+/**
+036
+* Creates a new file-based backend.
+037
+*
+038
+* @param dataLog the data log to save data to
+039
+*/
+040
+public FileBackend(DataLog dataLog) {
+041
+this.m_dataLog = requireNonNullParam(dataLog, "dataLog", "FileBackend");
+042
+}
+043
+044
+@Override
+045
+public EpilogueBackend getNested(String path) {
+046
+return m_subLoggers.computeIfAbsent(path, k -> new NestedBackend(k, this));
+047
+}
+048
+049
+@SuppressWarnings("unchecked")
+050
+private <E extends DataLogEntry> E getEntry(
+051
+String identifier, BiFunction<DataLog, String, ? extends E> ctor) {
+052
+if (m_entries.get(identifier) != null) {
+053
+return (E) m_entries.get(identifier);
+054
+}
+055
+056
+var entry = ctor.apply(m_dataLog, identifier);
+057
+m_entries.put(identifier, entry);
+058
+return entry;
+059
+}
+060
+061
+@Override
+062
+public void log(String identifier, int value) {
+063
+getEntry(identifier, IntegerLogEntry::new).append(value);
+064
+}
+065
+066
+@Override
+067
+public void log(String identifier, long value) {
+068
+getEntry(identifier, IntegerLogEntry::new).append(value);
+069
+}
+070
+071
+@Override
+072
+public void log(String identifier, float value) {
+073
+getEntry(identifier, FloatLogEntry::new).append(value);
+074
+}
+075
+076
+@Override
+077
+public void log(String identifier, double value) {
+078
+getEntry(identifier, DoubleLogEntry::new).append(value);
+079
+}
+080
+081
+@Override
+082
+public void log(String identifier, boolean value) {
+083
+getEntry(identifier, BooleanLogEntry::new).append(value);
+084
+}
+085
+086
+@Override
+087
+public void log(String identifier, byte[] value) {
+088
+getEntry(identifier, RawLogEntry::new).append(value);
+089
+}
+090
+091
+@Override
+092
+@SuppressWarnings("PMD.UnnecessaryCastRule")
+093
+public void log(String identifier, int[] value) {
+094
+long[] widened = new long[value.length];
+095
+for (int i = 0; i < value.length; i++) {
+096
+widened[i] = (long) value[i];
+097
+}
+098
+getEntry(identifier, IntegerArrayLogEntry::new).append(widened);
+099
+}
+100
+101
+@Override
+102
+public void log(String identifier, long[] value) {
+103
+getEntry(identifier, IntegerArrayLogEntry::new).append(value);
+104
+}
+105
+106
+@Override
+107
+public void log(String identifier, float[] value) {
+108
+getEntry(identifier, FloatArrayLogEntry::new).append(value);
+109
+}
+110
+111
+@Override
+112
+public void log(String identifier, double[] value) {
+113
+getEntry(identifier, DoubleArrayLogEntry::new).append(value);
+114
+}
+115
+116
+@Override
+117
+public void log(String identifier, boolean[] value) {
+118
+getEntry(identifier, BooleanArrayLogEntry::new).append(value);
+119
+}
+120
+121
+@Override
+122
+public void log(String identifier, String value) {
+123
+getEntry(identifier, StringLogEntry::new).append(value);
+124
+}
+125
+126
+@Override
+127
+public void log(String identifier, String[] value) {
+128
+getEntry(identifier, StringArrayLogEntry::new).append(value);
+129
+}
+130
+131
+@Override
+132
+@SuppressWarnings("unchecked")
+133
+public <S> void log(String identifier, S value, Struct<S> struct) {
+134
+m_dataLog.addSchema(struct);
+135
+getEntry(identifier, (log, k) -> StructLogEntry.create(log, k, struct)).append(value);
+136
+}
+137
+138
+@Override
+139
+@SuppressWarnings("unchecked")
+140
+public <S> void log(String identifier, S[] value, Struct<S> struct) {
+141
+m_dataLog.addSchema(struct);
+142
+getEntry(identifier, (log, k) -> StructArrayLogEntry.create(log, k, struct)).append(value);
+143
+}
+144
+}

@@ -1,0 +1,141 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.AnalogJNI;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.util.sendable.Sendable;
+011
+import edu.wpi.first.util.sendable.SendableBuilder;
+012
+import edu.wpi.first.util.sendable.SendableRegistry;
+013
+014
+/** Analog output class. */
+015
+public class AnalogOutput implements Sendable, AutoCloseable {
+016
+private int m_port;
+017
+private int m_channel;
+018
+019
+/**
+020
+* Construct an analog output on a specified MXP channel.
+021
+*
+022
+* @param channel The channel number to represent.
+023
+*/
+024
+@SuppressWarnings("this-escape")
+025
+public AnalogOutput(final int channel) {
+026
+SensorUtil.checkAnalogOutputChannel(channel);
+027
+m_channel = channel;
+028
+029
+final int portHandle = HAL.getPort((byte) channel);
+030
+m_port = AnalogJNI.initializeAnalogOutputPort(portHandle);
+031
+032
+HAL.report(tResourceType.kResourceType_AnalogOutput, channel + 1);
+033
+SendableRegistry.addLW(this, "AnalogOutput", channel);
+034
+}
+035
+036
+@Override
+037
+public void close() {
+038
+SendableRegistry.remove(this);
+039
+AnalogJNI.freeAnalogOutputPort(m_port);
+040
+m_port = 0;
+041
+m_channel = 0;
+042
+}
+043
+044
+/**
+045
+* Get the channel of this AnalogOutput.
+046
+*
+047
+* @return The channel of this AnalogOutput.
+048
+*/
+049
+public int getChannel() {
+050
+return m_channel;
+051
+}
+052
+053
+/**
+054
+* Set the value of the analog output.
+055
+*
+056
+* @param voltage The output value in Volts, from 0.0 to +5.0.
+057
+*/
+058
+public void setVoltage(double voltage) {
+059
+AnalogJNI.setAnalogOutput(m_port, voltage);
+060
+}
+061
+062
+/**
+063
+* Get the voltage of the analog output.
+064
+*
+065
+* @return The value in Volts, from 0.0 to +5.0.
+066
+*/
+067
+public double getVoltage() {
+068
+return AnalogJNI.getAnalogOutput(m_port);
+069
+}
+070
+071
+@Override
+072
+public void initSendable(SendableBuilder builder) {
+073
+builder.setSmartDashboardType("Analog Output");
+074
+builder.addDoubleProperty("Value", this::getVoltage, this::setVoltage);
+075
+}
+076
+}

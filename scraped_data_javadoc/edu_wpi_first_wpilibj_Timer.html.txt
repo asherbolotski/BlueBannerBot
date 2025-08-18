@@ -1,0 +1,222 @@
+Package
+edu.wpi.first.wpilibj
+Class Timer
+java.lang.Object
+edu.wpi.first.wpilibj.Timer
+public class
+Timer
+extends
+Object
+A timer class.
+Note that if the user calls SimHooks.restartTiming(), they should also reset the timer so
+ get() won't return a negative duration.
+Constructor Summary
+Constructors
+Constructor
+Description
+Timer
+()
+Timer constructor.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+advanceIfElapsed
+(double seconds)
+Check if the period specified has passed and if it has, advance the start time by that period.
+static void
+delay
+(double seconds)
+Pause the thread for a specified time.
+double
+get
+()
+Get the current time from the timer.
+static double
+getFPGATimestamp
+()
+Return the system clock time in seconds.
+static double
+getMatchTime
+()
+Return the approximate match time.
+static double
+getTimestamp
+()
+Return the clock time in seconds.
+boolean
+hasElapsed
+(double seconds)
+Check if the period specified has passed.
+boolean
+isRunning
+()
+Whether the timer is currently running.
+final void
+reset
+()
+Reset the timer by setting the time to 0.
+void
+restart
+()
+Restart the timer by stopping the timer, if it is not already stopped, resetting the
+ accumulated time, then starting the timer again.
+void
+start
+()
+Start the timer running.
+void
+stop
+()
+Stop the timer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+Timer
+public
+Timer
+()
+Timer constructor.
+Method Details
+getTimestamp
+public static
+double
+getTimestamp
+()
+Return the clock time in seconds. By default, the time is based on the FPGA hardware clock in
+ seconds since the FPGA started. However, the return value of this method may be modified to use
+ any time base, including non-monotonic time bases.
+Returns:
+Robot running time in seconds.
+getFPGATimestamp
+public static
+double
+getFPGATimestamp
+()
+Return the system clock time in seconds. Return the time from the FPGA hardware clock in
+ seconds since the FPGA started.
+Returns:
+Robot running time in seconds.
+getMatchTime
+public static
+double
+getMatchTime
+()
+Return the approximate match time. The FMS does not send an official match time to the robots,
+ but does send an approximate match time. The value will count down the time remaining in the
+ current period (auto or teleop). Warning: This is not an official time (so it cannot be used to
+ dispute ref calls or guarantee that a function will trigger before the match ends) The Practice
+ Match function of the DS approximates the behavior seen on the field.
+Returns:
+Time remaining in current match period (auto or teleop) in seconds
+delay
+public static
+void
+delay
+(double seconds)
+Pause the thread for a specified time. Pause the execution of the thread for a specified period
+ of time given in seconds. Motors will continue to run at their last assigned values, and
+ sensors will continue to update. Only the task containing the wait will pause until the wait
+ time is expired.
+Parameters:
+seconds
+- Length of time to pause
+get
+public
+double
+get
+()
+Get the current time from the timer. If the clock is running it is derived from the current
+ system clock the start time stored in the timer class. If the clock is not running, then return
+ the time when it was last stopped.
+Returns:
+Current time value for this timer in seconds
+reset
+public final
+void
+reset
+()
+Reset the timer by setting the time to 0.
+Make the timer startTime the current time so new requests will be relative now.
+start
+public
+void
+start
+()
+Start the timer running. Just set the running flag to true indicating that all time requests
+ should be relative to the system clock. Note that this method is a no-op if the timer is
+ already running.
+restart
+public
+void
+restart
+()
+Restart the timer by stopping the timer, if it is not already stopped, resetting the
+ accumulated time, then starting the timer again. If you want an event to periodically reoccur
+ at some time interval from the start time, consider using advanceIfElapsed() instead.
+stop
+public
+void
+stop
+()
+Stop the timer. This computes the time as of now and clears the running flag, causing all
+ subsequent time requests to be read from the accumulated time rather than looking at the system
+ clock.
+hasElapsed
+public
+boolean
+hasElapsed
+(double seconds)
+Check if the period specified has passed.
+Parameters:
+seconds
+- The period to check.
+Returns:
+Whether the period has passed.
+advanceIfElapsed
+public
+boolean
+advanceIfElapsed
+(double seconds)
+Check if the period specified has passed and if it has, advance the start time by that period.
+ This is useful to decide if it's time to do periodic work without drifting later by the time it
+ took to get around to checking.
+Parameters:
+seconds
+- The period to check.
+Returns:
+Whether the period has passed.
+isRunning
+public
+boolean
+isRunning
+()
+Whether the timer is currently running.
+Returns:
+true if running.

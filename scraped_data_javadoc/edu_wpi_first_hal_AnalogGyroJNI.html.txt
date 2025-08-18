@@ -1,0 +1,268 @@
+Package
+edu.wpi.first.hal
+Class AnalogGyroJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.AnalogGyroJNI
+public class
+AnalogGyroJNI
+extends
+JNIWrapper
+Analog Gyro JNI Functions.
+See Also:
+"hal/AnalogGyro.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+calibrateAnalogGyro
+(int handle)
+Calibrates the analog gyro.
+static void
+freeAnalogGyro
+(int handle)
+Frees an analog gyro.
+static double
+getAnalogGyroAngle
+(int handle)
+Gets the gyro angle in degrees.
+static int
+getAnalogGyroCenter
+(int handle)
+Gets the calibrated gyro center.
+static double
+getAnalogGyroOffset
+(int handle)
+Gets the calibrated gyro offset.
+static double
+getAnalogGyroRate
+(int handle)
+Gets the gyro rate in degrees/second.
+static int
+initializeAnalogGyro
+(int halAnalogInputHandle)
+Initializes an analog gyro.
+static void
+resetAnalogGyro
+(int handle)
+Resets the analog gyro value to 0.
+static void
+setAnalogGyroDeadband
+(int handle,
+ double volts)
+Sets the deadband of the analog gyro.
+static void
+setAnalogGyroParameters
+(int handle,
+ double voltsPerDegreePerSecond,
+ double offset,
+ int center)
+Sets the analog gyro parameters to the specified values.
+static void
+setAnalogGyroVoltsPerDegreePerSecond
+(int handle,
+ double voltsPerDegreePerSecond)
+Sets the analog gyro volts per degrees per second scaling.
+static void
+setupAnalogGyro
+(int handle)
+Sets up an analog gyro with the proper offsets and settings for the KOP analog gyro.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+initializeAnalogGyro
+public static
+int
+initializeAnalogGyro
+(int halAnalogInputHandle)
+Initializes an analog gyro.
+Parameters:
+halAnalogInputHandle
+- handle to the analog input port
+Returns:
+the initialized gyro handle
+See Also:
+"HAL_InitializeAnalogGyro"
+setupAnalogGyro
+public static
+void
+setupAnalogGyro
+(int handle)
+Sets up an analog gyro with the proper offsets and settings for the KOP analog gyro.
+Parameters:
+handle
+- the gyro handle
+See Also:
+"HAL_SetupAnalogGyro"
+freeAnalogGyro
+public static
+void
+freeAnalogGyro
+(int handle)
+Frees an analog gyro.
+Parameters:
+handle
+- the gyro handle
+See Also:
+"HAL_FreeAnalogGyro"
+setAnalogGyroParameters
+public static
+void
+setAnalogGyroParameters
+(int handle,
+ double voltsPerDegreePerSecond,
+ double offset,
+ int center)
+Sets the analog gyro parameters to the specified values.
+This is meant to be used if you want to reuse the values from a previous calibration.
+Parameters:
+handle
+- the gyro handle
+voltsPerDegreePerSecond
+- the gyro volts scaling
+offset
+- the gyro offset
+center
+- the gyro center
+See Also:
+"HAL_SetAnalogGyroParameters"
+setAnalogGyroVoltsPerDegreePerSecond
+public static
+void
+setAnalogGyroVoltsPerDegreePerSecond
+(int handle,
+ double voltsPerDegreePerSecond)
+Sets the analog gyro volts per degrees per second scaling.
+Parameters:
+handle
+- the gyro handle
+voltsPerDegreePerSecond
+- the gyro volts scaling
+See Also:
+"HAL_SetAnalogGyroVoltsPerDegreePerSecond"
+resetAnalogGyro
+public static
+void
+resetAnalogGyro
+(int handle)
+Resets the analog gyro value to 0.
+Parameters:
+handle
+- the gyro handle
+See Also:
+"HAL_ResetAnalogGyro"
+calibrateAnalogGyro
+public static
+void
+calibrateAnalogGyro
+(int handle)
+Calibrates the analog gyro.
+This happens by calculating the average value of the gyro over 5 seconds, and setting that
+ as the center. Note that this call blocks for 5 seconds to perform this.
+Parameters:
+handle
+- the gyro handle
+See Also:
+"HAL_CalibrateAnalogGyro"
+setAnalogGyroDeadband
+public static
+void
+setAnalogGyroDeadband
+(int handle,
+ double volts)
+Sets the deadband of the analog gyro.
+Parameters:
+handle
+- the gyro handle
+volts
+- the voltage deadband
+See Also:
+"HAL_SetAnalogGyroDeadband"
+getAnalogGyroAngle
+public static
+double
+getAnalogGyroAngle
+(int handle)
+Gets the gyro angle in degrees.
+Parameters:
+handle
+- the gyro handle
+Returns:
+the gyro angle in degrees
+See Also:
+"HAL_GetAnalogGyroAngle"
+getAnalogGyroRate
+public static
+double
+getAnalogGyroRate
+(int handle)
+Gets the gyro rate in degrees/second.
+Parameters:
+handle
+- the gyro handle
+Returns:
+the gyro rate in degrees/second
+See Also:
+"HAL_GetAnalogGyroRate"
+getAnalogGyroOffset
+public static
+double
+getAnalogGyroOffset
+(int handle)
+Gets the calibrated gyro offset.
+Can be used to not repeat a calibration but reconstruct the gyro object.
+Parameters:
+handle
+- the gyro handle
+Returns:
+the gyro offset
+See Also:
+"HAL_GetAnalogGyroOffset"
+getAnalogGyroCenter
+public static
+int
+getAnalogGyroCenter
+(int handle)
+Gets the calibrated gyro center.
+Can be used to not repeat a calibration but reconstruct the gyro object.
+Parameters:
+handle
+- the gyro handle
+Returns:
+the gyro center
+See Also:
+"HAL_GetAnalogGyroCenter"

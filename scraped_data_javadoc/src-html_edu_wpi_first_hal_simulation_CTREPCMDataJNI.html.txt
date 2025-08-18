@@ -1,0 +1,120 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal.simulation;
+006
+007
+import edu.wpi.first.hal.JNIWrapper;
+008
+009
+/** JNI for CTRE PCM data. */
+010
+public class CTREPCMDataJNI extends JNIWrapper {
+011
+public static native int registerInitializedCallback(
+012
+int index, NotifyCallback callback, boolean initialNotify);
+013
+014
+public static native void cancelInitializedCallback(int index, int uid);
+015
+016
+public static native boolean getInitialized(int index);
+017
+018
+public static native void setInitialized(int index, boolean initialized);
+019
+020
+public static native int registerSolenoidOutputCallback(
+021
+int index, int channel, NotifyCallback callback, boolean initialNotify);
+022
+023
+public static native void cancelSolenoidOutputCallback(int index, int channel, int uid);
+024
+025
+public static native boolean getSolenoidOutput(int index, int channel);
+026
+027
+public static native void setSolenoidOutput(int index, int channel, boolean solenoidOutput);
+028
+029
+public static native int registerCompressorOnCallback(
+030
+int index, NotifyCallback callback, boolean initialNotify);
+031
+032
+public static native void cancelCompressorOnCallback(int index, int uid);
+033
+034
+public static native boolean getCompressorOn(int index);
+035
+036
+public static native void setCompressorOn(int index, boolean compressorOn);
+037
+038
+public static native int registerClosedLoopEnabledCallback(
+039
+int index, NotifyCallback callback, boolean initialNotify);
+040
+041
+public static native void cancelClosedLoopEnabledCallback(int index, int uid);
+042
+043
+public static native boolean getClosedLoopEnabled(int index);
+044
+045
+public static native void setClosedLoopEnabled(int index, boolean closeLoopEnabled);
+046
+047
+public static native int registerPressureSwitchCallback(
+048
+int index, NotifyCallback callback, boolean initialNotify);
+049
+050
+public static native void cancelPressureSwitchCallback(int index, int uid);
+051
+052
+public static native boolean getPressureSwitch(int index);
+053
+054
+public static native void setPressureSwitch(int index, boolean pressureSwitch);
+055
+056
+public static native int registerCompressorCurrentCallback(
+057
+int index, NotifyCallback callback, boolean initialNotify);
+058
+059
+public static native void cancelCompressorCurrentCallback(int index, int uid);
+060
+061
+public static native double getCompressorCurrent(int index);
+062
+063
+public static native void setCompressorCurrent(int index, double compressorCurrent);
+064
+065
+public static native void registerAllNonSolenoidCallbacks(
+066
+int index, NotifyCallback callback, boolean initialNotify);
+067
+068
+public static native void registerAllSolenoidCallbacks(
+069
+int index, int channel, NotifyCallback callback, boolean initialNotify);
+070
+071
+public static native void resetData(int index);
+072
+073
+/** Utility class. */
+074
+private CTREPCMDataJNI() {}
+075
+}

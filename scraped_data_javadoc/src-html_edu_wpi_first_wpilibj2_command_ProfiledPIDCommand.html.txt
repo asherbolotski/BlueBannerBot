@@ -1,0 +1,301 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+008
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+009
+010
+import edu.wpi.first.math.controller.ProfiledPIDController;
+011
+import java.util.function.BiConsumer;
+012
+import java.util.function.DoubleSupplier;
+013
+import java.util.function.Supplier;
+014
+015
+/**
+016
+* A command that controls an output with a {@link ProfiledPIDController}. Runs forever by default -
+017
+* to add exit conditions and/or other behavior, subclass this class. The controller calculation and
+018
+* output are performed synchronously in the command's execute() method.
+019
+*
+020
+* <p>This class is provided by the NewCommands VendorDep
+021
+*
+022
+* @deprecated Use a ProfiledPIDController instead
+023
+*/
+024
+@Deprecated(forRemoval = true, since = "2025")
+025
+public class ProfiledPIDCommand extends Command {
+026
+/** Profiled PID controller. */
+027
+protected final ProfiledPIDController m_controller;
+028
+029
+/** Measurement getter. */
+030
+protected DoubleSupplier m_measurement;
+031
+032
+/** Goal getter. */
+033
+protected Supplier<State> m_goal;
+034
+035
+/** Profiled PID controller output consumer. */
+036
+protected BiConsumer<Double, State> m_useOutput;
+037
+038
+/**
+039
+* Creates a new PIDCommand, which controls the given output with a ProfiledPIDController. Goal
+040
+* velocity is specified.
+041
+*
+042
+* @param controller the controller that controls the output.
+043
+* @param measurementSource the measurement of the process variable
+044
+* @param goalSource the controller's goal
+045
+* @param useOutput the controller's output
+046
+* @param requirements the subsystems required by this command
+047
+*/
+048
+@SuppressWarnings("this-escape")
+049
+public ProfiledPIDCommand(
+050
+ProfiledPIDController controller,
+051
+DoubleSupplier measurementSource,
+052
+Supplier<State> goalSource,
+053
+BiConsumer<Double, State> useOutput,
+054
+Subsystem... requirements) {
+055
+requireNonNullParam(controller, "controller", "ProfiledPIDCommand");
+056
+requireNonNullParam(measurementSource, "measurementSource", "ProfiledPIDCommand");
+057
+requireNonNullParam(goalSource, "goalSource", "ProfiledPIDCommand");
+058
+requireNonNullParam(useOutput, "useOutput", "ProfiledPIDCommand");
+059
+060
+m_controller = controller;
+061
+m_useOutput = useOutput;
+062
+m_measurement = measurementSource;
+063
+m_goal = goalSource;
+064
+addRequirements(requirements);
+065
+}
+066
+067
+/**
+068
+* Creates a new PIDCommand, which controls the given output with a ProfiledPIDController. Goal
+069
+* velocity is implicitly zero.
+070
+*
+071
+* @param controller the controller that controls the output.
+072
+* @param measurementSource the measurement of the process variable
+073
+* @param goalSource the controller's goal
+074
+* @param useOutput the controller's output
+075
+* @param requirements the subsystems required by this command
+076
+*/
+077
+@SuppressWarnings("this-escape")
+078
+public ProfiledPIDCommand(
+079
+ProfiledPIDController controller,
+080
+DoubleSupplier measurementSource,
+081
+DoubleSupplier goalSource,
+082
+BiConsumer<Double, State> useOutput,
+083
+Subsystem... requirements) {
+084
+requireNonNullParam(controller, "controller", "SynchronousPIDCommand");
+085
+requireNonNullParam(measurementSource, "measurementSource", "SynchronousPIDCommand");
+086
+requireNonNullParam(goalSource, "goalSource", "SynchronousPIDCommand");
+087
+requireNonNullParam(useOutput, "useOutput", "SynchronousPIDCommand");
+088
+089
+m_controller = controller;
+090
+m_useOutput = useOutput;
+091
+m_measurement = measurementSource;
+092
+m_goal = () -> new State(goalSource.getAsDouble(), 0);
+093
+addRequirements(requirements);
+094
+}
+095
+096
+/**
+097
+* Creates a new PIDCommand, which controls the given output with a ProfiledPIDController. Goal
+098
+* velocity is specified.
+099
+*
+100
+* @param controller the controller that controls the output.
+101
+* @param measurementSource the measurement of the process variable
+102
+* @param goal the controller's goal
+103
+* @param useOutput the controller's output
+104
+* @param requirements the subsystems required by this command
+105
+*/
+106
+public ProfiledPIDCommand(
+107
+ProfiledPIDController controller,
+108
+DoubleSupplier measurementSource,
+109
+State goal,
+110
+BiConsumer<Double, State> useOutput,
+111
+Subsystem... requirements) {
+112
+this(controller, measurementSource, () -> goal, useOutput, requirements);
+113
+}
+114
+115
+/**
+116
+* Creates a new PIDCommand, which controls the given output with a ProfiledPIDController. Goal
+117
+* velocity is implicitly zero.
+118
+*
+119
+* @param controller the controller that controls the output.
+120
+* @param measurementSource the measurement of the process variable
+121
+* @param goal the controller's goal
+122
+* @param useOutput the controller's output
+123
+* @param requirements the subsystems required by this command
+124
+*/
+125
+public ProfiledPIDCommand(
+126
+ProfiledPIDController controller,
+127
+DoubleSupplier measurementSource,
+128
+double goal,
+129
+BiConsumer<Double, State> useOutput,
+130
+Subsystem... requirements) {
+131
+this(controller, measurementSource, () -> goal, useOutput, requirements);
+132
+}
+133
+134
+@Override
+135
+public void initialize() {
+136
+m_controller.reset(m_measurement.getAsDouble());
+137
+}
+138
+139
+@Override
+140
+public void execute() {
+141
+m_useOutput.accept(
+142
+m_controller.calculate(m_measurement.getAsDouble(), m_goal.get()),
+143
+m_controller.getSetpoint());
+144
+}
+145
+146
+@Override
+147
+public void end(boolean interrupted) {
+148
+m_useOutput.accept(0.0, new State());
+149
+}
+150
+151
+/**
+152
+* Returns the ProfiledPIDController used by the command.
+153
+*
+154
+* @return The ProfiledPIDController
+155
+*/
+156
+public ProfiledPIDController getController() {
+157
+return m_controller;
+158
+}
+159
+}

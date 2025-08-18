@@ -1,0 +1,206 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.counter;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.hal.CounterJNI;
+010
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+011
+import edu.wpi.first.hal.HAL;
+012
+import edu.wpi.first.util.sendable.Sendable;
+013
+import edu.wpi.first.util.sendable.SendableBuilder;
+014
+import edu.wpi.first.util.sendable.SendableRegistry;
+015
+import edu.wpi.first.wpilibj.DigitalSource;
+016
+import java.nio.ByteBuffer;
+017
+import java.nio.ByteOrder;
+018
+019
+/**
+020
+* Counter using external direction.
+021
+*
+022
+* <p>This counts on an edge from one digital input and the whether it counts up or down based on
+023
+* the state of a second digital input.
+024
+*/
+025
+public class ExternalDirectionCounter implements Sendable, AutoCloseable {
+026
+private final DigitalSource m_countSource;
+027
+private final DigitalSource m_directionSource;
+028
+029
+private final int m_handle;
+030
+031
+/**
+032
+* Constructs a new ExternalDirectionCounter.
+033
+*
+034
+* @param countSource The source for counting.
+035
+* @param directionSource The source for selecting count direction.
+036
+*/
+037
+@SuppressWarnings("this-escape")
+038
+public ExternalDirectionCounter(DigitalSource countSource, DigitalSource directionSource) {
+039
+m_countSource = requireNonNullParam(countSource, "countSource", "ExternalDirectionCounter");
+040
+m_directionSource =
+041
+requireNonNullParam(directionSource, "directionSource", "ExternalDirectionCounter");
+042
+043
+ByteBuffer index = ByteBuffer.allocateDirect(4);
+044
+// set the byte order
+045
+index.order(ByteOrder.LITTLE_ENDIAN);
+046
+m_handle = CounterJNI.initializeCounter(CounterJNI.EXTERNAL_DIRECTION, index.asIntBuffer());
+047
+048
+CounterJNI.setCounterUpSource(
+049
+m_handle,
+050
+countSource.getPortHandleForRouting(),
+051
+countSource.getAnalogTriggerTypeForRouting());
+052
+CounterJNI.setCounterUpSourceEdge(m_handle, true, false);
+053
+054
+CounterJNI.setCounterDownSource(
+055
+m_handle,
+056
+directionSource.getPortHandleForRouting(),
+057
+directionSource.getAnalogTriggerTypeForRouting());
+058
+CounterJNI.setCounterDownSourceEdge(m_handle, false, true);
+059
+CounterJNI.resetCounter(m_handle);
+060
+061
+int intIndex = index.getInt();
+062
+HAL.report(tResourceType.kResourceType_Counter, intIndex + 1);
+063
+SendableRegistry.addLW(this, "External Direction Counter", intIndex);
+064
+}
+065
+066
+/**
+067
+* Gets the current count.
+068
+*
+069
+* @return The current count.
+070
+*/
+071
+public int getCount() {
+072
+return CounterJNI.getCounter(m_handle);
+073
+}
+074
+075
+/**
+076
+* Sets to reverse the counter direction.
+077
+*
+078
+* @param reverseDirection True to reverse counting direction.
+079
+*/
+080
+public void setReverseDirection(boolean reverseDirection) {
+081
+CounterJNI.setCounterReverseDirection(m_handle, reverseDirection);
+082
+}
+083
+084
+/** Resets the current count. */
+085
+public void reset() {
+086
+CounterJNI.resetCounter(m_handle);
+087
+}
+088
+089
+/**
+090
+* Sets the edge configuration for counting.
+091
+*
+092
+* @param configuration The counting edge configuration.
+093
+*/
+094
+public void setEdgeConfiguration(EdgeConfiguration configuration) {
+095
+CounterJNI.setCounterUpSourceEdge(m_handle, configuration.rising, configuration.falling);
+096
+}
+097
+098
+@Override
+099
+public void close() {
+100
+SendableRegistry.remove(this);
+101
+CounterJNI.freeCounter(m_handle);
+102
+CounterJNI.suppressUnused(m_countSource);
+103
+CounterJNI.suppressUnused(m_directionSource);
+104
+}
+105
+106
+@Override
+107
+public void initSendable(SendableBuilder builder) {
+108
+builder.setSmartDashboardType("External Direction Counter");
+109
+builder.addDoubleProperty("Count", this::getCount, null);
+110
+}
+111
+}

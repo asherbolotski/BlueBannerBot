@@ -1,0 +1,128 @@
+Package
+edu.wpi.first.hal.can
+Class CANStreamOverflowException
+java.lang.Object
+java.lang.Throwable
+java.lang.Exception
+java.io.IOException
+edu.wpi.first.hal.can.CANStreamOverflowException
+All Implemented Interfaces:
+Serializable
+public class
+CANStreamOverflowException
+extends
+IOException
+Exception indicating that a CAN stream overflowed at some point between reads, therefore some
+ messages were lost. This exception contains any messages that were successfully read during the
+ operation that threw the exception.
+See Also:
+Serialized Form
+Constructor Summary
+Constructors
+Constructor
+Description
+CANStreamOverflowException
+(
+CANStreamMessage
+[] messages,
+ int messagesRead)
+Constructs a new CANStreamOverflowException.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+CANStreamMessage
+[]
+getMessages
+()
+Gets the messages that were successfully read.
+int
+getMessagesRead
+()
+Gets the count of messages that were successfully read.
+Methods inherited from class java.lang.
+Throwable
+addSuppressed
+,
+fillInStackTrace
+,
+getCause
+,
+getLocalizedMessage
+,
+getMessage
+,
+getStackTrace
+,
+getSuppressed
+,
+initCause
+,
+printStackTrace
+,
+printStackTrace
+,
+printStackTrace
+,
+setStackTrace
+,
+toString
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CANStreamOverflowException
+public
+CANStreamOverflowException
+(
+CANStreamMessage
+[] messages,
+ int messagesRead)
+Constructs a new CANStreamOverflowException.
+Parameters:
+messages
+- The messages that were read successfully.
+messagesRead
+- The length of messages read successfully.
+Method Details
+getMessages
+public
+CANStreamMessage
+[]
+getMessages
+()
+Gets the messages that were successfully read. Use
+getMessagesRead()
+to determine how
+ many messages in the returned array are valid.
+Returns:
+the messages
+getMessagesRead
+public
+int
+getMessagesRead
+()
+Gets the count of messages that were successfully read.
+Returns:
+count of messages

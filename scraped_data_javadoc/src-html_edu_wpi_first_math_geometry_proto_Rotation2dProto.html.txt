@@ -1,0 +1,76 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.proto;
+006
+007
+import edu.wpi.first.math.geometry.Rotation2d;
+008
+import edu.wpi.first.math.proto.Geometry2D.ProtobufRotation2d;
+009
+import edu.wpi.first.util.protobuf.Protobuf;
+010
+import us.hebi.quickbuf.Descriptors.Descriptor;
+011
+012
+public class Rotation2dProto implements Protobuf<Rotation2d, ProtobufRotation2d> {
+013
+@Override
+014
+public Class<Rotation2d> getTypeClass() {
+015
+return Rotation2d.class;
+016
+}
+017
+018
+@Override
+019
+public Descriptor getDescriptor() {
+020
+return ProtobufRotation2d.getDescriptor();
+021
+}
+022
+023
+@Override
+024
+public ProtobufRotation2d createMessage() {
+025
+return ProtobufRotation2d.newInstance();
+026
+}
+027
+028
+@Override
+029
+public Rotation2d unpack(ProtobufRotation2d msg) {
+030
+return new Rotation2d(msg.getValue());
+031
+}
+032
+033
+@Override
+034
+public void pack(ProtobufRotation2d msg, Rotation2d value) {
+035
+msg.setValue(value.getRadians());
+036
+}
+037
+038
+@Override
+039
+public boolean isImmutable() {
+040
+return true;
+041
+}
+042
+}

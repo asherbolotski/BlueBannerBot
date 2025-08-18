@@ -1,0 +1,149 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj2.command;
+006
+007
+import static edu.wpi.first.util.ErrorMessages.requireNonNullParam;
+008
+009
+import edu.wpi.first.util.sendable.SendableBuilder;
+010
+import java.util.Set;
+011
+import java.util.function.Supplier;
+012
+013
+/**
+014
+* Defers Command construction to runtime. Runs the command returned by a supplier when this command
+015
+* is initialized, and ends when it ends. Useful for performing runtime tasks before creating a new
+016
+* command. If this command is interrupted, it will cancel the command.
+017
+*
+018
+* <p>Note that the supplier <i>must</i> create a new Command each call. For selecting one of a
+019
+* preallocated set of commands, use {@link SelectCommand}.
+020
+*
+021
+* <p>This class is provided by the NewCommands VendorDep
+022
+*/
+023
+public class DeferredCommand extends Command {
+024
+private final Command m_nullCommand =
+025
+new PrintCommand("[DeferredCommand] Supplied command was null!");
+026
+027
+private final Supplier<Command> m_supplier;
+028
+private Command m_command = m_nullCommand;
+029
+030
+/**
+031
+* Creates a new DeferredCommand that directly runs the supplied command when initialized, and
+032
+* ends when it ends. Useful for lazily creating commands when the DeferredCommand is initialized,
+033
+* such as if the supplied command depends on runtime state. The {@link Supplier} will be called
+034
+* each time this command is initialized. The Supplier <i>must</i> create a new Command each call.
+035
+*
+036
+* @param supplier The command supplier
+037
+* @param requirements The command requirements. This is a {@link Set} to prevent accidental
+038
+*     omission of command requirements. Use {@link Set#of()} to easily construct a requirement
+039
+*     set.
+040
+*/
+041
+@SuppressWarnings("this-escape")
+042
+public DeferredCommand(Supplier<Command> supplier, Set<Subsystem> requirements) {
+043
+m_supplier = requireNonNullParam(supplier, "supplier", "DeferredCommand");
+044
+addRequirements(requirements.toArray(new Subsystem[0]));
+045
+}
+046
+047
+@Override
+048
+public void initialize() {
+049
+var cmd = m_supplier.get();
+050
+if (cmd != null) {
+051
+m_command = cmd;
+052
+CommandScheduler.getInstance().registerComposedCommands(m_command);
+053
+}
+054
+m_command.initialize();
+055
+}
+056
+057
+@Override
+058
+public void execute() {
+059
+m_command.execute();
+060
+}
+061
+062
+@Override
+063
+public boolean isFinished() {
+064
+return m_command.isFinished();
+065
+}
+066
+067
+@Override
+068
+public void end(boolean interrupted) {
+069
+m_command.end(interrupted);
+070
+m_command = m_nullCommand;
+071
+}
+072
+073
+@Override
+074
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
+075
+public void initSendable(SendableBuilder builder) {
+076
+super.initSendable(builder);
+077
+builder.addStringProperty(
+078
+"deferred", () -> m_command == m_nullCommand ? "null" : m_command.getName(), null);
+079
+}
+080
+}

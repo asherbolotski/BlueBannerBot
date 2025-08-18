@@ -1,0 +1,913 @@
+Package
+edu.wpi.first.wpilibj.shuffleboard
+Interface ShuffleboardContainer
+All Known Implementing Classes:
+ShuffleboardLayout
+,
+ShuffleboardTab
+public sealed interface
+ShuffleboardContainer
+permits
+ShuffleboardLayout
+,
+ShuffleboardTab
+Common interface for objects that can contain shuffleboard components.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Default Methods
+Modifier and Type
+Method
+Description
+default
+ComplexWidget
+add
+(
+VideoSource
+video)
+Adds a widget to this container to display the given video stream.
+ComplexWidget
+add
+(
+Sendable
+sendable)
+Adds a widget to this container to display the given sendable.
+default
+ComplexWidget
+add
+(
+String
+title,
+VideoSource
+video)
+Adds a widget to this container to display the given video stream.
+ComplexWidget
+add
+(
+String
+title,
+Sendable
+sendable)
+Adds a widget to this container to display the given sendable.
+SimpleWidget
+add
+(
+String
+title,
+Object
+defaultValue)
+Adds a widget to this container to display the given data.
+SimpleWidget
+add
+(
+String
+title,
+String
+typeString,
+Object
+defaultValue)
+Adds a widget to this container to display the given data.
+SuppliedValueWidget
+<
+Boolean
+>
+addBoolean
+(
+String
+title,
+BooleanSupplier
+valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<boolean[]>
+addBooleanArray
+(
+String
+title,
+Supplier
+<boolean[]> valueSupplier)
+Adds a widget to this container.
+default
+ComplexWidget
+addCamera
+(
+String
+title,
+String
+cameraName,
+String
+... cameraUrls)
+Adds a widget to this container to display a video stream.
+SuppliedValueWidget
+<
+Double
+>
+addDouble
+(
+String
+title,
+DoubleSupplier
+valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<double[]>
+addDoubleArray
+(
+String
+title,
+Supplier
+<double[]> valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<
+Float
+>
+addFloat
+(
+String
+title,
+FloatSupplier
+valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<float[]>
+addFloatArray
+(
+String
+title,
+Supplier
+<float[]> valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<
+Long
+>
+addInteger
+(
+String
+title,
+LongSupplier
+valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<long[]>
+addIntegerArray
+(
+String
+title,
+Supplier
+<long[]> valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<
+Double
+>
+addNumber
+(
+String
+title,
+DoubleSupplier
+valueSupplier)
+Adds a widget to this container.
+default
+SimpleWidget
+addPersistent
+(
+String
+title,
+Object
+defaultValue)
+Adds a widget to this container to display a simple piece of data.
+default
+SimpleWidget
+addPersistent
+(
+String
+title,
+String
+typeString,
+Object
+defaultValue)
+Adds a widget to this container to display a simple piece of data.
+SuppliedValueWidget
+<byte[]>
+addRaw
+(
+String
+title,
+String
+typeString,
+Supplier
+<byte[]> valueSupplier)
+Adds a widget to this container.
+default
+SuppliedValueWidget
+<byte[]>
+addRaw
+(
+String
+title,
+Supplier
+<byte[]> valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<
+String
+>
+addString
+(
+String
+title,
+Supplier
+<
+String
+> valueSupplier)
+Adds a widget to this container.
+SuppliedValueWidget
+<
+String
+[]>
+addStringArray
+(
+String
+title,
+Supplier
+<
+String
+[]> valueSupplier)
+Adds a widget to this container.
+void
+buildInto
+(
+NetworkTable
+parentTable,
+NetworkTable
+metaTable)
+Builds the entries for this value.
+List
+<
+ShuffleboardComponent
+<?>>
+getComponents
+()
+Gets the components that are direct children of this container.
+ShuffleboardLayout
+getLayout
+(
+String
+title)
+Gets the already-defined layout in this container with the given title.
+default
+ShuffleboardLayout
+getLayout
+(
+String
+title,
+LayoutType
+layoutType)
+Gets the layout with the given type and title, creating it if it does not already exist at the
+ time this method is called.
+ShuffleboardLayout
+getLayout
+(
+String
+title,
+String
+type)
+Gets the layout with the given type and title, creating it if it does not already exist at the
+ time this method is called.
+String
+getTitle
+()
+Gets the title of this Shuffleboard value.
+Method Details
+getComponents
+List
+<
+ShuffleboardComponent
+<?>>
+getComponents
+()
+Gets the components that are direct children of this container.
+Returns:
+The components that are direct children of this container.
+getLayout
+ShuffleboardLayout
+getLayout
+(
+String
+title,
+String
+type)
+Gets the layout with the given type and title, creating it if it does not already exist at the
+ time this method is called. Note: this method should only be used to use a layout type that is
+ not already built into Shuffleboard. To use a layout built into Shuffleboard, use
+getLayout(String, LayoutType)
+and the layouts in
+BuiltInLayouts
+.
+Parameters:
+title
+- the title of the layout
+type
+- the type of the layout, eg "List Layout" or "Grid Layout"
+Returns:
+the layout
+See Also:
+getLayout(String, LayoutType)
+getLayout
+default
+ShuffleboardLayout
+getLayout
+(
+String
+title,
+LayoutType
+layoutType)
+Gets the layout with the given type and title, creating it if it does not already exist at the
+ time this method is called.
+Parameters:
+title
+- the title of the layout
+layoutType
+- the type of the layout, eg "List" or "Grid"
+Returns:
+the layout
+getLayout
+ShuffleboardLayout
+getLayout
+(
+String
+title)
+Gets the already-defined layout in this container with the given title.
+Shuffleboard.getTab("Example Tab")
+   .getLayout("My Layout", BuiltInLayouts.kList);
+
+ // Later...
+ Shuffleboard.getTab("Example Tab")
+   .getLayout("My Layout");
+Parameters:
+title
+- the title of the layout to get
+Returns:
+the layout with the given title
+Throws:
+NoSuchElementException
+- if no layout has yet been defined with the given title
+add
+ComplexWidget
+add
+(
+String
+title,
+Sendable
+sendable)
+Adds a widget to this container to display the given sendable.
+Parameters:
+title
+- the title of the widget
+sendable
+- the sendable to display
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+add
+default
+ComplexWidget
+add
+(
+String
+title,
+VideoSource
+video)
+Adds a widget to this container to display the given video stream.
+Parameters:
+title
+- the title of the widget
+video
+- the video stream to display
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+add
+ComplexWidget
+add
+(
+Sendable
+sendable)
+Adds a widget to this container to display the given sendable.
+Parameters:
+sendable
+- the sendable to display
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title, or if the sendable's name has not been specified
+add
+default
+ComplexWidget
+add
+(
+VideoSource
+video)
+Adds a widget to this container to display the given video stream.
+Parameters:
+video
+- the video to display
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the same
+     title as the video source
+add
+SimpleWidget
+add
+(
+String
+title,
+Object
+defaultValue)
+Adds a widget to this container to display the given data.
+Parameters:
+title
+- the title of the widget
+defaultValue
+- the default value of the widget
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+See Also:
+add(String title, Object defaultValue)
+add
+SimpleWidget
+add
+(
+String
+title,
+String
+typeString,
+Object
+defaultValue)
+Adds a widget to this container to display the given data.
+Parameters:
+title
+- the title of the widget
+typeString
+- the NT type string
+defaultValue
+- the default value of the widget
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+See Also:
+add(String title, Object defaultValue)
+addCamera
+default
+ComplexWidget
+addCamera
+(
+String
+title,
+String
+cameraName,
+String
+... cameraUrls)
+Adds a widget to this container to display a video stream.
+Parameters:
+title
+- the title of the widget
+cameraName
+- the name of the streamed camera
+cameraUrls
+- the URLs with which the dashboard can access the camera stream
+Returns:
+a widget to display the camera stream
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addString
+SuppliedValueWidget
+<
+String
+>
+addString
+(
+String
+title,
+Supplier
+<
+String
+> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addNumber
+SuppliedValueWidget
+<
+Double
+>
+addNumber
+(
+String
+title,
+DoubleSupplier
+valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addDouble
+SuppliedValueWidget
+<
+Double
+>
+addDouble
+(
+String
+title,
+DoubleSupplier
+valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addFloat
+SuppliedValueWidget
+<
+Float
+>
+addFloat
+(
+String
+title,
+FloatSupplier
+valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addInteger
+SuppliedValueWidget
+<
+Long
+>
+addInteger
+(
+String
+title,
+LongSupplier
+valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addBoolean
+SuppliedValueWidget
+<
+Boolean
+>
+addBoolean
+(
+String
+title,
+BooleanSupplier
+valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addStringArray
+SuppliedValueWidget
+<
+String
+[]>
+addStringArray
+(
+String
+title,
+Supplier
+<
+String
+[]> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addDoubleArray
+SuppliedValueWidget
+<double[]>
+addDoubleArray
+(
+String
+title,
+Supplier
+<double[]> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addFloatArray
+SuppliedValueWidget
+<float[]>
+addFloatArray
+(
+String
+title,
+Supplier
+<float[]> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addIntegerArray
+SuppliedValueWidget
+<long[]>
+addIntegerArray
+(
+String
+title,
+Supplier
+<long[]> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addBooleanArray
+SuppliedValueWidget
+<boolean[]>
+addBooleanArray
+(
+String
+title,
+Supplier
+<boolean[]> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addRaw
+default
+SuppliedValueWidget
+<byte[]>
+addRaw
+(
+String
+title,
+Supplier
+<byte[]> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addRaw
+SuppliedValueWidget
+<byte[]>
+addRaw
+(
+String
+title,
+String
+typeString,
+Supplier
+<byte[]> valueSupplier)
+Adds a widget to this container. The widget will display the data provided by the value
+ supplier. Changes made on the dashboard will not propagate to the widget object, and will be
+ overridden by values from the value supplier.
+Parameters:
+title
+- the title of the widget
+typeString
+- the NT type string for the value
+valueSupplier
+- the supplier for values
+Returns:
+a widget to display data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+addPersistent
+default
+SimpleWidget
+addPersistent
+(
+String
+title,
+Object
+defaultValue)
+Adds a widget to this container to display a simple piece of data. Unlike
+add(String, Object)
+, the value in the widget will be saved on the robot and will be used when the robot
+ program next starts rather than
+defaultValue
+.
+Parameters:
+title
+- the title of the widget
+defaultValue
+- the default value of the widget
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+See Also:
+add(String title, Object defaultValue)
+addPersistent
+default
+SimpleWidget
+addPersistent
+(
+String
+title,
+String
+typeString,
+Object
+defaultValue)
+Adds a widget to this container to display a simple piece of data. Unlike
+add(String, Object)
+, the value in the widget will be saved on the robot and will be used when the robot
+ program next starts rather than
+defaultValue
+.
+Parameters:
+title
+- the title of the widget
+typeString
+- the NT type string
+defaultValue
+- the default value of the widget
+Returns:
+a widget to display the sendable data
+Throws:
+IllegalArgumentException
+- if a widget already exists in this container with the given
+     title
+See Also:
+add(String title, Object defaultValue)
+getTitle
+String
+getTitle
+()
+Gets the title of this Shuffleboard value.
+Returns:
+The title of this Shuffleboard value.
+buildInto
+void
+buildInto
+(
+NetworkTable
+parentTable,
+NetworkTable
+metaTable)
+Builds the entries for this value.
+Parameters:
+parentTable
+- the table containing all the data for the parent. Values that require a
+     complex entry or table structure should call
+parentTable.getSubTable(getTitle())
+to
+     get the table to put data into. Values that only use a single entry should call
+parentTable.getEntry(getTitle())
+to get that entry.
+metaTable
+- the table containing all the metadata for this value and its sub-values

@@ -1,0 +1,86 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.geometry.proto;
+006
+007
+import edu.wpi.first.math.geometry.Rotation2d;
+008
+import edu.wpi.first.math.geometry.Transform2d;
+009
+import edu.wpi.first.math.geometry.Translation2d;
+010
+import edu.wpi.first.math.proto.Geometry2D.ProtobufTransform2d;
+011
+import edu.wpi.first.util.protobuf.Protobuf;
+012
+import us.hebi.quickbuf.Descriptors.Descriptor;
+013
+014
+public class Transform2dProto implements Protobuf<Transform2d, ProtobufTransform2d> {
+015
+@Override
+016
+public Class<Transform2d> getTypeClass() {
+017
+return Transform2d.class;
+018
+}
+019
+020
+@Override
+021
+public Descriptor getDescriptor() {
+022
+return ProtobufTransform2d.getDescriptor();
+023
+}
+024
+025
+@Override
+026
+public ProtobufTransform2d createMessage() {
+027
+return ProtobufTransform2d.newInstance();
+028
+}
+029
+030
+@Override
+031
+public Transform2d unpack(ProtobufTransform2d msg) {
+032
+return new Transform2d(
+033
+Translation2d.proto.unpack(msg.getTranslation()),
+034
+Rotation2d.proto.unpack(msg.getRotation()));
+035
+}
+036
+037
+@Override
+038
+public void pack(ProtobufTransform2d msg, Transform2d value) {
+039
+Translation2d.proto.pack(msg.getMutableTranslation(), value.getTranslation());
+040
+Rotation2d.proto.pack(msg.getMutableRotation(), value.getRotation());
+041
+}
+042
+043
+@Override
+044
+public boolean isImmutable() {
+045
+return true;
+046
+}
+047
+}

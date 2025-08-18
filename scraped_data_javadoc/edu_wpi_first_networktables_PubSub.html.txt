@@ -1,0 +1,169 @@
+Package
+edu.wpi.first.networktables
+Interface PubSub
+All Superinterfaces:
+AutoCloseable
+All Known Subinterfaces:
+BooleanArrayEntry
+,
+BooleanArrayPublisher
+,
+BooleanArraySubscriber
+,
+BooleanEntry
+,
+BooleanPublisher
+,
+BooleanSubscriber
+,
+DoubleArrayEntry
+,
+DoubleArrayPublisher
+,
+DoubleArraySubscriber
+,
+DoubleEntry
+,
+DoublePublisher
+,
+DoubleSubscriber
+,
+FloatArrayEntry
+,
+FloatArrayPublisher
+,
+FloatArraySubscriber
+,
+FloatEntry
+,
+FloatPublisher
+,
+FloatSubscriber
+,
+GenericEntry
+,
+GenericPublisher
+,
+GenericSubscriber
+,
+IntegerArrayEntry
+,
+IntegerArrayPublisher
+,
+IntegerArraySubscriber
+,
+IntegerEntry
+,
+IntegerPublisher
+,
+IntegerSubscriber
+,
+ProtobufEntry
+<T>
+,
+ProtobufPublisher
+<T>
+,
+ProtobufSubscriber
+<T>
+,
+Publisher
+,
+RawEntry
+,
+RawPublisher
+,
+RawSubscriber
+,
+StringArrayEntry
+,
+StringArrayPublisher
+,
+StringArraySubscriber
+,
+StringEntry
+,
+StringPublisher
+,
+StringSubscriber
+,
+StructArrayEntry
+<T>
+,
+StructArrayPublisher
+<T>
+,
+StructArraySubscriber
+<T>
+,
+StructEntry
+<T>
+,
+StructPublisher
+<T>
+,
+StructSubscriber
+<T>
+,
+Subscriber
+All Known Implementing Classes:
+EntryBase
+,
+NetworkTableEntry
+public interface
+PubSub
+extends
+AutoCloseable
+NetworkTables publisher or subscriber.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+int
+getHandle
+()
+Gets the native handle.
+Topic
+getTopic
+()
+Gets the subscribed-to / published-to topic.
+boolean
+isValid
+()
+Determines if the native handle is valid.
+Method Details
+close
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+getTopic
+Topic
+getTopic
+()
+Gets the subscribed-to / published-to topic.
+Returns:
+Topic
+isValid
+boolean
+isValid
+()
+Determines if the native handle is valid.
+Returns:
+True if the native handle is valid, false otherwise.
+getHandle
+int
+getHandle
+()
+Gets the native handle.
+Returns:
+Handle

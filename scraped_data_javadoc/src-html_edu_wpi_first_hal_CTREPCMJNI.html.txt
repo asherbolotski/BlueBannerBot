@@ -1,0 +1,432 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* CTRE Pneumatic Control Module (PCM) Functions.
+009
+*
+010
+* @see "CTREPCM.h"
+011
+*/
+012
+public class CTREPCMJNI extends JNIWrapper {
+013
+/**
+014
+* Initializes a PCM.
+015
+*
+016
+* @param module the CAN ID to initialize
+017
+* @return the created PH handle
+018
+* @see "HAL_InitializeCTREPCM"
+019
+*/
+020
+public static native int initialize(int module);
+021
+022
+/**
+023
+* Frees a PCM handle.
+024
+*
+025
+* @param handle the PCMhandle
+026
+* @see "HAL_FreeCTREPCM"
+027
+*/
+028
+public static native void free(int handle);
+029
+030
+/**
+031
+* Checks if a solenoid channel number is valid.
+032
+*
+033
+* @param channel the channel to check
+034
+* @return true if the channel is valid, otherwise false
+035
+*/
+036
+public static native boolean checkSolenoidChannel(int channel);
+037
+038
+/**
+039
+* Get whether compressor is turned on.
+040
+*
+041
+* @param handle the PCM handle
+042
+* @return true if the compressor is turned on
+043
+* @see "HAL_GetCTREPCMCompressor"
+044
+*/
+045
+public static native boolean getCompressor(int handle);
+046
+047
+/**
+048
+* Enables the compressor closed loop control using the digital pressure switch. The compressor
+049
+* will turn on when the pressure switch indicates that the system is not full, and will turn off
+050
+* when the pressure switch indicates that the system is full.
+051
+*
+052
+* @param handle the PCM handle
+053
+* @param enabled true to enable closed loop control
+054
+* @see "HAL_SetCTREPCMClosedLoopControl"
+055
+*/
+056
+public static native void setClosedLoopControl(int handle, boolean enabled);
+057
+058
+/**
+059
+* Get whether the PCM closed loop control is enabled.
+060
+*
+061
+* @param handle the PCM handle
+062
+* @return True if closed loop control is enabled, otherwise false.
+063
+*/
+064
+public static native boolean getClosedLoopControl(int handle);
+065
+066
+/**
+067
+* Returns the state of the pressure switch.
+068
+*
+069
+* @param handle the PCM handle
+070
+* @return True if pressure switch indicates that the system is full, otherwise false.
+071
+* @see "HAL_GetCTREPCMPressureSwitch"
+072
+*/
+073
+public static native boolean getPressureSwitch(int handle);
+074
+075
+/**
+076
+* Returns the current drawn by the compressor.
+077
+*
+078
+* @param handle the PCM handle
+079
+* @return The current drawn by the compressor in amps.
+080
+* @see "HAL_GetCTREPCMCompressorCurrent"
+081
+*/
+082
+public static native double getCompressorCurrent(int handle);
+083
+084
+/**
+085
+* Return whether the compressor current is currently too high.
+086
+*
+087
+* @param handle the PCM handle
+088
+* @return True if the compressor current is too high, otherwise false.
+089
+* @see getCompressorCurrentTooHighStickyFault
+090
+* @see "HAL_GetCTREPCMCompressorCurrentTooHighFault"
+091
+*/
+092
+public static native boolean getCompressorCurrentTooHighFault(int handle);
+093
+094
+/**
+095
+* Returns whether the compressor current has been too high since sticky faults were last cleared.
+096
+* This fault is persistent and can be cleared by clearAllStickyFaults()
+097
+*
+098
+* @param handle the PCM handle
+099
+* @return True if the compressor current has been too high since sticky faults were last cleared.
+100
+* @see getCompressorCurrentTooHighFault
+101
+* @see "HAL_GetCTREPCMCompressorCurrentTooHighStickyFault("
+102
+*/
+103
+public static native boolean getCompressorCurrentTooHighStickyFault(int handle);
+104
+105
+/**
+106
+* Returns whether the compressor is currently shorted.
+107
+*
+108
+* @param handle the PCM handle
+109
+* @return True if the compressor is currently shorted, otherwise false.
+110
+* @see getCompressorCurrentTooHighStickyFault
+111
+* @see "HAL_GetCTREPCMCompressorShortedStickyFault"
+112
+*/
+113
+public static native boolean getCompressorShortedFault(int handle);
+114
+115
+/**
+116
+* Returns whether the compressor has been shorted since sticky faults were last cleared. This
+117
+* fault is persistent and can be cleared by clearAllStickyFaults()
+118
+*
+119
+* @param handle the PCM handle
+120
+* @return True if the compressor has been shorted since sticky faults were last cleared,
+121
+*     otherwise false.
+122
+* @see getCompressorShortedFault
+123
+* @see "HAL_GetCTREPCMCompressorShortedFault"
+124
+*/
+125
+public static native boolean getCompressorShortedStickyFault(int handle);
+126
+127
+/**
+128
+* Returns whether the compressor is currently disconnected.
+129
+*
+130
+* @param handle the PCM handle
+131
+* @return True if compressor is currently disconnected, otherwise false.
+132
+* @see getCompressorShortedStickyFault
+133
+* @see "HAL_GetCTREPCMCompressorNotConnectedFault"
+134
+*/
+135
+public static native boolean getCompressorNotConnectedFault(int handle);
+136
+137
+/**
+138
+* Returns whether the compressor has been disconnected since sticky faults were last cleared.
+139
+* This fault is persistent and can be cleared by clearAllStickyFaults()
+140
+*
+141
+* @param handle the PCM handle
+142
+* @return True if the compressor has been disconnected since sticky faults were last cleared,
+143
+*     otherwise false.
+144
+* @see getCompressorNotConnectedFault
+145
+* @see "HAL_GetCTREPCMCompressorNotConnectedStickyFault"
+146
+*/
+147
+public static native boolean getCompressorNotConnectedStickyFault(int handle);
+148
+149
+/**
+150
+* Gets a bitmask of solenoid values.
+151
+*
+152
+* @param handle the PCM handle
+153
+* @return Bitmask containing the state of the solenoids. The LSB represents solenoid 0.
+154
+* @see "HAL_GetCTREPCMSolenoids"
+155
+*/
+156
+public static native int getSolenoids(int handle);
+157
+158
+/**
+159
+* Sets solenoids on a pneumatics module.
+160
+*
+161
+* @param handle the PCM handle
+162
+* @param mask Bitmask indicating which solenoids to set. The LSB represents solenoid 0.
+163
+* @param values Bitmask indicating the desired states of the solenoids. The LSB represents
+164
+*     solenoid 0.
+165
+* @see "HAL_SetCTREPCMSolenoids"
+166
+*/
+167
+public static native void setSolenoids(int handle, int mask, int values);
+168
+169
+/**
+170
+* Get a bitmask of disabled solenoids.
+171
+*
+172
+* @param handle the PCM handle
+173
+* @return Bitmask indicating disabled solenoids. The LSB represents solenoid 0.
+174
+* @see "HAL_GetCTREPCMSolenoidDisabledList"
+175
+*/
+176
+public static native int getSolenoidDisabledList(int handle);
+177
+178
+/**
+179
+* Returns whether the solenoid is currently reporting a voltage fault.
+180
+*
+181
+* @param handle the PCM handle
+182
+* @return True if solenoid is reporting a fault, otherwise false.
+183
+* @see getSolenoidVoltageStickyFault
+184
+* @see "HAL_GetCTREPCMSolenoidVoltageFault"
+185
+*/
+186
+public static native boolean getSolenoidVoltageFault(int handle);
+187
+188
+/**
+189
+* Returns whether the solenoid has reported a voltage fault since sticky faults were last
+190
+* cleared. This fault is persistent and can be cleared by clearAllStickyFaults()
+191
+*
+192
+* @param handle the PCM handle
+193
+* @return True if solenoid is reporting a fault, otherwise false.
+194
+* @see getSolenoidVoltageFault
+195
+* @see "HAL_GetCTREPCMSolenoidVoltageStickyFault"
+196
+*/
+197
+public static native boolean getSolenoidVoltageStickyFault(int handle);
+198
+199
+/**
+200
+* Clears all sticky faults on this device.
+201
+*
+202
+* @param handle the PCM handle
+203
+* @see "HAL_ClearAllCTREPCMStickyFaults"
+204
+*/
+205
+public static native void clearAllStickyFaults(int handle);
+206
+207
+/**
+208
+* Fire a single solenoid shot.
+209
+*
+210
+* @param handle the PCM handle
+211
+* @param index solenoid index
+212
+* @see "HAL_FireCTREPCMOneShot"
+213
+*/
+214
+public static native void fireOneShot(int handle, int index);
+215
+216
+/**
+217
+* Set the duration for a single solenoid shot.
+218
+*
+219
+* @param handle the PCM handle
+220
+* @param index solenoid index
+221
+* @param durMs shot duration in ms
+222
+* @see "HAL_SetCTREPCMOneShotDuration"
+223
+*/
+224
+public static native void setOneShotDuration(int handle, int index, int durMs);
+225
+226
+/** Utility class. */
+227
+private CTREPCMJNI() {}
+228
+}

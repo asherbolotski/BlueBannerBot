@@ -1,0 +1,1517 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.AccumulatorResult;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.hal.SPIJNI;
+011
+import java.nio.ByteBuffer;
+012
+import java.nio.ByteOrder;
+013
+import java.nio.IntBuffer;
+014
+015
+/** Represents an SPI bus port. */
+016
+public class SPI implements AutoCloseable {
+017
+/** SPI port. */
+018
+public enum Port {
+019
+/** Onboard SPI bus port CS0. */
+020
+kOnboardCS0(SPIJNI.ONBOARD_CS0_PORT),
+021
+/** Onboard SPI bus port CS1. */
+022
+kOnboardCS1(SPIJNI.ONBOARD_CS1_PORT),
+023
+/** Onboard SPI bus port CS2. */
+024
+kOnboardCS2(SPIJNI.ONBOARD_CS2_PORT),
+025
+/** Onboard SPI bus port CS3. */
+026
+kOnboardCS3(SPIJNI.ONBOARD_CS3_PORT),
+027
+/** MXP (roboRIO MXP) SPI bus port. */
+028
+kMXP(SPIJNI.MXP_PORT);
+029
+030
+/** SPI port value. */
+031
+public final int value;
+032
+033
+Port(int value) {
+034
+this.value = value;
+035
+}
+036
+}
+037
+038
+/** SPI mode. */
+039
+public enum Mode {
+040
+/** Clock idle low, data sampled on rising edge. */
+041
+kMode0(SPIJNI.SPI_MODE0),
+042
+/** Clock idle low, data sampled on falling edge. */
+043
+kMode1(SPIJNI.SPI_MODE1),
+044
+/** Clock idle high, data sampled on falling edge. */
+045
+kMode2(SPIJNI.SPI_MODE2),
+046
+/** Clock idle high, data sampled on rising edge. */
+047
+kMode3(SPIJNI.SPI_MODE3);
+048
+049
+/** SPI mode value. */
+050
+public final int value;
+051
+052
+Mode(int value) {
+053
+this.value = value;
+054
+}
+055
+}
+056
+057
+private final int m_port;
+058
+059
+/**
+060
+* Constructor.
+061
+*
+062
+* @param port the physical SPI port
+063
+*/
+064
+public SPI(Port port) {
+065
+m_port = port.value;
+066
+067
+SPIJNI.spiInitialize(m_port);
+068
+069
+SPIJNI.spiSetMode(m_port, 0);
+070
+071
+HAL.report(tResourceType.kResourceType_SPI, port.value + 1);
+072
+}
+073
+074
+/**
+075
+* Returns the SPI port value.
+076
+*
+077
+* @return SPI port value.
+078
+*/
+079
+public int getPort() {
+080
+return m_port;
+081
+}
+082
+083
+@Override
+084
+public void close() {
+085
+if (m_accum != null) {
+086
+m_accum.close();
+087
+m_accum = null;
+088
+}
+089
+SPIJNI.spiClose(m_port);
+090
+}
+091
+092
+/**
+093
+* Configure the rate of the generated clock signal. The default value is 500,000 Hz. The maximum
+094
+* value is 4,000,000 Hz.
+095
+*
+096
+* @param hz The clock rate in Hertz.
+097
+*/
+098
+public final void setClockRate(int hz) {
+099
+SPIJNI.spiSetSpeed(m_port, hz);
+100
+}
+101
+102
+/**
+103
+* Sets the mode for the SPI device.
+104
+*
+105
+* <p>Mode 0 is Clock idle low, data sampled on rising edge.
+106
+*
+107
+* <p>Mode 1 is Clock idle low, data sampled on falling edge.
+108
+*
+109
+* <p>Mode 2 is Clock idle high, data sampled on falling edge.
+110
+*
+111
+* <p>Mode 3 is Clock idle high, data sampled on rising edge.
+112
+*
+113
+* @param mode The mode to set.
+114
+*/
+115
+public final void setMode(Mode mode) {
+116
+SPIJNI.spiSetMode(m_port, mode.value & 0x3);
+117
+}
+118
+119
+/** Configure the chip select line to be active high. */
+120
+public final void setChipSelectActiveHigh() {
+121
+SPIJNI.spiSetChipSelectActiveHigh(m_port);
+122
+}
+123
+124
+/** Configure the chip select line to be active low. */
+125
+public final void setChipSelectActiveLow() {
+126
+SPIJNI.spiSetChipSelectActiveLow(m_port);
+127
+}
+128
+129
+/**
+130
+* Write data to the peripheral device. Blocks until there is space in the output FIFO.
+131
+*
+132
+* <p>If not running in output only mode, also saves the data received on the CIPO input during
+133
+* the transfer into the receive FIFO.
+134
+*
+135
+* @param dataToSend The buffer containing the data to send.
+136
+* @param size The number of bytes to send.
+137
+* @return Number of bytes written or -1 on error.
+138
+*/
+139
+public int write(byte[] dataToSend, int size) {
+140
+if (dataToSend.length < size) {
+141
+throw new IllegalArgumentException("buffer is too small, must be at least " + size);
+142
+}
+143
+return SPIJNI.spiWriteB(m_port, dataToSend, size);
+144
+}
+145
+146
+/**
+147
+* Write data to the peripheral device. Blocks until there is space in the output FIFO.
+148
+*
+149
+* <p>If not running in output only mode, also saves the data received on the CIPO input during
+150
+* the transfer into the receive FIFO.
+151
+*
+152
+* @param dataToSend The buffer containing the data to send.
+153
+* @param size The number of bytes to send.
+154
+* @return Number of bytes written or -1 on error.
+155
+*/
+156
+public int write(ByteBuffer dataToSend, int size) {
+157
+if (dataToSend.hasArray()) {
+158
+return write(dataToSend.array(), size);
+159
+}
+160
+if (!dataToSend.isDirect()) {
+161
+throw new IllegalArgumentException("must be a direct buffer");
+162
+}
+163
+if (dataToSend.capacity() < size) {
+164
+throw new IllegalArgumentException("buffer is too small, must be at least " + size);
+165
+}
+166
+return SPIJNI.spiWrite(m_port, dataToSend, size);
+167
+}
+168
+169
+/**
+170
+* Read a word from the receive FIFO.
+171
+*
+172
+* <p>Waits for the current transfer to complete if the receive FIFO is empty.
+173
+*
+174
+* <p>If the receive FIFO is empty, there is no active transfer, and initiate is false, errors.
+175
+*
+176
+* @param initiate If true, this function pushes "0" into the transmit buffer and initiates a
+177
+*     transfer. If false, this function assumes that data is already in the receive FIFO from a
+178
+*     previous write.
+179
+* @param dataReceived Buffer in which to store bytes read.
+180
+* @param size Number of bytes to read.
+181
+* @return Number of bytes read or -1 on error.
+182
+*/
+183
+public int read(boolean initiate, byte[] dataReceived, int size) {
+184
+if (dataReceived.length < size) {
+185
+throw new IllegalArgumentException("buffer is too small, must be at least " + size);
+186
+}
+187
+return SPIJNI.spiReadB(m_port, initiate, dataReceived, size);
+188
+}
+189
+190
+/**
+191
+* Read a word from the receive FIFO.
+192
+*
+193
+* <p>Waits for the current transfer to complete if the receive FIFO is empty.
+194
+*
+195
+* <p>If the receive FIFO is empty, there is no active transfer, and initiate is false, errors.
+196
+*
+197
+* @param initiate If true, this function pushes "0" into the transmit buffer and initiates a
+198
+*     transfer. If false, this function assumes that data is already in the receive FIFO from a
+199
+*     previous write.
+200
+* @param dataReceived The buffer to be filled with the received data.
+201
+* @param size The length of the transaction, in bytes
+202
+* @return Number of bytes read or -1 on error.
+203
+*/
+204
+public int read(boolean initiate, ByteBuffer dataReceived, int size) {
+205
+if (dataReceived.hasArray()) {
+206
+return read(initiate, dataReceived.array(), size);
+207
+}
+208
+if (!dataReceived.isDirect()) {
+209
+throw new IllegalArgumentException("must be a direct buffer");
+210
+}
+211
+if (dataReceived.capacity() < size) {
+212
+throw new IllegalArgumentException("buffer is too small, must be at least " + size);
+213
+}
+214
+return SPIJNI.spiRead(m_port, initiate, dataReceived, size);
+215
+}
+216
+217
+/**
+218
+* Perform a simultaneous read/write transaction with the device.
+219
+*
+220
+* @param dataToSend The data to be written out to the device
+221
+* @param dataReceived Buffer to receive data from the device
+222
+* @param size The length of the transaction, in bytes
+223
+* @return TODO
+224
+*/
+225
+public int transaction(byte[] dataToSend, byte[] dataReceived, int size) {
+226
+if (dataToSend.length < size) {
+227
+throw new IllegalArgumentException("dataToSend is too small, must be at least " + size);
+228
+}
+229
+if (dataReceived.length < size) {
+230
+throw new IllegalArgumentException("dataReceived is too small, must be at least " + size);
+231
+}
+232
+return SPIJNI.spiTransactionB(m_port, dataToSend, dataReceived, size);
+233
+}
+234
+235
+/**
+236
+* Perform a simultaneous read/write transaction with the device.
+237
+*
+238
+* @param dataToSend The data to be written out to the device.
+239
+* @param dataReceived Buffer to receive data from the device.
+240
+* @param size The length of the transaction, in bytes
+241
+* @return TODO
+242
+*/
+243
+public int transaction(ByteBuffer dataToSend, ByteBuffer dataReceived, int size) {
+244
+if (dataToSend.hasArray() && dataReceived.hasArray()) {
+245
+return transaction(dataToSend.array(), dataReceived.array(), size);
+246
+}
+247
+if (!dataToSend.isDirect()) {
+248
+throw new IllegalArgumentException("dataToSend must be a direct buffer");
+249
+}
+250
+if (dataToSend.capacity() < size) {
+251
+throw new IllegalArgumentException("dataToSend is too small, must be at least " + size);
+252
+}
+253
+if (!dataReceived.isDirect()) {
+254
+throw new IllegalArgumentException("dataReceived must be a direct buffer");
+255
+}
+256
+if (dataReceived.capacity() < size) {
+257
+throw new IllegalArgumentException("dataReceived is too small, must be at least " + size);
+258
+}
+259
+return SPIJNI.spiTransaction(m_port, dataToSend, dataReceived, size);
+260
+}
+261
+262
+/**
+263
+* Initialize automatic SPI transfer engine.
+264
+*
+265
+* <p>Only a single engine is available, and use of it blocks use of all other chip select usage
+266
+* on the same physical SPI port while it is running.
+267
+*
+268
+* @param bufferSize buffer size in bytes
+269
+*/
+270
+public void initAuto(int bufferSize) {
+271
+SPIJNI.spiInitAuto(m_port, bufferSize);
+272
+}
+273
+274
+/** Frees the automatic SPI transfer engine. */
+275
+public void freeAuto() {
+276
+SPIJNI.spiFreeAuto(m_port);
+277
+}
+278
+279
+/**
+280
+* Set the data to be transmitted by the engine.
+281
+*
+282
+* <p>Up to 16 bytes are configurable, and may be followed by up to 127 zero bytes.
+283
+*
+284
+* @param dataToSend data to send (maximum 16 bytes)
+285
+* @param zeroSize number of zeros to send after the data
+286
+*/
+287
+public void setAutoTransmitData(byte[] dataToSend, int zeroSize) {
+288
+SPIJNI.spiSetAutoTransmitData(m_port, dataToSend, zeroSize);
+289
+}
+290
+291
+/**
+292
+* Start running the automatic SPI transfer engine at a periodic rate.
+293
+*
+294
+* <p>{@link #initAuto(int)} and {@link #setAutoTransmitData(byte[], int)} must be called before
+295
+* calling this function.
+296
+*
+297
+* @param period period between transfers, in seconds (us resolution)
+298
+*/
+299
+public void startAutoRate(double period) {
+300
+SPIJNI.spiStartAutoRate(m_port, period);
+301
+}
+302
+303
+/**
+304
+* Start running the automatic SPI transfer engine when a trigger occurs.
+305
+*
+306
+* <p>{@link #initAuto(int)} and {@link #setAutoTransmitData(byte[], int)} must be called before
+307
+* calling this function.
+308
+*
+309
+* @param source digital source for the trigger (may be an analog trigger)
+310
+* @param rising trigger on the rising edge
+311
+* @param falling trigger on the falling edge
+312
+*/
+313
+public void startAutoTrigger(DigitalSource source, boolean rising, boolean falling) {
+314
+SPIJNI.spiStartAutoTrigger(
+315
+m_port,
+316
+source.getPortHandleForRouting(),
+317
+source.getAnalogTriggerTypeForRouting(),
+318
+rising,
+319
+falling);
+320
+}
+321
+322
+/** Stop running the automatic SPI transfer engine. */
+323
+public void stopAuto() {
+324
+SPIJNI.spiStopAuto(m_port);
+325
+}
+326
+327
+/** Force the engine to make a single transfer. */
+328
+public void forceAutoRead() {
+329
+SPIJNI.spiForceAutoRead(m_port);
+330
+}
+331
+332
+/**
+333
+* Read data that has been transferred by the automatic SPI transfer engine.
+334
+*
+335
+* <p>Transfers may be made a byte at a time, so it's necessary for the caller to handle cases
+336
+* where an entire transfer has not been completed.
+337
+*
+338
+* <p>Each received data sequence consists of a timestamp followed by the received data bytes, one
+339
+* byte per word (in the least significant byte). The length of each received data sequence is the
+340
+* same as the combined size of the data and zeroSize set in setAutoTransmitData().
+341
+*
+342
+* <p>Blocks until numToRead words have been read or timeout expires. May be called with
+343
+* numToRead=0 to retrieve how many words are available.
+344
+*
+345
+* @param buffer buffer where read words are stored
+346
+* @param numToRead number of words to read
+347
+* @param timeout timeout in seconds (ms resolution)
+348
+* @return Number of words remaining to be read
+349
+*/
+350
+public int readAutoReceivedData(ByteBuffer buffer, int numToRead, double timeout) {
+351
+if (!buffer.isDirect()) {
+352
+throw new IllegalArgumentException("must be a direct buffer");
+353
+}
+354
+if (buffer.capacity() < numToRead * 4) {
+355
+throw new IllegalArgumentException(
+356
+"buffer is too small, must be at least " + (numToRead * 4));
+357
+}
+358
+return SPIJNI.spiReadAutoReceivedData(m_port, buffer, numToRead, timeout);
+359
+}
+360
+361
+/**
+362
+* Read data that has been transferred by the automatic SPI transfer engine.
+363
+*
+364
+* <p>Transfers may be made a byte at a time, so it's necessary for the caller to handle cases
+365
+* where an entire transfer has not been completed.
+366
+*
+367
+* <p>Each received data sequence consists of a timestamp followed by the received data bytes, one
+368
+* byte per word (in the least significant byte). The length of each received data sequence is the
+369
+* same as the combined size of the data and zeroSize set in setAutoTransmitData().
+370
+*
+371
+* <p>Blocks until numToRead words have been read or timeout expires. May be called with
+372
+* numToRead=0 to retrieve how many words are available.
+373
+*
+374
+* @param buffer array where read words are stored
+375
+* @param numToRead number of words to read
+376
+* @param timeout timeout in seconds (ms resolution)
+377
+* @return Number of words remaining to be read
+378
+*/
+379
+public int readAutoReceivedData(int[] buffer, int numToRead, double timeout) {
+380
+if (buffer.length < numToRead) {
+381
+throw new IllegalArgumentException("buffer is too small, must be at least " + numToRead);
+382
+}
+383
+return SPIJNI.spiReadAutoReceivedData(m_port, buffer, numToRead, timeout);
+384
+}
+385
+386
+/**
+387
+* Get the number of bytes dropped by the automatic SPI transfer engine due to the receive buffer
+388
+* being full.
+389
+*
+390
+* @return Number of bytes dropped
+391
+*/
+392
+public int getAutoDroppedCount() {
+393
+return SPIJNI.spiGetAutoDroppedCount(m_port);
+394
+}
+395
+396
+/**
+397
+* Configure the Auto SPI Stall time between reads.
+398
+*
+399
+* @param csToSclkTicks the number of ticks to wait before asserting the cs pin
+400
+* @param stallTicks the number of ticks to stall for
+401
+* @param pow2BytesPerRead the number of bytes to read before stalling
+402
+*/
+403
+public void configureAutoStall(int csToSclkTicks, int stallTicks, int pow2BytesPerRead) {
+404
+SPIJNI.spiConfigureAutoStall(m_port, csToSclkTicks, stallTicks, pow2BytesPerRead);
+405
+}
+406
+407
+private static final int kAccumulateDepth = 2048;
+408
+409
+private static class Accumulator implements AutoCloseable {
+410
+Accumulator(
+411
+int port,
+412
+int xferSize,
+413
+int validMask,
+414
+int validValue,
+415
+int dataShift,
+416
+int dataSize,
+417
+boolean isSigned,
+418
+boolean bigEndian) {
+419
+m_notifier = new Notifier(this::update);
+420
+m_buf =
+421
+ByteBuffer.allocateDirect((xferSize + 1) * kAccumulateDepth * 4)
+422
+.order(ByteOrder.nativeOrder());
+423
+m_intBuf = m_buf.asIntBuffer();
+424
+m_xferSize = xferSize + 1; // +1 for timestamp
+425
+m_validMask = validMask;
+426
+m_validValue = validValue;
+427
+m_dataShift = dataShift;
+428
+m_dataMax = 1 << dataSize;
+429
+m_dataMsbMask = 1 << (dataSize - 1);
+430
+m_isSigned = isSigned;
+431
+m_bigEndian = bigEndian;
+432
+m_port = port;
+433
+}
+434
+435
+@Override
+436
+public void close() {
+437
+m_notifier.close();
+438
+}
+439
+440
+final Notifier m_notifier;
+441
+final ByteBuffer m_buf;
+442
+final IntBuffer m_intBuf;
+443
+final Object m_mutex = new Object();
+444
+445
+long m_value;
+446
+int m_count;
+447
+int m_lastValue;
+448
+long m_lastTimestamp;
+449
+double m_integratedValue;
+450
+451
+int m_center;
+452
+int m_deadband;
+453
+double m_integratedCenter;
+454
+455
+final int m_validMask;
+456
+final int m_validValue;
+457
+final int m_dataMax; // one more than max data value
+458
+final int m_dataMsbMask; // data field MSB mask (for signed)
+459
+final int m_dataShift; // data field shift right amount, in bits
+460
+final int m_xferSize; // SPI transfer size, in bytes
+461
+final boolean m_isSigned; // is data field signed?
+462
+final boolean m_bigEndian; // is response big endian?
+463
+final int m_port;
+464
+465
+void update() {
+466
+synchronized (m_mutex) {
+467
+boolean done = false;
+468
+while (!done) {
+469
+done = true;
+470
+471
+// get amount of data available
+472
+int numToRead = SPIJNI.spiReadAutoReceivedData(m_port, m_buf, 0, 0);
+473
+474
+// only get whole responses
+475
+numToRead -= numToRead % m_xferSize;
+476
+if (numToRead > m_xferSize * kAccumulateDepth) {
+477
+numToRead = m_xferSize * kAccumulateDepth;
+478
+done = false;
+479
+}
+480
+if (numToRead == 0) {
+481
+return; // no samples
+482
+}
+483
+484
+// read buffered data
+485
+SPIJNI.spiReadAutoReceivedData(m_port, m_buf, numToRead, 0);
+486
+487
+// loop over all responses
+488
+for (int off = 0; off < numToRead; off += m_xferSize) {
+489
+// get timestamp from first word
+490
+long timestamp = m_intBuf.get(off) & 0xffffffffL;
+491
+492
+// convert from bytes
+493
+int resp = 0;
+494
+if (m_bigEndian) {
+495
+for (int i = 1; i < m_xferSize; ++i) {
+496
+resp <<= 8;
+497
+resp |= m_intBuf.get(off + i) & 0xff;
+498
+}
+499
+} else {
+500
+for (int i = m_xferSize - 1; i >= 1; --i) {
+501
+resp <<= 8;
+502
+resp |= m_intBuf.get(off + i) & 0xff;
+503
+}
+504
+}
+505
+506
+// process response
+507
+if ((resp & m_validMask) == m_validValue) {
+508
+// valid sensor data; extract data field
+509
+int data = resp >> m_dataShift;
+510
+data &= m_dataMax - 1;
+511
+// 2s complement conversion if signed MSB is set
+512
+if (m_isSigned && (data & m_dataMsbMask) != 0) {
+513
+data -= m_dataMax;
+514
+}
+515
+// center offset
+516
+int dataNoCenter = data;
+517
+data -= m_center;
+518
+// only accumulate if outside deadband
+519
+if (data < -m_deadband || data > m_deadband) {
+520
+m_value += data;
+521
+if (m_count != 0) {
+522
+// timestamps use the 1us FPGA clock; also handle rollover
+523
+if (timestamp >= m_lastTimestamp) {
+524
+m_integratedValue +=
+525
+dataNoCenter * (timestamp - m_lastTimestamp) * 1e-6 - m_integratedCenter;
+526
+} else {
+527
+m_integratedValue +=
+528
+dataNoCenter * ((1L << 32) - m_lastTimestamp + timestamp) * 1e-6
+529
+- m_integratedCenter;
+530
+}
+531
+}
+532
+}
+533
+++m_count;
+534
+m_lastValue = data;
+535
+} else {
+536
+// no data from the sensor; just clear the last value
+537
+m_lastValue = 0;
+538
+}
+539
+m_lastTimestamp = timestamp;
+540
+}
+541
+}
+542
+}
+543
+}
+544
+}
+545
+546
+private Accumulator m_accum;
+547
+548
+/**
+549
+* Initialize the accumulator.
+550
+*
+551
+* @param period Time between reads
+552
+* @param cmd SPI command to send to request data
+553
+* @param xferSize SPI transfer size, in bytes
+554
+* @param validMask Mask to apply to received data for validity checking
+555
+* @param validValue After validMask is applied, required matching value for validity checking
+556
+* @param dataShift Bit shift to apply to received data to get actual data value
+557
+* @param dataSize Size (in bits) of data field
+558
+* @param isSigned Is data field signed?
+559
+* @param bigEndian Is device big endian?
+560
+*/
+561
+public void initAccumulator(
+562
+double period,
+563
+int cmd,
+564
+int xferSize,
+565
+int validMask,
+566
+int validValue,
+567
+int dataShift,
+568
+int dataSize,
+569
+boolean isSigned,
+570
+boolean bigEndian) {
+571
+initAuto(xferSize * 2048);
+572
+byte[] cmdBytes = new byte[] {0, 0, 0, 0};
+573
+if (bigEndian) {
+574
+for (int i = xferSize - 1; i >= 0; --i) {
+575
+cmdBytes[i] = (byte) (cmd & 0xff);
+576
+cmd >>= 8;
+577
+}
+578
+} else {
+579
+cmdBytes[0] = (byte) (cmd & 0xff);
+580
+cmd >>= 8;
+581
+cmdBytes[1] = (byte) (cmd & 0xff);
+582
+cmd >>= 8;
+583
+cmdBytes[2] = (byte) (cmd & 0xff);
+584
+cmd >>= 8;
+585
+cmdBytes[3] = (byte) (cmd & 0xff);
+586
+}
+587
+setAutoTransmitData(cmdBytes, xferSize - 4);
+588
+startAutoRate(period);
+589
+590
+m_accum =
+591
+new Accumulator(
+592
+m_port, xferSize, validMask, validValue, dataShift, dataSize, isSigned, bigEndian);
+593
+m_accum.m_notifier.startPeriodic(period * 1024);
+594
+}
+595
+596
+/** Frees the accumulator. */
+597
+public void freeAccumulator() {
+598
+if (m_accum != null) {
+599
+m_accum.close();
+600
+m_accum = null;
+601
+}
+602
+freeAuto();
+603
+}
+604
+605
+/** Resets the accumulator to zero. */
+606
+public void resetAccumulator() {
+607
+if (m_accum == null) {
+608
+return;
+609
+}
+610
+synchronized (m_accum.m_mutex) {
+611
+m_accum.m_value = 0;
+612
+m_accum.m_count = 0;
+613
+m_accum.m_lastValue = 0;
+614
+m_accum.m_lastTimestamp = 0;
+615
+m_accum.m_integratedValue = 0;
+616
+}
+617
+}
+618
+619
+/**
+620
+* Set the center value of the accumulator.
+621
+*
+622
+* <p>The center value is subtracted from each value before it is added to the accumulator. This
+623
+* is used for the center value of devices like gyros and accelerometers to make integration work
+624
+* and to take the device offset into account when integrating.
+625
+*
+626
+* @param center The accumulator's center value.
+627
+*/
+628
+public void setAccumulatorCenter(int center) {
+629
+if (m_accum == null) {
+630
+return;
+631
+}
+632
+synchronized (m_accum.m_mutex) {
+633
+m_accum.m_center = center;
+634
+}
+635
+}
+636
+637
+/**
+638
+* Set the accumulator's deadband.
+639
+*
+640
+* @param deadband The accumulator's deadband.
+641
+*/
+642
+public void setAccumulatorDeadband(int deadband) {
+643
+if (m_accum == null) {
+644
+return;
+645
+}
+646
+synchronized (m_accum.m_mutex) {
+647
+m_accum.m_deadband = deadband;
+648
+}
+649
+}
+650
+651
+/**
+652
+* Read the last value read by the accumulator engine.
+653
+*
+654
+* @return The last value read by the accumulator engine.
+655
+*/
+656
+public int getAccumulatorLastValue() {
+657
+if (m_accum == null) {
+658
+return 0;
+659
+}
+660
+synchronized (m_accum.m_mutex) {
+661
+m_accum.update();
+662
+return m_accum.m_lastValue;
+663
+}
+664
+}
+665
+666
+/**
+667
+* Read the accumulated value.
+668
+*
+669
+* @return The 64-bit value accumulated since the last Reset().
+670
+*/
+671
+public long getAccumulatorValue() {
+672
+if (m_accum == null) {
+673
+return 0;
+674
+}
+675
+synchronized (m_accum.m_mutex) {
+676
+m_accum.update();
+677
+return m_accum.m_value;
+678
+}
+679
+}
+680
+681
+/**
+682
+* Read the number of accumulated values.
+683
+*
+684
+* <p>Read the count of the accumulated values since the accumulator was last Reset().
+685
+*
+686
+* @return The number of times samples from the channel were accumulated.
+687
+*/
+688
+public int getAccumulatorCount() {
+689
+if (m_accum == null) {
+690
+return 0;
+691
+}
+692
+synchronized (m_accum.m_mutex) {
+693
+m_accum.update();
+694
+return m_accum.m_count;
+695
+}
+696
+}
+697
+698
+/**
+699
+* Read the average of the accumulated value.
+700
+*
+701
+* @return The accumulated average value (value / count).
+702
+*/
+703
+public double getAccumulatorAverage() {
+704
+if (m_accum == null) {
+705
+return 0;
+706
+}
+707
+synchronized (m_accum.m_mutex) {
+708
+m_accum.update();
+709
+if (m_accum.m_count == 0) {
+710
+return 0.0;
+711
+}
+712
+return ((double) m_accum.m_value) / m_accum.m_count;
+713
+}
+714
+}
+715
+716
+/**
+717
+* Read the accumulated value and the number of accumulated values atomically.
+718
+*
+719
+* <p>This function reads the value and count atomically. This can be used for averaging.
+720
+*
+721
+* @param result AccumulatorResult object to store the results in.
+722
+*/
+723
+public void getAccumulatorOutput(AccumulatorResult result) {
+724
+if (result == null) {
+725
+throw new IllegalArgumentException("Null parameter `result'");
+726
+}
+727
+if (m_accum == null) {
+728
+result.value = 0;
+729
+result.count = 0;
+730
+return;
+731
+}
+732
+synchronized (m_accum.m_mutex) {
+733
+m_accum.update();
+734
+result.value = m_accum.m_value;
+735
+result.count = m_accum.m_count;
+736
+}
+737
+}
+738
+739
+/**
+740
+* Set the center value of the accumulator integrator.
+741
+*
+742
+* <p>The center value is subtracted from each value*dt before it is added to the integrated
+743
+* value. This is used for the center value of devices like gyros and accelerometers to take the
+744
+* device offset into account when integrating.
+745
+*
+746
+* @param center The accumulator integrator's center value.
+747
+*/
+748
+public void setAccumulatorIntegratedCenter(double center) {
+749
+if (m_accum == null) {
+750
+return;
+751
+}
+752
+synchronized (m_accum.m_mutex) {
+753
+m_accum.m_integratedCenter = center;
+754
+}
+755
+}
+756
+757
+/**
+758
+* Read the integrated value. This is the sum of (each value * time between values).
+759
+*
+760
+* @return The integrated value accumulated since the last Reset().
+761
+*/
+762
+public double getAccumulatorIntegratedValue() {
+763
+if (m_accum == null) {
+764
+return 0;
+765
+}
+766
+synchronized (m_accum.m_mutex) {
+767
+m_accum.update();
+768
+return m_accum.m_integratedValue;
+769
+}
+770
+}
+771
+772
+/**
+773
+* Read the average of the integrated value. This is the sum of (each value times the time between
+774
+* values), divided by the count.
+775
+*
+776
+* @return The average of the integrated value accumulated since the last Reset().
+777
+*/
+778
+public double getAccumulatorIntegratedAverage() {
+779
+if (m_accum == null) {
+780
+return 0;
+781
+}
+782
+synchronized (m_accum.m_mutex) {
+783
+m_accum.update();
+784
+if (m_accum.m_count <= 1) {
+785
+return 0.0;
+786
+}
+787
+// count-1 due to not integrating the first value received
+788
+return m_accum.m_integratedValue / (m_accum.m_count - 1);
+789
+}
+790
+}
+791
+}

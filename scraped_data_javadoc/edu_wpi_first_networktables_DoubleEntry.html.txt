@@ -1,0 +1,87 @@
+Package
+edu.wpi.first.networktables
+Interface DoubleEntry
+All Superinterfaces:
+AutoCloseable
+,
+DoubleConsumer
+,
+DoublePublisher
+,
+DoubleSubscriber
+,
+DoubleSupplier
+,
+Publisher
+,
+PubSub
+,
+Subscriber
+public interface
+DoubleEntry
+extends
+DoubleSubscriber
+,
+DoublePublisher
+NetworkTables Double entry.
+Unlike NetworkTableEntry, the entry goes away when close() is called.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+void
+unpublish
+()
+Stops publishing the entry if it's published.
+Methods inherited from interface java.util.function.
+DoubleConsumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+DoublePublisher
+accept
+,
+getTopic
+,
+set
+,
+set
+,
+setDefault
+Methods inherited from interface edu.wpi.first.networktables.
+DoubleSubscriber
+get
+,
+get
+,
+getAsDouble
+,
+getAtomic
+,
+getAtomic
+,
+getTopic
+,
+readQueue
+,
+readQueueValues
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+unpublish
+void
+unpublish
+()
+Stops publishing the entry if it's published.

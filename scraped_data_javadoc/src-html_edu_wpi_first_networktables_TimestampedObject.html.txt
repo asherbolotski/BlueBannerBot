@@ -1,0 +1,69 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.networktables;
+006
+007
+/**
+008
+* NetworkTables timestamped object.
+009
+*
+010
+* @param <T> Value type.
+011
+*/
+012
+public final class TimestampedObject<T> {
+013
+/**
+014
+* Create a timestamped value.
+015
+*
+016
+* @param timestamp timestamp in local time base
+017
+* @param serverTime timestamp in server time base
+018
+* @param value value
+019
+*/
+020
+public TimestampedObject(long timestamp, long serverTime, T value) {
+021
+this.timestamp = timestamp;
+022
+this.serverTime = serverTime;
+023
+this.value = value;
+024
+}
+025
+026
+/** Timestamp in local time base. */
+027
+@SuppressWarnings("MemberName")
+028
+public final long timestamp;
+029
+030
+/** Timestamp in server time base. May be 0 or 1 for locally set values. */
+031
+@SuppressWarnings("MemberName")
+032
+public final long serverTime;
+033
+034
+/** Value. */
+035
+@SuppressWarnings("MemberName")
+036
+public final T value;
+037
+}

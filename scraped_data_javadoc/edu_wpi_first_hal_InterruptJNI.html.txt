@@ -1,0 +1,254 @@
+Package
+edu.wpi.first.hal
+Class InterruptJNI
+java.lang.Object
+edu.wpi.first.hal.JNIWrapper
+edu.wpi.first.hal.InterruptJNI
+public class
+InterruptJNI
+extends
+JNIWrapper
+Interrupt HAL JNI functions.
+See Also:
+"hal/Interrupts.h"
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.hal.
+JNIWrapper
+JNIWrapper.Helper
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final int
+HalInvalidHandle
+Invalid handle value.
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+cleanInterrupts
+(int interruptHandle)
+Frees an interrupt.
+static int
+initializeInterrupts
+()
+Initializes an interrupt.
+static long
+readInterruptFallingTimestamp
+(int interruptHandle)
+Returns the timestamp for the falling interrupt that occurred most recently.
+static long
+readInterruptRisingTimestamp
+(int interruptHandle)
+Returns the timestamp for the rising interrupt that occurred most recently.
+static void
+releaseWaitingInterrupt
+(int interruptHandle)
+Releases a waiting interrupt.
+static void
+requestInterrupts
+(int interruptHandle,
+ int digitalSourceHandle,
+ int analogTriggerType)
+Requests interrupts on a specific digital source.
+static void
+setInterruptUpSourceEdge
+(int interruptHandle,
+ boolean risingEdge,
+ boolean fallingEdge)
+Sets the edges to trigger the interrupt on.
+static long
+waitForInterrupt
+(int interruptHandle,
+ double timeout,
+ boolean ignorePrevious)
+Waits for the defined interrupt to occur.
+static long
+waitForMultipleInterrupts
+(int interruptHandle,
+ long mask,
+ double timeout,
+ boolean ignorePrevious)
+Waits for any interrupt covered by the mask to occur.
+Methods inherited from class edu.wpi.first.hal.
+JNIWrapper
+forceLoad
+,
+suppressUnused
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+HalInvalidHandle
+public static final
+int
+HalInvalidHandle
+Invalid handle value.
+See Also:
+Constant Field Values
+Method Details
+initializeInterrupts
+public static
+int
+initializeInterrupts
+()
+Initializes an interrupt.
+Returns:
+the created interrupt handle
+See Also:
+"HAL_InitializeInterrupts"
+cleanInterrupts
+public static
+void
+cleanInterrupts
+(int interruptHandle)
+Frees an interrupt.
+Parameters:
+interruptHandle
+- the interrupt handle
+See Also:
+"HAL_CleanInterrupts"
+waitForInterrupt
+public static
+long
+waitForInterrupt
+(int interruptHandle,
+ double timeout,
+ boolean ignorePrevious)
+Waits for the defined interrupt to occur.
+Parameters:
+interruptHandle
+- the interrupt handle
+timeout
+- timeout in seconds
+ignorePrevious
+- if true, ignore interrupts that happened before waitForInterrupt was
+     called
+Returns:
+the mask of interrupts that fired
+See Also:
+"HAL_WaitForInterrupt"
+waitForMultipleInterrupts
+public static
+long
+waitForMultipleInterrupts
+(int interruptHandle,
+ long mask,
+ double timeout,
+ boolean ignorePrevious)
+Waits for any interrupt covered by the mask to occur.
+Parameters:
+interruptHandle
+- the interrupt handle to use for the context
+mask
+- the mask of interrupts to wait for
+timeout
+- timeout in seconds
+ignorePrevious
+- if true, ignore interrupts that happened before waitForInterrupt was
+     called
+Returns:
+the mask of interrupts that fired
+See Also:
+"HAL_WaitForMultipleInterrupts"
+readInterruptRisingTimestamp
+public static
+long
+readInterruptRisingTimestamp
+(int interruptHandle)
+Returns the timestamp for the rising interrupt that occurred most recently.
+This is in the same time domain as getFPGATime(). It only contains the bottom 32 bits of the
+ timestamp. If your robot has been running for over 1 hour, you will need to fill in the upper
+ 32 bits yourself.
+Parameters:
+interruptHandle
+- the interrupt handle
+Returns:
+timestamp in microseconds since FPGA Initialization
+readInterruptFallingTimestamp
+public static
+long
+readInterruptFallingTimestamp
+(int interruptHandle)
+Returns the timestamp for the falling interrupt that occurred most recently.
+This is in the same time domain as getFPGATime(). It only contains the bottom 32 bits of the
+ timestamp. If your robot has been running for over 1 hour, you will need to fill in the upper
+ 32 bits yourself.
+Parameters:
+interruptHandle
+- the interrupt handle
+Returns:
+timestamp in microseconds since FPGA Initialization
+requestInterrupts
+public static
+void
+requestInterrupts
+(int interruptHandle,
+ int digitalSourceHandle,
+ int analogTriggerType)
+Requests interrupts on a specific digital source.
+Parameters:
+interruptHandle
+- the interrupt handle
+digitalSourceHandle
+- the digital source handle (either a HAL_AnalogTriggerHandle or a
+     HAL_DigitalHandle)
+analogTriggerType
+- the trigger type if the source is an AnalogTrigger
+See Also:
+"HAL_RequestInterrupts"
+setInterruptUpSourceEdge
+public static
+void
+setInterruptUpSourceEdge
+(int interruptHandle,
+ boolean risingEdge,
+ boolean fallingEdge)
+Sets the edges to trigger the interrupt on.
+Note that both edges triggered is a valid configuration.
+Parameters:
+interruptHandle
+- the interrupt handle
+risingEdge
+- true for triggering on rising edge
+fallingEdge
+- true for triggering on falling edge
+See Also:
+"HAL_SetInterruptUpSourceEdge"
+releaseWaitingInterrupt
+public static
+void
+releaseWaitingInterrupt
+(int interruptHandle)
+Releases a waiting interrupt.
+This will release both rising and falling waiters.
+Parameters:
+interruptHandle
+- the interrupt handle to release
+See Also:
+"HAL_ReleaseWaitingInterrupt"

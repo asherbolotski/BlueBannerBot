@@ -1,0 +1,652 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.AccumulatorResult;
+008
+import edu.wpi.first.hal.AnalogJNI;
+009
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+010
+import edu.wpi.first.hal.HAL;
+011
+import edu.wpi.first.hal.SimDevice;
+012
+import edu.wpi.first.hal.util.AllocationException;
+013
+import edu.wpi.first.util.sendable.Sendable;
+014
+import edu.wpi.first.util.sendable.SendableBuilder;
+015
+import edu.wpi.first.util.sendable.SendableRegistry;
+016
+017
+/**
+018
+* Analog channel class.
+019
+*
+020
+* <p>Each analog channel is read from hardware as a 12-bit number representing 0V to 5V.
+021
+*
+022
+* <p>Connected to each analog channel is an averaging and oversampling engine. This engine
+023
+* accumulates the specified ( by setAverageBits() and setOversampleBits() ) number of samples
+024
+* before returning a new value. This is not a sliding window average. The only difference between
+025
+* the oversampled samples and the averaged samples is that the oversampled samples are simply
+026
+* accumulated effectively increasing the resolution, while the averaged samples are divided by the
+027
+* number of samples to retain the resolution, but get more stable values.
+028
+*/
+029
+public class AnalogInput implements Sendable, AutoCloseable {
+030
+private static final int kAccumulatorSlot = 1;
+031
+int m_port; // explicit no modifier, private and package accessible.
+032
+private int m_channel;
+033
+private static final int[] kAccumulatorChannels = {0, 1};
+034
+private long m_accumulatorOffset;
+035
+036
+/**
+037
+* Construct an analog channel.
+038
+*
+039
+* @param channel The channel number to represent. 0-3 are on-board 4-7 are on the MXP port.
+040
+*/
+041
+@SuppressWarnings("this-escape")
+042
+public AnalogInput(final int channel) {
+043
+AnalogJNI.checkAnalogInputChannel(channel);
+044
+m_channel = channel;
+045
+046
+final int portHandle = HAL.getPort((byte) channel);
+047
+m_port = AnalogJNI.initializeAnalogInputPort(portHandle);
+048
+049
+HAL.report(tResourceType.kResourceType_AnalogChannel, channel + 1);
+050
+SendableRegistry.addLW(this, "AnalogInput", channel);
+051
+}
+052
+053
+@Override
+054
+public void close() {
+055
+SendableRegistry.remove(this);
+056
+AnalogJNI.freeAnalogInputPort(m_port);
+057
+m_port = 0;
+058
+m_channel = 0;
+059
+m_accumulatorOffset = 0;
+060
+}
+061
+062
+/**
+063
+* Get a sample straight from this channel. The sample is a 12-bit value representing the 0V to 5V
+064
+* range of the A/D converter. The units are in A/D converter codes. Use GetVoltage() to get the
+065
+* analog value in calibrated units.
+066
+*
+067
+* @return A sample straight from this channel.
+068
+*/
+069
+public int getValue() {
+070
+return AnalogJNI.getAnalogValue(m_port);
+071
+}
+072
+073
+/**
+074
+* Get a sample from the output of the oversample and average engine for this channel. The sample
+075
+* is 12-bit + the bits configured in SetOversampleBits(). The value configured in
+076
+* setAverageBits() will cause this value to be averaged 2^bits number of samples. This is not a
+077
+* sliding window. The sample will not change until 2^(OversampleBits + AverageBits) samples have
+078
+* been acquired from this channel. Use getAverageVoltage() to get the analog value in calibrated
+079
+* units.
+080
+*
+081
+* @return A sample from the oversample and average engine for this channel.
+082
+*/
+083
+public int getAverageValue() {
+084
+return AnalogJNI.getAnalogAverageValue(m_port);
+085
+}
+086
+087
+/**
+088
+* Get a scaled sample straight from this channel. The value is scaled to units of Volts using the
+089
+* calibrated scaling data from getLSBWeight() and getOffset().
+090
+*
+091
+* @return A scaled sample straight from this channel.
+092
+*/
+093
+public double getVoltage() {
+094
+return AnalogJNI.getAnalogVoltage(m_port);
+095
+}
+096
+097
+/**
+098
+* Get a scaled sample from the output of the oversample and average engine for this channel. The
+099
+* value is scaled to units of Volts using the calibrated scaling data from getLSBWeight() and
+100
+* getOffset(). Using oversampling will cause this value to be higher resolution, but it will
+101
+* update more slowly. Using averaging will cause this value to be more stable, but it will update
+102
+* more slowly.
+103
+*
+104
+* @return A scaled sample from the output of the oversample and average engine for this channel.
+105
+*/
+106
+public double getAverageVoltage() {
+107
+return AnalogJNI.getAnalogAverageVoltage(m_port);
+108
+}
+109
+110
+/**
+111
+* Get the factory scaling the least significant bit weight constant. The least significant bit
+112
+* weight constant for the channel that was calibrated in manufacturing and stored in an eeprom.
+113
+*
+114
+* <p>Volts = ((LSB_Weight * 1e-9) * raw) - (Offset * 1e-9)
+115
+*
+116
+* @return Least significant bit weight.
+117
+*/
+118
+public long getLSBWeight() {
+119
+return AnalogJNI.getAnalogLSBWeight(m_port);
+120
+}
+121
+122
+/**
+123
+* Get the factory scaling offset constant. The offset constant for the channel that was
+124
+* calibrated in manufacturing and stored in an eeprom.
+125
+*
+126
+* <p>Volts = ((LSB_Weight * 1e-9) * raw) - (Offset * 1e-9)
+127
+*
+128
+* @return Offset constant.
+129
+*/
+130
+public int getOffset() {
+131
+return AnalogJNI.getAnalogOffset(m_port);
+132
+}
+133
+134
+/**
+135
+* Get the channel number.
+136
+*
+137
+* @return The channel number.
+138
+*/
+139
+public int getChannel() {
+140
+return m_channel;
+141
+}
+142
+143
+/**
+144
+* Set the number of averaging bits. This sets the number of averaging bits. The actual number of
+145
+* averaged samples is 2^bits. The averaging is done automatically in the FPGA.
+146
+*
+147
+* @param bits The number of averaging bits.
+148
+*/
+149
+public void setAverageBits(final int bits) {
+150
+AnalogJNI.setAnalogAverageBits(m_port, bits);
+151
+}
+152
+153
+/**
+154
+* Get the number of averaging bits. This gets the number of averaging bits from the FPGA. The
+155
+* actual number of averaged samples is 2^bits. The averaging is done automatically in the FPGA.
+156
+*
+157
+* @return The number of averaging bits.
+158
+*/
+159
+public int getAverageBits() {
+160
+return AnalogJNI.getAnalogAverageBits(m_port);
+161
+}
+162
+163
+/**
+164
+* Set the number of oversample bits. This sets the number of oversample bits. The actual number
+165
+* of oversampled values is 2^bits. The oversampling is done automatically in the FPGA.
+166
+*
+167
+* @param bits The number of oversample bits.
+168
+*/
+169
+public void setOversampleBits(final int bits) {
+170
+AnalogJNI.setAnalogOversampleBits(m_port, bits);
+171
+}
+172
+173
+/**
+174
+* Get the number of oversample bits. This gets the number of oversample bits from the FPGA. The
+175
+* actual number of oversampled values is 2^bits. The oversampling is done automatically in the
+176
+* FPGA.
+177
+*
+178
+* @return The number of oversample bits.
+179
+*/
+180
+public int getOversampleBits() {
+181
+return AnalogJNI.getAnalogOversampleBits(m_port);
+182
+}
+183
+184
+/** Initialize the accumulator. */
+185
+public void initAccumulator() {
+186
+if (!isAccumulatorChannel()) {
+187
+throw new AllocationException(
+188
+"Accumulators are only available on slot "
+189
++ kAccumulatorSlot
+190
++ " on channels "
+191
++ kAccumulatorChannels[0]
+192
++ ", "
+193
++ kAccumulatorChannels[1]);
+194
+}
+195
+m_accumulatorOffset = 0;
+196
+AnalogJNI.initAccumulator(m_port);
+197
+}
+198
+199
+/**
+200
+* Set an initial value for the accumulator.
+201
+*
+202
+* <p>This will be added to all values returned to the user.
+203
+*
+204
+* @param initialValue The value that the accumulator should start from when reset.
+205
+*/
+206
+public void setAccumulatorInitialValue(long initialValue) {
+207
+m_accumulatorOffset = initialValue;
+208
+}
+209
+210
+/** Resets the accumulator to the initial value. */
+211
+public void resetAccumulator() {
+212
+AnalogJNI.resetAccumulator(m_port);
+213
+214
+// Wait until the next sample, so the next call to getAccumulator*()
+215
+// won't have old values.
+216
+final double sampleTime = 1.0 / getGlobalSampleRate();
+217
+final double overSamples = 1 << getOversampleBits();
+218
+final double averageSamples = 1 << getAverageBits();
+219
+Timer.delay(sampleTime * overSamples * averageSamples);
+220
+}
+221
+222
+/**
+223
+* Set the center value of the accumulator.
+224
+*
+225
+* <p>The center value is subtracted from each A/D value before it is added to the accumulator.
+226
+* This is used for the center value of devices like gyros and accelerometers to take the device
+227
+* offset into account when integrating.
+228
+*
+229
+* <p>This center value is based on the output of the oversampled and averaged source the
+230
+* accumulator channel. Because of this, any non-zero oversample bits will affect the size of the
+231
+* value for this field.
+232
+*
+233
+* @param center The accumulator's center value.
+234
+*/
+235
+public void setAccumulatorCenter(int center) {
+236
+AnalogJNI.setAccumulatorCenter(m_port, center);
+237
+}
+238
+239
+/**
+240
+* Set the accumulator's deadband.
+241
+*
+242
+* @param deadband The deadband size in ADC codes (12-bit value)
+243
+*/
+244
+public void setAccumulatorDeadband(int deadband) {
+245
+AnalogJNI.setAccumulatorDeadband(m_port, deadband);
+246
+}
+247
+248
+/**
+249
+* Read the accumulated value.
+250
+*
+251
+* <p>Read the value that has been accumulating. The accumulator is attached after the oversample
+252
+* and average engine.
+253
+*
+254
+* @return The 64-bit value accumulated since the last Reset().
+255
+*/
+256
+public long getAccumulatorValue() {
+257
+return AnalogJNI.getAccumulatorValue(m_port) + m_accumulatorOffset;
+258
+}
+259
+260
+/**
+261
+* Read the number of accumulated values.
+262
+*
+263
+* <p>Read the count of the accumulated values since the accumulator was last Reset().
+264
+*
+265
+* @return The number of times samples from the channel were accumulated.
+266
+*/
+267
+public long getAccumulatorCount() {
+268
+return AnalogJNI.getAccumulatorCount(m_port);
+269
+}
+270
+271
+/**
+272
+* Read the accumulated value and the number of accumulated values atomically.
+273
+*
+274
+* <p>This function reads the value and count from the FPGA atomically. This can be used for
+275
+* averaging.
+276
+*
+277
+* @param result AccumulatorResult object to store the results in.
+278
+*/
+279
+public void getAccumulatorOutput(AccumulatorResult result) {
+280
+if (result == null) {
+281
+throw new IllegalArgumentException("Null parameter `result'");
+282
+}
+283
+if (!isAccumulatorChannel()) {
+284
+throw new IllegalArgumentException(
+285
+"Channel " + m_channel + " is not an accumulator channel.");
+286
+}
+287
+AnalogJNI.getAccumulatorOutput(m_port, result);
+288
+result.value += m_accumulatorOffset;
+289
+}
+290
+291
+/**
+292
+* Is the channel attached to an accumulator.
+293
+*
+294
+* @return The analog channel is attached to an accumulator.
+295
+*/
+296
+public boolean isAccumulatorChannel() {
+297
+for (int channel : kAccumulatorChannels) {
+298
+if (m_channel == channel) {
+299
+return true;
+300
+}
+301
+}
+302
+return false;
+303
+}
+304
+305
+/**
+306
+* Set the sample rate per channel.
+307
+*
+308
+* <p>This is a global setting for all channels. The maximum rate is 500kS/s divided by the number
+309
+* of channels in use. This is 62500 samples/s per channel if all 8 channels are used.
+310
+*
+311
+* @param samplesPerSecond The number of samples per second.
+312
+*/
+313
+public static void setGlobalSampleRate(final double samplesPerSecond) {
+314
+AnalogJNI.setAnalogSampleRate(samplesPerSecond);
+315
+}
+316
+317
+/**
+318
+* Get the current sample rate.
+319
+*
+320
+* <p>This assumes one entry in the scan list. This is a global setting for all channels.
+321
+*
+322
+* @return Sample rate.
+323
+*/
+324
+public static double getGlobalSampleRate() {
+325
+return AnalogJNI.getAnalogSampleRate();
+326
+}
+327
+328
+/**
+329
+* Indicates this input is used by a simulated device.
+330
+*
+331
+* @param device simulated device handle
+332
+*/
+333
+public void setSimDevice(SimDevice device) {
+334
+AnalogJNI.setAnalogInputSimDevice(m_port, device.getNativeHandle());
+335
+}
+336
+337
+@Override
+338
+public void initSendable(SendableBuilder builder) {
+339
+builder.setSmartDashboardType("Analog Input");
+340
+builder.addDoubleProperty("Value", this::getAverageVoltage, null);
+341
+}
+342
+}

@@ -1,0 +1,329 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* PWM JNI Functions.
+009
+*
+010
+* @see "hal/PWM.h"
+011
+*/
+012
+public class PWMJNI extends DIOJNI {
+013
+/**
+014
+* Initializes a PWM port.
+015
+*
+016
+* @param halPortHandle the port to initialize
+017
+* @return the created pwm handle
+018
+*/
+019
+public static native int initializePWMPort(int halPortHandle);
+020
+021
+/**
+022
+* Checks if a pwm channel is valid.
+023
+*
+024
+* @param channel the channel to check
+025
+* @return true if the channel is valid, otherwise false
+026
+*/
+027
+public static native boolean checkPWMChannel(int channel);
+028
+029
+/**
+030
+* Frees a PWM port.
+031
+*
+032
+* @param pwmPortHandle the pwm handle
+033
+*/
+034
+public static native void freePWMPort(int pwmPortHandle);
+035
+036
+/**
+037
+* Sets the configuration settings for the PWM channel.
+038
+*
+039
+* <p>All values are in microseconds.
+040
+*
+041
+* @param pwmPortHandle the PWM handle
+042
+* @param maxPwm the maximum PWM value
+043
+* @param deadbandMaxPwm the high range of the center deadband
+044
+* @param centerPwm the center PWM value
+045
+* @param deadbandMinPwm the low range of the center deadband
+046
+* @param minPwm the minimum PWM value
+047
+*/
+048
+public static native void setPWMConfigMicroseconds(
+049
+int pwmPortHandle,
+050
+int maxPwm,
+051
+int deadbandMaxPwm,
+052
+int centerPwm,
+053
+int deadbandMinPwm,
+054
+int minPwm);
+055
+056
+/**
+057
+* Gets the pwm configuration settings for the PWM channel.
+058
+*
+059
+* <p>Values are in microseconds.
+060
+*
+061
+* @param pwmPortHandle the PWM handle
+062
+* @return the pwm configuration settings
+063
+*/
+064
+public static native PWMConfigDataResult getPWMConfigMicroseconds(int pwmPortHandle);
+065
+066
+/**
+067
+* Sets if the FPGA should output the center value if the input value is within the deadband.
+068
+*
+069
+* @param pwmPortHandle the PWM handle
+070
+* @param eliminateDeadband true to eliminate deadband, otherwise false
+071
+*/
+072
+public static native void setPWMEliminateDeadband(int pwmPortHandle, boolean eliminateDeadband);
+073
+074
+/**
+075
+* Gets the current eliminate deadband value.
+076
+*
+077
+* @param pwmPortHandle the PWM handle
+078
+* @return true if set, otherwise false
+079
+*/
+080
+public static native boolean getPWMEliminateDeadband(int pwmPortHandle);
+081
+082
+/**
+083
+* Sets a PWM channel to the desired pulse width in microseconds.
+084
+*
+085
+* @param pwmPortHandle the PWM handle
+086
+* @param microsecondPulseTime the PWM value to set
+087
+*/
+088
+public static native void setPulseTimeMicroseconds(int pwmPortHandle, int microsecondPulseTime);
+089
+090
+/**
+091
+* Sets a PWM channel to the desired scaled value.
+092
+*
+093
+* <p>The values range from -1 to 1 and the period is controlled by the PWM Period and MinHigh
+094
+* registers.
+095
+*
+096
+* @param pwmPortHandle the PWM handle
+097
+* @param speed the scaled PWM value to set
+098
+*/
+099
+public static native void setPWMSpeed(int pwmPortHandle, double speed);
+100
+101
+/**
+102
+* Sets a PWM channel to the desired position value.
+103
+*
+104
+* <p>The values range from 0 to 1 and the period is controlled by the PWM Period and MinHigh
+105
+* registers.
+106
+*
+107
+* @param pwmPortHandle the PWM handle
+108
+* @param position the positional PWM value to set
+109
+*/
+110
+public static native void setPWMPosition(int pwmPortHandle, double position);
+111
+112
+/**
+113
+* Gets the current microsecond pulse time from a PWM channel.
+114
+*
+115
+* @param pwmPortHandle the PWM handle
+116
+* @return the current PWM microsecond pulse time
+117
+*/
+118
+public static native int getPulseTimeMicroseconds(int pwmPortHandle);
+119
+120
+/**
+121
+* Gets a scaled value from a PWM channel.
+122
+*
+123
+* <p>The values range from -1 to 1.
+124
+*
+125
+* @param pwmPortHandle the PWM handle
+126
+* @return the current speed PWM value
+127
+*/
+128
+public static native double getPWMSpeed(int pwmPortHandle);
+129
+130
+/**
+131
+* Gets a position value from a PWM channel.
+132
+*
+133
+* <p>The values range from 0 to 1.
+134
+*
+135
+* @param pwmPortHandle the PWM handle
+136
+* @return the current positional PWM value
+137
+*/
+138
+public static native double getPWMPosition(int pwmPortHandle);
+139
+140
+/**
+141
+* Sets a PWM channel to be disabled.
+142
+*
+143
+* <p>The channel is disabled until the next time it is set. Note this is different from just
+144
+* setting a 0 speed, as this will actively stop all signaling on the channel.
+145
+*
+146
+* @param pwmPortHandle the PWM handle.
+147
+*/
+148
+public static native void setPWMDisabled(int pwmPortHandle);
+149
+150
+/**
+151
+* Forces a PWM signal to go to 0 temporarily.
+152
+*
+153
+* @param pwmPortHandle the PWM handle.
+154
+*/
+155
+public static native void latchPWMZero(int pwmPortHandle);
+156
+157
+/**
+158
+* Sets the PWM output to be a continuous high signal while enabled.
+159
+*
+160
+* @param pwmPortHandle the PWM handle.
+161
+*/
+162
+public static native void setAlwaysHighMode(int pwmPortHandle);
+163
+164
+/**
+165
+* Sets how how often the PWM signal is squelched, thus scaling the period.
+166
+*
+167
+* @param pwmPortHandle the PWM handle.
+168
+* @param squelchMask the 2-bit mask of outputs to squelch
+169
+*/
+170
+public static native void setPWMPeriodScale(int pwmPortHandle, int squelchMask);
+171
+172
+/** Utility class. */
+173
+private PWMJNI() {}
+174
+}

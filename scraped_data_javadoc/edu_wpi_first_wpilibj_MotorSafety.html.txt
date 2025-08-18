@@ -1,0 +1,190 @@
+Package
+edu.wpi.first.wpilibj
+Class MotorSafety
+java.lang.Object
+edu.wpi.first.wpilibj.MotorSafety
+Direct Known Subclasses:
+NidecBrushless
+,
+PWMMotorController
+,
+Relay
+,
+RobotDriveBase
+public abstract class
+MotorSafety
+extends
+Object
+The Motor Safety feature acts as a watchdog timer for an individual motor. It operates by
+ maintaining a timer that tracks how long it has been since the feed() method has been called for
+ that actuator. Code in the Driver Station class initiates a comparison of these timers to the
+ timeout values for any actuator with safety enabled every 5 received packets (100ms nominal).
+The subclass should call feed() whenever the motor value is updated.
+Constructor Summary
+Constructors
+Constructor
+Description
+MotorSafety
+()
+MotorSafety constructor.
+Method Summary
+All Methods
+Static Methods
+Instance Methods
+Abstract Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+check
+()
+Check if this motor has exceeded its timeout.
+static void
+checkMotors
+()
+Check the motors to see if any have timed out.
+void
+feed
+()
+Feed the motor safety object.
+abstract
+String
+getDescription
+()
+Returns a description to print when an error occurs.
+double
+getExpiration
+()
+Retrieve the timeout value for the corresponding motor safety object.
+boolean
+isAlive
+()
+Determine of the motor is still operating or has timed out.
+boolean
+isSafetyEnabled
+()
+Return the state of the motor safety enabled flag.
+void
+setExpiration
+(double expirationTime)
+Set the expiration time for the corresponding motor safety object.
+void
+setSafetyEnabled
+(boolean enabled)
+Enable/disable motor safety for this device.
+abstract void
+stopMotor
+()
+Called to stop the motor when the timeout expires.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MotorSafety
+public
+MotorSafety
+()
+MotorSafety constructor.
+Method Details
+feed
+public
+void
+feed
+()
+Feed the motor safety object.
+Resets the timer on this object that is used to do the timeouts.
+setExpiration
+public
+void
+setExpiration
+(double expirationTime)
+Set the expiration time for the corresponding motor safety object.
+Parameters:
+expirationTime
+- The timeout value in seconds.
+getExpiration
+public
+double
+getExpiration
+()
+Retrieve the timeout value for the corresponding motor safety object.
+Returns:
+the timeout value in seconds.
+isAlive
+public
+boolean
+isAlive
+()
+Determine of the motor is still operating or has timed out.
+Returns:
+a true value if the motor is still operating normally and hasn't timed out.
+check
+public
+void
+check
+()
+Check if this motor has exceeded its timeout. This method is called periodically to determine
+ if this motor has exceeded its timeout value. If it has, the stop method is called, and the
+ motor is shut down until its value is updated again.
+setSafetyEnabled
+public
+void
+setSafetyEnabled
+(boolean enabled)
+Enable/disable motor safety for this device.
+Turn on and off the motor safety option for this PWM object.
+Parameters:
+enabled
+- True if motor safety is enforced for this object
+isSafetyEnabled
+public
+boolean
+isSafetyEnabled
+()
+Return the state of the motor safety enabled flag.
+Return if the motor safety is currently enabled for this device.
+Returns:
+True if motor safety is enforced for this device
+checkMotors
+public static
+void
+checkMotors
+()
+Check the motors to see if any have timed out.
+This static method is called periodically to poll all the motors and stop any that have
+ timed out.
+stopMotor
+public abstract
+void
+stopMotor
+()
+Called to stop the motor when the timeout expires.
+getDescription
+public abstract
+String
+getDescription
+()
+Returns a description to print when an error occurs.
+Returns:
+Description to print when an error occurs.

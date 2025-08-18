@@ -1,0 +1,85 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.util.datalog;
+006
+007
+import java.util.Iterator;
+008
+import java.util.NoSuchElementException;
+009
+import java.util.function.Consumer;
+010
+011
+/** DataLogReader iterator. */
+012
+public class DataLogIterator implements Iterator<DataLogRecord> {
+013
+DataLogIterator(DataLogReader reader, int pos) {
+014
+m_reader = reader;
+015
+m_pos = pos;
+016
+}
+017
+018
+@Override
+019
+public void forEachRemaining(Consumer<? super DataLogRecord> action) {
+020
+int size = m_reader.size();
+021
+for (; m_pos < size; m_pos = m_reader.getNextRecord(m_pos)) {
+022
+DataLogRecord record;
+023
+try {
+024
+record = m_reader.getRecord(m_pos);
+025
+} catch (NoSuchElementException ex) {
+026
+break;
+027
+}
+028
+action.accept(record);
+029
+}
+030
+}
+031
+032
+@Override
+033
+public boolean hasNext() {
+034
+return (m_pos + 16) <= m_reader.size();
+035
+}
+036
+037
+@Override
+038
+public DataLogRecord next() {
+039
+DataLogRecord record = m_reader.getRecord(m_pos);
+040
+m_pos = m_reader.getNextRecord(m_pos);
+041
+return record;
+042
+}
+043
+044
+private final DataLogReader m_reader;
+045
+private int m_pos;
+046
+}

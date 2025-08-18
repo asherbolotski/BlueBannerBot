@@ -1,0 +1,363 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import edu.wpi.first.hal.DigitalGlitchFilterJNI;
+008
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+009
+import edu.wpi.first.hal.HAL;
+010
+import edu.wpi.first.hal.util.AllocationException;
+011
+import edu.wpi.first.util.sendable.Sendable;
+012
+import edu.wpi.first.util.sendable.SendableBuilder;
+013
+import edu.wpi.first.util.sendable.SendableRegistry;
+014
+import java.util.concurrent.locks.Lock;
+015
+import java.util.concurrent.locks.ReentrantLock;
+016
+017
+/**
+018
+* Class to enable glitch filtering on a set of digital inputs. This class will manage adding and
+019
+* removing digital inputs from an FPGA glitch filter. The filter lets the user configure the time
+020
+* that an input must remain high or low before it is classified as high or low.
+021
+*/
+022
+public class DigitalGlitchFilter implements Sendable, AutoCloseable {
+023
+/** Configures the Digital Glitch Filter to its default settings. */
+024
+@SuppressWarnings("this-escape")
+025
+public DigitalGlitchFilter() {
+026
+m_channelIndex = allocateFilterIndex();
+027
+if (m_channelIndex < 0) {
+028
+throw new AllocationException("No filters available to allocate.");
+029
+}
+030
+HAL.report(tResourceType.kResourceType_DigitalGlitchFilter, m_channelIndex + 1, 0);
+031
+SendableRegistry.addLW(this, "DigitalGlitchFilter", m_channelIndex);
+032
+}
+033
+034
+@Override
+035
+public void close() {
+036
+SendableRegistry.remove(this);
+037
+if (m_channelIndex >= 0) {
+038
+m_mutex.lock();
+039
+try {
+040
+m_filterAllocated[m_channelIndex] = false;
+041
+} finally {
+042
+m_mutex.unlock();
+043
+}
+044
+045
+m_channelIndex = -1;
+046
+}
+047
+}
+048
+049
+/**
+050
+* Allocates the next available filter index, or -1 if there are no filters available.
+051
+*
+052
+* @return the filter index
+053
+*/
+054
+private static int allocateFilterIndex() {
+055
+m_mutex.lock();
+056
+try {
+057
+for (int index = 0; index < m_filterAllocated.length; index++) {
+058
+if (!m_filterAllocated[index]) {
+059
+m_filterAllocated[index] = true;
+060
+return index;
+061
+}
+062
+}
+063
+} finally {
+064
+m_mutex.unlock();
+065
+}
+066
+return -1;
+067
+}
+068
+069
+private static void setFilter(DigitalSource input, int channelIndex) {
+070
+if (input != null) { // Counter might have just one input
+071
+// analog triggers are not supported for DigitalGlitchFilters
+072
+if (input.isAnalogTrigger()) {
+073
+throw new IllegalStateException("Analog Triggers not supported for DigitalGlitchFilters");
+074
+}
+075
+DigitalGlitchFilterJNI.setFilterSelect(input.getPortHandleForRouting(), channelIndex);
+076
+077
+int selected = DigitalGlitchFilterJNI.getFilterSelect(input.getPortHandleForRouting());
+078
+if (selected != channelIndex) {
+079
+throw new IllegalStateException(
+080
+"DigitalGlitchFilterJNI.setFilterSelect(" + channelIndex + ") failed -> " + selected);
+081
+}
+082
+}
+083
+}
+084
+085
+/**
+086
+* Assigns the DigitalSource to this glitch filter.
+087
+*
+088
+* @param input The DigitalSource to add.
+089
+*/
+090
+public void add(DigitalSource input) {
+091
+setFilter(input, m_channelIndex + 1);
+092
+}
+093
+094
+/**
+095
+* Assigns the Encoder to this glitch filter.
+096
+*
+097
+* @param input The Encoder to add.
+098
+*/
+099
+public void add(Encoder input) {
+100
+add(input.m_aSource);
+101
+add(input.m_bSource);
+102
+}
+103
+104
+/**
+105
+* Assigns the Counter to this glitch filter.
+106
+*
+107
+* @param input The Counter to add.
+108
+*/
+109
+public void add(Counter input) {
+110
+add(input.m_upSource);
+111
+add(input.m_downSource);
+112
+}
+113
+114
+/**
+115
+* Removes this filter from the given digital input.
+116
+*
+117
+* @param input The DigitalSource to stop filtering.
+118
+*/
+119
+public void remove(DigitalSource input) {
+120
+setFilter(input, 0);
+121
+}
+122
+123
+/**
+124
+* Removes this filter from the given Encoder.
+125
+*
+126
+* @param input the Encoder to stop filtering.
+127
+*/
+128
+public void remove(Encoder input) {
+129
+remove(input.m_aSource);
+130
+remove(input.m_bSource);
+131
+}
+132
+133
+/**
+134
+* Removes this filter from the given Counter.
+135
+*
+136
+* @param input The Counter to stop filtering.
+137
+*/
+138
+public void remove(Counter input) {
+139
+remove(input.m_upSource);
+140
+remove(input.m_downSource);
+141
+}
+142
+143
+/**
+144
+* Sets the number of FPGA cycles that the input must hold steady to pass through this glitch
+145
+* filter.
+146
+*
+147
+* @param fpgaCycles The number of FPGA cycles.
+148
+*/
+149
+public void setPeriodCycles(int fpgaCycles) {
+150
+DigitalGlitchFilterJNI.setFilterPeriod(m_channelIndex, fpgaCycles);
+151
+}
+152
+153
+/**
+154
+* Sets the number of nanoseconds that the input must hold steady to pass through this glitch
+155
+* filter.
+156
+*
+157
+* @param nanoseconds The number of nanoseconds.
+158
+*/
+159
+public void setPeriodNanoSeconds(long nanoseconds) {
+160
+int fpgaCycles = (int) (nanoseconds * SensorUtil.kSystemClockTicksPerMicrosecond / 4 / 1000);
+161
+setPeriodCycles(fpgaCycles);
+162
+}
+163
+164
+/**
+165
+* Gets the number of FPGA cycles that the input must hold steady to pass through this glitch
+166
+* filter.
+167
+*
+168
+* @return The number of cycles.
+169
+*/
+170
+public int getPeriodCycles() {
+171
+return DigitalGlitchFilterJNI.getFilterPeriod(m_channelIndex);
+172
+}
+173
+174
+/**
+175
+* Gets the number of nanoseconds that the input must hold steady to pass through this glitch
+176
+* filter.
+177
+*
+178
+* @return The number of nanoseconds.
+179
+*/
+180
+public long getPeriodNanoSeconds() {
+181
+int fpgaCycles = getPeriodCycles();
+182
+183
+return fpgaCycles * 1000L / (SensorUtil.kSystemClockTicksPerMicrosecond / 4);
+184
+}
+185
+186
+@Override
+187
+public void initSendable(SendableBuilder builder) {}
+188
+189
+private int m_channelIndex;
+190
+private static final Lock m_mutex = new ReentrantLock(true);
+191
+private static final boolean[] m_filterAllocated = new boolean[3];
+192
+}

@@ -1,0 +1,612 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.system.plant;
+006
+007
+import edu.wpi.first.math.system.plant.proto.DCMotorProto;
+008
+import edu.wpi.first.math.system.plant.struct.DCMotorStruct;
+009
+import edu.wpi.first.math.util.Units;
+010
+import edu.wpi.first.util.protobuf.ProtobufSerializable;
+011
+import edu.wpi.first.util.struct.StructSerializable;
+012
+013
+/** Holds the constants for a DC motor. */
+014
+public class DCMotor implements ProtobufSerializable, StructSerializable {
+015
+/** Voltage at which the motor constants were measured. */
+016
+public final double nominalVoltageVolts;
+017
+018
+/** Torque when stalled. */
+019
+public final double stallTorqueNewtonMeters;
+020
+021
+/** Current draw when stalled. */
+022
+public final double stallCurrentAmps;
+023
+024
+/** Current draw under no load. */
+025
+public final double freeCurrentAmps;
+026
+027
+/** Angular velocity under no load. */
+028
+public final double freeSpeedRadPerSec;
+029
+030
+/** Motor internal resistance. */
+031
+public final double rOhms;
+032
+033
+/** Motor velocity constant. */
+034
+public final double KvRadPerSecPerVolt;
+035
+036
+/** Motor torque constant. */
+037
+public final double KtNMPerAmp;
+038
+039
+/** DCMotor protobuf for serialization. */
+040
+public static final DCMotorProto proto = new DCMotorProto();
+041
+042
+/** DCMotor struct for serialization. */
+043
+public static final DCMotorStruct struct = new DCMotorStruct();
+044
+045
+/**
+046
+* Constructs a DC motor.
+047
+*
+048
+* @param nominalVoltageVolts Voltage at which the motor constants were measured.
+049
+* @param stallTorqueNewtonMeters Torque when stalled.
+050
+* @param stallCurrentAmps Current draw when stalled.
+051
+* @param freeCurrentAmps Current draw under no load.
+052
+* @param freeSpeedRadPerSec Angular velocity under no load.
+053
+* @param numMotors Number of motors in a gearbox.
+054
+*/
+055
+public DCMotor(
+056
+double nominalVoltageVolts,
+057
+double stallTorqueNewtonMeters,
+058
+double stallCurrentAmps,
+059
+double freeCurrentAmps,
+060
+double freeSpeedRadPerSec,
+061
+int numMotors) {
+062
+this.nominalVoltageVolts = nominalVoltageVolts;
+063
+this.stallTorqueNewtonMeters = stallTorqueNewtonMeters * numMotors;
+064
+this.stallCurrentAmps = stallCurrentAmps * numMotors;
+065
+this.freeCurrentAmps = freeCurrentAmps * numMotors;
+066
+this.freeSpeedRadPerSec = freeSpeedRadPerSec;
+067
+068
+this.rOhms = nominalVoltageVolts / this.stallCurrentAmps;
+069
+this.KvRadPerSecPerVolt =
+070
+freeSpeedRadPerSec / (nominalVoltageVolts - rOhms * this.freeCurrentAmps);
+071
+this.KtNMPerAmp = this.stallTorqueNewtonMeters / this.stallCurrentAmps;
+072
+}
+073
+074
+/**
+075
+* Calculate current drawn by motor with given speed and input voltage.
+076
+*
+077
+* @param speedRadiansPerSec The current angular velocity of the motor.
+078
+* @param voltageInputVolts The voltage being applied to the motor.
+079
+* @return The estimated current.
+080
+*/
+081
+public double getCurrent(double speedRadiansPerSec, double voltageInputVolts) {
+082
+return -1.0 / KvRadPerSecPerVolt / rOhms * speedRadiansPerSec + 1.0 / rOhms * voltageInputVolts;
+083
+}
+084
+085
+/**
+086
+* Calculate current drawn by motor for a given torque.
+087
+*
+088
+* @param torqueNm The torque produced by the motor.
+089
+* @return The current drawn by the motor.
+090
+*/
+091
+public double getCurrent(double torqueNm) {
+092
+return torqueNm / KtNMPerAmp;
+093
+}
+094
+095
+/**
+096
+* Calculate torque produced by the motor with a given current.
+097
+*
+098
+* @param currentAmpere The current drawn by the motor.
+099
+* @return The torque output.
+100
+*/
+101
+public double getTorque(double currentAmpere) {
+102
+return currentAmpere * KtNMPerAmp;
+103
+}
+104
+105
+/**
+106
+* Calculate the voltage provided to the motor for a given torque and angular velocity.
+107
+*
+108
+* @param torqueNm The torque produced by the motor.
+109
+* @param speedRadiansPerSec The current angular velocity of the motor.
+110
+* @return The voltage of the motor.
+111
+*/
+112
+public double getVoltage(double torqueNm, double speedRadiansPerSec) {
+113
+return 1.0 / KvRadPerSecPerVolt * speedRadiansPerSec + 1.0 / KtNMPerAmp * rOhms * torqueNm;
+114
+}
+115
+116
+/**
+117
+* Calculates the angular speed produced by the motor at a given torque and input voltage.
+118
+*
+119
+* @param torqueNm The torque produced by the motor.
+120
+* @param voltageInputVolts The voltage applied to the motor.
+121
+* @return The angular speed of the motor.
+122
+*/
+123
+public double getSpeed(double torqueNm, double voltageInputVolts) {
+124
+return voltageInputVolts * KvRadPerSecPerVolt
+125
+- 1.0 / KtNMPerAmp * torqueNm * rOhms * KvRadPerSecPerVolt;
+126
+}
+127
+128
+/**
+129
+* Returns a copy of this motor with the given gearbox reduction applied.
+130
+*
+131
+* @param gearboxReduction The gearbox reduction.
+132
+* @return A motor with the gearbox reduction applied.
+133
+*/
+134
+public DCMotor withReduction(double gearboxReduction) {
+135
+return new DCMotor(
+136
+nominalVoltageVolts,
+137
+stallTorqueNewtonMeters * gearboxReduction,
+138
+stallCurrentAmps,
+139
+freeCurrentAmps,
+140
+freeSpeedRadPerSec / gearboxReduction,
+141
+1);
+142
+}
+143
+144
+/**
+145
+* Return a gearbox of CIM motors.
+146
+*
+147
+* @param numMotors Number of motors in the gearbox.
+148
+* @return A gearbox of CIM motors.
+149
+*/
+150
+public static DCMotor getCIM(int numMotors) {
+151
+return new DCMotor(
+152
+12, 2.42, 133, 2.7, Units.rotationsPerMinuteToRadiansPerSecond(5310), numMotors);
+153
+}
+154
+155
+/**
+156
+* Return a gearbox of 775Pro motors.
+157
+*
+158
+* @param numMotors Number of motors in the gearbox.
+159
+* @return A gearbox of 775Pro motors.
+160
+*/
+161
+public static DCMotor getVex775Pro(int numMotors) {
+162
+return new DCMotor(
+163
+12, 0.71, 134, 0.7, Units.rotationsPerMinuteToRadiansPerSecond(18730), numMotors);
+164
+}
+165
+166
+/**
+167
+* Return a gearbox of NEO motors.
+168
+*
+169
+* @param numMotors Number of motors in the gearbox.
+170
+* @return A gearbox of NEO motors.
+171
+*/
+172
+public static DCMotor getNEO(int numMotors) {
+173
+return new DCMotor(
+174
+12, 2.6, 105, 1.8, Units.rotationsPerMinuteToRadiansPerSecond(5676), numMotors);
+175
+}
+176
+177
+/**
+178
+* Return a gearbox of MiniCIM motors.
+179
+*
+180
+* @param numMotors Number of motors in the gearbox.
+181
+* @return A gearbox of MiniCIM motors.
+182
+*/
+183
+public static DCMotor getMiniCIM(int numMotors) {
+184
+return new DCMotor(
+185
+12, 1.41, 89, 3, Units.rotationsPerMinuteToRadiansPerSecond(5840), numMotors);
+186
+}
+187
+188
+/**
+189
+* Return a gearbox of Bag motors.
+190
+*
+191
+* @param numMotors Number of motors in the gearbox.
+192
+* @return A gearbox of Bag motors.
+193
+*/
+194
+public static DCMotor getBag(int numMotors) {
+195
+return new DCMotor(
+196
+12, 0.43, 53, 1.8, Units.rotationsPerMinuteToRadiansPerSecond(13180), numMotors);
+197
+}
+198
+199
+/**
+200
+* Return a gearbox of Andymark RS775-125 motors.
+201
+*
+202
+* @param numMotors Number of motors in the gearbox.
+203
+* @return A gearbox of Andymark RS775-125 motors.
+204
+*/
+205
+public static DCMotor getAndymarkRs775_125(int numMotors) {
+206
+return new DCMotor(
+207
+12, 0.28, 18, 1.6, Units.rotationsPerMinuteToRadiansPerSecond(5800.0), numMotors);
+208
+}
+209
+210
+/**
+211
+* Return a gearbox of Banebots RS775 motors.
+212
+*
+213
+* @param numMotors Number of motors in the gearbox.
+214
+* @return A gearbox of Banebots RS775 motors.
+215
+*/
+216
+public static DCMotor getBanebotsRs775(int numMotors) {
+217
+return new DCMotor(
+218
+12, 0.72, 97, 2.7, Units.rotationsPerMinuteToRadiansPerSecond(13050.0), numMotors);
+219
+}
+220
+221
+/**
+222
+* Return a gearbox of Andymark 9015 motors.
+223
+*
+224
+* @param numMotors Number of motors in the gearbox.
+225
+* @return A gearbox of Andymark 9015 motors.
+226
+*/
+227
+public static DCMotor getAndymark9015(int numMotors) {
+228
+return new DCMotor(
+229
+12, 0.36, 71, 3.7, Units.rotationsPerMinuteToRadiansPerSecond(14270.0), numMotors);
+230
+}
+231
+232
+/**
+233
+* Return a gearbox of Banebots RS 550 motors.
+234
+*
+235
+* @param numMotors Number of motors in the gearbox.
+236
+* @return A gearbox of Banebots RS 550 motors.
+237
+*/
+238
+public static DCMotor getBanebotsRs550(int numMotors) {
+239
+return new DCMotor(
+240
+12, 0.38, 84, 0.4, Units.rotationsPerMinuteToRadiansPerSecond(19000.0), numMotors);
+241
+}
+242
+243
+/**
+244
+* Return a gearbox of NEO 550 motors.
+245
+*
+246
+* @param numMotors Number of motors in the gearbox.
+247
+* @return A gearbox of NEO 550 motors.
+248
+*/
+249
+public static DCMotor getNeo550(int numMotors) {
+250
+return new DCMotor(
+251
+12, 0.97, 100, 1.4, Units.rotationsPerMinuteToRadiansPerSecond(11000.0), numMotors);
+252
+}
+253
+254
+/**
+255
+* Return a gearbox of Falcon 500 motors.
+256
+*
+257
+* @param numMotors Number of motors in the gearbox.
+258
+* @return A gearbox of Falcon 500 motors.
+259
+*/
+260
+public static DCMotor getFalcon500(int numMotors) {
+261
+return new DCMotor(
+262
+12, 4.69, 257, 1.5, Units.rotationsPerMinuteToRadiansPerSecond(6380.0), numMotors);
+263
+}
+264
+265
+/**
+266
+* Return a gearbox of Falcon 500 motors with FOC (Field-Oriented Control) enabled.
+267
+*
+268
+* @param numMotors Number of motors in the gearbox.
+269
+* @return A gearbox of Falcon 500 FOC enabled motors.
+270
+*/
+271
+public static DCMotor getFalcon500Foc(int numMotors) {
+272
+// https://store.ctr-electronics.com/falcon-500-powered-by-talon-fx/
+273
+return new DCMotor(
+274
+12, 5.84, 304, 1.5, Units.rotationsPerMinuteToRadiansPerSecond(6080.0), numMotors);
+275
+}
+276
+277
+/**
+278
+* Return a gearbox of Romi/TI_RSLK MAX motors.
+279
+*
+280
+* @param numMotors Number of motors in the gearbox.
+281
+* @return A gearbox of Romi/TI_RSLK MAX motors.
+282
+*/
+283
+public static DCMotor getRomiBuiltIn(int numMotors) {
+284
+// From https://www.pololu.com/product/1520/specs
+285
+return new DCMotor(
+286
+4.5, 0.1765, 1.25, 0.13, Units.rotationsPerMinuteToRadiansPerSecond(150.0), numMotors);
+287
+}
+288
+289
+/**
+290
+* Return a gearbox of Kraken X60 brushless motors.
+291
+*
+292
+* @param numMotors Number of motors in the gearbox.
+293
+* @return a gearbox of Kraken X60 motors.
+294
+*/
+295
+public static DCMotor getKrakenX60(int numMotors) {
+296
+// From https://store.ctr-electronics.com/announcing-kraken-x60/
+297
+return new DCMotor(
+298
+12, 7.09, 366, 2, Units.rotationsPerMinuteToRadiansPerSecond(6000), numMotors);
+299
+}
+300
+301
+/**
+302
+* Return a gearbox of Kraken X60 brushless motors with FOC (Field-Oriented Control) enabled.
+303
+*
+304
+* @param numMotors Number of motors in the gearbox.
+305
+* @return A gearbox of Kraken X60 FOC enabled motors.
+306
+*/
+307
+public static DCMotor getKrakenX60Foc(int numMotors) {
+308
+// From https://store.ctr-electronics.com/announcing-kraken-x60/
+309
+return new DCMotor(
+310
+12, 9.37, 483, 2, Units.rotationsPerMinuteToRadiansPerSecond(5800), numMotors);
+311
+}
+312
+313
+/**
+314
+* Return a gearbox of Neo Vortex brushless motors.
+315
+*
+316
+* @param numMotors Number of motors in the gearbox.
+317
+* @return a gearbox of Neo Vortex motors.
+318
+*/
+319
+public static DCMotor getNeoVortex(int numMotors) {
+320
+// From https://www.revrobotics.com/next-generation-spark-neo/
+321
+return new DCMotor(
+322
+12, 3.60, 211, 3.6, Units.rotationsPerMinuteToRadiansPerSecond(6784), numMotors);
+323
+}
+324
+}

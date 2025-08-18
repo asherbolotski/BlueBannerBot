@@ -1,0 +1,316 @@
+Package
+edu.wpi.first.wpilibj
+Class DigitalOutput
+java.lang.Object
+edu.wpi.first.wpilibj.DigitalSource
+edu.wpi.first.wpilibj.DigitalOutput
+All Implemented Interfaces:
+Sendable
+,
+AutoCloseable
+public class
+DigitalOutput
+extends
+DigitalSource
+implements
+Sendable
+Class to write digital outputs. This class will write digital outputs. Other devices that are
+ implemented elsewhere will automatically allocate digital inputs and outputs as required.
+Constructor Summary
+Constructors
+Constructor
+Description
+DigitalOutput
+(int channel)
+Create an instance of a digital output.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+void
+disablePWM
+()
+Change this line from a PWM output back to a static Digital Output line.
+void
+enablePPS
+(double dutyCycle)
+Enable a PWM PPS (Pulse Per Second) Output on this line.
+void
+enablePWM
+(double initialDutyCycle)
+Enable a PWM Output on this line.
+boolean
+get
+()
+Gets the value being output from the Digital Output.
+int
+getAnalogTriggerTypeForRouting
+()
+Get the analog trigger type.
+int
+getChannel
+()
+Get the GPIO channel number that this object represents.
+int
+getPortHandleForRouting
+()
+Get the HAL Port Handle.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isAnalogTrigger
+()
+Is this an analog trigger.
+boolean
+isPulsing
+()
+Determine if the pulse is still going.
+void
+pulse
+(double pulseLengthSeconds)
+Output a single pulse on the digital output line.
+void
+set
+(boolean value)
+Set the value of a digital output.
+void
+setPWMRate
+(double rate)
+Change the PWM frequency of the PWM output on a Digital Output line.
+void
+setSimDevice
+(
+SimDevice
+device)
+Indicates this input is used by a simulated device.
+void
+updateDutyCycle
+(double dutyCycle)
+Change the duty-cycle that is being generated on the line.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+DigitalOutput
+public
+DigitalOutput
+(int channel)
+Create an instance of a digital output. Create an instance of a digital output given a channel.
+Parameters:
+channel
+- the DIO channel to use for the digital output. 0-9 are on-board, 10-25 are on
+     the MXP
+Method Details
+close
+public
+void
+close
+()
+Specified by:
+close
+in interface
+AutoCloseable
+Overrides:
+close
+in class
+DigitalSource
+set
+public
+void
+set
+(boolean value)
+Set the value of a digital output.
+Parameters:
+value
+- true is on, off is false
+get
+public
+boolean
+get
+()
+Gets the value being output from the Digital Output.
+Returns:
+the state of the digital output.
+getChannel
+public
+int
+getChannel
+()
+Get the GPIO channel number that this object represents.
+Specified by:
+getChannel
+in class
+DigitalSource
+Returns:
+The GPIO channel number.
+pulse
+public
+void
+pulse
+(double pulseLengthSeconds)
+Output a single pulse on the digital output line.
+Send a single pulse on the digital output line where the pulse duration is specified in
+ seconds. Maximum of 65535 microseconds.
+Parameters:
+pulseLengthSeconds
+- The pulse length in seconds
+isPulsing
+public
+boolean
+isPulsing
+()
+Determine if the pulse is still going. Determine if a previously started pulse is still going.
+Returns:
+true if pulsing
+setPWMRate
+public
+void
+setPWMRate
+(double rate)
+Change the PWM frequency of the PWM output on a Digital Output line.
+The valid range is from 0.6 Hz to 19 kHz. The frequency resolution is logarithmic.
+There is only one PWM frequency for all channels.
+Parameters:
+rate
+- The frequency to output all digital output PWM signals.
+enablePPS
+public
+void
+enablePPS
+(double dutyCycle)
+Enable a PWM PPS (Pulse Per Second) Output on this line.
+Allocate one of the 6 DO PWM generator resources.
+Supply the duty-cycle to output.
+The resolution of the duty cycle is 8-bit.
+Parameters:
+dutyCycle
+- The duty-cycle to start generating. [0..1]
+enablePWM
+public
+void
+enablePWM
+(double initialDutyCycle)
+Enable a PWM Output on this line.
+Allocate one of the 6 DO PWM generator resources.
+Supply the initial duty-cycle to output in order to avoid a glitch when first starting.
+The resolution of the duty cycle is 8-bit for low frequencies (1kHz or less) but is reduced
+ the higher the frequency of the PWM signal is.
+Parameters:
+initialDutyCycle
+- The duty-cycle to start generating. [0..1]
+disablePWM
+public
+void
+disablePWM
+()
+Change this line from a PWM output back to a static Digital Output line.
+Free up one of the 6 DO PWM generator resources that were in use.
+updateDutyCycle
+public
+void
+updateDutyCycle
+(double dutyCycle)
+Change the duty-cycle that is being generated on the line.
+The resolution of the duty cycle is 8-bit for low frequencies (1kHz or less) but is reduced
+ the higher the frequency of the PWM signal is.
+Parameters:
+dutyCycle
+- The duty-cycle to change to. [0..1]
+setSimDevice
+public
+void
+setSimDevice
+(
+SimDevice
+device)
+Indicates this input is used by a simulated device.
+Parameters:
+device
+- simulated device handle
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Parameters:
+builder
+- sendable builder
+isAnalogTrigger
+public
+boolean
+isAnalogTrigger
+()
+Is this an analog trigger.
+Specified by:
+isAnalogTrigger
+in class
+DigitalSource
+Returns:
+true if this is an analog trigger
+getAnalogTriggerTypeForRouting
+public
+int
+getAnalogTriggerTypeForRouting
+()
+Get the analog trigger type.
+Specified by:
+getAnalogTriggerTypeForRouting
+in class
+DigitalSource
+Returns:
+false
+getPortHandleForRouting
+public
+int
+getPortHandleForRouting
+()
+Get the HAL Port Handle.
+Specified by:
+getPortHandleForRouting
+in class
+DigitalSource
+Returns:
+The HAL Handle to the specified source.

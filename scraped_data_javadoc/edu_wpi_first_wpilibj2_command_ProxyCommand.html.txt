@@ -1,0 +1,319 @@
+Package
+edu.wpi.first.wpilibj2.command
+Class ProxyCommand
+java.lang.Object
+edu.wpi.first.wpilibj2.command.Command
+edu.wpi.first.wpilibj2.command.ProxyCommand
+All Implemented Interfaces:
+Sendable
+public class
+ProxyCommand
+extends
+Command
+Schedules a given command when this command is initialized and ends when it ends, but does not
+ directly run it. Use this for including a command in a composition without adding its
+ requirements,
+but only if you know what you are doing. If you are unsure, see
+the
+ WPILib docs
+for a complete explanation of proxy semantics.
+Do not proxy a command
+ from a subsystem already required by the composition, or else the composition will cancel itself
+ when the proxy is reached. If this command is interrupted, it will cancel the command.
+This class is provided by the NewCommands VendorDep
+Nested Class Summary
+Nested classes/interfaces inherited from class edu.wpi.first.wpilibj2.command.
+Command
+Command.InterruptionBehavior
+Constructor Summary
+Constructors
+Constructor
+Description
+ProxyCommand
+(
+Command
+command)
+Creates a new ProxyCommand that schedules the given command when initialized, and ends when it
+ is no longer scheduled.
+ProxyCommand
+(
+Supplier
+<
+Command
+> supplier)
+Deprecated, for removal: This API element is subject to removal in a future version.
+This constructor's similarity to
+DeferredCommand
+is confusing and opens
+     potential footguns for users who do not fully understand the semantics and implications of
+     proxying, but who simply want runtime construction.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+end
+(boolean interrupted)
+The action to take when the command ends.
+void
+execute
+()
+The main body of a command.
+void
+initialize
+()
+The initial subroutine of a command.
+void
+initSendable
+(
+SendableBuilder
+builder)
+Initializes this
+Sendable
+object.
+boolean
+isFinished
+()
+Whether the command has finished.
+boolean
+runsWhenDisabled
+()
+Whether the given command should run when the robot is disabled.
+Methods inherited from class edu.wpi.first.wpilibj2.command.
+Command
+addRequirements
+,
+addRequirements
+,
+alongWith
+,
+andThen
+,
+andThen
+,
+asProxy
+,
+beforeStarting
+,
+beforeStarting
+,
+cancel
+,
+deadlineFor
+,
+deadlineWith
+,
+finallyDo
+,
+finallyDo
+,
+getInterruptionBehavior
+,
+getName
+,
+getRequirements
+,
+getSubsystem
+,
+handleInterrupt
+,
+hasRequirement
+,
+ignoringDisable
+,
+isScheduled
+,
+onlyIf
+,
+onlyWhile
+,
+raceWith
+,
+repeatedly
+,
+schedule
+,
+setName
+,
+setSubsystem
+,
+unless
+,
+until
+,
+withDeadline
+,
+withInterruptBehavior
+,
+withName
+,
+withTimeout
+,
+withTimeout
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ProxyCommand
+@Deprecated
+(
+since
+="2025",
+forRemoval
+=true)
+public
+ProxyCommand
+(
+Supplier
+<
+Command
+> supplier)
+Deprecated, for removal: This API element is subject to removal in a future version.
+This constructor's similarity to
+DeferredCommand
+is confusing and opens
+     potential footguns for users who do not fully understand the semantics and implications of
+     proxying, but who simply want runtime construction. Users who do know what they are doing
+     and need a supplier-constructed proxied command should instead defer a proxy command.
+Creates a new ProxyCommand that schedules the supplied command when initialized, and ends when
+ it is no longer scheduled. Use this for lazily creating
+proxied
+commands at
+ runtime. Proxying should only be done to escape from composition requirement semantics, so if
+ only initialization time command construction is needed, use
+DeferredCommand
+instead.
+Parameters:
+supplier
+- the command supplier
+See Also:
+DeferredCommand
+ProxyCommand
+public
+ProxyCommand
+(
+Command
+command)
+Creates a new ProxyCommand that schedules the given command when initialized, and ends when it
+ is no longer scheduled.
+Parameters:
+command
+- the command to run by proxy
+Method Details
+initialize
+public
+void
+initialize
+()
+Description copied from class:
+Command
+The initial subroutine of a command. Called once when the command is initially scheduled.
+Overrides:
+initialize
+in class
+Command
+end
+public
+void
+end
+(boolean interrupted)
+Description copied from class:
+Command
+The action to take when the command ends. Called when either the command finishes normally, or
+ when it interrupted/canceled.
+Do not schedule commands here that share requirements with this command. Use
+Command.andThen(Command...)
+instead.
+Overrides:
+end
+in class
+Command
+Parameters:
+interrupted
+- whether the command was interrupted/canceled
+execute
+public
+void
+execute
+()
+Description copied from class:
+Command
+The main body of a command. Called repeatedly while the command is scheduled.
+Overrides:
+execute
+in class
+Command
+isFinished
+public
+boolean
+isFinished
+()
+Description copied from class:
+Command
+Whether the command has finished. Once a command finishes, the scheduler will call its end()
+ method and un-schedule it.
+Overrides:
+isFinished
+in class
+Command
+Returns:
+whether the command has finished.
+runsWhenDisabled
+public
+boolean
+runsWhenDisabled
+()
+Whether the given command should run when the robot is disabled. Override to return true if the
+ command should run when disabled.
+Overrides:
+runsWhenDisabled
+in class
+Command
+Returns:
+true. Otherwise, this proxy would cancel commands that do run when disabled.
+initSendable
+public
+void
+initSendable
+(
+SendableBuilder
+builder)
+Description copied from interface:
+Sendable
+Initializes this
+Sendable
+object.
+Specified by:
+initSendable
+in interface
+Sendable
+Overrides:
+initSendable
+in class
+Command
+Parameters:
+builder
+- sendable builder

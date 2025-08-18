@@ -1,0 +1,248 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.epilogue.logging;
+006
+007
+import edu.wpi.first.util.struct.Struct;
+008
+import java.util.HashMap;
+009
+import java.util.List;
+010
+import java.util.Map;
+011
+012
+/**
+013
+* A backend implementation that delegates to other backends. Helpful for simultaneous logging to
+014
+* multiple data stores at once.
+015
+*/
+016
+public class MultiBackend implements EpilogueBackend {
+017
+private final List<EpilogueBackend> m_backends;
+018
+private final Map<String, NestedBackend> m_nestedBackends = new HashMap<>();
+019
+020
+// Use EpilogueBackend.multi(...) instead of instantiation directly
+021
+MultiBackend(EpilogueBackend... backends) {
+022
+this.m_backends = List.of(backends);
+023
+}
+024
+025
+@Override
+026
+public EpilogueBackend getNested(String path) {
+027
+return m_nestedBackends.computeIfAbsent(path, k -> new NestedBackend(k, this));
+028
+}
+029
+030
+@Override
+031
+public void log(String identifier, int value) {
+032
+for (EpilogueBackend backend : m_backends) {
+033
+backend.log(identifier, value);
+034
+}
+035
+}
+036
+037
+@Override
+038
+public void log(String identifier, long value) {
+039
+for (EpilogueBackend backend : m_backends) {
+040
+backend.log(identifier, value);
+041
+}
+042
+}
+043
+044
+@Override
+045
+public void log(String identifier, float value) {
+046
+for (EpilogueBackend backend : m_backends) {
+047
+backend.log(identifier, value);
+048
+}
+049
+}
+050
+051
+@Override
+052
+public void log(String identifier, double value) {
+053
+for (EpilogueBackend backend : m_backends) {
+054
+backend.log(identifier, value);
+055
+}
+056
+}
+057
+058
+@Override
+059
+public void log(String identifier, boolean value) {
+060
+for (EpilogueBackend backend : m_backends) {
+061
+backend.log(identifier, value);
+062
+}
+063
+}
+064
+065
+@Override
+066
+public void log(String identifier, byte[] value) {
+067
+for (EpilogueBackend backend : m_backends) {
+068
+backend.log(identifier, value);
+069
+}
+070
+}
+071
+072
+@Override
+073
+public void log(String identifier, int[] value) {
+074
+for (EpilogueBackend backend : m_backends) {
+075
+backend.log(identifier, value);
+076
+}
+077
+}
+078
+079
+@Override
+080
+public void log(String identifier, long[] value) {
+081
+for (EpilogueBackend backend : m_backends) {
+082
+backend.log(identifier, value);
+083
+}
+084
+}
+085
+086
+@Override
+087
+public void log(String identifier, float[] value) {
+088
+for (EpilogueBackend backend : m_backends) {
+089
+backend.log(identifier, value);
+090
+}
+091
+}
+092
+093
+@Override
+094
+public void log(String identifier, double[] value) {
+095
+for (EpilogueBackend backend : m_backends) {
+096
+backend.log(identifier, value);
+097
+}
+098
+}
+099
+100
+@Override
+101
+public void log(String identifier, boolean[] value) {
+102
+for (EpilogueBackend backend : m_backends) {
+103
+backend.log(identifier, value);
+104
+}
+105
+}
+106
+107
+@Override
+108
+public void log(String identifier, String value) {
+109
+for (EpilogueBackend backend : m_backends) {
+110
+backend.log(identifier, value);
+111
+}
+112
+}
+113
+114
+@Override
+115
+public void log(String identifier, String[] value) {
+116
+for (EpilogueBackend backend : m_backends) {
+117
+backend.log(identifier, value);
+118
+}
+119
+}
+120
+121
+@Override
+122
+public <S> void log(String identifier, S value, Struct<S> struct) {
+123
+for (EpilogueBackend backend : m_backends) {
+124
+backend.log(identifier, value, struct);
+125
+}
+126
+}
+127
+128
+@Override
+129
+public <S> void log(String identifier, S[] value, Struct<S> struct) {
+130
+for (EpilogueBackend backend : m_backends) {
+131
+backend.log(identifier, value, struct);
+132
+}
+133
+}
+134
+}

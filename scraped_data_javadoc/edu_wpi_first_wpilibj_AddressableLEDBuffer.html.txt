@@ -1,0 +1,216 @@
+Package
+edu.wpi.first.wpilibj
+Class AddressableLEDBuffer
+java.lang.Object
+edu.wpi.first.wpilibj.AddressableLEDBuffer
+All Implemented Interfaces:
+LEDReader
+,
+LEDWriter
+public class
+AddressableLEDBuffer
+extends
+Object
+implements
+LEDReader
+,
+LEDWriter
+Buffer storage for Addressable LEDs.
+Nested Class Summary
+Nested classes/interfaces inherited from interface edu.wpi.first.wpilibj.
+LEDReader
+LEDReader.IndexedColorIterator
+Constructor Summary
+Constructors
+Constructor
+Description
+AddressableLEDBuffer
+(int length)
+Constructs a new LED buffer with the specified length.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+AddressableLEDBufferView
+createView
+(int startingIndex,
+ int endingIndex)
+Creates a view of a subsection of this data buffer, starting from (and including)
+startingIndex
+and ending on (and including)
+endingIndex
+.
+int
+getBlue
+(int index)
+Gets the blue channel of the color at the specified index.
+int
+getGreen
+(int index)
+Gets the green channel of the color at the specified index.
+int
+getLength
+()
+Gets the buffer length.
+int
+getRed
+(int index)
+Gets the red channel of the color at the specified index.
+void
+setRGB
+(int index,
+ int r,
+ int g,
+ int b)
+Sets a specific led in the buffer.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.wpilibj.
+LEDReader
+forEach
+,
+getLED
+,
+getLED8Bit
+Methods inherited from interface edu.wpi.first.wpilibj.
+LEDWriter
+setHSV
+,
+setLED
+,
+setLED
+Constructor Details
+AddressableLEDBuffer
+public
+AddressableLEDBuffer
+(int length)
+Constructs a new LED buffer with the specified length.
+Parameters:
+length
+- The length of the buffer in pixels
+Method Details
+setRGB
+public
+void
+setRGB
+(int index,
+ int r,
+ int g,
+ int b)
+Sets a specific led in the buffer.
+Specified by:
+setRGB
+in interface
+LEDWriter
+Parameters:
+index
+- the index to write
+r
+- the r value [0-255]
+g
+- the g value [0-255]
+b
+- the b value [0-255]
+getLength
+public
+int
+getLength
+()
+Gets the buffer length.
+Specified by:
+getLength
+in interface
+LEDReader
+Returns:
+the buffer length
+getRed
+public
+int
+getRed
+(int index)
+Gets the red channel of the color at the specified index.
+Specified by:
+getRed
+in interface
+LEDReader
+Parameters:
+index
+- the index of the LED to read
+Returns:
+the value of the red channel, from [0, 255]
+getGreen
+public
+int
+getGreen
+(int index)
+Gets the green channel of the color at the specified index.
+Specified by:
+getGreen
+in interface
+LEDReader
+Parameters:
+index
+- the index of the LED to read
+Returns:
+the value of the green channel, from [0, 255]
+getBlue
+public
+int
+getBlue
+(int index)
+Gets the blue channel of the color at the specified index.
+Specified by:
+getBlue
+in interface
+LEDReader
+Parameters:
+index
+- the index of the LED to read
+Returns:
+the value of the blue channel, from [0, 255]
+createView
+public
+AddressableLEDBufferView
+createView
+(int startingIndex,
+ int endingIndex)
+Creates a view of a subsection of this data buffer, starting from (and including)
+startingIndex
+and ending on (and including)
+endingIndex
+. Views cannot be written
+ directly to an
+AddressableLED
+, but are useful tools for logically separating different
+ sections of an LED strip for independent control.
+Parameters:
+startingIndex
+- the first index in this buffer that the view should encompass (inclusive)
+endingIndex
+- the last index in this buffer that the view should encompass (inclusive)
+Returns:
+the view object

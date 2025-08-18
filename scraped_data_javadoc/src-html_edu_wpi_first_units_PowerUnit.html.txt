@@ -1,0 +1,308 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import static edu.wpi.first.units.Units.Joules;
+008
+import static edu.wpi.first.units.Units.Seconds;
+009
+010
+import edu.wpi.first.units.measure.ImmutablePower;
+011
+import edu.wpi.first.units.measure.MutPower;
+012
+import edu.wpi.first.units.measure.Power;
+013
+014
+/**
+015
+* Unit of power dimension.
+016
+*
+017
+* <p>This is the base type for units of power dimension. It is also used to specify the dimension
+018
+* for {@link Measure}: <code>Measure&lt;PowerUnit&gt;</code>.
+019
+*
+020
+* <p>Actual units (such as {@link Units#Watts} and {@link Units#Horsepower}) can be found in the
+021
+* {@link Units} class.
+022
+*/
+023
+public final class PowerUnit extends PerUnit<EnergyUnit, TimeUnit> {
+024
+private static final CombinatoryUnitCache<EnergyUnit, TimeUnit, PowerUnit> cache =
+025
+new CombinatoryUnitCache<>(PowerUnit::new);
+026
+027
+PowerUnit(EnergyUnit energy, TimeUnit time) {
+028
+super(
+029
+energy.isBaseUnit() && time.isBaseUnit()
+030
+? null
+031
+: combine(energy.getBaseUnit(), time.getBaseUnit()),
+032
+energy,
+033
+time);
+034
+}
+035
+036
+PowerUnit(
+037
+PowerUnit baseUnit,
+038
+UnaryFunction toBaseConverter,
+039
+UnaryFunction fromBaseConverter,
+040
+String name,
+041
+String symbol) {
+042
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+043
+}
+044
+045
+/**
+046
+* Combines an energy and a time unit to form a unit of power.
+047
+*
+048
+* @param energy the unit of energy
+049
+* @param period the unit of time
+050
+* @return the combined unit of power
+051
+*/
+052
+public static PowerUnit combine(EnergyUnit energy, TimeUnit period) {
+053
+return cache.combine(energy, period);
+054
+}
+055
+056
+/**
+057
+* Combines voltage and current into power.
+058
+*
+059
+* @param voltage the unit of voltage
+060
+* @param current the unit of current
+061
+* @return the combined unit of power
+062
+*/
+063
+public static PowerUnit combine(VoltageUnit voltage, CurrentUnit current) {
+064
+return combine(
+065
+new EnergyUnit(
+066
+Joules,
+067
+voltage.toBaseUnits(1) * current.toBaseUnits(1),
+068
+voltage.name() + "-" + current.name(),
+069
+voltage.symbol() + "*" + current.symbol()),
+070
+Seconds);
+071
+}
+072
+073
+/**
+074
+* Combines voltage and current into power.
+075
+*
+076
+* @param current the unit of current
+077
+* @param voltage the unit of voltage
+078
+* @return the combined unit of power
+079
+*/
+080
+public static PowerUnit combine(CurrentUnit current, VoltageUnit voltage) {
+081
+return combine(voltage, current);
+082
+}
+083
+084
+/**
+085
+* Combines angular velocity and torque into power. Useful when dealing with motors and flywheels.
+086
+*
+087
+* @param angularVelocity the unit of angular velocity
+088
+* @param torque the unit of torque
+089
+* @return the combined unit of power
+090
+*/
+091
+public static PowerUnit combine(AngularVelocityUnit angularVelocity, TorqueUnit torque) {
+092
+return combine(
+093
+new EnergyUnit(Joules, angularVelocity.toBaseUnits(1) * torque.toBaseUnits(1), "", ""),
+094
+Seconds);
+095
+}
+096
+097
+/**
+098
+* Combines angular velocity and torque into power. Useful when dealing with motors and flywheels.
+099
+*
+100
+* @param torque the unit of torque
+101
+* @param angularVelocity the unit of angular velocity
+102
+* @return the combined unit of power
+103
+*/
+104
+public static PowerUnit combine(TorqueUnit torque, AngularVelocityUnit angularVelocity) {
+105
+return combine(angularVelocity, torque);
+106
+}
+107
+108
+@Override
+109
+public PowerUnit getBaseUnit() {
+110
+return (PowerUnit) super.getBaseUnit();
+111
+}
+112
+113
+@Override
+114
+public Power of(double magnitude) {
+115
+return new ImmutablePower(magnitude, toBaseUnits(magnitude), this);
+116
+}
+117
+118
+@Override
+119
+public Power ofBaseUnits(double baseUnitMagnitude) {
+120
+return new ImmutablePower(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+121
+}
+122
+123
+@Override
+124
+public Power zero() {
+125
+return (Power) super.zero();
+126
+}
+127
+128
+@Override
+129
+public Power one() {
+130
+return (Power) super.one();
+131
+}
+132
+133
+@Override
+134
+public MutPower mutable(double initialMagnitude) {
+135
+return new MutPower(initialMagnitude, toBaseUnits(initialMagnitude), this);
+136
+}
+137
+138
+@Override
+139
+public VelocityUnit<PowerUnit> per(TimeUnit time) {
+140
+return VelocityUnit.combine(this, time);
+141
+}
+142
+143
+/**
+144
+* Creates a ratio unit between this unit and an arbitrary other unit.
+145
+*
+146
+* @param other the other unit
+147
+* @param <U> the type of the other unit
+148
+* @return the ratio unit
+149
+*/
+150
+public <U extends Unit> PerUnit<PowerUnit, U> per(U other) {
+151
+return PerUnit.combine(this, other);
+152
+}
+153
+154
+/**
+155
+* Converts a measurement value in terms of another power unit to this unit.
+156
+*
+157
+* @param magnitude the magnitude of the measurement in terms of the other power unit
+158
+* @param otherUnit the other power unit
+159
+* @return the value of the measurement in terms of this unit
+160
+*/
+161
+public double convertFrom(double magnitude, PowerUnit otherUnit) {
+162
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+163
+}
+164
+}

@@ -1,0 +1,548 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units;
+006
+007
+import edu.wpi.first.units.measure.ImmutablePer;
+008
+import edu.wpi.first.units.measure.MutPer;
+009
+import edu.wpi.first.units.measure.Per;
+010
+import java.util.Objects;
+011
+012
+/**
+013
+* Generic combinatory unit type that represents the proportion of one unit to another, such as
+014
+* Meters per Second or Radians per Celsius.
+015
+*
+016
+* @param <N> the type of the numerator unit
+017
+* @param <D> the type of the denominator unit
+018
+*/
+019
+public class PerUnit<N extends Unit, D extends Unit> extends Unit {
+020
+private final N m_numerator;
+021
+private final D m_denominator;
+022
+023
+/**
+024
+* Keep a cache of created instances so expressions like Volts.per(Meter) don't do any allocations
+025
+* after the first.
+026
+*/
+027
+@SuppressWarnings("rawtypes")
+028
+private static final CombinatoryUnitCache<Unit, Unit, PerUnit> cache =
+029
+new CombinatoryUnitCache<>(PerUnit::new);
+030
+031
+/**
+032
+* Creates a new proportional unit derived from the ratio of one unit to another. Consider using
+033
+* {@link #combine} instead of manually calling this constructor.
+034
+*
+035
+* @param numerator the numerator unit
+036
+* @param denominator the denominator unit
+037
+*/
+038
+private PerUnit(N numerator, D denominator) {
+039
+super(
+040
+numerator.isBaseUnit() && denominator.isBaseUnit()
+041
+? null
+042
+: combine(numerator.getBaseUnit(), denominator.getBaseUnit()),
+043
+numerator.toBaseUnits(1) / denominator.toBaseUnits(1),
+044
+numerator.name() + " per " + denominator.name(),
+045
+numerator.symbol() + "/" + denominator.symbol());
+046
+m_numerator = numerator;
+047
+m_denominator = denominator;
+048
+}
+049
+050
+/**
+051
+* Creates a new proportional unit derived from the ratio of one unit to another. Subclasses of
+052
+* {@code PerUnit} should use this constructor.
+053
+*
+054
+* @param baseUnit the base unit. Set this to null if the unit being constructed is its own base
+055
+*     unit
+056
+* @param numerator the numerator unit
+057
+* @param denominator the denominator unit
+058
+*/
+059
+protected PerUnit(PerUnit<N, D> baseUnit, N numerator, D denominator) {
+060
+super(
+061
+baseUnit,
+062
+numerator.toBaseUnits(1) / denominator.toBaseUnits(1),
+063
+numerator.name() + " per " + denominator.name(),
+064
+numerator.symbol() + "/" + denominator.symbol());
+065
+m_numerator = numerator;
+066
+m_denominator = denominator;
+067
+}
+068
+069
+/** {@inheritDoc} */
+070
+PerUnit(
+071
+PerUnit<N, D> baseUnit,
+072
+UnaryFunction toBaseConverter,
+073
+UnaryFunction fromBaseConverter,
+074
+String name,
+075
+String symbol) {
+076
+super(baseUnit, toBaseConverter, fromBaseConverter, name, symbol);
+077
+m_numerator = getBaseUnit().numerator();
+078
+m_denominator = getBaseUnit().denominator();
+079
+}
+080
+081
+/**
+082
+* Creates a new PerUnit unit derived from an arbitrary numerator and time denominator units.
+083
+*
+084
+* <pre>
+085
+*   PerUnit.combine(Volts, Meters) // possible PID constant
+086
+* </pre>
+087
+*
+088
+* @param <N> the type of the numerator unit
+089
+* @param <D> the type of the denominator unit
+090
+* @param numerator the numerator unit
+091
+* @param denominator the denominator for unit time
+092
+* @return the combined unit
+093
+*/
+094
+@SuppressWarnings("unchecked")
+095
+public static <N extends Unit, D extends Unit> PerUnit<N, D> combine(N numerator, D denominator) {
+096
+return cache.combine(numerator, denominator);
+097
+}
+098
+099
+@Override
+100
+@SuppressWarnings("unchecked")
+101
+public PerUnit<N, D> getBaseUnit() {
+102
+return (PerUnit<N, D>) super.getBaseUnit();
+103
+}
+104
+105
+/**
+106
+* Gets the numerator unit. For a {@code PerUnit<A, B>}, this will return the {@code A} unit.
+107
+*
+108
+* @return the numerator unit
+109
+*/
+110
+public N numerator() {
+111
+return m_numerator;
+112
+}
+113
+114
+/**
+115
+* Gets the denominator unit. For a {@code PerUnit<A, B>}, this will return the {@code B} unit.
+116
+*
+117
+* @return the denominator unit
+118
+*/
+119
+public D denominator() {
+120
+return m_denominator;
+121
+}
+122
+123
+/**
+124
+* Returns the reciprocal of this PerUnit.
+125
+*
+126
+* @return the reciprocal
+127
+*/
+128
+@SuppressWarnings("unchecked")
+129
+public PerUnit<D, N> reciprocal() {
+130
+if (m_numerator instanceof TimeUnit t) {
+131
+// Dividing by time, return a velocity
+132
+return (PerUnit<D, N>) VelocityUnit.combine(m_denominator, t);
+133
+} else {
+134
+// Generic case
+135
+return combine(m_denominator, m_numerator);
+136
+}
+137
+}
+138
+139
+/**
+140
+* Multiplies this unit by a unit of its denominator.
+141
+*
+142
+* @param denom the denominator-typed unit to multiply by
+143
+* @return the result
+144
+*/
+145
+public N mult(D denom) {
+146
+if (denom.equivalent(denominator())) {
+147
+return numerator();
+148
+}
+149
+150
+return Units.derive(numerator())
+151
+.toBase(denom.getConverterToBase().div(denominator().getConverterToBase()))
+152
+.fromBase(denom.getConverterFromBase().div(denominator().getConverterFromBase()))
+153
+.named(name() + " " + denom.name())
+154
+.symbol(symbol() + "-" + denom.symbol())
+155
+.make();
+156
+}
+157
+158
+/**
+159
+* {@inheritDoc}
+160
+*
+161
+* <p>Note: When called on an object of type {@code PerUnit} (and <i>not</i> a subclass!), this
+162
+* method will always return a {@link edu.wpi.first.units.measure.Per} instance. If you want to
+163
+* avoid casting, use {@link #ofNative(double)} that returns a {@code Per} instance directly.
+164
+*
+165
+* @param magnitude the magnitude of the measure
+166
+* @return the ratio measure
+167
+*/
+168
+@Override
+169
+public Measure<? extends PerUnit<N, D>> of(double magnitude) {
+170
+return ofNative(magnitude);
+171
+}
+172
+173
+/**
+174
+* {@inheritDoc}
+175
+*
+176
+* <p>Note: When called on an object of type {@code PerUnit} (and <i>not</i> a subclass!), this
+177
+* method will always return a {@link edu.wpi.first.units.measure.Per} instance. If you want to
+178
+* avoid casting, use {@link #ofNativeBaseUnits(double)} that returns a {@code Per} instance
+179
+* directly.
+180
+*
+181
+* @param baseUnitMagnitude the magnitude of the measure in terms of its base units.
+182
+* @return the ratio measure
+183
+*/
+184
+@Override
+185
+public Measure<? extends PerUnit<N, D>> ofBaseUnits(double baseUnitMagnitude) {
+186
+return ofNativeBaseUnits(baseUnitMagnitude);
+187
+}
+188
+189
+/**
+190
+* Creates a new immutable measurement of the given magnitude in terms of the ratio unit. This
+191
+* will always return a {@code Per} object and cannot be overridden by subclasses.
+192
+*
+193
+* @param magnitude the magnitude of the measurement.
+194
+* @return the measurement object
+195
+* @see #of(double)
+196
+*/
+197
+public final Per<N, D> ofNative(double magnitude) {
+198
+return new ImmutablePer<>(magnitude, toBaseUnits(magnitude), this);
+199
+}
+200
+201
+/**
+202
+* Creates a new immutable measurement of the given magnitude in terms of the ratio unit's base
+203
+* unit. This will always return a {@code Per} object and cannot be overridden by subclasses.
+204
+*
+205
+* @param baseUnitMagnitude the magnitude of the measure in terms of its base units.
+206
+* @return the measurement object
+207
+* @see #ofBaseUnits(double)
+208
+*/
+209
+public final Per<N, D> ofNativeBaseUnits(double baseUnitMagnitude) {
+210
+return new ImmutablePer<>(fromBaseUnits(baseUnitMagnitude), baseUnitMagnitude, this);
+211
+}
+212
+213
+@Override
+214
+@SuppressWarnings("unchecked")
+215
+public Measure<? extends PerUnit<N, D>> zero() {
+216
+return (Measure<? extends PerUnit<N, D>>) super.zero();
+217
+}
+218
+219
+@Override
+220
+@SuppressWarnings("unchecked")
+221
+public Measure<? extends PerUnit<N, D>> one() {
+222
+return (Measure<? extends PerUnit<N, D>>) super.one();
+223
+}
+224
+225
+/**
+226
+* {@inheritDoc}
+227
+*
+228
+* <p>Note: When called on an object of type {@code PerUnit} (and <i>not</i> a subclass!), this
+229
+* method will always return a {@link edu.wpi.first.units.measure.MutPer} instance.
+230
+*
+231
+* @param initialMagnitude the starting magnitude of the measure
+232
+* @return the ratio measure
+233
+*/
+234
+@Override
+235
+public MutableMeasure<? extends PerUnit<N, D>, ?, ?> mutable(double initialMagnitude) {
+236
+return mutableNative(initialMagnitude);
+237
+}
+238
+239
+/**
+240
+* Creates a new mutable measurement of the given magnitude in terms of the ratio unit. This will
+241
+* always return a {@code Per} object and cannot be overridden by subclasses.
+242
+*
+243
+* @param initialMagnitude the starting magnitude of the measure
+244
+* @return the ratio measure
+245
+* @see #mutable(double)
+246
+*/
+247
+public final MutPer<N, D> mutableNative(double initialMagnitude) {
+248
+return new MutPer<>(initialMagnitude, toBaseUnits(initialMagnitude), this);
+249
+}
+250
+251
+@Override
+252
+public Unit per(TimeUnit time) {
+253
+return VelocityUnit.combine(this, time);
+254
+}
+255
+256
+/**
+257
+* Converts a measurement value in terms of another unit to this unit.
+258
+*
+259
+* @param magnitude the magnitude of the measurement in terms of the other unit
+260
+* @param otherUnit the other unit
+261
+* @return the value of the measurement in terms of this unit
+262
+*/
+263
+public double convertFrom(double magnitude, PerUnit<? extends N, ? extends D> otherUnit) {
+264
+return fromBaseUnits(otherUnit.toBaseUnits(magnitude));
+265
+}
+266
+267
+@Override
+268
+public boolean equals(Object o) {
+269
+if (this == o) {
+270
+return true;
+271
+}
+272
+if (o == null || getClass() != o.getClass()) {
+273
+return false;
+274
+}
+275
+if (!super.equals(o)) {
+276
+return false;
+277
+}
+278
+PerUnit<?, ?> perUnit = (PerUnit<?, ?>) o;
+279
+return Objects.equals(m_numerator, perUnit.m_numerator)
+280
+&& Objects.equals(m_denominator, perUnit.m_denominator);
+281
+}
+282
+283
+@Override
+284
+public int hashCode() {
+285
+return Objects.hash(super.hashCode(), m_numerator, m_denominator);
+286
+}
+287
+}

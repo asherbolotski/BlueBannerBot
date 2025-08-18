@@ -1,0 +1,408 @@
+Package
+edu.wpi.first.math.controller
+Class SimpleMotorFeedforward
+java.lang.Object
+edu.wpi.first.math.controller.SimpleMotorFeedforward
+All Implemented Interfaces:
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+SimpleMotorFeedforward
+extends
+Object
+implements
+ProtobufSerializable
+,
+StructSerializable
+A helper class that computes feedforward outputs for a simple permanent-magnet DC motor.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+SimpleMotorFeedforwardProto
+proto
+SimpleMotorFeedforward protobuf for serialization.
+static final
+SimpleMotorFeedforwardStruct
+struct
+SimpleMotorFeedforward struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+SimpleMotorFeedforward
+(double ks,
+ double kv)
+Creates a new SimpleMotorFeedforward with the specified gains.
+SimpleMotorFeedforward
+(double ks,
+ double kv,
+ double ka)
+Creates a new SimpleMotorFeedforward with the specified gains and period.
+SimpleMotorFeedforward
+(double ks,
+ double kv,
+ double ka,
+ double dtSeconds)
+Creates a new SimpleMotorFeedforward with the specified gains and period.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+double
+calculate
+(double velocity)
+Calculates the feedforward from the gains and velocity setpoint assuming continuous control
+ (acceleration is assumed to be zero).
+double
+calculate
+(double velocity,
+ double acceleration)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+calculateWithVelocities(double, double)
+instead.
+double
+calculateWithVelocities
+(double currentVelocity,
+ double nextVelocity)
+Calculates the feedforward from the gains and setpoints assuming discrete control.
+double
+getDt
+()
+Returns the period in seconds.
+double
+getKa
+()
+Returns the acceleration gain in V/(units/s²).
+double
+getKs
+()
+Returns the static gain in volts.
+double
+getKv
+()
+Returns the velocity gain in V/(units/s).
+double
+maxAchievableAcceleration
+(double maxVoltage,
+ double velocity)
+Calculates the maximum achievable acceleration given a maximum voltage supply and a velocity.
+double
+maxAchievableVelocity
+(double maxVoltage,
+ double acceleration)
+Calculates the maximum achievable velocity given a maximum voltage supply and an acceleration.
+double
+minAchievableAcceleration
+(double maxVoltage,
+ double velocity)
+Calculates the minimum achievable acceleration given a maximum voltage supply and a velocity.
+double
+minAchievableVelocity
+(double maxVoltage,
+ double acceleration)
+Calculates the minimum achievable velocity given a maximum voltage supply and an acceleration.
+void
+setKa
+(double ka)
+Sets the acceleration gain.
+void
+setKs
+(double ks)
+Sets the static gain.
+void
+setKv
+(double kv)
+Sets the velocity gain.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+struct
+public static final
+SimpleMotorFeedforwardStruct
+struct
+SimpleMotorFeedforward struct for serialization.
+proto
+public static final
+SimpleMotorFeedforwardProto
+proto
+SimpleMotorFeedforward protobuf for serialization.
+Constructor Details
+SimpleMotorFeedforward
+public
+SimpleMotorFeedforward
+(double ks,
+ double kv,
+ double ka,
+ double dtSeconds)
+Creates a new SimpleMotorFeedforward with the specified gains and period.
+The units should be radians for angular systems and meters for linear systems.
+Parameters:
+ks
+- The static gain in volts.
+kv
+- The velocity gain in V/(units/s).
+ka
+- The acceleration gain in V/(units/s²).
+dtSeconds
+- The period in seconds.
+Throws:
+IllegalArgumentException
+- for kv < zero.
+IllegalArgumentException
+- for ka < zero.
+IllegalArgumentException
+- for period ≤ zero.
+SimpleMotorFeedforward
+public
+SimpleMotorFeedforward
+(double ks,
+ double kv,
+ double ka)
+Creates a new SimpleMotorFeedforward with the specified gains and period. The period is
+ defaulted to 20 ms.
+The units should be radians for angular systems and meters for linear systems.
+Parameters:
+ks
+- The static gain in volts.
+kv
+- The velocity gain in V/(units/s).
+ka
+- The acceleration gain in V/(units/s²).
+Throws:
+IllegalArgumentException
+- for kv < zero.
+IllegalArgumentException
+- for ka < zero.
+SimpleMotorFeedforward
+public
+SimpleMotorFeedforward
+(double ks,
+ double kv)
+Creates a new SimpleMotorFeedforward with the specified gains. Acceleration gain is defaulted
+ to zero. The period is defaulted to 20 ms.
+The units should be radians for angular systems and meters for linear systems.
+Parameters:
+ks
+- The static gain in volts.
+kv
+- The velocity gain in V/(units/s).
+Throws:
+IllegalArgumentException
+- for kv < zero.
+Method Details
+setKs
+public
+void
+setKs
+(double ks)
+Sets the static gain.
+Parameters:
+ks
+- The static gain in volts.
+setKv
+public
+void
+setKv
+(double kv)
+Sets the velocity gain.
+Parameters:
+kv
+- The velocity gain in V/(units/s).
+setKa
+public
+void
+setKa
+(double ka)
+Sets the acceleration gain.
+Parameters:
+ka
+- The acceleration gain in V/(units/s²).
+getKs
+public
+double
+getKs
+()
+Returns the static gain in volts.
+Returns:
+The static gain in volts.
+getKv
+public
+double
+getKv
+()
+Returns the velocity gain in V/(units/s).
+The units should be radians for angular systems and meters for linear systems.
+Returns:
+The velocity gain in V/(units/s).
+getKa
+public
+double
+getKa
+()
+Returns the acceleration gain in V/(units/s²).
+The units should be radians for angular systems and meters for linear systems.
+Returns:
+The acceleration gain in V/(units/s²).
+getDt
+public
+double
+getDt
+()
+Returns the period in seconds.
+Returns:
+The period in seconds.
+calculate
+@Deprecated
+(
+forRemoval
+=true,
+since
+="2025")
+public
+double
+calculate
+(double velocity,
+ double acceleration)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+calculateWithVelocities(double, double)
+instead.
+Calculates the feedforward from the gains and setpoints assuming continuous control.
+Parameters:
+velocity
+- The velocity setpoint.
+acceleration
+- The acceleration setpoint.
+Returns:
+The computed feedforward.
+calculate
+public
+double
+calculate
+(double velocity)
+Calculates the feedforward from the gains and velocity setpoint assuming continuous control
+ (acceleration is assumed to be zero).
+Parameters:
+velocity
+- The velocity setpoint.
+Returns:
+The computed feedforward.
+calculateWithVelocities
+public
+double
+calculateWithVelocities
+(double currentVelocity,
+ double nextVelocity)
+Calculates the feedforward from the gains and setpoints assuming discrete control.
+Note this method is inaccurate when the velocity crosses 0.
+Parameters:
+currentVelocity
+- The current velocity setpoint.
+nextVelocity
+- The next velocity setpoint.
+Returns:
+The computed feedforward.
+maxAchievableVelocity
+public
+double
+maxAchievableVelocity
+(double maxVoltage,
+ double acceleration)
+Calculates the maximum achievable velocity given a maximum voltage supply and an acceleration.
+ Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+ simultaneously achievable - enter the acceleration constraint, and this will give you a
+ simultaneously-achievable velocity constraint.
+The units should be radians for angular systems and meters for linear systems.
+Parameters:
+maxVoltage
+- The maximum voltage that can be supplied to the motor, in volts.
+acceleration
+- The acceleration of the motor, in (units/s²).
+Returns:
+The maximum possible velocity in (units/s) at the given acceleration.
+minAchievableVelocity
+public
+double
+minAchievableVelocity
+(double maxVoltage,
+ double acceleration)
+Calculates the minimum achievable velocity given a maximum voltage supply and an acceleration.
+ Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+ simultaneously achievable - enter the acceleration constraint, and this will give you a
+ simultaneously-achievable velocity constraint.
+The units should be radians for angular systems and meters for linear systems.
+Parameters:
+maxVoltage
+- The maximum voltage that can be supplied to the motor, in volts.
+acceleration
+- The acceleration of the motor, in (units/s²).
+Returns:
+The maximum possible velocity in (units/s) at the given acceleration.
+maxAchievableAcceleration
+public
+double
+maxAchievableAcceleration
+(double maxVoltage,
+ double velocity)
+Calculates the maximum achievable acceleration given a maximum voltage supply and a velocity.
+ Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+ simultaneously achievable - enter the velocity constraint, and this will give you a
+ simultaneously-achievable acceleration constraint.
+The units should be radians for angular systems and meters for linear systems.
+Parameters:
+maxVoltage
+- The maximum voltage that can be supplied to the motor, in volts.
+velocity
+- The velocity of the motor, in (units/s).
+Returns:
+The maximum possible acceleration in (units/s²) at the given velocity.
+minAchievableAcceleration
+public
+double
+minAchievableAcceleration
+(double maxVoltage,
+ double velocity)
+Calculates the minimum achievable acceleration given a maximum voltage supply and a velocity.
+ Useful for ensuring that velocity and acceleration constraints for a trapezoidal profile are
+ simultaneously achievable - enter the velocity constraint, and this will give you a
+ simultaneously-achievable acceleration constraint.
+The units should be radians for angular systems and meters for linear systems.
+Parameters:
+maxVoltage
+- The maximum voltage that can be supplied to the motor, in volts.
+velocity
+- The velocity of the motor, in (units/s).
+Returns:
+The maximum possible acceleration in (units/s²) at the given velocity.

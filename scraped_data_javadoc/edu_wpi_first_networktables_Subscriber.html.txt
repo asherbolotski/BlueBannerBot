@@ -1,0 +1,121 @@
+Package
+edu.wpi.first.networktables
+Interface Subscriber
+All Superinterfaces:
+AutoCloseable
+,
+PubSub
+All Known Subinterfaces:
+BooleanArrayEntry
+,
+BooleanArraySubscriber
+,
+BooleanEntry
+,
+BooleanSubscriber
+,
+DoubleArrayEntry
+,
+DoubleArraySubscriber
+,
+DoubleEntry
+,
+DoubleSubscriber
+,
+FloatArrayEntry
+,
+FloatArraySubscriber
+,
+FloatEntry
+,
+FloatSubscriber
+,
+GenericEntry
+,
+GenericSubscriber
+,
+IntegerArrayEntry
+,
+IntegerArraySubscriber
+,
+IntegerEntry
+,
+IntegerSubscriber
+,
+ProtobufEntry
+<T>
+,
+ProtobufSubscriber
+<T>
+,
+RawEntry
+,
+RawSubscriber
+,
+StringArrayEntry
+,
+StringArraySubscriber
+,
+StringEntry
+,
+StringSubscriber
+,
+StructArrayEntry
+<T>
+,
+StructArraySubscriber
+<T>
+,
+StructEntry
+<T>
+,
+StructSubscriber
+<T>
+All Known Implementing Classes:
+EntryBase
+,
+NetworkTableEntry
+public interface
+Subscriber
+extends
+PubSub
+NetworkTables subscriber.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+boolean
+exists
+()
+Determines if the entry currently exists.
+long
+getLastChange
+()
+Gets the last time the entry's value was changed.
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+getTopic
+,
+isValid
+Method Details
+exists
+boolean
+exists
+()
+Determines if the entry currently exists.
+Returns:
+True if the entry exists, false otherwise.
+getLastChange
+long
+getLastChange
+()
+Gets the last time the entry's value was changed.
+Returns:
+Entry last change time

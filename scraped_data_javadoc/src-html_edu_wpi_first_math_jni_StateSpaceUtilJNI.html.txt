@@ -1,0 +1,49 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.math.jni;
+006
+007
+/** StateSpaceUtil JNI. */
+008
+public final class StateSpaceUtilJNI extends WPIMathJNI {
+009
+/**
+010
+* Returns true if (A, B) is a stabilizable pair.
+011
+*
+012
+* <p>(A, B) is stabilizable if and only if the uncontrollable eigenvalues of A, if any, have
+013
+* absolute values less than one, where an eigenvalue is uncontrollable if rank(lambda * I - A, B)
+014
+* &lt; n where n is the number of states.
+015
+*
+016
+* @param states the number of states of the system.
+017
+* @param inputs the number of inputs to the system.
+018
+* @param A System matrix.
+019
+* @param B Input matrix.
+020
+* @return If the system is stabilizable.
+021
+*/
+022
+public static native boolean isStabilizable(int states, int inputs, double[] A, double[] B);
+023
+024
+/** Utility class. */
+025
+private StateSpaceUtilJNI() {}
+026
+}

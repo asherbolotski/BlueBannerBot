@@ -1,0 +1,134 @@
+Package
+edu.wpi.first.math.kinematics
+Class MecanumDriveOdometry3d
+java.lang.Object
+edu.wpi.first.math.kinematics.Odometry3d
+<
+MecanumDriveWheelPositions
+>
+edu.wpi.first.math.kinematics.MecanumDriveOdometry3d
+public class
+MecanumDriveOdometry3d
+extends
+Odometry3d
+<
+MecanumDriveWheelPositions
+>
+Class for mecanum drive odometry. Odometry allows you to track the robot's position on the field
+ over a course of a match using readings from your mecanum wheel encoders.
+This class is meant to be an easy replacement for
+MecanumDriveOdometry
+, only requiring
+ the addition of appropriate conversions between 2D and 3D versions of geometry classes. (See
+Pose3d(Pose2d)
+,
+Rotation3d(Rotation2d)
+,
+Translation3d(Translation2d)
+, and
+Pose3d.toPose2d()
+.)
+Teams can use odometry during the autonomous period for complex tasks like path following.
+ Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+Constructor Summary
+Constructors
+Constructor
+Description
+MecanumDriveOdometry3d
+(
+MecanumDriveKinematics
+kinematics,
+Rotation3d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions)
+Constructs a MecanumDriveOdometry3d object with the default pose at the origin.
+MecanumDriveOdometry3d
+(
+MecanumDriveKinematics
+kinematics,
+Rotation3d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions,
+Pose3d
+initialPoseMeters)
+Constructs a MecanumDriveOdometry3d object.
+Method Summary
+Methods inherited from class edu.wpi.first.math.kinematics.
+Odometry3d
+getPoseMeters
+,
+resetPose
+,
+resetPosition
+,
+resetRotation
+,
+resetTranslation
+,
+update
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MecanumDriveOdometry3d
+public
+MecanumDriveOdometry3d
+(
+MecanumDriveKinematics
+kinematics,
+Rotation3d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions,
+Pose3d
+initialPoseMeters)
+Constructs a MecanumDriveOdometry3d object.
+Parameters:
+kinematics
+- The mecanum drive kinematics for your drivetrain.
+gyroAngle
+- The angle reported by the gyroscope.
+wheelPositions
+- The distances driven by each wheel.
+initialPoseMeters
+- The starting position of the robot on the field.
+MecanumDriveOdometry3d
+public
+MecanumDriveOdometry3d
+(
+MecanumDriveKinematics
+kinematics,
+Rotation3d
+gyroAngle,
+MecanumDriveWheelPositions
+wheelPositions)
+Constructs a MecanumDriveOdometry3d object with the default pose at the origin.
+Parameters:
+kinematics
+- The mecanum drive kinematics for your drivetrain.
+gyroAngle
+- The angle reported by the gyroscope.
+wheelPositions
+- The distances driven by each wheel.

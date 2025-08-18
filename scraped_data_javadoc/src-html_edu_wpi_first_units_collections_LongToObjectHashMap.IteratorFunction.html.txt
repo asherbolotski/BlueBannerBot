@@ -1,0 +1,650 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.units.collections;
+006
+007
+import java.util.ArrayList;
+008
+import java.util.Arrays;
+009
+import java.util.Collection;
+010
+import java.util.List;
+011
+012
+/**
+013
+* A variant on {@code java.util.HashMap<K, V>} that uses primitive long ints for map keys instead
+014
+* of autoboxed Long objects like would be used for a {@code Map<Long, V>}.
+015
+*
+016
+* @param <V> the type of the values stored in the map
+017
+*/
+018
+public class LongToObjectHashMap<V> {
+019
+private static final int kInitialSize = 0;
+020
+private static final int kInitialCapacity = 8; // NOTE: must be a power of two
+021
+022
+/**
+023
+* The default load factor of the hashmap. If the ratio of the number of entries to the map's
+024
+* capacity exceeds this value, the map will be resized (doubled capacity) in order for more
+025
+* values to be easily inserted.
+026
+*/
+027
+private static final double kLoadFactor = 75.00 / 100;
+028
+029
+/** The current number of key-value pairs in the map. */
+030
+private int m_size = kInitialSize;
+031
+032
+/**
+033
+* The current maximum capacity of the map. Note that it will be resized before m_size reaches
+034
+* this value.
+035
+*/
+036
+private int m_capacity = kInitialCapacity;
+037
+038
+/**
+039
+* The keys in the map. This is a sparse array, and the location of a key may not be equal to the
+040
+* result of calling {@link #bucket(long)} on that key. To handle hash collisions, if a bucket is
+041
+* already in use when trying to insert a value, the bucket number is incremented (wrapping around
+042
+* to 0 if it's equal to m_capacity) and <i>that</i> bucket is checked to see if it's available.
+043
+* This process continues until an empty bucket is found (which is guaranteed because m_size is
+044
+* always less than m_capacity).
+045
+*/
+046
+private long[] m_keys = new long[m_capacity];
+047
+048
+/** Tracks which buckets are actually used (have a key-value mapping). */
+049
+private boolean[] m_uses = new boolean[m_capacity];
+050
+051
+/**
+052
+* The values in the map. See the documentation for m_keys for how indexing into this array works.
+053
+*/
+054
+@SuppressWarnings("unchecked")
+055
+private V[] m_values = (V[]) new Object[m_capacity];
+056
+057
+/** Default constructor. */
+058
+public LongToObjectHashMap() {}
+059
+060
+/**
+061
+* Puts a value {@code value} corresponding to key {@code key} in the map.
+062
+*
+063
+* @param key the associated key
+064
+* @param value the value to insert
+065
+* @return the previous value that was mapped to the key, or null if no such value existed
+066
+*/
+067
+public V put(long key, V value) {
+068
+int bucket = bucket(key);
+069
+070
+// Increment the bucket until we hit an open space (there's always going to be at least one)
+071
+while (m_uses[bucket]) {
+072
+if (m_keys[bucket] == key) {
+073
+// replace the existing value
+074
+var oldValue = m_values[bucket];
+075
+m_values[bucket] = value;
+076
+return oldValue;
+077
+}
+078
+bucket = safeIncrement(bucket);
+079
+}
+080
+081
+m_uses[bucket] = true;
+082
+m_keys[bucket] = key;
+083
+m_values[bucket] = value;
+084
+m_size++;
+085
+086
+if (m_size > maxSize()) {
+087
+grow();
+088
+}
+089
+return null;
+090
+}
+091
+092
+/**
+093
+* Gets the value associated with the given key.
+094
+*
+095
+* @param key the key to retrieve the value for
+096
+* @return the value mapped to the key, or null if the key is not in the map
+097
+*/
+098
+public V get(long key) {
+099
+int bucket = bucket(key);
+100
+while (m_uses[bucket]) {
+101
+if (m_keys[bucket] == key) {
+102
+// found it
+103
+return m_values[bucket];
+104
+}
+105
+bucket = safeIncrement(bucket);
+106
+}
+107
+return null;
+108
+}
+109
+110
+/**
+111
+* Removes the value associated with the given key and returns it.
+112
+*
+113
+* @param key the key to remove
+114
+* @return the value corresponding to the key, or null if the key is not in the map
+115
+*/
+116
+public V remove(long key) {
+117
+int bucket = bucket(key);
+118
+while (m_uses[bucket]) {
+119
+if (m_keys[bucket] == key) {
+120
+// found it
+121
+// TODO: Shrink the map when below a certain load factor
+122
+//       Current use cases don't remove elements from the map, so there's not much use
+123
+//       for shrinking at the moment.
+124
+m_size--;
+125
+m_keys[bucket] = 0L;
+126
+m_uses[bucket] = false;
+127
+128
+var oldValue = m_values[bucket];
+129
+m_values[bucket] = null;
+130
+return oldValue;
+131
+}
+132
+bucket = safeIncrement(bucket);
+133
+}
+134
+135
+return null;
+136
+}
+137
+138
+/**
+139
+* Checks if a key is contained in the map.
+140
+*
+141
+* @param key the key to check
+142
+* @return true if the key has an associated value, false if not
+143
+*/
+144
+public boolean containsKey(long key) {
+145
+int bucket = bucket(key);
+146
+while (m_uses[bucket]) {
+147
+if (m_keys[bucket] == key) {
+148
+return true;
+149
+}
+150
+bucket = safeIncrement(bucket);
+151
+}
+152
+return false;
+153
+}
+154
+155
+/** Clears and removes all entries from the map. */
+156
+public void clear() {
+157
+if (m_size == 0) {
+158
+// Nothing to do
+159
+return;
+160
+}
+161
+m_size = 0;
+162
+163
+Arrays.fill(m_uses, false);
+164
+Arrays.fill(m_keys, 0L);
+165
+Arrays.fill(m_values, null);
+166
+}
+167
+168
+/**
+169
+* Gets the number of key-value pairs currently contained in the map.
+170
+*
+171
+* @return the current size of the map
+172
+*/
+173
+public int size() {
+174
+return m_size;
+175
+}
+176
+177
+// package-private for tests
+178
+int capacity() {
+179
+return m_capacity;
+180
+}
+181
+182
+/**
+183
+* Checks if the map contains any entries.
+184
+*
+185
+* @return true if at least one entry is present, false otherwise
+186
+*/
+187
+public boolean isEmpty() {
+188
+return m_size == 0;
+189
+}
+190
+191
+/**
+192
+* Gets the keys contained in the map. Ordering is not guaranteed. The returned set is read-only
+193
+* and immutable. This uses a custom class for primitive long values to avoid unnecessary
+194
+* autoboxing to {@code java.lang.Long}.
+195
+*
+196
+* @return a read-only set of keys
+197
+*/
+198
+public ReadOnlyPrimitiveLongSet keySet() {
+199
+// copy the sparse key array into a compact array
+200
+final long[] keys = new long[m_size];
+201
+int i = 0;
+202
+for (int bucket = 0; bucket < m_capacity; bucket++) {
+203
+if (m_uses[bucket]) {
+204
+keys[i] = m_keys[bucket];
+205
+i++;
+206
+}
+207
+}
+208
+209
+return new ReadOnlyPrimitiveLongSet(keys);
+210
+}
+211
+212
+/**
+213
+* Gets the values contained in the map. Ordering is not guaranteed. The returned collection is
+214
+* read-only and immutable.
+215
+*
+216
+* @return a read-only collection of values
+217
+*/
+218
+public Collection<V> values() {
+219
+Collection<V> values = new ArrayList<>();
+220
+for (int bucket = 0; bucket < m_capacity; bucket++) {
+221
+if (m_uses[bucket]) {
+222
+values.add(m_values[bucket]);
+223
+}
+224
+}
+225
+return List.copyOf(values); // return a readonly copy
+226
+}
+227
+228
+/**
+229
+* Interface for map iterator function.
+230
+*
+231
+* @param <V> Value type.
+232
+*/
+233
+@FunctionalInterface
+234
+public interface IteratorFunction<V> {
+235
+/**
+236
+* Accepts a key-value pair from the map.
+237
+*
+238
+* @param key The key.
+239
+* @param value The value.
+240
+*/
+241
+void accept(long key, V value);
+242
+}
+243
+244
+/**
+245
+* Iterates over every key-value pair in the map and passes them to the given function.
+246
+*
+247
+* @param function the function to apply to every key-value pair.
+248
+*/
+249
+public void forEach(IteratorFunction<? super V> function) {
+250
+for (int bucket = 0; bucket < m_capacity; bucket++) {
+251
+if (m_uses[bucket]) {
+252
+function.accept(m_keys[bucket], m_values[bucket]);
+253
+}
+254
+}
+255
+}
+256
+257
+private void grow() {
+258
+final int currentSize = m_size;
+259
+final int oldCapacity = m_capacity;
+260
+if (oldCapacity * kLoadFactor >= currentSize) {
+261
+// We're below the maximum allowed size for the current capacity
+262
+// Nothing to do
+263
+return;
+264
+}
+265
+266
+final int newCapacity = oldCapacity * 2;
+267
+final int newMask = newCapacity - 1;
+268
+269
+final boolean[] oldUses = m_uses;
+270
+final long[] oldKeys = m_keys;
+271
+final V[] oldValues = m_values;
+272
+273
+final boolean[] newUses = new boolean[newCapacity];
+274
+final long[] newKeys = new long[newCapacity];
+275
+@SuppressWarnings("unchecked")
+276
+final V[] newValues = (V[]) new Object[newCapacity];
+277
+278
+for (int oldBucket = 0; oldBucket < oldCapacity; oldBucket++) {
+279
+if (!oldUses[oldBucket]) {
+280
+// Bucket is empty, skip
+281
+continue;
+282
+}
+283
+final long key = oldKeys[oldBucket];
+284
+final V value = oldValues[oldBucket];
+285
+286
+int newBucket = (int) (hash(key) & newMask);
+287
+while (newUses[newBucket]) {
+288
+newBucket = (newBucket + 1) & newMask;
+289
+}
+290
+291
+newUses[newBucket] = true;
+292
+newKeys[newBucket] = key;
+293
+newValues[newBucket] = value;
+294
+}
+295
+296
+m_capacity = newCapacity;
+297
+m_uses = newUses;
+298
+m_keys = newKeys;
+299
+m_values = newValues;
+300
+}
+301
+302
+private int maxSize() {
+303
+return (int) (m_capacity * kLoadFactor);
+304
+}
+305
+306
+/**
+307
+* Calculates a hashcode for an input key. Does some bit shuffling to account for poor hash
+308
+* functions.
+309
+*
+310
+* @param key the key to hash
+311
+* @return a hashcode for the input key
+312
+*/
+313
+private long hash(long key) {
+314
+return 31 + (key ^ (key >>> 15) ^ (key >>> 31) ^ (key << 31));
+315
+}
+316
+317
+/**
+318
+* The mask to use when translating a hashcode to a bucket index. Relies on m_capacity being a
+319
+* power of two.
+320
+*/
+321
+private int mask() {
+322
+return m_capacity - 1;
+323
+}
+324
+325
+/**
+326
+* Calculates the desired bucket index for a particular key. Does nothing to handle the case where
+327
+* the calculated index is already in use by another key.
+328
+*
+329
+* @param key the key to get the bucket for
+330
+* @return the desired bucket index
+331
+*/
+332
+private int bucket(long key) {
+333
+var hash = hash(key);
+334
+return (int) (hash & mask());
+335
+}
+336
+337
+/**
+338
+* Increments a bucket index by 1, wrapping around to 0 if the index is already at the maximum.
+339
+*
+340
+* @param bucket the index to increment
+341
+* @return the incremented bucket index
+342
+*/
+343
+private int safeIncrement(int bucket) {
+344
+return (bucket + 1) & mask();
+345
+}
+346
+}

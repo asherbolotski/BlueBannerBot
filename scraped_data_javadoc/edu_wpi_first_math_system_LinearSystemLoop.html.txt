@@ -1,0 +1,906 @@
+Package
+edu.wpi.first.math.system
+Class LinearSystemLoop<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+java.lang.Object
+edu.wpi.first.math.system.LinearSystemLoop<States,
+Inputs,
+Outputs>
+Type Parameters:
+States
+- Number of states.
+Inputs
+- Number of inputs.
+Outputs
+- Number of outputs.
+public class
+LinearSystemLoop
+<States extends
+Num
+,
+Inputs extends
+Num
+,
+Outputs extends
+Num
+>
+extends
+Object
+Combines a controller, feedforward, and observer for controlling a mechanism with full state
+ feedback.
+For everything in this file, "inputs" and "outputs" are defined from the perspective of the
+ plant. This means U is an input and Y is an output (because you give the plant U (powers) and it
+ gives you back a Y (sensor values)). This is the opposite of what they mean from the perspective
+ of the controller (U is an output because that's what goes to the motors and Y is an input
+ because that's what comes back from the sensors).
+For more on the underlying math, read
+https://file.tavsys.net/control/controls-engineering-in-frc.pdf
+.
+Constructor Summary
+Constructors
+Constructor
+Description
+LinearSystemLoop
+(
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+LinearPlantInversionFeedforward
+<
+States
+,
+Inputs
+,
+Outputs
+> feedforward,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+ double maxVoltageVolts)
+Constructs a state-space loop with the given controller, feedforward and observer.
+LinearSystemLoop
+(
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+LinearPlantInversionFeedforward
+<
+States
+,
+Inputs
+,
+Outputs
+> feedforward,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>> clampFunction)
+Constructs a state-space loop with the given controller, feedforward, and observer.
+LinearSystemLoop
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+ double maxVoltageVolts,
+ double dtSeconds)
+Constructs a state-space loop with the given plant, controller, and observer.
+LinearSystemLoop
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>> clampFunction,
+ double dtSeconds)
+Constructs a state-space loop with the given plant, controller, and observer.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Matrix
+<
+Inputs
+,
+N1
+>
+clampInput
+(
+Matrix
+<
+Inputs
+,
+N1
+> unclampedU)
+Clamp the input u to the min and max.
+void
+correct
+(
+Matrix
+<
+Outputs
+,
+N1
+> y)
+Correct the state estimate x-hat using the measurements in y.
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>>
+getClampFunction
+()
+Get the function used to clamp the input u.
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+>
+getController
+()
+Return the controller used internally.
+Matrix
+<
+States
+,
+N1
+>
+getError
+()
+Returns difference between reference r and current state x-hat.
+double
+getError
+(int index)
+Returns difference between reference r and current state x-hat.
+LinearPlantInversionFeedforward
+<
+States
+,
+Inputs
+,
+Outputs
+>
+getFeedforward
+()
+Return the feedforward used internally.
+Matrix
+<
+States
+,
+N1
+>
+getNextR
+()
+Returns the controller's next reference r.
+double
+getNextR
+(int row)
+Returns an element of the controller's next reference r.
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+>
+getObserver
+()
+Return the observer used internally.
+Matrix
+<
+Inputs
+,
+N1
+>
+getU
+()
+Returns the controller's calculated control input u plus the calculated feedforward u_ff.
+double
+getU
+(int row)
+Returns an element of the controller's calculated control input u.
+Matrix
+<
+States
+,
+N1
+>
+getXHat
+()
+Returns the observer's state estimate x-hat.
+double
+getXHat
+(int row)
+Returns an element of the observer's state estimate x-hat.
+void
+predict
+(double dtSeconds)
+Sets new controller output, projects model forward, and runs observer prediction.
+final void
+reset
+(
+Matrix
+<
+States
+,
+N1
+> initialState)
+Zeroes reference r and controller output u.
+void
+setClampFunction
+(
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>> clampFunction)
+Set the clamping function used to clamp inputs.
+void
+setNextR
+(double... nextR)
+Set the next reference r.
+void
+setNextR
+(
+Matrix
+<
+States
+,
+N1
+> nextR)
+Set the next reference r.
+void
+setXHat
+(int row,
+ double value)
+Set an element of the initial state estimate x-hat.
+void
+setXHat
+(
+Matrix
+<
+States
+,
+N1
+> xhat)
+Set the initial state estimate x-hat.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LinearSystemLoop
+public
+LinearSystemLoop
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+ double maxVoltageVolts,
+ double dtSeconds)
+Constructs a state-space loop with the given plant, controller, and observer. By default, the
+ initial reference is all zeros. Users should call reset with the initial system state before
+ enabling the loop. This constructor assumes that the input(s) to this system are voltage.
+Parameters:
+plant
+- State-space plant.
+controller
+- State-space controller.
+observer
+- State-space observer.
+maxVoltageVolts
+- The maximum voltage that can be applied. Commonly 12.
+dtSeconds
+- The nominal timestep.
+LinearSystemLoop
+public
+LinearSystemLoop
+(
+LinearSystem
+<
+States
+,
+Inputs
+,
+Outputs
+> plant,
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>> clampFunction,
+ double dtSeconds)
+Constructs a state-space loop with the given plant, controller, and observer. By default, the
+ initial reference is all zeros. Users should call reset with the initial system state before
+ enabling the loop.
+Parameters:
+plant
+- State-space plant.
+controller
+- State-space controller.
+observer
+- State-space observer.
+clampFunction
+- The function used to clamp the input U.
+dtSeconds
+- The nominal timestep.
+LinearSystemLoop
+public
+LinearSystemLoop
+(
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+LinearPlantInversionFeedforward
+<
+States
+,
+Inputs
+,
+Outputs
+> feedforward,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+ double maxVoltageVolts)
+Constructs a state-space loop with the given controller, feedforward and observer. By default,
+ the initial reference is all zeros. Users should call reset with the initial system state
+ before enabling the loop.
+Parameters:
+controller
+- State-space controller.
+feedforward
+- Plant inversion feedforward.
+observer
+- State-space observer.
+maxVoltageVolts
+- The maximum voltage that can be applied. Assumes that the inputs are
+     voltages.
+LinearSystemLoop
+public
+LinearSystemLoop
+(
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+> controller,
+LinearPlantInversionFeedforward
+<
+States
+,
+Inputs
+,
+Outputs
+> feedforward,
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+> observer,
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>> clampFunction)
+Constructs a state-space loop with the given controller, feedforward, and observer. By default,
+ the initial reference is all zeros. Users should call reset with the initial system state
+ before enabling the loop.
+Parameters:
+controller
+- State-space controller.
+feedforward
+- Plant inversion feedforward.
+observer
+- State-space observer.
+clampFunction
+- The function used to clamp the input U.
+Method Details
+getXHat
+public
+Matrix
+<
+States
+,
+N1
+>
+getXHat
+()
+Returns the observer's state estimate x-hat.
+Returns:
+the observer's state estimate x-hat.
+getXHat
+public
+double
+getXHat
+(int row)
+Returns an element of the observer's state estimate x-hat.
+Parameters:
+row
+- Row of x-hat.
+Returns:
+the i-th element of the observer's state estimate x-hat.
+setXHat
+public
+void
+setXHat
+(
+Matrix
+<
+States
+,
+N1
+> xhat)
+Set the initial state estimate x-hat.
+Parameters:
+xhat
+- The initial state estimate x-hat.
+setXHat
+public
+void
+setXHat
+(int row,
+ double value)
+Set an element of the initial state estimate x-hat.
+Parameters:
+row
+- Row of x-hat.
+value
+- Value for element of x-hat.
+getNextR
+public
+double
+getNextR
+(int row)
+Returns an element of the controller's next reference r.
+Parameters:
+row
+- Row of r.
+Returns:
+the element i of the controller's next reference r.
+getNextR
+public
+Matrix
+<
+States
+,
+N1
+>
+getNextR
+()
+Returns the controller's next reference r.
+Returns:
+the controller's next reference r.
+setNextR
+public
+void
+setNextR
+(
+Matrix
+<
+States
+,
+N1
+> nextR)
+Set the next reference r.
+Parameters:
+nextR
+- Next reference.
+setNextR
+public
+void
+setNextR
+(double... nextR)
+Set the next reference r.
+Parameters:
+nextR
+- Next reference.
+getU
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+getU
+()
+Returns the controller's calculated control input u plus the calculated feedforward u_ff.
+Returns:
+the calculated control input u.
+getU
+public
+double
+getU
+(int row)
+Returns an element of the controller's calculated control input u.
+Parameters:
+row
+- Row of u.
+Returns:
+the calculated control input u at the row i.
+getController
+public
+LinearQuadraticRegulator
+<
+States
+,
+Inputs
+,
+Outputs
+>
+getController
+()
+Return the controller used internally.
+Returns:
+the controller used internally.
+getFeedforward
+public
+LinearPlantInversionFeedforward
+<
+States
+,
+Inputs
+,
+Outputs
+>
+getFeedforward
+()
+Return the feedforward used internally.
+Returns:
+the feedforward used internally.
+getObserver
+public
+KalmanFilter
+<
+States
+,
+Inputs
+,
+Outputs
+>
+getObserver
+()
+Return the observer used internally.
+Returns:
+the observer used internally.
+reset
+public final
+void
+reset
+(
+Matrix
+<
+States
+,
+N1
+> initialState)
+Zeroes reference r and controller output u. The previous reference of the
+ PlantInversionFeedforward and the initial state estimate of the KalmanFilter are set to the
+ initial state provided.
+Parameters:
+initialState
+- The initial state.
+getError
+public
+Matrix
+<
+States
+,
+N1
+>
+getError
+()
+Returns difference between reference r and current state x-hat.
+Returns:
+The state error matrix.
+getError
+public
+double
+getError
+(int index)
+Returns difference between reference r and current state x-hat.
+Parameters:
+index
+- The index of the error matrix to return.
+Returns:
+The error at that index.
+getClampFunction
+public
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>>
+getClampFunction
+()
+Get the function used to clamp the input u.
+Returns:
+The clamping function.
+setClampFunction
+public
+void
+setClampFunction
+(
+Function
+<
+Matrix
+<
+Inputs
+,
+N1
+>,
+Matrix
+<
+Inputs
+,
+N1
+>> clampFunction)
+Set the clamping function used to clamp inputs.
+Parameters:
+clampFunction
+- The clamping function.
+correct
+public
+void
+correct
+(
+Matrix
+<
+Outputs
+,
+N1
+> y)
+Correct the state estimate x-hat using the measurements in y.
+Parameters:
+y
+- Measurement vector.
+predict
+public
+void
+predict
+(double dtSeconds)
+Sets new controller output, projects model forward, and runs observer prediction.
+After calling this, the user should send the elements of u to the actuators.
+Parameters:
+dtSeconds
+- Timestep for model update.
+clampInput
+public
+Matrix
+<
+Inputs
+,
+N1
+>
+clampInput
+(
+Matrix
+<
+Inputs
+,
+N1
+> unclampedU)
+Clamp the input u to the min and max.
+Parameters:
+unclampedU
+- The input to clamp.
+Returns:
+The clamped input.

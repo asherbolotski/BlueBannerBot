@@ -1,0 +1,119 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.hal;
+006
+007
+/**
+008
+* Relay Output HAL JNI Functions.
+009
+*
+010
+* @see "hal/Relay.h"
+011
+*/
+012
+public class RelayJNI extends DIOJNI {
+013
+/**
+014
+* Initializes a relay.
+015
+*
+016
+* <p>Note this call will only initialize either the forward or reverse port of the relay. If you
+017
+* need both, you will need to initialize 2 relays.
+018
+*
+019
+* @param halPortHandle the port handle to initialize
+020
+* @param forward true for the forward port, false for the reverse port
+021
+* @return the created relay handle
+022
+* @see "HAL_InitializeRelayPort"
+023
+*/
+024
+public static native int initializeRelayPort(int halPortHandle, boolean forward);
+025
+026
+/**
+027
+* Frees a relay port.
+028
+*
+029
+* @param relayPortHandle the relay handle
+030
+* @see "HAL_FreeRelayPort"
+031
+*/
+032
+public static native void freeRelayPort(int relayPortHandle);
+033
+034
+/**
+035
+* Checks if a relay channel is valid.
+036
+*
+037
+* @param channel the channel to check
+038
+* @return true if the channel is valid, otherwise false
+039
+* @see "HAL_CheckRelayChannel"
+040
+*/
+041
+public static native boolean checkRelayChannel(int channel);
+042
+043
+/**
+044
+* Sets the state of a relay output.
+045
+*
+046
+* @param relayPortHandle the relay handle
+047
+* @param on true for on, false for off
+048
+* @see "HAL_SetRelay"
+049
+*/
+050
+public static native void setRelay(int relayPortHandle, boolean on);
+051
+052
+/**
+053
+* Gets the current state of the relay channel.
+054
+*
+055
+* @param relayPortHandle the relay handle
+056
+* @return true for on, false for off
+057
+* @see "HAL_GetRelay"
+058
+*/
+059
+public static native boolean getRelay(int relayPortHandle);
+060
+061
+/** Utility class. */
+062
+private RelayJNI() {}
+063
+}

@@ -1,0 +1,430 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj;
+006
+007
+import static edu.wpi.first.units.Units.Seconds;
+008
+009
+import edu.wpi.first.hal.DriverStationJNI;
+010
+import edu.wpi.first.hal.FRCNetComm.tInstances;
+011
+import edu.wpi.first.hal.FRCNetComm.tResourceType;
+012
+import edu.wpi.first.hal.HAL;
+013
+import edu.wpi.first.hal.NotifierJNI;
+014
+import edu.wpi.first.units.measure.Time;
+015
+import java.util.PriorityQueue;
+016
+017
+/**
+018
+* TimedRobot implements the IterativeRobotBase robot program framework.
+019
+*
+020
+* <p>The TimedRobot class is intended to be subclassed by a user creating a robot program.
+021
+*
+022
+* <p>periodic() functions from the base class are called on an interval by a Notifier instance.
+023
+*/
+024
+public class TimedRobot extends IterativeRobotBase {
+025
+@SuppressWarnings("MemberName")
+026
+static class Callback implements Comparable<Callback> {
+027
+public Runnable func;
+028
+public long period;
+029
+public long expirationTime;
+030
+031
+/**
+032
+* Construct a callback container.
+033
+*
+034
+* @param func The callback to run.
+035
+* @param startTimeUs The common starting point for all callback scheduling in microseconds.
+036
+* @param periodUs The period at which to run the callback in microseconds.
+037
+* @param offsetUs The offset from the common starting time in microseconds.
+038
+*/
+039
+Callback(Runnable func, long startTimeUs, long periodUs, long offsetUs) {
+040
+this.func = func;
+041
+this.period = periodUs;
+042
+this.expirationTime =
+043
+startTimeUs
+044
++ offsetUs
+045
++ this.period
+046
++ (RobotController.getFPGATime() - startTimeUs) / this.period * this.period;
+047
+}
+048
+049
+@Override
+050
+public boolean equals(Object rhs) {
+051
+return rhs instanceof Callback callback && expirationTime == callback.expirationTime;
+052
+}
+053
+054
+@Override
+055
+public int hashCode() {
+056
+return Long.hashCode(expirationTime);
+057
+}
+058
+059
+@Override
+060
+public int compareTo(Callback rhs) {
+061
+// Elements with sooner expiration times are sorted as lesser. The head of
+062
+// Java's PriorityQueue is the least element.
+063
+return Long.compare(expirationTime, rhs.expirationTime);
+064
+}
+065
+}
+066
+067
+/** Default loop period. */
+068
+public static final double kDefaultPeriod = 0.02;
+069
+070
+// The C pointer to the notifier object. We don't use it directly, it is
+071
+// just passed to the JNI bindings.
+072
+private final int m_notifier = NotifierJNI.initializeNotifier();
+073
+074
+private long m_startTimeUs;
+075
+private long m_loopStartTimeUs;
+076
+077
+private final PriorityQueue<Callback> m_callbacks = new PriorityQueue<>();
+078
+079
+/** Constructor for TimedRobot. */
+080
+protected TimedRobot() {
+081
+this(kDefaultPeriod);
+082
+}
+083
+084
+/**
+085
+* Constructor for TimedRobot.
+086
+*
+087
+* @param period Period in seconds.
+088
+*/
+089
+protected TimedRobot(double period) {
+090
+super(period);
+091
+m_startTimeUs = RobotController.getFPGATime();
+092
+addPeriodic(this::loopFunc, period);
+093
+NotifierJNI.setNotifierName(m_notifier, "TimedRobot");
+094
+095
+HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_Timed);
+096
+}
+097
+098
+@Override
+099
+public void close() {
+100
+NotifierJNI.stopNotifier(m_notifier);
+101
+NotifierJNI.cleanNotifier(m_notifier);
+102
+}
+103
+104
+/** Provide an alternate "main loop" via startCompetition(). */
+105
+@Override
+106
+public void startCompetition() {
+107
+robotInit();
+108
+109
+if (isSimulation()) {
+110
+simulationInit();
+111
+}
+112
+113
+// Tell the DS that the robot is ready to be enabled
+114
+System.out.println("********** Robot program startup complete **********");
+115
+DriverStationJNI.observeUserProgramStarting();
+116
+117
+// Loop forever, calling the appropriate mode-dependent function
+118
+while (true) {
+119
+// We don't have to check there's an element in the queue first because
+120
+// there's always at least one (the constructor adds one). It's reenqueued
+121
+// at the end of the loop.
+122
+var callback = m_callbacks.poll();
+123
+124
+NotifierJNI.updateNotifierAlarm(m_notifier, callback.expirationTime);
+125
+126
+long currentTime = NotifierJNI.waitForNotifierAlarm(m_notifier);
+127
+if (currentTime == 0) {
+128
+break;
+129
+}
+130
+131
+m_loopStartTimeUs = RobotController.getFPGATime();
+132
+133
+callback.func.run();
+134
+135
+// Increment the expiration time by the number of full periods it's behind
+136
+// plus one to avoid rapid repeat fires from a large loop overrun. We
+137
+// assume currentTime ≥ expirationTime rather than checking for it since
+138
+// the callback wouldn't be running otherwise.
+139
+callback.expirationTime +=
+140
+callback.period
+141
++ (currentTime - callback.expirationTime) / callback.period * callback.period;
+142
+m_callbacks.add(callback);
+143
+144
+// Process all other callbacks that are ready to run
+145
+while (m_callbacks.peek().expirationTime <= currentTime) {
+146
+callback = m_callbacks.poll();
+147
+148
+callback.func.run();
+149
+150
+callback.expirationTime +=
+151
+callback.period
+152
++ (currentTime - callback.expirationTime) / callback.period * callback.period;
+153
+m_callbacks.add(callback);
+154
+}
+155
+}
+156
+}
+157
+158
+/** Ends the main loop in startCompetition(). */
+159
+@Override
+160
+public void endCompetition() {
+161
+NotifierJNI.stopNotifier(m_notifier);
+162
+}
+163
+164
+/**
+165
+* Return the system clock time in micrseconds for the start of the current periodic loop. This is
+166
+* in the same time base as Timer.getFPGATimestamp(), but is stable through a loop. It is updated
+167
+* at the beginning of every periodic callback (including the normal periodic loop).
+168
+*
+169
+* @return Robot running time in microseconds, as of the start of the current periodic function.
+170
+*/
+171
+public long getLoopStartTime() {
+172
+return m_loopStartTimeUs;
+173
+}
+174
+175
+/**
+176
+* Add a callback to run at a specific period.
+177
+*
+178
+* <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
+179
+* synchronously. Interactions between them are thread-safe.
+180
+*
+181
+* @param callback The callback to run.
+182
+* @param periodSeconds The period at which to run the callback in seconds.
+183
+*/
+184
+public final void addPeriodic(Runnable callback, double periodSeconds) {
+185
+m_callbacks.add(new Callback(callback, m_startTimeUs, (long) (periodSeconds * 1e6), 0));
+186
+}
+187
+188
+/**
+189
+* Add a callback to run at a specific period with a starting time offset.
+190
+*
+191
+* <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
+192
+* synchronously. Interactions between them are thread-safe.
+193
+*
+194
+* @param callback The callback to run.
+195
+* @param periodSeconds The period at which to run the callback in seconds.
+196
+* @param offsetSeconds The offset from the common starting time in seconds. This is useful for
+197
+*     scheduling a callback in a different timeslot relative to TimedRobot.
+198
+*/
+199
+public final void addPeriodic(Runnable callback, double periodSeconds, double offsetSeconds) {
+200
+m_callbacks.add(
+201
+new Callback(
+202
+callback, m_startTimeUs, (long) (periodSeconds * 1e6), (long) (offsetSeconds * 1e6)));
+203
+}
+204
+205
+/**
+206
+* Add a callback to run at a specific period.
+207
+*
+208
+* <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
+209
+* synchronously. Interactions between them are thread-safe.
+210
+*
+211
+* @param callback The callback to run.
+212
+* @param period The period at which to run the callback.
+213
+*/
+214
+public final void addPeriodic(Runnable callback, Time period) {
+215
+addPeriodic(callback, period.in(Seconds));
+216
+}
+217
+218
+/**
+219
+* Add a callback to run at a specific period with a starting time offset.
+220
+*
+221
+* <p>This is scheduled on TimedRobot's Notifier, so TimedRobot and the callback run
+222
+* synchronously. Interactions between them are thread-safe.
+223
+*
+224
+* @param callback The callback to run.
+225
+* @param period The period at which to run the callback.
+226
+* @param offset The offset from the common starting time. This is useful for scheduling a
+227
+*     callback in a different timeslot relative to TimedRobot.
+228
+*/
+229
+public final void addPeriodic(Runnable callback, Time period, Time offset) {
+230
+addPeriodic(callback, period.in(Seconds), offset.in(Seconds));
+231
+}
+232
+}

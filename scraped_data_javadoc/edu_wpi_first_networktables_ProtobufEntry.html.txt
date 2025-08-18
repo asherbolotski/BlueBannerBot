@@ -1,0 +1,96 @@
+Package
+edu.wpi.first.networktables
+Interface ProtobufEntry<T>
+Type Parameters:
+T
+- value class
+All Superinterfaces:
+AutoCloseable
+,
+Consumer
+<T>
+,
+ProtobufPublisher
+<T>
+,
+ProtobufSubscriber
+<T>
+,
+Publisher
+,
+PubSub
+,
+Subscriber
+,
+Supplier
+<T>
+public interface
+ProtobufEntry
+<T>
+extends
+ProtobufSubscriber
+<T>,
+ProtobufPublisher
+<T>
+NetworkTables protobuf-encoded value entry.
+Unlike NetworkTableEntry, the entry goes away when close() is called.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+void
+unpublish
+()
+Stops publishing the entry if it's published.
+Methods inherited from interface java.util.function.
+Consumer
+andThen
+Methods inherited from interface edu.wpi.first.networktables.
+ProtobufPublisher
+accept
+,
+getTopic
+,
+set
+,
+set
+,
+setDefault
+Methods inherited from interface edu.wpi.first.networktables.
+ProtobufSubscriber
+get
+,
+get
+,
+getAtomic
+,
+getAtomic
+,
+getInto
+,
+getTopic
+,
+readQueue
+,
+readQueueValues
+Methods inherited from interface edu.wpi.first.networktables.
+PubSub
+close
+,
+getHandle
+,
+isValid
+Methods inherited from interface edu.wpi.first.networktables.
+Subscriber
+exists
+,
+getLastChange
+Method Details
+unpublish
+void
+unpublish
+()
+Stops publishing the entry if it's published.

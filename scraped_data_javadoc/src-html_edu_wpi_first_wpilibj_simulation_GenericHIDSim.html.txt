@@ -1,0 +1,307 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.wpilibj.GenericHID;
+008
+009
+/** Class to control a simulated generic joystick. */
+010
+public class GenericHIDSim {
+011
+/** GenericHID port. */
+012
+protected final int m_port;
+013
+014
+/**
+015
+* Constructs from a GenericHID object.
+016
+*
+017
+* @param joystick joystick to simulate
+018
+*/
+019
+public GenericHIDSim(GenericHID joystick) {
+020
+m_port = joystick.getPort();
+021
+}
+022
+023
+/**
+024
+* Constructs from a joystick port number.
+025
+*
+026
+* @param port port number
+027
+*/
+028
+public GenericHIDSim(int port) {
+029
+m_port = port;
+030
+}
+031
+032
+/** Updates joystick data so that new values are visible to the user program. */
+033
+public void notifyNewData() {
+034
+DriverStationSim.notifyNewData();
+035
+}
+036
+037
+/**
+038
+* Set the value of a given button.
+039
+*
+040
+* @param button the button to set
+041
+* @param value the new value
+042
+*/
+043
+public void setRawButton(int button, boolean value) {
+044
+DriverStationSim.setJoystickButton(m_port, button, value);
+045
+}
+046
+047
+/**
+048
+* Set the value of a given axis.
+049
+*
+050
+* @param axis the axis to set
+051
+* @param value the new value
+052
+*/
+053
+public void setRawAxis(int axis, double value) {
+054
+DriverStationSim.setJoystickAxis(m_port, axis, value);
+055
+}
+056
+057
+/**
+058
+* Set the value of a given POV.
+059
+*
+060
+* @param pov the POV to set
+061
+* @param value the new value
+062
+*/
+063
+public void setPOV(int pov, int value) {
+064
+DriverStationSim.setJoystickPOV(m_port, pov, value);
+065
+}
+066
+067
+/**
+068
+* Set the value of the default POV (port 0).
+069
+*
+070
+* @param value the new value
+071
+*/
+072
+public void setPOV(int value) {
+073
+setPOV(0, value);
+074
+}
+075
+076
+/**
+077
+* Set the axis count of this device.
+078
+*
+079
+* @param count the new axis count
+080
+*/
+081
+public void setAxisCount(int count) {
+082
+DriverStationSim.setJoystickAxisCount(m_port, count);
+083
+}
+084
+085
+/**
+086
+* Set the POV count of this device.
+087
+*
+088
+* @param count the new POV count
+089
+*/
+090
+public void setPOVCount(int count) {
+091
+DriverStationSim.setJoystickPOVCount(m_port, count);
+092
+}
+093
+094
+/**
+095
+* Set the button count of this device.
+096
+*
+097
+* @param count the new button count
+098
+*/
+099
+public void setButtonCount(int count) {
+100
+DriverStationSim.setJoystickButtonCount(m_port, count);
+101
+}
+102
+103
+/**
+104
+* Set the type of this device.
+105
+*
+106
+* @param type the new device type
+107
+*/
+108
+public void setType(GenericHID.HIDType type) {
+109
+DriverStationSim.setJoystickType(m_port, type.value);
+110
+}
+111
+112
+/**
+113
+* Set the name of this device.
+114
+*
+115
+* @param name the new device name
+116
+*/
+117
+public void setName(String name) {
+118
+DriverStationSim.setJoystickName(m_port, name);
+119
+}
+120
+121
+/**
+122
+* Set the type of the provided axis channel.
+123
+*
+124
+* @param axis the axis
+125
+* @param type the type
+126
+*/
+127
+public void setAxisType(int axis, int type) {
+128
+DriverStationSim.setJoystickAxisType(m_port, axis, type);
+129
+}
+130
+131
+/**
+132
+* Read the output of a button.
+133
+*
+134
+* @param outputNumber the button number
+135
+* @return the value of the button (true = pressed)
+136
+*/
+137
+public boolean getOutput(int outputNumber) {
+138
+long outputs = getOutputs();
+139
+return (outputs & (1L << (outputNumber - 1))) != 0;
+140
+}
+141
+142
+/**
+143
+* Get the encoded 16-bit integer that passes button values.
+144
+*
+145
+* @return the button values
+146
+*/
+147
+public long getOutputs() {
+148
+return DriverStationSim.getJoystickOutputs(m_port);
+149
+}
+150
+151
+/**
+152
+* Get the joystick rumble.
+153
+*
+154
+* @param type the rumble to read
+155
+* @return the rumble value
+156
+*/
+157
+public double getRumble(GenericHID.RumbleType type) {
+158
+int value =
+159
+DriverStationSim.getJoystickRumble(
+160
+m_port, type == GenericHID.RumbleType.kLeftRumble ? 0 : 1);
+161
+return value / 65535.0;
+162
+}
+163
+}

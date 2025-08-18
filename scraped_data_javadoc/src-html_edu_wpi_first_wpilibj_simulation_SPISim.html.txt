@@ -1,0 +1,169 @@
+001
+// Copyright (c) FIRST and other WPILib contributors.
+002
+// Open Source Software; you can modify and/or share it under the terms of
+003
+// the WPILib BSD license file in the root directory of this project.
+004
+005
+package edu.wpi.first.wpilibj.simulation;
+006
+007
+import edu.wpi.first.hal.simulation.BufferCallback;
+008
+import edu.wpi.first.hal.simulation.ConstBufferCallback;
+009
+import edu.wpi.first.hal.simulation.NotifyCallback;
+010
+import edu.wpi.first.hal.simulation.SPIDataJNI;
+011
+import edu.wpi.first.hal.simulation.SpiReadAutoReceiveBufferCallback;
+012
+013
+/** A class for controlling a simulated SPI device. */
+014
+public class SPISim {
+015
+private final int m_index;
+016
+017
+/** Create a new simulated SPI device. */
+018
+public SPISim() {
+019
+m_index = 0;
+020
+}
+021
+022
+/**
+023
+* Register a callback to be run when this device is initialized.
+024
+*
+025
+* @param callback the callback
+026
+* @param initialNotify whether to run the callback with the initial state
+027
+* @return the {@link CallbackStore} object associated with this callback.
+028
+*/
+029
+public CallbackStore registerInitializedCallback(NotifyCallback callback, boolean initialNotify) {
+030
+int uid = SPIDataJNI.registerInitializedCallback(m_index, callback, initialNotify);
+031
+return new CallbackStore(m_index, uid, SPIDataJNI::cancelInitializedCallback);
+032
+}
+033
+034
+/**
+035
+* Check whether this device has been initialized.
+036
+*
+037
+* @return true if initialized
+038
+*/
+039
+public boolean getInitialized() {
+040
+return SPIDataJNI.getInitialized(m_index);
+041
+}
+042
+043
+/**
+044
+* Define whether this device has been initialized.
+045
+*
+046
+* @param initialized whether this object is initialized
+047
+*/
+048
+public void setInitialized(boolean initialized) {
+049
+SPIDataJNI.setInitialized(m_index, initialized);
+050
+}
+051
+052
+/**
+053
+* Register a callback to be run whenever a `read` operation is executed.
+054
+*
+055
+* @param callback the callback
+056
+* @return the {@link CallbackStore} object associated with this callback.
+057
+*/
+058
+public CallbackStore registerReadCallback(BufferCallback callback) {
+059
+int uid = SPIDataJNI.registerReadCallback(m_index, callback);
+060
+return new CallbackStore(m_index, uid, SPIDataJNI::cancelReadCallback);
+061
+}
+062
+063
+/**
+064
+* Register a callback to be run whenever a `write` operation is executed.
+065
+*
+066
+* @param callback the callback
+067
+* @return the {@link CallbackStore} object associated with this callback.
+068
+*/
+069
+public CallbackStore registerWriteCallback(ConstBufferCallback callback) {
+070
+int uid = SPIDataJNI.registerWriteCallback(m_index, callback);
+071
+return new CallbackStore(m_index, uid, SPIDataJNI::cancelWriteCallback);
+072
+}
+073
+074
+/**
+075
+* Register a callback to be run whenever an auto receive buffer is received.
+076
+*
+077
+* @param callback the callback
+078
+* @return the {@link CallbackStore} object associated with this callback.
+079
+*/
+080
+public CallbackStore registerReadAutoReceiveBufferCallback(
+081
+SpiReadAutoReceiveBufferCallback callback) {
+082
+int uid = SPIDataJNI.registerReadAutoReceiveBufferCallback(m_index, callback);
+083
+return new CallbackStore(m_index, uid, SPIDataJNI::cancelReadAutoReceiveBufferCallback);
+084
+}
+085
+086
+/** Reset all simulation data. */
+087
+public void resetData() {
+088
+SPIDataJNI.resetData(m_index);
+089
+}
+090
+}

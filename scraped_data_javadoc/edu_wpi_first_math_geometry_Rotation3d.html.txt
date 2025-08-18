@@ -1,0 +1,684 @@
+Package
+edu.wpi.first.math.geometry
+Class Rotation3d
+java.lang.Object
+edu.wpi.first.math.geometry.Rotation3d
+All Implemented Interfaces:
+Interpolatable
+<
+Rotation3d
+>
+,
+ProtobufSerializable
+,
+StructSerializable
+,
+WPISerializable
+public class
+Rotation3d
+extends
+Object
+implements
+Interpolatable
+<
+Rotation3d
+>,
+ProtobufSerializable
+,
+StructSerializable
+A rotation in a 3D coordinate frame represented by a quaternion.
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+static final
+Rotation3d
+kZero
+A preallocated Rotation3d representing no rotation.
+static final
+Rotation3dProto
+proto
+Rotation3d protobuf for serialization.
+static final
+Rotation3dStruct
+struct
+Rotation3d struct for serialization.
+Constructor Summary
+Constructors
+Constructor
+Description
+Rotation3d
+()
+Constructs a Rotation3d representing no rotation.
+Rotation3d
+(double roll,
+ double pitch,
+ double yaw)
+Constructs a Rotation3d from extrinsic roll, pitch, and yaw.
+Rotation3d
+(
+Quaternion
+q)
+Constructs a Rotation3d from a quaternion.
+Rotation3d
+(
+Rotation2d
+rotation)
+Constructs a 3D rotation from a 2D rotation in the X-Y plane.
+Rotation3d
+(
+Matrix
+<
+N3
+,
+N3
+> rotationMatrix)
+Constructs a Rotation3d from a rotation matrix.
+Rotation3d
+(
+Vector
+<
+N3
+> rvec)
+Constructs a Rotation3d with the given rotation vector representation.
+Rotation3d
+(
+Vector
+<
+N3
+> axis,
+ double angleRadians)
+Constructs a Rotation3d with the given axis-angle representation.
+Rotation3d
+(
+Vector
+<
+N3
+> initial,
+Vector
+<
+N3
+> last)
+Constructs a Rotation3d that rotates the initial vector onto the final vector.
+Rotation3d
+(
+Vector
+<
+N3
+> axis,
+Angle
+angle)
+Constructs a Rotation3d with the given axis-angle representation.
+Rotation3d
+(
+Angle
+roll,
+Angle
+pitch,
+Angle
+yaw)
+Constructs a Rotation3d from extrinsic roll, pitch, and yaw.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+Rotation3d
+div
+(double scalar)
+Divides the current rotation by a scalar.
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Rotation3d and another object.
+double
+getAngle
+()
+Returns the angle in radians in the axis-angle representation of this rotation.
+Vector
+<
+N3
+>
+getAxis
+()
+Returns the axis in the axis-angle representation of this rotation.
+Angle
+getMeasureAngle
+()
+Returns the angle in a measure in the axis-angle representation of this rotation.
+Angle
+getMeasureX
+()
+Returns the counterclockwise rotation angle around the X axis (roll) in a measure.
+Angle
+getMeasureY
+()
+Returns the counterclockwise rotation angle around the Y axis (pitch) in a measure.
+Angle
+getMeasureZ
+()
+Returns the counterclockwise rotation angle around the Z axis (yaw) in a measure.
+Quaternion
+getQuaternion
+()
+Returns the quaternion representation of the Rotation3d.
+double
+getX
+()
+Returns the counterclockwise rotation angle around the X axis (roll) in radians.
+double
+getY
+()
+Returns the counterclockwise rotation angle around the Y axis (pitch) in radians.
+double
+getZ
+()
+Returns the counterclockwise rotation angle around the Z axis (yaw) in radians.
+int
+hashCode
+()
+Rotation3d
+interpolate
+(
+Rotation3d
+endValue,
+ double t)
+Return the interpolated value.
+Rotation3d
+minus
+(
+Rotation3d
+other)
+Subtracts the new rotation from the current rotation and returns the new rotation.
+Rotation3d
+plus
+(
+Rotation3d
+other)
+Adds two rotations together.
+Rotation3d
+rotateBy
+(
+Rotation3d
+other)
+Adds the new rotation to the current rotation.
+Rotation3d
+times
+(double scalar)
+Multiplies the current rotation by a scalar.
+Matrix
+<
+N3
+,
+N3
+>
+toMatrix
+()
+Returns rotation matrix representation of this rotation.
+Rotation2d
+toRotation2d
+()
+Returns a Rotation2d representing this Rotation3d projected into the X-Y plane.
+String
+toString
+()
+Vector
+<
+N3
+>
+toVector
+()
+Returns rotation vector representation of this rotation.
+Rotation3d
+unaryMinus
+()
+Takes the inverse of the current rotation.
+Methods inherited from class java.lang.
+Object
+clone
+,
+finalize
+,
+getClass
+,
+notify
+,
+notifyAll
+,
+wait
+,
+wait
+,
+wait
+Field Details
+kZero
+public static final
+Rotation3d
+kZero
+A preallocated Rotation3d representing no rotation.
+This exists to avoid allocations for common rotations.
+proto
+public static final
+Rotation3dProto
+proto
+Rotation3d protobuf for serialization.
+struct
+public static final
+Rotation3dStruct
+struct
+Rotation3d struct for serialization.
+Constructor Details
+Rotation3d
+public
+Rotation3d
+()
+Constructs a Rotation3d representing no rotation.
+Rotation3d
+public
+Rotation3d
+(
+Quaternion
+q)
+Constructs a Rotation3d from a quaternion.
+Parameters:
+q
+- The quaternion.
+Rotation3d
+public
+Rotation3d
+(double roll,
+ double pitch,
+ double yaw)
+Constructs a Rotation3d from extrinsic roll, pitch, and yaw.
+Extrinsic rotations occur in that order around the axes in the fixed global frame rather
+ than the body frame.
+Angles are measured counterclockwise with the rotation axis pointing "out of the page". If
+ you point your right thumb along the positive axis direction, your fingers curl in the
+ direction of positive rotation.
+Parameters:
+roll
+- The counterclockwise rotation angle around the X axis (roll) in radians.
+pitch
+- The counterclockwise rotation angle around the Y axis (pitch) in radians.
+yaw
+- The counterclockwise rotation angle around the Z axis (yaw) in radians.
+Rotation3d
+public
+Rotation3d
+(
+Angle
+roll,
+Angle
+pitch,
+Angle
+yaw)
+Constructs a Rotation3d from extrinsic roll, pitch, and yaw.
+Extrinsic rotations occur in that order around the axes in the fixed global frame rather
+ than the body frame.
+Angles are measured counterclockwise with the rotation axis pointing "out of the page". If
+ you point your right thumb along the positive axis direction, your fingers curl in the
+ direction of positive rotation.
+Parameters:
+roll
+- The counterclockwise rotation angle around the X axis (roll).
+pitch
+- The counterclockwise rotation angle around the Y axis (pitch).
+yaw
+- The counterclockwise rotation angle around the Z axis (yaw).
+Rotation3d
+public
+Rotation3d
+(
+Vector
+<
+N3
+> rvec)
+Constructs a Rotation3d with the given rotation vector representation. This representation is
+ equivalent to axis-angle, where the normalized axis is multiplied by the rotation around the
+ axis in radians.
+Parameters:
+rvec
+- The rotation vector.
+Rotation3d
+public
+Rotation3d
+(
+Vector
+<
+N3
+> axis,
+ double angleRadians)
+Constructs a Rotation3d with the given axis-angle representation. The axis doesn't have to be
+ normalized.
+Parameters:
+axis
+- The rotation axis.
+angleRadians
+- The rotation around the axis in radians.
+Rotation3d
+public
+Rotation3d
+(
+Vector
+<
+N3
+> axis,
+Angle
+angle)
+Constructs a Rotation3d with the given axis-angle representation. The axis doesn't have to be
+ normalized.
+Parameters:
+axis
+- The rotation axis.
+angle
+- The rotation around the axis.
+Rotation3d
+public
+Rotation3d
+(
+Matrix
+<
+N3
+,
+N3
+> rotationMatrix)
+Constructs a Rotation3d from a rotation matrix.
+Parameters:
+rotationMatrix
+- The rotation matrix.
+Throws:
+IllegalArgumentException
+- if the rotation matrix isn't special orthogonal.
+Rotation3d
+public
+Rotation3d
+(
+Vector
+<
+N3
+> initial,
+Vector
+<
+N3
+> last)
+Constructs a Rotation3d that rotates the initial vector onto the final vector.
+This is useful for turning a 3D vector (final) into an orientation relative to a coordinate
+ system vector (initial).
+Parameters:
+initial
+- The initial vector.
+last
+- The final vector.
+Rotation3d
+public
+Rotation3d
+(
+Rotation2d
+rotation)
+Constructs a 3D rotation from a 2D rotation in the X-Y plane.
+Parameters:
+rotation
+- The 2D rotation.
+See Also:
+Pose3d(Pose2d)
+Transform3d(Transform2d)
+Method Details
+plus
+public
+Rotation3d
+plus
+(
+Rotation3d
+other)
+Adds two rotations together.
+Parameters:
+other
+- The rotation to add.
+Returns:
+The sum of the two rotations.
+minus
+public
+Rotation3d
+minus
+(
+Rotation3d
+other)
+Subtracts the new rotation from the current rotation and returns the new rotation.
+Parameters:
+other
+- The rotation to subtract.
+Returns:
+The difference between the two rotations.
+unaryMinus
+public
+Rotation3d
+unaryMinus
+()
+Takes the inverse of the current rotation.
+Returns:
+The inverse of the current rotation.
+times
+public
+Rotation3d
+times
+(double scalar)
+Multiplies the current rotation by a scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The new scaled Rotation3d.
+div
+public
+Rotation3d
+div
+(double scalar)
+Divides the current rotation by a scalar.
+Parameters:
+scalar
+- The scalar.
+Returns:
+The new scaled Rotation3d.
+rotateBy
+public
+Rotation3d
+rotateBy
+(
+Rotation3d
+other)
+Adds the new rotation to the current rotation. The other rotation is applied extrinsically,
+ which means that it rotates around the global axes. For example,
+new
+ Rotation3d(Units.degreesToRadians(90), 0, 0).rotateBy(new Rotation3d(0,
+ Units.degreesToRadians(45), 0))
+rotates by 90 degrees around the +X axis and then by 45
+ degrees around the global +Y axis. (This is equivalent to
+new
+ Rotation3d(Units.degreesToRadians(90), Units.degreesToRadians(45), 0)
+)
+Parameters:
+other
+- The extrinsic rotation to rotate by.
+Returns:
+The new rotated Rotation3d.
+getQuaternion
+public
+Quaternion
+getQuaternion
+()
+Returns the quaternion representation of the Rotation3d.
+Returns:
+The quaternion representation of the Rotation3d.
+getX
+public
+double
+getX
+()
+Returns the counterclockwise rotation angle around the X axis (roll) in radians.
+Returns:
+The counterclockwise rotation angle around the X axis (roll) in radians.
+getY
+public
+double
+getY
+()
+Returns the counterclockwise rotation angle around the Y axis (pitch) in radians.
+Returns:
+The counterclockwise rotation angle around the Y axis (pitch) in radians.
+getZ
+public
+double
+getZ
+()
+Returns the counterclockwise rotation angle around the Z axis (yaw) in radians.
+Returns:
+The counterclockwise rotation angle around the Z axis (yaw) in radians.
+getMeasureX
+public
+Angle
+getMeasureX
+()
+Returns the counterclockwise rotation angle around the X axis (roll) in a measure.
+Returns:
+The counterclockwise rotation angle around the x axis (roll) in a measure.
+getMeasureY
+public
+Angle
+getMeasureY
+()
+Returns the counterclockwise rotation angle around the Y axis (pitch) in a measure.
+Returns:
+The counterclockwise rotation angle around the y axis (pitch) in a measure.
+getMeasureZ
+public
+Angle
+getMeasureZ
+()
+Returns the counterclockwise rotation angle around the Z axis (yaw) in a measure.
+Returns:
+The counterclockwise rotation angle around the z axis (yaw) in a measure.
+getAxis
+public
+Vector
+<
+N3
+>
+getAxis
+()
+Returns the axis in the axis-angle representation of this rotation.
+Returns:
+The axis in the axis-angle representation.
+getAngle
+public
+double
+getAngle
+()
+Returns the angle in radians in the axis-angle representation of this rotation.
+Returns:
+The angle in radians in the axis-angle representation of this rotation.
+toMatrix
+public
+Matrix
+<
+N3
+,
+N3
+>
+toMatrix
+()
+Returns rotation matrix representation of this rotation.
+Returns:
+Rotation matrix representation of this rotation.
+toVector
+public
+Vector
+<
+N3
+>
+toVector
+()
+Returns rotation vector representation of this rotation.
+Returns:
+Rotation vector representation of this rotation.
+getMeasureAngle
+public
+Angle
+getMeasureAngle
+()
+Returns the angle in a measure in the axis-angle representation of this rotation.
+Returns:
+The angle in a measure in the axis-angle representation of this rotation.
+toRotation2d
+public
+Rotation2d
+toRotation2d
+()
+Returns a Rotation2d representing this Rotation3d projected into the X-Y plane.
+Returns:
+A Rotation2d representing this Rotation3d projected into the X-Y plane.
+toString
+public
+String
+toString
+()
+Overrides:
+toString
+in class
+Object
+equals
+public
+boolean
+equals
+(
+Object
+obj)
+Checks equality between this Rotation3d and another object.
+Overrides:
+equals
+in class
+Object
+Parameters:
+obj
+- The other object.
+Returns:
+Whether the two objects are equal or not.
+hashCode
+public
+int
+hashCode
+()
+Overrides:
+hashCode
+in class
+Object
+interpolate
+public
+Rotation3d
+interpolate
+(
+Rotation3d
+endValue,
+ double t)
+Description copied from interface:
+Interpolatable
+Return the interpolated value. This object is assumed to be the starting position, or lower
+ bound.
+Specified by:
+interpolate
+in interface
+Interpolatable
+<
+Rotation3d
+>
+Parameters:
+endValue
+- The upper bound, or end.
+t
+- How far between the lower and upper bound we are. This should be bounded in [0, 1].
+Returns:
+The interpolated value.
