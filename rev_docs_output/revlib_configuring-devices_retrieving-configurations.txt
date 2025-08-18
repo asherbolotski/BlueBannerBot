@@ -1,0 +1,68 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+Similar to configuration classes, devices will have a corresponding configuration accessor class. These accessor classes will contain methods to get parameters directly from the device. The structure of the accessor class resemble that of the respective configuration class where sub-configurations have corresponding nested accessors.
+However, there is no need to manually instantiate a configuration accessor, as it is automatically handled by the device class. The device class has a public member object of its accessor class called
+configAccessor
+which can be used to get configuration parameters.
+Below is an example of how to get a configuration parameter from a device:
+Copy
+int
+parameter
+=
+device
+.
+configAccessor
+.
+getParameter1
+();
+Here is how to get a nested configuration parameter:
+Copy
+int
+parameter
+=
+device
+.
+configAccessor
+.
+subConfig1
+.
+getParameter3
+();
+Previous
+Configuring Devices
+Next
+Flexibility with Configurations
+Last updated
+8 months ago
+Was this helpful?

@@ -1,0 +1,230 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.servohub
+Class ServoHubSim
+java.lang.Object
+com.revrobotics.servohub.ServoHubSim
+public class
+ServoHubSim
+extends
+Object
+Constructor Summary
+Constructors
+Constructor
+Description
+ServoHubSim
+(
+ServoHub
+servoHub)
+Create a simulated CAN Servo Hub object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+disable
+()
+Disable the Servo Hub Device
+void
+enable
+()
+Enable the Servo Hub Device.
+double
+getBankPulsePeriod
+(
+ServoHub.Bank
+bank)
+Get the simulated bank pulse period.
+double
+getDeviceCurrent
+()
+Get the simulated device current.
+double
+getDeviceVoltage
+()
+Get the simulated device voltage.
+ServoHubSimFaultManager
+getFaultManager
+()
+Get the
+ServoHubSimFaultManager
+object associated with this Servo Hub Device.
+double
+getServoVoltage
+()
+Get the simulated servo voltage.
+void
+setBankPulsePeriod
+(
+ServoHub.Bank
+bank,
+ int pulsePeriod_us)
+Set the simulated bank pulse period
+void
+setDeviceCurrent
+(double current)
+Set the simulated device current.
+void
+setDeviceVoltage
+(double voltage)
+Set the simulated device voltage.
+void
+setServoVoltage
+(double voltage)
+Set the simulated servo voltage.
+void
+useDriverStationEnable
+()
+Use the driver station enable as the method to enable/disable the Servo Hub.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ServoHubSim
+public
+ServoHubSim
+(
+ServoHub
+servoHub)
+Create a simulated CAN Servo Hub object. This class simulates some of the internal behavior of
+ the device. This class is not required to display to the sim GUI, but is required to interact
+ with it.
+Parameters:
+servoHub
+- The Servo Hub to simulate
+Method Details
+getDeviceVoltage
+public
+double
+getDeviceVoltage
+()
+Get the simulated device voltage. This matches the value from the ServoHub.getDeviceVoltage().
+Returns:
+device voltage in volts
+setDeviceVoltage
+public
+void
+setDeviceVoltage
+(double voltage)
+Set the simulated device voltage.
+Parameters:
+voltage
+- device voltage in volts
+getDeviceCurrent
+public
+double
+getDeviceCurrent
+()
+Get the simulated device current. This matches the value from the ServoHub.getDeviceCurrent().
+Returns:
+device current in amps
+setDeviceCurrent
+public
+void
+setDeviceCurrent
+(double current)
+Set the simulated device current.
+Parameters:
+current
+- device current in amps
+getServoVoltage
+public
+double
+getServoVoltage
+()
+Get the simulated servo voltage. This matches the value from the ServoHub.getServoVoltage().
+Returns:
+servo voltage in volts
+setServoVoltage
+public
+void
+setServoVoltage
+(double voltage)
+Set the simulated servo voltage.
+Parameters:
+voltage
+- servo voltage in volts
+getBankPulsePeriod
+public
+double
+getBankPulsePeriod
+(
+ServoHub.Bank
+bank)
+Get the simulated bank pulse period. This matches the value from the
+ ServoHub.getBankPulsePeriod().
+Parameters:
+bank
+- the specific bank (0-2, or 3-5)to get
+Returns:
+pulse period (in microseconds)for the specified bank
+setBankPulsePeriod
+public
+void
+setBankPulsePeriod
+(
+ServoHub.Bank
+bank,
+ int pulsePeriod_us)
+Set the simulated bank pulse period
+Parameters:
+bank
+- the specific bank (0-2, or 3-5)to get
+pulsePeriod_us
+- pulse period (in microseconds)for the specified bank
+enable
+public
+void
+enable
+()
+Enable the Servo Hub Device.
+disable
+public
+void
+disable
+()
+Disable the Servo Hub Device
+useDriverStationEnable
+public
+void
+useDriverStationEnable
+()
+Use the driver station enable as the method to enable/disable the Servo Hub. This is the
+ default, so you do not need to call this unless you previously called enable() or disable().
+getFaultManager
+public
+ServoHubSimFaultManager
+getFaultManager
+()
+Get the
+ServoHubSimFaultManager
+object associated with this Servo Hub Device. This will
+ allow you to set simulated faults on your simulated device and view the Fault Manager in the
+ Sim GUI.
+Returns:
+The
+ServoHubSimFaultManager
+object associated with this Servo Hub Device

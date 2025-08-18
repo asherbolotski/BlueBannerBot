@@ -1,0 +1,1261 @@
+REVLib - C++
+Public Member Functions
+|
+List of all members
+rev::spark::SignalsConfig Class Reference
+#include <
+SignalsConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Public Member Functions
+SignalsConfig
+()=default
+~SignalsConfig
+() override=default
+SignalsConfig
+(const
+SignalsConfig
+&)=delete
+SignalsConfig
+&
+operator=
+(const
+SignalsConfig
+&)=delete
+SignalsConfig
+(
+SignalsConfig
+&&) noexcept=delete
+SignalsConfig
+&
+operator=
+(
+SignalsConfig
+&&) noexcept=delete
+SignalsConfig
+&
+Apply
+(
+SignalsConfig
+&config)
+SignalsConfig
+&
+AppliedOutputPeriodMs
+(int periodMs)
+SignalsConfig
+&
+AppliedOutputAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+BusVoltagePeriodMs
+(int periodMs)
+SignalsConfig
+&
+BusVoltageAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+OutputCurrentPeriodMs
+(int periodMs)
+SignalsConfig
+&
+OutputCurrentAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+MotorTemperaturePeriodMs
+(int periodMs)
+SignalsConfig
+&
+MotorTemperatureAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+LimitsPeriodMs
+(int periodMs)
+SignalsConfig
+&
+LimitsAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+FaultsPeriodMs
+(int periodMs)
+SignalsConfig
+&
+FaultsAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+WarningsPeriodMs
+(int periodMs)
+SignalsConfig
+&
+WarningsAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+PrimaryEncoderVelocityPeriodMs
+(int periodMs)
+SignalsConfig
+&
+PrimaryEncoderVelocityAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+PrimaryEncoderPositionPeriodMs
+(int periodMs)
+SignalsConfig
+&
+PrimaryEncoderPositionAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+AnalogVoltagePeriodMs
+(int periodMs)
+SignalsConfig
+&
+AnalogVoltageAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+AnalogVelocityPeriodMs
+(int periodMs)
+SignalsConfig
+&
+AnalogVelocityAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+AnalogPositionPeriodMs
+(int periodMs)
+SignalsConfig
+&
+AnalogPositionAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+ExternalOrAltEncoderVelocity
+(int periodMs)
+SignalsConfig
+&
+ExternalOrAltEncoderVelocityAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+ExternalOrAltEncoderPosition
+(int periodMs)
+SignalsConfig
+&
+ExternalOrAltEncoderPositionAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+AbsoluteEncoderVelocityPeriodMs
+(int periodMs)
+SignalsConfig
+&
+AbsoluteEncoderVelocityAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+AbsoluteEncoderPositionPeriodMs
+(int periodMs)
+SignalsConfig
+&
+AbsoluteEncoderPositionAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+IAccumulationPeriodMs
+(int periodMs)
+SignalsConfig
+&
+IAccumulationAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+SetpointPeriodMs
+(int periodMs)
+SignalsConfig
+&
+SetpointAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+IsAtSetpointPeriodMs
+(int periodMs)
+SignalsConfig
+&
+IsAtSetpointAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+SelectedSlotPeriodMs
+(int periodMs)
+SignalsConfig
+&
+SelectedSlotAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+MaxMotionSetpointPositionPeriodMs
+(int periodMs)
+SignalsConfig
+&
+MaxMotionSetpointPositionAlwaysOn
+(bool enabled)
+SignalsConfig
+&
+MaxMotionSetpointVelocityPeriodMs
+(int periodMs)
+SignalsConfig
+&
+MaxMotionSetpointVelocityAlwaysOn
+(bool enabled)
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+virtual std::string
+Flatten
+()
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Constructor & Destructor Documentation
+◆
+SignalsConfig()
+[1/3]
+rev::spark::SignalsConfig::SignalsConfig
+(
+)
+default
+◆
+~SignalsConfig()
+rev::spark::SignalsConfig::~SignalsConfig
+(
+)
+override
+default
+◆
+SignalsConfig()
+[2/3]
+rev::spark::SignalsConfig::SignalsConfig
+(
+const
+SignalsConfig
+&
+)
+delete
+◆
+SignalsConfig()
+[3/3]
+rev::spark::SignalsConfig::SignalsConfig
+(
+SignalsConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+SignalsConfig
+& rev::spark::SignalsConfig::operator=
+(
+const
+SignalsConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+SignalsConfig
+& rev::spark::SignalsConfig::operator=
+(
+SignalsConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+SignalsConfig
+& SignalsConfig::Apply
+(
+SignalsConfig
+&
+config
+)
+Applies settings from another
+SignalsConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SignalsConfig
+to copy settings from
+Returns
+The updated
+SignalsConfig
+for method chaining
+◆
+AppliedOutputPeriodMs()
+SignalsConfig
+& SignalsConfig::AppliedOutputPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkBase::GetAppliedOutput()
+. The default period is 10ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+NOTE:
+Applied output is used by other SPARK devices in follower mode. Setting too long of a period should be avoided if this SPARK device is the leader, as it can degrade follower mode performance.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AppliedOutputAlwaysOn()
+SignalsConfig
+& SignalsConfig::AppliedOutputAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkBase::GetAppliedOutput()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+Deprecated:
+Calling this method will have no effect, as status 0 cannot be disabled.
+◆
+BusVoltagePeriodMs()
+SignalsConfig
+& SignalsConfig::BusVoltagePeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by SparkBase::getBusVoltage(). The default period is 10ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+NOTE:
+This signal shares a status frame with applied output which is used by other SPARK devices in follower mode. Setting too long of a period should be avoided if this SPARK device is the leader, as it can degrade follower mode performance.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+BusVoltageAlwaysOn()
+SignalsConfig
+& SignalsConfig::BusVoltageAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by SparkBase::getBusVoltage().
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+Deprecated:
+Calling this method will have no effect, as status 0 cannot be disabled.
+◆
+OutputCurrentPeriodMs()
+SignalsConfig
+& SignalsConfig::OutputCurrentPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkBase::GetOutputCurrent()
+. The default period is 10ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+NOTE:
+This signal shares a status frame with applied output which is used by other SPARK devices in follower mode. Setting too long of a period should be avoided if this SPARK device is the leader, as it can degrade follower mode performance.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+OutputCurrentAlwaysOn()
+SignalsConfig
+& SignalsConfig::OutputCurrentAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkBase::GetOutputCurrent()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+Deprecated:
+Calling this method will have no effect, as status 0 cannot be disabled.
+◆
+MotorTemperaturePeriodMs()
+SignalsConfig
+& SignalsConfig::MotorTemperaturePeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkBase::GetMotorTemperature()
+. The default period is 10ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+NOTE:
+This signal shares a status frame with applied output which is used by other SPARK devices in follower mode. Setting too long of a period should be avoided if this SPARK device is the leader, as it can degrade follower mode performance.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+MotorTemperatureAlwaysOn()
+SignalsConfig
+& SignalsConfig::MotorTemperatureAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkBase::GetMotorTemperature()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+Deprecated:
+Calling this method will have no effect, as status 0 cannot be disabled.
+◆
+LimitsPeriodMs()
+SignalsConfig
+& SignalsConfig::LimitsPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by SparkLimitSwitch::IsPressed(). The default period is 10ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+NOTE:
+This signal shares a status frame with applied output which is used by other SPARK devices in follower mode. Setting too long of a period should be avoided if this SPARK device is the leader, as it can degrade follower mode performance.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+LimitsAlwaysOn()
+SignalsConfig
+& SignalsConfig::LimitsAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by SparkLimitSwitch::IsPressed().
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+Deprecated:
+Calling this method will have no effect, as status 0 cannot be disabled.
+◆
+FaultsPeriodMs()
+SignalsConfig
+& SignalsConfig::FaultsPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkBase::GetFaults()
+and
+SparkBase::GetStickyFaults()
+. The default period is 250ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+FaultsAlwaysOn()
+SignalsConfig
+& SignalsConfig::FaultsAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkBase::GetFaults()
+and
+SparkBase::GetStickyFaults()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+WarningsPeriodMs()
+SignalsConfig
+& SignalsConfig::WarningsPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkBase::GetWarnings()
+and
+SparkBase::GetStickyWarnings()
+. The default period is 250ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+WarningsAlwaysOn()
+SignalsConfig
+& SignalsConfig::WarningsAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkBase::GetWarnings()
+and
+SparkBase::GetStickyWarnings()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+PrimaryEncoderVelocityPeriodMs()
+SignalsConfig
+& SignalsConfig::PrimaryEncoderVelocityPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkRelativeEncoder::GetVelocity()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+PrimaryEncoderVelocityAlwaysOn()
+SignalsConfig
+& SignalsConfig::PrimaryEncoderVelocityAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkRelativeEncoder::GetVelocity()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+PrimaryEncoderPositionPeriodMs()
+SignalsConfig
+& SignalsConfig::PrimaryEncoderPositionPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkRelativeEncoder::GetPosition()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+PrimaryEncoderPositionAlwaysOn()
+SignalsConfig
+& SignalsConfig::PrimaryEncoderPositionAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkRelativeEncoder::GetPosition()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AnalogVoltagePeriodMs()
+SignalsConfig
+& SignalsConfig::AnalogVoltagePeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkAnalogSensor::GetVoltage()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AnalogVoltageAlwaysOn()
+SignalsConfig
+& SignalsConfig::AnalogVoltageAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkAnalogSensor::GetVoltage()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AnalogVelocityPeriodMs()
+SignalsConfig
+& SignalsConfig::AnalogVelocityPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkAnalogSensor::GetVelocity()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AnalogVelocityAlwaysOn()
+SignalsConfig
+& SignalsConfig::AnalogVelocityAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkAnalogSensor::GetVelocity()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AnalogPositionPeriodMs()
+SignalsConfig
+& SignalsConfig::AnalogPositionPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkAnalogSensor::GetPosition()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AnalogPositionAlwaysOn()
+SignalsConfig
+& SignalsConfig::AnalogPositionAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkAnalogSensor::GetPosition()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+ExternalOrAltEncoderVelocity()
+SignalsConfig
+& SignalsConfig::ExternalOrAltEncoderVelocity
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkFlexExternalEncoder::GetVelocity()
+or
+SparkMaxAlternateEncoder::GetVelocity()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+ExternalOrAltEncoderVelocityAlwaysOn()
+SignalsConfig
+& SignalsConfig::ExternalOrAltEncoderVelocityAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkFlexExternalEncoder::GetVelocity()
+or
+SparkMaxAlternateEncoder::GetVelocity()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+ExternalOrAltEncoderPosition()
+SignalsConfig
+& SignalsConfig::ExternalOrAltEncoderPosition
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkFlexExternalEncoder::GetPosition()
+or
+SparkMaxAlternateEncoder::GetPosition()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+ExternalOrAltEncoderPositionAlwaysOn()
+SignalsConfig
+& SignalsConfig::ExternalOrAltEncoderPositionAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkFlexExternalEncoder::GetPosition()
+or
+SparkMaxAlternateEncoder::GetPosition()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AbsoluteEncoderVelocityPeriodMs()
+SignalsConfig
+& SignalsConfig::AbsoluteEncoderVelocityPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkAbsoluteEncoder::GetVelocity()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AbsoluteEncoderVelocityAlwaysOn()
+SignalsConfig
+& SignalsConfig::AbsoluteEncoderVelocityAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkAbsoluteEncoder::GetVelocity()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AbsoluteEncoderPositionPeriodMs()
+SignalsConfig
+& SignalsConfig::AbsoluteEncoderPositionPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkAbsoluteEncoder::GetPosition()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+AbsoluteEncoderPositionAlwaysOn()
+SignalsConfig
+& SignalsConfig::AbsoluteEncoderPositionAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkAbsoluteEncoder::GetPosition()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+IAccumulationPeriodMs()
+SignalsConfig
+& SignalsConfig::IAccumulationPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkClosedLoopController::GetIAccum()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+IAccumulationAlwaysOn()
+SignalsConfig
+& SignalsConfig::IAccumulationAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkClosedLoopController::GetIAccum()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+SetpointPeriodMs()
+SignalsConfig
+& SignalsConfig::SetpointPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkClosedLoopController::GetSetpoint()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+SetpointAlwaysOn()
+SignalsConfig
+& SignalsConfig::SetpointAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkClosedLoopController::GetSetpoint()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+IsAtSetpointPeriodMs()
+SignalsConfig
+& SignalsConfig::IsAtSetpointPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkClosedLoopController::IsAtSetpoint()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+IsAtSetpointAlwaysOn()
+SignalsConfig
+& SignalsConfig::IsAtSetpointAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkClosedLoopController::IsAtSetpoint()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+SelectedSlotPeriodMs()
+SignalsConfig
+& SignalsConfig::SelectedSlotPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkClosedLoopController::GetSelectedSlot()
+. The default period is 20ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+SelectedSlotAlwaysOn()
+SignalsConfig
+& SignalsConfig::SelectedSlotAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkClosedLoopController::GetSelectedSlot()
+.
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+MaxMotionSetpointPositionPeriodMs()
+SignalsConfig
+& SignalsConfig::MaxMotionSetpointPositionPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkClosedLoopController.getMAXMotionSetpointPosition()
+. The default period is 100ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+MaxMotionSetpointPositionAlwaysOn()
+SignalsConfig
+& SignalsConfig::MaxMotionSetpointPositionAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkClosedLoopController.getMAXMotionSetpointPosition()
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+MaxMotionSetpointVelocityPeriodMs()
+SignalsConfig
+& SignalsConfig::MaxMotionSetpointVelocityPeriodMs
+(
+int
+periodMs
+)
+Set the period (ms) of the status frame that provides the signal returned by
+SparkClosedLoopController.getMAXMotionSetpointVelocity()
+. The default period is 100ms.
+If multiple periods are set for signals within the same status frame, the minimum given value will be used.
+Parameters
+periodMs
+The period in milliseconds
+Returns
+The modified
+SignalsConfig
+object for method chaining
+◆
+MaxMotionSetpointVelocityAlwaysOn()
+SignalsConfig
+& SignalsConfig::MaxMotionSetpointVelocityAlwaysOn
+(
+bool
+enabled
+)
+Set whether to always enable the status frame that provides the signal returned by
+SparkClosedLoopController.getMAXMotionSetpointVelocity()
+Status frames are only enabled when a signal is requested via its respective getter method, and there may be a small period of time where the signal's data is unavailable due to waiting for the SPARK to receive the command to enable the status frame. Use this method to enable the status frame at all times.
+If multiple alwaysOn values are set for signals within the same status frame, the result from OR'ing the values will be used.
+Parameters
+enabled
+True to always enable the status frame
+Returns
+The modified
+SignalsConfig
+object for method chaining
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+SignalsConfig.h
+src/main/native/cpp/config/
+SignalsConfig.cpp
+rev
+spark
+SignalsConfig
+Generated by
+1.9.2

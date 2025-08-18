@@ -1,0 +1,494 @@
+REV DUO Build System
+REV DUO Build System Overview
+Structure
+Introduction to Structure
+15mm Extrusion
+15mm x 30mm Extrusion
+15mm x 45mm C Channel
+45mm x 45mm U Channel
+Flat Plate
+Flat Beam
+L Beam
+Brackets
+Corrugated Plastic Sheets
+M3 Hardware
+Motion
+Introduction to Motion
+Hex Shaft and Spacers
+Bearings
+Sprockets and Chain
+Advanced Sprockets and Chain
+Chain Tool
+Timing Belts and Pulleys
+Gears
+Advanced Gears
+Wheels
+Linear Motion
+Choosing an Actuator
+Motors
+HD Hex Motor
+Pinion Pressing Guide
+Pinion Removal Guide
+Core Hex Motor
+Servos
+Smart Robot Servo
+Building Techniques
+Tips and Tricks for Building
+Supporting Motion
+Constraining Motion
+Compatibility
+Build Guides
+Linear Motion Kit
+Three Stage Cascading Lift
+Three Stage Continuous Lift
+Channel Drivetrain
+Single Sprocket Shaft Assembly
+Double Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Channel Drivetrain - Mecanum Upgrade
+90mm Single Sprocket Shaft Assembly
+75mm Single Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behaviour
+Mecanum Drivetrain V2
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Mecanum Drivetrain Kit
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Extrusion Chain Drivetrain
+Pre-Loading Brackets
+Traction Wheel Assembly
+Omni Wheel Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Making the Chain Links
+Final Assembly
+Extrusion Gear Drivetrain
+Pre-Loading Brackets
+Omni Wheel Assembly
+Middle Grip Wheel Assembly
+Front Grip Wheel Assembly
+Gear Idler Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Final Assembly
+Class Bot V2
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Class Bot
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Electronics and Communication
+REV Control System
+Sensors
+Powered by GitBook
+On this page
+Gear Physics
+Gear Train
+Gear Ratio
+Idlers
+Compound Gearing
+Spacing and Center to Center Distance
+Spacing
+Center to Center Distance
+Gear Measurements
+Was this helpful?
+Export as PDF
+Gear Physics
+Gears are one common way to transmit power and change the output torque or speed of a mechanical system. Understanding these basic concepts is required to make optimized design decisions which consider the trade-off between torque and speed for a system with a given power.
+Speed
+Torque
+Power
+Speed
+is the measure of how fast an object is moving. The
+speed
+of an object is how far it will travel in a given amount of time. For rotating parts like gears and wheels,
+speed
+is expressed in how many revolutions are made in a given amount of time. Under ideal conditions, the rotation of a wheel is converted into linear
+speed
+and can be calculated by multiplying the diameter of the wheel by the rotations for a given time. The SI unit for
+speed
+is meters per second (m/s), but
+speed
+is also commonly expressed in feet per second (ft/s).
+Torque
+is roughly the measure of the turning force on an object like a gear or a wheel. Mathematically,
+torque
+is defined as the rate of change of the angular momentum of an object. This can also be stated as a force that acts normal (at 90 degrees) to a radial lever arm which causes the object to rotate. A common example of torque is the use of a wrench in order to tighten or loosen a bolt. In that example, using a longer wrench can produce more
+torque
+on the bolt than using a shorter wrench.
+Torque
+is commonly expressed in N⋅m or in⋅lbs.
+When
+torque
+is turning an object like a spur gear, the gear will create a straight line (linear) force at the point where the teeth contact the other gear. The magnitude of the
+torque
+created is the product of the rotational force applied and the length of the lever arm ,which in the case of a gear, is half of the pitch diameter (the radius).
+Power (P)
+is the rate of work over time. The concept of
+power
+includes both a physical change and a time period in which the change occurs. This is different from the concept of work which only measures a physical change. The difference in these two concepts is that it takes the same amount of work to carry a brick up a mountain whether you walk or run, but running takes more
+power
+because the work is done in a shorter amount of time. The SI unit for
+power
+is the Watt (W) which is equivalent to one joule per second (J/s).
+In competitive robotics, the total amount of available power is determined by the motors and batteries allowed to be used. The maximum speed at which an arm can lift a certain load is dictated by the maximum system
+power
+.
+Gear Train
+Meshing two or more gears together is known as a
+gear train
+. Selecting the gears in the gear train as larger or smaller relative to the input gear can either increase the output speed or increase the output torque, but the total power is not affected.
+Gear Ratio
+When a larger gear drives a smaller one, for one rotation of the larger gear the small gear must complete more revolutions - so the output will be faster than the input. If the situation is reversed, and aa smaller gear drives a larger output gear, then for one rotation of the input the output will complete less than one revolution – so the output will be slower than the input. The
+ratio
+of the sizes of the two gears is proportional to the speed and torque changes between them.
+The
+ratio
+in size from the input (driving) gear to the output (driven) gear determines if the output is faster (less torque) or has more torque (slower). To calculate exactly how the
+gear ratio
+effects the relationship from input to output, find the ratio for the number of teeth between the two gears. In the image below, the ratio of the number of teeth from the input gear to the output gear is 72T:15T which means the input needs to turn 4.8 rotations for the output to complete one rotation.
+Idlers
+What happens when a 45 tooth
+idler
+gear is inserted into the gear example? An
+idler gear
+is any intermediate (between input and output) gear which does not drive any output (work) shaft. Idler gears are used to transmit torque over longer distances than would be practical by using just a single pair of gears. Idler gears are also used to reverse the direction of the rotation of the final gear.
+Regardless of the number or size of idler gears in the chain, only the first and last gear determine the reduction. Since idler gears do not change the gear
+reduction
+, the reduction in the example remains 72:15, but the direction of the output stage is now reversed from the previous example.
+Idler gears are a good way to transmit power across distances in your robot. A common example of this is an all gear drivetrain. In this example the gears on the end are linked to the drive wheels and one of the center gears would be driven by a motor (not shown). The orange arrows indicate the relative rotation of each of the gears showing that the two wheels are mechanically linked and will always rotate in the same direction.
+Because idler gears reverse the direction of rotation, it is important to pay attention to the number of gears in the drivetrain. In the picture below there is an even number of gears, and because of this the wheels will always spin in the opposite direction.
+Compound Gearing
+Some designs may require more
+reduction
+than is practical in a single stage.  The ratio from the smallest gear available to the largest in the REV 15mm Build System is 125:15, so if a greater reduction then 8.3 is required, multiple reduction stages can be used in the same mechanism, this is called a
+compound gear reduction
+.  There are multiple gear pairs in a compound reduction with each pair of gears linked by a shared axle. Below is an example of a two-stage reduction. The driving gear (input) of each pair is highlighted in orange.
+Reduction
+is the concept lowering input speed to reduce overall output speed.
+To calculate the total reduction of a compound reduction, identify the reduction of each stage and then multiply each reduction together.
+CR
+=
+R
+1
+×
+R
+2
+×
+…
+×
+R
+n
+\text{CR}=\text{R}_1×\text{R}_2 ×\text{…} ×\text{R}_n
+CR
+=
+R
+1
+​
+×
+R
+2
+​
+×
+…
+×
+R
+n
+​
+Where:
+CR is the total Compound Reduction
+Rn is the total reduction of each stage
+Using the image above as an example the compound reduction is 12:1.
+CR
+=
+R
+1
+×
+R
+2
+=
+60
+30
+×
+90
+15
+=
+2
+×
+6
+=
+12
+\text{CR}=\text{R}_1×   \text{R}_2 =\frac{60}{30}× \frac{90}{15}=2 ×6=12
+CR
+=
+R
+1
+​
+×
+R
+2
+​
+=
+30
+60
+​
+×
+15
+90
+​
+=
+2
+×
+6
+=
+12
+For any gear system there are a limited number of gear sizes available, so in addition to being able to create greater reductions using compound reductions it is also possible to create a wider range of reduction values, or the same reduction of a single stage, but with smaller diameter gears.
+Spacing and Center to Center Distance
+When
+REV Robotics Gears
+are used in conjunction with the
+slots
+on
+Extrusion
+or
+Channel
+, the
+center to center distance
+between axles is completely adjustable. Slide and re-tighten the shaft mounting plates anywhere along the slots to mesh gears together. This system allows any combination of compatible REV Robotics Gears to be used together, allowing for a high level of flexibility. When adjusting the reduction of a system, just a single gear can be replaced, reducing the amount of reassembly time.
+Any combination of gear sizes can be used together. However, REV Plastic Gears and Metal Gears should NOT be used in conjunction with each other.
+When using the pitch featured on the
+Extended Motion Pattern
+there will not be the same level of flexibility for gear spacing. Flexibility can be maintained by using a combination of the slots and the pattern, which allows more gear options. If just the pattern is being used then center to center distance calculations will be more prevalent.
+Spacing
+In order for gears to work effectively, and not become damaged, it’s important that the
+center-to-center distance
+is correctly adjusted. The gears in DETAIL A ,of the figure below, may work under very light load, but they will certainly not work and will skip under any significant loading. The gears in that example are too far apart and so the teeth of each gear barely contact each other. The gears in DETAIL B are correctly spaced and will provide smooth and reliable operation.
+To correctly space REV Robotics Gears along slots, use the following procedure:
+Securely fix the axle of either the input or output gear. In the case of a gear train with multiple idlers or a compound reduction, consider which axle makes the most sense to fix, such as the very first input gear or the very last gear.
+Starting with the fixed axle, identify all the driving and driven gears for any gears on that axle. One by one, loosen these axles and slide them until the teeth of both gears are fully engaged and parallel. Re-tighten the axle mounts.
+Continue the procedure from Step 2 for each fixed axle until all the gears are tightly meshed and all the axles have been re-tightened.
+When using a gear train in conjunction with the Extended Motion Pattern, only certain combinations of gears will work.
+Center to Center Distance
+To learn more about pitch diameter return to the top level
+Gear page
+.
+The gear spacing adjustment procedure above is sufficient in cases where the slot system is being used. To mathematically calculate the correct center to center distance use the
+Gear Measurements
+section to determine the pitch diameter (PD) of both gears.
+CCD
+=
+PD
+1
+2
++
+PD
+2
+2
+\text{CCD} = \frac{\text{PD}_1}{2}+ \frac{\text{PD}_2}{2}
+CCD
+=
+2
+PD
+1
+​
+​
++
+2
+PD
+2
+​
+​
+Where:
+CCD is the Center to Center Distance
+PD1 is the pitch diameter for gear one
+PD2 is the pitch diameter for gear two
+Using the example in the figure with the 60 tooth and 72 tooth gears, the correct center to center distance calculation for a 72T:60T gear ratio is 49.5 mm.
+72
+⁣
+:
+⁣
+60
+CCD
+=
+45
+m
+m
+2
++
+54
+m
+m
+2
+=
+49.5
+m
+m
+72\!:\!60 ~\text{CCD} = \frac{45mm}{2} +\frac{54mm}{2}= 49.5mm
+72
+:
+60
+CCD
+=
+2
+45
+mm
+​
++
+2
+54
+mm
+​
+=
+49.5
+mm
+Gear Measurements
+Plastic Gear Measurements
+Outside Diameter A
+Pitch Diameter B
+15 Tooth Gear
+REV-41-1331
+0.5 in
+12.7 mm
+0.44 in
+11.25 mm
+30 Tooth Gear
+REV-41-1332
+0.95 in
+24.0 mm
+0.89 in
+22.5 mm
+45 Tooth Gear
+REV-41-1334
+1.39 in
+35.3 mm
+1.33 in
+33.75 mm
+60 Tooth Gear
+REV-41-1335
+1.83 in
+46.5 mm
+1.77 in
+45.0 mm
+72 Tooth Gear
+REV-41-1336
+2.19 in
+55.5 mm
+2.13 in
+54 mm
+90 Tooth Gear
+REV-41-1337
+2.72 in
+69.0 mm
+2.66 in
+67.5 mm
+125 Tooth Gear
+REV-41-1333
+3.75 in
+93.5 mm
+3.69 in
+93.75 mm
+The
+Motion Interface Pattern
+is a circular M3 hole pattern on a 16mm diameter that interfaces with certain REV Brackets and the UltraPlanetary 5mm Hex Output (
+REV-41-1615
+).
+The 15 tooth and 30 tooth plastic gears do not have a motion pattern due to size constraints. However, they share the same 0.75 module as the other acetal gears. The table below provides the outer diameter and pitch diameter of these gears.
+Outside Diameter A
+Pitch Diameter B
+15 Tooth Gear
+REV-41-1331
+0.5 in
+12.7 mm
+0.35 in
+9 mm
+30 Tooth Gear
+REV-41-1332
+0.95 in
+24.0 mm
+0.89 in
+22.5 mm
+Metal Gear Measurements
+Outside Diameter A
+Pitch Diameter B
+42 Tooth Gear
+REV-41-1664
+1.39 in
+35.2 mm
+1.32 in
+33.6 mm
+56 Tooth Gear
+REV-41-1663
+1.83 in
+46.4 mm
+1.73 in
+44.0 mm
+70 Tooth Gear
+REV-41-1662
+2.27 in
+57.6 mm
+2.20 in
+56.0 mm
+86 Tooth Gear
+REV-41-1661
+2.77 in
+70.3 mm
+2.71 in
+68.8 mm
+The
+Motion Interface Pattern
+is a circular M3 hole pattern on a 16mm diameter that interfaces with certain REV Brackets and the UltraPlanetary 5mm Hex Output (
+REV-41-1604
+).
+The 12 Tooth and 28  Tooth Metal Gears do not have a motion pattern due to size constraints. They are also made from sintered steel rather than aluminum. However, they share the same 0.8 module as the other metal gears. The table below provides the outer diameter and pitch diameter of these gears.
+Outside Diameter A
+Pitch Diameter B
+12 Tooth Gear
+REV-41-1666
+0.44 in
+11.2 mm
+0.38 in
+9.6 mm
+28 Tooth Gear
+REV-41-1665
+0.95 in
+24.0 mm
+0.88 in
+35.2 m
+The 12 Tooth Pinion Gear (
+REV-41-1660
+) while sharing the 0.8 module differs from the other metal gears significantly. See the
+drawing
+for relevant information for the 12 Tooth Pinion Gear.
+Previous
+Gears
+Next
+Wheels
+Last updated
+2 months ago
+Was this helpful?

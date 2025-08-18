@@ -1,0 +1,262 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Servo Control Basics
+Setting up Servo Hub
+Setting the Servo Pulse Period
+Controlling an Individual Servo
+Was this helpful?
+Export as PDF
+Servo Control Basics
+Servo motors are specialized motors that can be controlled to move to a specific angle instead of continuously rotating like a DC motor. For more general information on servos, see
+this page
+; for more detailed information, see
+https://en.wikipedia.org/wiki/Servo_control
+.
+Setting up Servo Hub
+Servo control in REVLib is accessed through the ServoHub's object. This object manages the individual ServoChannel objects and monitors the overall device. The ServoChannel object controls each servo motor and monitors its operation. It also contains all the methods to configure and control your servo. It can be accessed as shown below:
+Java
+C++
+Copy
+// Initialize the servo hub
+ServoHub
+m_servoHub
+=
+new
+ServoHub(deviceID)
+;
+// Obtain a servo channel controller
+ServoChannel
+m_channel0
+=
+m_servoHub
+.
+getServoChannel
+(
+ChannelId
+.
+kChannelId0
+);
+ServoChannel
+m_channel1
+=
+m_servoHub
+.
+getServoChannel
+(
+ChannelId
+.
+kChannelId1
+);
+...
+ServoChannel
+m_channel5
+=
+m_servoHub
+.
+getServoChannel
+(
+ChannelId
+.
+kChannelId5
+);
+API Docs:
+ServoHub
+,
+ServoChannel
+Copy
+using
+namespace
+rev
+::
+servohub;
+using namespace rev::servohub::ServoChannel;
+// Initialize the servo hub
+ServoHub m_servoHub{ deviceID };
+//Obtain a reference to a servo channel controller
+ServoChannel
+&
+m_channel0
+=
+m_servoHub
+.
+GetServoChannel
+(
+ChannelId
+.
+kChannelId0);
+ServoChannel
+&
+m_channel1
+=
+m_servoHub
+.
+GetServoChannel
+(
+ChannelId
+.
+kChannelId1);
+...
+ServoChannel
+&
+m_channel5
+=
+m_servoHub
+.
+GetServoChannel
+(
+ChannelId
+.
+kChannelId5);
+API Docs:
+ServoHub
+,
+ServoChannel
+Setting the Servo Pulse Period
+With a servo motor, the width of the pulse will determine how far the motor turns. The Pulse Period, on the other hand, will determine how often the pulse is sent to the servo. The ServoHub supports a Pulse Period of 4.5 - 20ms (specified in microseconds). The ServoHub supports a separate Pulse Period for each bank, composing servos 0-2 and 3-5, respectively. These settings can be accessed as shown below:
+Java
+C++
+Copy
+// Set the pulse period for channels 0-2 to 5ms (5000 microseconds)
+m_servoHub
+.
+setBankPulsePeriod
+(
+ServoHub
+.
+Bank
+.
+kBank0_2
+,
+5000
+);
+// Set the pulse period for channels 3-5 to 20ms (20000 microseconds)
+m_servoHub
+.
+setBankPulsePeriod
+(
+ServoHub
+.
+Bank
+.
+kBank3_5
+,
+20000
+);
+API Docs:
+setBankPulsePeriod
+Copy
+using
+namespace
+rev
+::
+servohub;
+// Set the pulse period for channels 0-2 to 5ms (5000 microseconds)
+m_servoHub
+.
+SetBankPulsePeriod
+(ServoHub
+::
+Bank
+::
+kBank0_2
+,
+5000
+);
+// Set the pulse period for channels 3-5 to 20ms (20000 microseconds)
+m_servoHub
+.
+SetBankPulsePeriod
+(ServoHub
+::
+Bank
+::
+kBank3_5
+,
+20000
+);
+API Docs:
+SetBankPulsePeriod
+Controlling an Individual Servo
+Individual servos are controlled via the ServoChannel objects. As shown above, you obtain a reference to a ServoChannel object by calling the getServoChannel() method on the ServoHub. You may set the following on a ServoChannel:
+PulseWidth - determines the servo's position (500 - 2500 microseconds).
+Enabled - enables/disables the servo - when disabled, the servo will maintain power according to the DisableBehavior configured for the specific channel.
+Powered - turns on/off the power to the servo
+Java
+C++
+Copy
+// Power on channels 0, 1, and 4
+m_channel0.setPowered(true);
+m_channel1.setPowered(true);
+m_channel4.setPowered(true);
+// Enabled them as well
+m_channel0.setEnabled(true);
+m_channel1.setEnabled(true);
+m_channel4.setEnabled(true)
+// Set the servo on channel 0 to the center (1500 microseconds)
+m_channel0.setPulseWidth(1500);
+// Set the servo on channel 1 to the far left (500 microseconds)
+m_channel1.setPulseWidth(500);
+// Set the servo on channel 4 to the far right(2500 microseconds)
+m_channel4.setPulseWidth(2500);
+API Docs:
+setPulseWidth
+,
+setPowered
+,
+setEnabled
+Copy
+using namespace rev::servohub;
+// Power on channels 0, 1, and 4
+m_channel0.SetPowered(true);
+m_channel1.SetPowered(true);
+m_channel4.SetPowered(true);
+// Enabled them as well
+m_channel0.SetEnabled(true);
+m_channel1.SetEnabled(true);
+m_channel4.SetEnabled(true)
+// Set the servo on channel 0 to the center (1500 microseconds)
+m_channel0.SetPulseWidth(1500);
+// Set the servo on channel 1 to the far left (500 microseconds)
+m_channel1.SetPulseWidth(500);
+// Set the servo on channel 4 to the far right(2500 microseconds)
+m_channel4.SetPulseWidth(2500);
+API Docs:
+SetPulseWidth
+,
+SetEnabled
+,
+SetPowered
+Previous
+Configuring a Servo Hub
+Last updated
+7 months ago
+Was this helpful?

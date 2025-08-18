@@ -1,0 +1,1217 @@
+REVLib - C++
+SparkBase.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2018-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#ifdef _MSC_VER
+32
+// Disable deprecation warnings for this file when using VS compiler
+33
+#pragma warning(disable : 4996)
+34
+#endif
+35
+36
+#ifdef __GNUC__
+37
+#pragma GCC diagnostic push
+38
+#pragma GCC diagnostic ignored "-Wdeprecated"
+39
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+40
+#endif
+41
+42
+#include "
+rev/REVLibError.h
+"
+43
+#include "
+rev/SparkAbsoluteEncoder.h
+"
+44
+#include "
+rev/SparkAnalogSensor.h
+"
+45
+#include "
+rev/SparkClosedLoopController.h
+"
+46
+#include "
+rev/SparkLimitSwitch.h
+"
+47
+#include "
+rev/SparkLowLevel.h
+"
+48
+#include "
+rev/SparkRelativeEncoder.h
+"
+49
+#include "
+rev/SparkSoftLimit.h
+"
+50
+51
+// Defined in HIL tester source
+52
+class
+ConfigBase;
+53
+54
+namespace
+rev::spark
+{
+55
+56
+class
+SparkBaseConfig;
+57
+58
+class
+SparkBase
+:
+public
+SparkLowLevel
+{
+59
+friend
+class
+SparkMax
+;
+60
+friend
+class
+SparkFlex
+;
+61
+friend
+class
+SparkLimitSwitch
+;
+62
+friend
+class
+SparkSoftLimit
+;
+63
+friend
+class
+SparkRelativeEncoder
+;
+64
+friend
+class
+SparkMaxAlternateEncoder
+;
+65
+friend
+class
+SparkAbsoluteEncoder
+;
+66
+friend
+class
+SparkSim
+;
+67
+friend
+class
+SparkClosedLoopController
+;
+68
+69
+// Defined in HIL tester source
+70
+friend
+class ::ConfigBase;
+71
+72
+public
+:
+73
+enum class
+IdleMode
+{
+kCoast
+= 0,
+kBrake
+= 1 };
+74
+75
+enum class
+SoftLimitDirection
+{
+kForward
+,
+kReverse
+};
+76
+77
+enum class
+ResetMode
+{
+kNoResetSafeParameters
+,
+kResetSafeParameters
+};
+78
+79
+enum class
+PersistMode
+{
+kNoPersistParameters
+,
+kPersistParameters
+};
+80
+81
+struct
+Faults
+{
+82
+bool
+other
+;
+83
+bool
+motorType
+;
+84
+bool
+sensor
+;
+85
+bool
+can
+;
+86
+bool
+temperature
+;
+87
+bool
+gateDriver
+;
+88
+bool
+escEeprom
+;
+89
+bool
+firmware
+;
+90
+int
+rawBits
+;
+91
+92
+Faults
+() {}
+93
+94
+explicit
+Faults
+(uint16_t faults) {
+95
+rawBits
+= faults;
+96
+other
+= (faults & 0x1) != 0;
+97
+motorType
+= (faults & 0x2) != 0;
+98
+sensor
+= (faults & 0x4) != 0;
+99
+can
+= (faults & 0x8) != 0;
+100
+temperature
+= (faults & 0x10) != 0;
+101
+gateDriver
+= (faults & 0x20) != 0;
+102
+escEeprom
+= (faults & 0x40) != 0;
+103
+firmware
+= (faults & 0x80) != 0;
+104
+}
+105
+};
+106
+107
+struct
+Warnings
+{
+108
+bool
+brownout
+;
+109
+bool
+overcurrent
+;
+110
+bool
+escEeprom
+;
+111
+bool
+extEeprom
+;
+112
+bool
+sensor
+;
+113
+bool
+stall
+;
+114
+bool
+hasReset
+;
+115
+bool
+other
+;
+116
+int
+rawBits
+;
+117
+118
+Warnings
+() {}
+119
+120
+explicit
+Warnings
+(uint16_t warnings) {
+121
+rawBits
+= warnings;
+122
+brownout
+= (warnings & 0x1) != 0;
+123
+overcurrent
+= (warnings & 0x2) != 0;
+124
+escEeprom
+= (warnings & 0x4) != 0;
+125
+extEeprom
+= (warnings & 0x8) != 0;
+126
+sensor
+= (warnings & 0x10) != 0;
+127
+stall
+= (warnings & 0x20) != 0;
+128
+hasReset
+= (warnings & 0x40) != 0;
+129
+other
+= (warnings & 0x80) != 0;
+130
+}
+131
+};
+132
+136
+~SparkBase
+()
+override
+=
+default
+;
+137
+138
+/**** Speed Controller Interface ****/
+144
+void
+Set
+(
+double
+speed)
+override
+;
+145
+156
+void
+SetVoltage
+(units::volt_t output)
+override
+;
+157
+163
+double
+Get
+()
+const override
+;
+164
+174
+[[deprecated(
+"Use SparkBaseConfig.Inverted() with Configure() instead"
+)]]
+175
+void
+SetInverted
+(
+bool
+isInverted)
+override
+;
+176
+186
+[[deprecated(
+187
+"Use SparkBaseConfigAccessor.GetInverted() via SparkMax.configAccessor "
+188
+"or SparkFlex.configAccessor instead"
+)]]
+189
+bool
+GetInverted
+()
+const override
+;
+190
+194
+void
+Disable
+()
+override
+;
+195
+199
+void
+StopMotor
+()
+override
+;
+200
+201
+/* ***** Extended Functions ****** */
+202
+224
+virtual
+REVLibError
+Configure
+(
+SparkBaseConfig
+& config,
+ResetMode
+resetMode,
+225
+PersistMode
+persistMode);
+226
+253
+virtual
+REVLibError
+ConfigureAsync
+(
+SparkBaseConfig
+& config,
+254
+ResetMode
+resetMode,
+255
+PersistMode
+persistMode);
+256
+262
+SparkRelativeEncoder
+&
+GetEncoder
+();
+263
+269
+SparkAnalogSensor
+&
+GetAnalog
+();
+270
+276
+virtual
+SparkAbsoluteEncoder
+&
+GetAbsoluteEncoder
+();
+277
+282
+SparkClosedLoopController
+&
+GetClosedLoopController
+();
+283
+290
+virtual
+SparkLimitSwitch
+&
+GetForwardLimitSwitch
+();
+291
+298
+virtual
+SparkLimitSwitch
+&
+GetReverseLimitSwitch
+();
+299
+304
+SparkSoftLimit
+&
+GetForwardSoftLimit
+();
+305
+310
+SparkSoftLimit
+&
+GetReverseSoftLimit
+();
+311
+322
+rev::REVLibError
+ResumeFollowerMode
+();
+323
+340
+rev::REVLibError
+ResumeFollowerModeAsync
+();
+341
+350
+rev::REVLibError
+PauseFollowerMode
+();
+351
+365
+rev::REVLibError
+PauseFollowerModeAsync
+();
+366
+373
+bool
+IsFollower
+();
+374
+382
+bool
+HasActiveFault
+();
+383
+390
+bool
+HasStickyFault
+();
+391
+398
+bool
+HasActiveWarning
+();
+399
+406
+bool
+HasStickyWarning
+();
+407
+414
+Faults
+GetFaults
+();
+415
+425
+Faults
+GetStickyFaults
+();
+426
+433
+Warnings
+GetWarnings
+();
+434
+444
+Warnings
+GetStickyWarnings
+();
+445
+449
+double
+GetBusVoltage
+();
+450
+458
+double
+GetAppliedOutput
+();
+459
+463
+double
+GetOutputCurrent
+();
+464
+468
+double
+GetMotorTemperature
+();
+469
+475
+REVLibError
+ClearFaults
+();
+476
+482
+REVLibError
+SetCANTimeout
+(
+int
+milliseconds);
+483
+492
+REVLibError
+GetLastError
+();
+493
+494
+protected
+:
+495
+// Only used for Get() or Set() API
+496
+double
+m_setpoint
+{0.0};
+497
+509
+explicit
+SparkBase
+(
+int
+deviceID,
+MotorType
+type,
+SparkModel
+model);
+510
+511
+// Used by the HIL tester
+512
+SparkRelativeEncoder
+GetEncoderEvenIfAlreadyCreated
+();
+513
+518
+uint8_t
+GetMotorInterface
+();
+519
+526
+SparkBase::SparkModel
+GetSparkModel
+();
+527
+528
+protected
+:
+529
+SparkRelativeEncoder
+m_RelativeEncoder
+;
+530
+std::atomic<bool>
+m_relativeEncoderCreated
+{
+false
+};
+531
+532
+SparkAnalogSensor
+m_AnalogSensor
+;
+533
+std::atomic<bool>
+m_analogSensorCreated
+{
+false
+};
+534
+535
+SparkAbsoluteEncoder
+m_AbsoluteEncoder
+;
+536
+std::atomic<bool>
+m_absoluteEncoderCreated
+{
+false
+};
+537
+538
+SparkClosedLoopController
+m_ClosedLoopController
+;
+539
+std::atomic<bool>
+m_closedLoopControllerCreated
+{
+false
+};
+540
+541
+SparkLimitSwitch
+m_ForwardLimitSwitch
+;
+542
+std::atomic<bool>
+m_forwardLimitSwitchCreated
+{
+false
+};
+543
+544
+SparkLimitSwitch
+m_ReverseLimitSwitch
+;
+545
+std::atomic<bool>
+m_reverseLimitSwitchCreated
+{
+false
+};
+546
+547
+SparkSoftLimit
+m_ForwardSoftLimit
+;
+548
+std::atomic<bool>
+m_forwardSoftLimitCreated
+{
+false
+};
+549
+550
+SparkSoftLimit
+m_ReverseSoftLimit
+;
+551
+std::atomic<bool>
+m_reverseSoftLimitCreated
+{
+false
+};
+552
+};
+553
+554
+}
+// namespace rev::spark
+555
+556
+#ifdef __GNUC__
+557
+#pragma GCC diagnostic pop
+558
+#endif
+REVLibError.h
+SparkAbsoluteEncoder.h
+SparkAnalogSensor.h
+SparkClosedLoopController.h
+SparkLimitSwitch.h
+SparkLowLevel.h
+SparkRelativeEncoder.h
+SparkSoftLimit.h
+rev::spark::SparkAbsoluteEncoder
+Definition:
+SparkAbsoluteEncoder.h:44
+rev::spark::SparkAnalogSensor
+Definition:
+SparkAnalogSensor.h:51
+rev::spark::SparkBaseConfig
+Definition:
+SparkBaseConfig.h:46
+rev::spark::SparkBase
+Definition:
+SparkBase.h:58
+rev::spark::SparkBase::HasStickyWarning
+bool HasStickyWarning()
+Definition:
+SparkBase.cpp:238
+rev::spark::SparkBase::m_forwardSoftLimitCreated
+std::atomic< bool > m_forwardSoftLimitCreated
+Definition:
+SparkBase.h:548
+rev::spark::SparkBase::GetEncoder
+SparkRelativeEncoder & GetEncoder()
+Definition:
+SparkBase.cpp:132
+rev::spark::SparkBase::GetMotorInterface
+uint8_t GetMotorInterface()
+Definition:
+SparkBase.cpp:172
+rev::spark::SparkBase::GetStickyWarnings
+Warnings GetStickyWarnings()
+Definition:
+SparkBase.cpp:268
+rev::spark::SparkBase::m_absoluteEncoderCreated
+std::atomic< bool > m_absoluteEncoderCreated
+Definition:
+SparkBase.h:536
+rev::spark::SparkBase::IdleMode
+IdleMode
+Definition:
+SparkBase.h:73
+rev::spark::SparkBase::IdleMode::kBrake
+@ kBrake
+rev::spark::SparkBase::IdleMode::kCoast
+@ kCoast
+rev::spark::SparkBase::IsFollower
+bool IsFollower()
+Definition:
+SparkBase.cpp:211
+rev::spark::SparkBase::PauseFollowerModeAsync
+rev::REVLibError PauseFollowerModeAsync()
+Definition:
+SparkBase.cpp:205
+rev::spark::SparkBase::SetCANTimeout
+REVLibError SetCANTimeout(int milliseconds)
+Definition:
+SparkBase.cpp:309
+rev::spark::SparkBase::SoftLimitDirection
+SoftLimitDirection
+Definition:
+SparkBase.h:75
+rev::spark::SparkBase::SoftLimitDirection::kReverse
+@ kReverse
+rev::spark::SparkBase::SoftLimitDirection::kForward
+@ kForward
+rev::spark::SparkBase::GetAbsoluteEncoder
+virtual SparkAbsoluteEncoder & GetAbsoluteEncoder()
+Definition:
+SparkBase.cpp:142
+rev::spark::SparkBase::GetStickyFaults
+Faults GetStickyFaults()
+Definition:
+SparkBase.cpp:252
+rev::spark::SparkBase::m_relativeEncoderCreated
+std::atomic< bool > m_relativeEncoderCreated
+Definition:
+SparkBase.h:530
+rev::spark::SparkBase::m_reverseSoftLimitCreated
+std::atomic< bool > m_reverseSoftLimitCreated
+Definition:
+SparkBase.h:551
+rev::spark::SparkBase::m_forwardLimitSwitchCreated
+std::atomic< bool > m_forwardLimitSwitchCreated
+Definition:
+SparkBase.h:542
+rev::spark::SparkBase::~SparkBase
+~SparkBase() override=default
+rev::spark::SparkBase::GetAppliedOutput
+double GetAppliedOutput()
+Definition:
+SparkBase.cpp:282
+rev::spark::SparkBase::GetClosedLoopController
+SparkClosedLoopController & GetClosedLoopController()
+Definition:
+SparkBase.cpp:147
+rev::spark::SparkBase::m_reverseLimitSwitchCreated
+std::atomic< bool > m_reverseLimitSwitchCreated
+Definition:
+SparkBase.h:545
+rev::spark::SparkBase::HasActiveFault
+bool HasActiveFault()
+Definition:
+SparkBase.cpp:218
+rev::spark::SparkBase::m_ReverseLimitSwitch
+SparkLimitSwitch m_ReverseLimitSwitch
+Definition:
+SparkBase.h:544
+rev::spark::SparkBase::GetWarnings
+Warnings GetWarnings()
+Definition:
+SparkBase.cpp:260
+rev::spark::SparkBase::GetFaults
+Faults GetFaults()
+Definition:
+SparkBase.cpp:245
+rev::spark::SparkBase::m_analogSensorCreated
+std::atomic< bool > m_analogSensorCreated
+Definition:
+SparkBase.h:533
+rev::spark::SparkBase::HasStickyFault
+bool HasStickyFault()
+Definition:
+SparkBase.cpp:224
+rev::spark::SparkBase::m_closedLoopControllerCreated
+std::atomic< bool > m_closedLoopControllerCreated
+Definition:
+SparkBase.h:539
+rev::spark::SparkBase::m_ClosedLoopController
+SparkClosedLoopController m_ClosedLoopController
+Definition:
+SparkBase.h:538
+rev::spark::SparkBase::Disable
+void Disable() override
+Definition:
+SparkBase.cpp:93
+rev::spark::SparkBase::Get
+double Get() const override
+Definition:
+SparkBase.cpp:73
+rev::spark::SparkBase::ClearFaults
+REVLibError ClearFaults()
+Definition:
+SparkBase.cpp:303
+rev::spark::SparkBase::GetEncoderEvenIfAlreadyCreated
+SparkRelativeEncoder GetEncoderEvenIfAlreadyCreated()
+Definition:
+SparkBase.cpp:321
+rev::spark::SparkBase::m_setpoint
+double m_setpoint
+Definition:
+SparkBase.h:496
+rev::spark::SparkBase::ResetMode
+ResetMode
+Definition:
+SparkBase.h:77
+rev::spark::SparkBase::ResetMode::kNoResetSafeParameters
+@ kNoResetSafeParameters
+rev::spark::SparkBase::ResetMode::kResetSafeParameters
+@ kResetSafeParameters
+rev::spark::SparkBase::m_ForwardSoftLimit
+SparkSoftLimit m_ForwardSoftLimit
+Definition:
+SparkBase.h:547
+rev::spark::SparkBase::GetOutputCurrent
+double GetOutputCurrent()
+Definition:
+SparkBase.cpp:289
+rev::spark::SparkBase::PauseFollowerMode
+rev::REVLibError PauseFollowerMode()
+Definition:
+SparkBase.cpp:199
+rev::spark::SparkBase::SetInverted
+void SetInverted(bool isInverted) override
+Definition:
+SparkBase.cpp:75
+rev::spark::SparkBase::Configure
+virtual REVLibError Configure(SparkBaseConfig &config, ResetMode resetMode, PersistMode persistMode)
+Definition:
+SparkBase.cpp:97
+rev::spark::SparkBase::m_AnalogSensor
+SparkAnalogSensor m_AnalogSensor
+Definition:
+SparkBase.h:532
+rev::spark::SparkBase::GetLastError
+REVLibError GetLastError()
+Definition:
+SparkBase.cpp:315
+rev::spark::SparkBase::GetInverted
+bool GetInverted() const override
+Definition:
+SparkBase.cpp:83
+rev::spark::SparkBase::Set
+void Set(double speed) override
+Definition:
+SparkBase.cpp:58
+rev::spark::SparkBase::GetReverseLimitSwitch
+virtual SparkLimitSwitch & GetReverseLimitSwitch()
+Definition:
+SparkBase.cpp:157
+rev::spark::SparkBase::GetSparkModel
+SparkBase::SparkModel GetSparkModel()
+Definition:
+SparkBase.cpp:180
+rev::spark::SparkBase::ConfigureAsync
+virtual REVLibError ConfigureAsync(SparkBaseConfig &config, ResetMode resetMode, PersistMode persistMode)
+Definition:
+SparkBase.cpp:119
+rev::spark::SparkBase::GetAnalog
+SparkAnalogSensor & GetAnalog()
+Definition:
+SparkBase.cpp:137
+rev::spark::SparkBase::ResumeFollowerMode
+rev::REVLibError ResumeFollowerMode()
+Definition:
+SparkBase.cpp:187
+rev::spark::SparkBase::m_AbsoluteEncoder
+SparkAbsoluteEncoder m_AbsoluteEncoder
+Definition:
+SparkBase.h:535
+rev::spark::SparkBase::HasActiveWarning
+bool HasActiveWarning()
+Definition:
+SparkBase.cpp:231
+rev::spark::SparkBase::GetForwardSoftLimit
+SparkSoftLimit & GetForwardSoftLimit()
+Definition:
+SparkBase.cpp:162
+rev::spark::SparkBase::GetReverseSoftLimit
+SparkSoftLimit & GetReverseSoftLimit()
+Definition:
+SparkBase.cpp:167
+rev::spark::SparkBase::SetVoltage
+void SetVoltage(units::volt_t output) override
+Definition:
+SparkBase.cpp:64
+rev::spark::SparkBase::m_RelativeEncoder
+SparkRelativeEncoder m_RelativeEncoder
+Definition:
+SparkBase.h:529
+rev::spark::SparkBase::GetBusVoltage
+double GetBusVoltage()
+Definition:
+SparkBase.cpp:276
+rev::spark::SparkBase::ResumeFollowerModeAsync
+rev::REVLibError ResumeFollowerModeAsync()
+Definition:
+SparkBase.cpp:193
+rev::spark::SparkBase::PersistMode
+PersistMode
+Definition:
+SparkBase.h:79
+rev::spark::SparkBase::PersistMode::kPersistParameters
+@ kPersistParameters
+rev::spark::SparkBase::PersistMode::kNoPersistParameters
+@ kNoPersistParameters
+rev::spark::SparkBase::m_ReverseSoftLimit
+SparkSoftLimit m_ReverseSoftLimit
+Definition:
+SparkBase.h:550
+rev::spark::SparkBase::GetMotorTemperature
+double GetMotorTemperature()
+Definition:
+SparkBase.cpp:296
+rev::spark::SparkBase::m_ForwardLimitSwitch
+SparkLimitSwitch m_ForwardLimitSwitch
+Definition:
+SparkBase.h:541
+rev::spark::SparkBase::GetForwardLimitSwitch
+virtual SparkLimitSwitch & GetForwardLimitSwitch()
+Definition:
+SparkBase.cpp:152
+rev::spark::SparkBase::StopMotor
+void StopMotor() override
+Definition:
+SparkBase.cpp:95
+rev::spark::SparkClosedLoopController
+Definition:
+SparkClosedLoopController.h:50
+rev::spark::SparkFlex
+Definition:
+SparkFlex.h:37
+rev::spark::SparkLimitSwitch
+Definition:
+SparkLimitSwitch.h:48
+rev::spark::SparkLowLevel
+Definition:
+SparkLowLevel.h:48
+rev::spark::SparkLowLevel::MotorType
+MotorType
+Definition:
+SparkLowLevel.h:76
+rev::spark::SparkLowLevel::SparkBase
+friend class SparkBase
+Definition:
+SparkLowLevel.h:49
+rev::spark::SparkLowLevel::SparkModel
+SparkModel
+Definition:
+SparkLowLevel.h:222
+rev::spark::SparkMaxAlternateEncoder
+Definition:
+SparkMaxAlternateEncoder.h:46
+rev::spark::SparkMax
+Definition:
+SparkMax.h:37
+rev::spark::SparkRelativeEncoder
+Definition:
+SparkRelativeEncoder.h:46
+rev::spark::SparkSim
+Definition:
+SparkSim.h:48
+rev::spark::SparkSoftLimit
+Definition:
+SparkSoftLimit.h:48
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::REVLibError
+REVLibError
+Definition:
+REVLibError.h:33
+rev::spark::SparkBase::Faults
+Definition:
+SparkBase.h:81
+rev::spark::SparkBase::Faults::rawBits
+int rawBits
+Definition:
+SparkBase.h:90
+rev::spark::SparkBase::Faults::Faults
+Faults()
+Definition:
+SparkBase.h:92
+rev::spark::SparkBase::Faults::motorType
+bool motorType
+Definition:
+SparkBase.h:83
+rev::spark::SparkBase::Faults::other
+bool other
+Definition:
+SparkBase.h:82
+rev::spark::SparkBase::Faults::Faults
+Faults(uint16_t faults)
+Definition:
+SparkBase.h:94
+rev::spark::SparkBase::Faults::temperature
+bool temperature
+Definition:
+SparkBase.h:86
+rev::spark::SparkBase::Faults::can
+bool can
+Definition:
+SparkBase.h:85
+rev::spark::SparkBase::Faults::gateDriver
+bool gateDriver
+Definition:
+SparkBase.h:87
+rev::spark::SparkBase::Faults::escEeprom
+bool escEeprom
+Definition:
+SparkBase.h:88
+rev::spark::SparkBase::Faults::sensor
+bool sensor
+Definition:
+SparkBase.h:84
+rev::spark::SparkBase::Faults::firmware
+bool firmware
+Definition:
+SparkBase.h:89
+rev::spark::SparkBase::Warnings
+Definition:
+SparkBase.h:107
+rev::spark::SparkBase::Warnings::extEeprom
+bool extEeprom
+Definition:
+SparkBase.h:111
+rev::spark::SparkBase::Warnings::escEeprom
+bool escEeprom
+Definition:
+SparkBase.h:110
+rev::spark::SparkBase::Warnings::overcurrent
+bool overcurrent
+Definition:
+SparkBase.h:109
+rev::spark::SparkBase::Warnings::hasReset
+bool hasReset
+Definition:
+SparkBase.h:114
+rev::spark::SparkBase::Warnings::sensor
+bool sensor
+Definition:
+SparkBase.h:112
+rev::spark::SparkBase::Warnings::Warnings
+Warnings()
+Definition:
+SparkBase.h:118
+rev::spark::SparkBase::Warnings::rawBits
+int rawBits
+Definition:
+SparkBase.h:116
+rev::spark::SparkBase::Warnings::other
+bool other
+Definition:
+SparkBase.h:115
+rev::spark::SparkBase::Warnings::Warnings
+Warnings(uint16_t warnings)
+Definition:
+SparkBase.h:120
+rev::spark::SparkBase::Warnings::stall
+bool stall
+Definition:
+SparkBase.h:113
+rev::spark::SparkBase::Warnings::brownout
+bool brownout
+Definition:
+SparkBase.h:108
+src
+main
+native
+include
+rev
+SparkBase.h
+Generated by
+1.9.2

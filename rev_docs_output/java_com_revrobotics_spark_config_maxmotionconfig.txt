@@ -1,0 +1,451 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class MAXMotionConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.MAXMotionConfig
+public class
+MAXMotionConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+MAXMotionConfig.MAXMotionPositionMode
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+MAXMotionConfig
+()
+Create a new object to configure MAXMotion.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+MAXMotionConfig
+allowedClosedLoopError
+(double allowedError)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+allowedProfileError(double)
+instead.
+MAXMotionConfig
+allowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+allowedProfileError(double, ClosedLoopSlot)
+instead.
+MAXMotionConfig
+allowedProfileError
+(double allowedError)
+Set the allowed profile error for the MAXMotion mode of the controller.
+MAXMotionConfig
+allowedProfileError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Set the allowed profile error for the MAXMotion mode of the controller for a specific PID slot.
+MAXMotionConfig
+apply
+(
+MAXMotionConfig
+config)
+Applies settings from another
+MAXMotionConfig
+to this one.
+MAXMotionConfig
+cruiseVelocity
+(double cruiseVelocity)
+Set the cruise velocity for the MAXMotion mode of the controller.
+MAXMotionConfig
+cruiseVelocity
+(double cruiseVelocity,
+ClosedLoopSlot
+slot)
+Set the cruise velocity for the MAXMotion mode of the controller for a specific closed loop
+ slot.
+MAXMotionConfig
+maxAcceleration
+(double maxAcceleration)
+Set the maximum acceleration for the MAXMotion mode of the controller.
+MAXMotionConfig
+maxAcceleration
+(double maxAcceleration,
+ClosedLoopSlot
+slot)
+Set the maximum acceleration for the MAXMotion mode of the controller for a specific closed
+ loop slot.
+MAXMotionConfig
+maxVelocity
+(double maxVelocity)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+cruiseVelocity(double)
+instead.
+MAXMotionConfig
+maxVelocity
+(double maxVelocity,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+cruiseVelocity(double, ClosedLoopSlot)
+instead.
+MAXMotionConfig
+positionMode
+(
+MAXMotionConfig.MAXMotionPositionMode
+mode)
+Set the MAXMotion position control mode of the controller.
+MAXMotionConfig
+positionMode
+(
+MAXMotionConfig.MAXMotionPositionMode
+mode,
+ClosedLoopSlot
+slot)
+Set the MAXMotion position control mode of the controller for a specific closed loop slot.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MAXMotionConfig
+public
+MAXMotionConfig
+()
+Create a new object to configure MAXMotion.
+Method Details
+apply
+public
+MAXMotionConfig
+apply
+(
+MAXMotionConfig
+config)
+Applies settings from another
+MAXMotionConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+MAXMotionConfig
+to copy settings from
+Returns:
+The updated
+MAXMotionConfig
+for method chaining
+maxVelocity
+@Deprecated
+(
+forRemoval
+=true)
+public
+MAXMotionConfig
+maxVelocity
+(double maxVelocity)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+cruiseVelocity(double)
+instead.
+Set the cruise velocity for the MAXMotion mode of the controller. Natively, the units are in
+ RPM but will be affected by the velocity conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+cruiseVelocity(double, ClosedLoopSlot)
+.
+Parameters:
+maxVelocity
+- The maximum velocity with the velocity conversion factor applied
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+cruiseVelocity
+public
+MAXMotionConfig
+cruiseVelocity
+(double cruiseVelocity)
+Set the cruise velocity for the MAXMotion mode of the controller. Natively, the units are in
+ RPM but will be affected by the velocity conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+cruiseVelocity(double, ClosedLoopSlot)
+.
+Parameters:
+cruiseVelocity
+- The maximum velocity with the velocity conversion factor applied
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+maxVelocity
+@Deprecated
+(
+forRemoval
+=true)
+public
+MAXMotionConfig
+maxVelocity
+(double maxVelocity,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+cruiseVelocity(double, ClosedLoopSlot)
+instead.
+Set the cruise velocity for the MAXMotion mode of the controller for a specific closed loop
+ slot. Natively, the units are in RPM but will be affected by the velocity conversion factor.
+Parameters:
+maxVelocity
+- The maximum velocity with the velocity conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+cruiseVelocity
+public
+MAXMotionConfig
+cruiseVelocity
+(double cruiseVelocity,
+ClosedLoopSlot
+slot)
+Set the cruise velocity for the MAXMotion mode of the controller for a specific closed loop
+ slot. Natively, the units are in RPM but will be affected by the velocity conversion factor.
+Parameters:
+cruiseVelocity
+- The cruise velocity with the velocity conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+maxAcceleration
+public
+MAXMotionConfig
+maxAcceleration
+(double maxAcceleration)
+Set the maximum acceleration for the MAXMotion mode of the controller. This is the rate at
+ which the velocity will increase until the max velocity is reached. Natively, the units are in
+ RPM per second but will be affected by the velocity conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+maxAcceleration(double, ClosedLoopSlot)
+.
+Parameters:
+maxAcceleration
+- The maximum acceleration with the velocity conversion factor applied
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+maxAcceleration
+public
+MAXMotionConfig
+maxAcceleration
+(double maxAcceleration,
+ClosedLoopSlot
+slot)
+Set the maximum acceleration for the MAXMotion mode of the controller for a specific closed
+ loop slot. This is the rate at which the velocity will increase until the max velocity is
+ reached. Natively, the units are in RPM per second but will be affected by the velocity
+ conversion factor.
+Parameters:
+maxAcceleration
+- The maximum acceleration with the velocity conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+allowedClosedLoopError
+@Deprecated
+(
+forRemoval
+=true)
+public
+MAXMotionConfig
+allowedClosedLoopError
+(double allowedError)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+allowedProfileError(double)
+instead.
+Set the allowed profile error for the MAXMotion mode of the controller. This value is how much
+ deviation from the profile is tolerated before the profile is regenerated. Natively, the units
+ are in rotations but will be affected by the position conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+allowedProfileError(double, ClosedLoopSlot)
+.
+Parameters:
+allowedError
+- The allowed error with the position conversion factor applied
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+allowedProfileError
+public
+MAXMotionConfig
+allowedProfileError
+(double allowedError)
+Set the allowed profile error for the MAXMotion mode of the controller. This value is how much
+ deviation from the profile is tolerated before the profile is regenerated. Natively, the units
+ are in rotations but will be affected by the position conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+allowedProfileError(double, ClosedLoopSlot)
+.
+Parameters:
+allowedError
+- The allowed error with the position conversion factor applied
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+allowedClosedLoopError
+@Deprecated
+(
+forRemoval
+=true)
+public
+MAXMotionConfig
+allowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+allowedProfileError(double, ClosedLoopSlot)
+instead.
+Set the allowed profile error for the MAXMotion mode of the controller for a specific PID slot.
+ This value is how much deviation from the profile is tolerated before the profile is
+ regenerated. Natively, the units are in rotations but will be affected by the position
+ conversion factor.
+Parameters:
+allowedError
+- The allowed error with the position conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+allowedProfileError
+public
+MAXMotionConfig
+allowedProfileError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Set the allowed profile error for the MAXMotion mode of the controller for a specific PID slot.
+ This value is how much deviation from the profile is tolerated before the profile is
+ regenerated. Natively, the units are in rotations but will be affected by the position
+ conversion factor.
+Parameters:
+allowedError
+- The allowed error with the position conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+positionMode
+public
+MAXMotionConfig
+positionMode
+(
+MAXMotionConfig.MAXMotionPositionMode
+mode)
+Set the MAXMotion position control mode of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+positionMode(MAXMotionPositionMode, ClosedLoopSlot)
+.
+Parameters:
+mode
+- The MAXmotion position mode
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining
+positionMode
+public
+MAXMotionConfig
+positionMode
+(
+MAXMotionConfig.MAXMotionPositionMode
+mode,
+ClosedLoopSlot
+slot)
+Set the MAXMotion position control mode of the controller for a specific closed loop slot.
+Parameters:
+mode
+- The MAXmotion position mode
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+MAXMotionConfig
+object for method chaining

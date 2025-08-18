@@ -1,0 +1,503 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Version 2025.03
+Version 2025.0.2
+Version 2025.0.1
+Version 2025.0.0
+Version 2024.2.4
+Version 2024.2.3
+Version 2024.2.2
+Version 2024.2.1
+Version 2024.2.0
+Version 2023.1.3
+Version 2022.1.2
+Version 2022.0.0
+Was this helpful?
+Export as PDF
+Version 2025.03
+Changes for Java and C++
+[SPARK] Improves documentation concerning Relative Encoders and Position and Velocity Conversion Factors
+[SPARK] Removes
+setPositionConversionFactor()
+and
+setVelocityConversionFactor()
+methods from the sim classes
+Instead, use the appropriate Config objects and
+positionConversionFactor()
+and
+velocityConversionFactor()
+methods
+[SPARK] Fixes crash when calling
+Spark[Flex, Max].configureAsync()
+in simulation
+Changes for LabVIEW
+Fixes issue where an error would be incorrectly generated when configuring follower mode
+Version 2025.0.2
+Changes for Java and C++
+[SPARK] Improves SPARK error messages by adding the invalid value which caused the error
+[SPARK] Improves SPARK error messages by displaying the parameter name as well as its ID
+[Servo Hub] Fixes uninitialized variables
+[REVLib] Fixes issue where REVLib doesn't clear a previous error (as viewed through
+GetLastError
+)
+[REVLib] Fixes threading issues encountered while running Googletest unit tests
+Version 2025.0.1
+Changes for Java and C++
+[SPARK] Fixes issue where enabling a limit switch in Java simulation would cause it to always return that it was pressed
+[SPARK] Fixes issue causing REVLib to have higher than normal CPU usage when retrieving SPARK status frames
+[SPARK] Fixes issue where a status frame timeout would cause a segmentation fault
+Version 2025.0.0
+Major Changes
+[REVLib] Requires non-prerelease versions of SPARK and Servo Hub firmware v25.0.0 or higher
+[SPARK] Java/C++: Moves to a more declarative approach for configuring devices
+Adds
+SparkFlexConfig
+,
+SparkMaxConfig
+which includes settings for different aspects of each device
+Adds
+configure()
+method to apply a config object's settings to one or more devices of the correct type
+Adds
+configureAsync()
+to configure a device without blocking the program
+Adds a
+configAccessor
+field to device classes for reading configuration parameters directly from the device
+[SPARK] Java/C++: Adds better support for simulation
+Moves away from
+REVPhysicsSim
+to offer better support for WPILib physics simulation instead
+Revamps simulation GUI data, including brand new fields for auxiliary devices
+Adds Sim classes for each auxiliary device, allowing for more thorough simulation in the WPILib injection style
+Adds
+SparkSim.iterate()
+method which features simulated current limits, closed-loop control, and more
+Adds
+SparkSimFaultManager
+for throwing simulated faults
+[SPARK] Adds support for MAXMotion
+Adds control types
+MAXMotionPositionControl
+and
+MAXMotionVelocityControl
+Adds
+MAXMotionConfig
+. Only trapezoidal profile is available at this time.
+MAXMotion is not a drop-in replacement for Smart Motion, as you will need to retune PID gains.
+[SPARK] Improves experience with managing status signals from SPARK devices
+Adds
+SignalsConfig
+to adjust signal periods and always on setting
+Automatically enables relevant status frames if a signal is requested by the user
+[Servo Hub] Java/C++: Adds initial support for Servo Hub
+Follows the same paradigms used for SPARK
+Includes basic simulation support for Servo Hub
+Breaking Changes
+[SPARK] Renames
+CANSparkFlex
+and
+CANSparkMax
+to
+SparkFlex
+and
+SparkMax
+respectively
+[SPARK] Renames
+SparkPIDController
+to
+SparkClosedLoopController
+[SPARK] Removes configuration parameter setter/getter methods. Use
+SparkBase.configure()
+and
+SparkBase.configAccessor
+instead.
+[SPARK] Removes
+burnFlash()
+and
+restoreFactoryDefaults()
+. Use the
+ResetMode
+and
+PersistMode
+options in
+SparkBase.configure()
+instead.
+[SPARK] Removes
+REVPhysicsSim
+in favor of new simulation system
+[SPARK] Removes async mechanism for setting parameters by setting CAN timeout to 0 in favor of
+configureAsync()
+[SPARK] Moves all SPARK related classes into a
+spark
+package in Java and namespace in C++
+[SPARK] LabVIEW: Reworks entire VI palette
+Improves organization of VI palette by separating VIs by configuration, device status, and utility
+Moves towards increased usage of polymorphic VIs for easier navigation of the palette
+Other Changes
+[SPARK] Fixes issue where multiple setpoint commands would be sent when switching control types on a SPARK, resulting in the motor oscillating between the different setpoints
+[SPARK] Deprecates
+kSmartMotion
+and
+kSmartVelocity
+control types in favor of
+kMAXMotionPositionControl
+and
+kMAXMotionVelocityControl
+respectively.
+[SPARK] Deprecates
+SparkBase.setInverted()
+and
+SparkBase.getInverted()
+in favor of using the new configuration system
+[SPARK] Updates
+ClosedLoopController.setReference()
+to use the
+ClosedLoopSlot
+enum instead of an int
+[SPARK] Improves error description when attempting to persist parameters while the robot is enabled
+[SPARK] Improves getting faults/warnings by returning a
+Faults
+or
+Warnings
+object
+The raw bits of faults and warnings are available as a field in the respective struct
+[SPARK] Adds
+hasActiveFault()
+,
+hasStickyFault()
+,
+hasActiveWarning()
+, and
+hasStickyWarning()
+to check if there is a fault/warning present at all on the SPARK device
+[SPARK] Adds
+pauseFollowerMode()
+and
+resumeFollowerMode()
+[SPARK] Adds ability for follower mode to work even if the follower is not referenced in user code
+[SPARK] Adds support for specifying an absolute encoder's duty cycle start and end pulse widths in
+AbsoluteEncoderConfig
+[SPARK] Adds configuration option for setting whether the absolute encoder is zero-centered
+[REVLib] Fixes potential memory leaks in string handling
+[SPARK] LabVIEW: Improves reliability of CAN transactions by adding a retry mechanism
+Version 2024.2.4
+Changes to C++ and Java
+Increases the default timeout to wait for a periodic status from 2*framePeriodMs to 500ms.
+Reduces possibility of large, inaccurate jumps in data occurring when retrieving from status frames.
+Reduces amount of "timed out while waiting for periodic status X" errors in driver station.
+Adds
+setPeriodicFrameTimeout()
+to configure the CAN timeout for periodic status frames.
+See code docs for more information.
+Improves reliability of RTR CAN frames such as setting parameters and other commands that expect a response from the device.
+Adds mechanism to retry requests if sending the request or receiving the response failed. The default value for maximum number of retries is 5.
+Adds
+setCANMaxRetries()
+to configure the value for maximum number of retries.
+See code docs for more information.
+Fixes undefined behavior when SPARK motor controller information cannot be retrieved during initialization.
+Version 2024.2.3
+Changes to Java
+Fixes issue introduced in v2024.2.2 where calling getEncoder() multiple times can cause a fatal exception in certain circumstances.
+Changes to C++ and Java
+Removes dynamic check for SPARK model when calling getEncoder(), causing unnecessary CAN traffic.
+Moves zero argument CANSparkBase.getEncoder() to CANSparkMax and CANSparkFlex subclasses to determine default encoder values.
+Version 2024.2.2
+Changes to C++ and Java
+Fixes issue where configuring the velocity filter for the default relative encoder of a SPARK Flex would not set the correct parameters.
+Changes to Java
+Improves memory allocation performance.
+Version 2024.2.1
+Changes to C++ and Java
+Changes behavior of SPARK Flex and MAX initialization errors to throw exceptions rather than terminating the robot program.
+Fixes issue where initializing a SPARK Flex or MAX in brushed mode while the device is disconnected from the CAN bus causes the robot program to terminate.
+Fixes issue where initializing a SPARK Flex or MAX in brushed mode causes robot simulation to terminate.
+Fixes warning about using the wrong class for a SPARK Flex or MAX during robot simulation.
+Changes to C++
+Fixes ambiguous overload error when no parameters are supplied when calling
+GetAnalogSensor()
+.
+Fixes ambiguous overload error when no parameters are supplied when calling
+GetEncoder()
+.
+Version 2024.2.0
+Official 2024 FRC kickoff release for REVLib, with full support for SPARK Flex. Requires WPILib 2024 and SPARK Flex/SPARK MAX firmware 24.x.x.
+Changes to C++, Java, and LabVIEW
+Throws an error if firmware version is less than 24.0.0
+Throws an error if the motor type is set to Brushed on a SPARK Flex while a SPARK Flex Dock is not connected
+Gets main encoder position with enhanced precision
+Changes to C++ and Java
+Sends a warning to the Driver Station if the wrong class is used for the type of SPARK that is connected
+Adds
+CanSparkBase
+class that exposes functionality that is common to both the SPARK MAX and the SPARK Flex
+Adds
+CanSparkFlex
+class that exposes all functionality of the SPARK Flex
+CanSparkFlex
+has a
+getExternalEncoder()
+method that returns a
+SparkFlexExternalEncoder
+instead of a
+getAlternateEncoder()
+method that returns a
+SparkMaxAlternateEncoder
+.
+This is because Alternate Encoder Mode is not necessary for SPARK Flex, and has been replaced by the External Encoder Data Port feature:
+Can be used simultaneously with the internal encoders in NEO class motors
+Can be used simultaneously with an absolute encoder and limit switches
+Virtually no RPM limit
+No special configuration
+The following items have been deprecated in favor of new equivalents:
+Instead of
+CANSparkMaxLowLevel
+, use
+CANSparkLowLevel
+Instead of
+SparkMaxAbsoluteEncoder
+, use
+SparkAbsoluteEncoder
+Instead of
+SparkMaxAnalogSensor
+, use
+SparkAnalogSensor
+Instead of
+SparkMaxLimitSwitch
+, use
+SparkLimitSwitch
+Instead of
+SparkMaxPIDController
+, use
+SparkPIDController
+Instead of
+SparkMaxRelativeEncoder
+, use
+SparkRelativeEncoder
+Instead of
+ExternalFollower.kFollowerSparkMax
+, use
+ExternalFollower.kFollowerSpark
+The
+ExternalFollower
+enum can be accessed at
+CANSparkMax.ExternalFollower
+,
+CANSparkFlex.ExternalFollower
+, or
+CANSparkBase.ExternalFollower
+Adds a
+CANSparkBase.getSparkModel()
+method that returns a
+SparkModel
+enum
+Changes to LabVIEW
+Deprecates old VIs that are prefixed with "Spark MAX" and replaces them with VIs prefixed with "SPARK"
+Deprecated icons are "grayed out"
+Help context (documentation) for deprecated VIs point the user to the equivalent new VI
+New icons say "SPARK" instead of "REV MAX"
+Adds
+SPARK Get Model.vi
+Fixes
+SPARK Get Analog Sensor Voltage.vi
+when used with a SPARK Flex
+Updates
+SPARK Get I Accum.vi
+to get I Accum from status 7 instead of status 2
+Updates "Alternate Encoder" VIs to be "Alternate or External Encoder"
+Only throw the data port config warnings when the device is a SPARK MAX
+Version 2023.1.3
+This version of REVLib requires SPARK MAX Firmware v1.6.3. Please update your SPARK MAX through the REV Hardware Client.
+Improves documentation for the setZeroOffset() and getZeroOffset() methods on Absolute Encoder objects
+Fixes issue where reading an absolute encoder’s zero offset could return an incorrect value in certain conditions
+Version 2023.1.2
+This version of REVLib requires SPARK MAX Firmware v1.6.2. Please update your SPARK MAX through the REV Hardware Client.
+Adds support to configure the hall sensor's velocity measurement
+C++/Java: Updates
+SetMeasurementPeriod()
+and
+SetAverageDepth()
+in the
+SparkMaxRelativeEncoder
+class to be used when the relative encoder is configured to be of type
+kHallSensor
+.
+LabVIEW: Adds
+SPARK MAX Configure Hall Sensor.vi
+and
+SPARK MAX Get Hall Sensor Config.vi
+to set and get the hall sensor's measurement period and average depth.
+Version 2023.1.1
+Adds support for WPILib 2023
+Adds support for using a duty cycle absolute encoder as a feedback device for the SPARK MAX
+C++/Java: Adds SparkMaxAbsoluteEncoder class
+LabVIEW: Adds VIs for configuring and getting the values from a duty cycle absolute encoder
+Adds Position PID Wrapping to allow continuous input for the SPARK MAX PID controller
+C++/Java: Adds PositionPIDWrapping methods to the SparkMaxPIDController class
+LabVIEW: Adds VIs for setting and getting the Position PID Wrapping configuration
+Allows configuring the periodic frame rates for status frames 4-6
+Version 2022.1.2
+Breaking Changes
+LabVIEW: The version of NI Package Manager bundled with the FRC LabVIEW offline installer will no longer work when installing the REVLib package. NIPM must be updated to the latest version or installed from the FRC LabVIEW online installer to be able to install this package of REVLib for LabVIEW
+Version 2022.0.0
+Breaking changes
+C++/Java:
+CANError
+has been renamed to
+REVLibError
+.
+Java:
+ColorMatch.makeColor()
+and the
+ColorShim
+class have been removed. Use the WPILib
+Color
+class instead.
+C++/Java: Deleted deprecated constructors, methods, and types
+Replace deprecated constructors with
+CANSparkMax.getX()
+functions.
+Replace
+CANEncoder.getCPR()
+with
+getCountsPerRevolution()
+.
+Remove all usages of
+CANDigitalInput.LimitSwitch
+.
+Replace
+CANSparkMax.getAlternateEncoder()
+with
+CANSparkMax.getAlternateEncoder(int countsPerRev)
+.
+Remove all usages of
+CANSparkMax.setMotorType()
+. You can only set the motor type in the constructor now.
+Replace
+SparkMax
+with
+PWMSparkMax
+, which is built into WPILib.
+Java:
+CANSparkMax.get()
+now returns the velocity setpoint set by
+set(double speed)
+rather than the actual velocity, in accordance with the WPILib
+MotorController
+API contract.
+C++/Java:
+CANPIDController.getSmartMotionAccelStrategy()
+now returns
+SparkMaxPIDController.AccelStrategy
+.
+C++/Java: Trying to do the following things will now throw an exception:
+Creating a
+CANSparkMax
+object for a device that already has one
+Specifying an incorrect
+countsPerRev
+value for a NEO hall sensor
+Java: Calling a
+CANSparkMax.getX()
+method using different settings than were used previously in the program
+Java: Trying to use a
+CANSparkMax
+(or another object retrieved from it) after
+close()
+has been called
+C++: Calling a
+CANSparkMax.getX()
+method more than once for a single device
+C++/Java: Deprecated classes in favor of renamed versions
+C++ users will get
+cannot declare field to be of abstract type
+errors until they replace their object declarations with ones for the new classes. Java users will be able to continue to use the old classes through the 2022 season.
+AlternateEncoderType
+is replaced by
+SparkMaxAlternateEncoder.Type
+.
+CANAnalog
+is replaced by
+SparkMaxAnalogSensor
+.
+CANDigitalInput
+is replaced by
+SparkMaxLimitSwitch
+.
+Java:
+CANEncoder
+is replaced by
+RelativeEncoder
+.
+C++:
+CANEncoder is replaced by
+SparkMaxRelativeEncoder
+and
+SparkMaxAlternateEncoder`.
+CANPIDController
+is replaced by
+SparkMaxPIDController
+.
+CANSensor
+is replaced by
+MotorFeedbackSensor
+.
+ControlType
+is replaced by
+CANSparkMax.ControlType
+.
+EncoderType
+is replaced by
+SparkMaxRelativeEncoder.Type
+.
+Enhancements:
+C++/Java: Added the ability to set the rate of periodic frame 3
+Fixes:
+C++/Java:
+CANSparkMax.getMotorType()
+no longer uses the Get Parameter API, which means that it is safe to call frequently
+Java: The
+CANSparkMax.getX()
+methods no longer create a new object on every call
+Known issues:
+SparkMaxPIDController.setIAccum()
+only works while the control mode is active
+PreviousREVLib
+Next
+Previous
+Installation
+Next
+Migrating to REVLib 2025
+Last updated
+5 months ago
+Was this helpful?

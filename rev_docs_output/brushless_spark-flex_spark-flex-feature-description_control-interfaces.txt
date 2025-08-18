@@ -1,0 +1,107 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+PWM Interface
+CAN Interface
+USB Interface
+Was this helpful?
+Export as PDF
+The SPARK Flex can be controlled by three different interfaces: servo-style PWM, Controller Area Network (CAN), and USB. The following sections describe the operation and protocols of these interfaces. For more details on the physical connections, see
+Control Connections
+.
+PWM Interface
+The SPARK Flex can accept a standard servo-style PWM signal as a control for the output duty cycle. Even though the PWM port is shared with the CAN port, SPARK Flex will automatically detect the incoming signal type and respond accordingly. For details on how to connect a PWM cable to the SPARK Flex, see
+CAN/PWM
+Connections
+.
+The SPARK Flex responds to a factory default pulse range of 1000 µs to 2000 µs. These pulses correspond to full-reverse and full-forward rotation, respectively, with 1500 µs (±5% default input deadband) as the neutral position, i.e. no rotation. The input deadband is configurable with the REV Hardware Client or the CAN interface. The table below describes how the default pulse range maps to the output behavior.
+PWM Pulse Mapping
+If a valid signal isn't received within a 60 ms window, the SPARK Flex will disable the motor output and either brake or coast the motor depending on the configured Idle Mode. For details on the Idle Mode, see Idle Mode - Brake/Coast Mode.
+CAN Interface
+The SPARK Flex can be connected to a robot CAN network. CAN is a bi-directional communications bus that enables advanced features within the SPARK Flex.
+SPARK Flex must be connected to a CAN network that has the appropriate termination resistors at both endpoints. Please see the FIRST Robotics Competition Robot Rules for the CAN bus wiring requirements.
+Even though the CAN port is shared with the PWM port, SPARK Flex will automatically detect the incoming signal type and respond accordingly.
+Each device on the CAN bus must be assigned a unique CAN ID number. Out of the box, SPARK Flex is assigned a device ID of 0. This ID is considered "unconfigured" and must be assigned to a unique number from 1 to 62. CAN IDs can be changed by connecting the SPARK Flex to a Windows computer and using the REV Hardware Client.
+Additional information about the CAN accessible features and how to access them can be found in the SPARK Flex API Information section.
+USB Interface
+The SPARK Flex can be configured and controlled through a USB connection to a computer running the REV Hardware Client.
+More information coming soon!
+Previous
+Mounting Holes
+Next
+Mode Button
+Last updated
+1 year ago
+Was this helpful?

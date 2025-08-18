@@ -1,0 +1,69 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+Position Control is used to point the motor in a specific direction. It takes a setpoint in rotations and uses the PID loop to move to that position. The Position control mode pipes directly into a PID controller with the configured encoder.
+For more complex mechanisms or motions where closer control over acceleration and velocity are needed, see
+MAXMotion Position Control
+A properly tuned Position control loop should respond quickly and accurately to a setpoint change and should not oscillate around the target.
+To run the motor in Position control mode, set the PID Controller setpoint as shown below.
+Java
+C++
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kPosition
+);
+API Docs:
+setReference
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kPosition);
+API Reference:
+SetReference
+This loop was tuned to show the curve, an ideal controller would move much quicker. In a perfect world, this motion would be nearly instantaneous.
+Previous
+Getting Started with PID Tuning
+Next
+Velocity Control Mode
+Last updated
+7 months ago
+Was this helpful?

@@ -1,0 +1,199 @@
+REV DUO Kickoff Concepts
+2025-26 REV DUO FTC Starter Bot
+DECODE 2025-26
+Starter Bot - DECODE
+Bill of Materials
+Programming TeleOp
+Build Tips & Tricks
+Starter Bot Changelog 2025-26
+INTO THE DEEP 2024-25
+2024-25 REV DUO FTC Starter Bot
+Starter Bot - INTO THE DEEP
+Bill of Materials
+Programming TeleOp
+Programming - Initialization
+Programming - Creating Functions
+Programming - Controlling the Arm and Wrist
+Programming - Intake and Claw Toggle
+Programming - Driving and Telemetry
+Programming - OnBot Java Overview
+Build Tips & Tricks
+Upgrades!
+Starter Bot Changelog 2024-25
+CENTERSTAGE 2023-2024
+Starter Bot - CENTERSTAGE
+Bill of Materials
+Programming Teleop
+Building Tips & Tricks
+Upgrades
+Starter Bot Changelog
+POWERPLAY 2022-2023
+Starter Bot - POWERPLAY
+Alternative Control Hub Placement
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Lifts
+Freight Frenzy - 2021-2022
+Starter Bot - Freight Frenzy
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Carousel Mechanism
+Freight Delivery Mechanisms
+Programming Autonomous
+Ultimate Goal - 2020-2021
+Game Strategy
+Game Piece
+Drivetrain
+Intake
+Conveyor
+Flywheel Launcher
+Powered by GitBook
+On this page
+Basic TeleOp Strategy
+Configuration and Wiring
+Wiring Diagram
+Assigning Controls to a Gamepad/Controller
+Programming Teleop - Blocks
+Drive Code
+Lift Code
+Intake Code
+Complete Blocks Program
+Was this helpful?
+Export as PDF
+Basic TeleOp Strategy
+Our strategy for teleoperated mode was to make driving the robot as intuitive and precise as possible. Navigating carefully through the grid of Junctions is important for gameplay so we decided to use Split Arcade Drive this year.
+Since the Junctions are mounted on springs and can move or change height freely, we found the best method to control the Lift mechanism was to not use preset levels. This allows us to easily raise cones to any height needed.
+Configuration and Wiring
+Before getting started with programming we needed to create a configuration file. Below is an overview of how the robot is configured for the teleop code to function as expected:
+Port Type
+Port Number
+Device Type
+Name
+Motor
+0
+REVRoboticsCoreHexMotor
+Lift (L)
+Motor
+1
+REVRoboticsCoreHexMotor
+Lift (R)
+Motor
+2
+REVRoboticsUltraplantary
+Drive (L)
+Motor
+3
+REVRoboticsUltraplantary
+Drive (R)
+Servo
+0
+Servo, Continuous Rotation
+Intake
+I2C
+0
+IMU
+imu
+For more in depth information on the configuration process check out
+Hello Robot - Configuration
+!
+Wiring Diagram
+Device Name/Function
+Device Type
+Port
+Lift (L)
+Core Hex Motor
+Motor/Encoder Port 0
+Lift (R)
+Core Hex Motor
+Motor/Encoder Port 1
+Drive (L)
+HD Hex Motor
+Motor/Encoder Port 2
+Drive (R)
+Core Hex Motor
+Motor/Encoder Port 3
+Intake
+Smart Robot Servo
+Servo Port 0
+Assigning Controls to a Gamepad/Controller
+Items to consider when mapping out your gamepad:
+What kind of input does the mechanism need?
+Joysticks and Triggers
+input
+floating point data
+to your code allowing you to adjust the speed of a motor based on the pressure applied to the trigger or position of the joystick.
+Buttons, Bumpers, and D-Pad
+provide
+boolean data
+to your code and are ideal for triggering a action such as rotating a motor to a set position.
+What drivetrain are you using and what driving style do you want to use?
+We decided the POWERPLAY Starter Bot would be driven with Split Arcade Drive for advantages in precision while driving.
+Which input makes the most sense? Would pressing up on the d-pad be more intuitive for moving your arm up or down?
+We chose to assign our D-Pad inputs to raising and lowering our lift and the right bumper to releasing Cones from the intake.
+POWERPLAY Starter Bot controller layout:
+Not all controllers have buttons labeled the same way. Check the manufacturer's documentation for accurate button mapping.
+Input
+Function
+Right Joystick
+Turn Left and Right
+Left Joystick
+Drive Forward and Reverse
+Right Bumper
+Reverse Intake (Let go of Cones)
+D-Pad Up
+Raise Lift
+D-Pad Down
+Lower Lift
+More information on programming gamepads for use with your robot can be found at
+Hello Robot - Using Gamepads
+.
+Programming Teleop - Blocks
+This section makes the assumption that you have learned some of the FTC programming basics by going through the
+Hello Robot
+guide. If you have not gone through this guide please walk through it before proceeding.
+Drive Code
+In
+Hello Robot- Basics of Programming Drivetrains
+we covered how to program arcade drive with one joystick. For this example, we will be programming arcade drive using two joysticks. This type of drive is called "split arcade". In split arcade drive, the left joystick will control forward and reverse motion of the robot, and the right joystick will control turning. This is similar to how some RC cars are driven and video games are played.
+We opted to use split arcade drive during the POWERPLAY season because it allows for forward and reverse movement without worrying about accidentally pushing the joystick in the X-Axis. The POWERPLAY field requires precise movements, and split arcade drive allows teams to have more control and precision.
+Similar to the traditional arcade style driving tutorial, we will use the Dual Motor block to assign power values to our motors.
+POWERPLAY Starter Bot Drive Code (Blocks)
+Remember to reverse one of the motors and negate the values on the Y-Axis of your joysticks.
+Lift Code
+The control of our lift arm is done by running two Core Hex Motors (
+REV-41-1300
+) on a Reverse Virtual Four Bar
+Linkage. Unlike the joystick, the DPad on a gamepad inputs are Boolean data,
+FALSE/TRUE
+. In order to tell the arm to move when DPad Up or DPad Down are selected, an
+if/else
+statement needs to be used.
+For all of our button inputs we used an
+if/else
+statement. In the image below you can see the code for pressing the DPad. When DPadUp is pressed, both Core Hex Motors set power to -1, which moves the lift upwards. When DPadDown is pressed, the Core Hex Motors change their power to 0.8, which moves the lift downwards.
+Remember that when it comes to coding your robot, the Y-Axis is -1 at its topmost point, and +1 at its bottommost point, unless you negate values.
+POWERPLAY Starter Bot Lift Code (Blocks)
+Intake Code
+The Starter Bot's compact active roller intake features one servo motor-driven roller paired with a free spinning roller. To make sure we keep a good grip on the Cone, the intake is always running inwards. This means we need to reverse the direction of the servo to release the Cone once the robot is in position to place it.
+For the intake, we chose to use the RightBumper to control the direction and speed of the motor spinning the mechanism. In order to tell the intake to increase power when RightBumper is pressed, an
+if/else
+statement needs to be used.
+POWERPLAY Starter Bot Intake Code (Blocks)
+As you can see, if you press the RightBumper, the intake sets its power to max. Otherwise, the intake power is set to 0.3.
+Complete Blocks Program
+Below is the complete Blocks Program for the POWERPLAY Starter Bot.
+POWERPLAY Starter Bot Complete Code (Blocks)
+Click here to download the POWERPLAY Starter Bot Blocks code.
+Previous
+Alternative Control Hub Placement
+Next
+Game Breakdown
+Last updated
+2 months ago
+Was this helpful?

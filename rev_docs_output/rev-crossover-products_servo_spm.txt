@@ -1,0 +1,148 @@
+REV Crossover
+REV Crossover Landing
+Sensors
+Through Bore Encoder
+Specifications
+Application Examples
+Color Sensor V3
+Specifications
+Application Examples
+Discontinued Color Sensors
+V2 Specifications & Examples
+V1 Specifications & Examples
+2m Distance Sensor
+Specifications
+Application Examples
+Magnetic Limit Switch
+Specifications
+Application Examples
+Touch Sensor
+Specifications
+Application Examples
+Potentiometer
+Specifications
+Application Examples
+9-Axis IMU
+Specifications
+Configuring the 9-Axis IMU
+Blinkin LED Driver
+Blinkin LED Driver Overview
+Blinkin Specifications
+Blinkin Getting Started
+LED Pattern Tables
+Blinkin Troubleshooting
+REV ION Application Examples
+REV DUO Application Examples
+UltraPlanetary System
+UltraPlanetary System Overview
+UltraPlanetary Features
+Cartridge Details
+Load Ratings
+Assembly Instructions
+Mounting Brackets
+Ultra 90 Degree Gearbox
+Assembly Instructions
+Rotation Direction
+Servos & Accessories
+Servo Hub
+Servo Hub Wiring
+Configuring the Servo Hub with a Control Hub
+Channel Power
+Channel Pulse
+Servo Hub Status LED Patterns
+Troubleshooting
+REVLib for Servo Hub
+Smart Robot Servo
+SRS Gear Replacement
+SRS Programmer
+Switching Operating Modes
+Servo Power Module
+Indicators
+Digital LED Indicator
+Specifications
+Application Examples
+Gamepad
+Gamepad Overview
+Remapping Guide
+Powered by GitBook
+On this page
+Overview
+Features
+Over-Current Shutdown
+Specifications
+About the Max. Current Specifications
+Output Current Calculations
+Electrical Connections
+Status LEDs
+Was this helpful?
+Export as PDF
+Overview
+The REV Servo Power Module is a 6V 90W power injector that enables the use of standard servos in applications where a robot controller cannot provide adequate power. The following Quick Start Guide describes the Servo Power Module features and the necessary information to get it up and running.
+Features
+#6 Screw Mounting Holes
+Six High-Power 6V DC Output for Servos
+Status LED for each Channel
+6V Power LED Indicator
+Integrated DC-DC Converter
+Over-Current Shutdown
+ESD Protection
+12V Power Input
+Over-Current Shutdown
+If the Servo Power Module detects a total output current larger than 15A it will enter a shutdown mode where the 6V output is disabled until the over-current condition has remedied. While in shutdown the blue power LED will turn off, dim, or flicker indicating the over-current condition is still present. In the case of frequent over-current shutdowns, ensure that the total stall current of all connected servos does not exceed 15A.
+Specifications
+Parameter
+Value and Units
+Nominal Input Voltage
+12V
+Operating Voltage Range
+7.0-20V
+Minimum Startup Voltage
+9.0V
+Output Voltage
+6V
+Number of Channels
+6
+Max. Total Output Current (across all Channels)
+15A
+Max. Total Output Current Per Channel
+†
+3A
+Max. Total Output Power
+90W
+Size
+3.6" x 1.52" x 0.81"
+Weight
+2.0oz/57g
+†
+Updated August 2024 to include clarifications for using the Servo Power Module with newer, more powerful servos that have stall currents greater than what the hardware of the port is rated for. 
+
+Please see our section
+about the Max. Current Specifications
+for more information.
+About the Max. Current Specifications
+Due to the shared power architecture of the six output ports, if a single connected servo draws larger than its expected power, the internal regulator will provide up 15A before going into a limiting over-current mode. While the regulator is designed to provide 15 A of current, the individual port pins are rated for approximately 3 A. This rating, of the port itself, highly depends on the quality of the connection between the Servo Power Module and the servo it is driving.
+Additionally, as technology has advanced and become more accessible, teams have started using more powerful servos- many having a stall current of 4 Amps or more. While we don't believe the 4 A stall current will produce enough heat to cause problems with a properly seated and quality connection, a poor connection can cause overheating and thermal runaway that can lead to damage.
+The best way to ensure you are making the most of your Servo Power Module's output, is to check that all input and output connections are fully seated with no gaps.
+Output Current Calculations
+It is important to ensure that you do not exceed the maximum total output current of your Servo Power Module. To do this, add together the stall current of each servo being powered by the Servo Power Module. If the total stall current is higher than 15A, you risk triggering the overcurrent protection. Consider reducing the number of servos connected to prevent triggering the overcurrent protections.
+Electrical Connections
+The Servo Power Module has two screw terminals for 12V power input. It is recommended to use ring or fork terminals designed for #6 or M3 screw terminals. Using an appropriate wire gauge, 18 AWG or larger, tightly crimp either a ring or fork terminal on the wire. Insert the crimped terminal into the screw terminal and tighten the screw. The input and output channels accept standard 3-wire 0.1” pitch servo/PWM cables. Please refer to the figure below or the case markings for proper orientation.
+Status LEDs
+Each channel has a corresponding status LED that will indicate the sensed state of the connected PWM signal. The table below describes each state’s corresponding LED pattern.
+State
+Pattern
+No Signal
+Blinking Amber
+Left/Reverse Signal
+Solid Red
+Center/Neutral Signal
+Solid Amber
+Right/Forward Signal
+Solid Green
+Previous
+Switching Operating Modes
+Next
+Digital LED Indicator
+Last updated
+7 months ago
+Was this helpful?

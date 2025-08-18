@@ -1,0 +1,103 @@
+REV Hardware Client
+REV Hardware Client Overview
+Changelog
+Getting Started
+Installation
+Navigating the Client
+Troubleshooting
+REV DUO
+Control Hub
+Updating a Control Hub
+Restoring Control Hub Data
+Driver Hub
+Updating a Driver Hub
+Expansion Hub
+Android Devices
+Installing RC/DS Applications
+Using the Log Viewer
+REV ION
+SPARK Flex
+Updating a SPARK Flex
+SPARK MAX
+Updating a SPARK MAX
+Power Distribution Hub
+Updating a Power Distribution Hub
+Pneumatic Hub
+Updating a Pneumatic Hub
+Telemetry Tab
+Running Multiple SPARK Motor Controllers
+Recovery Mode
+Crossover
+Servo Hub
+Powered by GitBook
+On this page
+Connecting a SPARK MAX via USB
+Navigating the REV Hardware Client
+Hardware Tab
+Basic Tab
+Advanced Tab
+Run Tab
+Update Tab
+Was this helpful?
+Export as PDF
+Connecting a SPARK MAX via USB
+Connect your SPARK MAX Motor Controller to your computer with a USB C cable.
+Open the REV Hardware Client application.
+The Client should automatically scan and connect to your SPARK MAX
+All SPARK MAX Motor Controllers comes with a USB C to USB A cable.
+Additional SPARK MAX devices connected via CAN to the USB Host SPARK MAX are visible when using the latest firmware. For more information see the
+SPARK MAX User's Manual.
+Navigating the REV Hardware Client
+The REV Hardware Client has four tabs to manage different features of the Client. The "Hardware Tab" is where supported hardware devices are managed. The "Utilities Tab" allows for viewing log files collected by the Control Hub or Driver Hub. The "Downloads Tab" allows for the downloading of supported device software for updating when offline. The "About Tab" has information on what devices are supported, updating the REV Hardware Client, and troubleshooting.
+Individual devices, like the SPARK MAX, have additional tabs available when the device is selected. For a full overview of the default navigation features of the REV Hardware Client see the
+User's Manual.
+Below is more information on using the specific features for the SPARK MAX.
+As of REV Hardware Client version 1.7.0, "Burn Flash" has been renamed to "Persist Perimeters"!
+Hardware Tab
+The Hardware Tab is used to select devices connected via USB or the USB to CAN bridge for configuration, updates, and more.
+Once a SPARK MAX is selected from the Hardware tab a number of device specific tabs will show.
+Basic Tab
+The Basic Tab is used to set the most common parameters for the SPARK MAX.
+Device Identify:
+Blink the selected SPARK MAX's LED for identification.
+CAN ID:
+This assigns a SPARK MAX a CAN ID for identification over the CAN BUS. Any configured SPARK MAX
+must have
+a CAN ID.
+Configurations:
+This drop down allows you to select pre-existing configurations store on the Windows machine running the SPARK MAX Client or to pull the existing parameters stored on in RAM on the SPARK MAX. This is helpful when configuring multiple motor controllers to the same settings.
+Configured Parameters:
+Change the motor type, sensor type, idle mode behavior, and more.
+Advanced Tab
+The Advanced Tab allows for changing all configurable parameters of the SPARK MAX without needing to set them in code.
+Search Parameters:
+Allows for easy look up of a specific parameter for editing.
+Parameter Table:
+Select the arrow to show all configurable parameters within a specific group. For more information on each parameter type see
+Configuration Parameters
+.
+Remember to burn the persist parameters to memory before disconnecting the SPARK MAX
+Run Tab
+The Run Tab allows for the SPARK MAX to operate over USB or a USB to CAN Bridge without the need for a full control system. This is helpful for testing mechanisms and tuning their control loops.
+Run:
+Choose setpoints to run a motor connected to a SPARK MAX using various modes, including position, velocity, and duty cycle.
+PIDF:
+Update PIDF parameters on the fly to tune control loops on the SPARK MAX.
+View Graph:
+Moves the Client over to the Telemetry Tab to show any added signals in graph form when running a SPARK MAX. This is helpful when tuning control loops.
+Update Tab
+The Update tab shows what version of firmware is on the selected device, if that device is up to date, and update the firmware of the selected device.
+Download Latest Firmware:
+Downloads latest firmware onto the local machine running the Client.
+Update Firmware:
+Updates the selected device with the latest firmware.
+Out-of-date Firmware Warning:
+Warning to alert the user there is new firmware available for any connected device.
+For more information on the firmware updating process see Updating Device Firmware
+Previous
+Updating a SPARK Flex
+Next
+Updating a SPARK MAX
+Last updated
+2 months ago
+Was this helpful?

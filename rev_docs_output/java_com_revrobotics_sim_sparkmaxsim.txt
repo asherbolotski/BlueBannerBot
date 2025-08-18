@@ -1,0 +1,139 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.sim
+Class SparkMaxSim
+java.lang.Object
+com.revrobotics.spark.SparkSim
+com.revrobotics.sim.SparkMaxSim
+public class
+SparkMaxSim
+extends
+SparkSim
+Constructor Summary
+Constructors
+Constructor
+Description
+SparkMaxSim
+(
+SparkMax
+sparkMax,
+DCMotor
+motor)
+Create a simulated CAN Spark MAX object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+SparkMaxAlternateEncoderSim
+getAlternateEncoderSim
+()
+Get the
+SparkMaxAlternateEncoderSim
+object associated with this Spark Device.
+Methods inherited from class com.revrobotics.spark.
+SparkSim
+disable
+,
+enable
+,
+getAbsoluteEncoderSim
+,
+getAnalogSensorSim
+,
+getAppliedOutput
+,
+getBusVoltage
+,
+getClosedLoopSlot
+,
+getFaultManager
+,
+getForwardLimitSwitchSim
+,
+getMotorCurrent
+,
+getPosition
+,
+getRelativeEncoderSim
+,
+getReverseLimitSwitchSim
+,
+getSetpoint
+,
+getVelocity
+,
+iterate
+,
+setAppliedOutput
+,
+setBusVoltage
+,
+setMotorCurrent
+,
+setPosition
+,
+setVelocity
+,
+useDriverStationEnable
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SparkMaxSim
+public
+SparkMaxSim
+(
+SparkMax
+sparkMax,
+DCMotor
+motor)
+Create a simulated CAN Spark MAX object. This class simulates some of the internal behavior of
+ the device. This class is not required to display to the sim GUI, but is required to interact
+ with it or inject physics simulation.
+See
+SparkSim.iterate(double, double, double)
+for more information on physics simulation.
+Parameters:
+sparkMax
+- The Spark to simulate
+motor
+- The WPILib DCMotor class object to use for calculations. If multiple motors are
+     connected to the same gearbox and follow each other, a single DCMotor and CANSparkSim can
+     be used to represent all of them.
+Method Details
+getAlternateEncoderSim
+public
+SparkMaxAlternateEncoderSim
+getAlternateEncoderSim
+()
+Get the
+SparkMaxAlternateEncoderSim
+object associated with this Spark Device. This will
+ allow you to read/write data from the simulated sensor and view it in the Sim GUI.
+Returns:
+The
+SparkMaxAlternateEncoderSim
+object associated with this Spark Device

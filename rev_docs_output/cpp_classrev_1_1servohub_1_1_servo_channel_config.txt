@@ -1,0 +1,319 @@
+REVLib - C++
+Classes
+|
+Public Types
+|
+Public Member Functions
+|
+List of all members
+rev::servohub::ServoChannelConfig Class Reference
+#include <
+ServoChannelConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Classes
+struct
+PulseRange_t
+Public Types
+enum class
+BehaviorWhenDisabled
+{
+kDoNotSupplyPower
+= 0
+,
+kSupplyPower
+= 1
+ }
+Public Member Functions
+ServoChannelConfig
+(
+ServoChannel::ChannelId
+channelId)
+~ServoChannelConfig
+() override=default
+ServoChannelConfig
+(const
+ServoChannelConfig
+&)=delete
+ServoChannelConfig
+&
+operator=
+(const
+ServoChannelConfig
+&)=delete
+ServoChannelConfig
+(
+ServoChannelConfig
+&&) noexcept=delete
+ServoChannelConfig
+&
+operator=
+(
+ServoChannelConfig
+&&) noexcept=delete
+ServoChannelConfig
+&
+Apply
+(
+ServoChannelConfig
+&config)
+ServoChannelConfig
+&
+PulseRange
+(uint32_t minPulse_us, uint32_t centerPulse_us, uint32_t maxPulse_us)
+ServoChannelConfig
+&
+PulseRange
+(const
+PulseRange_t
+&pulseRange_us)
+ServoChannelConfig
+&
+DisableBehavior
+(
+BehaviorWhenDisabled
+behavior)
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+virtual std::string
+Flatten
+()
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Member Enumeration Documentation
+◆
+BehaviorWhenDisabled
+enum class
+rev::servohub::ServoChannelConfig::BehaviorWhenDisabled
+strong
+Enumerator
+kDoNotSupplyPower
+kSupplyPower
+Constructor & Destructor Documentation
+◆
+ServoChannelConfig()
+[1/3]
+ServoChannelConfig::ServoChannelConfig
+(
+ServoChannel::ChannelId
+channelId
+)
+explicit
+◆
+~ServoChannelConfig()
+rev::servohub::ServoChannelConfig::~ServoChannelConfig
+(
+)
+override
+default
+◆
+ServoChannelConfig()
+[2/3]
+rev::servohub::ServoChannelConfig::ServoChannelConfig
+(
+const
+ServoChannelConfig
+&
+)
+delete
+◆
+ServoChannelConfig()
+[3/3]
+rev::servohub::ServoChannelConfig::ServoChannelConfig
+(
+ServoChannelConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+ServoChannelConfig
+& rev::servohub::ServoChannelConfig::operator=
+(
+const
+ServoChannelConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+ServoChannelConfig
+& rev::servohub::ServoChannelConfig::operator=
+(
+ServoChannelConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+ServoChannelConfig
+& ServoChannelConfig::Apply
+(
+ServoChannelConfig
+&
+config
+)
+Applies settings from another
+ServoChannelConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+[in]
+config
+The
+ServoChannelConfig
+to copy settings from
+Returns
+The updated
+ServoChannelConfig
+for method chaining
+◆
+PulseRange()
+[1/2]
+ServoChannelConfig
+& ServoChannelConfig::PulseRange
+(
+uint32_t
+minPulse_us
+,
+uint32_t
+centerPulse_us
+,
+uint32_t
+maxPulse_us
+)
+Set the min/center/max pulse widths on this channel.
+Parameters
+[in]
+minPulse_us
+The minimum pulse width (in microseconds)
+[in]
+centerPulse_us
+The center pulse width (in microseconds)
+[in]
+maxPulse_us
+The maximum pulse width (in microseconds)
+Returns
+The modified
+ServoChannelConfig
+object for method chaining
+◆
+PulseRange()
+[2/2]
+ServoChannelConfig
+& ServoChannelConfig::PulseRange
+(
+const
+PulseRange_t
+&
+pulseRange_us
+)
+Set the min/center/max pulse widths on this channel.
+Parameters
+[in]
+pulseRange_us
+The minimum/center/max pulse widths (in microseconds)
+Returns
+The modified
+ServoChannelConfig
+object for method chaining
+◆
+DisableBehavior()
+ServoChannelConfig
+& ServoChannelConfig::DisableBehavior
+(
+BehaviorWhenDisabled
+behavior
+)
+Set the output power behavior when the channel is disabled.
+When the channel is enabled [ServoChannel::SetEnabled(true)], the output power to the servo follows the channel's power setting [
+ServoChannel::SetPowered()
+].
+When the channel is disabled [ServoChannel::SetEnabled(false)], the output power to the servo follows the channel's disableBehavior.
+Parameters
+[in]
+behavior
+The disable behavior as described above.
+Returns
+The modified
+ServoChannelConfig
+object for method chaining
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+ServoChannelConfig.h
+src/main/native/cpp/config/
+ServoChannelConfig.cpp
+rev
+servohub
+ServoChannelConfig
+Generated by
+1.9.2

@@ -1,0 +1,80 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics
+Class ColorMatchResult
+java.lang.Object
+com.revrobotics.ColorMatchResult
+public class
+ColorMatchResult
+extends
+Object
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final
+Color
+color
+final double
+confidence
+Constructor Summary
+Constructors
+Constructor
+Description
+ColorMatchResult
+(
+Color
+color,
+ double confidence)
+Construct a color match result object.
+Method Summary
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+color
+public final
+Color
+color
+confidence
+public final
+double
+confidence
+Constructor Details
+ColorMatchResult
+public
+ColorMatchResult
+(
+Color
+color,
+ double confidence)
+Construct a color match result object. This object stores color which is a copy of the stored
+ value registered to the ColorMatch object, and a confidence.
+The condifence is simply 1 - euclidian distance
+Parameters:
+color
+- copy of matched color from ColorMatch object
+confidence
+- confidence number for the measurement. This is the 1 - euclidean distance of
+     the two color vectors

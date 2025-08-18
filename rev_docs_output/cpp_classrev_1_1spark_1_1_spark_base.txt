@@ -1,0 +1,1167 @@
+REVLib - C++
+Classes
+|
+Public Types
+|
+Public Member Functions
+|
+Protected Member Functions
+|
+Protected Attributes
+|
+Friends
+|
+List of all members
+rev::spark::SparkBase Class Reference
+#include <
+SparkBase.h
+>
+Inherits
+rev::spark::SparkLowLevel
+.
+Inherited by
+rev::spark::SparkFlex
+, and
+rev::spark::SparkMax
+.
+Classes
+struct
+Faults
+struct
+Warnings
+Public Types
+enum class
+IdleMode
+{
+kCoast
+= 0
+,
+kBrake
+= 1
+ }
+enum class
+SoftLimitDirection
+{
+kForward
+,
+kReverse
+}
+enum class
+ResetMode
+{
+kNoResetSafeParameters
+,
+kResetSafeParameters
+}
+enum class
+PersistMode
+{
+kNoPersistParameters
+,
+kPersistParameters
+}
+Public Types inherited from
+rev::spark::SparkLowLevel
+enum class
+MotorType
+{
+kBrushed
+= 0
+,
+kBrushless
+= 1
+ }
+enum class
+ControlType
+{
+kDutyCycle
+= 0
+,
+kVelocity
+= 1
+,
+kVoltage
+= 2
+,
+kPosition
+= 3
+,
+kSmartMotion
+= 4
+,
+kCurrent
+= 5
+,
+kSmartVelocity
+= 6
+,
+kMAXMotionPositionControl
+= 7
+,
+kMAXMotionVelocityControl
+= 8
+}
+enum class
+ParameterStatus
+{
+kOK
+= 0
+,
+kInvalidID
+= 1
+,
+kMismatchType
+= 2
+,
+kAccessMode
+= 3
+,
+kInvalid
+= 4
+,
+kNotImplementedDeprecated
+= 5
+}
+enum class
+PeriodicFrame
+{
+kStatus0
+= 0
+,
+kStatus1
+= 1
+,
+kStatus2
+= 2
+,
+kStatus3
+= 3
+,
+kStatus4
+= 4
+,
+kStatus5
+= 5
+,
+kStatus6
+= 6
+,
+kStatus7
+= 7
+,
+kStatus8
+= 8
+,
+kStatus9
+= 9
+}
+enum class
+SparkModel
+{
+kSparkMax
+= 0
+,
+kSparkFlex
+= 1
+,
+kUnknown
+= 255
+ }
+Public Member Functions
+~SparkBase
+() override=default
+void
+Set
+(double speed) override
+void
+SetVoltage
+(units::volt_t output) override
+double
+Get
+() const override
+void
+SetInverted
+(bool isInverted) override
+bool
+GetInverted
+() const override
+void
+Disable
+() override
+void
+StopMotor
+() override
+virtual
+REVLibError
+Configure
+(
+SparkBaseConfig
+&config,
+ResetMode
+resetMode,
+PersistMode
+persistMode)
+virtual
+REVLibError
+ConfigureAsync
+(
+SparkBaseConfig
+&config,
+ResetMode
+resetMode,
+PersistMode
+persistMode)
+SparkRelativeEncoder
+&
+GetEncoder
+()
+SparkAnalogSensor
+&
+GetAnalog
+()
+virtual
+SparkAbsoluteEncoder
+&
+GetAbsoluteEncoder
+()
+SparkClosedLoopController
+&
+GetClosedLoopController
+()
+virtual
+SparkLimitSwitch
+&
+GetForwardLimitSwitch
+()
+virtual
+SparkLimitSwitch
+&
+GetReverseLimitSwitch
+()
+SparkSoftLimit
+&
+GetForwardSoftLimit
+()
+SparkSoftLimit
+&
+GetReverseSoftLimit
+()
+rev::REVLibError
+ResumeFollowerMode
+()
+rev::REVLibError
+ResumeFollowerModeAsync
+()
+rev::REVLibError
+PauseFollowerMode
+()
+rev::REVLibError
+PauseFollowerModeAsync
+()
+bool
+IsFollower
+()
+bool
+HasActiveFault
+()
+bool
+HasStickyFault
+()
+bool
+HasActiveWarning
+()
+bool
+HasStickyWarning
+()
+Faults
+GetFaults
+()
+Faults
+GetStickyFaults
+()
+Warnings
+GetWarnings
+()
+Warnings
+GetStickyWarnings
+()
+double
+GetBusVoltage
+()
+double
+GetAppliedOutput
+()
+double
+GetOutputCurrent
+()
+double
+GetMotorTemperature
+()
+REVLibError
+ClearFaults
+()
+REVLibError
+SetCANTimeout
+(int milliseconds)
+REVLibError
+GetLastError
+()
+Public Member Functions inherited from
+rev::spark::SparkLowLevel
+virtual
+~SparkLowLevel
+()
+uint32_t
+GetFirmwareVersion
+()
+uint32_t
+GetFirmwareVersion
+(bool &isDebugBuild)
+std::string
+GetFirmwareString
+()
+std::vector< uint8_t >
+GetSerialNumber
+()
+int
+GetDeviceId
+() const
+MotorType
+GetMotorType
+()
+PeriodicStatus0
+GetPeriodicStatus0
+()
+PeriodicStatus1
+GetPeriodicStatus1
+()
+PeriodicStatus2
+GetPeriodicStatus2
+()
+PeriodicStatus3
+GetPeriodicStatus3
+()
+PeriodicStatus4
+GetPeriodicStatus4
+()
+PeriodicStatus5
+GetPeriodicStatus5
+()
+PeriodicStatus6
+GetPeriodicStatus6
+()
+PeriodicStatus7
+GetPeriodicStatus7
+()
+PeriodicStatus8
+GetPeriodicStatus8
+()
+PeriodicStatus9
+GetPeriodicStatus9
+()
+void
+SetPeriodicFrameTimeout
+(int timeoutMs)
+void
+SetCANMaxRetries
+(int numRetries)
+void
+SetControlFramePeriodMs
+(int periodMs)
+void
+CreateSimFaultManager
+()
+Protected Member Functions
+SparkBase
+(int deviceID,
+MotorType
+type,
+SparkModel
+model)
+SparkRelativeEncoder
+GetEncoderEvenIfAlreadyCreated
+()
+uint8_t
+GetMotorInterface
+()
+SparkBase::SparkModel
+GetSparkModel
+()
+Protected Member Functions inherited from
+rev::spark::SparkLowLevel
+REVLibError
+SetpointCommand
+(double value,
+SparkLowLevel::ControlType
+ctrl=
+ControlType::kDutyCycle
+,
+ClosedLoopSlot
+pidSlot=ClosedLoopSlot::kSlot0, double arbFeedforward=0, int arbFFUnits=0)
+float
+GetSafeFloat
+(float f)
+Protected Attributes
+double
+m_setpoint
+{0.0}
+SparkRelativeEncoder
+m_RelativeEncoder
+std::atomic< bool >
+m_relativeEncoderCreated
+{false}
+SparkAnalogSensor
+m_AnalogSensor
+std::atomic< bool >
+m_analogSensorCreated
+{false}
+SparkAbsoluteEncoder
+m_AbsoluteEncoder
+std::atomic< bool >
+m_absoluteEncoderCreated
+{false}
+SparkClosedLoopController
+m_ClosedLoopController
+std::atomic< bool >
+m_closedLoopControllerCreated
+{false}
+SparkLimitSwitch
+m_ForwardLimitSwitch
+std::atomic< bool >
+m_forwardLimitSwitchCreated
+{false}
+SparkLimitSwitch
+m_ReverseLimitSwitch
+std::atomic< bool >
+m_reverseLimitSwitchCreated
+{false}
+SparkSoftLimit
+m_ForwardSoftLimit
+std::atomic< bool >
+m_forwardSoftLimitCreated
+{false}
+SparkSoftLimit
+m_ReverseSoftLimit
+std::atomic< bool >
+m_reverseSoftLimitCreated
+{false}
+Protected Attributes inherited from
+rev::spark::SparkLowLevel
+MotorType
+m_motorType
+SparkModel
+m_expectedSparkModel
+void *
+m_sparkMaxHandle
+Friends
+class
+SparkMax
+class
+SparkFlex
+class
+SparkLimitSwitch
+class
+SparkSoftLimit
+class
+SparkRelativeEncoder
+class
+SparkMaxAlternateEncoder
+class
+SparkAbsoluteEncoder
+class
+SparkSim
+class
+SparkClosedLoopController
+class
+::ConfigBase
+Additional Inherited Members
+Static Public Attributes inherited from
+rev::spark::SparkLowLevel
+static const uint16_t
+kAPIMajorVersion
+= c_Spark_kAPIMajorVersion
+static const uint8_t
+kAPIMinorVersion
+= c_Spark_kAPIMinorVersion
+static const uint8_t
+kAPIBuildVersion
+= c_Spark_kAPIBuildVersion
+static const uint32_t
+kAPIVersion
+= c_Spark_kAPIVersion
+Member Enumeration Documentation
+◆
+IdleMode
+enum class
+rev::spark::SparkBase::IdleMode
+strong
+Enumerator
+kCoast
+kBrake
+◆
+SoftLimitDirection
+enum class
+rev::spark::SparkBase::SoftLimitDirection
+strong
+Enumerator
+kForward
+kReverse
+◆
+ResetMode
+enum class
+rev::spark::SparkBase::ResetMode
+strong
+Enumerator
+kNoResetSafeParameters
+kResetSafeParameters
+◆
+PersistMode
+enum class
+rev::spark::SparkBase::PersistMode
+strong
+Enumerator
+kNoPersistParameters
+kPersistParameters
+Constructor & Destructor Documentation
+◆
+~SparkBase()
+rev::spark::SparkBase::~SparkBase
+(
+)
+override
+default
+Closes the SPARK motor controller
+◆
+SparkBase()
+SparkBase::SparkBase
+(
+int
+deviceID
+,
+MotorType
+type
+,
+SparkModel
+model
+)
+explicit
+protected
+Create a new object to control a SPARK motor Controller
+Parameters
+deviceID
+The device ID.
+type
+The motor type connected to the controller. Brushless motor wires must be connected to their matching colors, and the hall sensor must be plugged in. Brushed motors must be connected to the Red and Black terminals only.
+model
+The model (kSparkMax or kSparkFlex) of the motor.
+Member Function Documentation
+◆
+Set()
+void SparkBase::Set
+(
+double
+speed
+)
+override
+Common interface for setting the speed of a speed controller.
+Parameters
+speed
+The speed to set. Value should be between -1.0 and 1.0.
+◆
+SetVoltage()
+void SparkBase::SetVoltage
+(
+units::volt_t
+output
+)
+override
+Sets the voltage output of the SpeedController. This is equivalent to a call to SetReference(output, SparkBase::ControlType::kVoltage). The behavior of this call differs slightly from the WPILib documentation for this call since the device internally sets the desired voltage (not a compensation value). That means that this
+can
+be a 'set-and-forget' call.
+Parameters
+output
+The voltage to output.
+◆
+Get()
+double SparkBase::Get
+(
+)
+const
+override
+Common interface for getting the current set speed of a speed controller.
+Returns
+The current set speed. Value is between -1.0 and 1.0.
+◆
+SetInverted()
+void SparkBase::SetInverted
+(
+bool
+isInverted
+)
+override
+Common interface for inverting direction of a speed controller.
+This call has no effect if the controller is a follower. To invert a follower, see the follow() method.
+Parameters
+isInverted
+The state of inversion, true is inverted.
+Deprecated:
+Use
+SparkBaseConfig.Inverted()
+with
+Configure()
+instead
+◆
+GetInverted()
+bool SparkBase::GetInverted
+(
+)
+const
+override
+Common interface for returning the inversion state of a speed controller.
+This call has no effect if the controller is a follower.
+Returns
+isInverted The state of inversion, true is inverted.
+Deprecated:
+Use
+SparkBaseConfigAccessor.GetInverted()
+via
+SparkMax.configAccessor
+or
+SparkFlex.configAccessor
+instead
+◆
+Disable()
+void SparkBase::Disable
+(
+)
+override
+Common interface for disabling a motor.
+◆
+StopMotor()
+void SparkBase::StopMotor
+(
+)
+override
+Common interface to stop the motor until Set is called again.
+◆
+Configure()
+rev::REVLibError
+SparkBase::Configure
+(
+SparkBaseConfig
+&
+config
+,
+ResetMode
+resetMode
+,
+PersistMode
+persistMode
+)
+virtual
+Set the configuration for the SPARK.
+If
+resetMode
+is
+ResetMode::kResetSafeParameters
+, this method will reset safe writable parameters to their default values before setting the given configuration. The following parameters will not be reset by this action: CAN ID, Motor Type, Idle Mode, PWM Input Deadband, and Duty Cycle Offset.
+If
+persistMode
+is
+PersistMode::kPersistParameters
+, this method will save all parameters to the SPARK's non-volatile memory after setting the given configuration. This will allow parameters to persist across power cycles.
+Parameters
+config
+The desired SPARK configuration
+resetMode
+Whether to reset safe parameters before setting the configuration
+persistMode
+Whether to persist the parameters after setting the configuration
+Returns
+REVLibError::kOk
+if successful
+Reimplemented in
+rev::spark::SparkMax
+.
+◆
+ConfigureAsync()
+rev::REVLibError
+SparkBase::ConfigureAsync
+(
+SparkBaseConfig
+&
+config
+,
+ResetMode
+resetMode
+,
+PersistMode
+persistMode
+)
+virtual
+Set the configuration for the SPARK without waiting for a response.
+If
+resetMode
+is
+ResetMode::kResetSafeParameters
+, this method will reset safe writable parameters to their default values before setting the given configuration. The following parameters will not be reset by this action: CAN ID, Motor Type, Idle Mode, PWM Input Deadband, and Duty Cycle Offset.
+If
+persistMode
+is
+PersistMode::kPersistParameters
+, this method will save all parameters to the SPARK's non-volatile memory after setting the given configuration. This will allow parameters to persist across power cycles.
+NOTE: This method will immediately return
+REVLibError::kOk
+and the action will be done in the background. Any errors that occur will be reported to the driver station.
+Parameters
+config
+The desired SPARK configuration
+resetMode
+Whether to reset safe parameters before setting the configuration
+persistMode
+Whether to persist the parameters after setting the configuration
+Returns
+REVLibError::kOk
+See also
+Configure()
+◆
+GetEncoder()
+SparkRelativeEncoder
+& SparkBase::GetEncoder
+(
+)
+Returns an object for interfacing with the encoder connected to the encoder pins or front port of the SPARK MAX or the motor interface of the SPARK Flex.
+◆
+GetAnalog()
+SparkAnalogSensor
+& SparkBase::GetAnalog
+(
+)
+Returns an object for interfacing with a connected analog sensor. By default, the mode is set to kAbsolute, thus treating the sensor as an absolute sensor.
+◆
+GetAbsoluteEncoder()
+SparkAbsoluteEncoder
+& SparkBase::GetAbsoluteEncoder
+(
+)
+virtual
+Returns an object for interfacing with a connected absolute encoder.
+The default encoder type is assumed to be a duty cycle sensor.
+Reimplemented in
+rev::spark::SparkMax
+.
+◆
+GetClosedLoopController()
+SparkClosedLoopController
+& SparkBase::GetClosedLoopController
+(
+)
+Returns an object for interfacing with the integrated Closed Loop Controller.
+◆
+GetForwardLimitSwitch()
+SparkLimitSwitch
+& SparkBase::GetForwardLimitSwitch
+(
+)
+virtual
+Returns an object for interfacing with the forward limit switch connected to the appropriate pins on the data port.
+This call will disable support for the alternate encoder.
+Reimplemented in
+rev::spark::SparkMax
+.
+◆
+GetReverseLimitSwitch()
+SparkLimitSwitch
+& SparkBase::GetReverseLimitSwitch
+(
+)
+virtual
+Returns an object for interfacing with the reverse limit switch connected to the appropriate pins on the data port.
+This call will disable support for the alternate encoder.
+Reimplemented in
+rev::spark::SparkMax
+.
+◆
+GetForwardSoftLimit()
+SparkSoftLimit
+& SparkBase::GetForwardSoftLimit
+(
+)
+Returns an object for interfacing with the forward soft limit switch
+◆
+GetReverseSoftLimit()
+SparkSoftLimit
+& SparkBase::GetReverseSoftLimit
+(
+)
+Returns an object for interfacing with the reverse soft limit switch
+◆
+ResumeFollowerMode()
+rev::REVLibError
+SparkBase::ResumeFollowerMode
+(
+)
+Resume follower mode if the SPARK has a valid follower mode config.
+NOTE: Follower mode will start automatically upon configuring follower mode. If the SPARK experiences a power cycle and has follower mode configured, follower mode will automatically restart. This method is only useful after
+PauseFollowerMode()
+has been called.
+Returns
+REVLibError::kOk
+if successful
+◆
+ResumeFollowerModeAsync()
+rev::REVLibError
+SparkBase::ResumeFollowerModeAsync
+(
+)
+Resume follower mode if the SPARK has a valid follower mode config without waiting for a response.
+NOTE: Follower mode will start automatically upon configuring follower mode. If the SPARK experiences a power cycle and has follower mode configured, follower mode will automatically restart. This method is only useful after
+PauseFollowerMode()
+has been called.
+NOTE: This method will immediately return
+REVLibError::kOk
+and the action will be done in the background. Any errors that occur will be reported to the driver station.
+Returns
+REVLibError::kOk
+See also
+ResumeFollowerMode()
+◆
+PauseFollowerMode()
+rev::REVLibError
+SparkBase::PauseFollowerMode
+(
+)
+Pause follower mode.
+NOTE: If the SPARK experiences a power cycle and has follower mode configured, follower mode will automatically restart.
+Returns
+REVLibError::kOk
+if successful
+◆
+PauseFollowerModeAsync()
+rev::REVLibError
+SparkBase::PauseFollowerModeAsync
+(
+)
+Pause follower mode without waiting for a response.
+NOTE: If the SPARK experiences a power cycle and has follower mode configured, follower mode will automatically restart.
+NOTE: This method will immediately return
+REVLibError::kOk
+and the action will be done in the background. Any errors that occur will be reported to the driver station.
+Returns
+REVLibError::kOk
+See also
+PauseFollowerMode()
+◆
+IsFollower()
+bool SparkBase::IsFollower
+(
+)
+Returns whether the controller is following another controller
+Returns
+True if this device is following another controller false otherwise
+◆
+HasActiveFault()
+bool SparkBase::HasActiveFault
+(
+)
+Get whether the SPARK has one or more active faults.
+Returns
+true if there is an active fault
+See also
+GetFaults()
+◆
+HasStickyFault()
+bool SparkBase::HasStickyFault
+(
+)
+Get whether the SPARK has one or more sticky faults.
+Returns
+true if there is a sticky fault
+See also
+GetStickyFaults()
+◆
+HasActiveWarning()
+bool SparkBase::HasActiveWarning
+(
+)
+Get whether the SPARK has one or more active warnings.
+Returns
+true if there is an active warning
+See also
+GetWarnings()
+◆
+HasStickyWarning()
+bool SparkBase::HasStickyWarning
+(
+)
+Get whether the SPARK has one or more sticky warnings.
+Returns
+true if there is a sticky warning
+See also
+GetStickyWarnings()
+◆
+GetFaults()
+SparkBase::Faults
+SparkBase::GetFaults
+(
+)
+Get the active faults that are currently present on the SPARK.
+Faults
+are fatal errors that prevent the motor from running.
+Returns
+A struct with each fault and their active value
+◆
+GetStickyFaults()
+SparkBase::Faults
+SparkBase::GetStickyFaults
+(
+)
+Get the sticky faults that were present on the SPARK at one point since the sticky faults were last cleared.
+Faults
+are fatal errors that prevent the motor from running.
+Sticky faults can be cleared with
+SparkBase::ClearFaults()
+.
+Returns
+A struct with each fault and their sticky value
+◆
+GetWarnings()
+SparkBase::Warnings
+SparkBase::GetWarnings
+(
+)
+Get the active warnings that are currently present on the SPARK.
+Warnings
+are non-fatal errors.
+Returns
+A struct with each warning and their active value
+◆
+GetStickyWarnings()
+SparkBase::Warnings
+SparkBase::GetStickyWarnings
+(
+)
+Get the sticky warnings that were present on the SPARK at one point since the sticky warnings were last cleared.
+Warnings
+are non-fatal errors.
+Sticky warnings can be cleared with SparkBase::clearFaults().
+Returns
+A struct with each warning and their sticky value
+◆
+GetBusVoltage()
+double SparkBase::GetBusVoltage
+(
+)
+Returns the voltage fed into the motor controller.
+◆
+GetAppliedOutput()
+double SparkBase::GetAppliedOutput
+(
+)
+Simulation note: this value will not be updated during simulation unless
+SparkSim#iterate
+is called
+Returns motor controller's output duty cycle.
+◆
+GetOutputCurrent()
+double SparkBase::GetOutputCurrent
+(
+)
+Returns motor controller's output current in Amps.
+◆
+GetMotorTemperature()
+double SparkBase::GetMotorTemperature
+(
+)
+Returns the motor temperature in Celsius.
+◆
+ClearFaults()
+rev::REVLibError
+SparkBase::ClearFaults
+(
+)
+Clears all non-sticky faults.
+Sticky faults must be cleared by resetting the motor controller.
+◆
+SetCANTimeout()
+rev::REVLibError
+SparkBase::SetCANTimeout
+(
+int
+milliseconds
+)
+Sets the timeout duration for waiting for CAN responses from the device.
+Parameters
+milliseconds
+The timeout in milliseconds.
+◆
+GetLastError()
+rev::REVLibError
+SparkBase::GetLastError
+(
+)
+All device errors are tracked on a per thread basis for all devices in that thread. This is meant to be called immediately following another call that has the possibility of throwing an error to validate if an error has occurred.
+Returns
+the last error that was generated.
+◆
+GetEncoderEvenIfAlreadyCreated()
+SparkRelativeEncoder
+SparkBase::GetEncoderEvenIfAlreadyCreated
+(
+)
+protected
+◆
+GetMotorInterface()
+uint8_t SparkBase::GetMotorInterface
+(
+)
+protected
+Get the current motor interface for the SPARK.
+Returns
+◆
+GetSparkModel()
+SparkBase::SparkModel
+SparkBase::GetSparkModel
+(
+)
+protected
+Get the Model of this SPARK Device. Useful for determining if this is a Flex, MAX, or other device
+Returns
+the model of this device
+Friends And Related Function Documentation
+◆
+SparkMax
+friend class
+SparkMax
+friend
+◆
+SparkFlex
+friend class
+SparkFlex
+friend
+◆
+SparkLimitSwitch
+friend class
+SparkLimitSwitch
+friend
+◆
+SparkSoftLimit
+friend class
+SparkSoftLimit
+friend
+◆
+SparkRelativeEncoder
+friend class
+SparkRelativeEncoder
+friend
+◆
+SparkMaxAlternateEncoder
+friend class
+SparkMaxAlternateEncoder
+friend
+◆
+SparkAbsoluteEncoder
+friend class
+SparkAbsoluteEncoder
+friend
+◆
+SparkSim
+friend class
+SparkSim
+friend
+◆
+SparkClosedLoopController
+friend class
+SparkClosedLoopController
+friend
+◆
+::ConfigBase
+friend class ::ConfigBase
+friend
+Member Data Documentation
+◆
+m_setpoint
+double rev::spark::SparkBase::m_setpoint {0.0}
+protected
+◆
+m_RelativeEncoder
+SparkRelativeEncoder
+rev::spark::SparkBase::m_RelativeEncoder
+protected
+◆
+m_relativeEncoderCreated
+std::atomic<bool> rev::spark::SparkBase::m_relativeEncoderCreated {false}
+protected
+◆
+m_AnalogSensor
+SparkAnalogSensor
+rev::spark::SparkBase::m_AnalogSensor
+protected
+◆
+m_analogSensorCreated
+std::atomic<bool> rev::spark::SparkBase::m_analogSensorCreated {false}
+protected
+◆
+m_AbsoluteEncoder
+SparkAbsoluteEncoder
+rev::spark::SparkBase::m_AbsoluteEncoder
+protected
+◆
+m_absoluteEncoderCreated
+std::atomic<bool> rev::spark::SparkBase::m_absoluteEncoderCreated {false}
+protected
+◆
+m_ClosedLoopController
+SparkClosedLoopController
+rev::spark::SparkBase::m_ClosedLoopController
+protected
+◆
+m_closedLoopControllerCreated
+std::atomic<bool> rev::spark::SparkBase::m_closedLoopControllerCreated {false}
+protected
+◆
+m_ForwardLimitSwitch
+SparkLimitSwitch
+rev::spark::SparkBase::m_ForwardLimitSwitch
+protected
+◆
+m_forwardLimitSwitchCreated
+std::atomic<bool> rev::spark::SparkBase::m_forwardLimitSwitchCreated {false}
+protected
+◆
+m_ReverseLimitSwitch
+SparkLimitSwitch
+rev::spark::SparkBase::m_ReverseLimitSwitch
+protected
+◆
+m_reverseLimitSwitchCreated
+std::atomic<bool> rev::spark::SparkBase::m_reverseLimitSwitchCreated {false}
+protected
+◆
+m_ForwardSoftLimit
+SparkSoftLimit
+rev::spark::SparkBase::m_ForwardSoftLimit
+protected
+◆
+m_forwardSoftLimitCreated
+std::atomic<bool> rev::spark::SparkBase::m_forwardSoftLimitCreated {false}
+protected
+◆
+m_ReverseSoftLimit
+SparkSoftLimit
+rev::spark::SparkBase::m_ReverseSoftLimit
+protected
+◆
+m_reverseSoftLimitCreated
+std::atomic<bool> rev::spark::SparkBase::m_reverseSoftLimitCreated {false}
+protected
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/
+SparkBase.h
+src/main/native/cpp/
+SparkBase.cpp
+rev
+spark
+SparkBase
+Generated by
+1.9.2

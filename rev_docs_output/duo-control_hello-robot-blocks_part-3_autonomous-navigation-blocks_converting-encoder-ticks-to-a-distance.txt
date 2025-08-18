@@ -1,0 +1,451 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+What's Needed for the Conversion
+Ticks per Revolution
+Total Gear Reduction
+Circumference of the Wheel
+Quick Summary
+Translating the Conversion to Code
+Setting up Variables
+Calculating COUNTS_PER_WHEEL_REV
+Calculating COUNTS_PER_MM
+Final Variables
+Was this helpful?
+Export as PDF
+In the previous section, the basic structure needed to use
+RUN_TO_POSITION
+was created. The placement of
+within the code, set the target position to 1000 ticks.
+But how far is a tick and how can we use them to help our robot navigate an area? We could attempt to estimate the distance the robot moves per tick or we can convert the amount of ticks per revolution of the encoder into a unit like millimeters or inches! For instance, if you work through the conversion process and find out that a drivetrain takes 700 ticks to move an inch, this can be used to find the total number of ticks need to move the robot 24 inches.
+Reminder that the basis for this guide is the
+Class Bot V2
+. The REV DUO Build System is a metric system. Since part of the conversion process references the diameter of the wheels, this section will convert to ticks per mm.
+What's Needed for the Conversion
+This process will take a bit of math to achieve so let's break it down.
+When using encoders built into motors, converting from ticks per revolution to ticks per unit of measure moved requires the following information:
+Ticks per revolution of the encoder shaft
+Total gear reduction on the motor
+Including gearboxes and motion transmission components like gears, sprockets and chain, or belts and pulleys
+Circumference of the driven wheels
+Ticks per Revolution
+The amount of ticks per revolution of the encoder shaft is dependent on the motor and encoder. Manufacturers of motors with built-in encoders will have information on the amount of ticks per revolution.
+For HD Hex Motors the encoder counts 28 ticks per revolution of the motor shaft.
+Visit the manufacturers website for your motor or encoders for more information on encoder counts. For HD Hex Motors or Core Hex Motors visit the
+Motor
+documentation.
+Total Gear Reduction
+Since ticks per revolution of the encoder shaft is before any gear reduction calculating the total gear reduction is needed. This includes the gearbox and any addition reduction from motion transmission components. To find the total gear reduction use the
+Compound Gearing formula
+.
+For the Class Bot V2 there are two UltraPlanetary Cartridges, 4:1 and 5:1, and an additional gear reduction from the UltraPlanetary Output to the wheels, 72T:45T ratio.
+The UltraPlanetary Cartridges use the nominal gear ratio as a descriptor. The actual gear ratios can be found in the
+UltraPlanetary Users Manual's Cartridge Details
+.
+Using the compound gearing formula for the Class Bot V2 the total gear reduction is:
+3.61
+1
+∗
+5.23
+1
+∗
+72
+45
+=
+30.21
+\frac{3.61}{1} * \frac{5.23}{1} * \frac{72}{45} = 30.21
+1
+3.61
+​
+∗
+1
+5.23
+​
+∗
+45
+72
+​
+=
+30.21
+Unlike the spur gears used to transfer motion to the wheels, the UltraPlanetary Gearbox Cartridges are planetary gear systems. To make calculations easier the gear ratios for the Cartridges are already reduced.
+Circumference of the Wheel
+The Class Bot V2 uses the 90mm Traction Wheels. 90mm is the diameter of the wheel. To get the appropriate circumference use the following formula
+c
+i
+r
+c
+u
+m
+f
+e
+r
+e
+n
+c
+e
+=
+d
+i
+a
+m
+e
+t
+e
+r
+∗
+π
+circumference = diameter * \pi
+c
+i
+rc
+u
+m
+f
+ere
+n
+ce
+=
+d
+iam
+e
+t
+er
+∗
+π
+You can calculate this by hand, but for the purpose of this guide, this can be calculated within the code.
+Due to wear and manufacturing tolerances, the diameter of some wheels may be nominally different. For the most accurate results consider measuring your wheel to confirm that the diameter is accurate.
+Quick Summary
+To summarize, for the Class Bot V2 the following information is true:
+Ticks per revolution
+28 ticks
+Total gear reduction
+30.21
+Circumference of the wheel
+90
+m
+m
+∗
+π
+90mm * \pi
+90
+mm
+∗
+π
+Translating the Conversion to Code
+Setting up Variables
+Each of these pieces of information will be used to find the number of encoder ticks (or counts) per mm that the wheel moves. Rather than worry about calculating this information by hand, these values can be added to the code as constant variables. To do this create three variables:
+COUNTS_PER_MOTOR_REV
+DRIVE_GEAR_REDUCTION
+WHEEL_CIRCUMFERENCE_MM
+The common naming convention for constant variables is known as CONSTANT_CASE, where the variable name is in all caps and words are separated by and underscore.
+We'll add the
+variables
+to the initialization section of the OpMode:
+Adding our new variables to initialization
+Once the variables are created and added to the OpMode, use the
+blocks to set the variables to the respective values.
+For
+WHEEL_CIRCUMFERENCE_MM
+a combination of the
+,
+, and
+blocks will be used to get the circumference of the wheel.
+Now that these three variables have been defined, we can use them to calculate two other variables: the
+amount of encoder counts per rotation of the wheel
+and
+the number of counts per mm that the wheel moves
+.
+Calculating COUNTS_PER_WHEEL_REV
+To calculate counts per wheel revolution multiply
+COUNTS_PER_MOTOR_REV
+by
+DRIVE_GEAR_REDUCTION
+Use the following formula:
+y
+=
+a
+∗
+b
+y = a
+*b
+y
+=
+a
+∗
+b
+Where:
+a
+a
+a
+=
+COUNTS_PER_MOTOR_REV
+b
+b
+b
+=
+DRIVE_GEAR_REDUCTION
+y
+y
+y
+=
+COUNTS_PER_WHEEL_REV
+Again math blocks need to be used to define these variables. Lets start with the
+COUNTS_PER_WHEEL_REV
+variable. Add a
+to the
+block. Add the
+and
+blocks to either side of the
+block.
+Calculating COUNTS_PER_MM
+Once the
+COUNTS_PER_WHEEL_REV
+is calculated, it can be used to calculate the counts per mm that the wheel moves. To do this divide the
+COUNTS_PER_WHEEL_REV
+by the
+WHEEL_CIRCUMFERENCE_MM
+. Use the following formula.
+x
+=
+(
+a
+∗
+b
+)
+c
+=
+y
+c
+x = \frac{(a*b)}{c} = \frac{y}{c}
+x
+=
+c
+(
+a
+∗
+b
+)
+​
+=
+c
+y
+​
+Where,
+a
+a
+a
+=
+COUNTS_PER_MOTOR_REV
+b
+b
+b
+=
+DRIVE_GEAR_REDUCTION
+c
+c
+c
+=
+WHEEL_CIRCUMFERENCE_MM
+y
+y
+y
+=
+COUNTS_PER_WHEEL_REV
+x
+x
+x
+=
+COUNTS_PER_MM
+COUNTS_PER_WHEEL_REV
+will be created as a separate variable from
+COUNTS_PER_MM
+as it is used in calculating a target velocity.
+Since
+COUNTS_PER_WHEEL_REV
+has been calculated it can be used to calculate
+COUNTS_PER_MM
+add the
+to the
+. On the left side of the
+add the
+block. On the right side of the
+add the
+.
+Final Variables
+Once
+COUNTS_PER_WHEEL_MM
+is set, this completes the conversion process, and all constant variables are set.
+Make sure to save your OpMode here to prevent any progress being lost in the event of a disconnect!
+Previous
+Drivetrain Encoders - Blocks
+Next
+Moving to a Target Distance
+Last updated
+9 months ago
+Was this helpful?

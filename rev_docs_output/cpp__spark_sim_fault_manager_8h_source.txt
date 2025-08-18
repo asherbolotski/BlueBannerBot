@@ -1,0 +1,278 @@
+REVLib - C++
+SparkSimFaultManager.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#ifndef FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SPARKSIMFAULTMANAGER_H_
+30
+#define FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SPARKSIMFAULTMANAGER_H_
+31
+32
+#include <string>
+33
+34
+#include <frc/simulation/SimDeviceSim.h>
+35
+#include <hal/SimDevice.h>
+36
+37
+#include "
+rev/SparkBase.h
+"
+38
+#include "
+rev/SparkFlex.h
+"
+39
+#include "
+rev/SparkMax.h
+"
+40
+41
+namespace
+rev::spark
+{
+42
+43
+class
+SparkSimFaultManager
+{
+44
+public
+:
+45
+explicit
+SparkSimFaultManager
+(
+SparkMax
+* motor);
+46
+explicit
+SparkSimFaultManager
+(
+SparkFlex
+* motor);
+47
+48
+void
+SetFaults
+(
+const
+SparkBase::Faults
+& faults);
+49
+void
+SetStickyFaults
+(
+const
+SparkBase::Faults
+& faults);
+50
+void
+SetWarnings
+(
+const
+SparkBase::Warnings
+& warnings);
+51
+void
+SetStickyWarnings
+(
+const
+SparkBase::Warnings
+& warnings);
+52
+53
+private
+:
+54
+void
+SetupSimDevice();
+55
+56
+hal::SimBoolean m_otherFault;
+57
+hal::SimBoolean m_motorTypeFault;
+58
+hal::SimBoolean m_sensorFault;
+59
+hal::SimBoolean m_canFault;
+60
+hal::SimBoolean m_temperatureFault;
+61
+hal::SimBoolean m_drvFault;
+62
+hal::SimBoolean m_escEepromFault;
+63
+hal::SimBoolean m_firmwareFault;
+64
+hal::SimBoolean m_brownoutWarning;
+65
+hal::SimBoolean m_overCurrentWarning;
+66
+hal::SimBoolean m_escEepromWarning;
+67
+hal::SimBoolean m_extEepromWarning;
+68
+hal::SimBoolean m_sensorWarning;
+69
+hal::SimBoolean m_stallWarning;
+70
+hal::SimBoolean m_hasResetWarning;
+71
+hal::SimBoolean m_otherWarning;
+72
+hal::SimBoolean m_otherStickyFault;
+73
+hal::SimBoolean m_motorTypeStickyFault;
+74
+hal::SimBoolean m_sensorStickyFault;
+75
+hal::SimBoolean m_canStickyFault;
+76
+hal::SimBoolean m_temperatureStickyFault;
+77
+hal::SimBoolean m_drvStickyFault;
+78
+hal::SimBoolean m_escEepromStickyFault;
+79
+hal::SimBoolean m_firmwareStickyFault;
+80
+hal::SimBoolean m_brownoutStickyWarning;
+81
+hal::SimBoolean m_overCurrentStickyWarning;
+82
+hal::SimBoolean m_escEepromStickyWarning;
+83
+hal::SimBoolean m_extEepromStickyWarning;
+84
+hal::SimBoolean m_sensorStickyWarning;
+85
+hal::SimBoolean m_stallStickyWarning;
+86
+hal::SimBoolean m_hasResetStickyWarning;
+87
+hal::SimBoolean m_otherStickyWarning;
+88
+89
+SparkBase
+* m_spark;
+90
+std::string simDeviceName;
+91
+};
+92
+93
+}
+// namespace rev::spark
+94
+95
+#endif
+// FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SPARKSIMFAULTMANAGER_H_
+SparkBase.h
+SparkFlex.h
+SparkMax.h
+rev::spark::SparkBase
+Definition:
+SparkBase.h:58
+rev::spark::SparkFlex
+Definition:
+SparkFlex.h:37
+rev::spark::SparkMax
+Definition:
+SparkMax.h:37
+rev::spark::SparkSimFaultManager
+Definition:
+SparkSimFaultManager.h:43
+rev::spark::SparkSimFaultManager::SetStickyWarnings
+void SetStickyWarnings(const SparkBase::Warnings &warnings)
+Definition:
+SparkSimFaultManager.cpp:128
+rev::spark::SparkSimFaultManager::SetFaults
+void SetFaults(const SparkBase::Faults &faults)
+Definition:
+SparkSimFaultManager.cpp:95
+rev::spark::SparkSimFaultManager::SetStickyFaults
+void SetStickyFaults(const SparkBase::Faults &faults)
+Definition:
+SparkSimFaultManager.cpp:106
+rev::spark::SparkSimFaultManager::SparkSimFaultManager
+SparkSimFaultManager(SparkMax *motor)
+Definition:
+SparkSimFaultManager.cpp:37
+rev::spark::SparkSimFaultManager::SetWarnings
+void SetWarnings(const SparkBase::Warnings &warnings)
+Definition:
+SparkSimFaultManager.cpp:117
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::SparkBase::Faults
+Definition:
+SparkBase.h:81
+rev::spark::SparkBase::Warnings
+Definition:
+SparkBase.h:107
+src
+main
+native
+include
+rev
+sim
+SparkSimFaultManager.h
+Generated by
+1.9.2

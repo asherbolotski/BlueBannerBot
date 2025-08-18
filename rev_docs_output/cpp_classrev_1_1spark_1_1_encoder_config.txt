@@ -1,0 +1,365 @@
+REVLib - C++
+Public Member Functions
+|
+List of all members
+rev::spark::EncoderConfig Class Reference
+#include <
+EncoderConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Public Member Functions
+EncoderConfig
+()=default
+~EncoderConfig
+() override=default
+EncoderConfig
+(const
+EncoderConfig
+&)=delete
+EncoderConfig
+&
+operator=
+(const
+EncoderConfig
+&)=delete
+EncoderConfig
+(
+EncoderConfig
+&&) noexcept=delete
+EncoderConfig
+&
+operator=
+(
+EncoderConfig
+&&) noexcept=delete
+EncoderConfig
+&
+Apply
+(
+EncoderConfig
+&config)
+EncoderConfig
+&
+CountsPerRevolution
+(int cpr)
+EncoderConfig
+&
+Inverted
+(bool inverted)
+EncoderConfig
+&
+PositionConversionFactor
+(double factor)
+EncoderConfig
+&
+VelocityConversionFactor
+(double factor)
+EncoderConfig
+&
+QuadratureAverageDepth
+(int depth)
+EncoderConfig
+&
+QuadratureMeasurementPeriod
+(int periodMs)
+EncoderConfig
+&
+UvwAverageDepth
+(int depth)
+EncoderConfig
+&
+UvwMeasurementPeriod
+(int periodMs)
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+virtual std::string
+Flatten
+()
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Constructor & Destructor Documentation
+◆
+EncoderConfig()
+[1/3]
+rev::spark::EncoderConfig::EncoderConfig
+(
+)
+default
+◆
+~EncoderConfig()
+rev::spark::EncoderConfig::~EncoderConfig
+(
+)
+override
+default
+◆
+EncoderConfig()
+[2/3]
+rev::spark::EncoderConfig::EncoderConfig
+(
+const
+EncoderConfig
+&
+)
+delete
+◆
+EncoderConfig()
+[3/3]
+rev::spark::EncoderConfig::EncoderConfig
+(
+EncoderConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+EncoderConfig
+& rev::spark::EncoderConfig::operator=
+(
+const
+EncoderConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+EncoderConfig
+& rev::spark::EncoderConfig::operator=
+(
+EncoderConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+EncoderConfig
+& EncoderConfig::Apply
+(
+EncoderConfig
+&
+config
+)
+Applies settings from another
+EncoderConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+EncoderConfig
+to copy settings from
+Returns
+The updated
+EncoderConfig
+for method chaining
+◆
+CountsPerRevolution()
+EncoderConfig
+& EncoderConfig::CountsPerRevolution
+(
+int
+cpr
+)
+Set the counts per revolutions of the encoder.
+NOTE: This only applies to an encoder used in brushed mode.
+Parameters
+cpr
+The counts per rotation
+Returns
+The modified
+EncoderConfig
+object for method chaining
+◆
+Inverted()
+EncoderConfig
+& EncoderConfig::Inverted
+(
+bool
+inverted
+)
+Set the phase of the encoder so that it is in phase with the motor itself.
+NOTE: This only applies to an encoder used in brushed mode.
+Parameters
+inverted
+The phase of the encoder
+Returns
+The modified
+EncoderConfig
+object for method chaining
+◆
+PositionConversionFactor()
+EncoderConfig
+& EncoderConfig::PositionConversionFactor
+(
+double
+factor
+)
+Set the conversion factor for the position of the encoder. Position is returned in native units of rotations and will be multiplied by this conversion factor.
+Parameters
+factor
+The conversion factor to multiply the native units by
+Returns
+The modified
+EncoderConfig
+object for method chaining
+◆
+VelocityConversionFactor()
+EncoderConfig
+& EncoderConfig::VelocityConversionFactor
+(
+double
+factor
+)
+Set the conversion factor for the velocity of the encoder. Velocity is returned in native units of rotations per minute and will be multiplied by this conversion factor.
+Parameters
+factor
+The conversion factor to multiply the native units by
+Returns
+The modified
+EncoderConfig
+object for method chaining
+◆
+QuadratureAverageDepth()
+EncoderConfig
+& EncoderConfig::QuadratureAverageDepth
+(
+int
+depth
+)
+Set the sampling depth of the velocity calculation process of the encoder. This value sets the number of samples in the average for velocity readings. This value must be in the range [1, 64]. The default value is 64.
+Parameters
+depth
+The velocity calculation process's sampling depth
+Returns
+The modified
+EncoderConfig
+object for method chaining
+◆
+QuadratureMeasurementPeriod()
+EncoderConfig
+& EncoderConfig::QuadratureMeasurementPeriod
+(
+int
+periodMs
+)
+Set the position measurement period used to calculate the velocity of the encoder. This value is in units of milliseconds and must be in a range [1, 100]. The default value is 100ms
+The basic formula to calculate velocity is change in position / change in time. This parameter sets the change in time for measurement.
+Parameters
+periodMs
+Measurement period in milliseconds
+Returns
+The modified
+EncoderConfig
+object for method chaining
+◆
+UvwAverageDepth()
+EncoderConfig
+& EncoderConfig::UvwAverageDepth
+(
+int
+depth
+)
+Set the sampling depth of the velocity calculation process of the encoder. This value sets the number of samples in the average for velocity readings. This value must be either 1, 2, 4, or 8 (default).
+Parameters
+depth
+The velocity calculation process's sampling depth
+Returns
+The modified
+EncoderConfig
+object for method chaining
+◆
+UvwMeasurementPeriod()
+EncoderConfig
+& EncoderConfig::UvwMeasurementPeriod
+(
+int
+periodMs
+)
+Set the position measurement period used to calculate the velocity of the encoder. This value is in units of milliseconds and must be in a range [8, 64]. The default value is 32ms.
+The basic formula to calculate velocity is change in position / change in time. This parameter sets the change in time for measurement.
+Parameters
+periodMs
+Measurement period in milliseconds
+Returns
+The modified
+EncoderConfig
+object for method chaining
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+EncoderConfig.h
+src/main/native/cpp/config/
+EncoderConfig.cpp
+rev
+spark
+EncoderConfig
+Generated by
+1.9.2

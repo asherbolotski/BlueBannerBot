@@ -1,0 +1,490 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Initialization:
+waitForStart();
+opModeIsActive()
+Adding Comments
+Common Errors
+Bracket Mismatch
+Mismatched File/Class Names
+Was this helpful?
+Export as PDF
+During the process of creating an OpMode the OnBot Java tool prompted the selection of a sample code. In OnBot these samples act as templates; providing the outline and logical structure for different robotics use cases. In the previous section the sample code
+BlankLinearOpMode
+was selected. This sample code, seen in below, is the structural shell needed in order to have a working Linear OpMode.
+If using Robot Controller App v10.3 or newer the way templates are used has changed.
+More information is available here
+.
+Copy
+/*
+Copyright 2024
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+package
+org
+.
+firstinspires
+.
+ftc
+.
+teamcode
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+eventloop
+.
+opmode
+.
+LinearOpMode
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+Blinker
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+Servo
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+TouchSensor
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+eventloop
+.
+opmode
+.
+TeleOp
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+eventloop
+.
+opmode
+.
+Disabled
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+DcMotor
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+DcMotorSimple
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+util
+.
+ElapsedTime
+;
+@
+TeleOp
+public
+class
+HelloRobot_TeleOp
+extends
+LinearOpMode
+{
+private
+Blinker
+control_Hub;
+private
+DcMotor
+test_motor;
+private
+Servo
+test_servo;
+private
+TouchSensor
+test_touch;
+@
+Override
+public
+void
+runOpMode
+() {
+control_Hub
+=
+hardwareMap
+.
+get
+(
+Blinker
+.
+class
+,
+"Control Hub"
+);
+test_motor
+=
+hardwareMap
+.
+get
+(
+DcMotor
+.
+class
+,
+"test_motor"
+);
+test_servo
+=
+hardwareMap
+.
+get
+(
+Servo
+.
+class
+,
+"test_servo"
+);
+test_touch
+=
+hardwareMap
+.
+get
+(
+TouchSensor
+.
+class
+,
+"test_touch"
+);
+telemetry
+.
+addData
+(
+"Status"
+,
+"Initialized"
+);
+telemetry
+.
+update
+();
+// Wait for the game to start (driver presses PLAY)
+waitForStart()
+;
+// run until the end of the match (driver presses STOP)
+while
+(
+opModeIsActive()
+) {
+telemetry
+.
+addData
+(
+"Status"
+,
+"Running"
+);
+telemetry
+.
+update
+();
+}
+}
+}
+Throughout Hello Robot we will primarily be focusing on modifying the code found during our initialization process and
+while loop
+that runs when the
+Play
+button is pressed on the Driver Hub. As such, most examples will begin at
+public void runOpMode()
+.
+When utilizing the samples provided in this tutorial, double check that the correct number of brackets and file names are added to your final program!
+Let's take a quick tour of this template!
+Initialization:
+Our first section of code is our hardwareMap. This is where our attached components are called and defined between the program and the configuration file
+Copy
+control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
+test_motor = hardwareMap.get(DcMotor.class, "test_motor");
+test_servo = hardwareMap.get(Servo.class, "test_servo");
+test_touch = hardwareMap.get(TouchSensor.class, "test_touch");
+Within this area of our OpMode is anything we want to run BEFORE we press Play on the Driver Hub, but AFTER we press to initialize. This might include defining variables, motor directions, or servo positions!
+waitForStart();
+Copy
+// Wait for the game to start (driver presses PLAY)
+waitForStart();
+Any code following this our waitForStart(); but before our while loop begins will be read ONCE when our play button is pressed! This might be used for resetting timers.
+opModeIsActive()
+Copy
+while (opModeIsActive()) {
+telemetry.addData("Status", "Running");
+telemetry.update();
+}
+Last is our while loop! This is where any code we want to actively run and/or repeat until we press STOP is entered.
+You will complete the majority of your program here.
+Adding Comments
+Comments
+are lines of code intended to help you the programmer.
+They can be used to explain the function of a section of code. This is especially helpful in collaborative programming environments. If code is handed from one programmer to another, comments communicate the intent of the code to the other programmer.
+You can see a few premade comments already in our template written by the FIRST Tech Team to help get started!
+To create a comment add
+//
+before the comment to be made. This can also be used to temporarily remove a line of code as the robot will not read comments!
+Copy
+// Wait for the game to start (driver presses PLAY)
+// run until the end of the match (driver presses STOP)
+Common Errors
+Bracket Mismatch
+OnBot Java will attempt to notify you if there are either TOO MANY brackets within your code or NOT ENOUGH brackets by highlighting the final line in red as seen below:
+The build errors may appear as below:
+A bracket appears to be missing from the program!
+There appears to be an extra bracket in the program!
+Keep in mind while checking your brackets that the error may be on a
+different
+line than the one reported! Take a look at the following example:
+In this case, the missing bracket is on line 75 where my loop begins and should match with line 84's bracket. Once I have this corrected I can see the error clears:
+Mismatched File/Class Names
+Click to enlarge error image
+While building your program you may encounter an error stating the class name is public and needs to be declared. This error can be common while copying and pasting from an example or tutorial and is the result of a mismatched name between the file name and public class.
+Looking at the above example I can see my file is named "HelloRobot_TeleOp.java", but my class is "HelloWorld_TeleOp"!
+To remedy this error, I could change my class name to match OR my file name. Which option is more ideal can be dependent on your end goal and how all your programs interact.
+To change the name of a file, right click it on the list:
+When renaming an OnBot Java file, the name is case sensitive and requires .java to be added to the end:
+Alternatively, as previously mentioned, the public class name can be updated before building again to clear the error:
+Always remember to Build your program after making major changes and before testing with your robot!
+Previous
+Creating an OpMode - OnBot
+Next
+Programming Servos
+Last updated
+11 days ago
+Was this helpful?

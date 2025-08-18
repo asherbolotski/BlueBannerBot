@@ -1,0 +1,505 @@
+REVLib - C++
+Classes
+|
+Public Types
+|
+Public Member Functions
+|
+Public Attributes
+|
+Friends
+|
+List of all members
+rev::servohub::ServoHub Class Reference
+#include <
+ServoHub.h
+>
+Inherits
+rev::servohub::ServoHubLowLevel
+.
+Classes
+struct
+Faults
+struct
+Warnings
+Public Types
+enum class
+ResetMode
+{
+kNoResetSafeParameters
+,
+kResetSafeParameters
+}
+enum class
+Bank
+{
+kBank0_2
+= 0
+,
+kBank3_5
+= 1
+ }
+Public Types inherited from
+rev::servohub::ServoHubLowLevel
+enum class
+CommunicationMode
+{
+kNone
+= 0
+,
+kCAN
+= 1
+,
+kRS_485
+= 2
+ }
+Public Member Functions
+ServoHub
+(int deviceID)
+~ServoHub
+() override
+REVLibError
+Configure
+(
+ServoHubConfig
+&config,
+ResetMode
+resetMode=
+ResetMode::kNoResetSafeParameters
+)
+REVLibError
+ConfigureAsync
+(
+ServoHubConfig
+&config,
+ResetMode
+resetMode=
+ResetMode::kNoResetSafeParameters
+)
+bool
+HasActiveFault
+() const
+bool
+HasStickyFault
+() const
+bool
+HasActiveWarning
+() const
+bool
+HasStickyWarning
+() const
+Faults
+GetFaults
+() const
+Faults
+GetStickyFaults
+() const
+Warnings
+GetWarnings
+() const
+Warnings
+GetStickyWarnings
+() const
+REVLibError
+ClearFaults
+()
+double
+GetDeviceVoltage
+() const
+double
+GetDeviceCurrent
+() const
+double
+GetServoVoltage
+() const
+ServoChannel
+&
+GetServoChannel
+(
+ServoChannel::ChannelId
+channelId)
+REVLibError
+SetBankPulsePeriod
+(
+Bank
+bank, int pulsePeriod_us)
+Public Member Functions inherited from
+rev::servohub::ServoHubLowLevel
+virtual
+~ServoHubLowLevel
+()
+int
+GetDeviceId
+() const
+FirmwareVersion
+GetFirmwareVersion
+() const
+std::string
+GetFirmwareVersionString
+() const
+void
+SetPeriodicFrameTimeout
+(int timeout_ms)
+REVLibError
+SetCANTimeout
+(int timeout_ms)
+void
+SetCANMaxRetries
+(int numRetries)
+void
+SetControlFramePeriodMs
+(int period_ms)
+int
+GetControlFramePeriodMs
+() const
+PeriodicStatus0
+GetPeriodicStatus0
+() const
+PeriodicStatus1
+GetPeriodicStatus1
+() const
+PeriodicStatus2
+GetPeriodicStatus2
+() const
+PeriodicStatus3
+GetPeriodicStatus3
+() const
+PeriodicStatus4
+GetPeriodicStatus4
+() const
+void
+CreateSimFaultManager
+()
+Public Attributes
+ServoHubConfigAccessor
+configAccessor
+Friends
+class
+ServoHubSim
+Additional Inherited Members
+Protected Member Functions inherited from
+rev::servohub::ServoHubLowLevel
+ServoHubLowLevel
+(int deviceID)
+Protected Attributes inherited from
+rev::servohub::ServoHubLowLevel
+void *
+m_servoHubHandle
+{nullptr}
+Member Enumeration Documentation
+◆
+ResetMode
+enum class
+rev::servohub::ServoHub::ResetMode
+strong
+Enumerator
+kNoResetSafeParameters
+kResetSafeParameters
+◆
+Bank
+enum class
+rev::servohub::ServoHub::Bank
+strong
+Enumerator
+kBank0_2
+kBank3_5
+Constructor & Destructor Documentation
+◆
+ServoHub()
+ServoHub::ServoHub
+(
+int
+deviceID
+)
+explicit
+Create a new object to control a
+ServoHub
+Servo Controller
+Parameters
+deviceID
+The device ID.
+◆
+~ServoHub()
+ServoHub::~ServoHub
+(
+)
+override
+Closes the
+ServoHub
+Member Function Documentation
+◆
+Configure()
+REVLibError
+ServoHub::Configure
+(
+ServoHubConfig
+&
+config
+,
+ResetMode
+resetMode
+=
+ResetMode::kNoResetSafeParameters
+)
+Set the configuration for the
+ServoHub
+.
+If
+resetMode
+is
+ResetMode::kResetSafeParameters
+, this method will reset safe writable parameters to their default values before setting the given configuration.
+Parameters
+config
+The desired
+ServoHub
+configuration
+resetMode
+Whether to reset safe parameters before setting the configuration
+Returns
+REVLibError::kOk
+if successful
+◆
+ConfigureAsync()
+REVLibError
+ServoHub::ConfigureAsync
+(
+ServoHubConfig
+&
+config
+,
+ResetMode
+resetMode
+=
+ResetMode::kNoResetSafeParameters
+)
+Set the configuration for the
+ServoHub
+without waiting for a response.
+If
+resetMode
+is
+ResetMode::kResetSafeParameters
+, this method will reset safe writable parameters to their default values before setting the given configuration.
+NOTE: This method will immediately return
+REVLibError::kOk
+and the action will be done in the background. Any errors that occur will be reported to the driver station.
+Parameters
+config
+The desired
+ServoHub
+configuration
+resetMode
+Whether to reset safe parameters before setting the configuration
+Returns
+REVLibError::kOk
+See also
+Configure()
+◆
+HasActiveFault()
+bool ServoHub::HasActiveFault
+(
+)
+const
+Get whether the
+ServoHub
+has one or more active faults.
+Returns
+true if there is an active fault
+See also
+GetFaults()
+◆
+HasStickyFault()
+bool ServoHub::HasStickyFault
+(
+)
+const
+Get whether the
+ServoHub
+has one or more sticky faults.
+Returns
+true if there is a sticky fault
+See also
+GetStickyFaults()
+◆
+HasActiveWarning()
+bool ServoHub::HasActiveWarning
+(
+)
+const
+Get whether the
+ServoHub
+has one or more active warnings.
+Returns
+true if there is an active warning
+See also
+GetWarnings()
+◆
+HasStickyWarning()
+bool ServoHub::HasStickyWarning
+(
+)
+const
+Get whether the
+ServoHub
+has one or more sticky warnings.
+Returns
+true if there is a sticky warning
+See also
+GetStickyWarnings()
+◆
+GetFaults()
+ServoHub::Faults
+ServoHub::GetFaults
+(
+)
+const
+Get the active faults that are currently present on the
+ServoHub
+.
+Faults
+are fatal errors that prevent the motor from running.
+Returns
+A struct with each fault and their active value
+◆
+GetStickyFaults()
+ServoHub::Faults
+ServoHub::GetStickyFaults
+(
+)
+const
+Get the sticky faults that were present on the
+ServoHub
+at one point since the sticky faults were last cleared.
+Faults
+are fatal errors that prevent the motor from running.
+Sticky faults can be cleared with
+ServoHub::ClearFaults()
+.
+Returns
+A struct with each fault and their sticky value
+◆
+GetWarnings()
+ServoHub::Warnings
+ServoHub::GetWarnings
+(
+)
+const
+Get the active warnings that are currently present on the
+ServoHub
+.
+Warnings
+are non-fatal errors.
+Returns
+A struct with each warning and their active value
+◆
+GetStickyWarnings()
+ServoHub::Warnings
+ServoHub::GetStickyWarnings
+(
+)
+const
+Get the sticky warnings that were present on the
+ServoHub
+at one point since the sticky warnings were last cleared.
+Warnings
+are non-fatal errors.
+Sticky warnings can be cleared with ServoHub::clearFaults().
+Returns
+A struct with each warning and their sticky value
+◆
+ClearFaults()
+REVLibError
+ServoHub::ClearFaults
+(
+)
+Clears all non-sticky faults.
+Sticky faults must be cleared by resetting the motor controller.
+◆
+GetDeviceVoltage()
+double ServoHub::GetDeviceVoltage
+(
+)
+const
+Returns
+The voltage fed into the servo controller.
+◆
+GetDeviceCurrent()
+double ServoHub::GetDeviceCurrent
+(
+)
+const
+Returns
+The servo controller's output current in Amps.
+◆
+GetServoVoltage()
+double ServoHub::GetServoVoltage
+(
+)
+const
+Returns
+The voltage fed to the actual servos.
+◆
+GetServoChannel()
+ServoChannel
+& ServoHub::GetServoChannel
+(
+ServoChannel::ChannelId
+channelId
+)
+Returns an object to control a specific servo channel.
+Parameters
+channelId
+The specific servo channel to get
+Returns
+The specified
+ServoChannel
+◆
+SetBankPulsePeriod()
+REVLibError
+ServoHub::SetBankPulsePeriod
+(
+Bank
+bank
+,
+int
+pulsePeriod_us
+)
+Set the Pulse Period for servo channels 0-2 or servo channels 3-5.
+Parameters
+bank
+The bank of channels (0-2 or 3-5) to set
+pulsePeriod_us
+The pulse period in microseconds
+Returns
+REVLibError::kOk
+if successful
+Friends And Related Function Documentation
+◆
+ServoHubSim
+friend class
+ServoHubSim
+friend
+Member Data Documentation
+◆
+configAccessor
+ServoHubConfigAccessor
+rev::servohub::ServoHub::configAccessor
+Accessor for
+ServoHub
+parameter values. This object contains fields and methods to retrieve parameters that have been applied to the device. To set parameters, see
+ServoHubConfig
+and
+ServoHub::Configure()
+.
+NOTE: This uses calls that are blocking to retrieve parameters and should be used infrequently.
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/
+ServoHub.h
+src/main/native/cpp/
+ServoHub.cpp
+rev
+servohub
+ServoHub
+Generated by
+1.9.2

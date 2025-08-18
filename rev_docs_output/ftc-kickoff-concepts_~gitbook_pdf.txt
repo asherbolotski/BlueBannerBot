@@ -1,0 +1,32 @@
+All pages
+Powered by GitBook
+1
+of
+1
+Loading...
+Programming - Controlling the Arm and Wrist
+Setting up the Arm and Wrist Motors:
+As part of our main loop, our arm and wrist motors are set to RUN_TO_POSITION mode with their TargetPosition set to the appropriate variable. Additionally, our arm and wrist motors are set to full power whenever they are moving.
+Because our targetArm and targetWrist values change throughout our code, we include this as part of our loop rather than initialization.
+Preset Movements
+The GAMEPAD_INPUT_STATE function contains all our code for controlling the arm and wrist. Let's break it down by what each button does in our If/Else statement!
+Pressing A/Cross
+When the A/Cross button on the gamepad is pressed our currentState switches to INTAKE meaning our robot's arm will move down and wrist will unfold to be ready to pick up samples.
+Pressing B/Circle
+This section of code allows for a togglable state between two positions of our arm/wrist when B/Circle are pressed. Because we want this to be togglable and not require the button to be held, we want to have our robot check the state of the B/Circle button each loop.
+The lastGrab variable will change between true or false based on the state of the button. If the driver holds down the B/Circle button its state will not update again until it is first released.
+If B/Circle is pressed AND is not currently held then the robot will run a second if/then statement to determine which of the Wall positions the arm/wrist should move to.
+With this statement the robot knows that if the arm is already at our WALL_GRAB preset it should move to unhook. The opposite is also true where if the arm/wrist is in the WALL_UNHOOK preset it will go back to grab.
+Pressing Y/Triangle
+This section functions similarly to B/Circle providing a togglable control for clipping a specimen!
+In this case lastHook allows the robot to determine if the Y/Triangle button is being held before the robot moves between the two positions.
+Pressing X/Square
+When the X/Square button on the gamepad is pressed our currentState switches to LOW_BASKET meaning our robot's arm will move up and wrist will unfold to be ready to deposit samples in the low basket.
+Pressing Left Bumper
+It's always good to have a way to reset our robot if needed! By pressing left bumper, currentState will be set to INIT moving our robot back to its initilization configuration, like what might be used at the start of a match.
+Manual Control
+Beyond our preset movements, we want our robot to have refined control for the arm and wrist as we navigate the field.
+Whenever we press a button on the d-pad our currentState will switch to MANUAL allowing the arm or wrist to move in increments until the button is released.
+Because we have our motors set to "RUN_TO_POSITION" mode we can't just turn the power on for manual control. Instead we have the robot changing the position in the appropriate direction in chunks. Depending our your driver's preference, you may choose to adjust these values for quicker or more refined control!
+By default, these position values are different in the OnBot Java and Blocks version of the provided code. This is due to a difference in how quickly OnBot Java loops through a program compared to Blocks.
+Setting the mode and target position for the motors

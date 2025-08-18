@@ -1,0 +1,542 @@
+REVLib - C++
+SparkBaseConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <string>
+32
+33
+#include "
+rev/SparkBase.h
+"
+34
+#include "
+rev/config/AbsoluteEncoderConfig.h
+"
+35
+#include "
+rev/config/AnalogSensorConfig.h
+"
+36
+#include "
+rev/config/BaseConfig.h
+"
+37
+#include "
+rev/config/ClosedLoopConfig.h
+"
+38
+#include "
+rev/config/EncoderConfig.h
+"
+39
+#include "
+rev/config/LimitSwitchConfig.h
+"
+40
+#include "
+rev/config/SignalsConfig.h
+"
+41
+#include "
+rev/config/SoftLimitConfig.h
+"
+42
+#include "
+rev/config/SparkParameters.h
+"
+43
+44
+namespace
+rev::spark
+{
+45
+46
+class
+SparkBaseConfig
+:
+public
+BaseConfig
+{
+47
+public
+:
+48
+enum
+IdleMode
+: uint32_t {
+kCoast
+= 0,
+kBrake
+= 1 };
+49
+50
+SparkBaseConfig
+() =
+default
+;
+51
+~SparkBaseConfig
+()
+override
+=
+default
+;
+52
+53
+SparkBaseConfig
+(
+const
+SparkBaseConfig
+&) =
+delete
+;
+54
+SparkBaseConfig
+&
+operator=
+(
+const
+SparkBaseConfig
+&) =
+delete
+;
+55
+SparkBaseConfig
+(
+SparkBaseConfig
+&&) noexcept = delete;
+56
+SparkBaseConfig
+& operator=(
+SparkBaseConfig
+&&) noexcept = delete;
+57
+68
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SparkBaseConfig
+& config);
+69
+80
+virtual
+SparkBaseConfig
+&
+Apply
+(
+AbsoluteEncoderConfig
+& config);
+81
+92
+virtual
+SparkBaseConfig
+&
+Apply
+(
+AnalogSensorConfig
+& config);
+93
+104
+virtual
+SparkBaseConfig
+&
+Apply
+(
+EncoderConfig
+& config);
+105
+116
+virtual
+SparkBaseConfig
+&
+Apply
+(
+LimitSwitchConfig
+& config);
+117
+128
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SoftLimitConfig
+& config);
+129
+140
+virtual
+SparkBaseConfig
+&
+Apply
+(
+ClosedLoopConfig
+& config);
+141
+152
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SignalsConfig
+& config);
+153
+160
+virtual
+SparkBaseConfig
+&
+SetIdleMode
+(
+IdleMode
+idleMode);
+161
+171
+virtual
+SparkBaseConfig
+&
+Inverted
+(
+bool
+inverted);
+172
+198
+virtual
+SparkBaseConfig
+&
+SmartCurrentLimit
+(
+int
+stallLimit,
+199
+int
+freeLimit = 0,
+200
+int
+limitRpm = 20000);
+201
+228
+virtual
+SparkBaseConfig
+&
+SecondaryCurrentLimit
+(
+double
+limit,
+229
+int
+chopCycles = 0);
+230
+240
+virtual
+SparkBaseConfig
+&
+OpenLoopRampRate
+(
+double
+rate);
+241
+251
+virtual
+SparkBaseConfig
+&
+ClosedLoopRampRate
+(
+double
+rate);
+252
+260
+virtual
+SparkBaseConfig
+&
+VoltageCompensation
+(
+double
+nominalVoltage);
+261
+267
+virtual
+SparkBaseConfig
+&
+DisableVoltageCompensation
+();
+268
+282
+virtual
+SparkBaseConfig
+&
+Follow
+(
+int
+leaderCanId,
+bool
+invert = false);
+283
+297
+virtual
+SparkBaseConfig
+&
+Follow
+(
+SparkBase
+& leader,
+bool
+invert = false);
+298
+304
+virtual
+SparkBaseConfig
+&
+DisableFollowerMode
+();
+305
+306
+std::
+string
+Flatten
+() override;
+307
+308
+AbsoluteEncoderConfig
+absoluteEncoder
+;
+309
+AnalogSensorConfig
+analogSensor
+;
+310
+ClosedLoopConfig
+closedLoop
+;
+311
+EncoderConfig
+encoder
+;
+312
+LimitSwitchConfig
+limitSwitch
+;
+313
+SignalsConfig
+signals
+;
+314
+SoftLimitConfig
+softLimit
+;
+315
+};
+// class SparkBaseConfig
+316
+317
+}
+// namespace rev::spark
+AbsoluteEncoderConfig.h
+AnalogSensorConfig.h
+BaseConfig.h
+ClosedLoopConfig.h
+EncoderConfig.h
+LimitSwitchConfig.h
+SignalsConfig.h
+SoftLimitConfig.h
+SparkBase.h
+SparkParameters.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::spark::AbsoluteEncoderConfig
+Definition:
+AbsoluteEncoderConfig.h:35
+rev::spark::AnalogSensorConfig
+Definition:
+AnalogSensorConfig.h:35
+rev::spark::ClosedLoopConfig
+Definition:
+ClosedLoopConfig.h:41
+rev::spark::EncoderConfig
+Definition:
+EncoderConfig.h:35
+rev::spark::LimitSwitchConfig
+Definition:
+LimitSwitchConfig.h:36
+rev::spark::SignalsConfig
+Definition:
+SignalsConfig.h:35
+rev::spark::SoftLimitConfig
+Definition:
+SoftLimitConfig.h:35
+rev::spark::SparkBaseConfig
+Definition:
+SparkBaseConfig.h:46
+rev::spark::SparkBaseConfig::VoltageCompensation
+virtual SparkBaseConfig & VoltageCompensation(double nominalVoltage)
+Definition:
+SparkBaseConfig.cpp:132
+rev::spark::SparkBaseConfig::encoder
+EncoderConfig encoder
+Definition:
+SparkBaseConfig.h:311
+rev::spark::SparkBaseConfig::DisableVoltageCompensation
+virtual SparkBaseConfig & DisableVoltageCompensation()
+Definition:
+SparkBaseConfig.cpp:139
+rev::spark::SparkBaseConfig::~SparkBaseConfig
+~SparkBaseConfig() override=default
+rev::spark::SparkBaseConfig::IdleMode
+IdleMode
+Definition:
+SparkBaseConfig.h:48
+rev::spark::SparkBaseConfig::kCoast
+@ kCoast
+Definition:
+SparkBaseConfig.h:48
+rev::spark::SparkBaseConfig::kBrake
+@ kBrake
+Definition:
+SparkBaseConfig.h:48
+rev::spark::SparkBaseConfig::softLimit
+SoftLimitConfig softLimit
+Definition:
+SparkBaseConfig.h:314
+rev::spark::SparkBaseConfig::OpenLoopRampRate
+virtual SparkBaseConfig & OpenLoopRampRate(double rate)
+Definition:
+SparkBaseConfig.cpp:114
+rev::spark::SparkBaseConfig::Inverted
+virtual SparkBaseConfig & Inverted(bool inverted)
+Definition:
+SparkBaseConfig.cpp:89
+rev::spark::SparkBaseConfig::Apply
+virtual SparkBaseConfig & Apply(SparkBaseConfig &config)
+Definition:
+SparkBaseConfig.cpp:37
+rev::spark::SparkBaseConfig::SparkBaseConfig
+SparkBaseConfig(SparkBaseConfig &&) noexcept=delete
+rev::spark::SparkBaseConfig::closedLoop
+ClosedLoopConfig closedLoop
+Definition:
+SparkBaseConfig.h:310
+rev::spark::SparkBaseConfig::DisableFollowerMode
+virtual SparkBaseConfig & DisableFollowerMode()
+Definition:
+SparkBaseConfig.cpp:155
+rev::spark::SparkBaseConfig::Flatten
+std::string Flatten() override
+Definition:
+SparkBaseConfig.cpp:161
+rev::spark::SparkBaseConfig::operator=
+SparkBaseConfig & operator=(const SparkBaseConfig &)=delete
+rev::spark::SparkBaseConfig::signals
+SignalsConfig signals
+Definition:
+SparkBaseConfig.h:313
+rev::spark::SparkBaseConfig::Follow
+virtual SparkBaseConfig & Follow(int leaderCanId, bool invert=false)
+Definition:
+SparkBaseConfig.cpp:144
+rev::spark::SparkBaseConfig::ClosedLoopRampRate
+virtual SparkBaseConfig & ClosedLoopRampRate(double rate)
+Definition:
+SparkBaseConfig.cpp:123
+rev::spark::SparkBaseConfig::absoluteEncoder
+AbsoluteEncoderConfig absoluteEncoder
+Definition:
+SparkBaseConfig.h:308
+rev::spark::SparkBaseConfig::analogSensor
+AnalogSensorConfig analogSensor
+Definition:
+SparkBaseConfig.h:309
+rev::spark::SparkBaseConfig::SparkBaseConfig
+SparkBaseConfig(const SparkBaseConfig &)=delete
+rev::spark::SparkBaseConfig::SmartCurrentLimit
+virtual SparkBaseConfig & SmartCurrentLimit(int stallLimit, int freeLimit=0, int limitRpm=20000)
+Definition:
+SparkBaseConfig.cpp:94
+rev::spark::SparkBaseConfig::limitSwitch
+LimitSwitchConfig limitSwitch
+Definition:
+SparkBaseConfig.h:312
+rev::spark::SparkBaseConfig::SecondaryCurrentLimit
+virtual SparkBaseConfig & SecondaryCurrentLimit(double limit, int chopCycles=0)
+Definition:
+SparkBaseConfig.cpp:106
+rev::spark::SparkBaseConfig::SparkBaseConfig
+SparkBaseConfig()=default
+rev::spark::SparkBaseConfig::SetIdleMode
+virtual SparkBaseConfig & SetIdleMode(IdleMode idleMode)
+Definition:
+SparkBaseConfig.cpp:84
+rev::spark::SparkBase
+Definition:
+SparkBase.h:58
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+src
+main
+native
+include
+rev
+config
+SparkBaseConfig.h
+Generated by
+1.9.2

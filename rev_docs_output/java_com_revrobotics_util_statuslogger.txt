@@ -1,0 +1,110 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.util
+Class StatusLogger
+java.lang.Object
+com.revrobotics.util.StatusLogger
+public class
+StatusLogger
+extends
+Object
+Constructor Summary
+Constructors
+Constructor
+Description
+StatusLogger
+()
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static void
+disableAutoLogging
+()
+Prevents the data logger from starting automatically.
+static void
+start
+()
+Manually start capturing data from REV devices to a REV binary log (.revlog).
+static void
+stop
+()
+Stops the data logging session.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+StatusLogger
+public
+StatusLogger
+()
+Method Details
+start
+public static
+void
+start
+()
+Manually start capturing data from REV devices to a REV binary log (.revlog).
+Note:
+This method provides an explicit override for the default logging behavior. In
+ most cases, this is not required, as logging begins automatically on the first call to any
+ REVLib function.
+Use this method only for advanced cases where logging must begin at a precise moment, such
+ as before the main robot loop or other subsystems are initialized.
+See Also:
+stop()
+disableAutoLogging()
+stop
+public static
+void
+stop
+()
+Stops the data logging session.
+While stopped, no new data from REV devices will be written to the REV binary log (.revlog).
+ The logging session is not terminated and can be resumed at any time by calling
+start()
+.
+See Also:
+start()
+disableAutoLogging()
+disableAutoLogging
+public static
+void
+disableAutoLogging
+()
+Prevents the data logger from starting automatically.
+IMPORTANT:
+This method must be called before any other REVLib function is invoked.
+ The recommended placement is as the first line in your
+robotInit()
+method.
+After calling this, logging will not occur until it is explicitly started with
+start()
+. This is useful for applications that require full manual control over the logging
+ lifecycle.
+See Also:
+start()
+stop()

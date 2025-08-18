@@ -1,0 +1,291 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+The Importance of Configuration
+Configuring Common Hardware Devices
+Accessing the Configuration Utility
+Configuring Hardware
+Saving the Configuration File
+Was this helpful?
+Export as PDF
+Before we can truly dive into programming our robot we need to help our robot's brain, the Control Hub, to know what is connected to it. Through the configuration process we can tell the Control Hub which port sensors, motors, servos, and any other connected devices can be found.
+This is one of the most important steps to always complete BEFORE you can start programming!
+When programming in Blocks, some blocks may be hidden UNTIL the configuration process is completed and activated on the Driver Hub.
+The Importance of Configuration
+While every REV Control Hub is the same, the robots being controlled are each unique. Each Control Hub has the same number of input and output ports for motors, sensors and cameras, but, how you may utilize these ports varies from system to system. For instance, a Color Sensor V3 may be plugged in to I2C Bus 1 on one person's Hub, but another might use the same bus to host a 2m Distance Sensor.
+While the Control Hub may know there is a device attached to a port, it doesn't instinctively know which information needs to be transferred back for use in an
+OpMode
+. To help our robot out we need to complete a process called hardware mapping. Generally, this is a two step process that includes creating our configuration file using the Driver Hub and calling the hardware map within our OpMode.
+When using Blocks, this second step is handled by the SDK itself. Once you've created your configuration file on the Driver Hub your robot's devices are ready to use and you will see their names in the dropdown menus of related blocks.
+In this configuration the motors have been named "arm" and "leftmotor"
+If you receive an error (example below) when opening a Blocks OpMode that the Control Hub could not locate a device, double check that the correct configuration file is currently active!
+Click to Learn More about the Configuration File
+The configuration file is a readable file created by the user through the Driver Station Application. When creating a configuration file users are required to assign each device to a port, select the type of device it is from options provided by the SDK, and give it a
+unique
+name.
+It's important to name each device something recognizable and distinguishable!
+Once a configuration file is saved or activated the robot will restart. This restart is so the SDK can read the file, determine what devices are present, and add the devices to the hardwareMap class.
+Configuring Common Hardware Devices
+Accessing the Configuration Utility
+Select the menu in the stop right corner of the Driver Station app. Then select Configure Robot.
+In the Available configurations page, select New.
+In the USB Devices in configuration page select the Control Hub Portal.
+Note:
+If you have an Expansion Hub connected it will appear as an Expansion Hub Portal.
+Pressing "
+Scan
+" on an existing configuration may result in the already named devices being erased. A new configuration file is needed when adding a camera or Expansion Hub.
+Within the Hub Portal select the device you want to configure. In this use case, select the Control Hub.
+Note:
+if you have an Expansion Hub connected to a Control Hub, the Expansion Hub will also appear as a configurable device in the portal.
+This will bring you to the page shown in the image. From here you can configure motors, servos and sensors that you are using. Follow through the rest of the guide to figure out how to configure devices that will be used in the Test Bed section.
+Note:
+The way that Digital and Analog devices are configured versus how I2C devices are configure differ significantly. This is because each physical I2C port is a different bus that can host multiple different sensors. For more information on the different types of sensors check out the
+sensors
+section.
+Configuring Hardware
+The following section will show how to configure components that will be used in the Test Bed. The hardware type and names have been chosen in consideration for the Hello World lesson plan. Users should heed notes within the steps to consider when creating configuration files for other instances.
+Motor
+Servo
+Digital Device
+I2C Device
+Configuring a Motor
+Select Motors.
+The Motor page will allow you to configure all four motor ports on the Hub. On Port 0 open the drop down menu and select REV Robotics Core Hex Motor.
+Note:
+In your configuration file you should configure the motor ports to the type of motor you are using.
+Name the motor
+test_motor. Select done
+. 
+
+Note:
+remember when naming hardware in the configuration file that the REV Control System is
+Case Sensitive
+.
+Configuring a Servo
+Select Servos
+.
+The Servo page will allow you to configure all six servo ports on the Hub. On Port 0 open the drop down menu and select
+Servo.
+Note:
+REV Servos can be configured as a Servo or a Continuous Rotation Servo. The type of device a servo is configured as should correspond with the mode the sensor is in. For more information on Sensor modes visit the
+Sensor section
+.
+Name the servo test_servo. Select done.
+Note:
+remember when naming hardware in the configuration file that the REV Control System is
+Case Sensitive.
+Configuring a Digital Device
+Select Digital Devices.
+The Digital Devices page will allow you to configure all eight digital ports on the Hub. On
+Port 1
+open the drop down menu and select
+Digital Device.
+Note:
+Touch Sensors must always be configured on odd number ports.
+Note:
+Touch Sensors can be configured as a REV Touch Sensor or a Digital Device. In the FTC SDK the type of device it is configured as changes the classes and methods that can be used.
+Name the motor
+test_touch. Select done.
+Note:
+remember when naming hardware in the configuration file that the REV Control System is Case Sensitive.
+Configuring an I2C Device
+Select I2C Bus 0.
+Select Add.
+Note:
+Each I2C Bus can host more than one I2C sensor as long as the I2C addresses do not conflict. Bus 0 will always host the internal IMU. For more information on I2C sensors visit the
+I2C section
+.
+On Port 1, which was created in the previous step,  open the drop down menu and select REV Color Sensor V3.
+Note:
+If you are using Color Sensors V1 or V2 select REV Color/Range Sensor. For more information on configuring with the REV Color Sensors visit the
+Color Sensor Datasheets
+.
+Name the motor test_color. Select done.
+Note:
+remember when naming hardware in the configuration file, that the REV Control System is Case Sensitive.
+Saving the Configuration File
+Hit Done
+twice until you reach the USB Devices in configuration page
+.
+On the USB Devices in configuration page hit
+Save.
+Name the configuration
+helloRobotTest
+and then select Ok.
+Note:
+The FTC SDK does not force you to abide by a naming convention for but it is common to name configurations in lowerCamelCase.
+Press back to activate the saved configuration. Your Robot Controller will restart once you activate a new configuration.
+Previous
+What is an OpMode?
+Next
+Common Errors in Configuration
+Last updated
+1 year ago
+Was this helpful?

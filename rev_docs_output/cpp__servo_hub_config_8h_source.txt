@@ -1,0 +1,303 @@
+REVLib - C++
+ServoHubConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <array>
+32
+#include <string>
+33
+34
+#include "
+rev/config/BaseConfig.h
+"
+35
+#include "
+rev/config/ServoChannelConfig.h
+"
+36
+37
+namespace
+rev::servohub
+{
+38
+39
+class
+ServoHubConfig
+:
+public
+BaseConfig
+{
+40
+public
+:
+41
+ServoHubConfig
+() =
+default
+;
+42
+~ServoHubConfig
+()
+override
+=
+default
+;
+43
+44
+ServoHubConfig
+(
+const
+ServoHubConfig
+&) =
+delete
+;
+45
+ServoHubConfig
+&
+operator=
+(
+const
+ServoHubConfig
+&) =
+delete
+;
+46
+ServoHubConfig
+(
+ServoHubConfig
+&&) noexcept = delete;
+47
+ServoHubConfig
+& operator=(
+ServoHubConfig
+&&) noexcept = delete;
+48
+58
+ServoHubConfig
+&
+Apply
+(
+ServoHubConfig
+& config);
+59
+70
+ServoHubConfig
+&
+Apply
+(
+ServoChannel
+::ChannelId channelId,
+71
+ServoChannelConfig
+& config);
+72
+73
+std::
+string
+Flatten
+() override;
+74
+75
+ServoChannelConfig
+channel0
+{
+ServoChannel::ChannelId::kChannelId0
+};
+76
+ServoChannelConfig
+channel1
+{
+ServoChannel::ChannelId::kChannelId1
+};
+77
+ServoChannelConfig
+channel2
+{
+ServoChannel::ChannelId::kChannelId2
+};
+78
+ServoChannelConfig
+channel3
+{
+ServoChannel::ChannelId::kChannelId3
+};
+79
+ServoChannelConfig
+channel4
+{
+ServoChannel::ChannelId::kChannelId4
+};
+80
+ServoChannelConfig
+channel5
+{
+ServoChannel::ChannelId::kChannelId5
+};
+81
+82
+private
+:
+83
+const
+std::array<ServoChannelConfig*, ServoChannel::kNumServoChannels>
+84
+m_ChannelConfigs{&
+channel0
+, &
+channel1
+, &
+channel2
+,
+85
+&
+channel3
+, &
+channel4
+, &
+channel5
+};
+86
+};
+// class ServoHubConfig
+87
+88
+}
+// namespace rev::servohub
+BaseConfig.h
+ServoChannelConfig.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::servohub::ServoChannelConfig
+Definition:
+ServoChannelConfig.h:36
+rev::servohub::ServoChannel
+Definition:
+ServoChannel.h:39
+rev::servohub::ServoChannel::ChannelId::kChannelId1
+@ kChannelId1
+rev::servohub::ServoChannel::ChannelId::kChannelId4
+@ kChannelId4
+rev::servohub::ServoChannel::ChannelId::kChannelId0
+@ kChannelId0
+rev::servohub::ServoChannel::ChannelId::kChannelId3
+@ kChannelId3
+rev::servohub::ServoChannel::ChannelId::kChannelId2
+@ kChannelId2
+rev::servohub::ServoChannel::ChannelId::kChannelId5
+@ kChannelId5
+rev::servohub::ServoHubConfig
+Definition:
+ServoHubConfig.h:39
+rev::servohub::ServoHubConfig::Apply
+ServoHubConfig & Apply(ServoHubConfig &config)
+Definition:
+ServoHubConfig.cpp:36
+rev::servohub::ServoHubConfig::Flatten
+std::string Flatten() override
+Definition:
+ServoHubConfig.cpp:55
+rev::servohub::ServoHubConfig::channel3
+ServoChannelConfig channel3
+Definition:
+ServoHubConfig.h:78
+rev::servohub::ServoHubConfig::ServoHubConfig
+ServoHubConfig(ServoHubConfig &&) noexcept=delete
+rev::servohub::ServoHubConfig::channel0
+ServoChannelConfig channel0
+Definition:
+ServoHubConfig.h:75
+rev::servohub::ServoHubConfig::~ServoHubConfig
+~ServoHubConfig() override=default
+rev::servohub::ServoHubConfig::channel1
+ServoChannelConfig channel1
+Definition:
+ServoHubConfig.h:76
+rev::servohub::ServoHubConfig::operator=
+ServoHubConfig & operator=(const ServoHubConfig &)=delete
+rev::servohub::ServoHubConfig::channel2
+ServoChannelConfig channel2
+Definition:
+ServoHubConfig.h:77
+rev::servohub::ServoHubConfig::channel5
+ServoChannelConfig channel5
+Definition:
+ServoHubConfig.h:80
+rev::servohub::ServoHubConfig::ServoHubConfig
+ServoHubConfig()=default
+rev::servohub::ServoHubConfig::ServoHubConfig
+ServoHubConfig(const ServoHubConfig &)=delete
+rev::servohub::ServoHubConfig::channel4
+ServoChannelConfig channel4
+Definition:
+ServoHubConfig.h:79
+rev::servohub
+Definition:
+ServoChannelConfig.h:34
+src
+main
+native
+include
+rev
+config
+ServoHubConfig.h
+Generated by
+1.9.2

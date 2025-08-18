@@ -1,0 +1,185 @@
+REV DUO Build System
+REV DUO Build System Overview
+Structure
+Introduction to Structure
+15mm Extrusion
+15mm x 30mm Extrusion
+15mm x 45mm C Channel
+45mm x 45mm U Channel
+Flat Plate
+Flat Beam
+L Beam
+Brackets
+Corrugated Plastic Sheets
+M3 Hardware
+Motion
+Introduction to Motion
+Hex Shaft and Spacers
+Bearings
+Sprockets and Chain
+Advanced Sprockets and Chain
+Chain Tool
+Timing Belts and Pulleys
+Gears
+Advanced Gears
+Wheels
+Linear Motion
+Choosing an Actuator
+Motors
+HD Hex Motor
+Pinion Pressing Guide
+Pinion Removal Guide
+Core Hex Motor
+Servos
+Smart Robot Servo
+Building Techniques
+Tips and Tricks for Building
+Supporting Motion
+Constraining Motion
+Compatibility
+Build Guides
+Linear Motion Kit
+Three Stage Cascading Lift
+Three Stage Continuous Lift
+Channel Drivetrain
+Single Sprocket Shaft Assembly
+Double Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Channel Drivetrain - Mecanum Upgrade
+90mm Single Sprocket Shaft Assembly
+75mm Single Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behaviour
+Mecanum Drivetrain V2
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Mecanum Drivetrain Kit
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Extrusion Chain Drivetrain
+Pre-Loading Brackets
+Traction Wheel Assembly
+Omni Wheel Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Making the Chain Links
+Final Assembly
+Extrusion Gear Drivetrain
+Pre-Loading Brackets
+Omni Wheel Assembly
+Middle Grip Wheel Assembly
+Front Grip Wheel Assembly
+Gear Idler Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Final Assembly
+Class Bot V2
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Class Bot
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Electronics and Communication
+REV Control System
+Sensors
+Powered by GitBook
+On this page
+Motor Basics
+Key Metrics
+Preventing Premature Motor Failure
+REV Motor Specifications
+Was this helpful?
+Export as PDF
+Motor Basics
+Electric motors are the core power plant of most robots. There are two types of motors in the REV DUO Build System: the Core Hex Motor (
+REV-41-1300
+) and the HD Hex Motor (
+REV-41-1291
+). Both motors are brushed DC motors. The image below showcases the common elements of a bushed DC motor.
+Elements of a Brushed DC Motor
+Brushed DC motors without a gear box can be estimated to be ~80% efficient, meaning if a motor is drawing 60 watts of power ~48 watts will be turned into mechanical energy and ~12 watts will become heat. Once a gear box is added the overall efficiency of the system goes down.
+Key Metrics
+DC brushed motors can be described by some key metrics:
+Stall Torque
+Stall Current
+Free Speed
+Operating Voltage
+Stall Torque
+is measured when the motors RPM is zero and the motor is drawing its full
+Stall Current
+. This value is the maximum torque the motor is ever capable of outputting. Keep in mind the motor is not capable of outputting this torque for an indefinite period of time. Waste energy will be released into the motor as heat. When the motor is producing more waste heat than the motor body is capable of dissipating the motor will eventually overheat and fail.
+Stall Current
+is the maximum amount of current the motor will draw. The stall current is measured at the point when the motor has torque that the RPM goes down to zero. This is also the point at which the most waste heat will be dissipated into the motor body.
+Free Speed
+is the
+angular velocity
+that a motor will spin at when powered at the
+Operating Voltage
+with zero load on the motor’s output shaft. This RPM is the fastest
+angular velocity
+the motor will ever spin at. Once the motor is under load its
+angular velocity
+will decrease.
+Learn more about angular velocity in the
+Core Concepts
+section
+Operating Voltage
+is the expected voltage that the motor will experience during operation. If a robot is built using a 12 volt battery the
+Operating Voltage
+of the motor will be 12 volts. When controlling the RPM of the motor the DC speed controller will modulate the effective voltage seen by the motor. The lower the voltage seen by the motor the slower it will spin. DC motors have a maximum rated voltage if this voltage is exceeded the motor will fail prematurely.
+The key metrics defined above are interrelated. Take some time to familiarize yourself with the definitions and how they connect together.
+The prototypical performance graph of a Brushed DC motor can be used to estimate the performance of a motor. In most cases amperage, the unit of measurement for current, is the easiest value to find as it can be reported by the REV Control Hub (
+REV-31-1595
+) and Expansion Hub (
+REV-31-1153
+).
+Preventing Premature Motor Failure
+In order to ensure that an electric motor lasts as long as possible a few rules of thumb should be kept in mind:
+Smooth loading
+- large torque spikes or sudden changes in direction can cause the wear and premature failure of gear box components. This is only an issue when the torque spike exceeds the rated stall torque of the motor. When shock loading is necessary, it is best to utilize mechanical braking or a hard stop that absorbs the impact instead of the motor.
+Overheating
+- when a motor is loaded at near its maximum operating torque it will produce more waste heat than when operating at a lower operating torque. If this heat this allowed to build up the motor can wear out prematurely or fail spontaneously.
+The Core Hex motor can run for approximately 4 hours continuously before overheating at near maximum torque loading.
+Poorly supported output shaft
+, most motor output shafts are not designed to take large thrust forces or forces normal to the shaft. Bearings need to be used to support the axle when loads in these directions are expected.
+To learn more about how to properly support motion visit the
+supporting motion
+page
+REV Motor Specifications
+REV DUO Robotics motors come in two types,
+HD Hex Motors
+and
+Core Hex Motors
+. All REV DUO Motors have a Hex Shaft or female hex coupler as the output from its gearbox. The Hex Shaft is extremely reliable at transmitting torque without being reliant on set screws that can come loose or not be tightened sufficiently. REV DUO motors also include keyed locking connectors for both the motor power and the built-in encoder.
+For more information on the encoder see the Control System Guide
+Previous
+Choosing an Actuator
+Next
+HD Hex Motor
+Last updated
+2 months ago
+Was this helpful?

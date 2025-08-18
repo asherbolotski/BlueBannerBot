@@ -1,0 +1,254 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Sensor Basics
+Scenarios where a sensor is needed:
+Different Sensor Types and Uses
+Basic
+Intermediate
+Advanced
+Was this helpful?
+Export as PDF
+Sensor Basics
+When starting out many of the robot actions can be accomplished by turning on a motor for a specific amount of time. Eventually, these time-based actions may not be accurate or repeatable enough. As battery power drains while the robot is running and mechanisms wearing in through use can all affect time-based actions. Fortunately, there is a way to give feedback to the robot about how it is operating by using sensors; devices that are used to collect information about the robot and the environment around it.
+Sensors provide information that allows you to program the robot to use this information to perform specific actions. This allows the robot to perform at its best and in a repeatable manner. A few scenarios that can benefit from a sensors information are listed below.
+Scenarios where a sensor is needed:
+The robot needs to autonomously move to a specific location and stop there.
+The robot needs to move forward at a green signal and stop moving at a red signal.
+The robot has an arm that needs to be prevented from rotating too far or it may damage other parts of the robot.
+The robot needs to stop 1 meter away from an opaque wall.
+The robot needs to be able to tell how many game objects it is currently holding inside its hopper.
+Different Sensor Types and Uses
+Control Hub ports
+In the REV Robotics Control System sensors are classified as
+basic
+,
+intermediate
+, or
+advanced
+. This division among sensors is based on programming complexity.
+Basic sensors
+can typically be coded using a if/else statement.
+Intermediate sensors,
+like the Color Sensor or Encoders, require a higher level understanding of programming.
+Advanced sensors
+require an advanced knowledge of programming. Visions sensors and using the Inertial Measurement Unit (IMU) are considered advanced.
+Basic
+In the REV Robotics Control System, both
+Analog
+and
+Digital
+sensors are considered basic sensors.
+Digital sensors provide
+binary
+information: information that can take one of two possible values or states. These states are represented in programming languages as:
+TRUE/FALSE
+or
+1/0
+. Electrically, these states are usually represented as two voltages: a
+High
+voltage and a
+Low
+voltage. For REV Hubs, High is 3.0V and Low is 0V.
+A touch sensor is a common digital sensor. It has two states: pressed and not-pressed.
+Analog sensors provide a range of information with an almost infinite set of values, instead of just two. These values are usually represented in programming languages as decimal numbers. Electrically, these values are represented as voltage. REV Hubs can measure voltages on the analog ports between 0V and 5.0V.
+Depending on the sensor, the reported voltage can represent anything that can't be represented by two digital states. A potentiometer is a common analog sensor that reports the angle of an attached shaft as voltages.
+Some sensors in the REV Control System are capable of running up to 5V. To learn more about sensor voltage visit the pages of the individual sensors!
+The table below gives the basic usage scenarios for analog and digital sensors
+Digital
+Analog
+Gives feedback as either on or off. This type of sensor is ideal for setting limits of a mechanism.
+Gives feedback as a proportional voltage range. This type of sensor is ideal for knowing exactly where a mechanism is, like a dial on a radio.
+Digital Sensors
+Touch Sensor: A sensor with a button. The button press can be used to trigger actions like stopping motors.
+Magnetic Limit Switch: A sensor that detects magnetic fields. When there is sufficient field strength of either magnetic pole detected the sensor is triggers and a limit of movement can be established.
+Analog Sensors
+Potentiometer: A sensor that senses the angular position of a shaft.
+Intermediate
+I2C
+sensors are considered intermediate because they give
+feedback through two-way communication with a robot controller. These types of sensors allow for more complex data to communicate to the robot, such as color values of an object.
+Color Sensor: A sensor capable of sensing colors and proximity of objects.
+2m Distance Sensor: A sensor typically used to detect the distance from the sensor to other opaque objects.
+All REV Robotics motors contain a built-in intermediate-level sensor called an Encoder. An
+Encoder
+, in the context of robotics, is a type of digital sensor that converts rotary motion into digital signal. These type of sensors require “decoding” to get this information into a usable form. The Control Hub and Expansion Hub have built in decoding through the “Encoder Ports” under the motor ports.
+Advanced
+Advanced sensors, in the REV Control System, are considered advanced as they rely on complex coding and information from other sensors in order to work effectively. Both the IMU and vision sensors require higher level code in order to decipher information being received from the sensor.
+Vision
+IMU
+Gives feedback as images to the robot controller. These types of sensors require the use of image processing software, like VuForia, to use to their full potential.
+The IMU incorporates three sensors: a 3-axis accelerometer, a 3-axis gyroscope, and a 3-axis geomagnetic sensor. This sensor can be used to determine orientation and location of the robot.
+Previous
+Using Limits to Control Range of Motion
+Next
+Digital
+Last updated
+11 months ago
+Was this helpful?

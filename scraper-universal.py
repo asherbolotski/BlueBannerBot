@@ -7,13 +7,12 @@ import time
 # --- 1. Configuration: Add new websites to this list ---
 SITES_TO_SCRAPE = [
     {
-        # REV and CTRE have been removed.
-        "base_url": "https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary",
-        "allowed_domain": "docs.limelightvision.io",
-        "output_dir": "limelight_docs_output",
-        "content_selector": ("div", {"class": "theme-default-content"}) 
+        "base_url": "https://docs.revrobotics.com/",
+        "allowed_domain": "docs.revrobotics.com",
+        "output_dir": "rev_docs_output",
+        # This is the ideal selector for the main content on the actual documentation pages.
+        "content_selector": ("main", {"class": "flex-grow"})
     },
-    # You can add AndyMark, Playing With Fusion, etc. here following the same pattern
 ]
 
 REQUEST_DELAY_SECONDS = 1
@@ -21,6 +20,7 @@ REQUEST_DELAY_SECONDS = 1
 def scrape_page(url, content_selector):
     """
     Fetches and extracts the main text content from a single page.
+    Includes a fallback to scrape the whole body if the primary selector is not found.
     """
     print(f"  - Scraping: {url}")
     try:
@@ -34,13 +34,21 @@ def scrape_page(url, content_selector):
         tag, attrs = content_selector
         main_content = soup.find(tag, attrs=attrs)
 
+        # --- NEW: Fallback Logic ---
+        if not main_content:
+            print(f"  - WARNING: Main content selector ('{tag}' with attrs {attrs}) not found.")
+            print("  - Falling back to scraping the entire <body>.")
+            main_content = soup.find('body') # Use the whole body as a fallback
+
         if main_content:
-            for element in main_content(["script", "style"]):
+            # Clean up the content by removing script and style tags
+            for element in main_content(["script", "style", "nav", "footer", "header"]):
                 element.decompose()
             return main_content.get_text(separator='\n', strip=True), soup
         else:
-            print(f"  - WARNING: Main content selector ('{tag}' with attrs {attrs}) not found.")
-            return None, soup # Return soup anyway to find other links
+            # This will only happen if a page has no body tag, which is very rare.
+            print("  - ERROR: Could not find any content to scrape.")
+            return None, soup 
 
     except requests.RequestException as e:
         print(f"  - Error during request: {e}")
@@ -72,7 +80,7 @@ def crawl_site(config):
 
         content, soup = scrape_page(current_url, content_selector)
 
-        if soup: # If the page was fetched successfully
+        if soup: 
             if content:
                 parsed_url = urlparse(current_url)
                 path = parsed_url.path.strip('/')
@@ -88,7 +96,6 @@ def crawl_site(config):
                 parsed_absolute_url = urlparse(absolute_url)
                 url_without_fragment = parsed_absolute_url._replace(fragment="").geturl()
 
-                # ADDED: Filter to ignore Cloudflare email protection links
                 if "cdn-cgi/l/email-protection" in url_without_fragment:
                     continue
 

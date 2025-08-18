@@ -1,0 +1,74 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+Velocity Control uses the PID controller to run the motor at a set speed in RPM. An FF gain, as detailed in
+F Parameter
+, is your friend in finding consistency when tuning this mode.
+Want to control the acceleration of your velocity controller? See
+MAXMotion Velocity Control
+for an improved version of Velocity Control with more features and control.
+It is called in the same way as Position Control:
+Java
+C++
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kVelocity
+);
+API Docs:
+setReference
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kVelocity);
+API Reference:
+SetReference
+Velocity Control mode will turn your motor continuously,. Be sure your mechanism does not have any hard limits for rotation.
+Velocity Loop constants are often of a very low magnitude, so if your mechanism isn't behaving as expected, try
+decreasing
+your gains.
+Previous
+Position Control Mode
+Next
+Current Control Mode
+Last updated
+7 months ago
+Was this helpful?

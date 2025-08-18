@@ -1,0 +1,275 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Control Hub
+Robot Controller Application 6.0 or Higher
+Driver Hub
+Expansion Hub
+Firmware Version 1.7.0 or Higher
+Was this helpful?
+Export as PDF
+The RGB LED located on the Control Hub (
+REV-31-1595
+) and Expansion Hub (
+REV-31-1153
+) near the RS485 ports and on the bottom of the Driver Hub (
+REV-31-1956
+) provide user feedback regarding the status of the Hub. Below is a Table of the Blink Codes.
+Control Hub
+All Control Hub Blink Codes assume the latest
+Control Hub Operating System
+is running on the device
+Robot Controller Application 6.0 or Higher
+If a Control Hub is running Robot Controller Application 5.5 or lower the LED Blink Codes for the Hub will be the same as an
+Expansion Hub running Firmware Version 1.7.0 or higher
+.
+LED Status
+LED Description
+When
+Hub Status
+Solid Blue
+At Boot
+Control Hub has power; Battery is >7V and is waiting to initialize communications.
+Solid Blue
+Anytime
+Hub is waiting for communication with the Driver Station Host.
+Control Hub has power; Battery is >7V.
+Solid Green
+Anytime
+Hub has power and active communication with the Android Platform.
+Blinking Blue
+Anytime
+Keep alive has timed out. Fault will clear when communication resumes.
+Blinking Orange
+Anytime
+Battery Voltage is lower than 7V. Either the 12V battery needs to be charged, or the Expansion Hub is running on USB power only. This fault will clear when battery voltage is raised above 7V.
+This will not be overwritten by the keep alive timeout pattern.
+Blinking Magenta
+During Wi-Fi Reset
+Control Hub changed Wi-Fi Band to 5GHz after pressing the button
+Blinking Yellow
+During Wi-Fi Reset
+Control Hub changed Wi-Fi Band to 2.4GHz after pressing the button
+Driver Hub
+All Driver Hub Blink Codes assume the latest
+Driver Hub Software
+is running on the device
+LED A
+LED Status
+LED Description
+Hub Status
+Blinking White
+Operating System is Booting
+LED B
+LED Status
+LED Description
+Hub Status
+Solid Green
+Device is on
+Battery Status LED
+LED Status
+LED Description
+Hub Status
+Blinking Red
+Battery Charging
+Solid Red
+Battery Charged
+Expansion Hub
+Firmware Version 1.7.0 or Higher
+LED Status
+LED Description
+When
+Hub Status
+Solid Blue
+At Boot
+Hub has power; Battery is >7V and is waiting to initialize communications.
+Solid Blue
+Anytime
+Hub is waiting for communication with the Robot Controller.
+Hub has power; Battery is >7V.
+Solid Green with one or more blue blinks every
+~5 Seconds
+Anytime
+Hub has power and active communication with the Android Platform. The number of blue blinks is the same as the Expansion Hub’s address.
+The factory default address is 2 (
+).
+Blinking Blue
+Anytime
+Keep alive has timed out. Fault will clear when communication resumes.
+Blinking Orange
+Anytime
+Battery Voltage is lower than 7V. Either the 12V battery needs to be charged, or the Expansion Hub is running on USB power only. This fault will clear when battery voltage is raised above 7V.
+This will not be overwritten by the keep alive timeout pattern.
+Previous
+Expansion Hub Troubleshooting
+Next
+12V Battery Best Practices and Troubleshooting
+Last updated
+12 months ago
+Was this helpful?

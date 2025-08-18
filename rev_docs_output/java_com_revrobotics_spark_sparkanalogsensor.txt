@@ -1,0 +1,98 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark
+Class SparkAnalogSensor
+java.lang.Object
+com.revrobotics.spark.SparkAnalogSensor
+All Implemented Interfaces:
+AnalogInput
+public class
+SparkAnalogSensor
+extends
+Object
+implements
+AnalogInput
+Get an instance of this class by using
+SparkBase.getAnalog()
+.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+getPosition
+()
+Get the position of the sensor.
+double
+getVelocity
+()
+Get the velocity of the sensor.
+double
+getVoltage
+()
+Get the voltage of the analog sensor.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getVoltage
+public
+double
+getVoltage
+()
+Get the voltage of the analog sensor.
+Specified by:
+getVoltage
+in interface
+AnalogInput
+Returns:
+Voltage of the sensor.
+getPosition
+public
+double
+getPosition
+()
+Get the position of the sensor. Returns value in the native unit of 'volt' by default, and can
+ be changed by a scale factor using
+AnalogSensorConfig.positionConversionFactor(double)
+.
+Specified by:
+getPosition
+in interface
+AnalogInput
+Returns:
+Position of the sensor
+getVelocity
+public
+double
+getVelocity
+()
+Get the velocity of the sensor. Returns value in the native units of 'volts per second' by
+ default, and can * be changed by a scale factor using
+AnalogSensorConfig.velocityConversionFactor(double)
+.
+Returns:
+Velocity of the sensor in volts per second

@@ -1,0 +1,330 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+Main Electrical Specifications
+PWM Input Specifications
+Data Port Specifications
+Encoder Port Specifications
+Mechanical Specifications
+Was this helpful?
+Export as PDF
+The following tables provide the operating and mechanical specifications for the SPARK MAX Motor Controller.
+DO NOT exceed the maximum electrical specifications. Doing so will cause permanent damage to the SPARK MAX and will void the warranty.
+Main Electrical Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Operating Voltage Range
+5.5
+12
+24
+V
+Absolute Maximum Supply Voltage
+-
+-
+30
+V
+Continuous Output Current
+-
+-
+60*
+A
+Maximum Output Current (2 second surge)
+-
+-
+100
+A
+Output Frequency
+-
+20
+-
+kHz
+*Continuous operation at 60A may produce high temperatures on the heat sink. Caution should be taken when handling the SPARK MAX if it has been running at higher current level for an extended period of time.
+If using a battery to power SPARK MAX, make sure the fully charged voltage is below 24V allowing for sustained operation. Some battery chemistries and configurations, including 6S LiPo packs, have a charge voltage above the maximum operating voltage for SPARK MAX.
+PWM Input Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Full-reverse Input Pulse †
+-
+1000
+-
+μs
+Neutral Input Pulse ††
+-
+1500
+-
+μs
+Full-forward Input Pulse †††
+-
+2000
+-
+μs
+Valid Input Pulse Range
+500
+-
+2500
+μs
+Input Frequency
+50
+-
+200
+Hz
+Input Timeout ‡
+-
+50
+-
+ms
+Default Input Deadband ‡‡
+-
+5
+-
+%
+Input High Level
+0.5
+0.7
+0.9
+V
+Input Voltage Max
+12
+-
+-
+V
+†
+Brushed: between A and B outputs at 100% duty. 
+Brushless: A->B->C direction at 100% duty.
+††
+Neutral corresponds to zero output voltage (0 V) and is either braking or coasting depending on the current idle behavior mode.
+†††
+Brushed:  between A and B outputs at 100% duty.
+Brushless: C->B->A direction at 100% duty.
+‡
+If a valid pulse isn't received within the timeout period, the SPARK MAX will disable its output.
+‡‡
+Input deadband is added to each side of the neutral pulse width. Within the deadband, output state is neutral. The deadband value is configurable using the REV Hardware Client or through the CAN interface.
+Data Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Digital input voltage range †
+0
+-
+5
+V
+Digital input-high voltage †
+1.85
+-
+-
+V
+Digital input-low voltage †
+-
+-
+1.36
+V
+Analog input voltage range ††
+0
+-
+3.3
+V
+Analog input (12bit)
+-
+81
+-
+μV
+5V supply current (I5V) ‡
+-
+-
+100
+mA
+3.3V supply current (I3.3V)
+-
+-
+30
+mA
+Total supply current (I5V + I3.3V)
+-
+-
+100
+mA
+†
+See the
+Data Port
+documentation for more details on the digital pins on the Data Port.
+††
+See the
+Analog Input
+documentation for more details on the Data Port's analog pin.
+‡
+The 5V supply is shared between the Data Port and Encoder Port.
+Encoder Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Digital input voltage range †
+0
+-
+5
+V
+Digital input-high voltage †
+1.85
+-
+-
+V
+Digital input-low voltage †
+-
+-
+1.36
+V
+Analog input voltage range ††
+0
+-
+3.3
+V
+5V supply current (I5V) ‡
+-
+-
+100
+mA
+3.3V supply current (I3.3V)
+-
+-
+30
+mA
+Total supply current (I5V + I3.3V)
+-
+-
+100
+mA
+†
+See the
+Data Port
+documentation for more details on the digital pins on the Data Port.
+††
+See the
+Analog Input
+documentation for more details on the Data Port's analog pin.
+‡
+The 5V supply is shared between the Data Port and Encoder Port.
+Mechanical Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Body length
+-
+70
+-
+mm
+Body width
+-
+35
+-
+mm
+Body height
+-
+25.5
+-
+mm
+Weight
+-
+113.3
+-
+g
+Power and motor wire gauge
+-
+12
+-
+AWG
+Power and motor wire length
+-
+15
+-
+cm
+Previous
+SPARK MAX Overview
+Next
+Power and Motor Connections
+Last updated
+1 year ago
+Was this helpful?

@@ -1,0 +1,94 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Major Differences
+Alternate vs External Encoder
+Migrating between MAX and Flex in REVLib
+Was this helpful?
+Export as PDF
+Generally, the feature sets of the software for SPARK MAX and SPARK Flex are very similar, yet they are still very different devices and should be treated that way in code. Because of this, there are two separate device classes in REVLib:
+SparkMax
+and
+SparkFlex
+. Separating them enables better management of feature differences that currently exist or may exist later down the road.
+It is important to ensure that the correct class is used for the device you are programming. Using the incorrect class for a SPARK motor controller will result in a warning in the driver station, and some functionalities may not work as intended.
+Major Differences
+Alternate vs External Encoder
+The SPARK MAX supports using an "alternate" encoder while the SPARK Flex supports using an "external" encoder. Though these are largely similar concepts, both providing the ability to measure position and velocity external to the motor's primary encoder, the alternate encoder is limited by its inability to handle high RPM loads. Due to this caveat, separate classes exist:
+SparkMaxAlternateEncoder
+and
+SparkFlexExternalEncoder
+.
+Additionally, an alternate encoder cannot be used with an absolute encoder and/or limit switches. Attempting to configure or use an alternate encoder alongside an absolute encoder/and or limit switches will throw an exception.
+The external encoder on SPARK Flex does not have these limitations. More information about the alternate encoder can be found
+here
+.
+Migrating between MAX and Flex in REVLib
+Since the majority of methods and interfaces in the two classes are largely similar, migrating between MAX and Flex can typically be done with a simple find-and-replace of class names. However, major differences listed above will need to be addressed on a case-by-case basis.
+Below is a list of class names that can be interchanged between MAX and Flex:
+SPARK MAX
+SPARK Flex
+SparkMax
+SparkFlex
+SparkMaxConfig
+SparkFlexConfig
+SparkMaxConfigAccessor
+SparkFlexConfigAccessor
+SparkMaxAlternateEncoder
+SparkFlexExternalEncoder
+SparkMaxSim
+SparkFlexSim
+SparkMaxAlternateEncoderSim
+SparkFlexExternalEncoderSim
+Below is an example of how you would migrate how a SPARK object is constructed:
+Java
+C++
+SPARK MAX
+Copy
+SparkMax spark = new SparkMax(1, MotorType.kBrushless);
+SPARK Flex
+Copy
+SparkFlex spark = new SparkFlex(1, MotorType.kBrushless);
+SPARK MAX
+Copy
+using namespace rev::spark;
+SparkMax m_spark{1, SparkMax::MotorType::kBrushless};
+SPARK Flex
+Copy
+using namespace rev::spark;
+SparkFlex m_spark{1, SparkFlex::MotorType::kBrushless};
+Previous
+Flexibility with Configurations
+Next
+Configuring a SPARK
+Last updated
+8 months ago
+Was this helpful?

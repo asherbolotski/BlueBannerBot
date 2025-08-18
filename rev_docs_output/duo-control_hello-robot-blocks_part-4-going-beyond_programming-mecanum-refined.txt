@@ -1,0 +1,432 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Mecanum Configuration
+Mecanum Example Code
+Mecanum Code Breakdown
+Establishing Variables
+Calculating Motor Movement with the Gamepad
+Quick Check! - Understanding Motor Power
+Setting Motor Power
+Normalizing Input Values
+Creating a Max Variable
+Creating the If/Else Statement
+Was this helpful?
+Export as PDF
+How a Mecanum Drivetrain is programmed largely depends on the driver's preference for how the controller is configured.
+In our provided example, the left joystick controls forward/back and strafe then the right joystick controls turning. This code is based on the sample provided by
+FIRST
+for Blocks (BasicOmniOpMode) available in the
+Robot Controller Console
+.
+Mecanum Configuration
+Port Type
+Port Number
+Device Type
+Name
+Motor
+0
+REV Robotics Ultraplanetary HD Hex Motor
+frontLeft
+Motor
+1
+REV Robotics Ultraplanetary HD Hex Motor
+backLeft
+Motor
+2
+REV Robotics Ultraplanetary HD Hex Motor
+frontRight
+Motor
+3
+REV Robotics Ultraplanetary HD Hex Motor
+backRight
+Mecanum Example Code
+13KB
+mecanumFull.blk
+Mecanum Code Breakdown
+Before diving into mecanum, double check the direction your motors and wheels are spinning. They may need to be reversed if you're experiencing jittering or inverted controls!
+Adjust the
+block to change the set direction during initialization.
+This example makes use of
+functions
+to help organize the code!
+With functions are main loop appears simplified
+At the very beginning of our program, our MOTOR_SETTINGS function is called. Within it the drivetrain motors are set to RUN_WITHOUT_ENCODER and are set to run the appropriate direction.
+Setting our motor settings within the function
+Establishing Variables
+Next, we need to create some new variables in order to use mecanum.
+All our variables for mecanum
+Let's break those down first:
+Variable
+Purpose
+forwardBack
+Moving forward and backwards
+strafe
+Strafing side to side
+turn
+Turning left and right
+leftFrontPower
+Sets the front left motor power
+rightFrontPower
+Sets the front right motor power
+leftBackPower
+Sets the back left motor power
+rightBackPower
+Sets the back right motor power
+Calculating Motor Movement with the Gamepad
+At the beginning of the MECANUM_DRIVE function, our variables for each movement direction are being set to the value generated by the movement of the matching joystick axis.
+Our variables are set to their appropriate joystick movement
+Since we now have four motors in play, our equation for setting the needed power to each motor gets a little more complicated.
+Our robot first needs to determine the combined movement of the gamepads's left joystick:
+Motor power being calculated with the left joystick movement
+Then calculate with the right stick's value:
+Motor power being calculated with both joysticks
+All our calculations together allows for movement when the left joystick is moved at an angle, such as for strafing along a diagonal!
+Quick Check! - Understanding Motor Power
+Let's take a closer look at how our motor power is being determined. For example, our leftFrontPower variable will equal:
+l
+e
+f
+t
+F
+r
+o
+n
+t
+P
+o
+w
+e
+r
+=
+(
+f
+o
+r
+w
+a
+r
+d
+B
+a
+c
+k
++
+s
+t
+r
+a
+f
+e
+)
++
+t
+u
+r
+n
+leftFrontPower = (forwardBack + strafe) + turn
+l
+e
+f
+tF
+ro
+n
+tP
+o
+w
+er
+=
+(
+f
+or
+w
+a
+r
+d
+B
+a
+c
+k
++
+s
+t
+r
+a
+f
+e
+)
++
+t
+u
+r
+n
+So what if we move our left joystick all the way to the left side along the X-axis. To our robot, our equation will read something like this:
+l
+e
+f
+t
+F
+r
+o
+n
+t
+P
+o
+w
+e
+r
+=
+(
+0
++
+−
+1
+)
++
+0
+leftFrontPower = (0 + -1)+ 0
+l
+e
+f
+tF
+ro
+n
+tP
+o
+w
+er
+=
+(
+0
++
+−
+1
+)
++
+0
+Take a moment to think: What would be the power of our other motors?
+What would be the power of our other motors?
+Our other motor power would look like the following:
+rightFrontPower = (0 - (-1)) + 0
+leftBackPower = (0 - (-1)) - 0
+rightBackPower = (0 + -1) - 0
+Or simplified:
+leftFrontPower = -1
+rightFrontPower = 1
+leftBackPower = 1
+rightBackPower = -1
+As we can see our motors are spinning the same direction as their diagonal partner, meaning the robot will strafe left!
+What about a more complicated example? What if we had the left joystick at an angle, all the way to the left and halfway towards the top? Or had our left stick forward and right stick all the way right?
+What about a more complicated example?
+Looking at our leftFrontPower again as an example the robot might calculate the following:
+What if we had the left joystick at an angle, all the way to the left and halfway towards the top?
+leftFrontPower = (0.5 + -1) + 0
+In this situation, our leftFront motor would set the power to -0.5!
+Or had our left stick forward and right stick all the way right?
+leftFrontPower = (1 + 0) + 1
+In this case, while our equation equals to 2, our motor cannot power higher than 1 so will cap out at full power! We'll discuss
+normalizing motor values
+to remain within range below.
+Adding telemetry to your program, as seen below, can help to see the values the motors are assigned during different scenarios:
+Setting Motor Power
+For our last step, our robot sets the power of each pair of motors based on all our calculations!
+Setting each motor's power to their variable
+Normalizing Input Values
+This section of code is not within the
+provided copy of the mecanum code
+used in this tutorial. Follow the steps below to add it!
+While driving, there's a possibility a value may fall outside the range of the motor's power (-1 to 1). To help make sure no inputs are lost because of this, we can use a technique called "normalizing".
+What normalizing does is take all of our calculated values and scales them appropriately to remain inside the intended range.
+Normalizing the motor power values
+Creating a Max Variable
+First we need to create a new variable called "max".
+Creating a new variable
+In Blocks, we use something called a "list", also known as an "array" to store a set of numbers. In this case, we will be storing all of our motor powers.
+Creating a list in Blocks
+But first, we need to add a
+block from our "Math" menu. We will change this using the dropdown to "max", meaning it is returning the largest value from our list of motor powers.
+Setting our variable to the highest motor value
+Since our motor power will sometimes be negative, such as when turning in reverse, we want to make sure we're using the absolute value of our motor powers.
+Finding the "absolute" block in the "Math" menu
+Creating the If/Else Statement
+Next, we will set up our
+If/Else
+to check if our "max" is higher than 1 and therefore outside the motor's range.
+Our max variable if/else statement
+Using this statement, we'll readjust each of our motor's power back to be within range proportionally by dividing each by the max value.
+Full If/Else statement
+Now our full drivetrain function will look like the following:
+Full mecanum drivetrain program with normalizing
+Previous
+Programming Mecanum - Simplified
+Next
+Welcome to Hello Robot!
+Last updated
+2 months ago
+Was this helpful?

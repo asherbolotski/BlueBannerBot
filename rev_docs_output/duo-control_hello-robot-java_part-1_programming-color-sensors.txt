@@ -1,0 +1,255 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Color Sensor Basics:
+But what makes up a color?
+Detecting Light vs. Dark
+Quick Check!
+Normalized Colors
+Was this helpful?
+Export as PDF
+It is recommended to create a new OpMode while following this tutorial. Ours is named HelloRobot_ColorSensor!
+Color Sensor Basics:
+While a touch sensor features a physical switch to gather information, a color sensor makes use of reflected light. By doing so it collects different data to determine how much light it is seeing, the distance to a surface, and of course what color is in front of it.
+But what makes up a color?
+For our robot we're going to focus on a few key components: hue, saturation, and value. With these we can use something known as the HSV color model to have the robot translate what its seeing into a recognizable color.
+HSV is a form of a cylindrical RGB color model used to do things like create color pickers for digital painting programs, to edit photos, and for programming vision code.
+Hue, saturation, and value all will play a part in helping our robot tell us what color it detects and allow us to make adjustments for something like a uniquely colored game piece!
+Detecting Light vs. Dark
+Before we tackle colors, let's start with having our robot use the color sensor to tell us how much light is being reflected.
+To do this we need to ask our color sensor to act as a light sensor, specifically an
+OpticalDistanceSensor
+.
+Copy
+while
+(
+opModeIsActive()
+) {
+telemetry
+.
+addData
+(
+"Light Detected"
+,
+((OpticalDistanceSensor) test_color)
+.
+getLightDetected
+());
+telemetry
+.
+update
+();
+}
+For this use case, we will use
+getLightDetected()
+to have the sensor report the amount of light detected in a range of 0-1.
+Quick Check!
+Time to test your program to see what your color sensor detects! While testing think about the following questions:
+Is the number higher when less or more light is detected?
+What happens when the color sensor looks at different color surfaces?
+Does the value change when turning the color sensor's LED light on or off?
+Does the value change if there is a shadow or if the lighting in the room changes?
+What happened?
+Likely, the numbers and differences you saw while testing are different than those we'd see ourselves. There are many factors that might change the color sensor's readings including the lighting in the room and surface material.
+However, one thing that is the same is that 1 should be the least amount of light, such as when your hand is covering the sensor, and 0 is the most amount of light being seen.
+Normalized Colors
+When using the option to "
+Setup Code for Configured Hardware
+" while creating a new OpMode, the color sensor will be established similar to the following:
+Copy
+public class HelloRobot_ColorSensor extends LinearOpMode {
+private ColorSensor test_color;
+@Override
+public void runOpMode() {
+test_color = hardwareMap.get(ColorSensor.class, "test_color");
+However, for this tutorial we want to set our color sensor up as a NormalizedColorSensor.
+Color Normalization is another technique within vision programming intended to help compensate for differences caused by lighting and shadows when looking at colors. This also affects shades of a color. For example, there are a ton of different shades of blue, such as cyan, navy, and aquamarine, but to our robot these will all be referenced as blue.
+Copy
+public class HelloRobot_ColorSensor extends LinearOpMode {
+private NormalizedColorSensor test_color;
+@Override
+public void runOpMode() {
+test_color = hardwareMap.get(NormalizedColorSensor.class, "test_color");
+With our color sensor now set for normalized colors, we'll add a call for
+NormalizedRGBA
+colors before we add telemetry for each individually.
+Copy
+while (opModeIsActive()) {
+telemetry.addData("Light Detected", ((OpticalDistanceSensor) test_color).getLightDetected());
+NormalizedRGBA colors = test_color.getNormalizedColors();
+telemetry.update();
+}
+Now we're ready to collect more data from our color sensor!
+Previous
+Programming Touch Sensors
+Next
+Color Sensor Telemetry
+Last updated
+2 months ago
+Was this helpful?

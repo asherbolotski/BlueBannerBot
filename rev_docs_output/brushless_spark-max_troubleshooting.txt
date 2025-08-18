@@ -1,0 +1,163 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+General Troubleshooting Tips
+Rule Out Issues By Isolation
+Use the Driver Station
+Use the APIs
+Common Faults and Issues
+Motor Not Spinning
+Gate Driver Fault
+Sensor Fault
+Powers via USB but not 12V
+Recovery Mode
+Was this helpful?
+Export as PDF
+Many issues can be solved by systematic troubleshooting without needing to contact REV Support. Take a look at the troubleshooting tips below for help in determining the cause of the issue you are seeing. Should you need to contact us, describing the steps you've taken in detail will help us get you up and running quickly.
+General Troubleshooting Tips
+The key to effective troubleshooting is isolating the issue. Many issues can show the same symptom, so eliminating failure points one at a time is critical to finding the root cause.
+Rule Out Issues By Isolation
+If possible, try to eliminate a section of the system when troubleshooting. For example:
+Rule out a code or control wiring issue:
+Use the REV Hardware Client to run the SPARK MAX over USB.
+Please be aware of the CAN lockout feature of the SPARK MAX.
+If it has been connected to the roboRIO's CAN bus, a safety feature within the SPARK MAX will lock out USB communication. Disconnecting from the CAN bus and power-cycling the MAX will release the lock.
+If this is your first time running the REV Hardware client, see the
+Getting Started with the REV Hardware Client
+for a tour of the software and its features.
+Rule out a code issue:
+Create a simple test program using our SPARK MAX Example Code.
+Rule out a mechanical issue:
+Remove the motor from the mechanism or use a different, free spinning motor.
+Use the Driver Station
+An extremely useful set of tools can be found on the Driver Station:
+Use the
+Driver Station Log File Viewer
+Look at the PDP channel current draw:
+Higher than expected current on a channel can indicate both mechanical and electrical issues.
+Look at the battery voltage:
+Large dips in the battery voltage around the time of an issue can indicate battery health issues that cause brownouts.
+Use the
+CAN/Power Tab
+Look at the CAN Bus Utilization.
+Look at CAN Faults.
+Look at Comms Faults:
+Comms faults can affect the SPARK MAX. If it loses communication with the roboRIO, it will go to its safe disabled state. This can look like a momentary glitch in a motor spinning if the comms faults are infrequent and irregular.
+Use the APIs
+It is also very useful to log or plot operating values internal to the SPARK MAX. These values can be accessed using the
+SPARK MAX APIs
+. Useful values to log:
+getAppliedOutput()
+This value will show what the SPARK MAX is actually applying to the motor output. This can illuminate issues with closed loop control tuning.
+getOutputCurrent()
+This value will show the output current going to the phases of the motor.
+Output current won't always be the same as the Input current
+measured by the PDP. Knowing the output current is useful to diagnose current-limit issues if motors are overheating.
+getBusVoltage()
+A way to measure the input voltage right at the controller.
+getStickyFaults()
+A sticky fault indicates if a fault has occurred since the last time the faults were reset. Checking these can provide a lot of insight into what the controller is experiencing.
+Common Faults and Issues
+Below you will find some troubleshooting steps for some common faults and issues related to operating the SPARK MAX.
+Motor Not Spinning
+Gate Driver Fault
+Sensor Fault
+Powers via USB but not 12V
+Continuity Check Instructions
+Measure the continuity between each of the motor phase wires and the sensor wire, as pictured here.
+
+Also, check the resistance between wires of the sensor cable and motor wires. Reach out to
+[email protected]
+with results for each phase wire.
+Recovery Mode
+Sometimes, when updating the firmware on a SPARK MAX, it is possible for the process to be interrupted or for the firmware to be corrupted by a bad download or other type of interruption in data transfer. In this state, the Status LED will be dark or dim and the device will fail to operate. There is a built-in recovery mode that can force your device to accept new firmware even if the controller seems to be bricked and the procedure is outlined below:
+Please note, performing this procedure will erase all data and settings on the device. To perform the procedure a small tool, like a straightened paper clip, is necessary to press the Mode Button (located to the right of the Status LED), the orange USB-C cable that came with the unit (or a DATA capable USB-C cable), and a native Windows based computer with the
+REV Hardware Client
+installed:
+With the SPARK MAX disconnected from power, press and hold the Mode Button
+While still holding the Mode Button, connect the Device to the computer using the USB-C cable - the Status LED will not illuminate - this is expected.
+With the REV Hardware Client running on the computer, wait a few seconds for the audible tone or icon for the device to be recognized in recovery mode then release the Mode Button - no lights will be present on the SPARK MAX during this stage of the process, this is expected
+Select the SPARK MAX in Recovery Mode from the REV Hardware Client window
+From the "Choose a Device" type dropdown, choose - SPARK MAX
+Choose the latest version of the firmware from the dropdown and then click update
+Wait for the software update to complete
+Power cycle unit (unplug and plug in USB-C) click on SPARK MAX icon, clear any sticky faults - the recovery should be complete!
+Previous
+SPARK MAX Status LED Patterns
+Next
+SPARK MAX Operating Modes
+Last updated
+2 months ago
+Was this helpful?

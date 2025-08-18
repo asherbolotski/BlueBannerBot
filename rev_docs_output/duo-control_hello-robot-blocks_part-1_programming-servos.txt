@@ -1,0 +1,234 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+What is a Servo?
+Quick Check
+Let's get Programming!
+Was this helpful?
+Export as PDF
+What is a Servo?
+This section is considering the Smart Robot Servo in its default mode. If your servo has been changed to function in continuous mode or with angular limits it will not behave the same using the code examples below. You can learn more about the
+Smart Robot Servo
+or changing the Servo's mode via the
+SRS Programmer
+by clicking the hyperlinks.
+A servo is a form of actuator or a device designed for moving. With a typical servo, you can specify a target position. The servo will turn its motor shaft to move to the target position, and then maintain that position, even if moderate forces are applied to try and disturb its position.
+For Hello Robot we will be using the
+Smart Robot Servo
+, which is able to switch between a
+continuous
+and
+angular
+mode.
+Continuous mode
+allows for the servo to rotate a full 360°, either direction, indefinitely similar to a standard motor.
+Angular mode
+sets the servo to move to specified positions within a 270° range of motion.
+Let's take a look at how to program our servo while it is on angular mode:
+While most common servos have a range of 180° for motion, the Smart Robot Servo has a range of 270° due to its ability to switch between modes. When programming this means our 0 and 1 position might be a little different than what you'd expect.
+Looking at the image above we can see that on
+default
+when asking our servo to move to its position 0 it will be at -135° . On the opposite end, moving to its position 1 takes our servo to +135° . Therefore if we wanted to return to 0°  we would need to program it to move to its position 0.5.
+A servo horn attachment connected to your Smart Robot Servo may effect where 0° appears. We recommend using a SRS programmer to set the servo to zero before adding attachments. This may also be done using the code learned in this section!
+Quick Check
+Let's review quick our basic positions:
+Programmed Position
+Degrees
+0
+-135°
+0.5
+0°
+1
+135°
+Based on what we've learned so far, think about the follow two questions:
+If we wanted our servo to move to -67.5° what
+position
+would we program it move to?
+If we have programmed our servo to move to position 0.7, what would that equal in
+degrees
+?
+Click to reveal the answers
+Breaking it down we can see that -67.5° would be half of our movement between 0°  and -135° . Therefore, we will set our position to halfway between 0 and 0.5 equaling 0.25.
+This second question requires a little more math. Let's think about how far our servo would move for each 0.1 of a position. Our total movement is 270° so if divided by 10 we know 0.1 = 27°. Going from there we can do the math starting from the 0° we know position 0.5 brings us to. Therefore, moving to position 0.7 should be 54°.
+For Hello Robot we will only be programming using positions. Understanding their translation to degrees is still important, however, to help think through designing a mechanism. Degrees may also be preferred when using a direct
+pulse input
+to program the servo.
+Let's get Programming!
+In the next few sections, we will be learning to program our servo to first move automatically to different requested positions then in response to our gamepad's input.
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Below is a sneak peek of our final full code:
+Previous
+Programming Essentials
+Next
+Programming Servo Basics
+Last updated
+9 months ago
+Was this helpful?

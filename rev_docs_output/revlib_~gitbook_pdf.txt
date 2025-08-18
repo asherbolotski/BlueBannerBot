@@ -1,0 +1,708 @@
+All pages
+Powered by GitBook
+1
+of
+10
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Current Control Mode
+Current Control uses a PID controller to run the motor at a consistent current providing a consistent torque. The PID controller is run using the setpoint, in Amps, and the internally measured current draw.
+It is called as shown below:
+Java
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kCurrent
+);
+API Docs:
+setReference
+C++
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kCurrent);
+API Reference:
+SetReference
+Current Control mode will turn your mechanism continuously and will speed up to maximum velocity if unloaded. Use caution when running this mode and avoid using it on mechanisms with a limited range of motion.
+Smart Motion Control
+Smart Motion Control is a complex control mode that allows for smoother and more controlled movements from one position to another. By configuring the maximum velocity and acceleration, as shown in
+, this control mode will create a motion that accelerates, holds a constant "cruise" velocity, and then decelerates to a stop at the setpoint.
+Tuning the PID Controller for Smart Motion may be difficult on mechanisms with a very limited range of motion.
+This control mode takes a setpoint in units of rotations, but the underlying implementation executes a Velocity PID controller, so the PID tuning process will be more like a Velocity controller.
+The
+is a good tool for tuning this control loop, as it allows you to toggle between Smart Motion and Velocity control to fine-tune the constants and parameters.
+Smart Motion's function is the same as that of
+, which uses an underlying position-based PID controller which may be easier to tune and can sometimes provide better results.
+Running Smart Motion Control is as easy as any other control mode: configure the constants, pick your setpoints, and set it as the mode when you apply the position target, as seen below:
+Java
+API Docs:
+C++
+API Reference:
+Using the Velocity Control mode will rotate your mechanism continuously. Please exercise caution while tuning. Utilize hard and soft limits to protect your robot.
+Smart Motion is deprecated as of the 2025 release of REVLib, and teams using it should migrate to MAXMotion Position Control Mode
+Smart Motion Control is a complex control mode that allows for smoother and more controlled movements from one position to another. By configuring the maximum velocity and acceleration, as shown in
+Getting Started with PID Tuning
+For a detailed technical and mathematical description of each term and its effect, the
+WPILib docs page on PID
+is a good resource.
+FRC Usage
+In FRC, PID loops are used in many types of mechanisms, from flywheel shooters to vertical arms. These need to be tuned to different constants, depending on the units they use and the physical design of the mechanism, however the process to find these constants is roughly the same.
+Most teams find success using controllers tuned primarily with
+P
+and
+D
+, using a
+Feed Forward
+to account for
+steady-state error
+.
+The Constants
+P - Proportional Gain
+P, the proportional gain, is the primary factor of the control loop. This is multiplied by the error and that gain is added to the output. This does the heavy lifting of the motion, pushing the motor in the direction it needs to go.
+I - Integral Gain
+I, the integral gain, is not often recommended in FRC. It is useful for eliminating steady-state error, or error that the other gains leave behind and cannot address. It accumulates the error over time and multiplies it by the I gain, gradually increasing the power it supplies until that has evened out. If it is needed, it's recommended to use a limited to prevent
+I windup
+.
+D - Derivative Gain
+The derivative gain, D, is used to tune out oscillation and dampen the motion. It resists motion, decreasing power when the mechanism is moving. A good balance of P and D is needed to make a smooth motion with no oscillation.
+Tuning
+Several guides for PID tuning are available, such as
+this one on the WPILib docs
+. It may be useful to consult multiple, especially those available that reference your specific mechanism.
+Any method for PID tuning will start with the same concept, however, regardless of mechanism. Before you can tune your mechanism, you should setup a graph of the setpoint and that measured value, either through the
+REV Hardware Client
+or a similar utility. This will allow you to analyze each test and properly evaluate the changes to make.
+To then tune a basic PID loop, follow the steps below:
+Set all constants (P, I, D, F, arb Feed Forward, etc) to 0
+If you are operating in Velocity Control Mode (or a velocity-based control mode), set F to the motor's value as discussed in
+F Parameter
+. (Note that this is different from arbFF, which is detailed below)
+Ensure the mechanism is safe to actuate. This process will spin the motor, potentially at unexpected speeds and in unexpected directions
+Check the direction of the motor, and invert it if needed so that positive output is in the desired direction
+Set P to a very small number, relative to the units you are working in
+Set a target for the motor to move to. Ensure this is within the range of your mechanism.
+Gradually increase P until you see movement, by small increments
+Once you see motion, increase P by small increments until it reaches the target at the desired speed
+If you see oscillation, decrease P or begin to increment D by a small amount
+Continue to adjust these parameters until the motion is quick, precise, and repeatable
+Arbitrary Feed Forward
+The SPARK Flex and SPARK MAX do not have any support for more complex physics-based Feed Forward models, but do include a means of applying an arbitrary voltage which can be calculated in your team code and passed to the API.
+Note the difference between a kF gain and an arbFF value: kF is a velocity PID gain that should be set to 0 when using position mode or MAXMotion Position Control Mode, while arbFF is an arbitrary voltage applied after the controller's PID calculations, and can be used with all position- and velocity-based control modes, including MAXMotion
+WPILib offers
+several basic feed forward calculation classes
+that work great with arbFF
+It can be applied with the setpoint as seen below:
+Java
+Copy
+// Set the setpoint of the controller in raw position mode, with a feedforward
+m_controller.setReference(
+setPoint,
+ControlType.kPosition,
+0,
+feedForward
+);
+API Docs:
+SparkClosedLoopController
+,
+setReference
+C++
+Copy
+using namespace rev::spark;
+// Set the setpoint of the controller in raw position mode, with a feedforward
+m_controller.SetReference(
+setPoint,
+SparkBase::ControlType::kPosition,
+0,
+feedForward
+);
+API Docs:
+SparkClosedLoopController
+,
+SetReference
+Smart Motion Parameters
+Smart Motion Example Program
+WPILib's TrapezoidalProfile
+setReference
+SetReference
+This graph was generated with a very slow acceleration and max velocity to show the curve. Once your constants are dialed in, these can be increased to make your motion quick and precise. This graph was made using a Spark Flex driving a 1:1 rubber flywheel.
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+SparkBase
+.
+ControlType
+.
+kSmartMotion
+);
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kSmartMotion);
+Closed Loop Control
+Closed-Loop Control Basics
+A Closed-Loop Control System in its most basic form is a process that uses feedback to improve the accuracy of its outputs. Closed-Loop Control Systems, sometimes referred to as Feedback Controllers, are frequently used when maintaining or reaching a steady output is important or if the system may have outside influences that could affect the system's output.
+A simple example using this type of Control is an automatic coffee maker. In its Closed-Loop Control System, the output is hot coffee and the process we are getting feedback on is the heating of the water. If the coffee maker receives feedback that the water is cold, it will start to heat the pot. When the water is almost hot enough to brew the coffee, the control algorithm will continue to heat the water until the correct goal temperature has been reached. Once the water reaches it's goal temperature, or if it gets too hot, the system will stop heating the water and wait until it receives feedback that the heater needs to begin again.
+Closed-Loop Control with SPARK Motor Controllers
+Closed-Loop Control is a staple of complex FRC mechanism programming. WPILib offers
+several sets of libraries
+to allow teams to run PID loops on the roboRIO, but they require setup in your team's code, only update every 20ms by default, and may require specifically-configured feedback devices for fast responses, especially at high frequencies.
+With a PID loop onboard a SPARK Motor Controller, the setup is simple, doesn't clutter your code, and the loop is updated every 1ms, increasing the responsiveness and precision of the controller. Even when using a more complex control algorithm on the roboRIO, it's still recommended to put as much processing on the motor controller as possible.
+Both the SPARK MAX and SPARK Flex can operate in several closed-loop control modes, using sensor input to tightly control the motor velocity, position or current. The internal control loop follows a standard PID algorithm with a feed-forward (F) term to compensate for known system offsets. This allows the motor to follow precise and repeatable motions, useful for complex mechanisms.
+Below is a diagram of the firmware implementation of the internal PIDF.
+SPARK Motor Controller PIDF Implementation
+Additionally, an arbitrary feedforward signal is added to the output of the control loop after
+all
+calculations are done. The units for this signal can be selected as either
+voltage
+or
+duty cycle.
+This feature allows more advanced feedforward calculations to be performed by the controller. More details about the types of feedforward calculations can be found on the
+WPILib documentation
+. Using the
+voltage
+units for arbitrary feedforward allows the user to send the calculated feedforward voltage from the WPILib API directly to the control loop.
+MAXMotion Position Control
+MAXMotion Position Control is a second-degree closed loop controller, allowing for smooth and consistent motions from one position to another by limiting both the velocity and acceleration of the motor. These can be configured via the
+MAXMotion Parameters
+, setting a target acceleration and a "cruise" velocity. The motor will spin up, honoring the acceleration target, hold speed at the cruise velocity, and then slow down honoring the acceleration target to arrive at the setpoint. MAXMotion updates its motion profile every 10ms and the underlying PID controller every 1ms, which makes it extremely fast and responsive.
+MAXMotion Position Control runs on top of an internal position PID controller, so the tuning process begins similarly to a typical position closed loop controller, with the P and D constants (See
+Getting Started with PID Tuning
+for more on this). Note that these values may need tweaked once you set your velocity and acceleration targets in order to smooth out the motion.
+When setting your maximum velocity and maximum acceleration parameters, keep a few things in mind:
+Maximum velocity is in units of revolutions per minute by default
+Maximum acceleration is in units of RPM per second by default
+Your current limits may interfere with motions that move too quickly or hold against gravity for too long
+Try to achieve a good balance of smoothness and consistency with speed
+Setting a high acceleration or velocity could cause the mechanism to shift or move your robot and may be dangerous to stand close to, so use extra caution when speeding things up
+Tips for Smooth Motions
+If your motion seems jittery, try adjusting your PID constants. If the target acceleration is faster or slower than your PIDs allow, the mechanism may appear to shake or jitter and speed and accuracy will be lost.
+Keep an eye on the current draw, as hitting limits may interfere with the functionality of MAXMotion. Increasing current limits or changing the gear ratio on your mechanism can help reduce the chances of this happening.
+Feed forwards (See
+Arbitrary Feed Forward
+) may help smooth out your motion and stabilize your mechanism, but if not perfectly tuned could also introduce noise or fight the internal PID (especially if the gains are too high). MAXMotion may be able to handle the motion on its own without any help at all, especially on a lightweight mechanism.
+As MAXMotion runs on an underlying position closed loop controller, a kF gain (
+) is not recommended and may lead to unexpected results. Instead, lean on the PID constants to handle this.
+Using MAXMotion
+After tuning your constants, calling MAXMotion is as simple as passing in the setpoint to the controller.
+Java
+Copy
+m_controller.setReference(setPoint, SparkBase.ControlType.kMAXMotionPositionControl);
+API Docs:
+setReference
+C++
+Copy
+using namespace rev::spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kMAXMotionPositionControl);
+API Reference:
+SetReference
+Migrating from Smart Motion
+As Smart Motion and MAXMotion Position Control use different underlying control methods, all PID constants will need to be re-tuned from scratch
+Smart Motion used a different method for smooth second-degree motion control, but MAXMotion can be applied anywhere Smart Motion was previously. Maximum velocity and acceleration constants may be transferable, but should be tested with caution. All other constants will need re-tuned from scratch, including all PIDs.
+MAXMotion has several improvements over Smart Motion, and should offer better consistency, a better tuning experience, better position retention, and an all-around better user experience. It is highly recommended to migrate all systems using Smart Motion to MAXMotion.
+Velocity Control Mode
+Velocity Control uses the PID controller to run the motor at a set speed in RPM. An FF gain, as detailed in
+, is your friend in finding consistency when tuning this mode.
+Want to control the acceleration of your velocity controller? See
+for an improved version of Velocity Control with more features and control.
+It is called in the same way as Position Control:
+Java
+API Docs:
+C++
+API Reference:
+Velocity Control mode will turn your motor continuously,. Be sure your mechanism does not have any hard limits for rotation.
+Velocity Loop constants are often of a very low magnitude, so if your mechanism isn't behaving as expected, try
+decreasing
+your gains.
+F Parameter
+MAXMotion Velocity Control
+setReference
+SetReference
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kVelocity
+);
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kVelocity);
+Smart Velocity Control
+Smart Velocity is deprecated as of the 2025 release of REVLib, and teams using it should migrate to MAXMotion Velocity Control Mode
+The Smart Velocity control mode utilizes the
+Smart Motion parameters
+to improve upon velocity control. Honoring the maximum acceleration, Smart Velocity will speed up and slow down your flywheel or rotary mechanism in a controlled way, reducing power draw and increasing consistency.
+It is called as seen below:
+Java
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kSmartVelocity
+);
+API Docs:
+setReference
+C++
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kSmartVelocity);
+API Reference:
+SetReference
+Smart Velocity Control mode will turn your motor continuously. Be sure your mechanism does not have any hard limits for rotation.
+This graph was generated with a very slow acceleration to better show the motion, the wobbles at low speed can be minimized by increasing your acceleration.
+MAXMotion Velocity Control
+MAXMotion Velocity Control utilizes the
+MAXMotion parameters
+to improve upon velocity control. Honoring the maximum acceleration, MAXMotion Velocity Control will speed up your flywheel or rotary mechanism in a controlled way, reducing power draw and increasing consistency.
+MAXMotion Velocity Control utilizes an internal velocity closed-loop controller, so transitioning from Velocity Control mode to MAXMotion Velocity Control is as simple as setting a maximum acceleration and changing the setReference call.
+It is called as seen below:
+Java
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kMAXMotionVelocityControl
+);
+API Docs:
+setReference
+C++
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kMAXMotionVelocityControl);
+API Reference:
+SetReference
+MAXMotion Velocity Control will turn your motor continuously. Be sure your mechanism does not have any hard limits for rotation.
+Tips for Smooth Motions
+If your motion seems jittery, try reducing your PID constants, especially P. If the underlying velocity PID outruns the acceleration target, the motion may seem jittery and the velocity will not increase smoothly.
+Make sure your units are correct: maximum velocity is set in RPM by default and maximum acceleration is set in RPM per second by default.
+At low speeds, the acceleration may seem wobbly or inconsistent if the loop has been tuned for higher speeds or vice versa. If both are needed, try tuning separate PIDs and switching between slots when needed. This may be easier than finding those perfect constants that work beautifully across the board.
+As MAXMotion Velocity Control Mode uses an internal velocity PID loop, a kF gain (
+) is recommended for more consistent control
+Passing a calculated arbitrary feed forward (
+Arbitrary Feed Forward
+) via arbFF may be helpful for large or heavy velocity-controlled mechanisms
+Migrating from Smart Velocity
+All Smart Velocity constants and PIDs can be transferred to MAXMotion Velocity Mode. Be sure to transcribe any Smart Motion parameters to the MAXMotion parameters.
+Position Control Mode
+Position Control is used to point the motor in a specific direction. It takes a setpoint in rotations and uses the PID loop to move to that position. The Position control mode pipes directly into a PID controller with the configured encoder.
+For more complex mechanisms or motions where closer control over acceleration and velocity are needed, see
+A properly tuned Position control loop should respond quickly and accurately to a setpoint change and should not oscillate around the target.
+To run the motor in Position control mode, set the PID Controller setpoint as shown below.
+Java
+API Docs:
+C++
+API Reference:
+MAXMotion Position Control
+setReference
+SetReference
+This loop was tuned to show the curve, an ideal controller would move much quicker. In a perfect world, this motion would be nearly instantaneous.
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kPosition
+);
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kPosition);
+F Parameter
+F Parameter
+Closed Loop Control Getting Started
+Setting up Closed-Loop Control
+Closed-loop control in REVLib is accessed through the SPARK's closed loop controller object. This object is specific to each motor and contains all the methods needed to control your motor with closed-loop control. It can be accessed as shown below:
+Java
+Copy
+// Initialize the motor (Flex/MAX are setup the same way)
+SparkFlex
+m_motor
+=
+new
+SparkFlex(deviceID
+,
+MotorType
+.
+kBrushless
+)
+;
+// Initialize the closed loop controller
+SparkClosedLoopController
+m_controller
+=
+m_motor
+.
+getClosedLoopController
+();
+API Docs:
+SparkFlex
+,
+SparkClosedLoopController
+C++
+Copy
+using
+namespace
+rev
+::
+spark;
+// Initialize the motor (Flex/MAX are setup the same way)
+SparkMax m_motor{deviceID
+,
+SparkMax
+::
+MotorType
+::
+kBrushless};
+// Initialize the closed loop controller
+SparkClosedLoopController m_controller
+=
+m_motor
+.
+GetClosedLoopController
+();
+API Docs:
+SparkMax
+,
+SparkClosedLoopController
+To drive your motor in a closed-loop control mode, address the closed loop controller object and give it a set point (a target in whatever units are required by your control mode:
+position
+,
+velocity
+, or
+current
+) and a control mode as shown below:
+This will run your motor in the provided mode, but it won't move until you've configured the
+PID constants.
+Java
+Copy
+// Set the setpoint of the PID controller in raw position mode
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kPosition
+);
+API Docs:
+setReference
+,
+ControlType
+C++
+Copy
+// Set the setpoint of the PID controller in raw position mode
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kPosition);
+API Docs:
+SetReference
+,
+ControlType
+The provided example above runs the motor in position control mode, which is just a conventional PID loop reading the motor's current position from the configured encoder and taking a setpoint in rotations.
+Use caution when running motors in closed-loop modes, as they may move very quickly and unexpectedly if improperly tuned.
+PID Constants and Configuration
+To run a PID loop, several constants are required. For a more advanced controller, even more parameters need to be set and tuned.
+This section uses concepts about configuration which is discussed
+here
+. For more information about SPARK specific configuration, see
+this page
+.
+PID Parameters
+A PID controller has 3 core parameters or gains. For more information on these gains and how to tune them, see
+Getting Started with PID Tuning
+.
+These gains can be configured on the with the
+closedLoop
+member of a
+SparkFlexConfig
+or
+SparkMaxConfig
+object as seen below:
+Java
+Copy
+SparkFlexConfig config = new SparkFlexConfig();
+// Set PID gains
+config.closedLoop
+.p(kP)
+.i(kI)
+.d(kD)
+.outputRange(kMinOutput, kMaxOutput);
+API Docs:
+ClosedLoopConfig
+C++
+Copy
+using namespace rev::spark;
+SparkFlexConfig config;
+// Set PID gains
+config.closedLoop
+.P(kP)
+.I(kI)
+.D(kD)
+.OutputRange(kMinOutput, kMaxOutput);
+API Docs:
+ClosedLoopConfig
+F Parameter
+The SPARK family of motor controllers also offer an F term, which is a velocity feed-forward. This is unique to each type of motor, and can be calculated by taking the reciprocal of the motor's velocity constant (Kv), in other words 1/Kv.
+Note that this is not the same as an arbitrary feed forward. The F parameter is multiplied by the velocity setpoint to achieve more consistent velocity control, while an arbFF value that is passed in with the setpoint can be used to apply kS, kV, kA, and kG gains. For more info on arbFF, see
+Arbitrary Feed Forward
+.
+The Kv values for the NEO family of Brushless Motors are documented within each motor's specifications table:
+NEO Vortex
+,
+NEO V1.1
+,
+NEO 550
+For a NEO Vortex, this value is 1/565. This is only needed when running a velocity-based control loop (velocity mode, Smart Motion, and Smart Velocity). The F parameter can be set as seen below:
+Java
+Copy
+SparkMaxConfig config = new SparkMaxConfig();
+// Set kFF
+config.closedLoop.velocityFF(1/Kv);
+API Docs:
+ClosedLoopConfig
+C++
+Copy
+using namespace rev::spark;
+SparkMaxConfig config;
+// Set kFF
+config.closedLoop.VelocityFF(1/Kv);
+API Docs:
+ClosedLoopConfig
+The F parameter should only be set when using a velocity-based PID controller, and should be set to zero otherwise to avoid unwanted behavior.
+MAXMotion Parameters
+MAXMotion has parameters that allow you to configure and tune the motion profiles generated by MAXMotion. The parameters can be set through the
+maxMotion
+member of the
+closedLoop
+config.
+The MAXMotion Max Velocity parameter only applies to MAXMotion Position Control Mode, while MAXMotion Velocity Control Mode does not honor it in order to ensure any setpoint is reachable. This means any top-speed clamping you want to do must be done
+before
+you send the setpoint to the Motor Controller.
+Java
+Copy
+SparkMaxConfig config = new SparkMaxConfig();
+// Set MAXMotion parameters
+config.closedloop.maxMotion
+.maxVelocity(maxVel)
+.maxAcceleration(maxAccel)
+.allowedClosedLoopError(allowedErr);
+API Docs:
+MAXMotionConfig
+C++
+Copy
+using namespace rev::spark;
+SparkMaxConfig config;
+// Set MAXMotion parameters
+config.closedloop.maxMotion
+.MaxVelocity(maxVel)
+.MaxAcceleration(maxAccel)
+.AllowedClosedLoopError(allowedErr);
+API Docs:
+MAXMotionConfig
+Smart Motion Parameters
+Smart Motion is deprecated and marked for removal. It is recommended to use MAXMotion instead.
+Smart Motion
+and
+Smart Velocity
+have parameters that allow you to configure and tune the motion profiles that they generate. The parameters can be set through the
+smartMotion
+member of the
+closedLoop
+config.
+Java
+Copy
+SparkMaxConfig config = new SparkMaxConfig();
+// Set Smart Motion and Smart Velocity parameters.
+config.closedloop.smartMotion
+.maxVelocity(maxVel)
+.minOutputVelocity(minVel)
+.maxAcceleration(maxAccel)
+.allowedClosedLoopError(allowerErr);
+API Docs:
+SmartMotionConfig
+C++
+Copy
+using namespace rev::spark;
+SparkMaxConfig config;
+// Set Smart Motion and Smart Velocity parameters.
+config.closedloop.smartMotion
+.MaxVelocity(maxVel)
+.MinOutputVelocity(minVel)
+.MaxAcceleration(maxAccel)
+.AllowedClosedLoopError(allowerErr);
+API Docs:
+Maximum Velocity is in units of Revolutions per Minute (RPM)
+Maximum Acceleration is in units of RPM per Second (RPM/s)
+Slots
+The SPARK MAX and SPARK Flex each have 4 closed-loop slots, each with their own set of constants. These slots are numbered 0-3. You can pass the desired as an argument to each of the applicable configurations.
+Java
+Copy
+SparkFlexConfig config = new SparkFlexConfig();
+config.closedLoop
+// Set PID gains for position control in slot 0.
+// We don't have to pass a slot number since the default is slot 0.
+.p(kP)
+.i(kI)
+.d(kD)
+.outputRange(kMinOutput, kMaxOutput)
+// Set PID gains for velocity control in slot 1
+.p(kP1, ClosedLoopSlot.kSlot1)
+.i(kI1, ClosedLoopSlot.kSlot1)
+.p(kD1, ClosedLoopSlot.kSlot1)
+.velocityFF(kFF1, ClosedLoopSlot.kSlot1);
+API Docs:
+ClosedLoopConfig
+C++
+Copy
+using namespace rev::spark;
+SparkFlexConfig config;
+config.closedLoop
+// Set PID gains for position control in slot 0.
+// We don't have to pass a slot number since the default is slot 0.
+.P(kP)
+.I(kI)
+.D(kD)
+.OutputRange(kMinOutput, kMaxOutput)
+// Set PID gains for velocity control in slot 1
+.P(kP1, ClosedLoopSlot::kSlot1)
+.I(kI1, ClosedLoopSlot::kSlot1)
+.D(kD1, ClosedLoopSlot::kSlot1)
+.VelocityFF(kFF1, ClosedLoopSlot::kSlot1);
+API Docs:
+ClosedLoopConfig
+When applying the setpoint, pass the slot number and the motor controller will switch to the appropriate config.
+Java
+Copy
+// Use the PID gains in slot 0 for position control
+m_controller.setReference(setPoint, ControlType.kPosition, 0);
+// Use the PID gains in slot 1 for velocity control
+m_controller.setReference(setPoint, ControlType.kVelocity, 1);
+API Docs:
+setReference
+,
+ControlType
+C++
+Copy
+using namespace rev::spark;
+// Use the PID gains in slot 0 for position control
+m_controller.SetReference(setPoint, SparkBase::ControlType::kPosition, 0);
+// Use the PID gains in slot 1 for velocity control
+m_controller.SetReference(setPoint, SparkBase::ControlType::kVelocity, 1);
+API Docs:
+SetReference
+,
+ControlType
+SmartMotionConfig

@@ -1,0 +1,135 @@
+REV DUO Kickoff Concepts
+2025-26 REV DUO FTC Starter Bot
+DECODE 2025-26
+Starter Bot - DECODE
+Bill of Materials
+Programming TeleOp
+Build Tips & Tricks
+Starter Bot Changelog 2025-26
+INTO THE DEEP 2024-25
+2024-25 REV DUO FTC Starter Bot
+Starter Bot - INTO THE DEEP
+Bill of Materials
+Programming TeleOp
+Programming - Initialization
+Programming - Creating Functions
+Programming - Controlling the Arm and Wrist
+Programming - Intake and Claw Toggle
+Programming - Driving and Telemetry
+Programming - OnBot Java Overview
+Build Tips & Tricks
+Upgrades!
+Starter Bot Changelog 2024-25
+CENTERSTAGE 2023-2024
+Starter Bot - CENTERSTAGE
+Bill of Materials
+Programming Teleop
+Building Tips & Tricks
+Upgrades
+Starter Bot Changelog
+POWERPLAY 2022-2023
+Starter Bot - POWERPLAY
+Alternative Control Hub Placement
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Lifts
+Freight Frenzy - 2021-2022
+Starter Bot - Freight Frenzy
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Carousel Mechanism
+Freight Delivery Mechanisms
+Programming Autonomous
+Ultimate Goal - 2020-2021
+Game Strategy
+Game Piece
+Drivetrain
+Intake
+Conveyor
+Flywheel Launcher
+Powered by GitBook
+On this page
+What is a Function?
+How do Functions appear in Blocks?
+Creating a new Function in Blocks
+Additional Function Example
+Was this helpful?
+Export as PDF
+This year in our Starter Bot Blocks code we are using "functions" for the first time.
+Blocks Functions
+What is a Function?
+Functions act similar to a variable in that we are using one thing to represent another. However, where a variable typically is used in place of something short, such as a number or equation, a function can take the place of several lines of code.
+This can be incredibly useful if there is a section of code we know will be repeated or to break apart our code into chunks for easy editing.
+Below is a breakdown of our functions:
+Function
+Purpose
+GAMEPAD_INPUT_STATE
+Contains the code related to the arm/wrist presets
+GAMEPAD_INPUT_TOGGLE
+Contains the code for the claw toggle
+GAMEPAD_INPUT_MANUAL
+Contains the code for manual control of the arm/wrist
+GAMEPAD_INTAKE
+Contains the code for running the servo on the intake
+STATE_MACHINE
+Contains all the preset positions for currentState
+SPLIT_STICK_ARCADE_DRIVE
+Contains the code for driving the robot
+TELEMETRY
+Contains the telemetry read out code
+How do Functions appear in Blocks?
+When using functions, our Blocks program becomes divided into different sections containing separate series of code:
+Starter Bot 2024-25 Example Code
+So let's say we wanted to change how quickly our robot's arm moves during
+manual control
+with the d-pad. With our functions organizing our code in chunks, it's easy to find the values we want to change:
+Function for Manual Arm/Wrist control
+Without the use of functions our code would end up a little long and clunky:
+This is intended as an example only and not actual use!
+Creating a new Function in Blocks
+If we want to create a new function in our Blocks program, we start by pulling a
+block from the Functions menu:
+Functions menu in Blocks
+Next we will replace "do something" with an appropriate name. Maybe in this case we are adding a new function for climbing:
+Example function for climbing
+Once our function is named it will appear in the "Functions" menu to be added to the main loop or wherever we need it within our code!
+New function block
+New function added to our main code
+All that's left is to add whatever code we'd like to be within this function:
+Example of a simple code within our function
+The Starter Bot is able to climb the lower rung using the existing example program!
+If the
+block is deleted this will remove the function from the "Functions" menu.
+Additional Function Example
+By default, the Starter Bot's program only references each function once during our loop. The following is intended to be an additional example for reusing functions throughout a program and as an additional educational resource!
+This program can be tested on the Starter Bot or another robot using the same configuration file! Create a new OpMode to begin. Ours is called
+FunctionsDemo
+.
+If you are using the Starter Bot, make sure the arm is adjusted to not drag while the robot drives autonomously.
+Let's say we are working on an autonomous code where we want our robot to drive roughly in a square. Remember that autonomous means this code will move the robot on its own when play is pressed:
+Simple program for driving in a square
+Next, let's say we need the robot to do something between one of the turns, such as move its arm or open a servo's claw. There's a couple of ways we could approach this without functions:
+Full code with claw opening after driving two sides
+Already our code is getting a little long so let's move our side motion and turn into a function:
+Function containing the code for driving and turning
+Now our loop may look like this:
+Using functions to drive in a square
+When we test our code we may notice our robot isn't exactly driving in a square shape. Thankfully with our function in place we only need to change the needed value in one place:
+Code for controlling the robot's turn
+This change to the function will be reflected anywhere
+DRIVE_AND_TURN
+used.
+Give it a try by changing the right motor's power or the timer to refine your square!
+Previous
+Programming - Initialization
+Next
+Programming - Controlling the Arm and Wrist
+Last updated
+11 months ago
+Was this helpful?

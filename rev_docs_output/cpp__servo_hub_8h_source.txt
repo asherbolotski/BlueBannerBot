@@ -1,0 +1,584 @@
+REVLib - C++
+ServoHub.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <stdint.h>
+32
+33
+#include <vector>
+34
+35
+#include "
+rev/REVLibError.h
+"
+36
+#include "
+rev/ServoChannel.h
+"
+37
+#include "
+rev/ServoHubLowLevel.h
+"
+38
+#include "
+rev/config/ServoHubConfig.h
+"
+39
+#include "
+rev/config/ServoHubConfigAccessor.h
+"
+40
+41
+namespace
+rev::servohub
+{
+42
+43
+class
+ServoHub
+:
+public
+ServoHubLowLevel
+{
+44
+friend
+class
+ServoHubSim
+;
+45
+46
+public
+:
+55
+ServoHubConfigAccessor
+configAccessor
+;
+56
+57
+public
+:
+63
+explicit
+ServoHub
+(
+int
+deviceID);
+64
+68
+~ServoHub
+()
+override
+;
+69
+70
+enum class
+ResetMode
+{
+kNoResetSafeParameters
+,
+kResetSafeParameters
+};
+71
+84
+REVLibError
+Configure
+(
+85
+ServoHubConfig
+& config,
+86
+ResetMode
+resetMode =
+ResetMode::kNoResetSafeParameters
+);
+87
+105
+REVLibError
+ConfigureAsync
+(
+106
+ServoHubConfig
+& config,
+107
+ResetMode
+resetMode =
+ResetMode::kNoResetSafeParameters
+);
+108
+115
+bool
+HasActiveFault
+()
+const
+;
+116
+123
+bool
+HasStickyFault
+()
+const
+;
+124
+131
+bool
+HasActiveWarning
+()
+const
+;
+132
+139
+bool
+HasStickyWarning
+()
+const
+;
+140
+141
+struct
+Faults
+{
+142
+bool
+regulatorPowerGood
+;
+143
+bool
+hardware
+;
+144
+bool
+firmware
+;
+145
+bool
+lowBattery
+;
+146
+uint16_t
+rawBits
+;
+147
+148
+explicit
+Faults
+(uint16_t faults);
+149
+};
+150
+157
+Faults
+GetFaults
+()
+const
+;
+158
+168
+Faults
+GetStickyFaults
+()
+const
+;
+169
+170
+struct
+Warnings
+{
+171
+bool
+brownout
+;
+172
+bool
+canWarning
+;
+173
+bool
+canBusOff
+;
+174
+bool
+hasReset
+;
+175
+bool
+channel0Overcurrent
+;
+176
+bool
+channel1Overcurrent
+;
+177
+bool
+channel2Overcurrent
+;
+178
+bool
+channel3Overcurrent
+;
+179
+bool
+channel4Overcurrent
+;
+180
+bool
+channel5Overcurrent
+;
+181
+uint16_t
+rawBits
+;
+182
+183
+explicit
+Warnings
+(uint16_t warnings);
+184
+};
+185
+192
+Warnings
+GetWarnings
+()
+const
+;
+193
+203
+Warnings
+GetStickyWarnings
+()
+const
+;
+204
+210
+REVLibError
+ClearFaults
+();
+211
+215
+double
+GetDeviceVoltage
+()
+const
+;
+216
+220
+double
+GetDeviceCurrent
+()
+const
+;
+221
+225
+double
+GetServoVoltage
+()
+const
+;
+226
+233
+ServoChannel
+&
+GetServoChannel
+(
+ServoChannel::ChannelId
+channelId);
+234
+235
+enum class
+Bank
+{
+kBank0_2
+= 0,
+kBank3_5
+= 1 };
+236
+244
+REVLibError
+SetBankPulsePeriod
+(
+Bank
+bank,
+int
+pulsePeriod_us);
+245
+246
+private
+:
+247
+std::vector<ServoChannel> m_servoChannels;
+248
+};
+249
+250
+}
+// namespace rev::servohub
+REVLibError.h
+ServoChannel.h
+ServoHubConfig.h
+ServoHubConfigAccessor.h
+ServoHubLowLevel.h
+rev::servohub::ServoChannel
+Definition:
+ServoChannel.h:39
+rev::servohub::ServoChannel::ChannelId
+ChannelId
+Definition:
+ServoChannel.h:48
+rev::servohub::ServoHubConfigAccessor
+Definition:
+ServoHubConfigAccessor.h:35
+rev::servohub::ServoHubConfig
+Definition:
+ServoHubConfig.h:39
+rev::servohub::ServoHub
+Definition:
+ServoHub.h:43
+rev::servohub::ServoHub::ClearFaults
+REVLibError ClearFaults()
+Definition:
+ServoHub.cpp:165
+rev::servohub::ServoHub::GetWarnings
+Warnings GetWarnings() const
+Definition:
+ServoHub.cpp:149
+rev::servohub::ServoHub::HasActiveWarning
+bool HasActiveWarning() const
+Definition:
+ServoHub.cpp:90
+rev::servohub::ServoHub::GetDeviceCurrent
+double GetDeviceCurrent() const
+Definition:
+ServoHub.cpp:179
+rev::servohub::ServoHub::GetStickyWarnings
+Warnings GetStickyWarnings() const
+Definition:
+ServoHub.cpp:157
+rev::servohub::ServoHub::HasStickyFault
+bool HasStickyFault() const
+Definition:
+ServoHub.cpp:83
+rev::servohub::ServoHub::Configure
+REVLibError Configure(ServoHubConfig &config, ResetMode resetMode=ResetMode::kNoResetSafeParameters)
+Definition:
+ServoHub.cpp:54
+rev::servohub::ServoHub::ConfigureAsync
+REVLibError ConfigureAsync(ServoHubConfig &config, ResetMode resetMode=ResetMode::kNoResetSafeParameters)
+Definition:
+ServoHub.cpp:67
+rev::servohub::ServoHub::SetBankPulsePeriod
+REVLibError SetBankPulsePeriod(Bank bank, int pulsePeriod_us)
+Definition:
+ServoHub.cpp:203
+rev::servohub::ServoHub::Bank
+Bank
+Definition:
+ServoHub.h:235
+rev::servohub::ServoHub::Bank::kBank3_5
+@ kBank3_5
+rev::servohub::ServoHub::Bank::kBank0_2
+@ kBank0_2
+rev::servohub::ServoHub::HasStickyWarning
+bool HasStickyWarning() const
+Definition:
+ServoHub.cpp:97
+rev::servohub::ServoHub::ServoHub
+ServoHub(int deviceID)
+Definition:
+ServoHub.cpp:40
+rev::servohub::ServoHub::~ServoHub
+~ServoHub() override
+Definition:
+ServoHub.cpp:52
+rev::servohub::ServoHub::GetServoChannel
+ServoChannel & GetServoChannel(ServoChannel::ChannelId channelId)
+Definition:
+ServoHub.cpp:196
+rev::servohub::ServoHub::GetFaults
+Faults GetFaults() const
+Definition:
+ServoHub.cpp:113
+rev::servohub::ServoHub::ResetMode
+ResetMode
+Definition:
+ServoHub.h:70
+rev::servohub::ServoHub::ResetMode::kNoResetSafeParameters
+@ kNoResetSafeParameters
+rev::servohub::ServoHub::ResetMode::kResetSafeParameters
+@ kResetSafeParameters
+rev::servohub::ServoHub::GetServoVoltage
+double GetServoVoltage() const
+Definition:
+ServoHub.cpp:186
+rev::servohub::ServoHub::HasActiveFault
+bool HasActiveFault() const
+Definition:
+ServoHub.cpp:76
+rev::servohub::ServoHub::GetStickyFaults
+Faults GetStickyFaults() const
+Definition:
+ServoHub.cpp:121
+rev::servohub::ServoHub::configAccessor
+ServoHubConfigAccessor configAccessor
+Definition:
+ServoHub.h:55
+rev::servohub::ServoHub::GetDeviceVoltage
+double GetDeviceVoltage() const
+Definition:
+ServoHub.cpp:172
+rev::servohub::ServoHubLowLevel
+Definition:
+ServoHubLowLevel.h:39
+rev::servohub::ServoHubSim
+Definition:
+ServoHubSim.h:41
+rev::servohub
+Definition:
+ServoChannelConfig.h:34
+rev::REVLibError
+REVLibError
+Definition:
+REVLibError.h:33
+rev::servohub::ServoHub::Faults
+Definition:
+ServoHub.h:141
+rev::servohub::ServoHub::Faults::lowBattery
+bool lowBattery
+Definition:
+ServoHub.h:145
+rev::servohub::ServoHub::Faults::hardware
+bool hardware
+Definition:
+ServoHub.h:143
+rev::servohub::ServoHub::Faults::regulatorPowerGood
+bool regulatorPowerGood
+Definition:
+ServoHub.h:142
+rev::servohub::ServoHub::Faults::firmware
+bool firmware
+Definition:
+ServoHub.h:144
+rev::servohub::ServoHub::Faults::rawBits
+uint16_t rawBits
+Definition:
+ServoHub.h:146
+rev::servohub::ServoHub::Faults::Faults
+Faults(uint16_t faults)
+Definition:
+ServoHub.cpp:104
+rev::servohub::ServoHub::Warnings
+Definition:
+ServoHub.h:170
+rev::servohub::ServoHub::Warnings::hasReset
+bool hasReset
+Definition:
+ServoHub.h:174
+rev::servohub::ServoHub::Warnings::channel0Overcurrent
+bool channel0Overcurrent
+Definition:
+ServoHub.h:175
+rev::servohub::ServoHub::Warnings::channel2Overcurrent
+bool channel2Overcurrent
+Definition:
+ServoHub.h:177
+rev::servohub::ServoHub::Warnings::Warnings
+Warnings(uint16_t warnings)
+Definition:
+ServoHub.cpp:129
+rev::servohub::ServoHub::Warnings::channel4Overcurrent
+bool channel4Overcurrent
+Definition:
+ServoHub.h:179
+rev::servohub::ServoHub::Warnings::channel3Overcurrent
+bool channel3Overcurrent
+Definition:
+ServoHub.h:178
+rev::servohub::ServoHub::Warnings::canBusOff
+bool canBusOff
+Definition:
+ServoHub.h:173
+rev::servohub::ServoHub::Warnings::canWarning
+bool canWarning
+Definition:
+ServoHub.h:172
+rev::servohub::ServoHub::Warnings::brownout
+bool brownout
+Definition:
+ServoHub.h:171
+rev::servohub::ServoHub::Warnings::channel1Overcurrent
+bool channel1Overcurrent
+Definition:
+ServoHub.h:176
+rev::servohub::ServoHub::Warnings::channel5Overcurrent
+bool channel5Overcurrent
+Definition:
+ServoHub.h:180
+rev::servohub::ServoHub::Warnings::rawBits
+uint16_t rawBits
+Definition:
+ServoHub.h:181
+src
+main
+native
+include
+rev
+ServoHub.h
+Generated by
+1.9.2

@@ -1,0 +1,359 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class SmartMotionConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.SmartMotionConfig
+public class
+SmartMotionConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+SmartMotionConfig
+()
+Create a new object to configure SmartMotion.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+SmartMotionConfig
+allowedClosedLoopError
+(double allowedError)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+SmartMotionConfig
+allowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+SmartMotionConfig
+apply
+(
+SmartMotionConfig
+config)
+Applies settings from another
+SmartMotionConfig
+to this one.
+SmartMotionConfig
+maxAcceleration
+(double maxAcceleration)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+SmartMotionConfig
+maxAcceleration
+(double maxAcceleration,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+SmartMotionConfig
+maxVelocity
+(double maxVelocity)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+SmartMotionConfig
+maxVelocity
+(double maxVelocity,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+SmartMotionConfig
+minOutputVelocity
+(double minVelocity)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+SmartMotionConfig
+minOutputVelocity
+(double minVelocity,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SmartMotionConfig
+public
+SmartMotionConfig
+()
+Create a new object to configure SmartMotion.
+Method Details
+apply
+public
+SmartMotionConfig
+apply
+(
+SmartMotionConfig
+config)
+Applies settings from another
+SmartMotionConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+SmartMotionConfig
+to copy settings from
+Returns:
+The updated
+SmartMotionConfig
+for method chaining
+maxVelocity
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+maxVelocity
+(double maxVelocity)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the maximum velocity for the Smart Motion mode of the controller. This is the cruising
+ velocity of the profile. Natively, the units are in RPM but will be affected by the velocity
+ conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+maxVelocity(double, ClosedLoopSlot)
+.
+Parameters:
+maxVelocity
+- The maximum velocity with the velocity conversion factor applied
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining
+maxVelocity
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+maxVelocity
+(double maxVelocity,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the maximum velocity for the Smart Motion mode of the controller for a specific closed loop
+ slot. This is the cruising velocity of the profile. Natively, the units are in RPM but will be
+ affected by the velocity conversion factor.
+Parameters:
+maxVelocity
+- The maximum velocity with the velocity conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining
+maxAcceleration
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+maxAcceleration
+(double maxAcceleration)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the maximum acceleration for the Smart Motion mode of the controller. This is the rate at
+ which the velocity will increase until the max velocity is reached. Natively, the units are in
+ RPM per second but will be affected by the velocity conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+maxAcceleration(double, ClosedLoopSlot)
+.
+Parameters:
+maxAcceleration
+- The maximum acceleration with the velocity conversion factor applied
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining
+maxAcceleration
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+maxAcceleration
+(double maxAcceleration,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the maximum acceleration for the Smart Motion mode of the controller for a specific PID
+ slot. This is the rate at which the velocity will increase until the max velocity is reached.
+ Natively, the units are in RPM per second but will be affected by the velocity conversion
+ factor.
+Parameters:
+maxAcceleration
+- The maximum acceleration with the velocity conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining
+minOutputVelocity
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+minOutputVelocity
+(double minVelocity)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the minimum velocity for the Smart Motion mode of the controller. Any requested velocities
+ below this value will be set to 0. Natively, the units are in RPM but will be affected by the
+ velocity conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+minOutputVelocity(double, ClosedLoopSlot)
+.
+Parameters:
+minVelocity
+- The minimum velocity with the velocity conversion factor applied
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining
+minOutputVelocity
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+minOutputVelocity
+(double minVelocity,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the minimum velocity for the Smart Motion mode of the controller for a specific closed loop
+ slot. Any requested velocities below this value will be set to 0. Natively, the units are in
+ RPM but will be affected by the velocity conversion factor.
+Parameters:
+minVelocity
+- The minimum velocity with the velocity conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining
+allowedClosedLoopError
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+allowedClosedLoopError
+(double allowedError)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the allowed closed loop error for the Smart Motion mode of the controller. This value is
+ how much deviation from the setpoint is tolerated and is useful in preventing oscillation
+ around the setpoint. Natively, the units are in rotations but will be affected by the position
+ conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+allowedClosedLoopError(double, ClosedLoopSlot)
+.
+Parameters:
+allowedError
+- The allowed error with the position conversion factor applied
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining
+allowedClosedLoopError
+@Deprecated
+(
+forRemoval
+=true)
+public
+SmartMotionConfig
+allowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+It is recommended to migrate to MAXMotion instead.
+Set the allowed closed loop error for the Smart Motion mode of the controller for a specific
+ closed loop slot. This value is how much deviation from the setpoint is tolerated and is useful
+ in preventing oscillation around the setpoint. Natively, the units are in rotations but will be
+ affected by the position conversion factor.
+Parameters:
+allowedError
+- The allowed error with the position conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+SmartMotionConfig
+object for method chaining

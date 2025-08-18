@@ -1,0 +1,557 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Introduction to ElapsedTime
+Quick Links
+Full Code Example
+Was this helpful?
+Export as PDF
+Introduction to ElapsedTime
+When using our gamepad, we can actively communicate with our robot while our program runs. Our robot waits for our input and acts accordingly until a different command is issued. However, this may not always be the case, such as during the autonomous period of a FTC competition.
+Our robot is smart enough to navigate some on its own, however we need to help it along to know what to look for. Eventually, you could work up to your robot being able to navigate using a camera and machine learning or its IMU to sense direction, but for now let's start with one of the built in features of the SDK:
+ElapsedTime
+What do you think of when you think of a timer? A stopwatch? Your phone? Maybe the timer on a microwave or oven? Timers commonly consist of two main categories:
+count up
+and
+count down
+. You can think about the differences of these two by a comparison like keeping track of how fast a runner did a 100m dash vs. needing to know how much longer our food should cook.
+ElapsedTime
+is a count up timer. Registering the amount of time elapsed from the start of a set event, like the starting of a stopwatch. In this situation, it is the amount of time passed from when the timer is created or reset within the code.
+For more information on the ElapsedTime object outside this tutorial check out the
+FTC Java Docs
+!
+Quick Links
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Full Code Example
+This program uses the same configuration file created at the start of Hello Robot. Some hardware may not be used during this section.
+Copy
+package
+org
+.
+firstinspires
+.
+ftc
+.
+teamcode
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+eventloop
+.
+opmode
+.
+LinearOpMode
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+Blinker
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+Servo
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+TouchSensor
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+eventloop
+.
+opmode
+.
+TeleOp
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+eventloop
+.
+opmode
+.
+Disabled
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+DcMotor
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+hardware
+.
+DcMotorSimple
+;
+import
+com
+.
+qualcomm
+.
+robotcore
+.
+util
+.
+ElapsedTime
+;
+@
+TeleOp
+public
+class
+HelloRobot_ElapsedTime
+extends
+LinearOpMode
+{
+private
+Blinker
+control_Hub;
+private
+DcMotor
+arm;
+private
+DcMotor
+leftmotor;
+private
+DcMotor
+rightmotor;
+private
+DcMotor
+test_motor;
+private
+Servo
+test_servo;
+private
+TouchSensor
+test_touch;
+private
+ElapsedTime
+runtime
+=
+new
+ElapsedTime()
+;
+@
+Override
+public
+void
+runOpMode
+() {
+control_Hub
+=
+hardwareMap
+.
+get
+(
+Blinker
+.
+class
+,
+"Control Hub"
+);
+arm
+=
+hardwareMap
+.
+get
+(
+DcMotor
+.
+class
+,
+"arm"
+);
+leftmotor
+=
+hardwareMap
+.
+get
+(
+DcMotor
+.
+class
+,
+"leftmotor"
+);
+rightmotor
+=
+hardwareMap
+.
+get
+(
+DcMotor
+.
+class
+,
+"rightmotor"
+);
+test_motor
+=
+hardwareMap
+.
+get
+(
+DcMotor
+.
+class
+,
+"test_motor"
+);
+test_servo
+=
+hardwareMap
+.
+get
+(
+Servo
+.
+class
+,
+"test_servo"
+);
+test_touch
+=
+hardwareMap
+.
+get
+(
+TouchSensor
+.
+class
+,
+"test_touch"
+);
+rightmotor
+.
+setDirection
+(
+DcMotorSimple
+.
+Direction
+.
+REVERSE
+);
+telemetry
+.
+addData
+(
+"Status"
+,
+"Initialized"
+);
+telemetry
+.
+update
+();
+// Wait for the game to start (driver presses PLAY)
+waitForStart()
+;
+runtime
+.
+reset
+();
+while
+(
+opModeIsActive()
+&&
+(
+runtime
+.
+seconds
+()
+<=
+3.0
+)) {
+leftmotor
+.
+setPower
+(
+1
+);
+rightmotor
+.
+setPower
+(
+1
+);
+telemetry
+.
+addData
+(
+"Number of Seconds in Phase 1"
+,
+runtime
+.
+seconds
+());
+telemetry
+.
+update
+();
+}
+runtime
+.
+reset
+();
+while
+(
+opModeIsActive()
+&&
+(
+runtime
+.
+seconds
+()
+<=
+3.0
+)) {
+leftmotor
+.
+setPower
+(
+-
+1
+);
+rightmotor
+.
+setPower
+(
+-
+1
+);
+telemetry
+.
+addData
+(
+"Number of Seconds in Phase 2"
+,
+runtime
+.
+seconds
+());
+telemetry
+.
+update
+();
+}
+}
+}
+Previous
+Part 3: Autonomous and Encoders
+Next
+ElapsedTime Setup
+Last updated
+1 year ago
+Was this helpful?

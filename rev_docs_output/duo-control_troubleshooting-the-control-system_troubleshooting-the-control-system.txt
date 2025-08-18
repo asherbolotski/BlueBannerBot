@@ -1,0 +1,221 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+General Best Practices
+ESD Mitigation Techniques
+USB Port Care
+Was this helpful?
+Export as PDF
+One of the key aspects of troubleshooting is understanding the most common issues that occur in a system. Once those problems, and their indicators, are defined a flow has to be created. For example, a check engine light in a car indicates any number of issues. When a cars check engine light comes on, a mechanic pulls the codes from the car to narrow down the issue to a specific part of the engine. Even if the code leads to a specific part of the engine, like the transmission, it is not always indicative of the exact problem. However, there is a process flow. Each step narrows down the problem to a potential solution. Troubleshooting the REV Control system is no different!
+The status LED is the REV Control System equivalent to the check engine light mentioned in the example.
+Visit the
+LED Blink Code
+section to understand what each code is and what it indicates.
+Many issues can be solved by systematic troubleshooting without needing to contact REV Support. Take a look at the troubleshooting tips below for help in determining the cause of the issue you are seeing. Should you need to contact us, describing the steps you've taken in detail will help us get you up and running quickly. The section is divided into general best practices, Control Hub (
+REV-31-1595
+) troubleshooting and Expansion Hub (
+REV-31-1153
+)
+troubleshooting.
+General Best Practices
+Before diving into common troubleshooting paths its important to understand the general guidelines, or best practices, for Control System Health.
+Charge the Battery
+- While a charged battery and phone are crucial to a healthy control system in general; it is also helpful to ensure batteries and phones are charged before a match.
+Update
+-  The applications, firmware, and operating system have periodic updates to improve the control system. Keeping the control system up to date ensures the best performance!
+Isolate the Issue -
+This is key to effective troubleshooting. Many issues can show the same symptom, so eliminating failure points one at a time is critical to finding the root cause.
+DO NOT plug a battery charger into either the Control Hub or Expansion Hub. It will damage the Hub and cause eventual device failure
+Maintaining and taking care of the 12V Slim Battery is also important for troubleshooting purposes. All rechargeable batteries have a finite lifespan however following the
+best practices for the 12V Slim Battery
+can extend the lifespan of the battery.
+ESD Mitigation Techniques
+During Match Play or practice on a competition field, some FTC teams may encounter Electrostatic Discharge (ESD) between the foam tiles and the robots. Below are some methods to help mitigate the effects that any ESD may have on your robot.
+Ensure that you plug USB devices, such as a Camera, into USB 3.0 Port on your Control Hub. Using the USB 2.0 Port may cause ESD to affect your Control Hub's Wi-Fi Chip
+Add a
+Resistive Grounding Strap
+, the 470Ω resistor will help minimize high discharge events from robot electronics and the frame
+Treat the practice area with an anti-static spray
+Other ESD mitigation strategies can be found within the documentation provided by
+FIRST
+:
+Managing Electrostatic Discharge Effects
+USB Port Care
+Regular maintenance of your DUO Control System's USB ports will help prevent issues in the future. Here are a few tips to make sure your hardware stays in good shape.
+When plugging in USB cables, don't force the connector too roughly. This can push the USB port into the Control Hub or Driver Hub
+Be sure to keep all ports clean and free of debris. Before cleaning with compressed air, be sure to turn off your device
+When transporting or storing a Driver Hub, remove all USB cables from the ports
+Don't wrap USB cables that are plugged in around the Driver Hub! This will put stress on the USB ports and is the most common cause of USB port damage
+Previous
+Adding an Expansion Hub
+Next
+Control Hub Troubleshooting
+Last updated
+12 months ago
+Was this helpful?

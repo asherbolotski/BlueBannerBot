@@ -1,0 +1,274 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class AbsoluteEncoderConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.AbsoluteEncoderConfig
+public class
+AbsoluteEncoderConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+AbsoluteEncoderConfig
+()
+Create a new object to configure an AbsoluteEncoder.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+AbsoluteEncoderConfig
+apply
+(
+AbsoluteEncoderConfig
+config)
+Applies settings from another
+AbsoluteEncoderConfig
+to this one.
+AbsoluteEncoderConfig
+averageDepth
+(int depth)
+Set the average sampling depth of the absolute encoder.
+AbsoluteEncoderConfig
+endPulseUs
+(double endPulseUs)
+Set the length of the end pulse for this encoder.
+AbsoluteEncoderConfig
+inverted
+(boolean inverted)
+Set the phase of the absolute encoder so that it is in phase with the motor itself.
+AbsoluteEncoderConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the absolute encoder.
+AbsoluteEncoderConfig
+setSparkMaxDataPortConfig
+()
+Configures the data port to use the absolute encoder, which is specifically required for SPARK
+ MAX.
+AbsoluteEncoderConfig
+startPulseUs
+(double startPulseUs)
+Set the length of the start pulse for this encoder.
+AbsoluteEncoderConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the absolute encoder.
+AbsoluteEncoderConfig
+zeroCentered
+(boolean zeroCentered)
+Set whether to enable zero-centering for the absolute encoder.
+AbsoluteEncoderConfig
+zeroOffset
+(double offset)
+Set the zero offset of the absolute encoder, the position that is reported as zero.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AbsoluteEncoderConfig
+public
+AbsoluteEncoderConfig
+()
+Create a new object to configure an AbsoluteEncoder.
+Method Details
+apply
+public
+AbsoluteEncoderConfig
+apply
+(
+AbsoluteEncoderConfig
+config)
+Applies settings from another
+AbsoluteEncoderConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+AbsoluteEncoderConfig
+to copy settings from
+Returns:
+The updated
+AbsoluteEncoderConfig
+for method chaining
+setSparkMaxDataPortConfig
+public
+AbsoluteEncoderConfig
+setSparkMaxDataPortConfig
+()
+Configures the data port to use the absolute encoder, which is specifically required for SPARK
+ MAX.
+NOTE: This method is only necessary when using an absolute encoder with a SPARK MAX without
+ configuring any of its settings
+IMPORTANT: SPARK MAX does not support using an absolute encoder in conjunction with an
+ alternate encoder.
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+inverted
+public
+AbsoluteEncoderConfig
+inverted
+(boolean inverted)
+Set the phase of the absolute encoder so that it is in phase with the motor itself.
+NOTE: This only applies to an encoder used in brushed mode.
+Parameters:
+inverted
+- The phase of the encoder
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+positionConversionFactor
+public
+AbsoluteEncoderConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the absolute encoder. Position is returned in
+ native units of rotations and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+velocityConversionFactor
+public
+AbsoluteEncoderConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the absolute encoder. Velocity is returned in
+ native units of rotations per minute and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+zeroOffset
+public
+AbsoluteEncoderConfig
+zeroOffset
+(double offset)
+Set the zero offset of the absolute encoder, the position that is reported as zero.
+The zero offset is specified as the reported position of the encoder in the desired zero
+ position as if the zero offset was set to 0, the position conversion factor was set to 1, and
+ inverted was set to false.
+Parameters:
+offset
+- The zero offset in the range [0, 1)
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+averageDepth
+public
+AbsoluteEncoderConfig
+averageDepth
+(int depth)
+Set the average sampling depth of the absolute encoder. This is a bit size and should be either
+ 1, 2, 4, 8, 16, 32, 64, or 128 (default).
+Parameters:
+depth
+- The average sampling depth of 1, 2, 4, 8, 16, 32, 64, or 128
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+startPulseUs
+public
+AbsoluteEncoderConfig
+startPulseUs
+(double startPulseUs)
+Set the length of the start pulse for this encoder. This pulse will be treated as the 0.0
+ position.
+Parameters:
+startPulseUs
+- The minimum high pulse in microseconds
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+endPulseUs
+public
+AbsoluteEncoderConfig
+endPulseUs
+(double endPulseUs)
+Set the length of the end pulse for this encoder. This pulse will be treated as the 1.0
+ position.
+Parameters:
+endPulseUs
+- The minimum low pulse in microseconds
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining
+zeroCentered
+public
+AbsoluteEncoderConfig
+zeroCentered
+(boolean zeroCentered)
+Set whether to enable zero-centering for the absolute encoder. If enabled, the position will be
+ reported in the range (-0.5, 0.5], instead of the default range [0, 1), assuming the default
+ units of rotations.
+Parameters:
+zeroCentered
+- Whether to enable zero centering
+Returns:
+The modified
+AbsoluteEncoderConfig
+object for method chaining

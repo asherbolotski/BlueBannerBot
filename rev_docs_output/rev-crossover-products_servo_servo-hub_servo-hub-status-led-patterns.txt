@@ -1,0 +1,172 @@
+REV Crossover
+REV Crossover Landing
+Sensors
+Through Bore Encoder
+Specifications
+Application Examples
+Color Sensor V3
+Specifications
+Application Examples
+Discontinued Color Sensors
+V2 Specifications & Examples
+V1 Specifications & Examples
+2m Distance Sensor
+Specifications
+Application Examples
+Magnetic Limit Switch
+Specifications
+Application Examples
+Touch Sensor
+Specifications
+Application Examples
+Potentiometer
+Specifications
+Application Examples
+9-Axis IMU
+Specifications
+Configuring the 9-Axis IMU
+Blinkin LED Driver
+Blinkin LED Driver Overview
+Blinkin Specifications
+Blinkin Getting Started
+LED Pattern Tables
+Blinkin Troubleshooting
+REV ION Application Examples
+REV DUO Application Examples
+UltraPlanetary System
+UltraPlanetary System Overview
+UltraPlanetary Features
+Cartridge Details
+Load Ratings
+Assembly Instructions
+Mounting Brackets
+Ultra 90 Degree Gearbox
+Assembly Instructions
+Rotation Direction
+Servos & Accessories
+Servo Hub
+Servo Hub Wiring
+Configuring the Servo Hub with a Control Hub
+Channel Power
+Channel Pulse
+Servo Hub Status LED Patterns
+Troubleshooting
+REVLib for Servo Hub
+Smart Robot Servo
+SRS Gear Replacement
+SRS Programmer
+Switching Operating Modes
+Servo Power Module
+Indicators
+Digital LED Indicator
+Specifications
+Application Examples
+Gamepad
+Gamepad Overview
+Remapping Guide
+Powered by GitBook
+On this page
+LED Indicators
+General Status LED
+Channel Status LEDs
+Angular Servos
+Continuous Rotation Servos
+Was this helpful?
+Export as PDF
+LED Indicators
+The REV Servo Hub uses LEDs to provide visual feedback about the device's status and individual channel states. Understanding these indicators helps diagnose issues and monitor system performance.
+Important
+: These led patterns only apply to firmware version 24.0.0 and later
+General Status LED
+The main Status LED on the Servo Hub communicates the overall state of the device. Below is a table explaining the various patterns and their meanings:
+LED Status
+LED Description
+When
+Hub Status
+Magenta Blinking
+Anytime
+The Servo Hub is powered on but not connected to a controller or the REV Hardware Client.
+Blue Solid
+Anytime
+The Servo Hub is connected to the Communication established the REV Hardware Client.
+Solid Cyan
+Anytime
+The Servo Hub is connected to a roboRIO or other CAN controller. †
+Green Solid
+Anytime
+The Servo Hub is connected to a Control Hub or other RS-485 controller. The number of blue blinks is the same as the Servo Hub's address. The factory default address is 3.
+Orange/Cyan Blinking
+Anytime
+Battery Voltage is lower than 5.5V. Please check the Servo Hub's Power Supply. This fault will clear when the input voltage is raised above 6.5V.
+Orange/Yellow Blinking
+Anytime
+A CAN fault has been detected. Verify CAN bus wiring and connections.
+Orange/Magenta Blinking
+Anytime
+An overcurrent fault has occurred. Check the connected servos and reduce the load if necessary.
+†
+Faults are not reported to logs when the Servo Hub is connected via RS485.
+Channel Status LEDs
+Each servo channel on the REV Servo Hub has its own dedicated LED, which provides feedback about the channel’s state and current PWM signal. Below is the meaning of each LED pattern:
+Notes:
+Channel LEDs reflect the current state of the PWM signal, helping users verify servo behavior in real-time.
+Disabled channels still show feedback via a blinking amber LED, making it easy to differentiate inactive channels.
+Angular Servos
+LED Status
+LED Description
+When
+Hub Status
+Amber Solid
+Anytime
+The channel is at the center position (typically 1,500 µs pulse width).
+Green  Blinking
+Anytime
+The pulse width is between center and maximum (e.g., 1,500–2,000 µs).
+Green Solid
+Anytime
+The channel is at the maximum position (e.g., 2,000 µs).
+Red Blinking
+Anytime
+The pulse width is between center and minimum (e.g., 1,500–1,000 µs).
+Red Solid
+Anytime
+The channel is at the minimum position (e.g., 1,000 µs).
+Amber Blinking
+Anytime
+The channel is disabled. The signal pin is pulled low, and no PWM signal is being sent.
+Quick Amber Blinking
+Anytime
+The channel is faulted. This can mean that either the device does not have sufficient power, neither the RoboRIO nor the Control Hub heartbeat is present, or the channel is experiencing an overcurrent event.
+Continuous Rotation Servos
+LED Status
+LED Description
+When
+Hub Status
+Amber Solid
+Anytime
+The servo is stopped (typically 1,500 µs pulse width).
+Green  Blinking
+Anytime
+The servo is running forward (e.g., 1,500–2,000 µs).
+Green Solid
+Anytime
+The servo is running forward at maximum speed (e.g., 2,000 µs).
+Red Blinking
+Anytime
+The servo is running in reverse (e.g., 1,500–1,000 µs).
+Red Solid
+Anytime
+The servo is running in reverse at full speed (e.g., 1,000 µs).
+Amber Blinking
+Anytime
+The channel is disabled. The signal pin is pulled low, and no PWM signal is being sent.
+Quick Amber Blinking
+Anytime
+The channel is faulted. This can mean that either the device does not have sufficient power, neither the RoboRIO nor the Control Hub heartbeat is present, or the channel is experiencing an overcurrent event.
+Previous
+Channel Pulse
+Next
+Troubleshooting
+Last updated
+6 months ago
+Was this helpful?

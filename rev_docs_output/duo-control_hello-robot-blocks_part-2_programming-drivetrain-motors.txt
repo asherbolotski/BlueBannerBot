@@ -1,0 +1,224 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Programming Drivetrain Motors
+Quick Check!
+Mirroring Motors
+Reversing a Motor:
+Was this helpful?
+Export as PDF
+In
+Part 1
+we learned how to control a single motor by giving it power or input from a joystick. For controlling a drivetrain, we need to be able to control two motors simultaneously to help the robot move. While we could try adding each motor individually, Blocks has a
+dual
+motor block available already for just this purpose.
+To access the
+dual
+block you will need to select the actuators dropdown menu:
+Not seeing DcMotor under the actuators menu? Make sure your
+configuration
+has been properly set up and activated before getting started!
+Programming Drivetrain Motors
+Any code from Part 1 should be moved to the side of the workspace or deleted before continuing this section. Alternatively, you may choose to create a new program.
+Add the
+block to op mode while loop.
+When there are multiple of the same type of variable (such as multiple DcMotors) the variable specific blocks will choose a default variable based on alphabetical order. For this example, OpMode DcMotor blocks will default to the
+arm
+variable.
+Use the variable drop down menu on the block to change from arm to rightmotor.
+Quick Check!
+Before running your code for the first time, pause and think about the following:
+What do you expect your robot to do once the program is activated?
+Now save your OpMode using the button in the upper lefthand corner and give your program a go!
+Did the robot move as you expected?
+You may have expected your robot to move in a straight line forwards or backwards. Instead, your robot likely spun in a circle.
+When motors run at different speeds they spin along their center pivot point. But the motors are both set to a power of 1 here so what else could be the cause?
+Always keep the Driver Hub within reach in the case of the event that a robot does not perform as expected. When in doubt, disable your robot to keep you and it safe.
+Mirroring Motors
+DC Motors are capable of spinning in two different directions depending on the current flow provided. When a positive power value is applied the motors will spin in a clockwise direction. The opposite will happen when using a negative power value, meaning the motors will spin in a counter clockwise direction.
+But how does that help with our current spinning robot? Let's take a closer look at our physical robot to find out:
+Top down view of the Class Bot V2
+Notice how the motors on your robot are currently mirrored from each other as part of the drivetrain.  Now think about how we learned that when giving the motors a positive value they should turn clockwise. This is still how, however while they may both be rotating clockwise, the direction they know to be as clockwise is opposite.
+Motors running the same direction, but facing opposite ways!
+Try activating your robot's code again, but this time watching which direction the wheels turn. You may consider supporting the robot's frame so the wheels are suspended to make this easier to see.
+Reversing a Motor:
+There are a couple ways we could adjust our program to help our robot not to be a spinning top. For example, we could make sure the power is set to a negative value whenever one of our motors is called. Or we could simple reverse our motor's direction during initialization.
+Add
+to your program, under the
+comment block. If you recall, blocks placed in this section will run AFTER the intilizal button is pressed on the Driver Hub, but BEFORE the play button is clicked.
+Now with the
+block added the direction for the rightmotor will always be reversed for this program. Our power values do not need to be changed.
+Go ahead and give it a try!
+Previous
+Robot Control Blocks Directory
+Next
+Arcade Style TeleOp - Blocks
+Last updated
+1 year ago
+Was this helpful?

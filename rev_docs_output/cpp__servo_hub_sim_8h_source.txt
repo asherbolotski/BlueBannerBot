@@ -1,0 +1,285 @@
+REVLib - C++
+ServoHubSim.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#ifndef FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SERVOHUBSIM_H_
+30
+#define FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SERVOHUBSIM_H_
+31
+32
+#include <memory>
+33
+#include <string>
+34
+#include <vector>
+35
+36
+#include "
+rev/ServoHub.h
+"
+37
+#include "
+rev/sim/ServoHubSimFaultManager.h
+"
+38
+39
+namespace
+rev::servohub
+{
+40
+41
+class
+ServoHubSim
+{
+42
+public
+:
+50
+explicit
+ServoHubSim
+(
+ServoHub
+* servoHub);
+51
+58
+double
+GetDeviceVoltage
+()
+const
+;
+59
+65
+void
+SetDeviceVoltage
+(
+double
+voltage);
+66
+73
+double
+GetDeviceCurrent
+()
+const
+;
+74
+80
+void
+SetDeviceCurrent
+(
+double
+current);
+81
+88
+double
+GetServoVoltage
+()
+const
+;
+89
+95
+void
+SetServoVoltage
+(
+double
+voltage);
+96
+105
+int
+GetBankPulsePeriod
+(
+ServoHub::Bank
+bank)
+const
+;
+106
+114
+void
+SetBankPulsePeriod
+(
+ServoHub::Bank
+bank,
+int
+pulsePeriod_us);
+115
+117
+void
+enable
+();
+118
+120
+void
+disable
+();
+121
+127
+void
+useDriverStationEnable
+();
+128
+137
+ServoHubSimFaultManager
+GetFaultManager
+();
+138
+139
+private
+:
+140
+hal::SimDouble m_deviceVoltage;
+141
+hal::SimDouble m_deviceCurrent;
+142
+hal::SimDouble m_servoVoltage;
+143
+hal::SimInt m_bankPulsePeriods[2];
+144
+145
+ServoHub
+* m_servoHub;
+146
+std::string m_deviceName;
+147
+std::unique_ptr<bool> m_enable;
+148
+};
+149
+150
+}
+// namespace rev::servohub
+151
+152
+#endif
+// FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SERVOHUBSIM_H_
+ServoHub.h
+ServoHubSimFaultManager.h
+rev::servohub::ServoHub
+Definition:
+ServoHub.h:43
+rev::servohub::ServoHub::Bank
+Bank
+Definition:
+ServoHub.h:235
+rev::servohub::ServoHubSimFaultManager
+Definition:
+ServoHubSimFaultManager.h:40
+rev::servohub::ServoHubSim
+Definition:
+ServoHubSim.h:41
+rev::servohub::ServoHubSim::GetServoVoltage
+double GetServoVoltage() const
+Definition:
+ServoHubSim.cpp:65
+rev::servohub::ServoHubSim::disable
+void disable()
+Definition:
+ServoHubSim.cpp:81
+rev::servohub::ServoHubSim::ServoHubSim
+ServoHubSim(ServoHub *servoHub)
+Definition:
+ServoHubSim.cpp:41
+rev::servohub::ServoHubSim::SetDeviceCurrent
+void SetDeviceCurrent(double current)
+Definition:
+ServoHubSim.cpp:61
+rev::servohub::ServoHubSim::SetBankPulsePeriod
+void SetBankPulsePeriod(ServoHub::Bank bank, int pulsePeriod_us)
+Definition:
+ServoHubSim.cpp:74
+rev::servohub::ServoHubSim::GetBankPulsePeriod
+int GetBankPulsePeriod(ServoHub::Bank bank) const
+Definition:
+ServoHubSim.cpp:70
+rev::servohub::ServoHubSim::GetDeviceCurrent
+double GetDeviceCurrent() const
+Definition:
+ServoHubSim.cpp:59
+rev::servohub::ServoHubSim::enable
+void enable()
+Definition:
+ServoHubSim.cpp:79
+rev::servohub::ServoHubSim::SetServoVoltage
+void SetServoVoltage(double voltage)
+Definition:
+ServoHubSim.cpp:66
+rev::servohub::ServoHubSim::GetDeviceVoltage
+double GetDeviceVoltage() const
+Definition:
+ServoHubSim.cpp:53
+rev::servohub::ServoHubSim::GetFaultManager
+ServoHubSimFaultManager GetFaultManager()
+Definition:
+ServoHubSim.cpp:85
+rev::servohub::ServoHubSim::useDriverStationEnable
+void useDriverStationEnable()
+Definition:
+ServoHubSim.cpp:83
+rev::servohub::ServoHubSim::SetDeviceVoltage
+void SetDeviceVoltage(double voltage)
+Definition:
+ServoHubSim.cpp:55
+rev::servohub
+Definition:
+ServoChannelConfig.h:34
+src
+main
+native
+include
+rev
+ServoHubSim.h
+Generated by
+1.9.2

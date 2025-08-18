@@ -1,0 +1,81 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Tips for Smooth Motions
+Using MAXMotion
+Migrating from Smart Motion
+Was this helpful?
+Export as PDF
+MAXMotion Position Control is a second-degree closed loop controller, allowing for smooth and consistent motions from one position to another by limiting both the velocity and acceleration of the motor. These can be configured via the
+MAXMotion Parameters
+, setting a target acceleration and a "cruise" velocity. The motor will spin up, honoring the acceleration target, hold speed at the cruise velocity, and then slow down honoring the acceleration target to arrive at the setpoint. MAXMotion updates its motion profile every 10ms and the underlying PID controller every 1ms, which makes it extremely fast and responsive.
+MAXMotion Position Control runs on top of an internal position PID controller, so the tuning process begins similarly to a typical position closed loop controller, with the P and D constants (See
+Getting Started with PID Tuning
+for more on this). Note that these values may need tweaked once you set your velocity and acceleration targets in order to smooth out the motion.
+When setting your maximum velocity and maximum acceleration parameters, keep a few things in mind:
+Maximum velocity is in units of revolutions per minute by default
+Maximum acceleration is in units of RPM per second by default
+Your current limits may interfere with motions that move too quickly or hold against gravity for too long
+Try to achieve a good balance of smoothness and consistency with speed
+Setting a high acceleration or velocity could cause the mechanism to shift or move your robot and may be dangerous to stand close to, so use extra caution when speeding things up
+Tips for Smooth Motions
+If your motion seems jittery, try adjusting your PID constants. If the target acceleration is faster or slower than your PIDs allow, the mechanism may appear to shake or jitter and speed and accuracy will be lost.
+Keep an eye on the current draw, as hitting limits may interfere with the functionality of MAXMotion. Increasing current limits or changing the gear ratio on your mechanism can help reduce the chances of this happening.
+Feed forwards (See
+Arbitrary Feed Forward
+) may help smooth out your motion and stabilize your mechanism, but if not perfectly tuned could also introduce noise or fight the internal PID (especially if the gains are too high). MAXMotion may be able to handle the motion on its own without any help at all, especially on a lightweight mechanism.
+As MAXMotion runs on an underlying position closed loop controller, a kF gain (
+F Parameter
+) is not recommended and may lead to unexpected results. Instead, lean on the PID constants to handle this.
+Using MAXMotion
+After tuning your constants, calling MAXMotion is as simple as passing in the setpoint to the controller.
+Java
+C++
+Copy
+m_controller.setReference(setPoint, SparkBase.ControlType.kMAXMotionPositionControl);
+API Docs:
+setReference
+Copy
+using namespace rev::spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kMAXMotionPositionControl);
+API Reference:
+SetReference
+Migrating from Smart Motion
+As Smart Motion and MAXMotion Position Control use different underlying control methods, all PID constants will need to be re-tuned from scratch
+Smart Motion used a different method for smooth second-degree motion control, but MAXMotion can be applied anywhere Smart Motion was previously. Maximum velocity and acceleration constants may be transferable, but should be tested with caution. All other constants will need re-tuned from scratch, including all PIDs.
+MAXMotion has several improvements over Smart Motion, and should offer better consistency, a better tuning experience, better position retention, and an all-around better user experience. It is highly recommended to migrate all systems using Smart Motion to MAXMotion.
+Previous
+Current Control Mode
+Next
+MAXMotion Velocity Control
+Last updated
+6 months ago
+Was this helpful?

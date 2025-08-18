@@ -1,0 +1,145 @@
+REV Hardware Client
+REV Hardware Client Overview
+Changelog
+Getting Started
+Installation
+Navigating the Client
+Troubleshooting
+REV DUO
+Control Hub
+Updating a Control Hub
+Restoring Control Hub Data
+Driver Hub
+Updating a Driver Hub
+Expansion Hub
+Android Devices
+Installing RC/DS Applications
+Using the Log Viewer
+REV ION
+SPARK Flex
+Updating a SPARK Flex
+SPARK MAX
+Updating a SPARK MAX
+Power Distribution Hub
+Updating a Power Distribution Hub
+Pneumatic Hub
+Updating a Pneumatic Hub
+Telemetry Tab
+Running Multiple SPARK Motor Controllers
+Recovery Mode
+Crossover
+Servo Hub
+Powered by GitBook
+On this page
+Connected Devices
+Available Devices
+Telemetry Settings
+Signals and Graph
+Tuning
+Parameters
+Editing the Y-Axis Scale
+Example
+Exporting Data
+Exporting as a Image
+Exporting as a .CSV
+Record to .CSV
+Troubleshooting
+roboRio Lockout
+PID Set Up Guide
+Frequently Asked Questions
+Was this helpful?
+Export as PDF
+Connected Devices
+Devices available in the REV Hardware Client are shown on the left side of the window. The device that the USB C Cable is connected to will be listed first, followed by any devices connected over CAN.
+Available Devices
+The below devices are able to provide telemetry and allow the Telemetry Tab to be used.
+SPARK MAX
+SPARK Flex
+Power Distribution Hub
+Pneumatic Hub
+Devices Connected to the SPARK MAX or SPARK Flex Motor Controllers:
+NEO Vortex
+NEO Brushless Motor V1.1
+NEO 550
+Brushed DC Motor
+Through Bore Encoder
+Other inputs connected to the Data Port
+Telemetry Settings
+Signals and Graph
+Run Motor:
+Choose setpoints to run a motor connected to a SPARK MAX using various modes, including position, velocity, and duty cycle.
+Signals:
+Select the different signals from the SPARK MAX you want to monitor here
+Start & Restart Graph:
+Start initiates recording of telemetry. Restart will erase the data and start again
+Time Span:
+Change the time span shown on the x-axis of the graph
+Scales:
+Different Signals will have different scales for the y-axis. You can change which are shown by clicking the arrows here
+Signal Key and Scale Adjustment:
+Signals you choose to monitor will be shown here. Click
+X
+to delete a signal from the graph and
+>
+to adjust the scale of the signal's graph y-axis
+Save Data:
+Save your data as a .CSV or image using this menu
+Tuning
+Update PIDF parameters on the fly to tune control loops on the SPARK MAX.
+Parameters
+Select the arrow to show all configurable parameters within a specific group. For more information on each parameter type see
+Configuration Parameters
+.
+Editing the Y-Axis Scale
+Y-Axis Labels:
+Select the label you want to view by clicking the arrow at the bottom of the label. In this image the Power Distribution Hub Channel Currents are selected.
+Y-Axis Scale:
+Use the drop down arrow next to the parameter you would like to change the scale for. Be sure to un-check the "use defaults" box to apply your changes.
+Example
+In this example the SPARK MAX and NEO Motor were run at 30% power, switching between forwards and backwards several times. The first switch in direction occurs near t=5s where you can see the Applied Output, Position, and Velocity change.
+Exporting Data
+Exporting as a Image
+This will export a .png image of the of the graph. The whole Time Span x-axis will be exported regardless of the time information was collected. The image below exported a 30 second graph while only 8 seconds of data was recorded.
+Exporting as a .CSV
+This will export a .csv file of the of the values and timestamps.
+Timestamp:
+This is the timestamp that the data was record for each signal in Unix time. Note that different signals may have their data recorded at different times than other signals.
+Signal Name:
+The Label of signal selected when creating your Telemetry graph.
+Device Name:
+The name of the device and the randomly generated ID assigned to each device when connected to the REV Hardware Client. This is randomly generated each time the device is connected to the REV Hardware Client.
+Signal Value:
+The value recorded for each Signal Name.
+Record to .CSV
+This allows you to select an existing .csv file prior to starting your graph and record the data straight to the .csv file. This allows you export additional data to a previously exported telemetry file without headers to seamlessly add to your existing columns.
+Troubleshooting
+roboRio Lockout
+Please be aware of the CAN lockout feature of the ION Control System.
+If it has been connected to the roboRIO's CAN bus, a safety feature within all ION Control System Devices and will lock out USB communication. You may be able to change some parameters on select devices but in order to run motors through the telemetry tab disconnecting from the CAN bus and power-cycling the device will release the lock.
+PID Set Up Guide
+As of REV Hardware Client version 1.7.0, "Burn Flash" has been renamed to "Persist Perimeters"!
+Under the device list, select your SPARK motor controller.
+Click the "Advanced" tab.
+For a SPARK MAX, under the "Alternate Encoder" section, make sure "kDataPortConfig" is set to "Default".
+Under the "Closed Loop" section, set "kCtrlType" to "Position".
+Under the same section, set "kFeedbackSensorPID0" to "Duty Cycle".
+Click "Burn Flash" at the bottom of the page. (Burn Flash has been renamed to Persist Perimeters in v 1.7.0)
+To tune your PID gains, click the "Telemetry" tab.
+Set the "Mode" to "Position".
+Under the "Signals" tab, select "Run Setpoint" and "Duty Cycle Position".
+Click the "Tuning" tab.
+Begin tuning your PID gains! Note that the setpoint in Hardware Client only allows whole numbers, so it would be helpful to set the Duty Cycle Position Factor parameter to something like 360 for degrees.
+Frequently Asked Questions
+Do I need to use a special type of USB cable?
+You need to use a USB-A to USB-C cable data capable cable. The orange USB cable that comes with most ION devices fits this description.
+Does the SPARK Flex offer more options than the SPARK MAX?
+As of the 2024 FRC season the SPARK Flex and SPARK MAX offer the same options. New features will become available with future updates to the SPARK Flex that will be free to SPARK Flex owners forever.
+Can the units of the telemetry channels be changed?
+No, not at this time. We recommend exporting the data as a .csv file and converting to fit your specific needs.
+Previous
+Updating a Pneumatic Hub
+Next
+Running Multiple SPARK Motor Controllers
+Last updated
+3 months ago
+Was this helpful?

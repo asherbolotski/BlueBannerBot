@@ -1,0 +1,84 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.servohub.config
+Class ServoChannelConfigAccessor
+java.lang.Object
+com.revrobotics.servohub.config.ServoChannelConfigAccessor
+public class
+ServoChannelConfigAccessor
+extends
+Object
+Constructor Summary
+Constructors
+Modifier
+Constructor
+Description
+protected
+ServoChannelConfigAccessor
+(
+ServoChannel.ChannelId
+channelId,
+ long servoHubHandle)
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+ServoChannelConfig.BehaviorWhenDisabled
+getDisableBehavior
+()
+Get the output power behavior when the channel is disabled.
+ServoChannelConfig.PulseRange
+getPulseRange
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ServoChannelConfigAccessor
+protected
+ServoChannelConfigAccessor
+(
+ServoChannel.ChannelId
+channelId,
+ long servoHubHandle)
+Method Details
+getPulseRange
+public
+ServoChannelConfig.PulseRange
+getPulseRange
+()
+getDisableBehavior
+public
+ServoChannelConfig.BehaviorWhenDisabled
+getDisableBehavior
+()
+Get the output power behavior when the channel is disabled.
+When the channel is enabled [ServoChannel::SetEnabled(true)], the output power to the servo
+ follows the channel's power setting [ServoChannel::SetPowered()].
+When the channel is disabled [ServoChannel::SetEnabled(false)], the output power to the
+ servo follows the channel's disableBehavior.
+Returns:
+The channel's disable behavior

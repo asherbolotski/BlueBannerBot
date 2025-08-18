@@ -1,0 +1,179 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class SoftLimitConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.SoftLimitConfig
+public class
+SoftLimitConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+SoftLimitConfig
+()
+Create a new object to configure the SoftLimits.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+SoftLimitConfig
+apply
+(
+SoftLimitConfig
+config)
+Applies settings from another
+SoftLimitConfig
+to this one.
+SoftLimitConfig
+forwardSoftLimit
+(double limit)
+Set the forward soft limit based on the position of the selected feedback sensor.
+SoftLimitConfig
+forwardSoftLimitEnabled
+(boolean enabled)
+Set whether to enable or disable the forward soft limit.
+SoftLimitConfig
+reverseSoftLimit
+(double limit)
+Set the reverse soft limit based on the position of the selected feedback sensor.
+SoftLimitConfig
+reverseSoftLimitEnabled
+(boolean enabled)
+Set whether to enable or disable the reverse soft limit.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SoftLimitConfig
+public
+SoftLimitConfig
+()
+Create a new object to configure the SoftLimits.
+Method Details
+apply
+public
+SoftLimitConfig
+apply
+(
+SoftLimitConfig
+config)
+Applies settings from another
+SoftLimitConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+SoftLimitConfig
+to copy settings from
+Returns:
+The updated
+SoftLimitConfig
+for method chaining
+forwardSoftLimit
+public
+SoftLimitConfig
+forwardSoftLimit
+(double limit)
+Set the forward soft limit based on the position of the selected feedback sensor. This will
+ disable motor actuation in the forward direction past this position. This value should have the
+ position conversion factor applied to it.
+Parameters:
+limit
+- The forward soft limit position with the conversion factor applied
+Returns:
+The modified
+SoftLimitConfig
+object for method chaining
+forwardSoftLimitEnabled
+public
+SoftLimitConfig
+forwardSoftLimitEnabled
+(boolean enabled)
+Set whether to enable or disable the forward soft limit.
+Parameters:
+enabled
+- True to enable the forward soft limit
+Returns:
+The modified
+SoftLimitConfig
+object for method chaining
+reverseSoftLimit
+public
+SoftLimitConfig
+reverseSoftLimit
+(double limit)
+Set the reverse soft limit based on the position of the selected feedback sensor. This will
+ disable motor actuation in the reverse direction past this position. This value should have the
+ position conversion factor applied to it.
+Parameters:
+limit
+- The reverse soft limit position with the conversion factor applied
+Returns:
+The modified
+SoftLimitConfig
+object for method chaining
+reverseSoftLimitEnabled
+public
+SoftLimitConfig
+reverseSoftLimitEnabled
+(boolean enabled)
+Set whether to enable or disable the reverse soft limit.
+Parameters:
+enabled
+- True to enable the reverse soft limit
+Returns:
+The modified
+SoftLimitConfig
+object for method chaining

@@ -1,0 +1,270 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.servohub
+Class ServoHubLowLevel
+java.lang.Object
+com.revrobotics.servohub.ServoHubLowLevel
+Direct Known Subclasses:
+ServoHub
+public abstract class
+ServoHubLowLevel
+extends
+Object
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+class
+ServoHubLowLevel.FirmwareVersion
+class
+ServoHubLowLevel.PeriodicStatus0
+class
+ServoHubLowLevel.PeriodicStatus1
+class
+ServoHubLowLevel.PeriodicStatus2
+class
+ServoHubLowLevel.PeriodicStatus3
+class
+ServoHubLowLevel.PeriodicStatus4
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final long
+servoHubHandle
+Constructor Summary
+Constructors
+Constructor
+Description
+ServoHubLowLevel
+(int deviceId)
+Create a new object to control a ServoHub Servo Controller
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Closes the ServoHub Controller
+void
+createSimFaultManager
+()
+Create the sim gui Fault Manager for this Servo Hub
+int
+getControlFramePeriodMs
+()
+Set the control frame send period for the native CAN Send thread.
+int
+getDeviceId
+()
+Get the configured Device ID of the ServoHub.
+ServoHubLowLevel.FirmwareVersion
+getFirmwareVersion
+()
+Get the firmware version of the ServoHub.
+String
+getFirmwareVersionString
+()
+Get the firmware version of the ServoHub as a string.
+ServoHubLowLevel.PeriodicStatus0
+getPeriodicStatus0
+()
+ServoHubLowLevel.PeriodicStatus1
+getPeriodicStatus1
+()
+ServoHubLowLevel.PeriodicStatus2
+getPeriodicStatus2
+()
+ServoHubLowLevel.PeriodicStatus3
+getPeriodicStatus3
+()
+ServoHubLowLevel.PeriodicStatus4
+getPeriodicStatus4
+()
+void
+setCANMaxRetries
+(int numRetries)
+Set the maximum number of times to retry an RTR CAN frame.
+REVLibError
+setCANTimeout
+(int timeout_ms)
+Sets the timeout duration for waiting for CAN responses from the device.
+void
+setControlFramePeriodMs
+(int periodMs)
+Set the control frame send period for the native CAN Send thread.
+void
+setPeriodicFrameTimeout
+(int timeout_ms)
+Set the amount of time to wait for a periodic status frame before returning a timeout error.
+protected void
+throwIfClosed
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+servoHubHandle
+protected final
+long
+servoHubHandle
+Constructor Details
+ServoHubLowLevel
+public
+ServoHubLowLevel
+(int deviceId)
+Create a new object to control a ServoHub Servo Controller
+Parameters:
+deviceId
+- The device ID.
+Method Details
+close
+public
+void
+close
+()
+Closes the ServoHub Controller
+getDeviceId
+public
+int
+getDeviceId
+()
+Get the configured Device ID of the ServoHub.
+Returns:
+int device ID
+getFirmwareVersion
+public
+ServoHubLowLevel.FirmwareVersion
+getFirmwareVersion
+()
+Get the firmware version of the ServoHub.
+Returns:
+FirmwareVersion tbd
+getFirmwareVersionString
+public
+String
+getFirmwareVersionString
+()
+Get the firmware version of the ServoHub as a string.
+Returns:
+String Human readable firmware version string
+setPeriodicFrameTimeout
+public
+void
+setPeriodicFrameTimeout
+(int timeout_ms)
+Set the amount of time to wait for a periodic status frame before returning a timeout error.
+ This timeout will apply to all periodic status frames for the ServoHub servo controller.
+To prevent invalid timeout errors, the minimum timeout for a given periodic status is 2.1
+ times its period. To use the minimum timeout for all status frames, set timeout_ms to 0.
+The default timeout is 500ms.
+Parameters:
+timeout_ms
+- The timeout in milliseconds
+setCANTimeout
+public
+REVLibError
+setCANTimeout
+(int timeout_ms)
+Sets the timeout duration for waiting for CAN responses from the device.
+Parameters:
+timeout_ms
+- The timeout in milliseconds.
+Returns:
+REVLibError.kOk
+if successful
+setCANMaxRetries
+public
+void
+setCANMaxRetries
+(int numRetries)
+Set the maximum number of times to retry an RTR CAN frame. This applies to calls such as
+ GetFirmwareVersion where a request is made to the ServoHub and a response is expected. Anytime
+ sending the request or receiving the response fails, it will retry the request a number of
+ times, no more than the value set by this method. If an attempt succeeds, it will immediately
+ return. The minimum number of retries is 0, where only a single attempt will be made and will
+ return regardless of success or failure.
+The default maximum is 5 retries.
+Parameters:
+numRetries
+- The maximum number of retries
+setControlFramePeriodMs
+public
+void
+setControlFramePeriodMs
+(int periodMs)
+Set the control frame send period for the native CAN Send thread.
+Parameters:
+periodMs
+- The send period in milliseconds between 1ms and 100ms or set to 0 to disable
+     periodic sends.
+getControlFramePeriodMs
+public
+int
+getControlFramePeriodMs
+()
+Set the control frame send period for the native CAN Send thread.
+Returns:
+int The send period in milliseconds.
+getPeriodicStatus0
+public
+ServoHubLowLevel.PeriodicStatus0
+getPeriodicStatus0
+()
+getPeriodicStatus1
+public
+ServoHubLowLevel.PeriodicStatus1
+getPeriodicStatus1
+()
+getPeriodicStatus2
+public
+ServoHubLowLevel.PeriodicStatus2
+getPeriodicStatus2
+()
+getPeriodicStatus3
+public
+ServoHubLowLevel.PeriodicStatus3
+getPeriodicStatus3
+()
+getPeriodicStatus4
+public
+ServoHubLowLevel.PeriodicStatus4
+getPeriodicStatus4
+()
+createSimFaultManager
+public
+void
+createSimFaultManager
+()
+Create the sim gui Fault Manager for this Servo Hub
+throwIfClosed
+protected
+void
+throwIfClosed
+()

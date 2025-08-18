@@ -1,0 +1,257 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class EncoderConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.EncoderConfig
+public class
+EncoderConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+EncoderConfig
+()
+Create a new object to configure an Encoder.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+EncoderConfig
+apply
+(
+EncoderConfig
+config)
+Applies settings from another
+EncoderConfig
+to this one.
+EncoderConfig
+countsPerRevolution
+(int cpr)
+Set the counts per revolutions of the encoder.
+EncoderConfig
+inverted
+(boolean inverted)
+Set the phase of the encoder so that it is in phase with the motor itself.
+EncoderConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the encoder.
+EncoderConfig
+quadratureAverageDepth
+(int depth)
+Set the sampling depth of the velocity calculation process of the encoder.
+EncoderConfig
+quadratureMeasurementPeriod
+(int periodMs)
+Set the position measurement period used to calculate the velocity of the encoder.
+EncoderConfig
+uvwAverageDepth
+(int depth)
+Set the sampling depth of the velocity calculation process of the encoder.
+EncoderConfig
+uvwMeasurementPeriod
+(int periodMs)
+Set the position measurement period used to calculate the velocity of the encoder.
+EncoderConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the encoder.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+EncoderConfig
+public
+EncoderConfig
+()
+Create a new object to configure an Encoder.
+Method Details
+apply
+public
+EncoderConfig
+apply
+(
+EncoderConfig
+config)
+Applies settings from another
+EncoderConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+EncoderConfig
+to copy settings from
+Returns:
+The updated
+EncoderConfig
+for method chaining
+countsPerRevolution
+public
+EncoderConfig
+countsPerRevolution
+(int cpr)
+Set the counts per revolutions of the encoder.
+NOTE: This only applies to an encoder used in brushed mode.
+Parameters:
+cpr
+- The counts per rotation
+Returns:
+The modified
+EncoderConfig
+object for method chaining
+inverted
+public
+EncoderConfig
+inverted
+(boolean inverted)
+Set the phase of the encoder so that it is in phase with the motor itself.
+NOTE: This only applies to an encoder used in brushed mode.
+Parameters:
+inverted
+- The phase of the encoder
+Returns:
+The modified
+EncoderConfig
+object for method chaining
+positionConversionFactor
+public
+EncoderConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the encoder. Position is returned in native units
+ of rotations and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+EncoderConfig
+object for method chaining
+velocityConversionFactor
+public
+EncoderConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the encoder. Velocity is returned in native units
+ of rotations per minute and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+EncoderConfig
+object for method chaining
+quadratureAverageDepth
+public
+EncoderConfig
+quadratureAverageDepth
+(int depth)
+Set the sampling depth of the velocity calculation process of the encoder. This value sets the
+ number of samples in the average for velocity readings. This value must be in the range [1,
+ 64]. The default value is 64.
+Parameters:
+depth
+- The velocity calculation process's sampling depth
+Returns:
+The modified
+EncoderConfig
+object for method chaining
+quadratureMeasurementPeriod
+public
+EncoderConfig
+quadratureMeasurementPeriod
+(int periodMs)
+Set the position measurement period used to calculate the velocity of the encoder. This value
+ is in units of milliseconds and must be in a range [1, 100]. The default value is 100ms
+The basic formula to calculate velocity is change in position / change in time. This
+ parameter sets the change in time for measurement.
+Parameters:
+periodMs
+- Measurement period in milliseconds
+Returns:
+The modified
+EncoderConfig
+object for method chaining
+uvwAverageDepth
+public
+EncoderConfig
+uvwAverageDepth
+(int depth)
+Set the sampling depth of the velocity calculation process of the encoder. This value sets the
+ number of samples in the average for velocity readings. This value must be either 1, 2, 4, or 8
+ (default).
+Parameters:
+depth
+- The velocity calculation process's sampling depth
+Returns:
+The modified
+EncoderConfig
+object for method chaining
+uvwMeasurementPeriod
+public
+EncoderConfig
+uvwMeasurementPeriod
+(int periodMs)
+Set the position measurement period used to calculate the velocity of the encoder. This value
+ is in units of milliseconds and must be in a range [8, 64]. The default value is 32ms.
+The basic formula to calculate velocity is change in position / change in time. This
+ parameter sets the change in time for measurement.
+Parameters:
+periodMs
+- Measurement period in milliseconds
+Returns:
+The modified
+EncoderConfig
+object for method chaining

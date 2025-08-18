@@ -1,0 +1,876 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark
+Class SparkBase
+java.lang.Object
+com.revrobotics.spark.SparkLowLevel
+com.revrobotics.spark.SparkBase
+All Implemented Interfaces:
+MotorController
+,
+AutoCloseable
+Direct Known Subclasses:
+SparkFlex
+,
+SparkMax
+public abstract class
+SparkBase
+extends
+SparkLowLevel
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+SparkBase.ControlType
+static class
+SparkBase.Faults
+static enum
+SparkBase.PersistMode
+static enum
+SparkBase.ResetMode
+static class
+SparkBase.Warnings
+Nested classes/interfaces inherited from class com.revrobotics.spark.
+SparkLowLevel
+SparkLowLevel.MotorType
+,
+SparkLowLevel.PeriodicFrame
+,
+SparkLowLevel.PeriodicStatus0
+,
+SparkLowLevel.PeriodicStatus1
+,
+SparkLowLevel.PeriodicStatus2
+,
+SparkLowLevel.SparkModel
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected
+SparkAbsoluteEncoder
+absoluteEncoder
+protected final
+Object
+absoluteEncoderLock
+protected
+SparkAnalogSensor
+analogSensor
+protected final
+Object
+analogSensorLock
+protected
+SparkClosedLoopController
+closedLoopController
+protected final
+Object
+closedLoopControllerLock
+protected
+SparkRelativeEncoder
+encoder
+protected final
+Object
+encoderLock
+protected
+SparkLimitSwitch
+forwardLimitSwitch
+protected final
+Object
+forwardLimitSwitchLock
+protected
+SparkSoftLimit
+forwardSoftLimit
+protected final
+Object
+forwardSoftLimitLock
+protected
+SparkLimitSwitch
+reverseLimitSwitch
+protected final
+Object
+reverseLimitSwitchLock
+protected
+SparkSoftLimit
+reverseSoftLimit
+protected final
+Object
+reverseSoftLimitLock
+Fields inherited from class com.revrobotics.spark.
+SparkLowLevel
+expectedSparkModel
+,
+isClosed
+,
+kAPIBuildVersion
+,
+kAPIMajorVersion
+,
+kAPIMinorVersion
+,
+kAPIVersion
+,
+motorType
+,
+sparkHandle
+Constructor Summary
+Constructors
+Constructor
+Description
+SparkBase
+(int deviceId,
+SparkLowLevel.MotorType
+type,
+SparkLowLevel.SparkModel
+model)
+Create a new object to control a SPARK motor Controller
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+REVLibError
+clearFaults
+()
+Clears all sticky faults.
+REVLibError
+configure
+(
+SparkBaseConfig
+config,
+SparkBase.ResetMode
+resetMode,
+SparkBase.PersistMode
+persistMode)
+Set the configuration for the SPARK.
+REVLibError
+configureAsync
+(
+SparkBaseConfig
+config,
+SparkBase.ResetMode
+resetMode,
+SparkBase.PersistMode
+persistMode)
+Set the configuration for the SPARK without waiting for a response.
+void
+disable
+()
+Common interface for disabling a motor.
+double
+get
+()
+Common interface for getting the current set speed of a speed controller.
+SparkAbsoluteEncoder
+getAbsoluteEncoder
+()
+Returns an object for interfacing with a connected absolute encoder.
+SparkAnalogSensor
+getAnalog
+()
+Returns an object for interfacing with a connected analog sensor.
+double
+getAppliedOutput
+()
+Simulation note: this value will not be updated during simulation unless
+SparkSim.iterate(double, double, double)
+is called
+double
+getBusVoltage
+()
+SparkClosedLoopController
+getClosedLoopController
+()
+RelativeEncoder
+getEncoder
+()
+Returns an object for interfacing with the encoder connected to the encoder pins or front port
+ of the SPARK MAX or the motor interface of the SPARK Flex.
+SparkBase.Faults
+getFaults
+()
+Get the active faults that are currently present on the SPARK.
+SparkLimitSwitch
+getForwardLimitSwitch
+()
+Returns an object for interfacing with the forward limit switch connected to the appropriate
+ pins on the data port.
+SparkSoftLimit
+getForwardSoftLimit
+()
+Returns an object for interfacing with the forward soft limit.
+boolean
+getInverted
+()
+Deprecated.
+Use
+SparkBaseConfigAccessor.getInverted()
+via
+SparkMax.configAccessor
+or
+SparkFlex.configAccessor
+instead.
+REVLibError
+getLastError
+()
+All device errors are tracked on a per thread basis for all devices in that thread.
+double
+getMotorTemperature
+()
+double
+getOutputCurrent
+()
+SparkLimitSwitch
+getReverseLimitSwitch
+()
+Returns an object for interfacing with the reverse limit switch connected to the appropriate
+ pins on the data port.
+SparkSoftLimit
+getReverseSoftLimit
+()
+Returns an object for interfacing with the reverse soft limit.
+SparkBase.Faults
+getStickyFaults
+()
+Get the sticky faults that were present on the SPARK at one point since the sticky faults were
+ last cleared.
+SparkBase.Warnings
+getStickyWarnings
+()
+Get the sticky warnings that were present on the SPARK at one point since the sticky warnings
+ were last cleared.
+SparkBase.Warnings
+getWarnings
+()
+Get the active warnings that are currently present on the SPARK.
+boolean
+hasActiveFault
+()
+Get whether the SPARK has one or more active faults.
+boolean
+hasActiveWarning
+()
+Get whether the SPARK has one or more active warnings.
+boolean
+hasStickyFault
+()
+Get whether the SPARK has one or more sticky faults.
+boolean
+hasStickyWarning
+()
+Get whether the SPARK has one or more sticky warnings.
+boolean
+isFollower
+()
+Returns whether the controller is following another controller
+REVLibError
+pauseFollowerMode
+()
+Pause follower mode.
+REVLibError
+pauseFollowerModeAsync
+()
+Pause follower mode without waiting for a response
+REVLibError
+resumeFollowerMode
+()
+Resume follower mode if the SPARK has a valid follower mode config.
+REVLibError
+resumeFollowerModeAsync
+()
+Resume follower mode if the SPARK has a valid follower mode config without waiting for a
+ response.
+void
+set
+(double speed)
+Common interface for setting the speed of a speed controller.
+REVLibError
+setCANTimeout
+(int milliseconds)
+Sets the timeout duration for waiting for CAN responses from the device.
+void
+setInverted
+(boolean isInverted)
+Deprecated.
+Use
+SparkBaseConfig.inverted(boolean)
+with
+configure(SparkBaseConfig, ResetMode, PersistMode)
+instead.
+void
+setVoltage
+(double outputVolts)
+Sets the voltage output of the SpeedController.
+void
+stopMotor
+()
+Methods inherited from class com.revrobotics.spark.
+SparkLowLevel
+close
+,
+createSimFaultManager
+,
+getDeviceId
+,
+getFirmwareString
+,
+getFirmwareVersion
+,
+getMotorType
+,
+getSafeFloat
+,
+getSerialNumber
+,
+setCANMaxRetries
+,
+setControlFramePeriodMs
+,
+setPeriodicFrameTimeout
+,
+throwIfClosed
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.wpilibj.motorcontrol.
+MotorController
+setVoltage
+Field Details
+encoder
+protected
+SparkRelativeEncoder
+encoder
+encoderLock
+protected final
+Object
+encoderLock
+analogSensor
+protected
+SparkAnalogSensor
+analogSensor
+analogSensorLock
+protected final
+Object
+analogSensorLock
+absoluteEncoder
+protected
+SparkAbsoluteEncoder
+absoluteEncoder
+absoluteEncoderLock
+protected final
+Object
+absoluteEncoderLock
+closedLoopController
+protected
+SparkClosedLoopController
+closedLoopController
+closedLoopControllerLock
+protected final
+Object
+closedLoopControllerLock
+forwardLimitSwitch
+protected
+SparkLimitSwitch
+forwardLimitSwitch
+forwardLimitSwitchLock
+protected final
+Object
+forwardLimitSwitchLock
+reverseLimitSwitch
+protected
+SparkLimitSwitch
+reverseLimitSwitch
+reverseLimitSwitchLock
+protected final
+Object
+reverseLimitSwitchLock
+forwardSoftLimit
+protected
+SparkSoftLimit
+forwardSoftLimit
+forwardSoftLimitLock
+protected final
+Object
+forwardSoftLimitLock
+reverseSoftLimit
+protected
+SparkSoftLimit
+reverseSoftLimit
+reverseSoftLimitLock
+protected final
+Object
+reverseSoftLimitLock
+Constructor Details
+SparkBase
+public
+SparkBase
+(int deviceId,
+SparkLowLevel.MotorType
+type,
+SparkLowLevel.SparkModel
+model)
+Create a new object to control a SPARK motor Controller
+Parameters:
+deviceId
+- The device ID.
+type
+- The motor type connected to the controller. Brushless motor wires must be connected
+     to their matching colors and the hall sensor must be plugged in. Brushed motors must be
+     connected to the Red and Black terminals only.
+Method Details
+set
+public
+void
+set
+(double speed)
+Common interface for setting the speed of a speed controller.
+Parameters:
+speed
+- The speed to set. Value should be between -1.0 and 1.0.
+setVoltage
+public
+void
+setVoltage
+(double outputVolts)
+Sets the voltage output of the SpeedController. This is equivillant to a call to
+ SetReference(output, rev::ControlType::kVoltage). The behavior of this call differs slightly
+ from the WPILib documetation for this call since the device internally sets the desired voltage
+ (not a compensation value). That means that this *can* be a 'set-and-forget' call.
+Parameters:
+outputVolts
+- The voltage to output.
+get
+public
+double
+get
+()
+Common interface for getting the current set speed of a speed controller.
+Returns:
+The current set speed. Value is between -1.0 and 1.0.
+setInverted
+@Deprecated
+public
+void
+setInverted
+(boolean isInverted)
+Deprecated.
+Use
+SparkBaseConfig.inverted(boolean)
+with
+configure(SparkBaseConfig, ResetMode, PersistMode)
+instead.
+Common interface for inverting direction of a speed controller.
+This call has no effect if the controller is a follower. To invert a follower, see the
+ follow() method.
+Parameters:
+isInverted
+- The state of inversion, true is inverted.
+getInverted
+@Deprecated
+public
+boolean
+getInverted
+()
+Deprecated.
+Use
+SparkBaseConfigAccessor.getInverted()
+via
+SparkMax.configAccessor
+or
+SparkFlex.configAccessor
+instead.
+Common interface for returning the inversion state of a speed controller.
+This call has no effect if the controller is a follower.
+Returns:
+isInverted The state of inversion, true is inverted.
+disable
+public
+void
+disable
+()
+Common interface for disabling a motor.
+stopMotor
+public
+void
+stopMotor
+()
+configure
+public
+REVLibError
+configure
+(
+SparkBaseConfig
+config,
+SparkBase.ResetMode
+resetMode,
+SparkBase.PersistMode
+persistMode)
+Set the configuration for the SPARK.
+If
+resetMode
+is
+SparkBase.ResetMode.kResetSafeParameters
+, this method will reset safe
+ writable parameters to their default values before setting the given configuration. The
+ following parameters will not be reset by this action: CAN ID, Motor Type, Idle Mode, PWM Input
+ Deadband, and Duty Cycle Offset.
+If
+persistMode
+is
+SparkBase.PersistMode.kPersistParameters
+, this method will save all
+ parameters to the SPARK's non-volatile memory after setting the given configuration. This will
+ allow parameters to persist across power cycles.
+Parameters:
+config
+- The desired SPARK configuration
+resetMode
+- Whether to reset safe parameters before setting the configuration
+persistMode
+- Whether to persist the parameters after setting the configuration
+Returns:
+REVLibError.kOk
+if successful
+configureAsync
+public
+REVLibError
+configureAsync
+(
+SparkBaseConfig
+config,
+SparkBase.ResetMode
+resetMode,
+SparkBase.PersistMode
+persistMode)
+Set the configuration for the SPARK without waiting for a response.
+If
+resetMode
+is
+SparkBase.ResetMode.kResetSafeParameters
+, this method will reset safe
+ writable parameters to their default values before setting the given configuration. The
+ following parameters will not be reset by this action: CAN ID, Motor Type, Idle Mode, PWM Input
+ Deadband, and Duty Cycle Offset.
+If
+persistMode
+is
+SparkBase.PersistMode.kPersistParameters
+, this method will save all
+ parameters to the SPARK's non-volatile memory after setting the given configuration. This will
+ allow parameters to persist across power cycles.
+NOTE: This method will immediately return
+REVLibError.kOk
+and the action will be
+ done in the background. Any errors that occur will be reported to the driver station.
+Parameters:
+config
+- The desired SPARK configuration
+resetMode
+- Whether to reset safe parameters before setting the configuration
+persistMode
+- Whether to persist the parameters after setting the configuration
+Returns:
+REVLibError.kOk
+getEncoder
+public
+RelativeEncoder
+getEncoder
+()
+Returns an object for interfacing with the encoder connected to the encoder pins or front port
+ of the SPARK MAX or the motor interface of the SPARK Flex.
+Returns:
+An object for interfacing with an encoder
+getAnalog
+public
+SparkAnalogSensor
+getAnalog
+()
+Returns an object for interfacing with a connected analog sensor.
+Returns:
+An object for interfacing with a connected analog sensor.
+getAbsoluteEncoder
+public
+SparkAbsoluteEncoder
+getAbsoluteEncoder
+()
+Returns an object for interfacing with a connected absolute encoder.
+Returns:
+An object for interfacing with a connected absolute encoder
+getClosedLoopController
+public
+SparkClosedLoopController
+getClosedLoopController
+()
+Returns:
+An object for interfacing with the integrated closed loop controller.
+getForwardLimitSwitch
+public
+SparkLimitSwitch
+getForwardLimitSwitch
+()
+Returns an object for interfacing with the forward limit switch connected to the appropriate
+ pins on the data port.
+Returns:
+An object for interfacing with the forward limit switch.
+getReverseLimitSwitch
+public
+SparkLimitSwitch
+getReverseLimitSwitch
+()
+Returns an object for interfacing with the reverse limit switch connected to the appropriate
+ pins on the data port.
+Returns:
+An object for interfacing with the reverse limit switch.
+getForwardSoftLimit
+public
+SparkSoftLimit
+getForwardSoftLimit
+()
+Returns an object for interfacing with the forward soft limit.
+Returns:
+An object for interfacing with the forward soft limit.
+getReverseSoftLimit
+public
+SparkSoftLimit
+getReverseSoftLimit
+()
+Returns an object for interfacing with the reverse soft limit.
+Returns:
+An object for interfacing with the reverse soft limit.
+resumeFollowerMode
+public
+REVLibError
+resumeFollowerMode
+()
+Resume follower mode if the SPARK has a valid follower mode config.
+NOTE: Follower mode will start automatically upon configuring follower mode. If the SPARK
+ experiences a power cycle and has follower mode configured, follower mode will automatically
+ restart. This method is only useful after
+pauseFollowerMode()
+has been called.
+Returns:
+REVLibError.kOk
+if successful
+resumeFollowerModeAsync
+public
+REVLibError
+resumeFollowerModeAsync
+()
+Resume follower mode if the SPARK has a valid follower mode config without waiting for a
+ response.
+NOTE: Follower mode will start automatically upon configuring follower mode. If the SPARK
+ experiences a power cycle and has follower mode configured, follower mode will automatically
+ restart. This method is only useful after
+pauseFollowerMode()
+has been called.
+NOTE: This method will immediately return
+REVLibError.kOk
+and the action will be
+ done in the background. Any errors that occur will be reported to the driver station.
+Returns:
+REVLibError.kOk
+See Also:
+resumeFollowerMode()
+pauseFollowerMode
+public
+REVLibError
+pauseFollowerMode
+()
+Pause follower mode.
+NOTE: If the SPARK experiences a power cycle and has follower mode configured, follower mode
+ will automatically restart.
+Returns:
+REVLibError.kOk
+if successful
+pauseFollowerModeAsync
+public
+REVLibError
+pauseFollowerModeAsync
+()
+Pause follower mode without waiting for a response
+NOTE: If the SPARK experiences a power cycle and has follower mode configured, follower mode
+ will automatically restart.
+NOTE: This method will immediately return
+REVLibError.kOk
+and the action will be
+ done in the background. Any errors that occur will be reported to the driver station.
+Returns:
+REVLibError.kOk
+See Also:
+pauseFollowerMode()
+isFollower
+public
+boolean
+isFollower
+()
+Returns whether the controller is following another controller
+Returns:
+True if this device is following another controller false otherwise
+hasActiveFault
+public
+boolean
+hasActiveFault
+()
+Get whether the SPARK has one or more active faults.
+Returns:
+true if there is an active fault
+See Also:
+getFaults()
+hasStickyFault
+public
+boolean
+hasStickyFault
+()
+Get whether the SPARK has one or more sticky faults.
+Returns:
+true if there is a sticky fault
+See Also:
+getStickyFaults()
+hasActiveWarning
+public
+boolean
+hasActiveWarning
+()
+Get whether the SPARK has one or more active warnings.
+Returns:
+true if there is an active warning
+See Also:
+getWarnings()
+hasStickyWarning
+public
+boolean
+hasStickyWarning
+()
+Get whether the SPARK has one or more sticky warnings.
+Returns:
+true if there is a sticky warning
+See Also:
+getStickyWarnings()
+getFaults
+public
+SparkBase.Faults
+getFaults
+()
+Get the active faults that are currently present on the SPARK. Faults are fatal errors that
+ prevent the motor from running.
+Returns:
+A struct with each fault and their active value
+getStickyFaults
+public
+SparkBase.Faults
+getStickyFaults
+()
+Get the sticky faults that were present on the SPARK at one point since the sticky faults were
+ last cleared. Faults are fatal errors that prevent the motor from running.
+Sticky faults can be cleared with
+clearFaults()
+.
+Returns:
+A struct with each fault and their sticky value
+getWarnings
+public
+SparkBase.Warnings
+getWarnings
+()
+Get the active warnings that are currently present on the SPARK. Warnings are non-fatal errors.
+Returns:
+A struct with each warning and their active value
+getStickyWarnings
+public
+SparkBase.Warnings
+getStickyWarnings
+()
+Get the sticky warnings that were present on the SPARK at one point since the sticky warnings
+ were last cleared. Warnings are non-fatal errors.
+Sticky warnings can be cleared with
+clearFaults()
+.
+Returns:
+A struct with each warning and their sticky value
+getBusVoltage
+public
+double
+getBusVoltage
+()
+Returns:
+The voltage fed into the motor controller.
+getAppliedOutput
+public
+double
+getAppliedOutput
+()
+Simulation note: this value will not be updated during simulation unless
+SparkSim.iterate(double, double, double)
+is called
+Returns:
+The motor controller's applied output duty cycle.
+getOutputCurrent
+public
+double
+getOutputCurrent
+()
+Returns:
+The motor controller's output current in Amps.
+getMotorTemperature
+public
+double
+getMotorTemperature
+()
+Returns:
+The motor temperature in Celsius.
+clearFaults
+public
+REVLibError
+clearFaults
+()
+Clears all sticky faults.
+Returns:
+REVLibError.kOk
+if successful
+setCANTimeout
+public
+REVLibError
+setCANTimeout
+(int milliseconds)
+Sets the timeout duration for waiting for CAN responses from the device.
+Parameters:
+milliseconds
+- The timeout in milliseconds.
+Returns:
+REVLibError.kOk
+if successful
+getLastError
+public
+REVLibError
+getLastError
+()
+All device errors are tracked on a per thread basis for all devices in that thread. This is
+ meant to be called immediately following another call that has the possibility of returning an
+ error to validate if an error has occurred.
+Returns:
+the last error that was generated.

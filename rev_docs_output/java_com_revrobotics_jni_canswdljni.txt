@@ -1,0 +1,120 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.jni
+Class CANSWDLJNI
+java.lang.Object
+com.revrobotics.jni.RevJNIWrapper
+com.revrobotics.jni.CANSWDLJNI
+public class
+CANSWDLJNI
+extends
+RevJNIWrapper
+Constructor Summary
+Constructors
+Constructor
+Description
+CANSWDLJNI
+()
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static boolean
+ChecksumFailFramePresent
+()
+Check if the checksum fail frame is present in the last 5 seconds.
+static int
+IterateSWDL
+(
+String
+dfuFilePath,
+String
+binFilePath)
+Iterate through the SWDL process, allowing for progress updates.
+static void
+ResetSWDL
+()
+Close, free, and reset the SWDL state.
+static boolean
+SetSWDLDevices
+(int[] deviceIDlist)
+Set the list of devices to update.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CANSWDLJNI
+public
+CANSWDLJNI
+()
+Method Details
+SetSWDLDevices
+public static
+boolean
+SetSWDLDevices
+(int[] deviceIDlist)
+Set the list of devices to update.
+Parameters:
+deviceIDlist
+- The device IDs you wish to update as an array of integers.
+Returns:
+True if the devices were set successfully, false if there was an error
+ResetSWDL
+public static
+void
+ResetSWDL
+()
+Close, free, and reset the SWDL state. This is called automatically when the SWDL process
+ completes or fails, but can also be called to reset the state if you need to start over.
+IterateSWDL
+public static
+int
+IterateSWDL
+(
+String
+dfuFilePath,
+String
+binFilePath)
+Iterate through the SWDL process, allowing for progress updates. Devices must be set before
+ calling this function. This function should be called repeatedly until it returns 100% or -1
+ (error). It resets state on error or completion. This function is not thread-safe, and only one
+ thread should call it at a time.
+Parameters:
+dfuFilePath
+- The path to the DFU file.
+binFilePath
+- The path to the binary file.
+Returns:
+The current progress percentage (0-100) or -1 if an error occurs.
+ChecksumFailFramePresent
+public static
+boolean
+ChecksumFailFramePresent
+()
+Check if the checksum fail frame is present in the last 5 seconds. A delay should be added
+ before calling this function.
+Returns:
+true if the checksum fail frame is present, false otherwise.

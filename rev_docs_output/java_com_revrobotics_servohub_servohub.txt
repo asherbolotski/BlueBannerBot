@@ -1,0 +1,413 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.servohub
+Class ServoHub
+java.lang.Object
+com.revrobotics.servohub.ServoHubLowLevel
+com.revrobotics.servohub.ServoHub
+public class
+ServoHub
+extends
+ServoHubLowLevel
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+ServoHub.Bank
+static class
+ServoHub.Faults
+static enum
+ServoHub.ResetMode
+static class
+ServoHub.Warnings
+Nested classes/interfaces inherited from class com.revrobotics.servohub.
+ServoHubLowLevel
+ServoHubLowLevel.FirmwareVersion
+,
+ServoHubLowLevel.PeriodicStatus0
+,
+ServoHubLowLevel.PeriodicStatus1
+,
+ServoHubLowLevel.PeriodicStatus2
+,
+ServoHubLowLevel.PeriodicStatus3
+,
+ServoHubLowLevel.PeriodicStatus4
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final
+ServoHubConfigAccessor
+configAccessor
+Accessor for ServoHub parameter values.
+Fields inherited from class com.revrobotics.servohub.
+ServoHubLowLevel
+servoHubHandle
+Constructor Summary
+Constructors
+Constructor
+Description
+ServoHub
+(int deviceId)
+Create a new object to control a ServoHub Servo Controller
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+REVLibError
+clearFaults
+()
+Clears all sticky faults.
+REVLibError
+configure
+(
+ServoHubConfig
+config,
+ServoHub.ResetMode
+resetMode)
+Set the configuration for the ServoHub.
+REVLibError
+configureAsync
+(
+ServoHubConfig
+config,
+ServoHub.ResetMode
+resetMode)
+Set the configuration for the ServoHub without waiting for a response.
+double
+getDeviceCurrent
+()
+double
+getDeviceVoltage
+()
+ServoHub.Faults
+getFaults
+()
+Get the active faults that are currently present on the ServoHub.
+ServoChannel
+getServoChannel
+(
+ServoChannel.ChannelId
+channelId)
+Returns an object to control a specific servo channel.
+double
+getServoVoltage
+()
+ServoHub.Faults
+getStickyFaults
+()
+Get the sticky faults that were present on the ServoHub at one point since the sticky faults
+ were last cleared.
+ServoHub.Warnings
+getStickyWarnings
+()
+Get the sticky warnings that were present on the ServoHub at one point since the sticky
+ warnings were last cleared.
+ServoHub.Warnings
+getWarnings
+()
+Get the active warnings that are currently present on the ServoHub.
+boolean
+hasActiveFault
+()
+Get whether the ServoHub has one or more active faults.
+boolean
+hasActiveWarning
+()
+Get whether the ServoHub has one or more active warnings.
+boolean
+hasStickyFault
+()
+Get whether the ServoHub has one or more sticky faults.
+boolean
+hasStickyWarning
+()
+Get whether the ServoHub has one or more sticky warnings.
+REVLibError
+setBankPulsePeriod
+(
+ServoHub.Bank
+bank,
+ int pulsePeriod_us)
+Set the Pulse Period for servo channels 0-2 or servo channels 3-5.
+Methods inherited from class com.revrobotics.servohub.
+ServoHubLowLevel
+close
+,
+createSimFaultManager
+,
+getControlFramePeriodMs
+,
+getDeviceId
+,
+getFirmwareVersion
+,
+getFirmwareVersionString
+,
+getPeriodicStatus0
+,
+getPeriodicStatus1
+,
+getPeriodicStatus2
+,
+getPeriodicStatus3
+,
+getPeriodicStatus4
+,
+setCANMaxRetries
+,
+setCANTimeout
+,
+setControlFramePeriodMs
+,
+setPeriodicFrameTimeout
+,
+throwIfClosed
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+configAccessor
+public final
+ServoHubConfigAccessor
+configAccessor
+Accessor for ServoHub parameter values. This object contains fields and methods to retrieve
+ parameters that have been applied to the device. To set parameters, see
+ServoHubConfig
+and
+configure(ServoHubConfig, ServoHub.ResetMode)
+.
+NOTE: This uses calls that are blocking to retrieve parameters and should be used
+ infrequently.
+Constructor Details
+ServoHub
+public
+ServoHub
+(int deviceId)
+Create a new object to control a ServoHub Servo Controller
+Parameters:
+deviceId
+- The device ID.
+Method Details
+configure
+public
+REVLibError
+configure
+(
+ServoHubConfig
+config,
+ServoHub.ResetMode
+resetMode)
+Set the configuration for the ServoHub.
+If
+resetMode
+is
+ServoHub.ResetMode.kResetSafeParameters
+, this method will reset safe
+ writable parameters to their default values before setting the given configuration.
+Parameters:
+config
+- The desired ServoHub configuration
+resetMode
+- Whether to reset safe parameters before setting the configuration
+Returns:
+REVLibError.kOk
+if successful
+configureAsync
+public
+REVLibError
+configureAsync
+(
+ServoHubConfig
+config,
+ServoHub.ResetMode
+resetMode)
+Set the configuration for the ServoHub without waiting for a response.
+If
+resetMode
+is
+ServoHub.ResetMode.kResetSafeParameters
+, this method will reset safe
+ writable parameters to their default values before setting the given configuration.
+NOTE: This method will immediately return
+REVLibError.kOk
+and the action will be
+ done in the background. Any errors that occur will be reported to the driver station.
+Parameters:
+config
+- The desired ServoHub configuration
+resetMode
+- Whether to reset safe parameters before setting the configuration
+Returns:
+REVLibError.kOk
+See Also:
+configure(ServoHubConfig, ResetMode)
+hasActiveFault
+public
+boolean
+hasActiveFault
+()
+Get whether the ServoHub has one or more active faults.
+Returns:
+true if there is an active fault
+See Also:
+getFaults()
+hasStickyFault
+public
+boolean
+hasStickyFault
+()
+Get whether the ServoHub has one or more sticky faults.
+Returns:
+true if there is a sticky fault
+See Also:
+getStickyFaults()
+hasActiveWarning
+public
+boolean
+hasActiveWarning
+()
+Get whether the ServoHub has one or more active warnings.
+Returns:
+true if there is an active warning
+See Also:
+getWarnings()
+hasStickyWarning
+public
+boolean
+hasStickyWarning
+()
+Get whether the ServoHub has one or more sticky warnings.
+Returns:
+true if there is a sticky warning
+See Also:
+getStickyWarnings()
+getFaults
+public
+ServoHub.Faults
+getFaults
+()
+Get the active faults that are currently present on the ServoHub. Faults are fatal errors that
+ prevent the motor from running.
+Returns:
+A struct with each fault and their active value
+getStickyFaults
+public
+ServoHub.Faults
+getStickyFaults
+()
+Get the sticky faults that were present on the ServoHub at one point since the sticky faults
+ were last cleared. Faults are fatal errors that prevent the motor from running.
+Sticky faults can be cleared with
+clearFaults()
+.
+Returns:
+A struct with each fault and their sticky value
+getWarnings
+public
+ServoHub.Warnings
+getWarnings
+()
+Get the active warnings that are currently present on the ServoHub. Warnings are non-fatal
+ errors.
+Returns:
+A struct with each warning and their active value
+getStickyWarnings
+public
+ServoHub.Warnings
+getStickyWarnings
+()
+Get the sticky warnings that were present on the ServoHub at one point since the sticky
+ warnings were last cleared. Warnings are non-fatal errors.
+Sticky warnings can be cleared with
+clearFaults()
+.
+Returns:
+A struct with each warning and their sticky value
+clearFaults
+public
+REVLibError
+clearFaults
+()
+Clears all sticky faults.
+Returns:
+REVLibError.kOk
+if successful
+getDeviceVoltage
+public
+double
+getDeviceVoltage
+()
+Returns:
+The voltage fed into the servo controller.
+getDeviceCurrent
+public
+double
+getDeviceCurrent
+()
+Returns:
+The servo controller's output current in Amps.
+getServoVoltage
+public
+double
+getServoVoltage
+()
+Returns:
+The voltage fed to the actual servos.
+getServoChannel
+public
+ServoChannel
+getServoChannel
+(
+ServoChannel.ChannelId
+channelId)
+Returns an object to control a specific servo channel.
+Parameters:
+channelId
+- The specific servo channel to get
+Returns:
+The specified ServoChannel
+setBankPulsePeriod
+public
+REVLibError
+setBankPulsePeriod
+(
+ServoHub.Bank
+bank,
+ int pulsePeriod_us)
+Set the Pulse Period for servo channels 0-2 or servo channels 3-5.
+Parameters:
+bank
+- The bank of channels (0-2 or 3-5) to set
+pulsePeriod_us
+- The pulse period in microseconds
+Returns:
+REVLibError.kOk
+if successful

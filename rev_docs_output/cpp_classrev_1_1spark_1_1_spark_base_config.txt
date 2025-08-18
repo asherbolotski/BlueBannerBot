@@ -1,0 +1,850 @@
+REVLib - C++
+Public Types
+|
+Public Member Functions
+|
+Public Attributes
+|
+List of all members
+rev::spark::SparkBaseConfig Class Reference
+#include <
+SparkBaseConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Inherited by
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+Public Types
+enum
+IdleMode
+: uint32_t {
+kCoast
+= 0
+,
+kBrake
+= 1
+ }
+Public Member Functions
+SparkBaseConfig
+()=default
+~SparkBaseConfig
+() override=default
+SparkBaseConfig
+(const
+SparkBaseConfig
+&)=delete
+SparkBaseConfig
+&
+operator=
+(const
+SparkBaseConfig
+&)=delete
+SparkBaseConfig
+(
+SparkBaseConfig
+&&) noexcept=delete
+SparkBaseConfig
+&
+operator=
+(
+SparkBaseConfig
+&&) noexcept=delete
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SparkBaseConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+AbsoluteEncoderConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+AnalogSensorConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+EncoderConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+LimitSwitchConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SoftLimitConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+ClosedLoopConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SignalsConfig
+&config)
+virtual
+SparkBaseConfig
+&
+SetIdleMode
+(
+IdleMode
+idleMode)
+virtual
+SparkBaseConfig
+&
+Inverted
+(bool inverted)
+virtual
+SparkBaseConfig
+&
+SmartCurrentLimit
+(int stallLimit, int freeLimit=0, int limitRpm=20000)
+virtual
+SparkBaseConfig
+&
+SecondaryCurrentLimit
+(double limit, int chopCycles=0)
+virtual
+SparkBaseConfig
+&
+OpenLoopRampRate
+(double rate)
+virtual
+SparkBaseConfig
+&
+ClosedLoopRampRate
+(double rate)
+virtual
+SparkBaseConfig
+&
+VoltageCompensation
+(double nominalVoltage)
+virtual
+SparkBaseConfig
+&
+DisableVoltageCompensation
+()
+virtual
+SparkBaseConfig
+&
+Follow
+(int leaderCanId, bool invert=false)
+virtual
+SparkBaseConfig
+&
+Follow
+(
+SparkBase
+&leader, bool invert=false)
+virtual
+SparkBaseConfig
+&
+DisableFollowerMode
+()
+std::string
+Flatten
+() override
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+Public Attributes
+AbsoluteEncoderConfig
+absoluteEncoder
+AnalogSensorConfig
+analogSensor
+ClosedLoopConfig
+closedLoop
+EncoderConfig
+encoder
+LimitSwitchConfig
+limitSwitch
+SignalsConfig
+signals
+SoftLimitConfig
+softLimit
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Member Enumeration Documentation
+◆
+IdleMode
+enum
+rev::spark::SparkBaseConfig::IdleMode
+: uint32_t
+Enumerator
+kCoast
+kBrake
+Constructor & Destructor Documentation
+◆
+SparkBaseConfig()
+[1/3]
+rev::spark::SparkBaseConfig::SparkBaseConfig
+(
+)
+default
+◆
+~SparkBaseConfig()
+rev::spark::SparkBaseConfig::~SparkBaseConfig
+(
+)
+override
+default
+◆
+SparkBaseConfig()
+[2/3]
+rev::spark::SparkBaseConfig::SparkBaseConfig
+(
+const
+SparkBaseConfig
+&
+)
+delete
+◆
+SparkBaseConfig()
+[3/3]
+rev::spark::SparkBaseConfig::SparkBaseConfig
+(
+SparkBaseConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+SparkBaseConfig
+& rev::spark::SparkBaseConfig::operator=
+(
+const
+SparkBaseConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+SparkBaseConfig
+& rev::spark::SparkBaseConfig::operator=
+(
+SparkBaseConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+[1/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+SparkBaseConfig
+&
+config
+)
+virtual
+Applies settings from another
+SparkBaseConfig
+to this one, including all of its nested configurations.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SparkBaseConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+Apply()
+[2/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+AbsoluteEncoderConfig
+&
+config
+)
+virtual
+Applies settings from an
+AbsoluteEncoderConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+AbsoluteEncoderConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+Apply()
+[3/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+AnalogSensorConfig
+&
+config
+)
+virtual
+Applies settings from an
+AnalogSensorConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+AnalogSensorConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+Apply()
+[4/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+EncoderConfig
+&
+config
+)
+virtual
+Applies settings from an
+EncoderConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+EncoderConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+Apply()
+[5/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+LimitSwitchConfig
+&
+config
+)
+virtual
+Applies settings from a
+LimitSwitchConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+LimitSwitchConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+Apply()
+[6/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+SoftLimitConfig
+&
+config
+)
+virtual
+Applies settings from a
+SoftLimitConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SoftLimitConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+Apply()
+[7/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+ClosedLoopConfig
+&
+config
+)
+virtual
+Applies settings from a
+ClosedLoopConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+ClosedLoopConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+Apply()
+[8/8]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+SignalsConfig
+&
+config
+)
+virtual
+Applies settings from a
+SignalsConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SignalsConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+◆
+SetIdleMode()
+SparkBaseConfig
+& SparkBaseConfig::SetIdleMode
+(
+IdleMode
+idleMode
+)
+virtual
+Sets the idle mode setting for the SPARK.
+Parameters
+idleMode
+kCoast or kBrake
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+Inverted()
+SparkBaseConfig
+& SparkBaseConfig::Inverted
+(
+bool
+inverted
+)
+virtual
+Common interface for inverting direction of a speed controller.
+This call has no effect if the controller is a follower. To invert a follower, see the follow() method.
+Parameters
+inverted
+True for inverted
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+SmartCurrentLimit()
+SparkBaseConfig
+& SparkBaseConfig::SmartCurrentLimit
+(
+int
+stallLimit
+,
+int
+freeLimit
+=
+0
+,
+int
+limitRpm
+=
+20000
+)
+virtual
+Sets the current limit in Amps.
+The motor controller will reduce the controller voltage output to avoid surpassing this limit. This limit is enabled by default and used for brushless only. This limit is highly recommended when using the NEO brushless motor.
+The NEO Brushless Motor has a low internal resistance, which can mean large current spikes that could be enough to cause damage to the motor and controller. This current limit provides a smarter strategy to deal with high current draws and keep the motor and controller operating in a safe region.
+The controller can also limit the current based on the RPM of the motor in a linear fashion to help with controllability in closed loop control. For a response that is linear the entire RPM range leave limit RPM at 0.
+Parameters
+stallLimit
+The current limit in Amps at 0 RPM.
+freeLimit
+The current limit at free speed (5700RPM for NEO).
+limitRpm
+RPM less than this value will be set to the stallLimit, RPM values greater than limitRpm will scale linearly to freeLimit
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+SecondaryCurrentLimit()
+SparkBaseConfig
+& SparkBaseConfig::SecondaryCurrentLimit
+(
+double
+limit
+,
+int
+chopCycles
+=
+0
+)
+virtual
+Sets the secondary current limit in Amps.
+The motor controller will disable the output of the controller briefly if the current limit is exceeded to reduce the current. This limit is a simplified 'on/off' controller. This limit is enabled by default but is set higher than the default Smart Current Limit.
+The time the controller is off after the current limit is reached is determined by the parameter limitCycles, which is the number of PWM cycles (20kHz). The recommended value is the default of 0 which is the minimum time and is part of a PWM cycle from when the over current is detected. This allows the controller to regulate the current close to the limit value.
+The total time is set by the equation
+t = (50us - t0) + 50us * limitCycles t = total off time after over current t0 = time from the start of the PWM cycle until over current is detected
+Parameters
+limit
+The current limit in Amps.
+chopCycles
+The number of additional PWM cycles to turn the driver off after overcurrent is detected.
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+OpenLoopRampRate()
+SparkBaseConfig
+& SparkBaseConfig::OpenLoopRampRate
+(
+double
+rate
+)
+virtual
+Sets the ramp rate for open loop control modes.
+This is the maximum rate at which the motor controller's output is allowed to change.
+Parameters
+rate
+Time in seconds to go from 0 to full throttle.
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+ClosedLoopRampRate()
+SparkBaseConfig
+& SparkBaseConfig::ClosedLoopRampRate
+(
+double
+rate
+)
+virtual
+Sets the ramp rate for closed loop control modes.
+This is the maximum rate at which the motor controller's output is allowed to change.
+Parameters
+rate
+Time in seconds to go from 0 to full throttle.
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+VoltageCompensation()
+SparkBaseConfig
+& SparkBaseConfig::VoltageCompensation
+(
+double
+nominalVoltage
+)
+virtual
+Sets the voltage compensation setting for all modes on the SPARK and enables voltage compensation.
+Parameters
+nominalVoltage
+Nominal voltage to compensate output to
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+DisableVoltageCompensation()
+SparkBaseConfig
+& SparkBaseConfig::DisableVoltageCompensation
+(
+)
+virtual
+Disables the voltage compensation setting for all modes on the SPARK.
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+Follow()
+[1/2]
+SparkBaseConfig
+& SparkBaseConfig::Follow
+(
+int
+leaderCanId
+,
+bool
+invert
+=
+false
+)
+virtual
+Causes this controller's output to mirror the provided leader.
+Only voltage output is mirrored. Settings changed on the leader do not affect the follower.
+Following anything other than a CAN-enabled SPARK is not officially supported.
+Parameters
+leaderCanId
+The CAN ID of the device to follow.
+invert
+Set the follower to output opposite of the leader
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+Follow()
+[2/2]
+SparkBaseConfig
+& SparkBaseConfig::Follow
+(
+SparkBase
+&
+leader
+,
+bool
+invert
+=
+false
+)
+virtual
+Causes this controller's output to mirror the provided leader.
+Only voltage output is mirrored. Settings changed on the leader do not affect the follower.
+Following anything other than a CAN-enabled SPARK is not officially supported.
+Parameters
+leader
+The motor controller to follow.
+invert
+Set the follower to output opposite of the leader
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+DisableFollowerMode()
+SparkBaseConfig
+& SparkBaseConfig::DisableFollowerMode
+(
+)
+virtual
+Disables follower mode on the controller.
+Returns
+The modified
+SparkBaseConfig
+object for method chaining
+◆
+Flatten()
+std::string SparkBaseConfig::Flatten
+(
+)
+override
+virtual
+Reimplemented from
+rev::BaseConfig
+.
+Reimplemented in
+rev::spark::SparkFlexConfig
+, and
+rev::spark::SparkMaxConfig
+.
+Member Data Documentation
+◆
+absoluteEncoder
+AbsoluteEncoderConfig
+rev::spark::SparkBaseConfig::absoluteEncoder
+◆
+analogSensor
+AnalogSensorConfig
+rev::spark::SparkBaseConfig::analogSensor
+◆
+closedLoop
+ClosedLoopConfig
+rev::spark::SparkBaseConfig::closedLoop
+◆
+encoder
+EncoderConfig
+rev::spark::SparkBaseConfig::encoder
+◆
+limitSwitch
+LimitSwitchConfig
+rev::spark::SparkBaseConfig::limitSwitch
+◆
+signals
+SignalsConfig
+rev::spark::SparkBaseConfig::signals
+◆
+softLimit
+SoftLimitConfig
+rev::spark::SparkBaseConfig::softLimit
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+SparkBaseConfig.h
+src/main/native/cpp/config/
+SparkBaseConfig.cpp
+rev
+spark
+SparkBaseConfig
+Generated by
+1.9.2

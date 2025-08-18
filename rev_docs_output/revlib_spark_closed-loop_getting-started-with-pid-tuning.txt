@@ -1,0 +1,124 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+FRC Usage
+The Constants
+P - Proportional Gain
+I - Integral Gain
+D - Derivative Gain
+Tuning
+Arbitrary Feed Forward
+Was this helpful?
+Export as PDF
+For a detailed technical and mathematical description of each term and its effect, the
+WPILib docs page on PID
+is a good resource.
+FRC Usage
+In FRC, PID loops are used in many types of mechanisms, from flywheel shooters to vertical arms. These need to be tuned to different constants, depending on the units they use and the physical design of the mechanism, however the process to find these constants is roughly the same.
+Most teams find success using controllers tuned primarily with
+P
+and
+D
+, using a
+Feed Forward
+to account for
+steady-state error
+.
+The Constants
+P - Proportional Gain
+P, the proportional gain, is the primary factor of the control loop. This is multiplied by the error and that gain is added to the output. This does the heavy lifting of the motion, pushing the motor in the direction it needs to go.
+I - Integral Gain
+I, the integral gain, is not often recommended in FRC. It is useful for eliminating steady-state error, or error that the other gains leave behind and cannot address. It accumulates the error over time and multiplies it by the I gain, gradually increasing the power it supplies until that has evened out. If it is needed, it's recommended to use a limited to prevent
+I windup
+.
+D - Derivative Gain
+The derivative gain, D, is used to tune out oscillation and dampen the motion. It resists motion, decreasing power when the mechanism is moving. A good balance of P and D is needed to make a smooth motion with no oscillation.
+Tuning
+Several guides for PID tuning are available, such as
+this one on the WPILib docs
+. It may be useful to consult multiple, especially those available that reference your specific mechanism.
+Any method for PID tuning will start with the same concept, however, regardless of mechanism. Before you can tune your mechanism, you should setup a graph of the setpoint and that measured value, either through the
+REV Hardware Client
+or a similar utility. This will allow you to analyze each test and properly evaluate the changes to make.
+To then tune a basic PID loop, follow the steps below:
+Set all constants (P, I, D, F, arb Feed Forward, etc) to 0
+If you are operating in Velocity Control Mode (or a velocity-based control mode), set F to the motor's value as discussed in
+F Parameter
+. (Note that this is different from arbFF, which is detailed below)
+Ensure the mechanism is safe to actuate. This process will spin the motor, potentially at unexpected speeds and in unexpected directions
+Check the direction of the motor, and invert it if needed so that positive output is in the desired direction
+Set P to a very small number, relative to the units you are working in
+Set a target for the motor to move to. Ensure this is within the range of your mechanism.
+Gradually increase P until you see movement, by small increments
+Once you see motion, increase P by small increments until it reaches the target at the desired speed
+If you see oscillation, decrease P or begin to increment D by a small amount
+Continue to adjust these parameters until the motion is quick, precise, and repeatable
+Arbitrary Feed Forward
+The SPARK Flex and SPARK MAX do not have any support for more complex physics-based Feed Forward models, but do include a means of applying an arbitrary voltage which can be calculated in your team code and passed to the API.
+Note the difference between a kF gain and an arbFF value: kF is a velocity PID gain that should be set to 0 when using position mode or MAXMotion Position Control Mode, while arbFF is an arbitrary voltage applied after the controller's PID calculations, and can be used with all position- and velocity-based control modes, including MAXMotion
+WPILib offers
+several basic feed forward calculation classes
+that work great with arbFF
+It can be applied with the setpoint as seen below:
+Java
+C++
+Copy
+// Set the setpoint of the controller in raw position mode, with a feedforward
+m_controller.setReference(
+setPoint,
+ControlType.kPosition,
+0,
+feedForward
+);
+API Docs:
+SparkClosedLoopController
+,
+setReference
+Copy
+using namespace rev::spark;
+// Set the setpoint of the controller in raw position mode, with a feedforward
+m_controller.SetReference(
+setPoint,
+SparkBase::ControlType::kPosition,
+0,
+feedForward
+);
+API Docs:
+SparkClosedLoopController
+,
+SetReference
+Previous
+Closed Loop Control Getting Started
+Next
+Position Control Mode
+Last updated
+6 months ago
+Was this helpful?

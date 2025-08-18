@@ -1,0 +1,78 @@
+REV DUO Kickoff Concepts
+2025-26 REV DUO FTC Starter Bot
+DECODE 2025-26
+Starter Bot - DECODE
+Bill of Materials
+Programming TeleOp
+Build Tips & Tricks
+Starter Bot Changelog 2025-26
+INTO THE DEEP 2024-25
+2024-25 REV DUO FTC Starter Bot
+Starter Bot - INTO THE DEEP
+Bill of Materials
+Programming TeleOp
+Programming - Initialization
+Programming - Creating Functions
+Programming - Controlling the Arm and Wrist
+Programming - Intake and Claw Toggle
+Programming - Driving and Telemetry
+Programming - OnBot Java Overview
+Build Tips & Tricks
+Upgrades!
+Starter Bot Changelog 2024-25
+CENTERSTAGE 2023-2024
+Starter Bot - CENTERSTAGE
+Bill of Materials
+Programming Teleop
+Building Tips & Tricks
+Upgrades
+Starter Bot Changelog
+POWERPLAY 2022-2023
+Starter Bot - POWERPLAY
+Alternative Control Hub Placement
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Lifts
+Freight Frenzy - 2021-2022
+Starter Bot - Freight Frenzy
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Carousel Mechanism
+Freight Delivery Mechanisms
+Programming Autonomous
+Ultimate Goal - 2020-2021
+Game Strategy
+Game Piece
+Drivetrain
+Intake
+Conveyor
+Flywheel Launcher
+Powered by GitBook
+On this page
+Intake Control
+Claw Toggle Control
+Was this helpful?
+Export as PDF
+Intake Control
+When one of the triggers on the gamepad is pressed, it activates our GAMEPAD_INTAKE function. This simple if/then statement just checks which trigger is being pressed so our servo knows which way to rotate.
+Because our servo is set to
+continuous mode
+in our configuration, we have the ability to tell our servo to set a power instead of moving by position increments!
+Claw Toggle Control
+When the right bumper is pressed on the gamepad, the claw on the robot either opens or closed. This prevents the driver from having to hold down the button to maintain control of a picked up specimen!
+Because togglable control is not natively available in the FTC SDK, we have to make use of a couple of variables to help the robot check the state of the claw's servo and the right bumper.
+Similar to what's used in our arm control's presets, lastBump checks if the right bumper is being held down and won't accept another input until its been released.
+Meanwhile, clawOpen allows the servo to shift between the two set positions based on where it has last moved to. You can adjust these values based on your specific robot to have the claw open more or less.
+Previous
+Programming - Controlling the Arm and Wrist
+Next
+Programming - Driving and Telemetry
+Last updated
+2 months ago
+Was this helpful?

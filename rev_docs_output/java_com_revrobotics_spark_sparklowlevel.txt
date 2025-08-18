@@ -1,0 +1,293 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark
+Class SparkLowLevel
+java.lang.Object
+com.revrobotics.spark.SparkLowLevel
+All Implemented Interfaces:
+MotorController
+,
+AutoCloseable
+Direct Known Subclasses:
+SparkBase
+public abstract class
+SparkLowLevel
+extends
+Object
+implements
+MotorController
+,
+AutoCloseable
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+SparkLowLevel.MotorType
+static enum
+SparkLowLevel.PeriodicFrame
+class
+SparkLowLevel.PeriodicStatus0
+class
+SparkLowLevel.PeriodicStatus1
+class
+SparkLowLevel.PeriodicStatus2
+protected static enum
+SparkLowLevel.SparkModel
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+protected final
+SparkLowLevel.SparkModel
+expectedSparkModel
+protected final
+AtomicBoolean
+isClosed
+static final int
+kAPIBuildVersion
+static final int
+kAPIMajorVersion
+static final int
+kAPIMinorVersion
+static final int
+kAPIVersion
+protected final
+SparkLowLevel.MotorType
+motorType
+protected final long
+sparkHandle
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+close
+()
+Closes the SPARK Controller
+void
+createSimFaultManager
+()
+Create the sim gui Fault Manager for this Spark Device
+int
+getDeviceId
+()
+Get the configured Device ID of the SPARK.
+String
+getFirmwareString
+()
+Get the firmware version of the SPARK as a string.
+int
+getFirmwareVersion
+()
+Get the firmware version of the SPARK.
+SparkLowLevel.MotorType
+getMotorType
+()
+Get the motor type setting for the SPARK
+float
+getSafeFloat
+(float f)
+byte[]
+getSerialNumber
+()
+Get the unique serial number of the SPARK.
+void
+setCANMaxRetries
+(int numRetries)
+Set the maximum number of times to retry an RTR CAN frame.
+void
+setControlFramePeriodMs
+(int periodMs)
+Set the control frame send period for the native CAN Send thread.
+void
+setPeriodicFrameTimeout
+(int timeoutMs)
+Set the amount of time to wait for a periodic status frame before returning a timeout error.
+protected void
+throwIfClosed
+()
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.wpilibj.motorcontrol.
+MotorController
+disable
+,
+get
+,
+getInverted
+,
+set
+,
+setInverted
+,
+setVoltage
+,
+setVoltage
+,
+stopMotor
+Field Details
+kAPIMajorVersion
+public static final
+int
+kAPIMajorVersion
+kAPIMinorVersion
+public static final
+int
+kAPIMinorVersion
+kAPIBuildVersion
+public static final
+int
+kAPIBuildVersion
+kAPIVersion
+public static final
+int
+kAPIVersion
+sparkHandle
+protected final
+long
+sparkHandle
+isClosed
+protected final
+AtomicBoolean
+isClosed
+motorType
+protected final
+SparkLowLevel.MotorType
+motorType
+expectedSparkModel
+protected final
+SparkLowLevel.SparkModel
+expectedSparkModel
+Method Details
+close
+public
+void
+close
+()
+Closes the SPARK Controller
+Specified by:
+close
+in interface
+AutoCloseable
+getFirmwareVersion
+public
+int
+getFirmwareVersion
+()
+Get the firmware version of the SPARK.
+Returns:
+uint32_t Firmware version integer. Value is represented as 4 bytes, Major.Minor.Build
+     H.Build L
+setControlFramePeriodMs
+public
+void
+setControlFramePeriodMs
+(int periodMs)
+Set the control frame send period for the native CAN Send thread.
+Parameters:
+periodMs
+- The send period in milliseconds between 1ms and 100ms or set to 0 to disable
+     periodic sends. Note this is not updated until the next call to Set() or SetReference().
+getFirmwareString
+public
+String
+getFirmwareString
+()
+Get the firmware version of the SPARK as a string.
+Returns:
+std::string Human readable firmware version string
+getSerialNumber
+public
+byte[]
+getSerialNumber
+()
+Get the unique serial number of the SPARK. Not currently available.
+Returns:
+byte[] Vector of bytes representig the unique serial number
+getDeviceId
+public
+int
+getDeviceId
+()
+Get the configured Device ID of the SPARK.
+Returns:
+int device ID
+getMotorType
+public
+SparkLowLevel.MotorType
+getMotorType
+()
+Get the motor type setting for the SPARK
+Returns:
+MotorType Motor type setting
+setPeriodicFrameTimeout
+public
+void
+setPeriodicFrameTimeout
+(int timeoutMs)
+Set the amount of time to wait for a periodic status frame before returning a timeout error.
+ This timeout will apply to all periodic status frames for the SPARK motor controller.
+To prevent invalid timeout errors, the minimum timeout for a given periodic status is 2.1
+ times its period. To use the minimum timeout for all status frames, set timeoutMs to 0.
+The default timeout is 500ms.
+Parameters:
+timeoutMs
+- The timeout in milliseconds
+setCANMaxRetries
+public
+void
+setCANMaxRetries
+(int numRetries)
+Set the maximum number of times to retry an RTR CAN frame. This applies to calls such as
+ SetParameter* and GetParameter* where a request is made to the SPARK motor controller and a
+ response is expected. Anytime sending the request or receiving the response fails, it will
+ retry the request a number of times, no more than the value set by this method. If an attempt
+ succeeds, it will immediately return. The minimum number of retries is 0, where only a single
+ attempt will be made and will return regardless of success or failure.
+The default maximum is 5 retries.
+Parameters:
+numRetries
+- The maximum number of retries
+getSafeFloat
+public
+float
+getSafeFloat
+(float f)
+createSimFaultManager
+public
+void
+createSimFaultManager
+()
+Create the sim gui Fault Manager for this Spark Device
+throwIfClosed
+protected
+void
+throwIfClosed
+()

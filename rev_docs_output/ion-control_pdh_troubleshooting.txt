@@ -1,0 +1,128 @@
+REV ION Control System
+REV ION Control System Overview
+Quick Links
+Frequently Asked Questions
+Power Distribution Hub
+Power Distribution Hub Overview
+Power Distribution Hub Specifications
+Getting Started with the Power Distribution Hub
+Wiring the Power Distribution Hub
+Power Distribution Hub Status LED Patterns
+Power Distribution Hub Troubleshooting
+Power Distribution Hub Firmware Changelog
+Pneumatic Hub
+Pneumatic Hub Overview
+Pneumatic Hub Specifications
+Getting Started with the Pneumatic Hub
+Wiring the Pneumatic Hub
+Pneumatic Hub Status LED Patterns
+Pneumatic Hub Troubleshooting
+Pneumatic Hub Firmware Changelog
+Radio Power Module
+Radio Power Module Overview
+Radio Power Module Specifications
+Getting Started with the Radio Power Module
+RPM Compatibility with the new FRC Radio
+Mini Power Module
+Mini Power Module Overview
+Mini Power Module Specifications
+Mini Power Module Status LED Patterns
+Sensors
+2m Distance Sensor
+Color Sensor V3
+Magnetic Limit Switch
+Potentiometer
+Through Bore Encoder
+Touch Sensor
+Accessories
+Blinkin LED Driver
+Digital LED Indicator
+Servo Power Module
+POE Injector Cable
+JST PH 6-Pin Breakout Board
+JST PH 6-pin Joiner Board
+Software Resources
+REV Hardware Client Documentation
+REVLib
+Powered by GitBook
+On this page
+Most Common Issues
+General Troubleshooting
+Breakers are difficult to extract
+Recovery Mode
+Was this helpful?
+Export as PDF
+The most common Power Distribution Hub troubleshooting issues are listed below. After reading through, if you still have questions or need additional help, reach out to us at:
+[email protected]
+Is your Status LED light showing a new color or sequence? Check the
+Status LED Pattern
+page!
+Most Common Issues
+CSA Channel Read Error
+Channels 20-23 Showing Wrong Current
+A
+CSA Channel Read Error
+is a hardware fault caused by one or more Current Sense Amplifier (CSA) chips on your PDH failing. The CSA chips on your PDH are connected to groupings of four channels to monitor the current draw, control the fuse/breaker faults, and set the status lights of each channel.
+A CSA Fault
+does not
+affect your Power Distribution Hub's ability to distribute power safely.
+By using the image below, you can determine which channels of your PDH are still able to monitor the current draw. If all of the channels in one of the groups have "tripped or missing" showing on the faults list, even with breakers and fuses installed, their CSA Chip has likely become damaged and is contributing to the CSA Fault.
+The affected channels will still power your robot, however, you will need to manually check that fuses and breakers are installed correctly.  Also, current draw data will not be available for these channels in your Driver Station Logs.
+PDH Channels on each CSA Chip
+There is a firmware issue on the Power Distribution Hub where the low current channels (20-23) will wrap around back to 0A for current values above 15.9375A.
+For example, 20A on any of the four channels will result in a reading of ~4A. Current values below 15.9375A will be accurate.
+All current PDH Firmware versions are affected by this issue.
+General Troubleshooting
+If you are experiencing issues with your Power Distribution Hub that you are struggling to diagnose, we recommend following the troubleshooting guides and steps listed below, both in the flowchart and in the following subsections.
+Smart Tug
+- tugging on a wire to test the connection with a reasonable amount of force.
+Symptom
+Possible Solution
+No Voltage / Device Does not Turn On
+Perform a smart tug to check that the battery wires have a good connection to the input terminals
+Check your battery voltage on the PDH's display, then check the voltage through the REV Hardware Client. If the readings are inconsistent or missing, check your robot's battery wiring.
+If only being powered via USB there will not be any input voltage.
+Channel LED Keeps Flashing
+Make sure that the circuit breaker is properly inserted and snug in the holder
+If the problem persists you may have a fault on the load causing the breaker to trip. Make sure there are no problems with your connected devices.
+CAN Warning
+A CAN warning means that there is something wrong with your CAN bus. Check your CAN bus wiring and the devices on your CAN bus. Note: if you are operating the PH by itself using the REV hardware client, you can ignore most CAN warnings. The PH will send a CAN warning if it does not see any other device on the bus
+CAN Bus Off
+A CAN Bus Off fault means that the CAN bus has run into a critical issue resulting in the bus network turning off. Check your CAN bus for shorts on the high and low CAN wires. The CAN bus will turn back on once the issue is resolved.
+Hardware Fault
+The hardware fault is generally an internal electrical fault. This could also trigger a sticky fault if a large amount of electrical noise caused a brief communication breakdown internally. This will not affect the function of the device but there could be a small amount of data lost during the interruption.
+Device has Reset
+The Reset Fault will be triggered when the Power Distribution Hub has lost power.
+This will happen each time the robot is turned on and off. It is possible that this could happen when the robot has a bad connection to the battery or the robot experiences a severe brownout.
+When are Sticky Faults Cleared?
+Sticky faults are cleared when the mode button on the Power Distribution Hub is pressed or can be cleared using the REV Hardware Client. It is also possible to clear sticky faults using WPILib.
+Breakers are difficult to extract
+If unable to remove Circuit Breakers from your PDH by using
+the rocking method shown in the Getting Started Guide
+, we recommend using a PDH Breaker Extractor.
+The 3D printed Breaker Extractor makes freeing REV ATO Auto-resetting Breakers from the Power Distribution Hub easy!
+Breaker Extractor .STL File Download
+Breaker Extractor STEP File Download
+First, grasp the T-handle of the extractor and slide the square frame around the breaker you would like to remove from the Power Distribution Hub.
+Then, position the bottom edge of the breaker extractor under the bottom edge of the breaker. While maintaining that position, and contact with the plastic bottom of the breaker, gently rock the extractor handle side to side while pulling upwards.
+Continue that motion until breaker is free.
+Recovery Mode
+When updating the firmware on the Power Distribution Hub, it is possible for the process to be interrupted or for the firmware to be corrupted by a bad download. In this state, the Status LED will be dark or dim and the Power Distribution Hub will fail to operate. There is a built-in recovery mode that can force it to accept new firmware even if the controller seems to be bricked and the procedure is outlined below:
+Please note, that performing this procedure will erase all data and settings on the device. To perform the procedure a small tool, like a straightened paper clip is necessary to press the Mode Button (located close to the LED status light), the orange USB-C cable that came with the unit (or a DATA capable USB-C cable), and a native Windows based computer with the
+REV Hardware Client
+installed:
+With the Power Distribution Hub powered off, press and hold the Mode Button
+While still holding the Mode Button, connect the Device to the computer using the USB-C cable -the Status LED will not illuminate - this is expected.
+With the REV Hardware Client running on the computer, wait a few seconds for the audible tone or icon for the device to be recognized in recovery mode then release the Mode Button - no lights will be present on the Power Distribution Hub during this stage of the process, this is expected
+Select the Power Distribution Hub in Recovery Mode from the REV Hardware Client window
+From the "Choose a Device" type dropdown, choose - Power Distribution Hub
+Choose the latest version of the firmware from the dropdown and then click update
+Wait for the software update to complete
+Power cycle unit (unplug and plug in USB-C) click on the Power Distribution Hub icon, and clear any sticky faults - the recovery should be complete.
+Previous
+Power Distribution Hub Status LED Patterns
+Next
+Power Distribution Hub Firmware Changelog
+Last updated
+7 months ago
+Was this helpful?

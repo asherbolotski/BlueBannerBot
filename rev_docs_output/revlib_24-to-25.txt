@@ -1,0 +1,251 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Summary
+Including the library and creating a SPARK object
+Configuring a SPARK
+Retrieving a configuration parameter from a SPARK
+Setting status periods
+Was this helpful?
+Export as PDF
+Only SPARK MAX and SPARK Flex are affected by the REVLib 2025 release. Color Sensor V3 is unaffected.
+Summary
+The 2025 version of REVLib introduced a series of breaking changes from the previous year. These changes include:
+An overhauled configuration system
+Updated import paths
+Renamed classes
+For a more complete changelog, please see our
+2025 beta release notes
+on GitHub.
+Below shows how to migrate certain common tasks from previous versions of REVLib to the 2025 release.
+Including the library and creating a SPARK object
+In the 2025 version, all SPARK related classes moved to a
+spark
+package in Java and a
+spark
+namespace in C++.
+In addition, some of the classes were renamed:
+CANSparkMax
+is now
+SparkMax
+CANSparkFlex
+is now
+SparkFlex
+CANSparkLowLevel
+is now
+SparkLowLevel
+SparkPIDController
+is now
+SparkClosedLoopController
+Java
+C++
+Before
+Copy
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkPIDController;
+CANSparkMax max = new CANSparkMax(1, MotorType.kBrushless);
+CANSparkFlex flex = new CANSparkFlex(2, MotorType.kBrushless);
+SparkPIDController maxPid = max.getPIDController();
+After
+Copy
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkClosedLoopController;
+SparkMax max = new SparkMax(1, MotorType.kBrushless);
+SparkFlex flex = new SparkFlex(2, MotorType.kBrushless);
+SparkClosedLoopController maxPid = max.getClosedLoopController();
+Before
+Copy
+#include <rev/CANSparkMax.h>
+#include <rev/CANSparkFlex.h>
+using namespace rev;
+CANSparkMax m_max{1, CANSparkMax::MotorType::kBrushless};
+CANSparkFlex m_flex{2, CANSparkFlex::MotorType::kBrushless};
+SparkPIDController m_maxPid = m_max.GetPIDController();
+After
+Copy
+#include <rev/SparkMax.h>
+#include <rev/SparkFlex.h>
+using namespace rev::spark;
+SparkMax m_max{1, SparkMax::MotorType::kBrushless};
+SparkFlex m_flex{2, SparkFlex::MotorType::kBrushless};
+SparkClosedLoopController m_maxPid = m_max.GetClosedLoopController();
+Configuring a SPARK
+Instead of imperatively configuring parameters of the SPARK by calling methods directly on it and its auxiliary objects (sensors, closed loop controller, etc.), configuration parameters are set in a more declarative way through configuration objects and applying that configuration to the SPARK.
+A more complete guide on the new configuration system will soon be available.
+For simplicity, only an example for SPARK MAX is provided. The following will still be valid for a SPARK Flex object.
+Java
+C++
+Before
+Copy
+CANSparkMax max = new CANSparkMax(1, MotorType.kBrushless);
+RelativeEncoder enc = max.getEncoder();
+SparkPIDController pid = max.getPIDController();
+max.restoreFactoryDefaults();
+max.setInverted(true);
+max.setIdleMode(IdleMode.kBrake);
+enc.setPositionConversionFactor(1000);
+enc.setVelocityConversionFactor(1000);
+pid.setFeedbackDevice(enc);
+pid.setP(1.0);
+pid.setI(0.0);
+pid.setD(0.0);
+max.burnFlash();
+After
+Copy
+SparkMax max = new SparkMax(1, MotorType.kBrushless);
+SparkMaxConfig config = new SparkMaxConfig();
+config
+.inverted(true)
+.idleMode(IdleMode.kBrake);
+config.encoder
+.positionConversionFactor(1000)
+.velocityConversionFactor(1000);
+config.closedLoop
+.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+.pid(1.0, 0.0, 0.0);
+max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+Before
+Copy
+using namespace rev;
+CANSparkMax m_max{1, MotorType.kBrushless};
+SparkRelativeEncoder m_enc = m_max.GetEncoder();
+SparkPIDController m_pid = m_max.GetPIDController();
+m_max.RestoreFactoryDefaults();
+m_max.SetInverted(true);
+m_max.SetIdleMode(IdleMode.kBrake);
+m_enc.SetPositionConversionFactor(1000);
+m_enc.SetVelocityConversionFactor(1000);
+m_pid.SetFeedbackDevice(enc);
+m_pid.SetP(1.0);
+m_pid.SetI(0.0);
+m_pid.SetD(0.0);
+m_max.BurnFlash();
+After
+Copy
+using namespace rev::spark;
+SparkMax m_max{1, SparkMax::MotorType::kBrushless};
+SparkMaxConfig config{};
+config
+.Inverted(true)
+.SetIdleMode(SparkMaxConfig::IdleMode::kBrake);
+config.encoder
+.PositionConversionFactor(1000)
+.VelocityConversionFactor(1000);
+config.closedLoop
+.SetFeedbackSensor(ClosedLoopConfig::FeedbackSensor::kPrimaryEncoder)
+.Pid(1.0, 0.0, 0.0);
+m_max.Configure(config, SparkMax::ResetMode::kResetSafeParameters, SparkMax::PersistMode::kPersistParameters);
+Retrieving a configuration parameter from a SPARK
+With the new configuration system, parameter getters moved to a
+configAccessor
+field in the
+SparkMax
+and
+SparkFlex
+.
+For simplicity, only an example for SPARK MAX is provided. The following will still be valid for a SPARK Flex object.
+Java
+C++
+Before
+Copy
+CANSparkMax max = new CANSparkMax(1, MotorType.kBrushless);
+RelativeEncoder enc = max.getEncoder();
+boolean isInverted = max.getInverted();
+double positionConversionFactor = enc.getPositionConversionFactor();
+double velocityConversionFactor = enc.getVelocityConversionFactor();
+After
+Copy
+SparkMax max = new SparkMax(1, MotorType.kBrushless);
+boolean isInverted = max.configAccessor.getInverted();
+double positionFactor = max.configAccessor.encoder.getPositionConversionFactor();
+double velocityFactor = max.configAccessor.encoder.getVelocityConversionFactor();
+Before
+Copy
+using namespace rev;
+CANSparkMax m_max{1, CANSparkMax::MotorType::kBrushless};
+SparkRelativeEncoder m_enc = m_max.GetEncoder();
+bool isInverted = m_max.GetInverted();
+double positionFactor = m_enc.GetPositionConversionFactor();
+double velocityFactor = m_enc.GetVelocityConversionFactor();
+After
+Copy
+using namespace rev::spark;
+SparkMax m_max{1, SparkMax::MotorType::kBrushless};
+bool isInverted = m_max.configAccessor.GetInverted();
+double positionFactor = m_max.configAccessor.encoder.GetPositionConversionFactor();
+double velocityFactor = m_max.configAccessor.encoder.GetVelocityConversionFactor();
+Setting status periods
+Previously, setting status periods required the user to know which periodic status frame a signal belonged to. Now, status signals' periods can be individually configured, and REVLib will handle figuring out which status frame to adjust.
+These values can be configured through the new configuration system.
+For simplicity, only an example for SPARK MAX is provided. The following will still be valid for a SPARK Flex object.
+Java
+C++
+Before
+Copy
+CANSparkMax max = new CANSparkMax(1, MotorType.kBrushless);
+max.restoreFactoryDefaults();
+// Adjust periodic status frame 2, which includes encoder position data
+max.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 5);
+max.burnFlash();
+double position = max.getEncoder().getPosition();
+After
+Copy
+SparkMax max = new SparkMax(1, MotorType.kBrushless);
+SparkMaxConfig config = new SparkMaxConfig();
+config.signals.primaryEncoderPositionPeriodMs(5);
+max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+double position = max.getEncoder().getPosition();
+Before
+Copy
+using namespace rev;
+CANSparkMax m_max{1, MotorType.kBrushless};
+m_max.RestoreFactoryDefaults();
+// Adjust periodic status frame 2, which includes encoder position data
+m_max.SetPeriodicFramePeriod(CANSparkMax::PeriodicFrame::kStatus2, 5);
+m_max.BurnFlash();
+double position = m_max.GetEncoder().GetPosition();
+After
+Copy
+using namespace rev::spark;
+SparkMax m_max{1, SparkMax::MotorType::kBrushless};
+SparkMaxConfig config{};
+config.signals.PrimaryEncoderPositionPeriodMs(5);
+m_max.Configure(config, SparkMax::ResetMode::kResetSafeParameters, SparkMax::PersistMode::kPersistParameters);
+double position = m_max.GetEncoder().GetPosition();
+Previous
+Changelog
+Next
+Configuring Devices
+Was this helpful?

@@ -1,0 +1,202 @@
+REV DUO Kickoff Concepts
+2025-26 REV DUO FTC Starter Bot
+DECODE 2025-26
+Starter Bot - DECODE
+Bill of Materials
+Programming TeleOp
+Build Tips & Tricks
+Starter Bot Changelog 2025-26
+INTO THE DEEP 2024-25
+2024-25 REV DUO FTC Starter Bot
+Starter Bot - INTO THE DEEP
+Bill of Materials
+Programming TeleOp
+Programming - Initialization
+Programming - Creating Functions
+Programming - Controlling the Arm and Wrist
+Programming - Intake and Claw Toggle
+Programming - Driving and Telemetry
+Programming - OnBot Java Overview
+Build Tips & Tricks
+Upgrades!
+Starter Bot Changelog 2024-25
+CENTERSTAGE 2023-2024
+Starter Bot - CENTERSTAGE
+Bill of Materials
+Programming Teleop
+Building Tips & Tricks
+Upgrades
+Starter Bot Changelog
+POWERPLAY 2022-2023
+Starter Bot - POWERPLAY
+Alternative Control Hub Placement
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Lifts
+Freight Frenzy - 2021-2022
+Starter Bot - Freight Frenzy
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Carousel Mechanism
+Freight Delivery Mechanisms
+Programming Autonomous
+Ultimate Goal - 2020-2021
+Game Strategy
+Game Piece
+Drivetrain
+Intake
+Conveyor
+Flywheel Launcher
+Powered by GitBook
+On this page
+Dual Gamepads
+Arcade Drive
+Mecanum Drive
+Example Mecanum Drive Program
+Mecanum Code Breakdown
+Tips, Tricks, & Upgrades Video Walkthrough
+Was this helpful?
+Export as PDF
+Dual Gamepads
+There are many ways to split robot control across two gamepads. We recommend testing different combinations with your team to decide what feels the most comfortable to you!
+This version of the program is intended to be just one example for using two gamepads. Arm and wrist control has been moved to a second gamepad while the main gamepad handles driving and the servos on the intake and claw.
+38KB
+Starterbot2025TeleOpBlocksTwoGamepad.blk
+The associated gamepad for a button input can be changed at any time by clicking on the block's dropdown:
+Switching arm control to gamepad 2
+Arcade Drive
+38KB
+Starterbot2025TeleOpBlocksArcade.blk
+In this example code, we changed our drive function to only be on the left stick!
+Arcade Drive Code
+You can learn about arcade style of driving in Hello Robot!
+When changing a function name this will automatically change throughout the entire code to reflect the new name.
+Mecanum Drive
+Upgrading to a
+Mecanum Drivetrain
+(REV-45-2470) allows for new kinds of movement giving the robot the ability to strafe side-to-side across the field.
+For Mecanum Drive each wheel has an individual motor!
+REV's Mecanum Drivetrain Kit V2
+The FTC Starter Kit V3.1 can be
+upgraded to the Mecanum Drivetrain V1 following this guide.
+Upgrading from the FTC Starter Kit V3.1 to Mecanum Drivetrain V2:
+The following additional parts are needed:
+UltraPlanetary Gearbox Kit & HD Hex Motor
+- QTY 2
+Ultra 90 Degree Gearbox
+- QTY 4
+75mm Mecanum Wheel Set
+- QTY 1 (set of 4)
+M3 x 6mm HexCap Screws 50 Pack
+- QTY 1
+Expansion Hub
+(QTY 1) OR
+SPARKmini Motor Controller
+(QTY 2)
+Full build instructions can be found here!
+Example Mecanum Drive Program
+How a Mecanum Drivetrain is programmed largely depends on the driver's preference for how the controller is configured.
+In our provided example, the left joystick controls forward/back and strafe then the right joystick controls turning. This code is based on the sample provided by
+FIRST
+in Blocks (BasicOmniOpMode).
+Mecanum Demo Blocks Code:
+49KB
+Starterbot2025Mecanum.blk
+Mecanum Configuration File:
+978B
+StarterBotMecanum.xml
+Mecanum Configuration - Control Hub and Expansion Hub
+Port Type
+Hub
+Port Number
+Device Type
+Name
+Motor
+Control Hub
+0
+REV Robotics Ultraplanetary HD Hex Motor
+frontLeft
+Motor
+Control Hub
+1
+REV Robotics Ultraplanetary HD Hex Motor
+backLeft
+Motor
+Control Hub
+2
+REV Robotics Ultraplanetary HD Hex Motor
+frontRight
+Motor
+Control Hub
+3
+REV Robotics Ultraplanetary HD Hex Motor
+backRight
+Servo
+Control Hub
+4
+Servo
+claw
+Servo
+Control Hub
+5
+Continuous Servo
+intake
+Motor
+Expansion Hub
+0
+REV Robotics Core Hex Motor
+wrist
+Motor
+Expansion Hub
+1
+REV Robotics Ultraplanetary HD Hex Motor
+arm
+Mecanum Code Breakdown
+Before diving into mecanum,  double check the direction your motors and wheels are turning. They may need to be reversed if you're experiencing jittering or inverted controls!
+Add a
+block to change the set direction during initialization.
+Motors are set to RUN_WITHOUT_ENCODER are the beginning of the code
+At the very beginning of our program the drivetrain motors are set to RUN_WITHOUT_ENCODER.
+Our mecanum drive function
+We need to create some new variables in order to use mecanum. Let's break those down first:
+Variable
+Purpose
+FB
+Moving forward and backwards
+Strafe
+Strafing side to side
+Turn
+Turning left and right
+leftFrontPower
+Sets the front left motor power
+rightFrontPower
+Sets the front right motor power
+leftBackPower
+Sets the back left motor power
+rightBackPower
+Sets the back right motor power
+max
+This is used to check that our values do not exceed the expected range - similar to the "clip" block
+At the beginning of the MECANUM_DRIVE function, our variables for each movement direction are being set to the value generated by the movement of the matching joystick axis.
+Forward/back is on left Y, strafe on left X, and turning on right X
+Since we now have four motors in play, our equation for setting the appropriate power to each motor  gets a little more complicated.
+Our robot first needs to determine the combined movement of the left stick then calculate with the right stick's value. This allows for movement when the left joystick is at an angle, such as strafing along a diagonal!
+Calculating motor power
+Next, similar to our original drivetrain code, there's a chance a value may fall outside the range of the motor's power  (-1 to 1). Therefore, we want our robot to check and bring those values back into range so we don't miss any inputs.
+Making sure our power range is between -1 to 1
+For our last step, our robot sets the power of each pair of motors based on all our calculations!
+Setting motor power
+Tips, Tricks, & Upgrades Video Walkthrough
+Previous
+Build Tips & Tricks
+Next
+Starter Bot Changelog 2024-25
+Last updated
+2 months ago
+Was this helpful?

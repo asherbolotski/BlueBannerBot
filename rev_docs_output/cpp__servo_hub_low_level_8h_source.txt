@@ -1,0 +1,936 @@
+REVLib - C++
+ServoHubLowLevel.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <stdint.h>
+32
+33
+#include <string>
+34
+35
+#include "
+rev/REVLibError.h
+"
+36
+37
+namespace
+rev::servohub
+{
+38
+39
+class
+ServoHubLowLevel
+{
+40
+//     friend class ServoChannelSim;
+41
+friend
+class
+ServoHubSimFaultManager
+;
+42
+43
+public
+:
+47
+virtual
+~ServoHubLowLevel
+();
+48
+54
+int
+GetDeviceId
+()
+const
+;
+55
+56
+struct
+FirmwareVersion
+{
+57
+uint8_t
+firmwareFix
+;
+58
+uint8_t
+firmwareMinor
+;
+59
+uint8_t
+firmwareYear
+;
+60
+uint8_t
+hardwareMinor
+;
+61
+uint8_t
+hardwareMajor
+;
+62
+};
+68
+FirmwareVersion
+GetFirmwareVersion
+()
+const
+;
+69
+75
+std::string
+GetFirmwareVersionString
+()
+const
+;
+76
+90
+void
+SetPeriodicFrameTimeout
+(
+int
+timeout_ms);
+91
+98
+REVLibError
+SetCANTimeout
+(
+int
+timeout_ms);
+99
+114
+void
+SetCANMaxRetries
+(
+int
+numRetries);
+115
+122
+void
+SetControlFramePeriodMs
+(
+int
+period_ms);
+123
+129
+int
+GetControlFramePeriodMs
+()
+const
+;
+130
+131
+enum class
+CommunicationMode
+{
+kNone
+= 0,
+kCAN
+= 1,
+kRS_485
+= 2 };
+132
+133
+struct
+PeriodicStatus0
+{
+134
+double
+voltage
+;
+135
+double
+servoVoltage
+;
+136
+double
+deviceCurrent
+;
+137
+bool
+primaryHeartbeatLock
+;
+138
+bool
+systemEnabled
+;
+139
+CommunicationMode
+communicationMode
+;
+140
+bool
+programmingEnabled
+;
+141
+bool
+activelyProgramming
+;
+142
+uint64_t
+timestamp
+;
+143
+};
+144
+PeriodicStatus0
+GetPeriodicStatus0
+()
+const
+;
+145
+146
+struct
+PeriodicStatus1
+{
+147
+bool
+regulatorPowerGoodFault
+;
+148
+bool
+brownout
+;
+149
+bool
+canWarning
+;
+150
+bool
+canBusOff
+;
+151
+bool
+hardwareFault
+;
+152
+bool
+firmwareFault
+;
+153
+bool
+hasReset
+;
+154
+bool
+channel0Overcurrent
+;
+155
+bool
+channel1Overcurrent
+;
+156
+bool
+channel2Overcurrent
+;
+157
+bool
+channel3Overcurrent
+;
+158
+bool
+channel4Overcurrent
+;
+159
+bool
+channel5Overcurrent
+;
+160
+bool
+stickyRegulatorPowerGoodFault
+;
+161
+bool
+stickyBrownout
+;
+162
+bool
+stickyCanWarning
+;
+163
+bool
+stickyCanBusOff
+;
+164
+bool
+stickyHardwareFault
+;
+165
+bool
+stickyFirmwareFault
+;
+166
+bool
+stickyHasReset
+;
+167
+bool
+stickyChannel0Overcurrent
+;
+168
+bool
+stickyChannel1Overcurrent
+;
+169
+bool
+stickyChannel2Overcurrent
+;
+170
+bool
+stickyChannel3Overcurrent
+;
+171
+bool
+stickyChannel4Overcurrent
+;
+172
+bool
+stickyChannel5Overcurrent
+;
+173
+uint64_t
+timestamp
+;
+174
+};
+175
+PeriodicStatus1
+GetPeriodicStatus1
+()
+const
+;
+176
+177
+struct
+PeriodicStatus2
+{
+178
+uint16_t
+channel0PulseWidth
+;
+179
+uint16_t
+channel1PulseWidth
+;
+180
+uint16_t
+channel2PulseWidth
+;
+181
+bool
+channel0Enabled
+;
+182
+bool
+channel1Enabled
+;
+183
+bool
+channel2Enabled
+;
+184
+bool
+channel0OutOfRange
+;
+185
+bool
+channel1OutOfRange
+;
+186
+bool
+channel2OutOfRange
+;
+187
+uint64_t
+timestamp
+;
+188
+};
+189
+PeriodicStatus2
+GetPeriodicStatus2
+()
+const
+;
+190
+191
+struct
+PeriodicStatus3
+{
+192
+uint16_t
+channel3PulseWidth
+;
+193
+uint16_t
+channel4PulseWidth
+;
+194
+uint16_t
+channel5PulseWidth
+;
+195
+bool
+channel3Enabled
+;
+196
+bool
+channel4Enabled
+;
+197
+bool
+channel5Enabled
+;
+198
+bool
+channel3OutOfRange
+;
+199
+bool
+channel4OutOfRange
+;
+200
+bool
+channel5OutOfRange
+;
+201
+uint64_t
+timestamp
+;
+202
+};
+203
+PeriodicStatus3
+GetPeriodicStatus3
+()
+const
+;
+204
+205
+struct
+PeriodicStatus4
+{
+206
+double
+channel0Current
+;
+207
+double
+channel1Current
+;
+208
+double
+channel2Current
+;
+209
+double
+channel3Current
+;
+210
+double
+channel4Current
+;
+211
+double
+channel5Current
+;
+212
+uint64_t
+timestamp
+;
+213
+};
+214
+PeriodicStatus4
+GetPeriodicStatus4
+()
+const
+;
+215
+219
+void
+CreateSimFaultManager
+();
+220
+221
+protected
+:
+222
+explicit
+ServoHubLowLevel
+(
+int
+deviceID);
+223
+224
+// The type is void* because we don't want to expose c_ServoHub_handle to
+225
+// the consumers of this header file
+226
+void
+*
+m_servoHubHandle
+{
+nullptr
+};
+227
+228
+private
+:
+229
+int
+m_deviceID;
+230
+};
+231
+232
+}
+// namespace rev::servohub
+REVLibError.h
+rev::servohub::ServoHubLowLevel
+Definition:
+ServoHubLowLevel.h:39
+rev::servohub::ServoHubLowLevel::SetControlFramePeriodMs
+void SetControlFramePeriodMs(int period_ms)
+Definition:
+ServoHubLowLevel.cpp:103
+rev::servohub::ServoHubLowLevel::GetFirmwareVersionString
+std::string GetFirmwareVersionString() const
+Definition:
+ServoHubLowLevel.cpp:79
+rev::servohub::ServoHubLowLevel::CommunicationMode
+CommunicationMode
+Definition:
+ServoHubLowLevel.h:131
+rev::servohub::ServoHubLowLevel::CommunicationMode::kNone
+@ kNone
+rev::servohub::ServoHubLowLevel::CommunicationMode::kCAN
+@ kCAN
+rev::servohub::ServoHubLowLevel::CommunicationMode::kRS_485
+@ kRS_485
+rev::servohub::ServoHubLowLevel::SetCANMaxRetries
+void SetCANMaxRetries(int numRetries)
+Definition:
+ServoHubLowLevel.cpp:98
+rev::servohub::ServoHubLowLevel::GetDeviceId
+int GetDeviceId() const
+Definition:
+ServoHubLowLevel.cpp:67
+rev::servohub::ServoHubLowLevel::ServoHubLowLevel
+ServoHubLowLevel(int deviceID)
+Definition:
+ServoHubLowLevel.cpp:40
+rev::servohub::ServoHubLowLevel::GetPeriodicStatus0
+PeriodicStatus0 GetPeriodicStatus0() const
+Definition:
+ServoHubLowLevel.cpp:112
+rev::servohub::ServoHubLowLevel::~ServoHubLowLevel
+virtual ~ServoHubLowLevel()
+Definition:
+ServoHubLowLevel.cpp:63
+rev::servohub::ServoHubLowLevel::SetCANTimeout
+REVLibError SetCANTimeout(int timeout_ms)
+Definition:
+ServoHubLowLevel.cpp:92
+rev::servohub::ServoHubLowLevel::GetPeriodicStatus4
+PeriodicStatus4 GetPeriodicStatus4() const
+Definition:
+ServoHubLowLevel.cpp:217
+rev::servohub::ServoHubLowLevel::GetPeriodicStatus2
+PeriodicStatus2 GetPeriodicStatus2() const
+Definition:
+ServoHubLowLevel.cpp:177
+rev::servohub::ServoHubLowLevel::GetPeriodicStatus3
+PeriodicStatus3 GetPeriodicStatus3() const
+Definition:
+ServoHubLowLevel.cpp:197
+rev::servohub::ServoHubLowLevel::GetPeriodicStatus1
+PeriodicStatus1 GetPeriodicStatus1() const
+Definition:
+ServoHubLowLevel.cpp:132
+rev::servohub::ServoHubLowLevel::GetFirmwareVersion
+FirmwareVersion GetFirmwareVersion() const
+Definition:
+ServoHubLowLevel.cpp:69
+rev::servohub::ServoHubLowLevel::GetControlFramePeriodMs
+int GetControlFramePeriodMs() const
+Definition:
+ServoHubLowLevel.cpp:107
+rev::servohub::ServoHubLowLevel::SetPeriodicFrameTimeout
+void SetPeriodicFrameTimeout(int timeout_ms)
+Definition:
+ServoHubLowLevel.cpp:87
+rev::servohub::ServoHubLowLevel::CreateSimFaultManager
+void CreateSimFaultManager()
+Definition:
+ServoHubLowLevel.cpp:234
+rev::servohub::ServoHubLowLevel::m_servoHubHandle
+void * m_servoHubHandle
+Definition:
+ServoHubLowLevel.h:226
+rev::servohub::ServoHubSimFaultManager
+Definition:
+ServoHubSimFaultManager.h:40
+rev::servohub
+Definition:
+ServoChannelConfig.h:34
+rev::REVLibError
+REVLibError
+Definition:
+REVLibError.h:33
+rev::servohub::ServoHubLowLevel::FirmwareVersion
+Definition:
+ServoHubLowLevel.h:56
+rev::servohub::ServoHubLowLevel::FirmwareVersion::firmwareFix
+uint8_t firmwareFix
+Definition:
+ServoHubLowLevel.h:57
+rev::servohub::ServoHubLowLevel::FirmwareVersion::firmwareYear
+uint8_t firmwareYear
+Definition:
+ServoHubLowLevel.h:59
+rev::servohub::ServoHubLowLevel::FirmwareVersion::hardwareMajor
+uint8_t hardwareMajor
+Definition:
+ServoHubLowLevel.h:61
+rev::servohub::ServoHubLowLevel::FirmwareVersion::firmwareMinor
+uint8_t firmwareMinor
+Definition:
+ServoHubLowLevel.h:58
+rev::servohub::ServoHubLowLevel::FirmwareVersion::hardwareMinor
+uint8_t hardwareMinor
+Definition:
+ServoHubLowLevel.h:60
+rev::servohub::ServoHubLowLevel::PeriodicStatus0
+Definition:
+ServoHubLowLevel.h:133
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::programmingEnabled
+bool programmingEnabled
+Definition:
+ServoHubLowLevel.h:140
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::timestamp
+uint64_t timestamp
+Definition:
+ServoHubLowLevel.h:142
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::primaryHeartbeatLock
+bool primaryHeartbeatLock
+Definition:
+ServoHubLowLevel.h:137
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::deviceCurrent
+double deviceCurrent
+Definition:
+ServoHubLowLevel.h:136
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::activelyProgramming
+bool activelyProgramming
+Definition:
+ServoHubLowLevel.h:141
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::voltage
+double voltage
+Definition:
+ServoHubLowLevel.h:134
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::communicationMode
+CommunicationMode communicationMode
+Definition:
+ServoHubLowLevel.h:139
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::servoVoltage
+double servoVoltage
+Definition:
+ServoHubLowLevel.h:135
+rev::servohub::ServoHubLowLevel::PeriodicStatus0::systemEnabled
+bool systemEnabled
+Definition:
+ServoHubLowLevel.h:138
+rev::servohub::ServoHubLowLevel::PeriodicStatus1
+Definition:
+ServoHubLowLevel.h:146
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyChannel3Overcurrent
+bool stickyChannel3Overcurrent
+Definition:
+ServoHubLowLevel.h:170
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyBrownout
+bool stickyBrownout
+Definition:
+ServoHubLowLevel.h:161
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::regulatorPowerGoodFault
+bool regulatorPowerGoodFault
+Definition:
+ServoHubLowLevel.h:147
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::channel5Overcurrent
+bool channel5Overcurrent
+Definition:
+ServoHubLowLevel.h:159
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::brownout
+bool brownout
+Definition:
+ServoHubLowLevel.h:148
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyCanBusOff
+bool stickyCanBusOff
+Definition:
+ServoHubLowLevel.h:163
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::hardwareFault
+bool hardwareFault
+Definition:
+ServoHubLowLevel.h:151
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyRegulatorPowerGoodFault
+bool stickyRegulatorPowerGoodFault
+Definition:
+ServoHubLowLevel.h:160
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyCanWarning
+bool stickyCanWarning
+Definition:
+ServoHubLowLevel.h:162
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyChannel4Overcurrent
+bool stickyChannel4Overcurrent
+Definition:
+ServoHubLowLevel.h:171
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyChannel1Overcurrent
+bool stickyChannel1Overcurrent
+Definition:
+ServoHubLowLevel.h:168
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyHasReset
+bool stickyHasReset
+Definition:
+ServoHubLowLevel.h:166
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::channel3Overcurrent
+bool channel3Overcurrent
+Definition:
+ServoHubLowLevel.h:157
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::channel2Overcurrent
+bool channel2Overcurrent
+Definition:
+ServoHubLowLevel.h:156
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyChannel2Overcurrent
+bool stickyChannel2Overcurrent
+Definition:
+ServoHubLowLevel.h:169
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::channel0Overcurrent
+bool channel0Overcurrent
+Definition:
+ServoHubLowLevel.h:154
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::channel4Overcurrent
+bool channel4Overcurrent
+Definition:
+ServoHubLowLevel.h:158
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::canBusOff
+bool canBusOff
+Definition:
+ServoHubLowLevel.h:150
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyChannel5Overcurrent
+bool stickyChannel5Overcurrent
+Definition:
+ServoHubLowLevel.h:172
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::timestamp
+uint64_t timestamp
+Definition:
+ServoHubLowLevel.h:173
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::channel1Overcurrent
+bool channel1Overcurrent
+Definition:
+ServoHubLowLevel.h:155
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::canWarning
+bool canWarning
+Definition:
+ServoHubLowLevel.h:149
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyFirmwareFault
+bool stickyFirmwareFault
+Definition:
+ServoHubLowLevel.h:165
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::hasReset
+bool hasReset
+Definition:
+ServoHubLowLevel.h:153
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyHardwareFault
+bool stickyHardwareFault
+Definition:
+ServoHubLowLevel.h:164
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::stickyChannel0Overcurrent
+bool stickyChannel0Overcurrent
+Definition:
+ServoHubLowLevel.h:167
+rev::servohub::ServoHubLowLevel::PeriodicStatus1::firmwareFault
+bool firmwareFault
+Definition:
+ServoHubLowLevel.h:152
+rev::servohub::ServoHubLowLevel::PeriodicStatus2
+Definition:
+ServoHubLowLevel.h:177
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel2PulseWidth
+uint16_t channel2PulseWidth
+Definition:
+ServoHubLowLevel.h:180
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel2OutOfRange
+bool channel2OutOfRange
+Definition:
+ServoHubLowLevel.h:186
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel1Enabled
+bool channel1Enabled
+Definition:
+ServoHubLowLevel.h:182
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel1PulseWidth
+uint16_t channel1PulseWidth
+Definition:
+ServoHubLowLevel.h:179
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel2Enabled
+bool channel2Enabled
+Definition:
+ServoHubLowLevel.h:183
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel0PulseWidth
+uint16_t channel0PulseWidth
+Definition:
+ServoHubLowLevel.h:178
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel0OutOfRange
+bool channel0OutOfRange
+Definition:
+ServoHubLowLevel.h:184
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel1OutOfRange
+bool channel1OutOfRange
+Definition:
+ServoHubLowLevel.h:185
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::timestamp
+uint64_t timestamp
+Definition:
+ServoHubLowLevel.h:187
+rev::servohub::ServoHubLowLevel::PeriodicStatus2::channel0Enabled
+bool channel0Enabled
+Definition:
+ServoHubLowLevel.h:181
+rev::servohub::ServoHubLowLevel::PeriodicStatus3
+Definition:
+ServoHubLowLevel.h:191
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel3OutOfRange
+bool channel3OutOfRange
+Definition:
+ServoHubLowLevel.h:198
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel5PulseWidth
+uint16_t channel5PulseWidth
+Definition:
+ServoHubLowLevel.h:194
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel5Enabled
+bool channel5Enabled
+Definition:
+ServoHubLowLevel.h:197
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel3PulseWidth
+uint16_t channel3PulseWidth
+Definition:
+ServoHubLowLevel.h:192
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel5OutOfRange
+bool channel5OutOfRange
+Definition:
+ServoHubLowLevel.h:200
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel4OutOfRange
+bool channel4OutOfRange
+Definition:
+ServoHubLowLevel.h:199
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel4Enabled
+bool channel4Enabled
+Definition:
+ServoHubLowLevel.h:196
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel4PulseWidth
+uint16_t channel4PulseWidth
+Definition:
+ServoHubLowLevel.h:193
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::timestamp
+uint64_t timestamp
+Definition:
+ServoHubLowLevel.h:201
+rev::servohub::ServoHubLowLevel::PeriodicStatus3::channel3Enabled
+bool channel3Enabled
+Definition:
+ServoHubLowLevel.h:195
+rev::servohub::ServoHubLowLevel::PeriodicStatus4
+Definition:
+ServoHubLowLevel.h:205
+rev::servohub::ServoHubLowLevel::PeriodicStatus4::channel0Current
+double channel0Current
+Definition:
+ServoHubLowLevel.h:206
+rev::servohub::ServoHubLowLevel::PeriodicStatus4::channel5Current
+double channel5Current
+Definition:
+ServoHubLowLevel.h:211
+rev::servohub::ServoHubLowLevel::PeriodicStatus4::timestamp
+uint64_t timestamp
+Definition:
+ServoHubLowLevel.h:212
+rev::servohub::ServoHubLowLevel::PeriodicStatus4::channel3Current
+double channel3Current
+Definition:
+ServoHubLowLevel.h:209
+rev::servohub::ServoHubLowLevel::PeriodicStatus4::channel2Current
+double channel2Current
+Definition:
+ServoHubLowLevel.h:208
+rev::servohub::ServoHubLowLevel::PeriodicStatus4::channel1Current
+double channel1Current
+Definition:
+ServoHubLowLevel.h:207
+rev::servohub::ServoHubLowLevel::PeriodicStatus4::channel4Current
+double channel4Current
+Definition:
+ServoHubLowLevel.h:210
+src
+main
+native
+include
+rev
+ServoHubLowLevel.h
+Generated by
+1.9.2

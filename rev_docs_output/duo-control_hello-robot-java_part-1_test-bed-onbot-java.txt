@@ -1,0 +1,241 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+The time has come to create our first OpMode. We want to make sure to choose a clear and unique name each time we make a program. This will help us to find it again later or to communicate with teammates who may also be driving the robot.
+In the programming world, there are common naming conventions that have been established to denote variables, classes, functions, etc. OpModes share some similarities to classes, a program-code-template
+.
+Thus the naming convention for OpModes tends to follow the naming convention for classes, which has the first letter of every word is capitalized.
+While there are standardized naming conventions in programming, at the end of the day you will want to pick something that makes sense to YOU or your team. This might include having your name, team name, a school class period, or similar in your name.
+Your OpMode name should not be the same as a created variable name.
+To start, let's take a look at the OnBot Java layout in the REV Hardware Client:
+Create New OpMode
+- The plus sign button opens up a window to create a new OpMode.
+Project Browser Pane
+- This pane shows all the Java project files on the Robot Controller.
+Source Code Editing Pane
+- This is the main code editing area
+Message Pane
+- This pane provides information on the success or failure of code builds, as well as where to check for errors after attemping a build
+Build Everything
+- Builds ALL of the .java files on a Robot Controller.
+Selecting to "Build Everything" will attempt to compile ALL your OnBot Java files. Errors may appear for incomplete or test files along with the active file.
+To temporarily disable an OpMode, right click the file name and select "Disable / Comment":
+OpModes may be reenable the same way!
+Select the
+Create New OpMode
+button. This will open the
+New File
+window.
+The 10.3 version of the Robot Controller App/Driver Station App released in June 2025 introduces a new interface for creating an OnBot Java file. Both versions are available to reference in the tabs before, but double check your version number before proceeding!
+Pre-10.3 Creating an OnBot Java File
+Creating an OnBot Java File 10.3
+There are a lot of things we can modify while setting up our OpMode, such as the name, sample in use, and kind of OpMode. For Hello Robot, use the following settings for reference:
+File Name:
+HelloRobot_TeleOp
+Sample:
+BlankLinearOpMode
+OpMode Type:
+TeleOp
+Setup for Configured Hardware:
+on
+Setup Code for Configured Hardware
+is an incredibly useful tool that allows for OnBot to help create the hardwareMap based on the current active configuration!
+Your intended configuration file should be active BEFORE creating an OpMode using this feature.
+HelloRobot_TeleOp created with the Setup Code for Configured Hardware active
+Once the proper settings have been choose, select "OK" to create the OpMode!
+There are a lot of things we can modify while setting up our OpMode, such as the name, sample in use, and kind of OpMode. For Hello Robot, use the following settings for reference:
+OnBot Java new file menu in 10.3
+File Location:
+org/firstinspires/ftc/teamcode
+File Type:
+Blank OpMode - Linear OpMode
+File Name:
+HelloRobot_TeleOp.java
+OpMode Type:
+TeleOp
+Add generated code for configured hardware:
+on
+Note:
+There is a known bug in v10.3 preventing the "Add generated code for configured hardware" option from working as expected
+.
+The following will need to be manually added to match Hello Robot's tutorial:
+Hardware mapping in OnBot Java
+Sample Codes:
+In the 10.3 version of the Robot Controller App, samples and blank templates have been separated to make navigation easier.
+To use a sample code change "File Type" to "Example OpMode" then select the desired sample from the dropdown. This will autofill the "File Name" and "OpMode type", but will disable the option to "Add generated code for configured hardware".
+Using a sample code in 10.3 OnBot Java
+Previous
+Tackling the Basics Directory - OnBot
+Next
+Programming Essentials
+Last updated
+1 month ago
+Was this helpful?

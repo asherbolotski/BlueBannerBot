@@ -1,0 +1,185 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.servohub.config
+Class ServoChannelConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.servohub.config.ServoChannelConfig
+public class
+ServoChannelConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+ServoChannelConfig.BehaviorWhenDisabled
+static class
+ServoChannelConfig.PulseRange
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+ServoChannelConfig
+(
+ServoChannel.ChannelId
+channelId)
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+ServoChannelConfig
+apply
+(
+ServoChannelConfig
+config)
+Applies settings from another
+ServoChannelConfig
+to this one.
+ServoChannelConfig
+disableBehavior
+(
+ServoChannelConfig.BehaviorWhenDisabled
+behavior)
+Set the output power behavior when the channel is disabled.
+ServoChannelConfig
+pulseRange
+(int minPulse_us,
+ int centerPulse_us,
+ int maxPulse_us)
+Set the min/center/max pulse widths on this channel.
+ServoChannelConfig
+pulseRange
+(
+ServoChannelConfig.PulseRange
+pulseRange_us)
+Set the min/center/max pulse widths on this channel.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ServoChannelConfig
+public
+ServoChannelConfig
+(
+ServoChannel.ChannelId
+channelId)
+Method Details
+apply
+public
+ServoChannelConfig
+apply
+(
+ServoChannelConfig
+config)
+Applies settings from another
+ServoChannelConfig
+to this one.
+Settings in the provided config will overwrite existing values in this
+Parameters:
+config
+- The
+ServoChannelConfig
+to apply settings from
+Returns:
+The updated
+ServoChannelConfig
+for method chaining
+pulseRange
+public
+ServoChannelConfig
+pulseRange
+(int minPulse_us,
+ int centerPulse_us,
+ int maxPulse_us)
+Set the min/center/max pulse widths on this channel.
+Parameters:
+minPulse_us
+- The minimum pulse width (in us)
+centerPulse_us
+- The center pulse width (in us)
+maxPulse_us
+- The maximum pulse width (in us)
+Returns:
+The modified
+ServoChannelConfig
+object for method chaining
+pulseRange
+public
+ServoChannelConfig
+pulseRange
+(
+ServoChannelConfig.PulseRange
+pulseRange_us)
+Set the min/center/max pulse widths on this channel.
+Parameters:
+pulseRange_us
+- The minimum/center/max pulse widths (in microseconds)
+Returns:
+The modified ServoChannelConfig object for method chaining
+disableBehavior
+public
+ServoChannelConfig
+disableBehavior
+(
+ServoChannelConfig.BehaviorWhenDisabled
+behavior)
+Set the output power behavior when the channel is disabled.
+When the channel is enabled [ServoChannel.setEnabled(true)], the output power to the servo
+ follows the channel's power setting [ServoChannel.setPowered()].
+When the channel is disabled [ServoChannel.setEnabled(false)], the output power to the servo
+ follows the channel's disableBehavior.
+Parameters:
+behavior
+- The disable behavior as described above.
+Returns:
+The modified
+ServoChannelConfig
+object for method chaining

@@ -1,0 +1,764 @@
+REVLib - C++
+ColorSensorV3.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2020-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <frc/I2C.h>
+32
+#include <frc/util/Color.h>
+33
+#include <hal/SimDevice.h>
+34
+35
+#include "
+CIEColor.h
+"
+36
+37
+namespace
+rev
+{
+38
+44
+class
+ColorSensorV3
+{
+45
+public
+:
+46
+enum class
+GainFactor
+{
+k1x
+= 0,
+k3x
+= 1,
+k6x
+= 2,
+k9x
+= 3,
+k18x
+= 4 };
+47
+48
+enum class
+LEDPulseFrequency
+{
+49
+k60kHz
+= 0x18,
+50
+k70kHz
+= 0x40,
+51
+k80kHz
+= 0x28,
+52
+k90kHz
+= 0x30,
+53
+k100kHz
+= 0x38,
+54
+};
+55
+56
+enum class
+LEDCurrent
+{
+57
+kPulse2mA
+= 0,
+58
+kPulse5mA
+= 1,
+59
+kPulse10mA
+= 2,
+60
+kPulse25mA
+= 3,
+61
+kPulse50mA
+= 4,
+62
+kPulse75mA
+= 5,
+63
+kPulse100mA
+= 6,
+64
+kPulse125mA
+= 7,
+65
+};
+66
+67
+enum class
+ProximityResolution
+{
+68
+k8bit
+= 0x00,
+69
+k9bit
+= 0x08,
+70
+k10bit
+= 0x10,
+71
+k11bit
+= 0x18,
+72
+};
+73
+74
+enum class
+ProximityMeasurementRate
+{
+75
+k6ms
+= 1,
+76
+k12ms
+= 2,
+77
+k25ms
+= 3,
+78
+k50ms
+= 4,
+79
+k100ms
+= 5,
+80
+k200ms
+= 6,
+81
+k400ms
+= 7,
+82
+};
+83
+84
+enum class
+ColorResolution
+{
+85
+k20bit
+= 0x00,
+86
+k19bit
+= 0x10,
+87
+k18bit
+= 0x20,
+88
+k17bit
+= 0x30,
+89
+k16bit
+= 0x40,
+90
+k13bit
+= 0x50,
+91
+};
+92
+93
+enum class
+ColorMeasurementRate
+{
+94
+k25ms
+= 0,
+95
+k50ms
+= 1,
+96
+k100ms
+= 2,
+97
+k200ms
+= 3,
+98
+k500ms
+= 4,
+99
+k1000ms
+= 5,
+100
+k2000ms
+= 7,
+101
+};
+102
+103
+struct
+RawColor
+{
+104
+uint32_t
+red
+;
+105
+uint32_t
+green
+;
+106
+uint32_t
+blue
+;
+107
+uint32_t
+ir
+;
+108
+RawColor
+(uint32_t r, uint32_t g, uint32_t b, uint32_t _ir)
+109
+:
+red
+(r),
+green
+(g),
+blue
+(b),
+ir
+(_ir) {}
+110
+};
+111
+121
+explicit
+ColorSensorV3
+(frc::I2C::Port port);
+122
+123
+ColorSensorV3
+(
+ColorSensorV3
+&&) =
+default
+;
+124
+ColorSensorV3
+&
+operator=
+(
+ColorSensorV3
+&&) =
+default
+;
+125
+132
+frc::Color
+GetColor
+();
+133
+139
+RawColor
+GetRawColor
+();
+140
+149
+CIEColor
+GetCIEColor
+();
+150
+157
+double
+GetIR
+();
+158
+167
+uint32_t
+GetProximity
+();
+168
+177
+void
+SetGain
+(
+GainFactor
+gain);
+178
+193
+void
+ConfigureProximitySensorLED
+(
+LEDPulseFrequency
+freq,
+LEDCurrent
+current,
+194
+uint8_t pulses);
+195
+207
+void
+ConfigureProximitySensor
+(
+ProximityResolution
+res,
+208
+ProximityMeasurementRate
+rate);
+209
+221
+void
+ConfigureColorSensor
+(
+ColorResolution
+res,
+ColorMeasurementRate
+rate);
+222
+235
+bool
+HasReset
+();
+236
+242
+bool
+IsConnected
+();
+243
+244
+private
+:
+245
+enum class
+Register {
+246
+kMainCtrl = 0x00,
+247
+kProximitySensorLED = 0x01,
+248
+kProximitySensorPulses = 0x02,
+249
+kProximitySensorRate = 0x03,
+250
+kLightSensorMeasurementRate = 0x04,
+251
+kLightSensorGain = 0x05,
+252
+kPartID = 0x06,
+253
+kMainStatus = 0x07,
+254
+kProximityData = 0x08,
+255
+kDataInfrared = 0x0A,
+256
+kDataGreen = 0x0D,
+257
+kDataBlue = 0x10,
+258
+kDataRed = 0x13
+259
+};
+260
+261
+enum class
+MainCtrlFields {
+262
+kProximitySensorEnable = 0x01,
+263
+kLightSensorEnable = 0x02,
+264
+kRGBMode = 0x04
+265
+};
+266
+267
+struct
+MainStatus {
+268
+uint8_t PSDataStatus : 1;
+269
+uint8_t PSInterruptStatus : 1;
+270
+uint8_t PSLogicStatus : 1;
+271
+uint8_t LSDataStatus : 1;
+272
+uint8_t LSInterruptStatus : 1;
+273
+uint8_t PowerOnStatus : 1;
+274
+uint8_t : 2;
+275
+};
+276
+277
+bool
+Write(Register reg, uint8_t data) {
+278
+return
+m_i2c.Write(
+static_cast<
+uint8_t
+>
+(reg), data);
+279
+}
+280
+281
+bool
+Read(Register reg,
+int
+count, uint8_t* data) {
+282
+return
+m_i2c.Read(
+static_cast<
+uint8_t
+>
+(reg), count, data);
+283
+}
+284
+285
+uint32_t To20Bit(uint8_t* val) {
+286
+return
+(
+static_cast<
+uint32_t
+>
+(val[0]) |
+287
+(
+static_cast<
+uint32_t
+>
+(val[1]) << 8) |
+288
+(
+static_cast<
+uint32_t
+>
+(val[2]) << 16)) &
+289
+0x03FFFF;
+290
+}
+291
+292
+uint16_t To11Bit(uint8_t* val) {
+293
+return
+(
+static_cast<
+uint16_t
+>
+(val[0]) |
+294
+(
+static_cast<
+uint16_t
+>
+(val[1]) << 8)) &
+295
+0x7FF;
+296
+}
+297
+298
+uint32_t Read20BitRegister(Register reg);
+299
+uint16_t Read11BitRegister(Register reg);
+300
+301
+bool
+CheckDeviceID(
+bool
+reportErrors);
+302
+void
+InitializeDevice();
+303
+MainStatus GetStatus();
+304
+305
+static
+const
+double
+Cmatrix[9];
+306
+307
+frc::I2C m_i2c;
+308
+309
+hal::SimDevice m_simDevice;
+310
+hal::SimDouble m_simR, m_simG, m_simB, m_simIR, m_simProx;
+311
+};
+312
+313
+}
+// namespace rev
+CIEColor.h
+rev::CIEColor
+Definition:
+CIEColor.h:35
+rev::ColorSensorV3
+Definition:
+ColorSensorV3.h:44
+rev::ColorSensorV3::LEDPulseFrequency
+LEDPulseFrequency
+Definition:
+ColorSensorV3.h:48
+rev::ColorSensorV3::LEDPulseFrequency::k60kHz
+@ k60kHz
+rev::ColorSensorV3::LEDPulseFrequency::k80kHz
+@ k80kHz
+rev::ColorSensorV3::LEDPulseFrequency::k70kHz
+@ k70kHz
+rev::ColorSensorV3::LEDPulseFrequency::k100kHz
+@ k100kHz
+rev::ColorSensorV3::LEDPulseFrequency::k90kHz
+@ k90kHz
+rev::ColorSensorV3::IsConnected
+bool IsConnected()
+Definition:
+ColorSensorV3.cpp:209
+rev::ColorSensorV3::ProximityResolution
+ProximityResolution
+Definition:
+ColorSensorV3.h:67
+rev::ColorSensorV3::ProximityResolution::k9bit
+@ k9bit
+rev::ColorSensorV3::ProximityResolution::k10bit
+@ k10bit
+rev::ColorSensorV3::ProximityResolution::k11bit
+@ k11bit
+rev::ColorSensorV3::ProximityResolution::k8bit
+@ k8bit
+rev::ColorSensorV3::GetIR
+double GetIR()
+Definition:
+ColorSensorV3.cpp:128
+rev::ColorSensorV3::LEDCurrent
+LEDCurrent
+Definition:
+ColorSensorV3.h:56
+rev::ColorSensorV3::LEDCurrent::kPulse100mA
+@ kPulse100mA
+rev::ColorSensorV3::LEDCurrent::kPulse5mA
+@ kPulse5mA
+rev::ColorSensorV3::LEDCurrent::kPulse125mA
+@ kPulse125mA
+rev::ColorSensorV3::LEDCurrent::kPulse75mA
+@ kPulse75mA
+rev::ColorSensorV3::LEDCurrent::kPulse25mA
+@ kPulse25mA
+rev::ColorSensorV3::LEDCurrent::kPulse50mA
+@ kPulse50mA
+rev::ColorSensorV3::LEDCurrent::kPulse10mA
+@ kPulse10mA
+rev::ColorSensorV3::LEDCurrent::kPulse2mA
+@ kPulse2mA
+rev::ColorSensorV3::ColorMeasurementRate
+ColorMeasurementRate
+Definition:
+ColorSensorV3.h:93
+rev::ColorSensorV3::ColorMeasurementRate::k100ms
+@ k100ms
+rev::ColorSensorV3::ColorMeasurementRate::k50ms
+@ k50ms
+rev::ColorSensorV3::ColorMeasurementRate::k1000ms
+@ k1000ms
+rev::ColorSensorV3::ColorMeasurementRate::k2000ms
+@ k2000ms
+rev::ColorSensorV3::ColorMeasurementRate::k25ms
+@ k25ms
+rev::ColorSensorV3::ColorMeasurementRate::k500ms
+@ k500ms
+rev::ColorSensorV3::ColorMeasurementRate::k200ms
+@ k200ms
+rev::ColorSensorV3::ColorResolution
+ColorResolution
+Definition:
+ColorSensorV3.h:84
+rev::ColorSensorV3::ColorResolution::k19bit
+@ k19bit
+rev::ColorSensorV3::ColorResolution::k16bit
+@ k16bit
+rev::ColorSensorV3::ColorResolution::k18bit
+@ k18bit
+rev::ColorSensorV3::ColorResolution::k20bit
+@ k20bit
+rev::ColorSensorV3::ColorResolution::k13bit
+@ k13bit
+rev::ColorSensorV3::ColorResolution::k17bit
+@ k17bit
+rev::ColorSensorV3::HasReset
+bool HasReset()
+Definition:
+ColorSensorV3.cpp:202
+rev::ColorSensorV3::GetColor
+frc::Color GetColor()
+Definition:
+ColorSensorV3.cpp:90
+rev::ColorSensorV3::ProximityMeasurementRate
+ProximityMeasurementRate
+Definition:
+ColorSensorV3.h:74
+rev::ColorSensorV3::ProximityMeasurementRate::k100ms
+@ k100ms
+rev::ColorSensorV3::ProximityMeasurementRate::k6ms
+@ k6ms
+rev::ColorSensorV3::ProximityMeasurementRate::k400ms
+@ k400ms
+rev::ColorSensorV3::ProximityMeasurementRate::k50ms
+@ k50ms
+rev::ColorSensorV3::ProximityMeasurementRate::k12ms
+@ k12ms
+rev::ColorSensorV3::ProximityMeasurementRate::k25ms
+@ k25ms
+rev::ColorSensorV3::ProximityMeasurementRate::k200ms
+@ k200ms
+rev::ColorSensorV3::GetRawColor
+RawColor GetRawColor()
+Definition:
+ColorSensorV3.cpp:102
+rev::ColorSensorV3::ConfigureProximitySensor
+void ConfigureProximitySensor(ProximityResolution res, ProximityMeasurementRate rate)
+Definition:
+ColorSensorV3.cpp:190
+rev::ColorSensorV3::GainFactor
+GainFactor
+Definition:
+ColorSensorV3.h:46
+rev::ColorSensorV3::GainFactor::k18x
+@ k18x
+rev::ColorSensorV3::GainFactor::k6x
+@ k6x
+rev::ColorSensorV3::GainFactor::k9x
+@ k9x
+rev::ColorSensorV3::GainFactor::k3x
+@ k3x
+rev::ColorSensorV3::GainFactor::k1x
+@ k1x
+rev::ColorSensorV3::operator=
+ColorSensorV3 & operator=(ColorSensorV3 &&)=default
+rev::ColorSensorV3::ConfigureProximitySensorLED
+void ConfigureProximitySensorLED(LEDPulseFrequency freq, LEDCurrent current, uint8_t pulses)
+Definition:
+ColorSensorV3.cpp:181
+rev::ColorSensorV3::SetGain
+void SetGain(GainFactor gain)
+Definition:
+ColorSensorV3.cpp:135
+rev::ColorSensorV3::ColorSensorV3
+ColorSensorV3(ColorSensorV3 &&)=default
+rev::ColorSensorV3::GetProximity
+uint32_t GetProximity()
+Definition:
+ColorSensorV3.cpp:83
+rev::ColorSensorV3::ColorSensorV3
+ColorSensorV3(frc::I2C::Port port)
+Definition:
+ColorSensorV3.cpp:62
+rev::ColorSensorV3::ConfigureColorSensor
+void ConfigureColorSensor(ColorResolution res, ColorMeasurementRate rate)
+Definition:
+ColorSensorV3.cpp:196
+rev::ColorSensorV3::GetCIEColor
+CIEColor GetCIEColor()
+Definition:
+ColorSensorV3.cpp:120
+rev
+Definition:
+SparkLowLevel.cpp:40
+rev::ColorSensorV3::RawColor
+Definition:
+ColorSensorV3.h:103
+rev::ColorSensorV3::RawColor::blue
+uint32_t blue
+Definition:
+ColorSensorV3.h:106
+rev::ColorSensorV3::RawColor::red
+uint32_t red
+Definition:
+ColorSensorV3.h:104
+rev::ColorSensorV3::RawColor::ir
+uint32_t ir
+Definition:
+ColorSensorV3.h:107
+rev::ColorSensorV3::RawColor::green
+uint32_t green
+Definition:
+ColorSensorV3.h:105
+rev::ColorSensorV3::RawColor::RawColor
+RawColor(uint32_t r, uint32_t g, uint32_t b, uint32_t _ir)
+Definition:
+ColorSensorV3.h:108
+src
+main
+native
+include
+rev
+ColorSensorV3.h
+Generated by
+1.9.2

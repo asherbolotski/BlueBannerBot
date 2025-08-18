@@ -1,0 +1,256 @@
+REVLib - C++
+ServoHubSimFaultManager.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#ifndef FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SERVOHUBSIMFAULTMANAGER_H_
+30
+#define FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SERVOHUBSIMFAULTMANAGER_H_
+31
+32
+#include <string>
+33
+34
+#include <hal/SimDevice.h>
+35
+36
+#include "
+rev/ServoHub.h
+"
+37
+38
+namespace
+rev::servohub
+{
+39
+40
+class
+ServoHubSimFaultManager
+{
+41
+public
+:
+50
+explicit
+ServoHubSimFaultManager
+(
+ServoHub
+* servoHub);
+51
+52
+ServoHubSimFaultManager
+() =
+delete
+;
+53
+61
+void
+SetFaults
+(
+const
+ServoHub::Faults
+& faults);
+62
+71
+void
+SetStickyFaults
+(
+const
+ServoHub::Faults
+& faults);
+72
+80
+void
+SetWarnings
+(
+const
+ServoHub::Warnings
+& warnings);
+81
+91
+void
+SetStickyWarnings
+(
+const
+ServoHub::Warnings
+& warnings);
+92
+93
+private
+:
+94
+void
+SetupSimDevice();
+95
+96
+hal::SimBoolean m_regulatorPGoodFault;
+97
+hal::SimBoolean m_firmwareFault;
+98
+hal::SimBoolean m_hardwareFault;
+99
+hal::SimBoolean m_lowBatteryFault;
+100
+101
+hal::SimBoolean m_regulatorPGoodStickyFault;
+102
+hal::SimBoolean m_firmwareStickyFault;
+103
+hal::SimBoolean m_hardwareStickyFault;
+104
+hal::SimBoolean m_lowBatteryStickyFault;
+105
+106
+hal::SimBoolean m_brownoutWarning;
+107
+hal::SimBoolean m_canWarning;
+108
+hal::SimBoolean m_canBusOffWarning;
+109
+hal::SimBoolean m_hasResetWarning;
+110
+hal::SimBoolean m_channel0OvercurrentWarning;
+111
+hal::SimBoolean m_channel1OvercurrentWarning;
+112
+hal::SimBoolean m_channel2OvercurrentWarning;
+113
+hal::SimBoolean m_channel3OvercurrentWarning;
+114
+hal::SimBoolean m_channel4OvercurrentWarning;
+115
+hal::SimBoolean m_channel5OvercurrentWarning;
+116
+117
+hal::SimBoolean m_brownoutStickyWarning;
+118
+hal::SimBoolean m_canStickyWarning;
+119
+hal::SimBoolean m_canBusOffStickyWarning;
+120
+hal::SimBoolean m_hasResetStickyWarning;
+121
+hal::SimBoolean m_channel0OvercurrentStickyWarning;
+122
+hal::SimBoolean m_channel1OvercurrentStickyWarning;
+123
+hal::SimBoolean m_channel2OvercurrentStickyWarning;
+124
+hal::SimBoolean m_channel3OvercurrentStickyWarning;
+125
+hal::SimBoolean m_channel4OvercurrentStickyWarning;
+126
+hal::SimBoolean m_channel5OvercurrentStickyWarning;
+127
+128
+ServoHub
+* m_servoHub;
+129
+std::string simDeviceName;
+130
+};
+131
+132
+}
+// namespace rev::servohub
+133
+134
+#endif
+// FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SERVOHUBSIMFAULTMANAGER_H_
+ServoHub.h
+rev::servohub::ServoHub
+Definition:
+ServoHub.h:43
+rev::servohub::ServoHubSimFaultManager
+Definition:
+ServoHubSimFaultManager.h:40
+rev::servohub::ServoHubSimFaultManager::SetWarnings
+void SetWarnings(const ServoHub::Warnings &warnings)
+Definition:
+ServoHubSimFaultManager.cpp:116
+rev::servohub::ServoHubSimFaultManager::SetFaults
+void SetFaults(const ServoHub::Faults &faults)
+Definition:
+ServoHubSimFaultManager.cpp:102
+rev::servohub::ServoHubSimFaultManager::SetStickyWarnings
+void SetStickyWarnings(const ServoHub::Warnings &warnings)
+Definition:
+ServoHubSimFaultManager.cpp:129
+rev::servohub::ServoHubSimFaultManager::SetStickyFaults
+void SetStickyFaults(const ServoHub::Faults &faults)
+Definition:
+ServoHubSimFaultManager.cpp:109
+rev::servohub::ServoHubSimFaultManager::ServoHubSimFaultManager
+ServoHubSimFaultManager()=delete
+rev::servohub
+Definition:
+ServoChannelConfig.h:34
+rev::servohub::ServoHub::Faults
+Definition:
+ServoHub.h:141
+rev::servohub::ServoHub::Warnings
+Definition:
+ServoHub.h:170
+src
+main
+native
+include
+rev
+sim
+ServoHubSimFaultManager.h
+Generated by
+1.9.2

@@ -1,0 +1,118 @@
+REV ION Control System
+REV ION Control System Overview
+Quick Links
+Frequently Asked Questions
+Power Distribution Hub
+Power Distribution Hub Overview
+Power Distribution Hub Specifications
+Getting Started with the Power Distribution Hub
+Wiring the Power Distribution Hub
+Power Distribution Hub Status LED Patterns
+Power Distribution Hub Troubleshooting
+Power Distribution Hub Firmware Changelog
+Pneumatic Hub
+Pneumatic Hub Overview
+Pneumatic Hub Specifications
+Getting Started with the Pneumatic Hub
+Wiring the Pneumatic Hub
+Pneumatic Hub Status LED Patterns
+Pneumatic Hub Troubleshooting
+Pneumatic Hub Firmware Changelog
+Radio Power Module
+Radio Power Module Overview
+Radio Power Module Specifications
+Getting Started with the Radio Power Module
+RPM Compatibility with the new FRC Radio
+Mini Power Module
+Mini Power Module Overview
+Mini Power Module Specifications
+Mini Power Module Status LED Patterns
+Sensors
+2m Distance Sensor
+Color Sensor V3
+Magnetic Limit Switch
+Potentiometer
+Through Bore Encoder
+Touch Sensor
+Accessories
+Blinkin LED Driver
+Digital LED Indicator
+Servo Power Module
+POE Injector Cable
+JST PH 6-Pin Breakout Board
+JST PH 6-pin Joiner Board
+Software Resources
+REV Hardware Client Documentation
+REVLib
+Powered by GitBook
+On this page
+General Troubleshooting
+Checking for Faults
+Clearing Sticky Faults
+Compressor Test Mode
+Fuse consistently pops during use
+Recovery Mode
+Other Common Issues
+Was this helpful?
+Export as PDF
+Is your Status LED light showing a new color or sequence? Check out the
+Status LED Pattern
+page!
+General Troubleshooting
+If you are experiencing issues with your Pneumatic Hub that you are struggling to diagnose, we recommend following the troubleshooting guides and steps listed below, both in the flowchart and in the following subsections.
+Checking for Faults
+View
+Active Faults
+and
+Sticky Faults
+on your Pneumatic Hub by connecting it to the
+REV Hardware Client
+. Under the Device Faults section you will see two columns, one for Active Faults and one for Sticky Faults.
+Clearing Sticky Faults
+Sticky faults are cleared when the mode button on the Power Distribution Hub is pressed or can be cleared using the REV Hardware Client. It is also possible to clear sticky faults using WPILib.
+Compressor Test Mode
+To activate Compressor Test Mode, please follow these steps:
+Turn on and enable your robot, or connect your Pneumatics Hub to the REV Hardware Client.
+Hold down the mode button for 7 seconds.
+Compressor will start, continue holding the mode button to keep the compressor on.
+When done with Compressor Test Mode, release the mode button to stop the compressor.
+Fuse consistently pops during use
+Your Pneumatic Hub is drawing more current than the fuse can handle. If you’re using a 15A fuse, try a 20A fuse.
+If you’re using a 20A fuse, we recommend moving your Pneumatic Hub to be powered by a High Current Channel and a 20A breaker.
+You should also check your logs to see how much current the PH is pulling. Please note that the PH will draw more current at lower battery voltages.
+Recovery Mode
+When updating the firmware on the Pneumatic Hub, it is possible for the process to be interrupted or for the firmware to be corrupted by a bad download. In this state, the Status LED will be dark and the Pneumatic Hub will fail to operate. There is a built-in recovery mode that can force it to accept new firmware even if the controller seems to be bricked and the procedure is outlined below:
+Please note, performing this procedure will erase all data and settings on the device. To perform the procedure a small tool, like a straightened paper clip is necessary to press the Mode Button (located close to the LED status light), the orange USB-C cable that came with the unit (or a DATA capable USB-C cable), and a native Windows based computer with the
+REV Hardware Client
+installed.
+With the Pneumatic Hub powered off, press and hold the Mode Button
+While still holding the Mode Button, connect the Pneumatic Hub to the computer using the USB-C cable - the Status LED will not illuminate, this is expected
+With the REV Hardware Client running on the computer, wait a few seconds for the audible tone or icon for the device to be recognized in recovery mode then release the Mode Button -no lights will be present on the Pneumatic Hub during this stage of the process, this is expected
+Select the Pneumatic Hub in Recovery Mode from the REV Hardware Client window
+From the "Choose a Device" type dropdown, choose - Pneumatic Hub
+Choose the latest version of the firmware from the dropdown and then click update
+Wait for the software update to complete
+Power cycle unit (unplug and plug in USB-C) click on Pneumatic Hub icon, clear any sticky faults - the recovery should be complete.
+Other Common Issues
+Symptom
+Possible Resolution
+The PH won’t power on even though the PDH is on.
+Check the polarity of the main power wiring on the PH
+Check the fuse on the PDH side channel that the PH is wired to.
+Solenoid does not turn on despite the channel turning on (Green LED is on).
+Check the cable wiring and make sure there is enough bare wire to make contact in the solenoid terminal. Verify that the solenoid voltage switch is set to the proper voltage.
+Compressor does not turn on despite the compressor channel turning on (Green LED is on).
+Check the wiring of the compressor and make sure there is enough bare wire to make contact in the compressor terminal.
+PH cannot communicate over CAN
+Check your CAN wiring and make sure there is enough bare wire to make contact in the CAN terminals.
+CAN Warning
+A CAN warning means that there is something wrong with your CAN bus. Check your CAN bus wiring and the devices on your CAN bus. Note: if you are operating the PH by itself using the REV hardware client, you can ignore most CAN warnings. The PH will send a CAN warning if it does not see any other device on the bus
+CAN Bus Off Fault
+A CAN Bus Off fault means that the CAN bus has run into a critical issue resulting in the bus network turning off. Check your CAN bus for shorts on the high and low CAN wires. The CAN bus will turn back on once the issue is resolved.
+Previous
+Pneumatic Hub Status LED Patterns
+Next
+Pneumatic Hub Firmware Changelog
+Last updated
+1 year ago
+Was this helpful?

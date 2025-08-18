@@ -1,0 +1,64 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Closed-Loop Control Basics
+Closed-Loop Control with SPARK Motor Controllers
+Was this helpful?
+Export as PDF
+Closed-Loop Control Basics
+A Closed-Loop Control System in its most basic form is a process that uses feedback to improve the accuracy of its outputs. Closed-Loop Control Systems, sometimes referred to as Feedback Controllers, are frequently used when maintaining or reaching a steady output is important or if the system may have outside influences that could affect the system's output.
+A simple example using this type of Control is an automatic coffee maker. In its Closed-Loop Control System, the output is hot coffee and the process we are getting feedback on is the heating of the water. If the coffee maker receives feedback that the water is cold, it will start to heat the pot. When the water is almost hot enough to brew the coffee, the control algorithm will continue to heat the water until the correct goal temperature has been reached. Once the water reaches it's goal temperature, or if it gets too hot, the system will stop heating the water and wait until it receives feedback that the heater needs to begin again.
+Closed-Loop Control with SPARK Motor Controllers
+Closed-Loop Control is a staple of complex FRC mechanism programming. WPILib offers
+several sets of libraries
+to allow teams to run PID loops on the roboRIO, but they require setup in your team's code, only update every 20ms by default, and may require specifically-configured feedback devices for fast responses, especially at high frequencies.
+With a PID loop onboard a SPARK Motor Controller, the setup is simple, doesn't clutter your code, and the loop is updated every 1ms, increasing the responsiveness and precision of the controller. Even when using a more complex control algorithm on the roboRIO, it's still recommended to put as much processing on the motor controller as possible.
+Both the SPARK MAX and SPARK Flex can operate in several closed-loop control modes, using sensor input to tightly control the motor velocity, position or current. The internal control loop follows a standard PID algorithm with a feed-forward (F) term to compensate for known system offsets. This allows the motor to follow precise and repeatable motions, useful for complex mechanisms.
+Below is a diagram of the firmware implementation of the internal PIDF.
+SPARK Motor Controller PIDF Implementation
+Additionally, an arbitrary feedforward signal is added to the output of the control loop after
+all
+calculations are done. The units for this signal can be selected as either
+voltage
+or
+duty cycle.
+This feature allows more advanced feedforward calculations to be performed by the controller. More details about the types of feedforward calculations can be found on the
+WPILib documentation
+. Using the
+voltage
+units for arbitrary feedforward allows the user to send the calculated feedforward voltage from the WPILib API directly to the control loop.
+Previous
+Configuring a SPARK
+Next
+Closed Loop Control Getting Started
+Last updated
+6 months ago
+Was this helpful?

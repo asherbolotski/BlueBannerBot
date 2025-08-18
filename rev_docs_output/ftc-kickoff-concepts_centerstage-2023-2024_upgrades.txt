@@ -1,0 +1,124 @@
+REV DUO Kickoff Concepts
+2025-26 REV DUO FTC Starter Bot
+DECODE 2025-26
+Starter Bot - DECODE
+Bill of Materials
+Programming TeleOp
+Build Tips & Tricks
+Starter Bot Changelog 2025-26
+INTO THE DEEP 2024-25
+2024-25 REV DUO FTC Starter Bot
+Starter Bot - INTO THE DEEP
+Bill of Materials
+Programming TeleOp
+Programming - Initialization
+Programming - Creating Functions
+Programming - Controlling the Arm and Wrist
+Programming - Intake and Claw Toggle
+Programming - Driving and Telemetry
+Programming - OnBot Java Overview
+Build Tips & Tricks
+Upgrades!
+Starter Bot Changelog 2024-25
+CENTERSTAGE 2023-2024
+Starter Bot - CENTERSTAGE
+Bill of Materials
+Programming Teleop
+Building Tips & Tricks
+Upgrades
+Starter Bot Changelog
+POWERPLAY 2022-2023
+Starter Bot - POWERPLAY
+Alternative Control Hub Placement
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Lifts
+Freight Frenzy - 2021-2022
+Starter Bot - Freight Frenzy
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Carousel Mechanism
+Freight Delivery Mechanisms
+Programming Autonomous
+Ultimate Goal - 2020-2021
+Game Strategy
+Game Piece
+Drivetrain
+Intake
+Conveyor
+Flywheel Launcher
+Powered by GitBook
+On this page
+Mecanum Drive
+Upgrading from the FTC Starter Kit V3 to Mecanum Drivetrain V2:
+Example Mecanum Drive Program
+Adding Independent Wrist Movement
+Blocks:
+OnBot Java:
+Was this helpful?
+Export as PDF
+Mecanum Drive
+Upgrading to a
+Mecanum Drivetrain
+(REV-45-2470) allows for new kinds of movement giving the robot the ability to strafe side-to-side across the field.
+For Mecanum Drive each wheel has an individual motor!
+REV's Mecanum Drivetrain Kit V2
+The FTC Starter Kit V3 can be
+upgraded to the Mecanum Drivetrain V1 following this guide.
+Upgrading from the FTC Starter Kit V3 to Mecanum Drivetrain V2:
+The following additional parts are needed:
+UltraPlanetary Gearbox Kit & HD Hex Motor
+- QTY 2
+Ultra 90 Degree Gearbox
+- QTY 4
+75mm Mecanum Wheel Set
+- QTY 1 (set of 4)
+M3 x 6mm HexCap Screws 50 Pack
+- QTY 1
+Full build instructions can be found here!
+Example Mecanum Drive Program
+How a Mecanum Drivetrain is programmed largely depends on the driver's preference for how the controller is configured. If your team is new to Mecanum, we have a
+demo code and breakdown available for Blocks.
+This example code uses a different configuration than the Starter Bot's provided code! Please make sure to update both your program and the configuration file through the Driver Station.
+Adding Independent Wrist Movement
+Using the
+provided program
+the wrist only moves when one of the preset arm/wrist buttons on the controller is pressed. Your team may decide to add independent wrist movement for more refined control.
+Below are a couple examples for adding wrist movement using the existing variables:
+These examples are meant to replace the use of presets in favor of manual control of the arm and wrist.
+Blocks:
+Example 1:
+This option functions similar to the gripper using the two preset positions. If "Up" on the Dpad is held down then the wrist will move and stay in the up position. When released, it will return down.
+Example 2:
+This option breaks the movement apart to move up or down when the matching button is pressed once on the Dpad. The button does not need to be held for it to remain in the set position.
+OnBot Java:
+Example 1:
+Copy
+//Indepedent Wrist
+if (gamepad1.dpad_up) {
+wrist.setPosition(wristUpPosition);
+} else {
+wrist.setPosition(wristDownPosition);
+}
+Example 2:
+Copy
+//Indepedent Wrist
+if (gamepad1.dpad_up) {
+wrist.setPosition(wristUpPosition);
+}
+if (gamepad1.dpad_down) {
+wrist.setPosition(wristDownPosition);
+}
+Previous
+Building Tips & Tricks
+Next
+Starter Bot Changelog
+Last updated
+2 months ago
+Was this helpful?

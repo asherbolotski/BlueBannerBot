@@ -1,0 +1,129 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Overview
+Configuration Classes
+Setting Parameters
+Sub-configs
+Example Configuration Class
+Applying a Configuration to Your Device
+Resetting Parameters Before Configuring
+Was this helpful?
+Export as PDF
+This only applies to Java and C++.
+Overview
+Starting 2025, REVLib shifted its device configuration paradigm towards something more declarative. This approach promotes better code organization and readability while also reducing boilerplate code. Additionally, it opens the door for enhanced configuration validation as well as reusability of code, aligning with principles of good object-oriented design.
+This page explores how different parts of REVLib's configuration paradigm works and how you can use it effectively in your robot program. For more information on device specific configurations, see the following:
+Configuring a SPARK
+Color Sensor V3 does not follow the device configuration paradigm described on this page.
+Configuration Classes
+In this configuration paradigm, each device has its own dedicated configuration class which serves as a structure for organizing and storing the parameters to be configured for that device.
+All parameters in a configuration are
+optional
+, meaning all parameters will remain unchanged unless otherwise specified. This minimizes the traffic between REVLib and the device when applying the configuration.
+As a result, configuration classes are not intended to represent the device's complete configuration—though this is possible, it is generally unnecessary. Their primary purpose is to set only the parameters that are relevant to your needs.
+For details on retrieving parameters from a device, refer to
+this section
+.
+Setting Parameters
+Configuration parameters can be set via methods on a config object, and those methods return a modified instance of the object, allowing you to perform method chaining for more organized and readable code.
+Below is an example of how you would set parameters using method chaining:
+Copy
+config
+.
+parameter1
+(
+42
+)
+.
+parameter2
+(
+43
+);
+Sub-configs
+Config classes can also contain sub-configs as members of the class, allowing for improved organization by grouping conceptually-related configuration parameters together. Since a sub-config is its own configuration class, its methods return the sub-config instead of its parent. To configure something outside the sub-config, you'll need to start a new chain of method calls.
+Copy
+config.subConfig1
+.parameter3(44);
+config.subConfig2
+.parameter4(45)
+.parameter5(46);
+Additionally, a sub-config can have its own sub-configs, allowing parameters to be deeply nested within the hierarchy.
+Copy
+config.subConfig1.subSubConfig1
+.parameter6(47)
+.parameter7(48);
+Example Configuration Class
+Applying the concepts described above, this is how an example configuration class would be composed.
+An example configuration class
+Applying a Configuration to Your Device
+After setting up your configuration object, you can apply the configuration by calling the
+configure()
+method on your device object.
+The method signature may differ between devices, so be sure to consult the device's configuration documentation. In all cases, however,
+configure()
+takes a configuration object and a
+ResetMode
+value as arguments and returns a
+REVLibError
+.
+Resetting Parameters Before Configuring
+The
+ResetMode
+argument specifies whether to reset the parameters before applying the configuration. This argument is required to ensure the user makes the conscious decision whether to reset the parameters, helping to avoid potential pitfalls.
+Use Cases
+Resetting parameters before applying a new configuration ensures the device starts in a known, good state. This is particularly useful when initializing the device at the start of a program, and by starting with a clean slate, you can guarantee the configuration is consistent each time the robot powers up. This approach is especially valuable when performing a drop-in replacement for a device, as the replacement may be in an unknown state.
+A reason to not reset parameters when applying a configuration is to preserve previously set values during a mid-operation adjustment. While reconfiguring a device during operation is generally discouraged, some use cases may necessitate it.
+Another reason to not reset parameters is when you are using the REV Hardware Client as your primary configuration tool. Although configuring devices through code is considered a best practice, the Hardware Client remains a valid and supported option for configuration.
+Below is an example of either case:
+Copy
+public Robot() {
+Config initialConfig = new Config();
+initialConfig
+.parameter1(42)
+.parameter2(43)
+.parameter3(44);
+// Reset parameters for consistent initialization
+device.configure(initialConfig, ResetMode.kResetParameters);
+}
+void updateConfig() {
+Config updatedConfig = new Config();
+updatedConfig.parameter3(45);
+// Don't reset parameters since we only want to change one parameter
+device.configure(updatedConfig, ResetMode.kNoResetParameters);
+}
+Previous
+Migrating to REVLib 2025
+Next
+Retrieving Configurations
+Last updated
+8 months ago
+Was this helpful?

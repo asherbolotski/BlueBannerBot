@@ -1,0 +1,296 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Setting a Time Limit
+Modifying Our While Loop
+Quick Check!
+Resetting the Timer
+Adding Telemetry
+Was this helpful?
+Export as PDF
+Setting a Time Limit
+For now our goal will be to have the motors move forward for 3 seconds. To accomplish this we need to edit our main
+While Loop
+so that it triggers when the OpMode is active AND the ElapsedTime timer is less than or equal to 3 seconds.
+Let's take a look first at how our timer appears in OnBot Java when checking for less than or equal to 3 seconds:
+Copy
+runtime
+.
+seconds
+()
+<=
+3.0
+Click to Review OnBot Java Operators
+In OnBot Java we can use the following operators when assigning a check for a variable's value:
+Equal to:
+==
+Less than:
+<
+Greater than:
+>
+Less than or equal to:
+<=
+Greater than or equal to:
+>=
+Modifying Our While Loop
+When using our default template, our program will continue running until we press stop on the Driver Hub. However, in this situation we want our program to end when our timer is up. This means we need to modify our
+while loop
+to add a second condition!
+Alongside our check for
+opModeIsActive()
+we will add our check for if runtime is under 3 seconds:
+Copy
+waitForStart()
+;
+while
+(
+opModeIsActive()
+&&
+(
+runtime
+.
+seconds
+()
+<=
+3.0
+)) {
+}
+&&
+is a logical operator in Java. This symbol is the Java equivalent of "and."
+Think back to in
+Part 1
+we learned that
+||
+means OR in OnBot Java!
+Now the
+While Loop
+will now activate when both conditions of the
+AND
+block are true.
+Quick Check!
+Let's give our OpMode a try and test the following scenarios:
+What happens when hitting play quickly after the initialization button is pressed?
+What happens when hitting play 2 seconds after the initialization button is pressed?
+What happens when hitting play 10 seconds after the initialization button is pressed?
+What happens while testing?
+You may notice the robot moves different distances depending on how long the wait is between INITIALIZATION and PLAYING the program. But why is that?
+Remember our timer starts counting when created. Currently, our program creates our timer during initialization meaning it's counting up before Play is ever pressed. If we wait too long our robot may not do anything at all when clicking Play!
+Resetting the Timer
+Not being able to pause between initialization and pressing Play is probably not ideal in most situations. It certainly makes tracking how far the robot will travel more challenging, the opposite of what we'd like ElapsedTime to help us do.
+To keep this from happening the timer should be reset once the OpMode is active. Let's add the line
+runtime.reset();
+between the
+waitForStart();
+command and the
+while loop
+.
+Copy
+waitForStart();
+runtime.reset();
+// run until the end of the match (driver presses STOP)
+while (opModeIsActive() && (runtime.seconds() <= 3.0)) {
+Since this is before our loop our robot will complete it once when Play is pressed. Then will complete the check for our While Loop.
+Test your program again with this change!
+Copy
+rightmotor.setDirection(DcMotorSimple.Direction.REVERSE);
+telemetry.addData("Status", "Initialized");
+telemetry.update();
+// Wait for the game to start (driver presses PLAY)
+waitForStart();
+runtime.reset();
+// run until the end of the match (driver presses STOP)
+while (opModeIsActive() && (runtime.seconds() <= 3.0)) {
+leftmotor.setPower(1);
+rightmotor.setPower(1);
+telemetry.addData("Status", "Running");
+telemetry.update();
+Now let's explore what happens when we change our time limit to different amounts. You can adjust your time limit by changing the 3 seconds within
+(runtime.seconds() <= 3.0)
+to different numbers.
+Consider marking different goals on the floor with tape to practice determining how much time the robot needs to reach it.
+Adding Telemetry
+In previous parts, we've looked at adding telemetry as a way for the robot to communicate with us. In this situation, it would be helpful for the robot to be able to tell us how much time it has counted so we can make adjustments to our program!
+For our
+key
+let's call it "Number of Seconds in Phase 1" for now. This will be useful for distinguishing where in our program our robot is during the next section.
+Copy
+// run until the end of the match (driver presses STOP)
+while (opModeIsActive() && (runtime.seconds() <= 3.0)) {
+leftmotor.setPower(1);
+rightmotor.setPower(1);
+telemetry.addData("Status", "Running");
+telemetry.addData("Number of Seconds in Phase 1", runtime.seconds());
+telemetry.update();
+Previous
+ElapsedTime Setup
+Next
+ElapsedTime - Multiple Movements
+Last updated
+1 year ago
+Was this helpful?

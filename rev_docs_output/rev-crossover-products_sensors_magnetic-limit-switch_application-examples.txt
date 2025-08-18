@@ -1,0 +1,135 @@
+REV Crossover
+REV Crossover Landing
+Sensors
+Through Bore Encoder
+Specifications
+Application Examples
+Color Sensor V3
+Specifications
+Application Examples
+Discontinued Color Sensors
+V2 Specifications & Examples
+V1 Specifications & Examples
+2m Distance Sensor
+Specifications
+Application Examples
+Magnetic Limit Switch
+Specifications
+Application Examples
+Touch Sensor
+Specifications
+Application Examples
+Potentiometer
+Specifications
+Application Examples
+9-Axis IMU
+Specifications
+Configuring the 9-Axis IMU
+Blinkin LED Driver
+Blinkin LED Driver Overview
+Blinkin Specifications
+Blinkin Getting Started
+LED Pattern Tables
+Blinkin Troubleshooting
+REV ION Application Examples
+REV DUO Application Examples
+UltraPlanetary System
+UltraPlanetary System Overview
+UltraPlanetary Features
+Cartridge Details
+Load Ratings
+Assembly Instructions
+Mounting Brackets
+Ultra 90 Degree Gearbox
+Assembly Instructions
+Rotation Direction
+Servos & Accessories
+Servo Hub
+Servo Hub Wiring
+Configuring the Servo Hub with a Control Hub
+Channel Power
+Channel Pulse
+Servo Hub Status LED Patterns
+Troubleshooting
+REVLib for Servo Hub
+Smart Robot Servo
+SRS Gear Replacement
+SRS Programmer
+Switching Operating Modes
+Servo Power Module
+Indicators
+Digital LED Indicator
+Specifications
+Application Examples
+Gamepad
+Gamepad Overview
+Remapping Guide
+Powered by GitBook
+On this page
+Application Information
+FTC Applications
+Was this helpful?
+Export as PDF
+Application Information
+The REV Magnetic Limit Switch comes with two mountable magnets. Because this sensor does not require a contact interface, the magnet can also be soft-mounted almost anywhere with just tape or glue.
+The strength of the magnetic field determines the maximum distance the magnet can be from the sensor and still be detected. Alternate (stronger or weaker) magnets can easily be used to change the trigger range of this sensor.
+Hysteresis
+When designing a system using the REV Magnetic Limit Switch, it is important to consider the impact of hysteresis. When the magnetic field approaches the Magnetic Limit Switch, the sensor triggers after the field strength increases enough to cross the rising trigger point (Bop). As the magnet is then moved away from the sensor, the magnetic field strength falls, but the sensor remains in the triggered state until the field falls below the falling trigger level (BRP). The difference between these two points is the hysteresis.
+For a simple system like stopping an arm at the end of range of motion, the hysteresis might not play much of a role, but for creating one or more stop points on a linear elevator, this may factor into the software design.
+FTC Applications
+Configuring in the Control System
+It is recommended that the Magnetic Limit Switch be configured as a "REV Touch Sensor" as shown below:
+In this example, the Magnetic Limit Switch is configured on port 3 as a "REV Touch Sensor". It is touched on briefly in the
+Pinout Section
+that the Magnetic Limit Switch is capable of sending a signal to the Control Hub through the n+1 and n communication channels. The channel the sensor communicates through is decided by which port it is configured on. In this case, the Magnetic Limit Switch communicates through the n channel.
+Programming Applications
+The code blocks below gives a basic example of how to use the Magnetic Limit Switch to limit the motion range of a motor using if/else logic. If the magnet is within range of the sensor, then the motor stops. Otherwise, the motor is allowed to move. When triggered by proximity to a magnet, the sensor is considered
+pressed
+.
+To learn more about programming Touch and Limit Sensors check out Hello Robot for
+Blocks
+and
+OnBot Java
+!
+Blocks
+OnBot Java
+Certain blocks will not appear if the Magnetic Limit Switch is configured as just a "Digital Device"
+The code assumes the sensor has been named "test_magnetic" and the motor has been named "test_motor" in configuration.
+Copy
+package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+@TeleOp
+public class LimitSwitchTest extends LinearOpMode {
+// Define variables for our touch sensor and motor
+TouchSensor test_magnetic;
+DcMotor test_motor;
+@Override
+public void runOpMode() {
+// Get the touch sensor and motor from hardwareMap
+test_magnetic = hardwareMap.get(TouchSensor.class, "test_magnetic");
+test_motor = hardwareMap.get(DcMotor.class, "test_motor");
+// Wait for the play button to be pressed
+waitForStart();
+// Loop while the Op Mode is running
+while (opModeIsActive()) {
+// If the Magnetic Limit Swtch is pressed, stop the motor
+if (test_magnetic.isPressed()) {
+test_motor.setPower(0);
+} else { // Otherwise, run the motor
+test_motor.setPower(0.3);
+}
+telemetry.addData("Arm Motor Power:", test_motor.getPower());
+telemetry.update();
+}
+}
+}
+Previous
+Specifications
+Next
+Touch Sensor
+Last updated
+4 months ago
+Was this helpful?

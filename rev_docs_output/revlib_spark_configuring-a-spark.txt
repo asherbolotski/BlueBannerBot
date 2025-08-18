@@ -1,0 +1,111 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Configuration Classes
+API Documentation
+Persisting Parameters
+Use Cases
+Defining Motor Type
+Was this helpful?
+Export as PDF
+This page will discuss information about configuration concepts specific to only SPARK MAX and SPARK Flex. For more information on general configuration in REVLib, see
+this page
+.
+Configuration Classes
+SPARK MAX and SPARK Flex each have their own configuration classes,
+SparkMaxConfig
+and
+SparkFlexConfig
+. They are both derived from
+SparkBaseConfig
+which includes shared configurations between the two devices. Configurations specific to SPARK MAX or SPARK Flex live in their respective configuration class.
+API Documentation
+For more information about what configurations and sub-configuration classes each class provides, refer to the links below:
+SparkMaxConfig
+Java
+C++
+SparkFlexConfig
+Java
+C++
+SparkBaseConfig
+Java
+C++
+Persisting Parameters
+Configuring a SPARK MAX and SPARK Flex differs from other devices in REVLib with the addition of the
+persistMode
+parameter in their
+configure()
+methods, which specifies whether the configuration settings applied to the device should be persisted between power cycles.
+Persisting parameters involves saving them to the SPARK controller's memory, which is time-intensive and blocks communication with the device. To provide flexibility, this process is not automatic, as this behavior may be unnecessary or undesirable in some cases. Therefore, users must manually specify the persist mode, and to help avoid possible pitfalls, it is a required parameter.
+Use Cases
+It is recommended to persist parameters during the initial configuration of the device at the start of your program to ensure that the controller retains its configuration in the event of a power cycle during operation e.g. due to a breaker trip or a brownout.
+When making updates to the configuration mid-operation, it is generally recommend to not persist the applied configuration changes to avoid blocking the program, depending on the use case. While reconfiguring a device during operation is generally discouraged, some use cases may necessitate it, and it is important to make the choice whether to persist parameters as it can affect performance of the robot.
+Below is an example of either case:
+Java
+Copy
+Robot() {
+SparkMaxConfig config = new SparkMaxConfig();
+config
+.smartCurrentLimit(50)
+.idleMode(IdleMode.kBrake);
+// Persist parameters to retain configuration in the event of a power cycle
+spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+}
+void setCoastMode() {
+SparkMaxConfig config = new SparkMaxConfig();
+config.idleMode(IdleMode.kCoast);
+// Don't persist parameters since it takes time and this change is temporary
+spark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+}
+Defining Motor Type
+Motor type is the only configuration parameter that must be set outside of a configuration object, specifically through the constructor of the
+SparkMax
+and
+SparkFlex
+classes. This ensures that the user makes the conscious decision the specify type of motor is being driven, as driving a brushless motor in brushed mode can permanently damage the motor.
+Below is an example of how configuring for different motor types would look like:
+Java
+Copy
+SparkMax neo = new SparkMax(1, MotorType.kBrushless);
+SparkMax cim = new SparkMax(2, MotorType.kBrushed);
+SparkMaxConfig cimConfig = new SparkMaxConfig();
+// Configure primary encoder for brushed motor
+cimConfig.encoder
+.countsPerRevolution(8192)
+.inverted(true);
+cim.configure(cimConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+Previous
+SPARK MAX vs SPARK Flex
+Next
+Closed Loop Control
+Last updated
+7 months ago
+Was this helpful?

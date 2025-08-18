@@ -1,0 +1,267 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Using Gamepads
+Boolean vs Float Data Types
+Was this helpful?
+Export as PDF
+Using Gamepads
+While our robot is able to do a lot autonomously, more often than not we need to input commands using our connected gamepad. There is a large variety of gamepads that could be used with the Driver Hub. For this tutorial we will be focusing on a generic PS4 controller, such as the
+Etpark Wired Controller
+or a Logitech controller.
+To initialize the gamepad that will act as User 1 (gamepad1, in code) press the options button and the Cross/A button on the gamepad at the same time. To initialize User 2 ( gamepad2, in code) press the options button and the Circle/B button at the same time.
+All buttons on a gamepad can be programmed to a specific task or behavior. Let's take a look at the breakdown of each button, their associated block name, and the type of data they output:
+PS4 Controllers
+Generic USB Gamepad
+Blocks
+Data Type
+Cross
+a
+Boolean
+Circle
+b
+Boolean
+Triangle
+y
+Boolean
+Square
+x
+Boolean
+Dpad Up
+Dpad Up
+Boolean
+Dpad Down
+Dpad Down
+Boolean
+Dpad Left
+Dpad Left
+Boolean
+Dpad Right
+Dpad Right
+Boolean
+Left Bumper
+Left Bumper
+Boolean
+Right Bumper
+Right Bumper
+Boolean
+Left Trigger
+Left Trigger
+Float
+Right Trigger
+Right Trigger
+Float
+PS
+Home
+Boolean
+Options
+Start/Options
+Boolean
+Share
+Back/Share
+Boolean
+Left Stick Button
+Left Stick Button
+Boolean
+Left Stick X Axis
+Left Stick X Axis
+Float
+Left Stick Y Axis
+Left Stick Y Axis
+Float
+Right Stick Button
+Right Stick Button
+Boolean
+Right Stick X Axis
+Right Stick X Axis
+Float
+Right Stick Y Axis
+Right Stick Y Axis
+Float
+Boolean vs Float Data Types
+The gamepad outputs two types of data back to the Control Hub to be used within the program:
+Boolean
+Boolean data has two possible values:
+True and False
+. These two values can also be represented by
+On and Off
+or
+1 and 0
+.
+The buttons, bumpers, and triggers on the gamepad provide boolean data to our robot! For example, a button that is not pressed will return a value of False (or 0) and a button that is pressed will return the value True (or 1).
+Float
+Float data is a number that can include decimal places and positive or negative values.
+On the gamepad, the float data returned will be between 1 and -1 for the joystick's position on each axis. Some examples of possible values are 0.44, 0, -0.29, or -1.
+Previous
+Common Errors in Configuration
+Next
+Part 1: Tackling the Basics
+Last updated
+1 year ago
+Was this helpful?

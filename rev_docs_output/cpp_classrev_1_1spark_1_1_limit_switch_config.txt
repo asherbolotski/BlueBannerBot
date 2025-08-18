@@ -1,0 +1,453 @@
+REVLib - C++
+Public Types
+|
+Public Member Functions
+|
+List of all members
+rev::spark::LimitSwitchConfig Class Reference
+#include <
+LimitSwitchConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Public Types
+enum
+Behavior
+: uint32_t {
+kKeepMovingMotor
+= 0
+,
+kStopMovingMotor
+= 1
+,
+kKeepMovingMotorAndSetPosition
+= 2
+,
+kStopMovingMotorAndSetPosition
+= 3
+ }
+enum
+Type
+{
+kNormallyOpen
+= 0
+,
+kNormallyClosed
+= 1
+ }
+Public Member Functions
+LimitSwitchConfig
+()=default
+~LimitSwitchConfig
+() override=default
+LimitSwitchConfig
+(const
+LimitSwitchConfig
+&)=delete
+LimitSwitchConfig
+&
+operator=
+(const
+LimitSwitchConfig
+&)=delete
+LimitSwitchConfig
+(
+LimitSwitchConfig
+&&) noexcept=delete
+LimitSwitchConfig
+&
+operator=
+(
+LimitSwitchConfig
+&&) noexcept=delete
+LimitSwitchConfig
+&
+Apply
+(
+LimitSwitchConfig
+&config)
+LimitSwitchConfig
+&
+SetSparkMaxDataPortConfig
+()
+LimitSwitchConfig
+&
+ForwardLimitSwitchEnabled
+(bool enabled)
+LimitSwitchConfig
+&
+ForwardLimitSwitchTriggerBehavior
+(
+Behavior
+behavior)
+LimitSwitchConfig
+&
+ForwardLimitSwitchType
+(
+Type
+type)
+LimitSwitchConfig
+&
+ForwardLimitSwitchPosition
+(double position)
+LimitSwitchConfig
+&
+ReverseLimitSwitchEnabled
+(bool enabled)
+LimitSwitchConfig
+&
+ReverseLimitSwitchTriggerBehavior
+(
+Behavior
+behavior)
+LimitSwitchConfig
+&
+ReverseLimitSwitchType
+(
+Type
+type)
+LimitSwitchConfig
+&
+ReverseLimitSwitchPosition
+(double position)
+LimitSwitchConfig
+&
+LimitSwitchPositionSensor
+(
+FeedbackSensor
+sensor)
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+virtual std::string
+Flatten
+()
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Member Enumeration Documentation
+◆
+Behavior
+enum
+rev::spark::LimitSwitchConfig::Behavior
+: uint32_t
+Enumerator
+kKeepMovingMotor
+kStopMovingMotor
+kKeepMovingMotorAndSetPosition
+kStopMovingMotorAndSetPosition
+◆
+Type
+enum
+rev::spark::LimitSwitchConfig::Type
+Enumerator
+kNormallyOpen
+kNormallyClosed
+Constructor & Destructor Documentation
+◆
+LimitSwitchConfig()
+[1/3]
+rev::spark::LimitSwitchConfig::LimitSwitchConfig
+(
+)
+default
+◆
+~LimitSwitchConfig()
+rev::spark::LimitSwitchConfig::~LimitSwitchConfig
+(
+)
+override
+default
+◆
+LimitSwitchConfig()
+[2/3]
+rev::spark::LimitSwitchConfig::LimitSwitchConfig
+(
+const
+LimitSwitchConfig
+&
+)
+delete
+◆
+LimitSwitchConfig()
+[3/3]
+rev::spark::LimitSwitchConfig::LimitSwitchConfig
+(
+LimitSwitchConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+LimitSwitchConfig
+& rev::spark::LimitSwitchConfig::operator=
+(
+const
+LimitSwitchConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+LimitSwitchConfig
+& rev::spark::LimitSwitchConfig::operator=
+(
+LimitSwitchConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+LimitSwitchConfig
+& LimitSwitchConfig::Apply
+(
+LimitSwitchConfig
+&
+config
+)
+Applies settings from another
+LimitSwitchConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+LimitSwitchConfig
+to copy settings from
+Returns
+The updated
+LimitSwitchConfig
+for method chaining
+◆
+SetSparkMaxDataPortConfig()
+LimitSwitchConfig
+& LimitSwitchConfig::SetSparkMaxDataPortConfig
+(
+)
+Configures the data port to use limit switches, which is specifically required for SPARK MAX.
+NOTE: This method is only necessary when using limit switches with a SPARK MAX without configuring any of its settings
+IMPORTANT: SPARK MAX does not support using limit switches in conjunction with an alternate encoder.
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ForwardLimitSwitchEnabled()
+LimitSwitchConfig
+& LimitSwitchConfig::ForwardLimitSwitchEnabled
+(
+bool
+enabled
+)
+Set whether to enable/disable motor shutdown based on the forward limit switch state. This does not not affect the result of the isPressed() command.
+Parameters
+enabled
+True for halting the motor when triggered
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ForwardLimitSwitchTriggerBehavior()
+LimitSwitchConfig
+& LimitSwitchConfig::ForwardLimitSwitchTriggerBehavior
+(
+Behavior
+behavior
+)
+Set the trigger behavior based on the forward limit switch state. This does not not affect the result of the isPressed() command.
+Parameters
+behavior
+The trigger behavior
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ForwardLimitSwitchType()
+LimitSwitchConfig
+& LimitSwitchConfig::ForwardLimitSwitchType
+(
+Type
+type
+)
+Set the normal state of the forward limit switch.
+Parameters
+type
+kNormallyOpen or kNormallyClosed
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ForwardLimitSwitchPosition()
+LimitSwitchConfig
+& LimitSwitchConfig::ForwardLimitSwitchPosition
+(
+double
+position
+)
+Set the triggered position value of the forward limit switch (used when the enable mode is set to kEnabled_SetValueOnTrigger).
+Parameters
+position
+user specified position value
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ReverseLimitSwitchEnabled()
+LimitSwitchConfig
+& LimitSwitchConfig::ReverseLimitSwitchEnabled
+(
+bool
+enabled
+)
+Set whether to enable/disable motor shutdown based on the reverse limit switch state. This does not not affect the result of the isPressed() command.
+Parameters
+enabled
+True for halting the motor when triggered
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ReverseLimitSwitchTriggerBehavior()
+LimitSwitchConfig
+& LimitSwitchConfig::ReverseLimitSwitchTriggerBehavior
+(
+Behavior
+behavior
+)
+Set the trigger behavior based on the reverse limit switch state. This does not not affect the result of the isPressed() command.
+Parameters
+behavior
+The trigger behavior
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ReverseLimitSwitchType()
+LimitSwitchConfig
+& LimitSwitchConfig::ReverseLimitSwitchType
+(
+Type
+type
+)
+Set the normal state of the reverse limit switch.
+Parameters
+type
+kNormallyOpen or kNormallyClosed
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+ReverseLimitSwitchPosition()
+LimitSwitchConfig
+& LimitSwitchConfig::ReverseLimitSwitchPosition
+(
+double
+position
+)
+Set the triggered position value of the reverse limit switch (used when the enable mode is set to kEnabled_SetValueOnTrigger).
+Parameters
+position
+user specified position value
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+◆
+LimitSwitchPositionSensor()
+LimitSwitchConfig
+& LimitSwitchConfig::LimitSwitchPositionSensor
+(
+FeedbackSensor
+sensor
+)
+Specifies the feedback sensor that the triggered position value is set on. This applies for both forward and reverse limit switches.
+Parameters
+sensor
+The feedback sensor to set the position value on
+Returns
+The modified
+LimitSwitchConfig
+object for method chaining
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+LimitSwitchConfig.h
+src/main/native/cpp/config/
+LimitSwitchConfig.cpp
+rev
+spark
+LimitSwitchConfig
+Generated by
+1.9.2

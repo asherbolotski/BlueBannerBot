@@ -1,0 +1,200 @@
+REV Crossover
+REV Crossover Landing
+Sensors
+Through Bore Encoder
+Specifications
+Application Examples
+Color Sensor V3
+Specifications
+Application Examples
+Discontinued Color Sensors
+V2 Specifications & Examples
+V1 Specifications & Examples
+2m Distance Sensor
+Specifications
+Application Examples
+Magnetic Limit Switch
+Specifications
+Application Examples
+Touch Sensor
+Specifications
+Application Examples
+Potentiometer
+Specifications
+Application Examples
+9-Axis IMU
+Specifications
+Configuring the 9-Axis IMU
+Blinkin LED Driver
+Blinkin LED Driver Overview
+Blinkin Specifications
+Blinkin Getting Started
+LED Pattern Tables
+Blinkin Troubleshooting
+REV ION Application Examples
+REV DUO Application Examples
+UltraPlanetary System
+UltraPlanetary System Overview
+UltraPlanetary Features
+Cartridge Details
+Load Ratings
+Assembly Instructions
+Mounting Brackets
+Ultra 90 Degree Gearbox
+Assembly Instructions
+Rotation Direction
+Servos & Accessories
+Servo Hub
+Servo Hub Wiring
+Configuring the Servo Hub with a Control Hub
+Channel Power
+Channel Pulse
+Servo Hub Status LED Patterns
+Troubleshooting
+REVLib for Servo Hub
+Smart Robot Servo
+SRS Gear Replacement
+SRS Programmer
+Switching Operating Modes
+Servo Power Module
+Indicators
+Digital LED Indicator
+Specifications
+Application Examples
+Gamepad
+Gamepad Overview
+Remapping Guide
+Powered by GitBook
+On this page
+Smart Robot Servo Basics
+Product Specifications
+Mechanical Specifications
+Kit Contents
+Operating Modes
+Default Operation
+Continuous Rotation
+Angular Limits
+Servo Accessories / Adapters
+Was this helpful?
+Export as PDF
+The REV Robotics Smart Robot Servo (SRS) (
+REV-41-1097
+) is a configurable metal-geared servo that takes the guesswork out of aligning and adjusting servo based mechanisms. One SRS can be used as a standard angular servo, a custom angular servo, and a continuous rotation servo by simply changing its settings with the
+SRS Programmer
+.
+Smart Robot Servo Basics
+The Smart Robot Servo has a 25T output spline. A
+spline
+is a specific groove pattern cut into the shaft which allows the rotation of the servo motor to be transmitted to the attached Aluminum Servo Horn (
+REV-41-1363
+) or
+Servo Adapter
+. Splines are like keys, so only matched types will fit together. If the internal gears or spline of the REV Robotics Smart Robot Servo become damaged, they are replaceable using a Replacement Gear Set (
+REV-41-1168
+).
+Product Specifications
+The REV Robotics Smart Robot Servo includes the following features:
+Default operation:
+270° motion over full input pulse range
+Metal gears
+Smart features
+Programmable with REV SRS Programmer (
+REV-31-1108
+)
+Servo Limit Mode
+Set right and left angular limits
+SRS will not move past limits
+Continuous Mode
+SRS spins continuously
+Speed and direction set by input pulse
+Mechanical Specifications
+Parameter
+Value and Units
+Stall torque (at 6V)
+13.5 kg-cm / 187.8 oz-in
+Speed (at 6V)
+0.13s/60º
+Maximum angular range
+270º
+Gear Material
+Brass
+Spline Type
+25T
+Dimensions
+40.2mm x 20.0mm x 38.0mm
+Weight
+2.05oz.
+Electrical Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Voltage Rating
+4.8
+6.0
+7.4
+V
+Stall Current (at 6V)
+-
+-
+2.0
+A
+Input Pulse
+500
+1500
+2500
+μs
+Kit Contents
+The REV Robotics SRS comes with the following:
+REV Smart Robot Servo
+Servo horn (arm) assortment
+Servo horn mounting hardware
+Operating Modes
+Default Operation
+Out of the box, the SRS operates as a 270° servo. However, the REV
+SRS Programmer
+can reconfigure the SRS to set angular limits or switch it into a continuous rotation mode.
+For more information on how to use the SRS programmer to change the servo modes see the
+Switching Operation Modes
+section
+The default range for the SRS is 270°. This range is mapped to an input pulse range of 500μs to 2500μs with 1500μs as the center point. The image below describes the pulse-to-angle relationship.
+Continuous Rotation
+The SRS can be configured with the SRS Programmer to operate in a continuous rotation mode. In this mode, the same input pulse range is mapped to direction and speed. The table below lists the pulse mapping for direction and speed.
+Angular Limits
+The SRS can be easily configured with the SRS Programmer to limit right and left motion at two user-defined angles. Input pulses that occur past the limits will be ignored and the SRS will hold the limit angle. Any two angles can be set as limits as long as the left limit is left of the center dead band and the right limit is to the right of the center dead band. The table below shows the valid regions for left and right limits.
+Once valid limits are programmed, the SRS will ignore any pulses that exceed the limits and hold the limit angle. For example, the image below exhibits what would happen a left limit of -30° and a right limit of +60° was set.
+Servo Accessories / Adapters
+REV Robotics Servo Adapters fit 25T spline servos like the REV Robotics Smart Robot Servo. In addition to the variety pack of generic servo horns which come with the Smart Robot Servo, there are five other custom servo adapters which make using servos with the REV ION Build System easy.
+Aluminum Servo Shaft Adapters
+(
+REV-41-1558
+) convert a 25T spline servo output shaft into a female 5mm hex socket.  This adapter can be used to drive a hex shaft directly.
+Aluminum Servo Horns
+(
+REV-41-1828
+) have a tapped hole pattern that can be directly mounted to any of the REV Robotics gears, wheels, or sprockets with the Motion Pattern.
+Aluminum Double Servo Arms
+(
+REV-41-1820
+)
+have two tapped holes that can be directly mounted to any of the REV Robotics extrusion, channel, or brackets.
+Aluminum 1/2in Rounded Hex Servo Shaft
+(
+REV-21-2892
+) converts a servo to a 1/2in Hex shaft for use with all other ION mechanical system components
+Plastic 1/2in Hex Linkage Arm
+(
+REV-21-2895
+) used to control a linkage, flap, lever or pushrod
+Plastic Face Mount Bracket
+The ION Servo Face Mount Bracket (
+REV-21-2896
+) allows for easy integration of Servo Motors into the ION System.
+Previous
+Troubleshooting
+Next
+SRS Gear Replacement
+Last updated
+1 year ago
+Was this helpful?

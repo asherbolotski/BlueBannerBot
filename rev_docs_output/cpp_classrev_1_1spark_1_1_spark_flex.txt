@@ -1,0 +1,536 @@
+REVLib - C++
+Public Member Functions
+|
+Public Attributes
+|
+Friends
+|
+List of all members
+rev::spark::SparkFlex Class Reference
+#include <
+SparkFlex.h
+>
+Inherits
+rev::spark::SparkBase
+.
+Public Member Functions
+SparkFlex
+(int deviceID,
+MotorType
+type)
+SparkFlexExternalEncoder
+&
+GetExternalEncoder
+()
+~SparkFlex
+() override=default
+Public Member Functions inherited from
+rev::spark::SparkBase
+~SparkBase
+() override=default
+void
+Set
+(double speed) override
+void
+SetVoltage
+(units::volt_t output) override
+double
+Get
+() const override
+void
+SetInverted
+(bool isInverted) override
+bool
+GetInverted
+() const override
+void
+Disable
+() override
+void
+StopMotor
+() override
+virtual
+REVLibError
+Configure
+(
+SparkBaseConfig
+&config,
+ResetMode
+resetMode,
+PersistMode
+persistMode)
+virtual
+REVLibError
+ConfigureAsync
+(
+SparkBaseConfig
+&config,
+ResetMode
+resetMode,
+PersistMode
+persistMode)
+SparkRelativeEncoder
+&
+GetEncoder
+()
+SparkAnalogSensor
+&
+GetAnalog
+()
+virtual
+SparkAbsoluteEncoder
+&
+GetAbsoluteEncoder
+()
+SparkClosedLoopController
+&
+GetClosedLoopController
+()
+virtual
+SparkLimitSwitch
+&
+GetForwardLimitSwitch
+()
+virtual
+SparkLimitSwitch
+&
+GetReverseLimitSwitch
+()
+SparkSoftLimit
+&
+GetForwardSoftLimit
+()
+SparkSoftLimit
+&
+GetReverseSoftLimit
+()
+rev::REVLibError
+ResumeFollowerMode
+()
+rev::REVLibError
+ResumeFollowerModeAsync
+()
+rev::REVLibError
+PauseFollowerMode
+()
+rev::REVLibError
+PauseFollowerModeAsync
+()
+bool
+IsFollower
+()
+bool
+HasActiveFault
+()
+bool
+HasStickyFault
+()
+bool
+HasActiveWarning
+()
+bool
+HasStickyWarning
+()
+Faults
+GetFaults
+()
+Faults
+GetStickyFaults
+()
+Warnings
+GetWarnings
+()
+Warnings
+GetStickyWarnings
+()
+double
+GetBusVoltage
+()
+double
+GetAppliedOutput
+()
+double
+GetOutputCurrent
+()
+double
+GetMotorTemperature
+()
+REVLibError
+ClearFaults
+()
+REVLibError
+SetCANTimeout
+(int milliseconds)
+REVLibError
+GetLastError
+()
+Public Member Functions inherited from
+rev::spark::SparkLowLevel
+virtual
+~SparkLowLevel
+()
+uint32_t
+GetFirmwareVersion
+()
+uint32_t
+GetFirmwareVersion
+(bool &isDebugBuild)
+std::string
+GetFirmwareString
+()
+std::vector< uint8_t >
+GetSerialNumber
+()
+int
+GetDeviceId
+() const
+MotorType
+GetMotorType
+()
+PeriodicStatus0
+GetPeriodicStatus0
+()
+PeriodicStatus1
+GetPeriodicStatus1
+()
+PeriodicStatus2
+GetPeriodicStatus2
+()
+PeriodicStatus3
+GetPeriodicStatus3
+()
+PeriodicStatus4
+GetPeriodicStatus4
+()
+PeriodicStatus5
+GetPeriodicStatus5
+()
+PeriodicStatus6
+GetPeriodicStatus6
+()
+PeriodicStatus7
+GetPeriodicStatus7
+()
+PeriodicStatus8
+GetPeriodicStatus8
+()
+PeriodicStatus9
+GetPeriodicStatus9
+()
+void
+SetPeriodicFrameTimeout
+(int timeoutMs)
+void
+SetCANMaxRetries
+(int numRetries)
+void
+SetControlFramePeriodMs
+(int periodMs)
+void
+CreateSimFaultManager
+()
+Public Attributes
+SparkFlexConfigAccessor
+configAccessor
+Friends
+class
+SparkFlexExternalEncoder
+Additional Inherited Members
+Public Types inherited from
+rev::spark::SparkBase
+enum class
+IdleMode
+{
+kCoast
+= 0
+,
+kBrake
+= 1
+ }
+enum class
+SoftLimitDirection
+{
+kForward
+,
+kReverse
+}
+enum class
+ResetMode
+{
+kNoResetSafeParameters
+,
+kResetSafeParameters
+}
+enum class
+PersistMode
+{
+kNoPersistParameters
+,
+kPersistParameters
+}
+Public Types inherited from
+rev::spark::SparkLowLevel
+enum class
+MotorType
+{
+kBrushed
+= 0
+,
+kBrushless
+= 1
+ }
+enum class
+ControlType
+{
+kDutyCycle
+= 0
+,
+kVelocity
+= 1
+,
+kVoltage
+= 2
+,
+kPosition
+= 3
+,
+kSmartMotion
+= 4
+,
+kCurrent
+= 5
+,
+kSmartVelocity
+= 6
+,
+kMAXMotionPositionControl
+= 7
+,
+kMAXMotionVelocityControl
+= 8
+}
+enum class
+ParameterStatus
+{
+kOK
+= 0
+,
+kInvalidID
+= 1
+,
+kMismatchType
+= 2
+,
+kAccessMode
+= 3
+,
+kInvalid
+= 4
+,
+kNotImplementedDeprecated
+= 5
+}
+enum class
+PeriodicFrame
+{
+kStatus0
+= 0
+,
+kStatus1
+= 1
+,
+kStatus2
+= 2
+,
+kStatus3
+= 3
+,
+kStatus4
+= 4
+,
+kStatus5
+= 5
+,
+kStatus6
+= 6
+,
+kStatus7
+= 7
+,
+kStatus8
+= 8
+,
+kStatus9
+= 9
+}
+enum class
+SparkModel
+{
+kSparkMax
+= 0
+,
+kSparkFlex
+= 1
+,
+kUnknown
+= 255
+ }
+Static Public Attributes inherited from
+rev::spark::SparkLowLevel
+static const uint16_t
+kAPIMajorVersion
+= c_Spark_kAPIMajorVersion
+static const uint8_t
+kAPIMinorVersion
+= c_Spark_kAPIMinorVersion
+static const uint8_t
+kAPIBuildVersion
+= c_Spark_kAPIBuildVersion
+static const uint32_t
+kAPIVersion
+= c_Spark_kAPIVersion
+Protected Member Functions inherited from
+rev::spark::SparkBase
+SparkBase
+(int deviceID,
+MotorType
+type,
+SparkModel
+model)
+SparkRelativeEncoder
+GetEncoderEvenIfAlreadyCreated
+()
+uint8_t
+GetMotorInterface
+()
+SparkBase::SparkModel
+GetSparkModel
+()
+Protected Member Functions inherited from
+rev::spark::SparkLowLevel
+REVLibError
+SetpointCommand
+(double value,
+SparkLowLevel::ControlType
+ctrl=
+ControlType::kDutyCycle
+,
+ClosedLoopSlot
+pidSlot=ClosedLoopSlot::kSlot0, double arbFeedforward=0, int arbFFUnits=0)
+float
+GetSafeFloat
+(float f)
+Protected Attributes inherited from
+rev::spark::SparkBase
+double
+m_setpoint
+{0.0}
+SparkRelativeEncoder
+m_RelativeEncoder
+std::atomic< bool >
+m_relativeEncoderCreated
+{false}
+SparkAnalogSensor
+m_AnalogSensor
+std::atomic< bool >
+m_analogSensorCreated
+{false}
+SparkAbsoluteEncoder
+m_AbsoluteEncoder
+std::atomic< bool >
+m_absoluteEncoderCreated
+{false}
+SparkClosedLoopController
+m_ClosedLoopController
+std::atomic< bool >
+m_closedLoopControllerCreated
+{false}
+SparkLimitSwitch
+m_ForwardLimitSwitch
+std::atomic< bool >
+m_forwardLimitSwitchCreated
+{false}
+SparkLimitSwitch
+m_ReverseLimitSwitch
+std::atomic< bool >
+m_reverseLimitSwitchCreated
+{false}
+SparkSoftLimit
+m_ForwardSoftLimit
+std::atomic< bool >
+m_forwardSoftLimitCreated
+{false}
+SparkSoftLimit
+m_ReverseSoftLimit
+std::atomic< bool >
+m_reverseSoftLimitCreated
+{false}
+Protected Attributes inherited from
+rev::spark::SparkLowLevel
+MotorType
+m_motorType
+SparkModel
+m_expectedSparkModel
+void *
+m_sparkMaxHandle
+Constructor & Destructor Documentation
+◆
+SparkFlex()
+SparkFlex::SparkFlex
+(
+int
+deviceID
+,
+MotorType
+type
+)
+explicit
+Create a new object to control a SPARK Flex motor Controller
+Parameters
+deviceID
+The device ID.
+type
+The motor type connected to the controller. Brushless motor wires must be connected to their matching colors, and the hall sensor must be plugged in. Brushed motors must be connected to the Red and Black terminals only.
+◆
+~SparkFlex()
+rev::spark::SparkFlex::~SparkFlex
+(
+)
+override
+default
+Closes the SPARK Flex Controller
+Member Function Documentation
+◆
+GetExternalEncoder()
+SparkFlexExternalEncoder
+& SparkFlex::GetExternalEncoder
+(
+)
+Returns an object for interfacing with an external quadrature encoder
+Friends And Related Function Documentation
+◆
+SparkFlexExternalEncoder
+friend class
+SparkFlexExternalEncoder
+friend
+Member Data Documentation
+◆
+configAccessor
+SparkFlexConfigAccessor
+rev::spark::SparkFlex::configAccessor
+Accessor for SPARK parameter values. This object contains fields and methods to retrieve parameters that have been applied to the device. To set parameters, see
+SparkBaseConfig
+and
+SparkBase::Configure
+.
+NOTE: This uses calls that are blocking to retrieve parameters and should be used infrequently.
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/
+SparkFlex.h
+src/main/native/cpp/
+SparkFlex.cpp
+rev
+spark
+SparkFlex
+Generated by
+1.9.2

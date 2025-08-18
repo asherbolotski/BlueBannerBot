@@ -1,0 +1,196 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Reusing Configurations
+Applying a Configuration to Another One
+How It Works
+Applying with Sub-Configurations
+Was this helpful?
+Export as PDF
+Reusing Configurations
+Because configuration objects are not tied to a single device, they can be used multiples times for multiple devices of the same type, reducing the amount of boilerplate code for devices that function similarly.
+Copy
+config
+.
+parameter1
+(
+42
+)
+.
+parameter2
+(
+43
+)
+.
+parameter3
+(
+44
+);
+device1
+.
+configure
+(config
+,
+ResetMode
+.
+kResetParameters
+);
+device2
+.
+configure
+(config
+,
+ResetMode
+.
+kResetParameters
+);
+Applying a Configuration to Another One
+Configuration classes provide an
+apply()
+method to apply parameters from one configuration to another, providing greater flexibility when configuring multiple devices of the same type.
+For example, you can create a common configuration for multiple devices of the same type and apply it to each device's individual configuration. This simplifies setup by avoiding duplicated code, allowing you to focus on setting only the unique parameters for each device.
+Depending on the configuration class, multiple overloaded
+apply()
+methods may be provided. However, the simplest form of
+apply()
+accepts a configuration object of the same type as the target. Just like the other parameter setting methods,
+apply()
+returns a modified instance of the object for method chaining.
+How It Works
+Importantly, applying a configuration is distinct from copying it. Copying would completely overwrite the target configuration, including potentially removing parameters previously set. Instead,
+apply()
+selectively updates parameters.
+The
+apply()
+method updates only the parameters that exist in the passed configuration object. Parameters in the target configuration that are not present in the passed configuration remain unchanged. If a parameter exists in both the target and the passed configurations, the value from the passed configuration takes precedence.
+Below is a basic example of how
+apply()
+can be used to create a starting point from another configuration:
+Copy
+Config config1 = new Config();
+Config config2 = new Config();
+config1
+.parameter1(42)
+.parameter2(43);
+config2
+.apply(config1)
+.parameter3(44);
+/*
+* config1 will have the values:
+*   parameter1: 42
+*   parameter2: 43
+*
+* config2 will have the following values:
+*   parameter1: 42
+*   parameter2: 43
+*   parameter3: 44
+*/
+You can also adjust parameters that were set from calling
+apply()
+:
+Copy
+Config config1 = new Config();
+Config config2 = new Config();
+config1
+.parameter1(42)
+.parameter2(43);
+config2
+.apply(config1)
+.parameter2(44);
+/*
+* config1 will have the values:
+*   parameter1: 42
+*   parameter2: 43
+*
+* config2 will have the following values:
+*   parameter1: 42
+*   parameter2: 44
+*/
+Calling
+apply()
+may override previously set parameters, so it is important to keep ordering in consideration:
+Copy
+Config config1 = new Config();
+Config config2 = new Config();
+config1
+.parameter1(42)
+.parameter2(43);
+config2
+.parameter2(44)
+.apply(config1);
+/*
+* config1 will have the values:
+*   parameter1: 42
+*   parameter2: 43
+*
+* config2 will have the following values:
+*   parameter1: 42
+*   parameter2: 43
+*/
+Applying with Sub-Configurations
+For configuration classes that contain sub-configurations, using the base
+apply()
+will also apply the parameters from the passed object's sub-configurations to the target's. The same will apply to further nested sub-configurations.
+Copy
+Config config1 = new Config();
+Config config2 = new Config();
+config1
+.parameter1(42)
+.parameter2(43)
+.subConfig1
+.parameter3(44);
+config2.apply(config1);
+// config2's subConfig1 will have parameter3 set to 44
+Configuration classes that contain sub-configurations will also provide overloaded methods of
+apply()
+for each of its sub-configurations. These methods allow you to apply a sub-configuration object to multiple parent configurations.
+Copy
+Config config1 = new Config();
+Config config2 = new Config();
+SubConfig1 subConfig1 = new SubConfig1();
+config1
+.parameter1(42)
+.parameter2(43)
+.subConfig1
+.parameter3(44);
+subConfig1
+.parameter3(45);
+config2
+.apply(config1)      // base apply(Config)
+.apply(subConfig1);  // overloaded apply(SubConfig1)
+// config2's subConfig1 will have parameter3 set to 45
+Previous
+Retrieving Configurations
+Next
+SPARK MAX vs SPARK Flex
+Last updated
+8 months ago
+Was this helpful?

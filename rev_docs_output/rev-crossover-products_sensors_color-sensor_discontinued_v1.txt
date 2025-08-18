@@ -1,0 +1,156 @@
+REV Crossover
+REV Crossover Landing
+Sensors
+Through Bore Encoder
+Specifications
+Application Examples
+Color Sensor V3
+Specifications
+Application Examples
+Discontinued Color Sensors
+V2 Specifications & Examples
+V1 Specifications & Examples
+2m Distance Sensor
+Specifications
+Application Examples
+Magnetic Limit Switch
+Specifications
+Application Examples
+Touch Sensor
+Specifications
+Application Examples
+Potentiometer
+Specifications
+Application Examples
+9-Axis IMU
+Specifications
+Configuring the 9-Axis IMU
+Blinkin LED Driver
+Blinkin LED Driver Overview
+Blinkin Specifications
+Blinkin Getting Started
+LED Pattern Tables
+Blinkin Troubleshooting
+REV ION Application Examples
+REV DUO Application Examples
+UltraPlanetary System
+UltraPlanetary System Overview
+UltraPlanetary Features
+Cartridge Details
+Load Ratings
+Assembly Instructions
+Mounting Brackets
+Ultra 90 Degree Gearbox
+Assembly Instructions
+Rotation Direction
+Servos & Accessories
+Servo Hub
+Servo Hub Wiring
+Configuring the Servo Hub with a Control Hub
+Channel Power
+Channel Pulse
+Servo Hub Status LED Patterns
+Troubleshooting
+REVLib for Servo Hub
+Smart Robot Servo
+SRS Gear Replacement
+SRS Programmer
+Switching Operating Modes
+Servo Power Module
+Indicators
+Digital LED Indicator
+Specifications
+Application Examples
+Gamepad
+Gamepad Overview
+Remapping Guide
+Powered by GitBook
+On this page
+General Specifications
+Electrical Specifications
+Mechanical Drawings
+Pinout
+Application Examples
+Application Information
+FTC Application
+Additional Resources
+Was this helpful?
+Export as PDF
+General Specifications
+Parameter Description
+Parameter
+Sensor Type
+I2C
+I2C Address
+0x39
+Sensor Part
+TMD37821
+Measurement Channels
+Red, Green, Blue, Alpha, and Proximity
+Electrical Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Operating Voltage Range
+-
+-
+3.3
+V
+Proximity Sensor Range
+5
+-
+25
+cm
+Mechanical Drawings
+All dimensions are in millimeters.
+Pinout
+Application Examples
+Application Information
+The REV Robotics Color Sensor has two sensing elements, proximity and color.
+Proximity measurements are based on IR reflectance and can vary depending on lighting conditions and target reflectivity.
+Color measurements consist of Red, Green, Blue, and Alpha (clear) values. The white LED on the sensor has a slide switch to turn the LED on or off. Unlit targets are best illuminated with the build-in LED while bright or light-emitting targets may not require the build-in LED. Color data is best collected within 2cm of the target for the strongest color differentiation.
+FTC Application
+Configuring for the Control System
+When working with the Color Sensor V1 configure your robot to use the "REV Color/Range Sensor" as shown in the image below.
+In this example, the Color Sensor V1 is configured on I2C bus 2. The Color Sensor V1 can be configured on any of the I2C busses.
+Recall that I2C sensors must have different addresses in order to operate on the same bus.
+Programming Example
+This program shows the values from the Color Sensor on your phone. Your team will need to figure out the logic to use this information in your program. Below there are three examples of different color modes and their readings. Light Detected mode will read the amount of light on the sensor from 0-1.0. Because the sensor is close to a surface, the LED in the sensor reads 1.0 in the examples.
+OnBot Java
+The code assumes that the Color Sensor was configured with the name “Color.”
+Copy
+package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+@TeleOp
+public class TestColorSensor extends LinearOpMode {
+// Define a variable for our color sensor
+ColorSensor color;
+@Override
+public void runOpMode() {
+// Get the color sensor from hardwareMap
+color = hardwareMap.get(ColorSensor.class, "Color");
+// Wait for the Play button to be pressed
+waitForStart();
+// While the Op Mode is running, update the telemetry values.
+while (opModeIsActive()) {
+telemetry.addData("Red", color.red());
+telemetry.addData("Green", color.green());
+telemetry.addData("Blue", color.blue());
+telemetry.update();
+}
+}
+}
+Additional Resources
+Additional information about the TMD37821, its capabilities, and its features can be found in the following datasheet:
+TMD37821 Datasheet
+Previous
+V2 Specifications & Examples
+Next
+2m Distance Sensor
+Last updated
+1 year ago
+Was this helpful?

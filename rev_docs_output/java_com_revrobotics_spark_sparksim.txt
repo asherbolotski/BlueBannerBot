@@ -1,0 +1,425 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark
+Class SparkSim
+java.lang.Object
+com.revrobotics.spark.SparkSim
+Direct Known Subclasses:
+SparkFlexSim
+,
+SparkMaxSim
+public class
+SparkSim
+extends
+Object
+Constructor Summary
+Constructors
+Constructor
+Description
+SparkSim
+(
+SparkBase
+spark,
+DCMotor
+motor)
+Create a simulated CAN Spark Max or Flex object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+disable
+()
+Disable the Spark Device, causing the output to go to 0
+void
+enable
+()
+Enable the Spark Device, allowing the motor to run.
+SparkAbsoluteEncoderSim
+getAbsoluteEncoderSim
+()
+Get the
+SparkAbsoluteEncoderSim
+object associated with this Spark Device.
+SparkAnalogSensorSim
+getAnalogSensorSim
+()
+Get the
+SparkAnalogSensorSim
+object associated with this Spark Device.
+double
+getAppliedOutput
+()
+Get the simulated applied output.
+double
+getBusVoltage
+()
+Get the simulated bus voltage
+ClosedLoopSlot
+getClosedLoopSlot
+()
+Get the simulated closed loop slot
+SparkSimFaultManager
+getFaultManager
+()
+Get the
+SparkSimFaultManager
+object associated with this Spark Device.
+SparkLimitSwitchSim
+getForwardLimitSwitchSim
+()
+Get the Forward
+SparkLimitSwitchSim
+object associated with this Spark Device.
+double
+getMotorCurrent
+()
+Get the simulated motor current in amps.
+double
+getPosition
+()
+Get the simulation position.
+SparkRelativeEncoderSim
+getRelativeEncoderSim
+()
+Get the
+SparkRelativeEncoderSim
+object associated with this Spark Device.
+SparkLimitSwitchSim
+getReverseLimitSwitchSim
+()
+Get the Reverse
+SparkLimitSwitchSim
+object associated with this Spark Device.
+double
+getSetpoint
+()
+Get the setpoint sent to the device
+double
+getVelocity
+()
+Get the simulation velocity.
+void
+iterate
+(double velocity,
+ double vbus,
+ double dt)
+Run internal calculations and set internal state.
+void
+setAppliedOutput
+(double appliedOutput)
+Set the simulated applied output.
+void
+setBusVoltage
+(double voltage)
+Set the simulated bus voltage.
+void
+setMotorCurrent
+(double current)
+Set the simulated motor current.
+void
+setPosition
+(double position)
+Set the simulated position.
+void
+setVelocity
+(double velocity)
+Set the simulation velocity.
+void
+useDriverStationEnable
+()
+Use the driver station enable as the method to enable/disable the Spark Max.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SparkSim
+public
+SparkSim
+(
+SparkBase
+spark,
+DCMotor
+motor)
+Create a simulated CAN Spark Max or Flex object. This class simulates some of the internal
+ behavior of the device. CANSparkMaxSim and CANSparkFlexSim wrap this class. This class is not
+ required to display to the sim GUI, but is required to interact with it or inject physics
+ simulation.
+See
+iterate(double, double, double)
+for more information on physics simulation.
+Parameters:
+spark
+- The Spark to simulate
+motor
+- The WPILib DCMotor class object to use for calculations. If multiple motors are
+     connected to the same gearbox and follow each other, a single DCMotor and CANSparkSim can
+     be used to represent all of them.
+Method Details
+getAppliedOutput
+public
+double
+getAppliedOutput
+()
+Get the simulated applied output. This matches the value from the CANSparkBase
+ getAppliedOutput(). Multiply by vbus to get the motor voltage.
+Returns:
+applied output [-1, 1]
+setAppliedOutput
+public
+void
+setAppliedOutput
+(double appliedOutput)
+Set the simulated applied output. Use this only in place of iterate().
+Parameters:
+appliedOutput
+- simulated applied output value [-1, 1]
+getSetpoint
+public
+double
+getSetpoint
+()
+Get the setpoint sent to the device
+Returns:
+setpoint value
+getClosedLoopSlot
+public
+ClosedLoopSlot
+getClosedLoopSlot
+()
+Get the simulated closed loop slot
+Returns:
+the closed loop slot being used
+iterate
+public
+void
+iterate
+(double velocity,
+ double vbus,
+ double dt)
+Run internal calculations and set internal state.
+This method belongs in Simulation Periodic. Use a WPILib physics simulation class or
+ equivalent to calculate the velocity from the applied output and pass it in to this method,
+ which will update the simulated state of the motor.
+Simulating a Spark this way will use the configurations and controls of the original
+ CANSparkMax or CANSparkFlex device to simulate velocity noise, all supported control modes
+ (including MAXMotion), arb feedforward input, voltage compensation, limit switches, soft
+ limits, and current limiting, with algorithms translated directly from the Spark firmware.
+This method will update the CANSparkSim's position and velocity, accessible with
+getPosition()
+and
+getVelocity()
+. These values are automatically used
+ as the selected feedback sensor for calculations like closed-loop control and soft limits, and
+ are reflected in the selected sensor's value. Other sensors each have their own Sim class,
+ which can be used to inject their positions based on these calculations, to match how they are
+ configured physically. For example, to represent an Absolute Encoder on a 1:5 ratio from the
+ mechanism,
+SparkAbsoluteEncoderSim.iterate(double, double)
+is called each
+ simulationPeriodic loop with a velocity divided by 5. The selected sensor's position and
+ velocity will automatically be updated to match the CANSparkSim's when this method is called.
+Parameters:
+velocity
+- The externally calculated velocity in units after conversion. For example, if
+     the velocity factor is 1, use RPM. If the velocity factor is (1 / 60) use RPS. The internal
+     simulation state will 'lag' slightly behind this input due to the SPARK Device internal
+     filtering. Noise will also be added.
+vbus
+- Bus voltage in volts (See WPILib's BatterySim class to simulate this, or use 12V)
+dt
+- Simulation time step in seconds
+getVelocity
+public
+double
+getVelocity
+()
+Get the simulation velocity. This should be equivalent to calling CANEncoder().getVelocity()
+Returns:
+Velocity of the SPARK Device accounting for conversion factor
+setVelocity
+public
+void
+setVelocity
+(double velocity)
+Set the simulation velocity. This method expects units after the conversion factor (your
+ program's native units).
+Only use this method if not calling iterate()
+Parameters:
+velocity
+- simulation velocity
+getPosition
+public
+double
+getPosition
+()
+Get the simulation position. This should be equivalent to calling CANEncoder().getPosition()
+Returns:
+Velocity of the SPARK Device
+setPosition
+public
+void
+setPosition
+(double position)
+Set the simulated position. This is equivalent to calling CANEncoder().setPosition(), in fact
+ you probably are using that unless you have a good reason to set the sim value separately, or
+ are running simulation without using iterate()
+Parameters:
+position
+- simulated position in your programs units (after conversion)
+getBusVoltage
+public
+double
+getBusVoltage
+()
+Get the simulated bus voltage
+Returns:
+simulated bus voltage in volts
+setBusVoltage
+public
+void
+setBusVoltage
+(double voltage)
+Set the simulated bus voltage. Use this if you are not using the iterate() method.
+Parameters:
+voltage
+- bus voltage in volts
+getMotorCurrent
+public
+double
+getMotorCurrent
+()
+Get the simulated motor current in amps. This is equivalent to running spark.getOutputCurrent()
+Returns:
+motor current in amps
+setMotorCurrent
+public
+void
+setMotorCurrent
+(double current)
+Set the simulated motor current. The iterate() method also sets this value. If you are using an
+ external method to calculate the current, but still want to use the iterate() method, call this
+ function *after* iterate()
+Parameters:
+current
+- current in amps
+enable
+public
+void
+enable
+()
+Enable the Spark Device, allowing the motor to run.
+disable
+public
+void
+disable
+()
+Disable the Spark Device, causing the output to go to 0
+useDriverStationEnable
+public
+void
+useDriverStationEnable
+()
+Use the driver station enable as the method to enable/disable the Spark Max. This is the
+ default, so you do not need to call this unless you previously called enable() or disable().
+getRelativeEncoderSim
+public
+SparkRelativeEncoderSim
+getRelativeEncoderSim
+()
+Get the
+SparkRelativeEncoderSim
+object associated with this Spark Device. This will
+ allow you to read/write data from the simulated sensor and view it in the Sim GUI.
+Returns:
+The
+SparkRelativeEncoderSim
+object associated with this Spark Device
+getAbsoluteEncoderSim
+public
+SparkAbsoluteEncoderSim
+getAbsoluteEncoderSim
+()
+Get the
+SparkAbsoluteEncoderSim
+object associated with this Spark Device. This will
+ allow you to read/write data from the simulated sensor and view it in the Sim GUI.
+Returns:
+The
+SparkAbsoluteEncoderSim
+object associated with this Spark Device
+getAnalogSensorSim
+public
+SparkAnalogSensorSim
+getAnalogSensorSim
+()
+Get the
+SparkAnalogSensorSim
+object associated with this Spark Device. This will allow
+ you to read/write data from the simulated sensor and view it in the Sim GUI.
+Returns:
+The
+SparkAnalogSensorSim
+object associated with this Spark Device
+getForwardLimitSwitchSim
+public
+SparkLimitSwitchSim
+getForwardLimitSwitchSim
+()
+Get the Forward
+SparkLimitSwitchSim
+object associated with this Spark Device. This will
+ allow you to read/write data from the simulated sensor and view it in the Sim GUI.
+Returns:
+The Forward
+SparkLimitSwitchSim
+object associated with this Spark Device
+getReverseLimitSwitchSim
+public
+SparkLimitSwitchSim
+getReverseLimitSwitchSim
+()
+Get the Reverse
+SparkLimitSwitchSim
+object associated with this Spark Device. This will
+ allow you to read/write data from the simulated sensor and view it in the Sim GUI.
+Returns:
+The Reverse
+SparkLimitSwitchSim
+object associated with this Spark Device
+getFaultManager
+public
+SparkSimFaultManager
+getFaultManager
+()
+Get the
+SparkSimFaultManager
+object associated with this Spark Device. This will allow
+ you to set simulated faults on your simulated device and view the Fault Manager in the Sim GUI.
+Returns:
+The
+SparkSimFaultManager
+object associated with this Spark Device

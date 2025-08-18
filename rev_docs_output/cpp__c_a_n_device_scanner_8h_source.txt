@@ -1,0 +1,881 @@
+REVLib - C++
+CANDeviceScanner.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2018-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <rev/driver/FRCCanSpec.h>
+32
+#include <stdint.h>
+33
+34
+#include <atomic>
+35
+#include <map>
+36
+#include <memory>
+37
+#include <set>
+38
+#include <string>
+39
+#include <thread>
+40
+#include <unordered_map>
+41
+#include <utility>
+42
+#include <vector>
+43
+44
+namespace
+rev
+{
+45
+namespace
+detail {
+46
+47
+static
+const
+char
+* frc_deviceType_text[16] = {
+48
+"Broadcast"
+,
+49
+"Robot Controller"
+,
+50
+"Motor Controller"
+,
+51
+"Relay Controller"
+,
+52
+"Gyro Sensor"
+,
+53
+"Accelerometer"
+,
+54
+"Ultrasonic Sensor"
+,
+55
+"Gear Tooth Sensor"
+,
+56
+"Power Distribution"
+,
+57
+"Pneumatics Controller"
+,
+58
+"Misc CAN Device"
+,
+59
+"IO Breakout"
+,
+60
+"Servo Controller"
+,
+61
+"Reserved"
+62
+"Firmware Update"
+,
+63
+"Unknown"
+,
+64
+};
+65
+66
+static
+inline
+const
+char
+* GetFRCDeviceTypeText(uint32_t index) {
+67
+if
+(index > 12 && index < 31) {
+68
+index = 13;
+69
+}
+else
+if
+(index > 31) {
+70
+index = 15;
+71
+}
+else
+if
+(index == 31) {
+72
+index = 14;
+73
+}
+else
+{
+74
+index = 0;
+75
+}
+76
+return
+frc_deviceType_text[index];
+77
+}
+78
+79
+static
+const
+char
+* frc_manufacturer_text[18] = {
+"Broadcast"
+,
+80
+"NI"
+,
+81
+"LM"
+,
+82
+"DEKA"
+,
+83
+"CTRE"
+,
+84
+"REV"
+,
+85
+"Grapple"
+,
+86
+"MindSensors"
+,
+87
+"Team Use"
+,
+88
+"Kauai Labs"
+,
+89
+"Copperforge"
+,
+90
+"Playing with Fusion"
+,
+91
+"Studica"
+,
+92
+"TheThriftyBot"
+,
+93
+"Redux Robotics"
+,
+94
+"AndyMark"
+,
+95
+"Vivid-Hosting"
+,
+96
+"Unknown"
+};
+97
+98
+static
+inline
+const
+char
+* GetFRCManufacturerText(uint32_t index) {
+99
+index = (index > 17) ? 17 : index;
+100
+return
+frc_manufacturer_text[index];
+101
+}
+102
+103
+// Note: This is dependent on __attribute__((PACKED)) and processor is
+104
+// little-endian
+105
+106
+#ifdef _WIN32
+107
+#define PACKED
+108
+#pragma pack(push, 1)
+109
+#else
+110
+#define PACKED __attribute__((__packed__))
+111
+#endif
+112
+113
+struct
+PACKED
+frc_frameIDFields_t
+{
+114
+uint16_t
+deviceNumber
+: 6;
+115
+uint16_t
+api
+: 10;
+116
+rev::FRCManufacturer
+manufacturer
+: 8;
+117
+rev::FRCDeviceType
+deviceType
+: 5;
+118
+uint8_t
+rsvd
+: 3;
+// these are DNC
+119
+};
+120
+121
+union
+frc_frameID_t
+{
+122
+frc_frameIDFields_t
+fields
+;
+123
+uint32_t
+raw
+;
+124
+};
+125
+126
+struct
+CANScanIdentifier
+{
+127
+rev::FRCDeviceType
+deviceTypeId
+;
+128
+rev::FRCManufacturer
+manufacturerId
+;
+129
+uint16_t
+canId
+;
+130
+uint32_t
+uniqueId
+;
+131
+std::string
+name
+;
+132
+CANScanIdentifier
+(uint32_t arbid, std::string
+name
+, uint32_t
+uniqueId
+= 0) {
+133
+frc_frameID_t
+frame;
+134
+frame.
+raw
+= arbid;
+135
+this->name =
+name
+;
+136
+this->uniqueId =
+uniqueId
+;
+137
+this->deviceTypeId = frame.
+fields
+.
+deviceType
+;
+138
+this->manufacturerId = frame.
+fields
+.
+manufacturer
+;
+139
+this->canId = frame.
+fields
+.
+deviceNumber
+;
+140
+}
+141
+142
+std::string
+Name
+()
+const
+{
+143
+if
+(
+name
+.empty()) {
+144
+return
+std::string(GetFRCManufacturerText(
+manufacturerId
+)) +
+" "
++
+145
+std::string(GetFRCDeviceTypeText(
+deviceTypeId
+));
+146
+}
+else
+{
+147
+return
+name
+;
+148
+}
+149
+}
+150
+};
+151
+152
+inline
+bool
+operator<
+(
+const
+CANScanIdentifier
+& lhs,
+153
+const
+CANScanIdentifier
+& rhs) {
+154
+return
+std::tie(lhs.
+deviceTypeId
+, lhs.
+manufacturerId
+, lhs.
+canId
+,
+155
+lhs.
+uniqueId
+) < std::tie(rhs.
+deviceTypeId
+,
+156
+rhs.
+manufacturerId
+, rhs.
+canId
+,
+157
+rhs.
+uniqueId
+);
+158
+}
+159
+160
+inline
+bool
+operator>
+(
+const
+CANScanIdentifier
+& lhs,
+161
+const
+CANScanIdentifier
+& rhs) {
+162
+return
+std::tie(lhs.
+deviceTypeId
+, lhs.
+manufacturerId
+, lhs.
+canId
+,
+163
+lhs.
+uniqueId
+) > std::tie(rhs.
+deviceTypeId
+,
+164
+rhs.
+manufacturerId
+, rhs.
+canId
+,
+165
+rhs.
+uniqueId
+);
+166
+}
+167
+168
+inline
+bool
+operator==
+(
+const
+CANScanIdentifier
+& lhs,
+169
+const
+CANScanIdentifier
+& rhs) {
+170
+return
+std::tie(lhs.
+deviceTypeId
+, lhs.
+manufacturerId
+, lhs.
+canId
+,
+171
+lhs.
+uniqueId
+) == std::tie(rhs.
+deviceTypeId
+,
+172
+rhs.
+manufacturerId
+, rhs.
+canId
+,
+173
+rhs.
+uniqueId
+);
+174
+}
+175
+176
+class
+CANBusScanner
+{
+177
+public
+:
+178
+// Make sure the buffer size is large enough to capture all needed messages
+179
+// in the thread interval time
+180
+explicit
+CANBusScanner
+(
+int
+buffersize = 256,
+int
+threadIntervalMs = 10);
+181
+~CANBusScanner
+();
+182
+183
+bool
+Start
+();
+184
+void
+Stop
+();
+185
+bool
+Running
+();
+186
+std::string
+LastError
+();
+187
+std::vector<CANScanIdentifier>
+CANBusScan
+();
+188
+void
+RegisterDevice
+(std::string name, std::vector<uint32_t> validIds,
+189
+int32_t maxFramePeriodMs = 100);
+190
+191
+private
+:
+192
+class
+CANScanElement {
+193
+uint64_t lastSeen;
+194
+uint64_t timeout;
+195
+196
+public
+:
+197
+explicit
+CANScanElement(uint64_t timeoutMs = 1000);
+198
+void
+UpdateLastSeen();
+199
+bool
+IsActive()
+const
+;
+200
+};
+201
+202
+class
+CANScanCollection {
+203
+public
+:
+204
+CANScanCollection(std::string name, uint32_t arbId, uint64_t timeoutMs)
+205
+: name(name), timeout(timeoutMs), arbId(arbId) {}
+206
+207
+std::vector<int> ActiveDevices()
+const
+{
+208
+std::vector<int> result;
+209
+for
+(
+const
+auto
+& [devKey, devValue] : devices) {
+210
+if
+(devValue.IsActive()) {
+211
+result.push_back(devKey);
+212
+}
+213
+}
+214
+return
+result;
+215
+}
+216
+217
+void
+AddOrUpdateDevice(
+int
+id
+) {
+218
+if
+(devices.find(
+id
+) != devices.end()) {
+219
+devices[id] = CANScanElement(timeout);
+220
+}
+221
+devices[id].UpdateLastSeen();
+222
+}
+223
+224
+std::string Name()
+const
+{
+return
+name; }
+225
+uint32_t ArbId()
+const
+{
+return
+arbId; }
+226
+227
+private
+:
+228
+std::string name;
+229
+uint64_t timeout;
+230
+uint32_t arbId;
+231
+std::unordered_map<int, CANScanElement> devices;
+232
+};
+233
+234
+// Data structure is a map of all arbIds that point to a single shared
+235
+// collection and a vector of all collections (same pointer). This allows a
+236
+// fast lookup per arbID received and a way to iterate through by registered
+237
+// device
+238
+std::unordered_map<uint32_t, std::shared_ptr<CANScanCollection> >
+239
+m_registeredDevices;
+240
+std::vector<std::shared_ptr<CANScanCollection> > m_registeredList;
+241
+242
+int
+m_streamBufferSize;
+243
+uint32_t m_streamHandle;
+244
+int
+m_threadInterval;
+245
+246
+std::thread m_thread;
+247
+std::atomic_bool m_stopThread;
+248
+std::atomic_bool m_running;
+249
+std::string m_lastError;
+250
+251
+void
+run();
+252
+};
+253
+254
+}
+// namespace detail
+255
+}
+// namespace rev
+PACKED
+#define PACKED
+Definition:
+CANDeviceScanner.h:110
+rev::detail::CANBusScanner
+Definition:
+CANDeviceScanner.h:176
+rev::detail::CANBusScanner::~CANBusScanner
+~CANBusScanner()
+Definition:
+CANDeviceScanner.cpp:55
+rev::detail::CANBusScanner::Start
+bool Start()
+Definition:
+CANDeviceScanner.cpp:61
+rev::detail::CANBusScanner::CANBusScan
+std::vector< CANScanIdentifier > CANBusScan()
+Definition:
+CANDeviceScanner.cpp:146
+rev::detail::CANBusScanner::Running
+bool Running()
+Definition:
+CANDeviceScanner.cpp:89
+rev::detail::CANBusScanner::Stop
+void Stop()
+Definition:
+CANDeviceScanner.cpp:81
+rev::detail::CANBusScanner::RegisterDevice
+void RegisterDevice(std::string name, std::vector< uint32_t > validIds, int32_t maxFramePeriodMs=100)
+Definition:
+CANDeviceScanner.cpp:130
+rev::detail::CANBusScanner::LastError
+std::string LastError()
+Definition:
+CANDeviceScanner.cpp:91
+rev::detail::CANBusScanner::CANBusScanner
+CANBusScanner(int buffersize=256, int threadIntervalMs=10)
+Definition:
+CANDeviceScanner.cpp:48
+rev::detail::operator<
+bool operator<(const CANScanIdentifier &lhs, const CANScanIdentifier &rhs)
+Definition:
+CANDeviceScanner.h:152
+rev::detail::operator==
+bool operator==(const CANScanIdentifier &lhs, const CANScanIdentifier &rhs)
+Definition:
+CANDeviceScanner.h:168
+rev::detail::operator>
+bool operator>(const CANScanIdentifier &lhs, const CANScanIdentifier &rhs)
+Definition:
+CANDeviceScanner.h:160
+rev
+Definition:
+SparkLowLevel.cpp:40
+rev::detail::CANScanIdentifier
+Definition:
+CANDeviceScanner.h:126
+rev::detail::CANScanIdentifier::manufacturerId
+rev::FRCManufacturer manufacturerId
+Definition:
+CANDeviceScanner.h:128
+rev::detail::CANScanIdentifier::canId
+uint16_t canId
+Definition:
+CANDeviceScanner.h:129
+rev::detail::CANScanIdentifier::Name
+std::string Name() const
+Definition:
+CANDeviceScanner.h:142
+rev::detail::CANScanIdentifier::uniqueId
+uint32_t uniqueId
+Definition:
+CANDeviceScanner.h:130
+rev::detail::CANScanIdentifier::deviceTypeId
+rev::FRCDeviceType deviceTypeId
+Definition:
+CANDeviceScanner.h:127
+rev::detail::CANScanIdentifier::CANScanIdentifier
+CANScanIdentifier(uint32_t arbid, std::string name, uint32_t uniqueId=0)
+Definition:
+CANDeviceScanner.h:132
+rev::detail::CANScanIdentifier::name
+std::string name
+Definition:
+CANDeviceScanner.h:131
+rev::detail::frc_frameIDFields_t
+Definition:
+CANDeviceScanner.h:113
+rev::detail::frc_frameIDFields_t::api
+uint16_t api
+Definition:
+CANDeviceScanner.h:115
+rev::detail::frc_frameIDFields_t::deviceNumber
+uint16_t deviceNumber
+Definition:
+CANDeviceScanner.h:114
+rev::detail::frc_frameIDFields_t::manufacturer
+rev::FRCManufacturer manufacturer
+Definition:
+CANDeviceScanner.h:116
+rev::detail::frc_frameIDFields_t::rsvd
+uint8_t rsvd
+Definition:
+CANDeviceScanner.h:118
+rev::detail::frc_frameIDFields_t::deviceType
+rev::FRCDeviceType deviceType
+Definition:
+CANDeviceScanner.h:117
+rev::detail::frc_frameID_t
+Definition:
+CANDeviceScanner.h:121
+rev::detail::frc_frameID_t::fields
+frc_frameIDFields_t fields
+Definition:
+CANDeviceScanner.h:122
+rev::detail::frc_frameID_t::raw
+uint32_t raw
+Definition:
+CANDeviceScanner.h:123
+src
+main
+native
+include
+rev
+CANDeviceScanner.h
+Generated by
+1.9.2

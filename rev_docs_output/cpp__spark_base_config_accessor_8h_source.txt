@@ -1,0 +1,349 @@
+REVLib - C++
+SparkBaseConfigAccessor.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include "
+rev/config/AbsoluteEncoderConfigAccessor.h
+"
+32
+#include "
+rev/config/AnalogSensorConfigAccessor.h
+"
+33
+#include "
+rev/config/ClosedLoopConfigAccessor.h
+"
+34
+#include "
+rev/config/EncoderConfigAccessor.h
+"
+35
+#include "
+rev/config/LimitSwitchConfigAccessor.h
+"
+36
+#include "
+rev/config/SignalsConfigAccessor.h
+"
+37
+#include "
+rev/config/SoftLimitConfigAccessor.h
+"
+38
+#include "
+rev/config/SparkBaseConfig.h
+"
+39
+40
+namespace
+rev::spark
+{
+41
+42
+class
+SparkBaseConfigAccessor
+{
+43
+protected
+:
+44
+explicit
+SparkBaseConfigAccessor
+(
+void
+* sparkHandle);
+45
+46
+private
+:
+47
+void
+* m_sparkHandle;
+48
+49
+public
+:
+57
+AbsoluteEncoderConfigAccessor
+absoluteEncoder
+;
+58
+66
+AnalogSensorConfigAccessor
+analogSensor
+;
+67
+76
+ClosedLoopConfigAccessor
+closedLoop
+;
+77
+85
+EncoderConfigAccessor
+encoder
+;
+86
+95
+LimitSwitchConfigAccessor
+limitSwitch
+;
+96
+104
+SignalsConfigAccessor
+signals
+;
+105
+113
+SoftLimitConfigAccessor
+softLimit
+;
+114
+115
+SparkBaseConfig::IdleMode
+GetIdleMode
+();
+116
+bool
+GetInverted
+();
+117
+int
+GetSmartCurrentLimit
+();
+118
+int
+GetSmartCurrentFreeLimit
+();
+119
+int
+GetSmartCurrentRPMLimit
+();
+120
+double
+GetSecondaryCurrentLimit
+();
+121
+int
+GetSecondaryCurrentLimitChopCycles
+();
+122
+double
+GetOpenLoopRampRate
+();
+123
+double
+GetClosedLoopRampRate
+();
+124
+double
+GetVoltageCompensation
+();
+125
+bool
+GetVoltageCompensationEnabled
+();
+126
+int
+GetFollowerModeLeaderId
+();
+127
+bool
+GetFollowerModeInverted
+();
+128
+};
+// class SparkBaseConfigAccessor
+129
+130
+}
+// namespace rev::spark
+AbsoluteEncoderConfigAccessor.h
+AnalogSensorConfigAccessor.h
+ClosedLoopConfigAccessor.h
+EncoderConfigAccessor.h
+LimitSwitchConfigAccessor.h
+SignalsConfigAccessor.h
+SoftLimitConfigAccessor.h
+SparkBaseConfig.h
+rev::spark::AbsoluteEncoderConfigAccessor
+Definition:
+AbsoluteEncoderConfigAccessor.h:33
+rev::spark::AnalogSensorConfigAccessor
+Definition:
+AnalogSensorConfigAccessor.h:33
+rev::spark::ClosedLoopConfigAccessor
+Definition:
+ClosedLoopConfigAccessor.h:39
+rev::spark::EncoderConfigAccessor
+Definition:
+EncoderConfigAccessor.h:33
+rev::spark::LimitSwitchConfigAccessor
+Definition:
+LimitSwitchConfigAccessor.h:35
+rev::spark::SignalsConfigAccessor
+Definition:
+SignalsConfigAccessor.h:33
+rev::spark::SoftLimitConfigAccessor
+Definition:
+SoftLimitConfigAccessor.h:33
+rev::spark::SparkBaseConfigAccessor
+Definition:
+SparkBaseConfigAccessor.h:42
+rev::spark::SparkBaseConfigAccessor::GetInverted
+bool GetInverted()
+Definition:
+SparkBaseConfigAccessor.cpp:54
+rev::spark::SparkBaseConfigAccessor::GetVoltageCompensation
+double GetVoltageCompensation()
+Definition:
+SparkBaseConfigAccessor.cpp:110
+rev::spark::SparkBaseConfigAccessor::GetSmartCurrentLimit
+int GetSmartCurrentLimit()
+Definition:
+SparkBaseConfigAccessor.cpp:61
+rev::spark::SparkBaseConfigAccessor::analogSensor
+AnalogSensorConfigAccessor analogSensor
+Definition:
+SparkBaseConfigAccessor.h:66
+rev::spark::SparkBaseConfigAccessor::absoluteEncoder
+AbsoluteEncoderConfigAccessor absoluteEncoder
+Definition:
+SparkBaseConfigAccessor.h:57
+rev::spark::SparkBaseConfigAccessor::encoder
+EncoderConfigAccessor encoder
+Definition:
+SparkBaseConfigAccessor.h:85
+rev::spark::SparkBaseConfigAccessor::GetFollowerModeInverted
+bool GetFollowerModeInverted()
+Definition:
+SparkBaseConfigAccessor.cpp:131
+rev::spark::SparkBaseConfigAccessor::GetSmartCurrentFreeLimit
+int GetSmartCurrentFreeLimit()
+Definition:
+SparkBaseConfigAccessor.cpp:68
+rev::spark::SparkBaseConfigAccessor::limitSwitch
+LimitSwitchConfigAccessor limitSwitch
+Definition:
+SparkBaseConfigAccessor.h:95
+rev::spark::SparkBaseConfigAccessor::GetFollowerModeLeaderId
+int GetFollowerModeLeaderId()
+Definition:
+SparkBaseConfigAccessor.cpp:124
+rev::spark::SparkBaseConfigAccessor::GetSecondaryCurrentLimitChopCycles
+int GetSecondaryCurrentLimitChopCycles()
+Definition:
+SparkBaseConfigAccessor.cpp:89
+rev::spark::SparkBaseConfigAccessor::softLimit
+SoftLimitConfigAccessor softLimit
+Definition:
+SparkBaseConfigAccessor.h:113
+rev::spark::SparkBaseConfigAccessor::signals
+SignalsConfigAccessor signals
+Definition:
+SparkBaseConfigAccessor.h:104
+rev::spark::SparkBaseConfigAccessor::GetOpenLoopRampRate
+double GetOpenLoopRampRate()
+Definition:
+SparkBaseConfigAccessor.cpp:96
+rev::spark::SparkBaseConfigAccessor::GetClosedLoopRampRate
+double GetClosedLoopRampRate()
+Definition:
+SparkBaseConfigAccessor.cpp:103
+rev::spark::SparkBaseConfigAccessor::GetIdleMode
+SparkBaseConfig::IdleMode GetIdleMode()
+Definition:
+SparkBaseConfigAccessor.cpp:47
+rev::spark::SparkBaseConfigAccessor::GetSmartCurrentRPMLimit
+int GetSmartCurrentRPMLimit()
+Definition:
+SparkBaseConfigAccessor.cpp:75
+rev::spark::SparkBaseConfigAccessor::closedLoop
+ClosedLoopConfigAccessor closedLoop
+Definition:
+SparkBaseConfigAccessor.h:76
+rev::spark::SparkBaseConfigAccessor::SparkBaseConfigAccessor
+SparkBaseConfigAccessor(void *sparkHandle)
+Definition:
+SparkBaseConfigAccessor.cpp:37
+rev::spark::SparkBaseConfigAccessor::GetVoltageCompensationEnabled
+bool GetVoltageCompensationEnabled()
+Definition:
+SparkBaseConfigAccessor.cpp:117
+rev::spark::SparkBaseConfigAccessor::GetSecondaryCurrentLimit
+double GetSecondaryCurrentLimit()
+Definition:
+SparkBaseConfigAccessor.cpp:82
+rev::spark::SparkBaseConfig::IdleMode
+IdleMode
+Definition:
+SparkBaseConfig.h:48
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+src
+main
+native
+include
+rev
+config
+SparkBaseConfigAccessor.h
+Generated by
+1.9.2

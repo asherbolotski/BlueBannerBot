@@ -1,0 +1,292 @@
+REVLib - C++
+SparkRelativeEncoderSim.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#ifndef FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SPARKRELATIVEENCODERSIM_H_
+30
+#define FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SPARKRELATIVEENCODERSIM_H_
+31
+32
+#include <string>
+33
+34
+#include <frc/simulation/SimDeviceSim.h>
+35
+#include <hal/SimDevice.h>
+36
+37
+#include "
+rev/SparkBase.h
+"
+38
+#include "
+rev/SparkFlex.h
+"
+39
+#include "
+rev/SparkMax.h
+"
+40
+41
+namespace
+rev::spark
+{
+42
+43
+class
+SparkRelativeEncoderSim
+{
+44
+public
+:
+45
+explicit
+SparkRelativeEncoderSim
+(
+SparkMax
+* motor);
+46
+explicit
+SparkRelativeEncoderSim
+(
+SparkFlex
+* motor);
+47
+48
+void
+SetPosition
+(
+double
+position);
+49
+double
+GetPosition
+()
+const
+;
+50
+51
+void
+SetVelocity
+(
+double
+velocity);
+52
+double
+GetVelocity
+()
+const
+;
+53
+54
+void
+SetInverted
+(
+bool
+inverted);
+55
+bool
+GetInverted
+()
+const
+;
+56
+57
+void
+SetZeroOffset
+(
+double
+zeroOffset);
+58
+double
+GetZeroOffset
+()
+const
+;
+59
+60
+double
+GetPositionConversionFactor
+()
+const
+;
+61
+double
+GetVelocityConversionFactor
+()
+const
+;
+62
+63
+void
+iterate
+(
+double
+velocity,
+double
+dt);
+64
+65
+private
+:
+66
+void
+SetupSimDevice();
+67
+68
+hal::SimDouble m_position;
+69
+hal::SimDouble m_velocity;
+70
+hal::SimBoolean m_isInverted;
+71
+hal::SimDouble m_zeroOffset;
+72
+hal::SimDouble m_positionConversionFactor;
+73
+hal::SimDouble m_velocityConversionFactor;
+74
+SparkBase
+* m_spark;
+75
+std::string simDeviceName;
+76
+};
+77
+78
+}
+// namespace rev::spark
+79
+80
+#endif
+// FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SIM_SPARKRELATIVEENCODERSIM_H_
+SparkBase.h
+SparkFlex.h
+SparkMax.h
+rev::spark::SparkBase
+Definition:
+SparkBase.h:58
+rev::spark::SparkFlex
+Definition:
+SparkFlex.h:37
+rev::spark::SparkMax
+Definition:
+SparkMax.h:37
+rev::spark::SparkRelativeEncoderSim
+Definition:
+SparkRelativeEncoderSim.h:43
+rev::spark::SparkRelativeEncoderSim::iterate
+void iterate(double velocity, double dt)
+Definition:
+SparkRelativeEncoderSim.cpp:98
+rev::spark::SparkRelativeEncoderSim::SetVelocity
+void SetVelocity(double velocity)
+Definition:
+SparkRelativeEncoderSim.cpp:70
+rev::spark::SparkRelativeEncoderSim::GetPositionConversionFactor
+double GetPositionConversionFactor() const
+Definition:
+SparkRelativeEncoderSim.cpp:90
+rev::spark::SparkRelativeEncoderSim::SetZeroOffset
+void SetZeroOffset(double zeroOffset)
+Definition:
+SparkRelativeEncoderSim.cpp:82
+rev::spark::SparkRelativeEncoderSim::GetPosition
+double GetPosition() const
+Definition:
+SparkRelativeEncoderSim.cpp:68
+rev::spark::SparkRelativeEncoderSim::GetInverted
+bool GetInverted() const
+Definition:
+SparkRelativeEncoderSim.cpp:80
+rev::spark::SparkRelativeEncoderSim::SetInverted
+void SetInverted(bool inverted)
+Definition:
+SparkRelativeEncoderSim.cpp:76
+rev::spark::SparkRelativeEncoderSim::GetZeroOffset
+double GetZeroOffset() const
+Definition:
+SparkRelativeEncoderSim.cpp:86
+rev::spark::SparkRelativeEncoderSim::GetVelocityConversionFactor
+double GetVelocityConversionFactor() const
+Definition:
+SparkRelativeEncoderSim.cpp:94
+rev::spark::SparkRelativeEncoderSim::GetVelocity
+double GetVelocity() const
+Definition:
+SparkRelativeEncoderSim.cpp:74
+rev::spark::SparkRelativeEncoderSim::SetPosition
+void SetPosition(double position)
+Definition:
+SparkRelativeEncoderSim.cpp:64
+rev::spark::SparkRelativeEncoderSim::SparkRelativeEncoderSim
+SparkRelativeEncoderSim(SparkMax *motor)
+Definition:
+SparkRelativeEncoderSim.cpp:35
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+src
+main
+native
+include
+rev
+sim
+SparkRelativeEncoderSim.h
+Generated by
+1.9.2

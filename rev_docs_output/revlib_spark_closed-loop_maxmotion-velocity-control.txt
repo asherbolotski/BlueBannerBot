@@ -1,0 +1,83 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Tips for Smooth Motions
+Migrating from Smart Velocity
+Was this helpful?
+Export as PDF
+MAXMotion Velocity Control utilizes the
+MAXMotion parameters
+to improve upon velocity control. Honoring the maximum acceleration, MAXMotion Velocity Control will speed up your flywheel or rotary mechanism in a controlled way, reducing power draw and increasing consistency.
+MAXMotion Velocity Control utilizes an internal velocity closed-loop controller, so transitioning from Velocity Control mode to MAXMotion Velocity Control is as simple as setting a maximum acceleration and changing the setReference call.
+It is called as seen below:
+Java
+C++
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kMAXMotionVelocityControl
+);
+API Docs:
+setReference
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kMAXMotionVelocityControl);
+API Reference:
+SetReference
+MAXMotion Velocity Control will turn your motor continuously. Be sure your mechanism does not have any hard limits for rotation.
+Tips for Smooth Motions
+If your motion seems jittery, try reducing your PID constants, especially P. If the underlying velocity PID outruns the acceleration target, the motion may seem jittery and the velocity will not increase smoothly.
+Make sure your units are correct: maximum velocity is set in RPM by default and maximum acceleration is set in RPM per second by default.
+At low speeds, the acceleration may seem wobbly or inconsistent if the loop has been tuned for higher speeds or vice versa. If both are needed, try tuning separate PIDs and switching between slots when needed. This may be easier than finding those perfect constants that work beautifully across the board.
+As MAXMotion Velocity Control Mode uses an internal velocity PID loop, a kF gain (
+F Parameter
+) is recommended for more consistent control
+Passing a calculated arbitrary feed forward (
+Arbitrary Feed Forward
+) via arbFF may be helpful for large or heavy velocity-controlled mechanisms
+Migrating from Smart Velocity
+All Smart Velocity constants and PIDs can be transferred to MAXMotion Velocity Mode. Be sure to transcribe any Smart Motion parameters to the MAXMotion parameters.
+Previous
+MAXMotion Position Control
+Next
+Smart Motion Control
+Last updated
+6 months ago
+Was this helpful?

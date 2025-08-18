@@ -1,0 +1,44 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics
+Interface AbsoluteEncoder
+All Known Implementing Classes:
+SparkAbsoluteEncoder
+public interface
+AbsoluteEncoder
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+double
+getPosition
+()
+Get the position of the motor.
+double
+getVelocity
+()
+Get the velocity of the motor.
+Method Details
+getPosition
+double
+getPosition
+()
+Get the position of the motor. This returns the native units of 'rotations' by default, and can
+ be changed by a scale factor using
+AbsoluteEncoderConfig.positionConversionFactor(double)
+.
+Returns:
+Number of rotations of the motor
+getVelocity
+double
+getVelocity
+()
+Get the velocity of the motor. This returns the native units of 'rotations per minute' by
+ default, and can * be changed by a scale factor using
+AbsoluteEncoderConfig.velocityConversionFactor(double)
+.
+Returns:
+Number of rotations per minute of the motor

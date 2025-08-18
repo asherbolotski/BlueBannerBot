@@ -1,0 +1,129 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+Brake/Coast Mode - Idle Behavior
+Mode Button Configuration
+USB Configuration
+CAN Configuration
+Was this helpful?
+Export as PDF
+Brake/Coast Mode - Idle Behavior
+When the SPARK Flex is receiving a neutral command the idle behavior of the motor can be handled in two different ways:
+Braking
+or
+Coasting
+.
+When in
+Brake Mode
+, the SPARK Flex will effectively short all motor wires together. This quickly dissipates any electrical energy within the motor and brings it to a quick stop.
+When in
+Coast Mode
+, the SPARK Flex will effectively disconnect all motor wires. This allows the motor to spin down at its own rate.
+The Idle Mode can be configured using the Mode Button, CAN, and USB interfaces.
+Mode Button Configuration
+Follow the steps below to switch the Idle Mode between Brake and Coast with the Mode Button.
+Use a small screwdriver, straightened paper clip, pen, or other small implement to press the button. Do not use any type of pencil as the pencil lead can break off inside the SPARK Flex.
+Connect the SPARK Flex to main power, not just USB Power.
+The Status LED will indicate which Idle Mode is currently configured by blinking blue or cyan for Brake and yellow or magenta for Coast depending on the motor type.
+Press and release the Mode Button.
+You should see the Status LED change to indicate the selected Idle Mode.
+Please see the
+Status LED Patterns
+guide for information on how to identify the Idle Behavior configuration by the color of the Status LED!
+USB Configuration
+Follow the steps below to switch the Idle Mode between Brake and Coast with the USB and the REV Hardware Client application. Be sure to
+download and install the REV Hardware Client
+application before continuing.
+Connect the SPARK Flex to your computer using a USB-C cable.
+Open the REV Hardware Client application and verify that the application is connected to your SPARK MAX.
+On the
+Basic
+tab, select the desired mode with the
+Idle Mode
+switch.
+Click
+Persist Parameters
+and confirm the change.
+CAN Configuration
+Please see the
+API Information
+for information on how to configure the SPARK Flex using the CAN interface.
+Previous
+SPARK Flex Troubleshooting
+Next
+SPARK MAX Overview
+Last updated
+1 month ago
+Was this helpful?

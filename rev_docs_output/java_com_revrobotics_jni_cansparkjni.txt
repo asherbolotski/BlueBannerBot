@@ -1,0 +1,801 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.jni
+Class CANSparkJNI
+java.lang.Object
+com.revrobotics.jni.RevJNIWrapper
+com.revrobotics.jni.CANSparkJNI
+public class
+CANSparkJNI
+extends
+RevJNIWrapper
+Constructor Summary
+Constructors
+Constructor
+Description
+CANSparkJNI
+()
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+static int
+c_Spark_ClearFaults
+(long handle)
+static int
+c_Spark_Configure
+(long handle,
+String
+flattenedString,
+ boolean resetSafeParameters,
+ boolean persistParameters)
+static int
+c_Spark_ConfigureAsync
+(long handle,
+String
+flattenedString,
+ boolean resetSafeParameters,
+ boolean persistParameters)
+static long
+c_Spark_Create
+(int deviceId,
+ int motortype,
+ int sparkModel)
+static void
+c_Spark_CreateAbsoluteEncoderSim
+(long handle)
+static void
+c_Spark_CreateAlternateEncoderSim
+(long handle)
+static void
+c_Spark_CreateAnalogSensorSim
+(long handle)
+static void
+c_Spark_CreateForwardLimitSwitchSim
+(long handle)
+static void
+c_Spark_CreateRelativeEncoderSim
+(long handle)
+static void
+c_Spark_CreateReverseLimitSwitchSim
+(long handle)
+static void
+c_Spark_CreateSimFaultManager
+(long handle)
+static void
+c_Spark_Destroy
+(long handle)
+static float
+c_Spark_GetAltEncoderPosition
+(long handle)
+static float
+c_Spark_GetAltEncoderVelocity
+(long handle)
+static float
+c_Spark_GetAnalogPosition
+(long handle)
+static float
+c_Spark_GetAnalogVelocity
+(long handle)
+static float
+c_Spark_GetAnalogVoltage
+(long handle)
+static int
+c_Spark_GetAPIBuildRevision
+()
+static int
+c_Spark_GetAPIMajorRevision
+()
+static int
+c_Spark_GetAPIMinorRevision
+()
+static int
+c_Spark_GetAPIVersion
+()
+static float
+c_Spark_GetAppliedOutput
+(long handle)
+static float
+c_Spark_GetBusVoltage
+(long handle)
+static int
+c_Spark_GetControlFramePeriod
+(long handle)
+static int
+c_Spark_GetDataPortConfig
+(long handle)
+static int
+c_Spark_GetDeviceId
+(long handle)
+static float
+c_Spark_GetDutyCyclePosition
+(long handle)
+static float
+c_Spark_GetDutyCycleVelocity
+(long handle)
+static float
+c_Spark_GetEncoderPosition
+(long handle)
+static float
+c_Spark_GetEncoderVelocity
+(long handle)
+static int
+c_Spark_GetFaults
+(long handle)
+static int
+c_Spark_GetFirmwareVersion
+(long handle)
+static float
+c_Spark_GetIAccum
+(long handle)
+static boolean
+c_Spark_GetInverted
+(long handle)
+static int
+c_Spark_GetLastError
+(long handle)
+static boolean
+c_Spark_GetLimitSwitch
+(long handle,
+ int sw)
+static float
+c_Spark_GetMaxMotionSetpointPosition
+(long handle)
+static float
+c_Spark_GetMaxMotionSetpointVelocity
+(long handle)
+static int
+c_Spark_GetMotorInterface
+(long handle)
+static float
+c_Spark_GetMotorTemperature
+(long handle)
+static float
+c_Spark_GetOutputCurrent
+(long handle)
+static boolean
+c_Spark_GetParameterBool
+(long handle,
+ int paramId)
+static float
+c_Spark_GetParameterFloat32
+(long handle,
+ int paramId)
+static int
+c_Spark_GetParameterInt32
+(long handle,
+ int paramId)
+static int
+c_Spark_GetParameterType
+(int paramId)
+static int
+c_Spark_GetParameterUint32
+(long handle,
+ int paramId)
+static int
+c_Spark_GetSelectedSlot
+(long handle)
+static float
+c_Spark_GetSetpoint
+(long handle)
+static float
+c_Spark_GetSimClosedLoopOutput
+(long handle,
+ float setpoint,
+ float pv,
+ float dt)
+static float
+c_Spark_GetSimCurrentLimitOutput
+(long handle,
+ float appliedOutput,
+ float current)
+static float
+c_Spark_GetSimMAXMotionPositionControlOutput
+(long handle,
+ float dt)
+static float
+c_Spark_GetSimMAXMotionVelocityControlOutput
+(long handle,
+ float dt)
+static boolean
+c_Spark_GetSoftLimit
+(long handle,
+ int sw)
+static int
+c_Spark_GetSparkModel
+(long sparkHandle)
+static int
+c_Spark_GetStickyFaults
+(long handle)
+static int
+c_Spark_GetStickyWarnings
+(long handle)
+static int
+c_Spark_GetWarnings
+(long handle)
+static boolean
+c_Spark_IsAtSetpoint
+(long handle)
+static boolean
+c_Spark_IsDataPortConfigured
+(long handle)
+static boolean
+c_Spark_IsFollower
+(long handle)
+static int
+c_Spark_PersistParameters
+(long handle)
+static int
+c_Spark_RegisterId
+(int deviceId)
+static int
+c_Spark_ResetSafeParameters
+(long handle,
+ boolean persist)
+static float
+c_Spark_SafeFloat
+(float f)
+static int
+c_Spark_SetAltEncoderPosition
+(long handle,
+ float position)
+static void
+c_Spark_SetCANMaxRetries
+(long handle,
+ int numRetries)
+static int
+c_Spark_SetCANTimeout
+(long handle,
+ int timeoutMs)
+static void
+c_Spark_SetControlFramePeriod
+(long handle,
+ int periodMs)
+static int
+c_Spark_SetEncoderPosition
+(long handle,
+ float position)
+static int
+c_Spark_SetIAccum
+(long handle,
+ float iAccum)
+static int
+c_Spark_SetInverted
+(long handle,
+ boolean inverted)
+static int
+c_Spark_SetParameterBool
+(long handle,
+ int paramId,
+ boolean value)
+static int
+c_Spark_SetParameterFloat32
+(long handle,
+ int paramId,
+ float value)
+static int
+c_Spark_SetParameterInt32
+(long handle,
+ int paramId,
+ int value)
+static int
+c_Spark_SetParameterUint32
+(long handle,
+ int paramId,
+ int value)
+static void
+c_Spark_SetPeriodicFrameTimeout
+(long handle,
+ int timeoutMs)
+static int
+c_Spark_SetpointCommand
+(long handle,
+ float value,
+ int ctrlType,
+ int pidSlot,
+ float arbFeedforward,
+ int arbFFUnits)
+static void
+c_Spark_SetSimAppliedOutput
+(long handle,
+ float value)
+static int
+c_Spark_StartFollowerMode
+(long handle)
+static int
+c_Spark_StartFollowerModeAsync
+(long handle)
+static int
+c_Spark_StopFollowerMode
+(long handle)
+static int
+c_Spark_StopFollowerModeAsync
+(long handle)
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+CANSparkJNI
+public
+CANSparkJNI
+()
+Method Details
+c_Spark_RegisterId
+public static
+int
+c_Spark_RegisterId
+(int deviceId)
+c_Spark_Create
+public static
+long
+c_Spark_Create
+(int deviceId,
+ int motortype,
+ int sparkModel)
+c_Spark_Destroy
+public static
+void
+c_Spark_Destroy
+(long handle)
+c_Spark_GetFirmwareVersion
+public static
+int
+c_Spark_GetFirmwareVersion
+(long handle)
+c_Spark_GetDeviceId
+public static
+int
+c_Spark_GetDeviceId
+(long handle)
+c_Spark_SetPeriodicFrameTimeout
+public static
+void
+c_Spark_SetPeriodicFrameTimeout
+(long handle,
+ int timeoutMs)
+c_Spark_SetControlFramePeriod
+public static
+void
+c_Spark_SetControlFramePeriod
+(long handle,
+ int periodMs)
+c_Spark_GetControlFramePeriod
+public static
+int
+c_Spark_GetControlFramePeriod
+(long handle)
+c_Spark_SetEncoderPosition
+public static
+int
+c_Spark_SetEncoderPosition
+(long handle,
+ float position)
+c_Spark_ResetSafeParameters
+public static
+int
+c_Spark_ResetSafeParameters
+(long handle,
+ boolean persist)
+c_Spark_SafeFloat
+public static
+float
+c_Spark_SafeFloat
+(float f)
+c_Spark_SetpointCommand
+public static
+int
+c_Spark_SetpointCommand
+(long handle,
+ float value,
+ int ctrlType,
+ int pidSlot,
+ float arbFeedforward,
+ int arbFFUnits)
+c_Spark_SetInverted
+public static
+int
+c_Spark_SetInverted
+(long handle,
+ boolean inverted)
+c_Spark_GetInverted
+public static
+boolean
+c_Spark_GetInverted
+(long handle)
+c_Spark_IsFollower
+public static
+boolean
+c_Spark_IsFollower
+(long handle)
+c_Spark_GetFaults
+public static
+int
+c_Spark_GetFaults
+(long handle)
+c_Spark_GetStickyFaults
+public static
+int
+c_Spark_GetStickyFaults
+(long handle)
+c_Spark_GetWarnings
+public static
+int
+c_Spark_GetWarnings
+(long handle)
+c_Spark_GetStickyWarnings
+public static
+int
+c_Spark_GetStickyWarnings
+(long handle)
+c_Spark_GetBusVoltage
+public static
+float
+c_Spark_GetBusVoltage
+(long handle)
+c_Spark_GetAppliedOutput
+public static
+float
+c_Spark_GetAppliedOutput
+(long handle)
+c_Spark_SetSimAppliedOutput
+public static
+void
+c_Spark_SetSimAppliedOutput
+(long handle,
+ float value)
+c_Spark_GetOutputCurrent
+public static
+float
+c_Spark_GetOutputCurrent
+(long handle)
+c_Spark_GetMotorTemperature
+public static
+float
+c_Spark_GetMotorTemperature
+(long handle)
+c_Spark_ClearFaults
+public static
+int
+c_Spark_ClearFaults
+(long handle)
+c_Spark_PersistParameters
+public static
+int
+c_Spark_PersistParameters
+(long handle)
+c_Spark_SetCANTimeout
+public static
+int
+c_Spark_SetCANTimeout
+(long handle,
+ int timeoutMs)
+c_Spark_SetCANMaxRetries
+public static
+void
+c_Spark_SetCANMaxRetries
+(long handle,
+ int numRetries)
+c_Spark_GetLimitSwitch
+public static
+boolean
+c_Spark_GetLimitSwitch
+(long handle,
+ int sw)
+c_Spark_GetSoftLimit
+public static
+boolean
+c_Spark_GetSoftLimit
+(long handle,
+ int sw)
+c_Spark_GetAnalogPosition
+public static
+float
+c_Spark_GetAnalogPosition
+(long handle)
+c_Spark_GetAnalogVelocity
+public static
+float
+c_Spark_GetAnalogVelocity
+(long handle)
+c_Spark_GetAnalogVoltage
+public static
+float
+c_Spark_GetAnalogVoltage
+(long handle)
+c_Spark_GetEncoderPosition
+public static
+float
+c_Spark_GetEncoderPosition
+(long handle)
+c_Spark_GetEncoderVelocity
+public static
+float
+c_Spark_GetEncoderVelocity
+(long handle)
+c_Spark_SetAltEncoderPosition
+public static
+int
+c_Spark_SetAltEncoderPosition
+(long handle,
+ float position)
+c_Spark_GetAltEncoderPosition
+public static
+float
+c_Spark_GetAltEncoderPosition
+(long handle)
+c_Spark_GetAltEncoderVelocity
+public static
+float
+c_Spark_GetAltEncoderVelocity
+(long handle)
+c_Spark_GetDataPortConfig
+public static
+int
+c_Spark_GetDataPortConfig
+(long handle)
+c_Spark_IsDataPortConfigured
+public static
+boolean
+c_Spark_IsDataPortConfigured
+(long handle)
+c_Spark_GetDutyCyclePosition
+public static
+float
+c_Spark_GetDutyCyclePosition
+(long handle)
+c_Spark_GetDutyCycleVelocity
+public static
+float
+c_Spark_GetDutyCycleVelocity
+(long handle)
+c_Spark_SetIAccum
+public static
+int
+c_Spark_SetIAccum
+(long handle,
+ float iAccum)
+c_Spark_GetIAccum
+public static
+float
+c_Spark_GetIAccum
+(long handle)
+c_Spark_GetSetpoint
+public static
+float
+c_Spark_GetSetpoint
+(long handle)
+c_Spark_IsAtSetpoint
+public static
+boolean
+c_Spark_IsAtSetpoint
+(long handle)
+c_Spark_GetSelectedSlot
+public static
+int
+c_Spark_GetSelectedSlot
+(long handle)
+c_Spark_GetMaxMotionSetpointPosition
+public static
+float
+c_Spark_GetMaxMotionSetpointPosition
+(long handle)
+c_Spark_GetMaxMotionSetpointVelocity
+public static
+float
+c_Spark_GetMaxMotionSetpointVelocity
+(long handle)
+c_Spark_GetAPIMajorRevision
+public static
+int
+c_Spark_GetAPIMajorRevision
+()
+c_Spark_GetAPIMinorRevision
+public static
+int
+c_Spark_GetAPIMinorRevision
+()
+c_Spark_GetAPIBuildRevision
+public static
+int
+c_Spark_GetAPIBuildRevision
+()
+c_Spark_GetAPIVersion
+public static
+int
+c_Spark_GetAPIVersion
+()
+c_Spark_GetLastError
+public static
+int
+c_Spark_GetLastError
+(long handle)
+c_Spark_GetSparkModel
+public static
+int
+c_Spark_GetSparkModel
+(long sparkHandle)
+c_Spark_SetParameterFloat32
+public static
+int
+c_Spark_SetParameterFloat32
+(long handle,
+ int paramId,
+ float value)
+c_Spark_SetParameterInt32
+public static
+int
+c_Spark_SetParameterInt32
+(long handle,
+ int paramId,
+ int value)
+c_Spark_SetParameterUint32
+public static
+int
+c_Spark_SetParameterUint32
+(long handle,
+ int paramId,
+ int value)
+c_Spark_SetParameterBool
+public static
+int
+c_Spark_SetParameterBool
+(long handle,
+ int paramId,
+ boolean value)
+c_Spark_GetParameterFloat32
+public static
+float
+c_Spark_GetParameterFloat32
+(long handle,
+ int paramId)
+c_Spark_GetParameterInt32
+public static
+int
+c_Spark_GetParameterInt32
+(long handle,
+ int paramId)
+c_Spark_GetParameterUint32
+public static
+int
+c_Spark_GetParameterUint32
+(long handle,
+ int paramId)
+c_Spark_GetParameterBool
+public static
+boolean
+c_Spark_GetParameterBool
+(long handle,
+ int paramId)
+c_Spark_GetParameterType
+public static
+int
+c_Spark_GetParameterType
+(int paramId)
+c_Spark_GetMotorInterface
+public static
+int
+c_Spark_GetMotorInterface
+(long handle)
+c_Spark_Configure
+public static
+int
+c_Spark_Configure
+(long handle,
+String
+flattenedString,
+ boolean resetSafeParameters,
+ boolean persistParameters)
+c_Spark_StartFollowerMode
+public static
+int
+c_Spark_StartFollowerMode
+(long handle)
+c_Spark_StopFollowerMode
+public static
+int
+c_Spark_StopFollowerMode
+(long handle)
+c_Spark_GetSimClosedLoopOutput
+public static
+float
+c_Spark_GetSimClosedLoopOutput
+(long handle,
+ float setpoint,
+ float pv,
+ float dt)
+c_Spark_GetSimMAXMotionPositionControlOutput
+public static
+float
+c_Spark_GetSimMAXMotionPositionControlOutput
+(long handle,
+ float dt)
+c_Spark_GetSimMAXMotionVelocityControlOutput
+public static
+float
+c_Spark_GetSimMAXMotionVelocityControlOutput
+(long handle,
+ float dt)
+c_Spark_GetSimCurrentLimitOutput
+public static
+float
+c_Spark_GetSimCurrentLimitOutput
+(long handle,
+ float appliedOutput,
+ float current)
+c_Spark_CreateAbsoluteEncoderSim
+public static
+void
+c_Spark_CreateAbsoluteEncoderSim
+(long handle)
+c_Spark_CreateAlternateEncoderSim
+public static
+void
+c_Spark_CreateAlternateEncoderSim
+(long handle)
+c_Spark_CreateAnalogSensorSim
+public static
+void
+c_Spark_CreateAnalogSensorSim
+(long handle)
+c_Spark_CreateForwardLimitSwitchSim
+public static
+void
+c_Spark_CreateForwardLimitSwitchSim
+(long handle)
+c_Spark_CreateReverseLimitSwitchSim
+public static
+void
+c_Spark_CreateReverseLimitSwitchSim
+(long handle)
+c_Spark_CreateSimFaultManager
+public static
+void
+c_Spark_CreateSimFaultManager
+(long handle)
+c_Spark_CreateRelativeEncoderSim
+public static
+void
+c_Spark_CreateRelativeEncoderSim
+(long handle)
+c_Spark_ConfigureAsync
+public static
+int
+c_Spark_ConfigureAsync
+(long handle,
+String
+flattenedString,
+ boolean resetSafeParameters,
+ boolean persistParameters)
+c_Spark_StartFollowerModeAsync
+public static
+int
+c_Spark_StartFollowerModeAsync
+(long handle)
+c_Spark_StopFollowerModeAsync
+public static
+int
+c_Spark_StopFollowerModeAsync
+(long handle)

@@ -1,0 +1,613 @@
+REVLib - C++
+Namespaces
+|
+Enumerations
+SparkParameters.h File Reference
+#include <stdint.h>
+Go to the source code of this file.
+Namespaces
+namespace
+rev
+namespace
+rev::spark
+Enumerations
+enum
+rev::spark::SparkParameter
+: uint8_t {
+rev::spark::kCANID
+= 0
+,
+rev::spark::kInputMode
+= 1
+,
+rev::spark::kMotorType
+= 2
+,
+rev::spark::kCommutationAdvance
+= 3
+,
+rev::spark::kControlType
+= 5
+,
+rev::spark::kIdleMode
+= 6
+,
+rev::spark::kInputDeadband
+= 7
+,
+rev::spark::kClosedLoopControlSensor
+= 9
+,
+rev::spark::kPolePairs
+= 10
+,
+rev::spark::kCurrentChop
+= 11
+,
+rev::spark::kCurrentChopCycles
+= 12
+,
+rev::spark::kP_0
+= 13
+,
+rev::spark::kI_0
+= 14
+,
+rev::spark::kD_0
+= 15
+,
+rev::spark::kV_0
+= 16
+,
+rev::spark::kIZone_0
+= 17
+,
+rev::spark::kDFilter_0
+= 18
+,
+rev::spark::kOutputMin_0
+= 19
+,
+rev::spark::kOutputMax_0
+= 20
+,
+rev::spark::kP_1
+= 21
+,
+rev::spark::kI_1
+= 22
+,
+rev::spark::kD_1
+= 23
+,
+rev::spark::kV_1
+= 24
+,
+rev::spark::kIZone_1
+= 25
+,
+rev::spark::kDFilter_1
+= 26
+,
+rev::spark::kOutputMin_1
+= 27
+,
+rev::spark::kOutputMax_1
+= 28
+,
+rev::spark::kP_2
+= 29
+,
+rev::spark::kI_2
+= 30
+,
+rev::spark::kD_2
+= 31
+,
+rev::spark::kV_2
+= 32
+,
+rev::spark::kIZone_2
+= 33
+,
+rev::spark::kDFilter_2
+= 34
+,
+rev::spark::kOutputMin_2
+= 35
+,
+rev::spark::kOutputMax_2
+= 36
+,
+rev::spark::kP_3
+= 37
+,
+rev::spark::kI_3
+= 38
+,
+rev::spark::kD_3
+= 39
+,
+rev::spark::kV_3
+= 40
+,
+rev::spark::kIZone_3
+= 41
+,
+rev::spark::kDFilter_3
+= 42
+,
+rev::spark::kOutputMin_3
+= 43
+,
+rev::spark::kOutputMax_3
+= 44
+,
+rev::spark::kInverted
+= 45
+,
+rev::spark::kLimitSwitchFwdPolarity
+= 50
+,
+rev::spark::kLimitSwitchRevPolarity
+= 51
+,
+rev::spark::kHardLimitFwdEn
+= 52
+,
+rev::spark::kHardLimitRevEn
+= 53
+,
+rev::spark::kSoftLimitFwdEn
+= 54
+,
+rev::spark::kSoftLimitRevEn
+= 55
+,
+rev::spark::kOpenLoopRampRate
+= 56
+,
+rev::spark::kFollowerID
+= 57
+,
+rev::spark::kFollowerConfig
+= 58
+,
+rev::spark::kSmartCurrentStallLimit
+= 59
+,
+rev::spark::kSmartCurrentFreeLimit
+= 60
+,
+rev::spark::kSmartCurrentConfig
+= 61
+,
+rev::spark::kSmartCurrentReserved
+= 62
+,
+rev::spark::kMotorKv
+= 63
+,
+rev::spark::kEncoderCountsPerRev
+= 69
+,
+rev::spark::kEncoderAverageDepth
+= 70
+,
+rev::spark::kEncoderSampleDelta
+= 71
+,
+rev::spark::kEncoderInverted
+= 72
+,
+rev::spark::kVoltageCompensationMode
+= 74
+,
+rev::spark::kCompensatedNominalVoltage
+= 75
+,
+rev::spark::kSmartMotionMaxVelocity_0
+= 76
+,
+rev::spark::kSmartMotionMaxAccel_0
+= 77
+,
+rev::spark::kSmartMotionMinVelOutput_0
+= 78
+,
+rev::spark::kSmartMotionAllowedClosedLoopError_0
+= 79
+,
+rev::spark::kSmartMotionAccelStrategy_0
+= 80
+,
+rev::spark::kSmartMotionMaxVelocity_1
+= 81
+,
+rev::spark::kSmartMotionMaxAccel_1
+= 82
+,
+rev::spark::kSmartMotionMinVelOutput_1
+= 83
+,
+rev::spark::kSmartMotionAllowedClosedLoopError_1
+= 84
+,
+rev::spark::kSmartMotionAccelStrategy_1
+= 85
+,
+rev::spark::kSmartMotionMaxVelocity_2
+= 86
+,
+rev::spark::kSmartMotionMaxAccel_2
+= 87
+,
+rev::spark::kSmartMotionMinVelOutput_2
+= 88
+,
+rev::spark::kSmartMotionAllowedClosedLoopError_2
+= 89
+,
+rev::spark::kSmartMotionAccelStrategy_2
+= 90
+,
+rev::spark::kSmartMotionMaxVelocity_3
+= 91
+,
+rev::spark::kSmartMotionMaxAccel_3
+= 92
+,
+rev::spark::kSmartMotionMinVelOutput_3
+= 93
+,
+rev::spark::kSmartMotionAllowedClosedLoopError_3
+= 94
+,
+rev::spark::kSmartMotionAccelStrategy_3
+= 95
+,
+rev::spark::kIMaxAccum_0
+= 96
+,
+rev::spark::kAllowedClosedLoopError_0
+= 97
+,
+rev::spark::kIMaxAccum_1
+= 100
+,
+rev::spark::kAllowedClosedLoopError_1
+= 101
+,
+rev::spark::kIMaxAccum_2
+= 104
+,
+rev::spark::kAllowedClosedLoopError_2
+= 105
+,
+rev::spark::kIMaxAccum_3
+= 108
+,
+rev::spark::kAllowedClosedLoopError_3
+= 109
+,
+rev::spark::kPositionConversionFactor
+= 112
+,
+rev::spark::kVelocityConversionFactor
+= 113
+,
+rev::spark::kClosedLoopRampRate
+= 114
+,
+rev::spark::kSoftLimitForward
+= 115
+,
+rev::spark::kSoftLimitReverse
+= 116
+,
+rev::spark::kAnalogPositionConversion
+= 119
+,
+rev::spark::kAnalogVelocityConversion
+= 120
+,
+rev::spark::kAnalogAverageDepth
+= 121
+,
+rev::spark::kAnalogSensorMode
+= 122
+,
+rev::spark::kAnalogInverted
+= 123
+,
+rev::spark::kAnalogSampleDelta
+= 124
+,
+rev::spark::kCompatibilityPortConfig
+= 127
+,
+rev::spark::kAltEncoderCountsPerRev
+= 128
+,
+rev::spark::kAltEncoderAverageDepth
+= 129
+,
+rev::spark::kAltEncoderSampleDelta
+= 130
+,
+rev::spark::kAltEncoderInverted
+= 131
+,
+rev::spark::kAltEncoderPositionConversion
+= 132
+,
+rev::spark::kAltEncoderVelocityConversion
+= 133
+,
+rev::spark::kUvwSensorSampleRate
+= 136
+,
+rev::spark::kUvwSensorAverageDepth
+= 137
+,
+rev::spark::kNumParameters
+= 138
+,
+rev::spark::kDutyCyclePositionFactor
+= 139
+,
+rev::spark::kDutyCycleVelocityFactor
+= 140
+,
+rev::spark::kDutyCycleInverted
+= 141
+,
+rev::spark::kDutyCycleSensorMode
+= 142
+,
+rev::spark::kDutyCycleAverageDepth
+= 143
+,
+rev::spark::kDutyCycleOffsetLegacy
+= 145
+,
+rev::spark::kPositionPIDWrapEnable
+= 149
+,
+rev::spark::kPositionPIDMinInput
+= 150
+,
+rev::spark::kPositionPIDMaxInput
+= 151
+,
+rev::spark::kDutyCycleZeroCentered
+= 152
+,
+rev::spark::kDutyCycleSensorPrescaler
+= 153
+,
+rev::spark::kDutyCycleOffset
+= 154
+,
+rev::spark::kProductId
+= 155
+,
+rev::spark::kDeviceMajorVersion
+= 156
+,
+rev::spark::kDeviceMinorVersion
+= 157
+,
+rev::spark::kStatus0Period
+= 158
+,
+rev::spark::kStatus1Period
+= 159
+,
+rev::spark::kStatus2Period
+= 160
+,
+rev::spark::kStatus3Period
+= 161
+,
+rev::spark::kStatus4Period
+= 162
+,
+rev::spark::kStatus5Period
+= 163
+,
+rev::spark::kStatus6Period
+= 164
+,
+rev::spark::kStatus7Period
+= 165
+,
+rev::spark::kMAXMotionCruiseVelocity_0
+= 166
+,
+rev::spark::kMAXMotionMaxAccel_0
+= 167
+,
+rev::spark::kMAXMotionMaxJerk_0
+= 168
+,
+rev::spark::kMAXMotionAllowedProfileError_0
+= 169
+,
+rev::spark::kMAXMotionPositionMode_0
+= 170
+,
+rev::spark::kMAXMotionCruiseVelocity_1
+= 171
+,
+rev::spark::kMAXMotionMaxAccel_1
+= 172
+,
+rev::spark::kMAXMotionMaxJerk_1
+= 173
+,
+rev::spark::kMAXMotionAllowedProfileError_1
+= 174
+,
+rev::spark::kMAXMotionPositionMode_1
+= 175
+,
+rev::spark::kMAXMotionCruiseVelocity_2
+= 176
+,
+rev::spark::kMAXMotionMaxAccel_2
+= 177
+,
+rev::spark::kMAXMotionMaxJerk_2
+= 178
+,
+rev::spark::kMAXMotionAllowedProfileError_2
+= 179
+,
+rev::spark::kMAXMotionPositionMode_2
+= 180
+,
+rev::spark::kMAXMotionCruiseVelocity_3
+= 181
+,
+rev::spark::kMAXMotionMaxAccel_3
+= 182
+,
+rev::spark::kMAXMotionMaxJerk_3
+= 183
+,
+rev::spark::kMAXMotionAllowedProfileError_3
+= 184
+,
+rev::spark::kMAXMotionPositionMode_3
+= 185
+,
+rev::spark::kForceEnableStatus_0
+= 186
+,
+rev::spark::kForceEnableStatus_1
+= 187
+,
+rev::spark::kForceEnableStatus_2
+= 188
+,
+rev::spark::kForceEnableStatus_3
+= 189
+,
+rev::spark::kForceEnableStatus_4
+= 190
+,
+rev::spark::kForceEnableStatus_5
+= 191
+,
+rev::spark::kForceEnableStatus_6
+= 192
+,
+rev::spark::kForceEnableStatus_7
+= 193
+,
+rev::spark::kFollowerModeLeaderId
+= 194
+,
+rev::spark::kFollowerModeIsInverted
+= 195
+,
+rev::spark::kDutyCycleEncoderStartPulseUs
+= 196
+,
+rev::spark::kDutyCycleEncoderEndPulseUs
+= 197
+,
+rev::spark::kParamTableVersion
+= 198
+,
+rev::spark::kStatus8Period
+= 199
+,
+rev::spark::kForceEnableStatus_8
+= 200
+,
+rev::spark::kLimitSwitchPositionSensor
+= 201
+,
+rev::spark::kLimitSwitchFwdPosition
+= 202
+,
+rev::spark::kLimitSwitchRevPosition
+= 203
+,
+rev::spark::kS_0
+= 204
+,
+rev::spark::kA_0
+= 205
+,
+rev::spark::kG_0
+= 206
+,
+rev::spark::kCos_0
+= 207
+,
+rev::spark::kCosRatio_0
+= 208
+,
+rev::spark::kS_1
+= 209
+,
+rev::spark::kA_1
+= 210
+,
+rev::spark::kG_1
+= 211
+,
+rev::spark::kCos_1
+= 212
+,
+rev::spark::kCosRatio_1
+= 213
+,
+rev::spark::kS_2
+= 214
+,
+rev::spark::kA_2
+= 215
+,
+rev::spark::kG_2
+= 216
+,
+rev::spark::kCos_2
+= 217
+,
+rev::spark::kCosRatio_2
+= 218
+,
+rev::spark::kS_3
+= 219
+,
+rev::spark::kA_3
+= 220
+,
+rev::spark::kG_3
+= 221
+,
+rev::spark::kCos_3
+= 222
+,
+rev::spark::kCosRatio_3
+= 223
+,
+rev::spark::kStatus9Period
+= 224
+,
+rev::spark::kForceEnableStatus_9
+= 225
+}
+src
+main
+native
+include
+rev
+config
+SparkParameters.h
+Generated by
+1.9.2

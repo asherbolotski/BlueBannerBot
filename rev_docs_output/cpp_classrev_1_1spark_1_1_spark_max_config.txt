@@ -1,0 +1,675 @@
+REVLib - C++
+Public Types
+|
+Public Member Functions
+|
+Public Attributes
+|
+List of all members
+rev::spark::SparkMaxConfig Class Reference
+#include <
+SparkMaxConfig.h
+>
+Inherits
+rev::spark::SparkBaseConfig
+.
+Public Types
+enum
+DataPortConfig
+{
+kInvalid
+= -1
+,
+kLimitSwitchesAndAbsoluteEncoder
+= 0
+,
+kAlternateEncoder
+= 1
+ }
+Public Types inherited from
+rev::spark::SparkBaseConfig
+enum
+IdleMode
+: uint32_t {
+kCoast
+= 0
+,
+kBrake
+= 1
+ }
+Public Member Functions
+SparkMaxConfig
+()=default
+~SparkMaxConfig
+() override=default
+SparkMaxConfig
+(const
+SparkMaxConfig
+&)=delete
+SparkMaxConfig
+&
+operator=
+(const
+SparkMaxConfig
+&)=delete
+SparkMaxConfig
+(
+SparkMaxConfig
+&&) noexcept=delete
+SparkMaxConfig
+&
+operator=
+(
+SparkMaxConfig
+&&) noexcept=delete
+SparkMaxConfig
+&
+Apply
+(
+SparkMaxConfig
+&config)
+SparkMaxConfig
+&
+Apply
+(
+AlternateEncoderConfig
+&config)
+std::string
+Flatten
+() override
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SparkBaseConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+AbsoluteEncoderConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+AnalogSensorConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+EncoderConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+LimitSwitchConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SoftLimitConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+ClosedLoopConfig
+&config)
+virtual
+SparkBaseConfig
+&
+Apply
+(
+SignalsConfig
+&config)
+Public Member Functions inherited from
+rev::spark::SparkBaseConfig
+SparkBaseConfig
+()=default
+~SparkBaseConfig
+() override=default
+SparkBaseConfig
+(const
+SparkBaseConfig
+&)=delete
+SparkBaseConfig
+&
+operator=
+(const
+SparkBaseConfig
+&)=delete
+SparkBaseConfig
+(
+SparkBaseConfig
+&&) noexcept=delete
+SparkBaseConfig
+&
+operator=
+(
+SparkBaseConfig
+&&) noexcept=delete
+virtual
+SparkBaseConfig
+&
+SetIdleMode
+(
+IdleMode
+idleMode)
+virtual
+SparkBaseConfig
+&
+Inverted
+(bool inverted)
+virtual
+SparkBaseConfig
+&
+SmartCurrentLimit
+(int stallLimit, int freeLimit=0, int limitRpm=20000)
+virtual
+SparkBaseConfig
+&
+SecondaryCurrentLimit
+(double limit, int chopCycles=0)
+virtual
+SparkBaseConfig
+&
+OpenLoopRampRate
+(double rate)
+virtual
+SparkBaseConfig
+&
+ClosedLoopRampRate
+(double rate)
+virtual
+SparkBaseConfig
+&
+VoltageCompensation
+(double nominalVoltage)
+virtual
+SparkBaseConfig
+&
+DisableVoltageCompensation
+()
+virtual
+SparkBaseConfig
+&
+Follow
+(int leaderCanId, bool invert=false)
+virtual
+SparkBaseConfig
+&
+Follow
+(
+SparkBase
+&leader, bool invert=false)
+virtual
+SparkBaseConfig
+&
+DisableFollowerMode
+()
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+Public Attributes
+AlternateEncoderConfig
+alternateEncoder
+Public Attributes inherited from
+rev::spark::SparkBaseConfig
+AbsoluteEncoderConfig
+absoluteEncoder
+AnalogSensorConfig
+analogSensor
+ClosedLoopConfig
+closedLoop
+EncoderConfig
+encoder
+LimitSwitchConfig
+limitSwitch
+SignalsConfig
+signals
+SoftLimitConfig
+softLimit
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Member Enumeration Documentation
+◆
+DataPortConfig
+enum
+rev::spark::SparkMaxConfig::DataPortConfig
+Enumerator
+kInvalid
+kLimitSwitchesAndAbsoluteEncoder
+kAlternateEncoder
+Constructor & Destructor Documentation
+◆
+SparkMaxConfig()
+[1/3]
+rev::spark::SparkMaxConfig::SparkMaxConfig
+(
+)
+default
+◆
+~SparkMaxConfig()
+rev::spark::SparkMaxConfig::~SparkMaxConfig
+(
+)
+override
+default
+◆
+SparkMaxConfig()
+[2/3]
+rev::spark::SparkMaxConfig::SparkMaxConfig
+(
+const
+SparkMaxConfig
+&
+)
+delete
+◆
+SparkMaxConfig()
+[3/3]
+rev::spark::SparkMaxConfig::SparkMaxConfig
+(
+SparkMaxConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+SparkMaxConfig
+& rev::spark::SparkMaxConfig::operator=
+(
+const
+SparkMaxConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+SparkMaxConfig
+& rev::spark::SparkMaxConfig::operator=
+(
+SparkMaxConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+[1/10]
+SparkMaxConfig
+& SparkMaxConfig::Apply
+(
+SparkMaxConfig
+&
+config
+)
+Applies settings from another
+SparkMaxConfig
+to this one, including all of its nested configurations.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SparkMaxConfig
+to copy settings from
+Returns
+The updated
+SparkMaxConfig
+for method chaining
+◆
+Apply()
+[2/10]
+SparkMaxConfig
+& SparkMaxConfig::Apply
+(
+AlternateEncoderConfig
+&
+config
+)
+Applies settings from an
+AlternateEncoderConfig
+to this
+SparkMaxConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+AlternateEncoderConfig
+to copy settings from
+Returns
+The updated
+SparkMaxConfig
+for method chaining
+◆
+Flatten()
+std::string SparkMaxConfig::Flatten
+(
+)
+override
+virtual
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[3/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+SparkBaseConfig
+&
+config
+)
+virtual
+Applies settings from another
+SparkBaseConfig
+to this one, including all of its nested configurations.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SparkBaseConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[4/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+AbsoluteEncoderConfig
+&
+config
+)
+virtual
+Applies settings from an
+AbsoluteEncoderConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+AbsoluteEncoderConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[5/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+AnalogSensorConfig
+&
+config
+)
+virtual
+Applies settings from an
+AnalogSensorConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+AnalogSensorConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[6/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+EncoderConfig
+&
+config
+)
+virtual
+Applies settings from an
+EncoderConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+EncoderConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[7/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+LimitSwitchConfig
+&
+config
+)
+virtual
+Applies settings from a
+LimitSwitchConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+LimitSwitchConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[8/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+SoftLimitConfig
+&
+config
+)
+virtual
+Applies settings from a
+SoftLimitConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SoftLimitConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[9/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+ClosedLoopConfig
+&
+config
+)
+virtual
+Applies settings from a
+ClosedLoopConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+ClosedLoopConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+◆
+Apply()
+[10/10]
+SparkBaseConfig
+& SparkBaseConfig::Apply
+(
+SignalsConfig
+&
+config
+)
+virtual
+Applies settings from a
+SignalsConfig
+to this
+SparkBaseConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SignalsConfig
+to copy settings from
+Returns
+The updated
+SparkBaseConfig
+for method chaining
+Reimplemented from
+rev::spark::SparkBaseConfig
+.
+Member Data Documentation
+◆
+alternateEncoder
+AlternateEncoderConfig
+rev::spark::SparkMaxConfig::alternateEncoder
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+SparkMaxConfig.h
+src/main/native/cpp/config/
+SparkMaxConfig.cpp
+rev
+spark
+SparkMaxConfig
+Generated by
+1.9.2

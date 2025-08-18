@@ -1,0 +1,720 @@
+REVLib - C++
+Classes
+|
+Public Types
+|
+Public Member Functions
+|
+Static Public Attributes
+|
+Protected Member Functions
+|
+Protected Attributes
+|
+Friends
+|
+List of all members
+rev::spark::SparkLowLevel Class Reference
+#include <
+SparkLowLevel.h
+>
+Inherits frc::MotorController.
+Inherited by
+rev::spark::SparkBase
+.
+Classes
+struct
+PeriodicStatus0
+struct
+PeriodicStatus1
+struct
+PeriodicStatus2
+struct
+PeriodicStatus3
+struct
+PeriodicStatus4
+struct
+PeriodicStatus5
+struct
+PeriodicStatus6
+struct
+PeriodicStatus7
+struct
+PeriodicStatus8
+struct
+PeriodicStatus9
+Public Types
+enum class
+MotorType
+{
+kBrushed
+= 0
+,
+kBrushless
+= 1
+ }
+enum class
+ControlType
+{
+kDutyCycle
+= 0
+,
+kVelocity
+= 1
+,
+kVoltage
+= 2
+,
+kPosition
+= 3
+,
+kSmartMotion
+= 4
+,
+kCurrent
+= 5
+,
+kSmartVelocity
+= 6
+,
+kMAXMotionPositionControl
+= 7
+,
+kMAXMotionVelocityControl
+= 8
+}
+enum class
+ParameterStatus
+{
+kOK
+= 0
+,
+kInvalidID
+= 1
+,
+kMismatchType
+= 2
+,
+kAccessMode
+= 3
+,
+kInvalid
+= 4
+,
+kNotImplementedDeprecated
+= 5
+}
+enum class
+PeriodicFrame
+{
+kStatus0
+= 0
+,
+kStatus1
+= 1
+,
+kStatus2
+= 2
+,
+kStatus3
+= 3
+,
+kStatus4
+= 4
+,
+kStatus5
+= 5
+,
+kStatus6
+= 6
+,
+kStatus7
+= 7
+,
+kStatus8
+= 8
+,
+kStatus9
+= 9
+}
+enum class
+SparkModel
+{
+kSparkMax
+= 0
+,
+kSparkFlex
+= 1
+,
+kUnknown
+= 255
+ }
+Public Member Functions
+virtual
+~SparkLowLevel
+()
+uint32_t
+GetFirmwareVersion
+()
+uint32_t
+GetFirmwareVersion
+(bool &isDebugBuild)
+std::string
+GetFirmwareString
+()
+std::vector< uint8_t >
+GetSerialNumber
+()
+int
+GetDeviceId
+() const
+MotorType
+GetMotorType
+()
+PeriodicStatus0
+GetPeriodicStatus0
+()
+PeriodicStatus1
+GetPeriodicStatus1
+()
+PeriodicStatus2
+GetPeriodicStatus2
+()
+PeriodicStatus3
+GetPeriodicStatus3
+()
+PeriodicStatus4
+GetPeriodicStatus4
+()
+PeriodicStatus5
+GetPeriodicStatus5
+()
+PeriodicStatus6
+GetPeriodicStatus6
+()
+PeriodicStatus7
+GetPeriodicStatus7
+()
+PeriodicStatus8
+GetPeriodicStatus8
+()
+PeriodicStatus9
+GetPeriodicStatus9
+()
+void
+SetPeriodicFrameTimeout
+(int timeoutMs)
+void
+SetCANMaxRetries
+(int numRetries)
+void
+SetControlFramePeriodMs
+(int periodMs)
+void
+CreateSimFaultManager
+()
+Static Public Attributes
+static const uint16_t
+kAPIMajorVersion
+= c_Spark_kAPIMajorVersion
+static const uint8_t
+kAPIMinorVersion
+= c_Spark_kAPIMinorVersion
+static const uint8_t
+kAPIBuildVersion
+= c_Spark_kAPIBuildVersion
+static const uint32_t
+kAPIVersion
+= c_Spark_kAPIVersion
+Protected Member Functions
+REVLibError
+SetpointCommand
+(double value,
+SparkLowLevel::ControlType
+ctrl=
+ControlType::kDutyCycle
+,
+ClosedLoopSlot
+pidSlot=ClosedLoopSlot::kSlot0, double arbFeedforward=0, int arbFFUnits=0)
+float
+GetSafeFloat
+(float f)
+Protected Attributes
+MotorType
+m_motorType
+SparkModel
+m_expectedSparkModel
+void *
+m_sparkMaxHandle
+Friends
+class
+SparkBase
+class
+SparkMax
+class
+SparkFlex
+class
+SparkAnalogSensor
+class
+SparkMaxAlternateEncoder
+class
+SparkLimitSwitch
+class
+SparkClosedLoopController
+class
+SparkRelativeEncoder
+class
+SparkAbsoluteEncoder
+class
+SparkFlexExternalEncoder
+class
+SparkAbsoluteEncoderSim
+class
+SparkAnalogSensorSim
+class
+SparkExternalEncoderSim
+class
+SparkLimitSwitchSim
+class
+SparkMaxAlternateEncoderSim
+class
+SparkRelativeEncoderSim
+class
+SparkSimFaultManager
+class
+::ConfigBase
+Member Enumeration Documentation
+◆
+MotorType
+enum class
+rev::spark::SparkLowLevel::MotorType
+strong
+Enumerator
+kBrushed
+kBrushless
+◆
+ControlType
+enum class
+rev::spark::SparkLowLevel::ControlType
+strong
+Enumerator
+kDutyCycle
+kVelocity
+kVoltage
+kPosition
+kSmartMotion
+Deprecated:
+It is recommended to migrate to MAXMotion Velocity mode instead.
+kCurrent
+kSmartVelocity
+Deprecated:
+It is recommended to migrate to MAXMotion Velocity mode instead.
+kMAXMotionPositionControl
+kMAXMotionVelocityControl
+◆
+ParameterStatus
+enum class
+rev::spark::SparkLowLevel::ParameterStatus
+strong
+Enumerator
+kOK
+kInvalidID
+kMismatchType
+kAccessMode
+kInvalid
+kNotImplementedDeprecated
+◆
+PeriodicFrame
+enum class
+rev::spark::SparkLowLevel::PeriodicFrame
+strong
+Enumerator
+kStatus0
+kStatus1
+kStatus2
+kStatus3
+kStatus4
+kStatus5
+kStatus6
+kStatus7
+kStatus8
+kStatus9
+◆
+SparkModel
+enum class
+rev::spark::SparkLowLevel::SparkModel
+strong
+Enumerator
+kSparkMax
+kSparkFlex
+kUnknown
+Constructor & Destructor Documentation
+◆
+~SparkLowLevel()
+rev::spark::SparkLowLevel::~SparkLowLevel
+(
+)
+virtual
+Closes the SPARK motor controller
+Member Function Documentation
+◆
+GetFirmwareVersion()
+[1/2]
+uint32_t rev::spark::SparkLowLevel::GetFirmwareVersion
+(
+)
+Get the firmware version of the SPARK.
+Returns
+uint32_t Firmware version integer. Value is represented as 4 bytes, Major.Minor.Build H.Build L
+◆
+GetFirmwareVersion()
+[2/2]
+uint32_t rev::spark::SparkLowLevel::GetFirmwareVersion
+(
+bool &
+isDebugBuild
+)
+◆
+GetFirmwareString()
+std::string rev::spark::SparkLowLevel::GetFirmwareString
+(
+)
+Get the firmware version of the SPARK as a string.
+Returns
+std::string Human readable firmware version string
+◆
+GetSerialNumber()
+std::vector< uint8_t > rev::spark::SparkLowLevel::GetSerialNumber
+(
+)
+Get the unique serial number of the SPARK. Currently not implemented.
+Returns
+std::vector<uint8_t> Vector of bytes representig the unique serial number
+◆
+GetDeviceId()
+int rev::spark::SparkLowLevel::GetDeviceId
+(
+)
+const
+Get the configured Device ID of the SPARK.
+Returns
+int device ID
+◆
+GetMotorType()
+SparkLowLevel::MotorType
+rev::spark::SparkLowLevel::GetMotorType
+(
+)
+Get the motor type setting for the SPARK.
+Returns
+MotorType Motor type setting
+◆
+GetPeriodicStatus0()
+SparkLowLevel::PeriodicStatus0
+rev::spark::SparkLowLevel::GetPeriodicStatus0
+(
+)
+Get Periodic Status 0 for the SPARK.
+Returns
+PeriodicStatus0
+Periodic status 0
+◆
+GetPeriodicStatus1()
+SparkLowLevel::PeriodicStatus1
+rev::spark::SparkLowLevel::GetPeriodicStatus1
+(
+)
+Get Periodic Status 1 for the SPARK.
+Returns
+PeriodicStatus1
+Periodic status 1
+◆
+GetPeriodicStatus2()
+SparkLowLevel::PeriodicStatus2
+rev::spark::SparkLowLevel::GetPeriodicStatus2
+(
+)
+Get Periodic Status 2 for the SPARK.
+Returns
+PeriodicStatus2
+Periodic status 2
+◆
+GetPeriodicStatus3()
+SparkLowLevel::PeriodicStatus3
+rev::spark::SparkLowLevel::GetPeriodicStatus3
+(
+)
+Get Periodic Status 3 for the SPARK.
+Returns
+PeriodicStatus3
+Periodic status 3
+◆
+GetPeriodicStatus4()
+SparkLowLevel::PeriodicStatus4
+rev::spark::SparkLowLevel::GetPeriodicStatus4
+(
+)
+Get Periodic Status 4 for the SPARK.
+Returns
+PeriodicStatus4
+Periodic status 4
+◆
+GetPeriodicStatus5()
+SparkLowLevel::PeriodicStatus5
+rev::spark::SparkLowLevel::GetPeriodicStatus5
+(
+)
+Get Periodic Status 5 for the SPARK.
+Returns
+PeriodicStatus5
+Periodic status 5
+◆
+GetPeriodicStatus6()
+SparkLowLevel::PeriodicStatus6
+rev::spark::SparkLowLevel::GetPeriodicStatus6
+(
+)
+Get Periodic Status 6 for the SPARK.
+Returns
+PeriodicStatus6
+Periodic status 6
+◆
+GetPeriodicStatus7()
+SparkLowLevel::PeriodicStatus7
+rev::spark::SparkLowLevel::GetPeriodicStatus7
+(
+)
+Get Periodic Status 7 for the SPARK.
+Returns
+PeriodicStatus7
+Periodic status 7
+◆
+GetPeriodicStatus8()
+SparkLowLevel::PeriodicStatus8
+rev::spark::SparkLowLevel::GetPeriodicStatus8
+(
+)
+Get Periodic Status 8 for the SPARK.
+Returns
+PeriodicStatus8
+Periodic status 8
+◆
+GetPeriodicStatus9()
+SparkLowLevel::PeriodicStatus9
+rev::spark::SparkLowLevel::GetPeriodicStatus9
+(
+)
+Get Periodic Status 9 for the SPARK.
+Returns
+PeriodicStatus9
+Periodic status 9
+◆
+SetPeriodicFrameTimeout()
+void rev::spark::SparkLowLevel::SetPeriodicFrameTimeout
+(
+int
+timeoutMs
+)
+Set the amount of time to wait for a periodic status frame before returning a timeout error. This timeout will apply to all periodic status frames for the SPARK motor controller.
+To prevent invalid timeout errors, the minimum timeout for a given periodic status is 2.1 times its period. To use the minimum timeout for all status frames, set timeoutMs to 0.
+The default timeout is 500ms.
+Parameters
+timeoutMs
+The timeout in milliseconds
+◆
+SetCANMaxRetries()
+void rev::spark::SparkLowLevel::SetCANMaxRetries
+(
+int
+numRetries
+)
+Set the maximum number of times to retry an RTR CAN frame. This applies to calls such as SetParameter* and GetParameter* where a request is made to the SPARK motor controller and a response is expected. Anytime sending the request or receiving the response fails, it will retry the request a number of times, no more than the value set by this method. If an attempt succeeds, it will immediately return. The minimum number of retries is 0, where only a single attempt will be made and will return regardless of success or failure.
+The default maximum is 5 retries.
+Parameters
+numRetries
+The maximum number of retries
+◆
+SetControlFramePeriodMs()
+void rev::spark::SparkLowLevel::SetControlFramePeriodMs
+(
+int
+periodMs
+)
+Set the control frame send period for the native CAN Send thread. To disable periodic sends, set periodMs to 0.
+Parameters
+periodMs
+The send period in milliseconds between 1ms and 100ms or set to 0 to disable periodic sends. Note this is not updated until the next call to Set() or SetReference().
+◆
+CreateSimFaultManager()
+void rev::spark::SparkLowLevel::CreateSimFaultManager
+(
+)
+Create the sim gui Fault Manager for this Spark Device
+◆
+SetpointCommand()
+rev::REVLibError
+rev::spark::SparkLowLevel::SetpointCommand
+(
+double
+value
+,
+SparkLowLevel::ControlType
+ctrl
+=
+ControlType::kDutyCycle
+,
+ClosedLoopSlot
+pidSlot
+=
+ClosedLoopSlot::kSlot0
+,
+double
+arbFeedforward
+=
+0
+,
+int
+arbFFUnits
+=
+0
+)
+protected
+◆
+GetSafeFloat()
+float rev::spark::SparkLowLevel::GetSafeFloat
+(
+float
+f
+)
+protected
+Friends And Related Function Documentation
+◆
+SparkBase
+friend class
+SparkBase
+friend
+◆
+SparkMax
+friend class
+SparkMax
+friend
+◆
+SparkFlex
+friend class
+SparkFlex
+friend
+◆
+SparkAnalogSensor
+friend class
+SparkAnalogSensor
+friend
+◆
+SparkMaxAlternateEncoder
+friend class
+SparkMaxAlternateEncoder
+friend
+◆
+SparkLimitSwitch
+friend class
+SparkLimitSwitch
+friend
+◆
+SparkClosedLoopController
+friend class
+SparkClosedLoopController
+friend
+◆
+SparkRelativeEncoder
+friend class
+SparkRelativeEncoder
+friend
+◆
+SparkAbsoluteEncoder
+friend class
+SparkAbsoluteEncoder
+friend
+◆
+SparkFlexExternalEncoder
+friend class
+SparkFlexExternalEncoder
+friend
+◆
+SparkAbsoluteEncoderSim
+friend class
+SparkAbsoluteEncoderSim
+friend
+◆
+SparkAnalogSensorSim
+friend class
+SparkAnalogSensorSim
+friend
+◆
+SparkExternalEncoderSim
+friend class
+SparkExternalEncoderSim
+friend
+◆
+SparkLimitSwitchSim
+friend class
+SparkLimitSwitchSim
+friend
+◆
+SparkMaxAlternateEncoderSim
+friend class
+SparkMaxAlternateEncoderSim
+friend
+◆
+SparkRelativeEncoderSim
+friend class
+SparkRelativeEncoderSim
+friend
+◆
+SparkSimFaultManager
+friend class
+SparkSimFaultManager
+friend
+◆
+::ConfigBase
+friend class ::ConfigBase
+friend
+Member Data Documentation
+◆
+kAPIMajorVersion
+const uint16_t rev::spark::SparkLowLevel::kAPIMajorVersion = c_Spark_kAPIMajorVersion
+static
+◆
+kAPIMinorVersion
+const uint8_t rev::spark::SparkLowLevel::kAPIMinorVersion = c_Spark_kAPIMinorVersion
+static
+◆
+kAPIBuildVersion
+const uint8_t rev::spark::SparkLowLevel::kAPIBuildVersion = c_Spark_kAPIBuildVersion
+static
+◆
+kAPIVersion
+const uint32_t rev::spark::SparkLowLevel::kAPIVersion = c_Spark_kAPIVersion
+static
+◆
+m_motorType
+MotorType
+rev::spark::SparkLowLevel::m_motorType
+protected
+◆
+m_expectedSparkModel
+SparkModel
+rev::spark::SparkLowLevel::m_expectedSparkModel
+protected
+◆
+m_sparkMaxHandle
+void* rev::spark::SparkLowLevel::m_sparkMaxHandle
+protected
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/
+SparkLowLevel.h
+src/main/native/cpp/
+SparkLowLevel.cpp
+rev
+spark
+SparkLowLevel
+Generated by
+1.9.2

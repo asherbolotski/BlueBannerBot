@@ -1,0 +1,438 @@
+REVLib - C++
+SparkSim.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#ifndef FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SPARKSIM_H_
+30
+#define FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SPARKSIM_H_
+31
+32
+#include <memory>
+33
+#include <string>
+34
+35
+#include <frc/simulation/SimDeviceSim.h>
+36
+#include <frc/system/plant/DCMotor.h>
+37
+38
+#include "
+rev/SparkBase.h
+"
+39
+#include "
+rev/sim/MovingAverageFilterSim.h
+"
+40
+#include "
+rev/sim/SparkAbsoluteEncoderSim.h
+"
+41
+#include "
+rev/sim/SparkAnalogSensorSim.h
+"
+42
+#include "
+rev/sim/SparkLimitSwitchSim.h
+"
+43
+#include "
+rev/sim/SparkRelativeEncoderSim.h
+"
+44
+#include "
+rev/sim/SparkSimFaultManager.h
+"
+45
+46
+namespace
+rev::spark
+{
+47
+48
+class
+SparkSim
+{
+49
+public
+:
+50
+SparkSim
+(
+SparkBase
+* spark, frc::DCMotor* motor);
+51
+52
+double
+GetAppliedOutput
+()
+const
+;
+53
+void
+SetAppliedOutput
+(
+double
+appliedOutput);
+54
+55
+double
+GetSetpoint
+()
+const
+;
+56
+ClosedLoopSlot
+GetClosedLoopSlot
+()
+const
+;
+57
+58
+void
+iterate
+(
+double
+velocity,
+double
+vbus,
+double
+dt);
+59
+60
+double
+GetVelocity
+()
+const
+;
+61
+void
+SetVelocity
+(
+double
+velocity);
+62
+63
+double
+GetPosition
+()
+const
+;
+64
+void
+SetPosition
+(
+double
+position);
+65
+66
+double
+GetBusVoltage
+()
+const
+;
+67
+void
+SetBusVoltage
+(
+double
+voltage);
+68
+69
+double
+GetMotorCurrent
+()
+const
+;
+70
+void
+SetMotorCurrent
+(
+double
+current);
+71
+72
+void
+enable
+();
+73
+void
+disable
+();
+74
+void
+useDriverStationEnable
+();
+75
+76
+SparkRelativeEncoderSim
+GetRelativeEncoderSim
+();
+77
+SparkAbsoluteEncoderSim
+GetAbsoluteEncoderSim
+();
+78
+SparkAnalogSensorSim
+GetAnalogSensorSim
+();
+79
+SparkLimitSwitchSim
+GetForwardLimitSwitchSim
+();
+80
+SparkLimitSwitchSim
+GetReverseLimitSwitchSim
+();
+81
+SparkSimFaultManager
+GetFaultManager
+();
+82
+83
+private
+:
+84
+bool
+runLimitLogic(
+bool
+forward);
+85
+86
+hal::SimDouble m_appliedOutput;
+87
+hal::SimDouble m_velocity;
+88
+hal::SimDouble m_position;
+89
+hal::SimDouble m_busVoltage;
+90
+hal::SimDouble m_motorCurrent;
+91
+hal::SimDouble m_setpoint;
+92
+hal::SimDouble m_arbFF;
+93
+hal::SimInt m_closedLoopSlot;
+94
+hal::SimInt m_arbFFUnits;
+95
+SparkBase
+* m_spark;
+96
+frc::DCMotor* m_dcMotor;
+97
+hal::SimInt m_controlMode;
+98
+MovingAverageFilterSim
+m_velocityAverage;
+99
+std::unique_ptr<bool> m_enable;
+100
+std::string m_deviceName;
+101
+std::string m_unknownDeviceTypeMessage;
+102
+};
+103
+104
+}
+// namespace rev::spark
+105
+106
+#endif
+// FRC_REVLIB_SRC_MAIN_NATIVE_INCLUDE_REV_SPARKSIM_H_
+MovingAverageFilterSim.h
+SparkAbsoluteEncoderSim.h
+SparkAnalogSensorSim.h
+SparkBase.h
+SparkLimitSwitchSim.h
+SparkRelativeEncoderSim.h
+SparkSimFaultManager.h
+rev::spark::MovingAverageFilterSim
+Definition:
+MovingAverageFilterSim.h:38
+rev::spark::SparkAbsoluteEncoderSim
+Definition:
+SparkAbsoluteEncoderSim.h:43
+rev::spark::SparkAnalogSensorSim
+Definition:
+SparkAnalogSensorSim.h:43
+rev::spark::SparkBase
+Definition:
+SparkBase.h:58
+rev::spark::SparkLimitSwitchSim
+Definition:
+SparkLimitSwitchSim.h:43
+rev::spark::SparkRelativeEncoderSim
+Definition:
+SparkRelativeEncoderSim.h:43
+rev::spark::SparkSimFaultManager
+Definition:
+SparkSimFaultManager.h:43
+rev::spark::SparkSim
+Definition:
+SparkSim.h:48
+rev::spark::SparkSim::SparkSim
+SparkSim(SparkBase *spark, frc::DCMotor *motor)
+Definition:
+SparkSim.cpp:55
+rev::spark::SparkSim::useDriverStationEnable
+void useDriverStationEnable()
+Definition:
+SparkSim.cpp:400
+rev::spark::SparkSim::GetVelocity
+double GetVelocity() const
+Definition:
+SparkSim.cpp:380
+rev::spark::SparkSim::GetFaultManager
+SparkSimFaultManager GetFaultManager()
+Definition:
+SparkSim.cpp:480
+rev::spark::SparkSim::iterate
+void iterate(double velocity, double vbus, double dt)
+Definition:
+SparkSim.cpp:120
+rev::spark::SparkSim::GetMotorCurrent
+double GetMotorCurrent() const
+Definition:
+SparkSim.cpp:392
+rev::spark::SparkSim::GetPosition
+double GetPosition() const
+Definition:
+SparkSim.cpp:384
+rev::spark::SparkSim::disable
+void disable()
+Definition:
+SparkSim.cpp:398
+rev::spark::SparkSim::SetPosition
+void SetPosition(double position)
+Definition:
+SparkSim.cpp:386
+rev::spark::SparkSim::GetClosedLoopSlot
+ClosedLoopSlot GetClosedLoopSlot() const
+Definition:
+SparkSim.cpp:89
+rev::spark::SparkSim::GetAnalogSensorSim
+SparkAnalogSensorSim GetAnalogSensorSim()
+Definition:
+SparkSim.cpp:434
+rev::spark::SparkSim::GetSetpoint
+double GetSetpoint() const
+Definition:
+SparkSim.cpp:87
+rev::spark::SparkSim::GetAbsoluteEncoderSim
+SparkAbsoluteEncoderSim GetAbsoluteEncoderSim()
+Definition:
+SparkSim.cpp:418
+rev::spark::SparkSim::SetBusVoltage
+void SetBusVoltage(double voltage)
+Definition:
+SparkSim.cpp:390
+rev::spark::SparkSim::GetForwardLimitSwitchSim
+SparkLimitSwitchSim GetForwardLimitSwitchSim()
+Definition:
+SparkSim.cpp:450
+rev::spark::SparkSim::SetVelocity
+void SetVelocity(double velocity)
+Definition:
+SparkSim.cpp:382
+rev::spark::SparkSim::GetRelativeEncoderSim
+SparkRelativeEncoderSim GetRelativeEncoderSim()
+Definition:
+SparkSim.cpp:402
+rev::spark::SparkSim::SetMotorCurrent
+void SetMotorCurrent(double current)
+Definition:
+SparkSim.cpp:394
+rev::spark::SparkSim::GetAppliedOutput
+double GetAppliedOutput() const
+Definition:
+SparkSim.cpp:81
+rev::spark::SparkSim::SetAppliedOutput
+void SetAppliedOutput(double appliedOutput)
+Definition:
+SparkSim.cpp:83
+rev::spark::SparkSim::GetBusVoltage
+double GetBusVoltage() const
+Definition:
+SparkSim.cpp:388
+rev::spark::SparkSim::enable
+void enable()
+Definition:
+SparkSim.cpp:396
+rev::spark::SparkSim::GetReverseLimitSwitchSim
+SparkLimitSwitchSim GetReverseLimitSwitchSim()
+Definition:
+SparkSim.cpp:465
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::ClosedLoopSlot
+ClosedLoopSlot
+Definition:
+ClosedLoopTypes.h:35
+src
+main
+native
+include
+rev
+SparkSim.h
+Generated by
+1.9.2

@@ -1,0 +1,108 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+Each Spark device has a set of additional sensors, limit switches, and encoders that can be accessed and addressed in your robot code. To simulate each of these, we use a similar model where the user can directly set, either via the GUI or programmatically, each value that these devices measure.
+As each auxiliary device is addressed in your native robot code they will be added to the simulation GUI, allowing you to easily adjust their values and test a variety of scenarios.
+For example, the code below will generate the GUI display shown below:
+Java
+C++
+Copy
+SparkMax
+m_motor
+=
+new
+SparkMax(
+10
+,
+MotorType
+.
+kBrushless
+)
+;
+SparkRelativeEncoder
+m_relEncoder
+=
+(SparkRelativeEncoder)
+m_motor
+.
+getEncoder
+();
+SparkAnalogSensor
+m_analog
+=
+m_motor
+.
+getAnalog
+();
+SparkAbsoluteEncoder
+m_absoluteEncoder
+=
+m_motor
+.
+getAbsoluteEncoder
+();
+Copy
+using
+namespace
+rev
+::
+spark;
+SparkMax m_motor {10, SparkMax::MotorType::kBrushless};
+SparkRelativeEncoder m_relEncoder
+=
+m_motor
+.
+GetEncoder
+();
+SparkAnalogSensor m_analog
+=
+m_motor
+.
+GetAnalog
+();
+SparkAbsoluteEncoder m_absoluteEncoder
+=
+m_motor
+.
+GetAbsoluteEncoder
+();
+Simulating Auxiliary Devices in Code
+In the same fashion as the Spark devices, all auxiliary devices have their own Sim classes for accessing the simulation tooling. These follow a similar model, where all physics and motion or change in sensor values need to be handled externally, allowing you to configure these auxiliary devices in the simulation to match how they behave on your robot.
+Each Encoder Sim class also contains a .iterate function, which automatically updates both position and velocity from a velocity input, streamlining the process of integrating with an existing WPILib physics simulation. For example, an External/Alternate Encoder attached after a gearbox could be updated with the motor's velocity transformed by the gear ratio to provide accurate measurements, or an independent simulation could be run for the auxiliary device.
+Previous
+REVLib Simulation Feature Overview
+Next
+Configuring a Servo Hub
+Last updated
+7 months ago
+Was this helpful?

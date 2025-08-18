@@ -1,0 +1,275 @@
+REVLib - C++
+AbsoluteEncoderConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include "
+rev/config/BaseConfig.h
+"
+32
+33
+namespace
+rev::spark
+{
+34
+35
+class
+AbsoluteEncoderConfig
+:
+public
+BaseConfig
+{
+36
+public
+:
+37
+AbsoluteEncoderConfig
+() =
+default
+;
+38
+~AbsoluteEncoderConfig
+()
+override
+=
+default
+;
+39
+40
+AbsoluteEncoderConfig
+(
+const
+AbsoluteEncoderConfig
+&) =
+delete
+;
+41
+AbsoluteEncoderConfig
+&
+operator=
+(
+const
+AbsoluteEncoderConfig
+&) =
+delete
+;
+42
+AbsoluteEncoderConfig
+(
+AbsoluteEncoderConfig
+&&) noexcept = delete;
+43
+AbsoluteEncoderConfig
+& operator=(
+AbsoluteEncoderConfig
+&&) noexcept = delete;
+44
+54
+AbsoluteEncoderConfig
+&
+Apply
+(
+AbsoluteEncoderConfig
+& config);
+55
+69
+AbsoluteEncoderConfig
+&
+SetSparkMaxDataPortConfig
+();
+70
+79
+AbsoluteEncoderConfig
+&
+Inverted
+(
+bool
+inverted);
+80
+90
+AbsoluteEncoderConfig
+&
+PositionConversionFactor
+(
+double
+factor);
+91
+101
+AbsoluteEncoderConfig
+&
+VelocityConversionFactor
+(
+double
+factor);
+102
+115
+AbsoluteEncoderConfig
+&
+ZeroOffset
+(
+double
+offset);
+116
+125
+AbsoluteEncoderConfig
+&
+AverageDepth
+(
+int
+depth);
+126
+135
+AbsoluteEncoderConfig
+&
+StartPulseUs
+(
+double
+startPulseUs);
+136
+145
+AbsoluteEncoderConfig
+&
+EndPulseUs
+(
+double
+endPulseUs);
+146
+156
+AbsoluteEncoderConfig
+&
+ZeroCentered
+(
+bool
+zeroCentered);
+157
+};
+158
+159
+}
+// namespace rev::spark
+BaseConfig.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::spark::AbsoluteEncoderConfig
+Definition:
+AbsoluteEncoderConfig.h:35
+rev::spark::AbsoluteEncoderConfig::ZeroCentered
+AbsoluteEncoderConfig & ZeroCentered(bool zeroCentered)
+Definition:
+AbsoluteEncoderConfig.cpp:132
+rev::spark::AbsoluteEncoderConfig::Inverted
+AbsoluteEncoderConfig & Inverted(bool inverted)
+Definition:
+AbsoluteEncoderConfig.cpp:49
+rev::spark::AbsoluteEncoderConfig::VelocityConversionFactor
+AbsoluteEncoderConfig & VelocityConversionFactor(double factor)
+Definition:
+AbsoluteEncoderConfig.cpp:65
+rev::spark::AbsoluteEncoderConfig::SetSparkMaxDataPortConfig
+AbsoluteEncoderConfig & SetSparkMaxDataPortConfig()
+Definition:
+AbsoluteEncoderConfig.cpp:42
+rev::spark::AbsoluteEncoderConfig::~AbsoluteEncoderConfig
+~AbsoluteEncoderConfig() override=default
+rev::spark::AbsoluteEncoderConfig::StartPulseUs
+AbsoluteEncoderConfig & StartPulseUs(double startPulseUs)
+Definition:
+AbsoluteEncoderConfig.cpp:115
+rev::spark::AbsoluteEncoderConfig::PositionConversionFactor
+AbsoluteEncoderConfig & PositionConversionFactor(double factor)
+Definition:
+AbsoluteEncoderConfig.cpp:56
+rev::spark::AbsoluteEncoderConfig::Apply
+AbsoluteEncoderConfig & Apply(AbsoluteEncoderConfig &config)
+Definition:
+AbsoluteEncoderConfig.cpp:36
+rev::spark::AbsoluteEncoderConfig::operator=
+AbsoluteEncoderConfig & operator=(const AbsoluteEncoderConfig &)=delete
+rev::spark::AbsoluteEncoderConfig::ZeroOffset
+AbsoluteEncoderConfig & ZeroOffset(double offset)
+Definition:
+AbsoluteEncoderConfig.cpp:74
+rev::spark::AbsoluteEncoderConfig::AbsoluteEncoderConfig
+AbsoluteEncoderConfig(AbsoluteEncoderConfig &&) noexcept=delete
+rev::spark::AbsoluteEncoderConfig::EndPulseUs
+AbsoluteEncoderConfig & EndPulseUs(double endPulseUs)
+Definition:
+AbsoluteEncoderConfig.cpp:124
+rev::spark::AbsoluteEncoderConfig::AbsoluteEncoderConfig
+AbsoluteEncoderConfig(const AbsoluteEncoderConfig &)=delete
+rev::spark::AbsoluteEncoderConfig::AbsoluteEncoderConfig
+AbsoluteEncoderConfig()=default
+rev::spark::AbsoluteEncoderConfig::AverageDepth
+AbsoluteEncoderConfig & AverageDepth(int depth)
+Definition:
+AbsoluteEncoderConfig.cpp:81
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+src
+main
+native
+include
+rev
+config
+AbsoluteEncoderConfig.h
+Generated by
+1.9.2

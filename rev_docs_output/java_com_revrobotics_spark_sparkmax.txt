@@ -1,0 +1,393 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark
+Class SparkMax
+java.lang.Object
+com.revrobotics.spark.SparkLowLevel
+com.revrobotics.spark.SparkBase
+com.revrobotics.spark.SparkMax
+All Implemented Interfaces:
+MotorController
+,
+AutoCloseable
+public class
+SparkMax
+extends
+SparkBase
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.spark.
+SparkBase
+SparkBase.ControlType
+,
+SparkBase.Faults
+,
+SparkBase.PersistMode
+,
+SparkBase.ResetMode
+,
+SparkBase.Warnings
+Nested classes/interfaces inherited from class com.revrobotics.spark.
+SparkLowLevel
+SparkLowLevel.MotorType
+,
+SparkLowLevel.PeriodicFrame
+,
+SparkLowLevel.PeriodicStatus0
+,
+SparkLowLevel.PeriodicStatus1
+,
+SparkLowLevel.PeriodicStatus2
+,
+SparkLowLevel.SparkModel
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final
+SparkMaxConfigAccessor
+configAccessor
+Accessor for SPARK parameter values.
+Fields inherited from class com.revrobotics.spark.
+SparkBase
+absoluteEncoder
+,
+absoluteEncoderLock
+,
+analogSensor
+,
+analogSensorLock
+,
+closedLoopController
+,
+closedLoopControllerLock
+,
+encoder
+,
+encoderLock
+,
+forwardLimitSwitch
+,
+forwardLimitSwitchLock
+,
+forwardSoftLimit
+,
+forwardSoftLimitLock
+,
+reverseLimitSwitch
+,
+reverseLimitSwitchLock
+,
+reverseSoftLimit
+,
+reverseSoftLimitLock
+Fields inherited from class com.revrobotics.spark.
+SparkLowLevel
+expectedSparkModel
+,
+isClosed
+,
+kAPIBuildVersion
+,
+kAPIMajorVersion
+,
+kAPIMinorVersion
+,
+kAPIVersion
+,
+motorType
+,
+sparkHandle
+Constructor Summary
+Constructors
+Constructor
+Description
+SparkMax
+(int deviceId,
+SparkLowLevel.MotorType
+type)
+Create a new object to control a SPARK MAX motor Controller
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+REVLibError
+configure
+(
+SparkBaseConfig
+config,
+SparkBase.ResetMode
+resetMode,
+SparkBase.PersistMode
+persistMode)
+Set the configuration for the SPARK.
+SparkAbsoluteEncoder
+getAbsoluteEncoder
+()
+Returns an object for interfacing with a connected absolute encoder.
+RelativeEncoder
+getAlternateEncoder
+()
+Returns an object for interfacing with a quadrature encoder connected to the alternate encoder
+ mode data port pins.
+SparkLimitSwitch
+getForwardLimitSwitch
+()
+Returns an object for interfacing with the forward limit switch connected to the appropriate
+ pins on the data port.
+SparkLimitSwitch
+getReverseLimitSwitch
+()
+Returns an object for interfacing with the reverse limit switch connected to the appropriate
+ pins on the data port.
+Methods inherited from class com.revrobotics.spark.
+SparkBase
+clearFaults
+,
+configureAsync
+,
+disable
+,
+get
+,
+getAnalog
+,
+getAppliedOutput
+,
+getBusVoltage
+,
+getClosedLoopController
+,
+getEncoder
+,
+getFaults
+,
+getForwardSoftLimit
+,
+getInverted
+,
+getLastError
+,
+getMotorTemperature
+,
+getOutputCurrent
+,
+getReverseSoftLimit
+,
+getStickyFaults
+,
+getStickyWarnings
+,
+getWarnings
+,
+hasActiveFault
+,
+hasActiveWarning
+,
+hasStickyFault
+,
+hasStickyWarning
+,
+isFollower
+,
+pauseFollowerMode
+,
+pauseFollowerModeAsync
+,
+resumeFollowerMode
+,
+resumeFollowerModeAsync
+,
+set
+,
+setCANTimeout
+,
+setInverted
+,
+setVoltage
+,
+stopMotor
+Methods inherited from class com.revrobotics.spark.
+SparkLowLevel
+close
+,
+createSimFaultManager
+,
+getDeviceId
+,
+getFirmwareString
+,
+getFirmwareVersion
+,
+getMotorType
+,
+getSafeFloat
+,
+getSerialNumber
+,
+setCANMaxRetries
+,
+setControlFramePeriodMs
+,
+setPeriodicFrameTimeout
+,
+throwIfClosed
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Methods inherited from interface edu.wpi.first.wpilibj.motorcontrol.
+MotorController
+setVoltage
+Field Details
+configAccessor
+public final
+SparkMaxConfigAccessor
+configAccessor
+Accessor for SPARK parameter values. This object contains fields and methods to retrieve
+ parameters that have been applied to the device. To set parameters, see
+SparkBaseConfig
+and
+SparkBase.configure(SparkBaseConfig, SparkBase.ResetMode, SparkBase.PersistMode)
+.
+NOTE: This uses calls that are blocking to retrieve parameters and should be used
+ infrequently.
+Constructor Details
+SparkMax
+public
+SparkMax
+(int deviceId,
+SparkLowLevel.MotorType
+type)
+Create a new object to control a SPARK MAX motor Controller
+Parameters:
+deviceId
+- The device ID.
+type
+- The motor type connected to the controller. Brushless motor wires must be connected
+     to their matching colors and the hall sensor must be plugged in. Brushed motors must be
+     connected to the Red and Black terminals only.
+Method Details
+configure
+public
+REVLibError
+configure
+(
+SparkBaseConfig
+config,
+SparkBase.ResetMode
+resetMode,
+SparkBase.PersistMode
+persistMode)
+Description copied from class:
+SparkBase
+Set the configuration for the SPARK.
+If
+resetMode
+is
+SparkBase.ResetMode.kResetSafeParameters
+, this method will reset safe
+ writable parameters to their default values before setting the given configuration. The
+ following parameters will not be reset by this action: CAN ID, Motor Type, Idle Mode, PWM Input
+ Deadband, and Duty Cycle Offset.
+If
+persistMode
+is
+SparkBase.PersistMode.kPersistParameters
+, this method will save all
+ parameters to the SPARK's non-volatile memory after setting the given configuration. This will
+ allow parameters to persist across power cycles.
+Overrides:
+configure
+in class
+SparkBase
+Parameters:
+config
+- The desired SPARK configuration
+resetMode
+- Whether to reset safe parameters before setting the configuration
+persistMode
+- Whether to persist the parameters after setting the configuration
+Returns:
+REVLibError.kOk
+if successful
+getAlternateEncoder
+public
+RelativeEncoder
+getAlternateEncoder
+()
+Returns an object for interfacing with a quadrature encoder connected to the alternate encoder
+ mode data port pins. These are defined as:
+Pin 4 (Forward Limit Switch): Index
+Pin 6 (Multi-function): Encoder A
+Pin 8 (Reverse Limit Switch): Encoder B
+This call will disable support for the limit switch inputs.
+Returns:
+An object for interfacing with a quadrature encoder connected to the alternate encoder
+     mode data port pins
+getAbsoluteEncoder
+public
+SparkAbsoluteEncoder
+getAbsoluteEncoder
+()
+Description copied from class:
+SparkBase
+Returns an object for interfacing with a connected absolute encoder.
+Overrides:
+getAbsoluteEncoder
+in class
+SparkBase
+Returns:
+An object for interfacing with a connected absolute encoder
+getForwardLimitSwitch
+public
+SparkLimitSwitch
+getForwardLimitSwitch
+()
+Description copied from class:
+SparkBase
+Returns an object for interfacing with the forward limit switch connected to the appropriate
+ pins on the data port.
+Overrides:
+getForwardLimitSwitch
+in class
+SparkBase
+Returns:
+An object for interfacing with the forward limit switch.
+getReverseLimitSwitch
+public
+SparkLimitSwitch
+getReverseLimitSwitch
+()
+Description copied from class:
+SparkBase
+Returns an object for interfacing with the reverse limit switch connected to the appropriate
+ pins on the data port.
+Overrides:
+getReverseLimitSwitch
+in class
+SparkBase
+Returns:
+An object for interfacing with the reverse limit switch.

@@ -1,0 +1,225 @@
+REV Crossover
+REV Crossover Landing
+Sensors
+Through Bore Encoder
+Specifications
+Application Examples
+Color Sensor V3
+Specifications
+Application Examples
+Discontinued Color Sensors
+V2 Specifications & Examples
+V1 Specifications & Examples
+2m Distance Sensor
+Specifications
+Application Examples
+Magnetic Limit Switch
+Specifications
+Application Examples
+Touch Sensor
+Specifications
+Application Examples
+Potentiometer
+Specifications
+Application Examples
+9-Axis IMU
+Specifications
+Configuring the 9-Axis IMU
+Blinkin LED Driver
+Blinkin LED Driver Overview
+Blinkin Specifications
+Blinkin Getting Started
+LED Pattern Tables
+Blinkin Troubleshooting
+REV ION Application Examples
+REV DUO Application Examples
+UltraPlanetary System
+UltraPlanetary System Overview
+UltraPlanetary Features
+Cartridge Details
+Load Ratings
+Assembly Instructions
+Mounting Brackets
+Ultra 90 Degree Gearbox
+Assembly Instructions
+Rotation Direction
+Servos & Accessories
+Servo Hub
+Servo Hub Wiring
+Configuring the Servo Hub with a Control Hub
+Channel Power
+Channel Pulse
+Servo Hub Status LED Patterns
+Troubleshooting
+REVLib for Servo Hub
+Smart Robot Servo
+SRS Gear Replacement
+SRS Programmer
+Switching Operating Modes
+Servo Power Module
+Indicators
+Digital LED Indicator
+Specifications
+Application Examples
+Gamepad
+Gamepad Overview
+Remapping Guide
+Powered by GitBook
+On this page
+Application Information
+FTC Applications
+Was this helpful?
+Export as PDF
+Application Information
+Potentiometers are most commonly used to measure the angle of an arm type joint. There are two different ways to utilize a potentiometer when using it in conjunction with an arm. One way to use the potentiometer is to directly place it on the shaft being used to pivot the arm. However, placing the potentiometer on an adjacent shaft that connects to the pivot-point shaft, via gears or chain, allows for more design flexibility.
+Applying the concept of gear ratios (or sprocket ratios) to the potentiometer; it is possible to manipulate the accuracy/range of motion relationship. When the range of motion increases, through changes in gear ratio, accuracy decreases, and vice versa.
+This Potentiometer has a 5mm female hex socket input and can be used with any 5mm hex axle, like the ones in the REV Building System.  There are six M3 tapped holes around the input shaft on a 16mm circle which will mount to any of the REV Robotics Motion Brackets.
+Calculating the relationship between voltage and angle
+The REV Potentiometer has a linear* relationship between the output voltage and the angle of its shaft.
+*When used in FTC applications, the Hub's analog circuitry changes the linearity of the potentiometer. Skip ahead to the FTC Applications section for more information.
+Assuming a 3.3V input voltage, the degrees per volt can be graphed and calculated as follows:
+27
+0
+∘
+3.3
+V
+=
+81.
+8
+∘
+1
+V
+o
+r
+0.081
+8
+∘
+1
+m
+V
+\frac{270^{\circ}}{3.3V}=\frac{81.8^{\circ}}{1V}\: or\;\frac{0.0818^{\circ}}{1mV}
+3.3
+V
+27
+0
+∘
+​
+=
+1
+V
+81.
+8
+∘
+​
+or
+1
+mV
+0.081
+8
+∘
+​
+Therefore, given a measured output voltage V in volts, you can easily calculate the corresponding angle θ in degrees:
+θ
+=
+V
+OUT
+×
+81.8
+\theta= V_{\textit{OUT}}\times81.8
+θ
+=
+V
+OUT
+​
+×
+81.8
+FTC Applications
+Even though the Potentiometer is a linear taper potentiometer, the analog circuitry on the Control/Expansion Hubs can change the linearity so that the above equations are not as accurate. Therefore, it is recommended to move your robot mechanisms to specific positions of interest and record the Potentiometer voltage at those positions to use in your code.
+Calculating the output voltage for a specific angle θ between 0 and 270° is still possible, but the equation is no longer linear:
+V
+OUT
+=
+445.5
+(
+θ
+−
+270
+)
+θ
+2
+−
+270
+θ
+−
+36450
+V_\textit{OUT}=\frac{445.5(\theta-270)}{\theta^2-270\theta-36450}
+V
+OUT
+​
+=
+θ
+2
+−
+270
+θ
+−
+36450
+445.5
+(
+θ
+−
+270
+)
+​
+Configuring in the Control System
+Configure the Potentiometer as "Analog Input" as shown in the image below.
+In this example, the Potentiometer is configured on port 0. It is touched on briefly in the
+Pinout Section
+that the Potentiometer only sends a signal to the Control Hub through the n communication channel. Because of this limitation, the Potentiometer will only work when configured port 0 and port 2.
+Programming Applications
+This program has a variable called CurrentVoltage that is used to store the current voltage. CurrentVoltage is updated using the AnalogInput block every time that the program loops. When CurrentVoltage less than the midpoint of 1.65 volts, the motor stops. When the voltage is higher than the midpoint, the motor moves. The potentiometer voltage is also displayed via telemetry.
+Blocks
+OnBot Java
+The code assumes that a Potentiometer was configured with the name “potentiometer”, and that a motor was configured with the name “test_motor”.
+Copy
+package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+@TeleOp
+public class PotentiometerTest extends LinearOpMode {
+// Define variables for our potentiometer and motor
+AnalogInput potentiometer;
+DcMotor test_motor;
+// Define variable for the current voltage
+double currentVoltage;
+@Override
+public void runOpMode() {
+// Get the potentiometer and motor from hardwareMap
+potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
+test_motor = hardwareMap.get(DcMotor.class, "test_motor");
+// Loop while the Op Mode is running
+waitForStart();
+while (opModeIsActive()) {
+// Update currentVoltage from the potentiometer
+currentVoltage = potentiometer.getVoltage();
+// Turn the motor on or off based on the potentiometer’s position
+if (currentVoltage < 1.65) {
+test_motor.setPower(0);
+} else {
+test_motor.setPower(0.3);
+}
+// Show the potentiometer’s voltage in telemetry
+telemetry.addData("Potentiometer voltage", currentVoltage);
+telemetry.update();
+}
+}
+}
+Previous
+Specifications
+Next
+9-Axis IMU
+Last updated
+9 months ago
+Was this helpful?

@@ -1,0 +1,120 @@
+REV DUO Kickoff Concepts
+2025-26 REV DUO FTC Starter Bot
+DECODE 2025-26
+Starter Bot - DECODE
+Bill of Materials
+Programming TeleOp
+Build Tips & Tricks
+Starter Bot Changelog 2025-26
+INTO THE DEEP 2024-25
+2024-25 REV DUO FTC Starter Bot
+Starter Bot - INTO THE DEEP
+Bill of Materials
+Programming TeleOp
+Programming - Initialization
+Programming - Creating Functions
+Programming - Controlling the Arm and Wrist
+Programming - Intake and Claw Toggle
+Programming - Driving and Telemetry
+Programming - OnBot Java Overview
+Build Tips & Tricks
+Upgrades!
+Starter Bot Changelog 2024-25
+CENTERSTAGE 2023-2024
+Starter Bot - CENTERSTAGE
+Bill of Materials
+Programming Teleop
+Building Tips & Tricks
+Upgrades
+Starter Bot Changelog
+POWERPLAY 2022-2023
+Starter Bot - POWERPLAY
+Alternative Control Hub Placement
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Lifts
+Freight Frenzy - 2021-2022
+Starter Bot - Freight Frenzy
+Starter Bot - Programming TeleOp
+Game Breakdown
+Game Elements
+Drivetrain
+Intake
+Carousel Mechanism
+Freight Delivery Mechanisms
+Programming Autonomous
+Ultimate Goal - 2020-2021
+Game Strategy
+Game Piece
+Drivetrain
+Intake
+Conveyor
+Flywheel Launcher
+Powered by GitBook
+On this page
+Drivetrain Motor Settings
+Establishing Variables
+Variables: OnBot Java vs. Blocks
+currentState Variable
+Was this helpful?
+Export as PDF
+Before the bulk of our program begins, we need to first establish our variables and tell our motors how we want them to run. This section of code will run once when the program is activated and before we hit "Play" on the Driver Hub.
+Initialization Code
+Drivetrain Motor Settings
+Since the motors on our drive train are a mirror of each other, one needs to be set to run in reverse. In this case we have the leftDrive motor set to run in reverse.
+By default, our drivetrain motors will not be using encoder data so we can set them to RUN_WITHOUT_ENCODER. Your team may choose to change this later when working on autonomous programming!
+Establishing Variables
+To learn more about "What is a Variable?" check out our Hello Robot tutorial!
+Variable states at program start
+There are two parts to our variable set up in this year's Starter Bot program. Often times we use variables in place of a number or equation, but in this case we will be using them to help our robot move between functions in our code and determine preset arm/wrist positions.
+Let's take a look at what all our variables do:
+Variable
+Purpose
+MANUAL
+Switches the arm and wrist to being manually controlled by the Dpad
+INTAKE
+Sets the arm and wrist to a preset position to intake game pieces
+WALL_GRAB
+Sets the arm and wrist to a preset position to pick up clipped specimens from human player
+WALL_UNHOOK
+Raises the arm from the wall (human player) position to remove clipped specimens
+HOVER_HIGH
+Sets the arm and wrist to a preset position to place specimens on the high rung
+CLIP_HIGH
+Moves the arm to clip specimens on the high rung
+LOW_BASKET
+Sets the arm/wrist to the needed high to score in the low basket
+INIT
+Resets the robot to its start up configuration
+currentState
+Switches the arm/wrist between the above preset positions and provides a readout for telemetry
+clawOpen
+Allows for the toggle control of the claw
+lastBump
+Allows for toggling the claw open or closed
+lastHook
+Allows for toggling between the two clip positions
+lastGrab
+Allows for toggling between the wall (human player) positions
+Variables: OnBot Java vs. Blocks
+In the OnBot Java version of this code, we use something called "enum". This allows us to declare the variable name and have it treated as a unique value.
+For example: the robot interprets the variable "MANUAL" as one of the states within our switch case in OnBot Java. We'll discuss more about the switch case down below!
+However, "enum" is not available in Blocks meaning we have to be a little clever to mimic this process. We created strings using the "text" block to do a similar thing. This will have the robot understand MANUAL equals the word "manual", which allows it to move between cases.
+Variables in Blocks using strings
+Variables in OnBot Java using enum
+currentState Variable
+You'll notice the variable currentState appears throughout our program repeatedly. But what does it do?
+This variable is what will allow our robot to switch between its various preset configurations based on what button is pressed on the gamepad. It's one variable that can be set to a number of different constant states. In comparison, our position variables will remain constant.
+When we press one of the buttons on our gamepad it changes our currentState. In turn, this tells our arm and wrist on the robot to move to one of the predetermined positions seen below.
+Arm and Wrist Presets
+If we needed to update the position value for one of our presets, we can do so within this if/else statement and it will be reflected throughout the entire code without having the hunt down every instance it may be used.
+Previous
+Programming TeleOp
+Next
+Programming - Creating Functions
+Last updated
+2 months ago
+Was this helpful?

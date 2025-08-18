@@ -1,0 +1,201 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+SPARK MAX Data Port Pinout
+SPARK MAX Data Port Features
+Limit Switch Inputs
+Quadrature Encoder Input
+Analog Input
+Multi-function Pin
+Power Rails
+SPARK MAX Data Port Accessories
+Alternate Encoder Adapter
+Absolute Encoder Adapter
+Data Port Breakout Board
+Was this helpful?
+Export as PDF
+SPARK MAX Data Port Pinout
+Located on the top of the SPARK MAX, the Data Port allows for extra sensor input and future feature development. The connector details can be found below.
+Connector Pin
+Pin Type
+Pin Function
+1
+Power
++3.3V
+2
+Power
++5V
+3
+Analog
+Analog Input
+4
+Digital
+Forward Limit Switch Input
+5
+Digital
+Encoder B
+6
+Digital
+Multi-function Pin
+7
+Digital
+Encoder A
+8
+Digital
+Reverse Limit Switch Input
+9
+Digital
+Encoder C / Index
+10
+Ground
+Ground
+Using the
+SPARK MAX Data Port Breakout Board
+(
+REV-11-1278
+) makes interfacing with the SPARK MAX Data Port easier.
+SPARK MAX Data Port Features
+Limit Switch Inputs
+SPARK MAX has two limit switch inputs that, when triggered, can independently prevent motion in both the forward and reverse directions. By default, when the pin for the corresponding direction is grounded, SPARK MAX will override any input commands for that direction and force the output into the neutral state. Input commands for the opposite direction will still be processed unless the corresponding limit signal is also triggered.
+The default polarity is compatible with Normally Open (NO) style limit switches, whose contacts are shorted together when the switch is pressed. The Limit Switch Inputs can be configured for the opposite polarity using the USB or CAN interfaces. When configured for the opposite polarity, Normally Closed (NC), the limit will be triggered when the pin is left disconnected from ground. In other words, connecting the pin to ground will release the limit. The following table shows these configurations in detail:
+Limit Switch Operation
+Quadrature Encoder Input
+The Quadrature Encoder Input on the Data Port is compatible with standard quadrature encoder signals, usually labeled as channel A, channel B, and Index. SPARK MAX shares these signals with the Encoder Port on the output side of the controller, therefore the Index signal is shared with the third brushless encoder signal C. When in Brushless Mode, these Data Port pins cannot be used with an external encoder. See
+Alternate Encoder Mode
+for information on how to configure the SPARK MAX to accept an alternative encoder source when running in Brushless Mode.
+When in Brushed Mode, an external encoder can be connected through either the Data Port or the Encoder Port.
+The SPARK MAX encoder signals are not pulled high internally. This is to ensure the maximum compatibility with different types of encoders.
+Analog Input
+The Analog Port on the SPARK MAX can measure voltages up to 3.3V with 12-bit resolution. The SPARK MAX Data Port Breakout includes a 5V to 3.3V amplifier circuit so that 5V signals can be sensed with the Analog Input pin.
+Analog input is supported on firmware versions 1.4.0 and newer.
+Multi-function Pin
+This pin is reconfigured when the SPARK MAX is configured in Alternate Encoder Mode.
+Power Rails
+The SPARK MAX Data Port can provide both 3.3V and 5V power to connected devices. Please check
+Data Port Specifications
+for details on the supply current capabilities of both rails.
+SPARK MAX Data Port Accessories
+Alternate Encoder Adapter
+Features
+The SPARK MAX Alternate Encoder Adapter (
+REV-11-1881-PK2
+) enables the use of an alternative encoder source different from the default. This is especially useful when running one of the NEO Brushless Motors, as the default encoder port is occupied by the built-in NEO hall sensors. Please see the Alternate Encoder Mode section in the
+SPARK MAX User's Manual
+for more information.
+JST PH 6-pin connector
+Pinout compatible with REV Through Bore Encoder
+Index Signal/Absolute PWM Pulse selection switch
+Selects which signal is connected to pin 4 of the Data Port
+Solder pads
+Analog Input
+3.3V and 5.0V Power
+Ground
+Specifications
+1 x JST PH, 6-pin connector
+1 x 14 Position 2 Row Receptacle Connector 0.050"
+Absolute Encoder Adapter
+Features
+The SPARK MAX Absolute Encoder Adapter (
+REV-11-3326
+) connects the Absolute Duty Cycle output of the Through Bore Encoder to the correct SPARK MAX Data Port pins, leaving the incremental quadrature pins disconnected.
+JST PH 6-pin connector
+Pinout Compatible with REV Through Bore Encoder
+Solder pads
+Limit Switches
+Ground
+Specifications
+1 x JST PH, 6-pin connector
+1 x 14 Position 2 Row Receptacle Connector 0.050"
+Data Port Breakout Board
+Features
+The SPARK MAX Data Port Breakout Board (
+REV-11-1278
+) makes it easy to connect external sensors to the SPARK MAX Data Port.
+Solder pads for every Data Port pin
+Analog input 5V to 3.3V converter
+Built-in amplifier maps 0V - 5V analog signals to the native 0V - 3.3V range of the SPARK MAX Analog Input
+Configurable resistors can bypass the amplifier (move R3 to R4 position)
+Pass-through Data Port connector
+Connect other sensors with data port-compatible cables while using this breakout
+Mounts directly to SPARK MAX
+No need for a data port cable
+Securely mounts to the SPARK MAX zip-tie notches
+Previous
+Encoder Port
+Next
+SPARK MAX Getting Started
+Last updated
+2 months ago
+Was this helpful?

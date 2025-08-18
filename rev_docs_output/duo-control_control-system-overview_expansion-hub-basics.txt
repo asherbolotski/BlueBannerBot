@@ -1,0 +1,497 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Specifications
+Input Power Specifications
+Motor Port Specifications
+Encoder Port Specifications
+Digital Port Specifications
+Analog Port Specifications
+I2C Port Specifications
+Servo Port Specifications
++5V Power Port Specifications
+Mechanical Specifications
+Was this helpful?
+Export as PDF
+The REV Robotics Expansion Hub (
+REV-31-1153
+) is a low-cost educational device that can communicate with any computer (commonly the
+REV Robotics Control Hub
+or an Android Phone) to provide the interfaces required for building robots and other mechatronics. The Expansion Hub was purpose built to stand up to the rigors of the classroom and competition field. It features a mature firmware designed for basic and advanced use cases with the ability to be field upgraded in the future.
+The IO ports of the Expansion Hub are identical in specification to the Control Hub. Within this documentation, many sections may refer to the Control Hub, but the connections are the same for the Expansion Hub.
+The REV Robotics Expansion Hub is an approved device for use in the FIRST Tech Challenge and FIRST Global.
+Port Label
+Qty
+Connector
+Description
+Battery
+2
+XT30
+Connect one 12V NiMh battery, add an Expansion Hub with second port
+Motor
+4
+JST VH, 2-pin
+Motor power output
+Encoder
+4
+JST PH, 4-pin
+Quadrature encoder input
+Servo
+6
+0.1” Header
+Extended range 5V servo output (500-2500ms)
+5V Aux Power
+2
+0.1” Header
+Auxiliary device 5V/2A
+Analog
+4
+JST PH, 4-pin
+Analog input 0-5.0V measurement range with two channels per connector. 3.3V provided on the connector power pin.
+Digital
+8
+JST PH, 4-pin
+Digital Input/Output with two channels per connector
+I2C
+4
+JST PH, 4-pin
+Four separate I2C busses, 100kHz/400kHz bus speed
+RS485
+2
+JST PH, 3-pin
+Serial communication port to add a Hub (Control or Expansion)
+UART
+2
+JST PH, 3-pin
+Debugging only
+MINI USB
+1
+USB Mini-B
+Connect directly to the Robot Controller Android device or PC
+Specifications
+The following tables provide the operating and mechanical specifications for the Expansion Hub.
+DO NOT exceed the absolute maximum electrical specifications. Doing so will cause permanent damage to the Expansion Hub and will void the warranty.
+Input Power Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Operating voltage range (
+V
+I
+N
+V_{IN}
+V
+I
+N
+​
+)
+8
+12
+15
+V
+Absolute maximum supply voltage
+-
+-
+15
+V
+Motor Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Continuous output current †
+-
+-
+10
+A
+Absolute maximum output current ‡
+-
+-
+20
+A
+†
+Exceeding the continuous current maximum depends on many thermal factors. The outputs will self protect once they approach their thermal limit.
+‡
+Maximum current is ultimately limited by the in-line battery fuse.
+Encoder Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Encoder port input voltage
+0
+-
+3.3
+V
+Encoder port supply voltage
+-
+-
+3.3
+V
+Encoder port total supply current
+-
+-
+500
+mA
+See
+Sensors - Encoders
+for more information on encoders and using the encoder ports. For using non-REV motor encoders see
+Using 3rd Party Sensors - Encoders
+for more details.
+Digital Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Digital port input voltage
+0
+-
+3.3
+V
+Digital port supply voltage
+-
+-
+3.3
+V
+Digital port total supply current
+-
+-
+1
+A
+See
+Sensors - Digital
+for more information on using the digital ports. See
+Using 5V Sensors
+for information on using 5V logic level devices with the digital ports.
+Analog Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Analog port input voltage range †
+0
+-
+5
+V
+Analog port supply voltage
+-
+-
+3.3
+V
+Analog port total supply current
+-
+-
+500
+mA
+†
+The analog input will accept up to 5V. When using 5V analog sensors, a custom wiring harness is needed to provide 5V of power for the sensor as the power pin provides 3.3V.
+See
+Sensors - Analog
+for more information on using the analog ports.
+I2C Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+I2C port input voltage range
+0
+-
+3.3
+V
+I2C port supply voltage
+-
+-
+3.3
+V
+I2C port total supply current
+-
+-
+500
+mA
+Bus speed
+-
+100/400
+-
+kHz
+I2C pull-up resistor
+-
+2.49
+-
+kΩ
+Expansion Hubs purchased AFTER December 2021 no longer include an internal IMU
+See
+Sensors - I2C
+for more information on using the I2C ports. See
+Using 5V Sensors
+for information on using 5V logic level devices with the I2C ports.
+Servo Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Servo output signal voltage
+0
+-
+5
+V
+Servo port supply voltage
+-
+5
+-
+V
+Servo port pair total supply current †
+-
+-
+2
+A
+Absolute maximum total supply current ‡
+-
+-
+5
+A
+Servo port output pulse range
+500
+-
+2500
+μs
+†
+Total supply is shared across pairs of ports (0-1, 2-3, 4-5)
+‡
+The 5A total supply current for all servo ports and +5V power ports is shared.
++5V Power Port Specifications
+Parameter
+Min
+Typ
+Max
+Units
++5V power port output voltage
+-
+5
+-
+V
++5V power port pair total supply current †
+-
+-
+2
+A
+Absolute maximum total supply current ‡
+-
+-
+5
+A
+†
+Total supply current is shared across both ports
+‡
+The 5A total supply current for all servo ports and +5V power ports is shared.
+Mechanical Specifications
+Parameter
+Min
+Typ
+Max
+Units
+Body length
+-
+103
+-
+mm
+Body width
+-
+143
+-
+mm
+Body height
+-
+29.5
+-
+mm
+Weight
+-
+209
+-
+g
+Mounting hole pitch
+-
+16
+-
+mm
+Previous
+Control Hub Specifications
+Next
+Driver Hub Specifications
+Last updated
+12 months ago
+Was this helpful?

@@ -1,0 +1,70 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+Smart Velocity is deprecated as of the 2025 release of REVLib, and teams using it should migrate to MAXMotion Velocity Control Mode
+The Smart Velocity control mode utilizes the
+Smart Motion parameters
+to improve upon velocity control. Honoring the maximum acceleration, Smart Velocity will speed up and slow down your flywheel or rotary mechanism in a controlled way, reducing power draw and increasing consistency.
+It is called as seen below:
+Java
+C++
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kSmartVelocity
+);
+API Docs:
+setReference
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kSmartVelocity);
+API Reference:
+SetReference
+Smart Velocity Control mode will turn your motor continuously. Be sure your mechanism does not have any hard limits for rotation.
+This graph was generated with a very slow acceleration to better show the motion, the wobbles at low speed can be minimized by increasing your acceleration.
+Previous
+Smart Motion Control
+Next
+Simulation
+Last updated
+7 months ago
+Was this helpful?

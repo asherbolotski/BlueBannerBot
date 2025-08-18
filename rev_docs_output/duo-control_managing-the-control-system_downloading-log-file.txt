@@ -1,0 +1,234 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Log Viewer - REV Hardware Client
+Downloading Log Files
+REV Hardware Client
+File Search
+Robot Controller Console
+Was this helpful?
+Export as PDF
+When troubleshooting problems with the REV Control System log files provide indicators of what the status of the Control Hub or Expansion Hub were during an event. Often the first log that is considered is the Robot Controller log, as they are relatively easy to decipher and can be pulled from the Control Hub or Robot Controller. While working through the
+troubleshooting process
+looking through the XML files, Wi-Fi Log, or Updater Logs in addition to the Robot Controller logs help to paint a full picture.
+There are a few ways to access the log files depending on if you are looking to troubleshoot or downloading the log files for REV support to help.
+Log Viewer - REV Hardware Client
+The REV Hardware Client has a Log Viewer that makes it easier to parse overall log files. Through a series of filters, tags, and a search function makes it easy to see what is happening on the Control Hub or Driver Hub during any OpMode run.
+To access the Log Viewer, head to the Utilities Tab.
+From there you can select and open log files for connected devices or for ones downloaded onto the computer.
+For more information on the Log Viewer check out the
+REV Hardware Client User's Manual
+.
+Downloading Log Files
+When sending logs to REV Support use the REV Hardware Client. The Client will zip all relevant log files, collect some additional information from a form, and then send them to REV for diagnosis. When running through the troubleshooting process at an event, physically connecting to a Control Hub (
+REV-31-1595
+) and using the file search of the computer allows access to the files. Alternatively connecting to the Robot Controller Console allows downloading the logs through the manage tab.
+REV Hardware Client
+Provide 12v Power to the Control Hub.
+Plug the USB-C Cable into the top board of the Control Hub and into a PC with the
+REV Hardware Client
+installed.
+Select the Control Hub from the Connect Hardware.
+Click the "Send Diagnostics to REV" Button
+There is a short form to fill out with additional information to help REV Support troubleshoot the issue.
+File Search
+Using a PC
+Mac computers do not support MTP natively, the protocol used to browse files on Android devices. You need to use the Android File Transfer app:
+https://www.android.com/filetransfer/
+Windows devices will operate without the need for an additional application.
+1.Provide 12v Power to the Control Hub.
+2.Plug the USB-C Cable into the top board of the Control Hub and into a PC
+3.Navigate to This PC\Control Hub v1.0\Internal shared storage. Robot Controller, Wi-Fi, and Updater logs can be found on this level of the file hierarchy.
+The logs are all text files that can either be open via Notepad++ and looked over or sent to REV Support via an email to be further troubleshot.
+4.While in the This PC\Control Hub v1.0\Internal shared storage location navigate to a folder called "FIRST." The folder should have XML files with a naming convention that mirrors the names of the robot configuration.
+Using a Mac
+1. Download the Android File Transfer App on your MAC
+2. Open Android File Transfer.dmg 
+3. Drag Android File Transfer to Applications 
+4. Use the USB-C to USB-A cable that came with your Control Hub (or other relevant Android Device)
+5. Double click Android File Transfer
+6. Navigate to Control Hub v1.0\Internal shared storage. Robot Controller, Wi-Fi, and Updater logs can be found on this level of the file hierarchy.
+The logs are all text files that can either be open via Notepad++ and looked over or sent to REV Support via an email to be further troubleshot.
+7. While in the Control Hub v1.0\Internal shared storage location navigate to a folder called "FIRST." The folder should have XML files with a naming convention that mirrors the names of the robot configuration.
+Robot Controller Console
+1.Open the
+Robot Controller Console
+2. Select the
+Manage
+page 
+3. Press the Download Logs button
+4. Check for the robotControllerLog.txt in the Downloads Directory of the Computer 
+5. Open the Logs via a text editor, like Notepad++, to view the contents of the log or send the logs to REV Support
+Previous
+Updating the Driver Hub
+Next
+Android Studio - Deploying Code Wirelessly
+Last updated
+12 months ago
+Was this helpful?

@@ -1,0 +1,303 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics
+Class ColorSensorV3
+java.lang.Object
+com.revrobotics.ColorSensorV3
+public class
+ColorSensorV3
+extends
+Object
+REV Robotics Color Sensor V3
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+ColorSensorV3.ColorSensorMeasurementRate
+static enum
+ColorSensorV3.ColorSensorResolution
+static enum
+ColorSensorV3.GainFactor
+static enum
+ColorSensorV3.LEDCurrent
+static enum
+ColorSensorV3.LEDPulseFrequency
+static enum
+ColorSensorV3.MainControl
+static enum
+ColorSensorV3.ProximitySensorMeasurementRate
+static enum
+ColorSensorV3.ProximitySensorResolution
+static class
+ColorSensorV3.RawColor
+static enum
+ColorSensorV3.Register
+Constructor Summary
+Constructors
+Constructor
+Description
+ColorSensorV3
+(
+I2C.Port
+port)
+Constructs a ColorSensor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+configureColorSensor
+(
+ColorSensorV3.ColorSensorResolution
+res,
+ColorSensorV3.ColorSensorMeasurementRate
+rate,
+ColorSensorV3.GainFactor
+gain)
+Configure the color sensor.
+void
+configureProximitySensor
+(
+ColorSensorV3.ProximitySensorResolution
+res,
+ColorSensorV3.ProximitySensorMeasurementRate
+rate)
+Configure the proximity sensor.
+void
+configureProximitySensorLED
+(
+ColorSensorV3.LEDPulseFrequency
+freq,
+ColorSensorV3.LEDCurrent
+curr,
+ int pulses)
+Configure the the IR LED used by the proximity sensor.
+int
+getBlue
+()
+Get the raw color value from the blue ADC
+CIEColor
+getCIEColor
+()
+Get the color converted to CIE XYZ color space using factory calibrated constants.
+Color
+getColor
+()
+Get the most likely color.
+int
+getGreen
+()
+Get the raw color value from the green ADC
+int
+getIR
+()
+Get the raw color value from the IR ADC
+int
+getProximity
+()
+Get the raw proximity value from the sensor ADC (11 bit).
+ColorSensorV3.RawColor
+getRawColor
+()
+Get the raw color values from their respective ADCs (20-bit).
+int
+getRed
+()
+Get the raw color value from the red ADC
+boolean
+hasReset
+()
+Indicates if the device reset.
+boolean
+isConnected
+()
+Indicates if the device can currently be communicated with.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ColorSensorV3
+public
+ColorSensorV3
+(
+I2C.Port
+port)
+Constructs a ColorSensor.
+Parameters:
+port
+- The I2C port the color sensor is attached to
+Method Details
+configureProximitySensorLED
+public
+void
+configureProximitySensorLED
+(
+ColorSensorV3.LEDPulseFrequency
+freq,
+ColorSensorV3.LEDCurrent
+curr,
+ int pulses)
+Configure the the IR LED used by the proximity sensor.
+These settings are only needed for advanced users, the defaults will work fine for most
+ teams. Consult the APDS-9151 for more information on these configuration settings and how they
+ will affect proximity sensor measurements.
+Parameters:
+freq
+- The pulse modulation frequency for the proximity sensor LED
+curr
+- The pulse current for the proximity sensor LED
+pulses
+- The number of pulses per measurement of the proximity sensor LED (0-255)
+configureProximitySensor
+public
+void
+configureProximitySensor
+(
+ColorSensorV3.ProximitySensorResolution
+res,
+ColorSensorV3.ProximitySensorMeasurementRate
+rate)
+Configure the proximity sensor.
+These settings are only needed for advanced users, the defaults will work fine for most
+ teams. Consult the APDS-9151 for more information on these configuration settings and how they
+ will affect proximity sensor measurements.
+Parameters:
+res
+- Bit resolution output by the proximity sensor ADC.
+rate
+- Measurement rate of the proximity sensor
+configureColorSensor
+public
+void
+configureColorSensor
+(
+ColorSensorV3.ColorSensorResolution
+res,
+ColorSensorV3.ColorSensorMeasurementRate
+rate,
+ColorSensorV3.GainFactor
+gain)
+Configure the color sensor.
+These settings are only needed for advanced users, the defaults will work fine for most
+ teams. Consult the APDS-9151 for more information on these configuration settings and how they
+ will affect color sensor measurements.
+Parameters:
+res
+- Bit resolution output by the respective light sensor ADCs
+rate
+- Measurement rate of the light sensor
+gain
+- Gain factor applied to light sensor (color) outputs
+getColor
+public
+Color
+getColor
+()
+Get the most likely color. Works best when within 2 inches and perpendicular to surface of
+ interest.
+Returns:
+Color enum of the most likely color, including unknown if the minimum threshold is not
+     met
+getProximity
+public
+int
+getProximity
+()
+Get the raw proximity value from the sensor ADC (11 bit). This value is largest when an object
+ is close to the sensor and smallest when far away.
+Returns:
+Proximity measurement value, ranging from 0 to 2047
+getRawColor
+public
+ColorSensorV3.RawColor
+getRawColor
+()
+Get the raw color values from their respective ADCs (20-bit).
+Returns:
+ColorValues struct containing red, green, blue and IR values
+getRed
+public
+int
+getRed
+()
+Get the raw color value from the red ADC
+Returns:
+Red ADC value
+getGreen
+public
+int
+getGreen
+()
+Get the raw color value from the green ADC
+Returns:
+Green ADC value
+getBlue
+public
+int
+getBlue
+()
+Get the raw color value from the blue ADC
+Returns:
+Blue ADC value
+getIR
+public
+int
+getIR
+()
+Get the raw color value from the IR ADC
+Returns:
+IR ADC value
+getCIEColor
+public
+CIEColor
+getCIEColor
+()
+Get the color converted to CIE XYZ color space using factory calibrated constants.
+https://en.wikipedia.org/wiki/CIE_1931_color_space
+Returns:
+CIEColor value from sensor
+hasReset
+public
+boolean
+hasReset
+()
+Indicates if the device reset. Based on the power on status flag in the status register. Per
+ the datasheet:
+Part went through a power-up event, either because the part was turned on or because there
+ was power supply voltage disturbance (default at first register read).
+This flag is self clearing
+Returns:
+true if the device was reset
+isConnected
+public
+boolean
+isConnected
+()
+Indicates if the device can currently be communicated with.
+Returns:
+true if the device is currently connected and responsive

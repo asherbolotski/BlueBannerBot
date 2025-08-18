@@ -1,0 +1,280 @@
+REV ION Build System
+REV ION Build System Overview
+FRC Robot Basics Guide
+System Standards
+Structure
+Introduction to Structure
+Brackets
+MAXSpline Brackets
+Structure Brackets
+Actuator Brackets
+MAX Pattern Plates
+Hardware
+Extrusion
+Bumper Brackets
+MAXComposite
+Motion
+Introduction to Motion
+Shafts / Spacers / Collars
+MAXHubs
+Tubes / Bushings / Axles
+Bearings / Bearing Blocks
+Pivot Joints
+Linear Actuators
+Gears
+Advanced Gears
+Addendum Shifting in Gears
+Sprockets and Chain
+Advanced Sprockets and Chain
+Chain Tool
+Belts and Pulleys
+Ratio Plates
+NEO Brushless Motors
+Servos
+Smart Robot Servo
+Wheels
+Traction
+Grip
+Omni
+Compliant
+Flap
+Gearboxes
+2 Motor Gearbox - Through Bore
+2 Motor Drivetrain Gearbox - Through Bore
+MAXPlanetary System
+System Features
+Mounting Features
+Load Ratings
+Assembly Tips and Tricks
+MAXSwerve
+MAXSwerve Build Guide
+MAXSwerve Drivetrain Onshape
+MAXSwerve Calibration
+Wiring MAXSwerve
+Programming MAXSwerve
+MAXSwerve Module Inspection
+MAXSwerve Spiky Wheel
+Aluminum MAXSwerve Wheels
+MAXSwerve Wheel V1 Evaluation
+MAXSwerve Wheel V1 Tread Reinforcement
+MAXSwerve Tips and Tricks
+Onshape Examples
+Onshape CAD Examples
+Low Complexity
+Medium Complexity
+High Complexity
+Building Techniques
+Supporting Motion
+Constraining Motion
+Build Guides
+MAXSwerve Module Assembly
+Motor Orientation
+MAXSwerve SPARK MAX Mounting Bracket Assembly
+MAXSwerve Pack Contents
+MAXSwerve Assembly Tips
+MAXSwerve Drivetrain Assembly
+Elevator Bearing Block Assembly
+MAXPlanetary Gearbox Assembly
+NEO & CIM
+NEO Vortex
+NEO 550 & 550 Sized Motors
+775 Sized Motors
+Falcon
+Shaft Retention Assembly
+Spacer Installation
+MAX 90 Degree Gearbox Assembly
+2 Motor Drivetrain Gearbox Assembly
+2 Motor Gearbox Assembly
+Linear Actuator Assembly
+MAX 180 Degree Gearbox Assembly
+Drivetrain Bumper Kit Assembly
+West Coast Drivetrain with MAXTube
+AM14U5 (FRC Kit of Parts Chassis)
+REV ION West Coast Drivetrain Assembly
+REV ION Control System
+REV Hardware Client
+Power Distribution Hub
+Radio Power Module
+Mini Power Module
+Brushless Motors and Controllers
+Pneumatics
+Sensors & Indicators
+Powered by GitBook
+On this page
+Gear Physics
+Gear Train
+Gear Ratio
+Idlers
+Compound Gearing
+Center-to-Center Distance
+Addendum Shifting
+Was this helpful?
+Export as PDF
+Gear Physics
+Gears are one common way to transmit power and change the output torque or speed of a mechanical system. Understanding these basic concepts is required to make optimized design decisions which consider the trade-off between torque and speed for a system with a given power.
+Speed
+Torque
+Power
+Speed
+is the measure of how fast an object is moving. The
+speed
+of an object is how far it will travel in a given amount of time. For rotating parts like gears and wheels,
+speed
+is expressed in how many revolutions are made in a given amount of time. Under ideal conditions, the rotation of a wheel is converted into linear
+speed
+and can be calculated by multiplying the diameter of the wheel by the rotations for a given time. The SI unit for
+speed
+is meters per second (m/s), but
+speed
+is also commonly expressed in feet per second (ft/s).
+Torque
+is roughly the measure of the turning force on an object like a gear or a wheel. Mathematically,
+torque
+is defined as the rate of change of the angular momentum of an object. This can also be stated as a force that acts normal (at 90 degrees) to a radial lever arm which causes the object to rotate. A common example of torque is the use of a wrench in order to tighten or loosen a bolt. In that example, using a longer wrench can produce more
+torque
+on the bolt than using a shorter wrench.
+Torque
+is commonly expressed in N⋅m or in⋅lbs.
+When
+torque
+is turning an object like a spur gear, the gear will create a straight line (linear) force at the point where the teeth contact the other gear. The magnitude of the
+torque
+created is the product of the rotational force applied and the length of the lever arm ,which in the case of a gear, is half of the pitch diameter (the radius).
+Power (P)
+is the rate of work over time. The concept of
+power
+includes both a physical change and a time period in which the change occurs. This is different from the concept of work which only measures a physical change. The difference in these two concepts is that it takes the same amount of work to carry a brick up a mountain whether you walk or run, but running takes more
+power
+because the work is done in a shorter amount of time. The SI unit for
+power
+is the Watt (W) which is equivalent to one joule per second (J/s).
+In competitive robotics, the total amount of available power is determined by the motors and batteries allowed to be used. The maximum speed at which an arm can lift a certain load is dictated by the maximum system
+power
+.
+Gear Train
+Meshing two or more gears together is known as a
+gear train
+. Selecting the gears in the gear train as larger or smaller relative to the input gear can either increase the output speed or increase the output torque, but the total power is not affected.
+Gear Ratio
+When a larger gear drives a smaller one, for one rotation of the larger gear the small gear must complete more revolutions - so the output will be faster than the input. If the situation is reversed, and aa smaller gear drives a larger output gear, then for one rotation of the input the output will complete less than one revolution – so the output will be slower than the input. The
+ratio
+of the sizes of the two gears is proportional to the speed and torque changes between them.
+The
+ratio
+in size from the input (driving) gear to the output (driven) gear determines if the output is faster (less torque) or has more torque (slower). To calculate exactly how the
+gear ratio
+effects the relationship from input to output, find the ratio for the number of teeth between the two gears. In the image below, the ratio of the number of teeth from the input gear to the output gear is 72T:15T which means the input needs to turn 4.8 rotations for the output to complete one rotation.
+Idlers
+What happens when a 45 tooth
+idler
+gear is inserted into the gear example? An
+idler gear
+is any intermediate (between input and output) gear which does not drive any output (work) shaft. Idler gears are used to transmit torque over longer distances than would be practical by using just a single pair of gears. Idler gears are also used to reverse the direction of the rotation of the final gear.
+Regardless of the number or size of idler gears in the chain, only the first and last gear determine the reduction. Since idler gears do not change the gear
+reduction
+, the reduction in the example remains 72:15, but the direction of the output stage is now reversed from the previous example.
+Idler gears are a good way to transmit power across distances in your robot. A common example of this is an all gear drivetrain. In this example the gears on the end are linked to the drive wheels and one of the center gears would be driven by a motor (not shown). The orange arrows indicate the relative rotation of each of the gears showing that the two wheels are mechanically linked and will always rotate in the same direction.
+Because idler gears reverse the direction of rotation, it is important to pay attention to the number of gears in the drivetrain. In the picture below there is an even number of gears, and because of this the wheels will always spin in the opposite direction.
+Compound Gearing
+Some designs may require more
+reduction
+than is practical in a single stage.  The ratio from the smallest gear available to the largest in the REV ION Build System is 80:10, so if a greater reduction than 8 is required, multiple reduction stages can be used in the same mechanism, and this is called a
+compound gear reduction
+.  There are multiple gear pairs in a compound reduction with each pair of gears linked by a shared shaft. Below is an example of a two-stage reduction. The driving gear (input) of each pair is highlighted in orange.
+Reduction
+is the concept of lowering input speed to reduce overall output speed.
+To calculate the total reduction of a compound reduction, identify the reduction of each stage and then multiply each reduction together.
+CR
+=
+R
+1
+×
+R
+2
+×
+…
+×
+R
+n
+\text{CR}=\text{R}_1×\text{R}_2 ×\text{…} ×\text{R}_n
+CR
+=
+R
+1
+​
+×
+R
+2
+​
+×
+…
+×
+R
+n
+​
+​
+Where:
+CR is the total Compound Reduction
+Rn is the total reduction of each stage
+Using the image above as an example, the compound reduction is 12:1.
+CR
+=
+R
+1
+×
+R
+2
+=
+60
+30
+×
+90
+15
+=
+2
+×
+6
+=
+12
+\text{CR}=\text{R}_1×   \text{R}_2 =\frac{60}{30}× \frac{90}{15}=2 ×6=12
+CR
+=
+R
+1
+​
+×
+R
+2
+​
+=
+30
+60
+​
+×
+15
+90
+​
+=
+2
+×
+6
+=
+12
+​For any gear system, there are a limited number of gear sizes available, so in addition to being able to create greater reductions using compound reductions, it is also possible to create a wider range of reduction values, or the same reduction of a single stage, but with smaller diameter gears.
+Center-to-Center Distance
+To ensure that you have a proper amount of gear teeth mesh, it is important to calculate the center-to-center distance in between your gears. You can do this by first calculating the pitch diameter (PD) of each gear using some combination of module (M), number of teeth (N), or outside diameter (OD).
+PD = M × N
+PD = (OD × N) / (N + 2)
+PD = OD - (2 × M)
+Then, use the pitch diameters to calculate the center-to-center distance (CCD).
+CCD = ((PD1) / 2) + ((PD2) / 2)
+Any two REV ION gears that add up to 80 teeth will fit center-to-center on structure elements featuring the MAX Pattern and have a center-to-center distance of 2in
+Addendum Shifting
+Documentation Coming Soon!
+Previous
+Gears
+Next
+Addendum Shifting in Gears
+Last updated
+1 year ago
+Was this helpful?

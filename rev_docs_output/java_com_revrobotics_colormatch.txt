@@ -1,0 +1,124 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics
+Class ColorMatch
+java.lang.Object
+com.revrobotics.ColorMatch
+public class
+ColorMatch
+extends
+Object
+Constructor Summary
+Constructors
+Constructor
+Description
+ColorMatch
+()
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+void
+addColorMatch
+(
+Color
+color)
+Add color to match object
+ColorMatchResult
+matchClosestColor
+(
+Color
+color)
+MatchColor uses euclidean distance to compare a given normalized RGB vector against stored
+ values
+ColorMatchResult
+matchColor
+(
+Color
+colorToMatch)
+MatchColor uses euclidean distance to compare a given normalized RGB vector against stored
+ values
+void
+setConfidenceThreshold
+(double confidence)
+Set the confidence interval for determining color.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ColorMatch
+public
+ColorMatch
+()
+Method Details
+addColorMatch
+public
+void
+addColorMatch
+(
+Color
+color)
+Add color to match object
+Parameters:
+color
+- color to add to matching
+setConfidenceThreshold
+public
+void
+setConfidenceThreshold
+(double confidence)
+Set the confidence interval for determining color. Defaults to 0.95
+Parameters:
+confidence
+- A value between 0 and 1
+matchColor
+public
+ColorMatchResult
+matchColor
+(
+Color
+colorToMatch)
+MatchColor uses euclidean distance to compare a given normalized RGB vector against stored
+ values
+Parameters:
+colorToMatch
+- color to compare against stored colors
+Returns:
+Matched color if detected, returns null if no color detected confidence level
+matchClosestColor
+public
+ColorMatchResult
+matchClosestColor
+(
+Color
+color)
+MatchColor uses euclidean distance to compare a given normalized RGB vector against stored
+ values
+Parameters:
+color
+- color to compare against stored colors
+Returns:
+Closest color to match

@@ -1,0 +1,336 @@
+REVLib - C++
+Public Member Functions
+|
+List of all members
+rev::spark::SmartMotionConfig Class Reference
+#include <
+SmartMotionConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Public Member Functions
+SmartMotionConfig
+()=default
+~SmartMotionConfig
+() override=default
+SmartMotionConfig
+(const
+SmartMotionConfig
+&)=delete
+SmartMotionConfig
+&
+operator=
+(const
+SmartMotionConfig
+&)=delete
+SmartMotionConfig
+(
+SmartMotionConfig
+&&) noexcept=delete
+SmartMotionConfig
+&
+operator=
+(
+SmartMotionConfig
+&&) noexcept=delete
+SmartMotionConfig
+&
+Apply
+(
+SmartMotionConfig
+&config)
+SmartMotionConfig
+&
+MaxVelocity
+(double maxVelocity,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+SmartMotionConfig
+&
+MaxAcceleration
+(double maxAcceleration,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+SmartMotionConfig
+&
+MinOutputVelocity
+(double minVelocity,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+SmartMotionConfig
+&
+AllowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+virtual std::string
+Flatten
+()
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Constructor & Destructor Documentation
+◆
+SmartMotionConfig()
+[1/3]
+rev::spark::SmartMotionConfig::SmartMotionConfig
+(
+)
+default
+◆
+~SmartMotionConfig()
+rev::spark::SmartMotionConfig::~SmartMotionConfig
+(
+)
+override
+default
+◆
+SmartMotionConfig()
+[2/3]
+rev::spark::SmartMotionConfig::SmartMotionConfig
+(
+const
+SmartMotionConfig
+&
+)
+delete
+◆
+SmartMotionConfig()
+[3/3]
+rev::spark::SmartMotionConfig::SmartMotionConfig
+(
+SmartMotionConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+SmartMotionConfig
+& rev::spark::SmartMotionConfig::operator=
+(
+const
+SmartMotionConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+SmartMotionConfig
+& rev::spark::SmartMotionConfig::operator=
+(
+SmartMotionConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+SmartMotionConfig
+& SmartMotionConfig::Apply
+(
+SmartMotionConfig
+&
+config
+)
+Applies settings from another
+SmartMotionConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SmartMotionConfig
+to copy settings from
+Returns
+The updated
+SmartMotionConfig
+for method chaining
+◆
+MaxVelocity()
+SmartMotionConfig
+& SmartMotionConfig::MaxVelocity
+(
+double
+maxVelocity
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the maximum velocity for the Smart Motion mode of the controller. This is the cruising velocity of the profile. Natively, the units are in RPM but will be affected by the velocity conversion factor.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop slot, use
+SmartMotionConfig::MaxVelocity
+(double, ClosedLoopSlot).
+Parameters
+maxVelocity
+The maximum velocity with the velocity conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+SmartMotionConfig
+object for method chaining
+Deprecated:
+It is recommended to migrate to MAXMotion instead.
+◆
+MaxAcceleration()
+SmartMotionConfig
+& SmartMotionConfig::MaxAcceleration
+(
+double
+maxAcceleration
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the maximum acceleration for the Smart Motion mode of the controller for a specific PID slot. This is the rate at which the velocity will increase until the max velocity is reached. Natively, the units are in RPM per second but will be affected by the velocity conversion factor.
+Parameters
+maxAcceleration
+The maximum acceleration with the velocity conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+SmartMotionConfig
+object for method chaining
+Deprecated:
+It is recommended to migrate to MAXMotion instead.
+◆
+MinOutputVelocity()
+SmartMotionConfig
+& SmartMotionConfig::MinOutputVelocity
+(
+double
+minVelocity
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the minimum velocity for the Smart Motion mode of the controller for a specific closed loop slot. Any requested velocities below this value will be set to 0. Natively, the units are in RPM but will be affected by the velocity conversion factor.
+Parameters
+minVelocity
+The minimum velocity with the velocity conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+SmartMotionConfig
+object for method chaining
+Deprecated:
+It is recommended to migrate to MAXMotion instead.
+◆
+AllowedClosedLoopError()
+SmartMotionConfig
+& SmartMotionConfig::AllowedClosedLoopError
+(
+double
+allowedError
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the allowed closed loop error for the Smart Motion mode of the controller for a specific closed loop slot. This value is how much deviation from the setpoint is tolerated and is useful in preventing oscillation around the setpoint. Natively, the units are in rotations but will be affected by the position conversion factor.
+Parameters
+allowedError
+The allowed error with the position conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+SmartMotionConfig
+object for method chaining
+Deprecated:
+It is recommended to migrate to MAXMotion instead.
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+SmartMotionConfig.h
+src/main/native/cpp/config/
+SmartMotionConfig.cpp
+rev
+spark
+SmartMotionConfig
+Generated by
+1.9.2

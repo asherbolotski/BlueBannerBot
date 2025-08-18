@@ -1,0 +1,583 @@
+REVLib - C++
+ClosedLoopConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <string>
+32
+33
+#include "
+rev/ClosedLoopTypes.h
+"
+34
+#include "
+rev/config/BaseConfig.h
+"
+35
+#include "
+rev/config/FeedForwardConfig.h
+"
+36
+#include "
+rev/config/MAXMotionConfig.h
+"
+37
+#include "
+rev/config/SmartMotionConfig.h
+"
+38
+39
+namespace
+rev::spark
+{
+40
+41
+class
+ClosedLoopConfig
+:
+public
+BaseConfig
+{
+42
+public
+:
+43
+ClosedLoopConfig
+() =
+default
+;
+44
+~ClosedLoopConfig
+()
+override
+=
+default
+;
+45
+46
+ClosedLoopConfig
+(
+const
+ClosedLoopConfig
+&) =
+delete
+;
+47
+ClosedLoopConfig
+&
+operator=
+(
+const
+ClosedLoopConfig
+&) =
+delete
+;
+48
+ClosedLoopConfig
+(
+ClosedLoopConfig
+&&) noexcept = delete;
+49
+ClosedLoopConfig
+& operator=(
+ClosedLoopConfig
+&&) noexcept = delete;
+50
+61
+ClosedLoopConfig
+&
+Apply
+(
+ClosedLoopConfig
+& config);
+62
+72
+ClosedLoopConfig
+&
+Apply
+(
+SmartMotionConfig
+& config);
+73
+84
+ClosedLoopConfig
+&
+Apply
+(
+MAXMotionConfig
+& config);
+85
+96
+ClosedLoopConfig
+&
+Apply
+(
+FeedForwardConfig
+& config);
+97
+110
+[[deprecated(
+111
+"Use
+FeedForwardConfig
+::V(
+double
+v,
+ClosedLoopSlot
+slot) to set a "
+112
+"Velocity Feedforward")]]
+ClosedLoopConfig
+&
+113
+Pidf
+(
+double
+p,
+double
+i,
+double
+d,
+double
+ff,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+114
+124
+ClosedLoopConfig
+&
+Pid
+(
+double
+p,
+double
+i,
+double
+d,
+125
+ClosedLoopSlot
+slot =
+kSlot0
+);
+126
+135
+ClosedLoopConfig
+&
+P
+(
+double
+p,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+136
+144
+ClosedLoopConfig
+&
+I
+(
+double
+i,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+145
+154
+ClosedLoopConfig
+&
+D
+(
+double
+d,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+155
+166
+[[deprecated(
+167
+"Use
+FeedForwardConfig
+::V(
+double
+v,
+ClosedLoopSlot
+slot) to set this "
+168
+"gain")]]
+ClosedLoopConfig
+&
+169
+VelocityFF
+(
+double
+ff,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+170
+179
+ClosedLoopConfig
+&
+DFilter
+(
+double
+dFilter,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+180
+188
+ClosedLoopConfig
+&
+IZone
+(
+double
+iZone,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+189
+197
+ClosedLoopConfig
+&
+MinOutput
+(
+double
+minOutput,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+198
+206
+ClosedLoopConfig
+&
+MaxOutput
+(
+double
+maxOutput,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+207
+216
+ClosedLoopConfig
+&
+OutputRange
+(
+double
+minOutput,
+double
+maxOutput,
+217
+ClosedLoopSlot
+slot =
+kSlot0
+);
+218
+228
+ClosedLoopConfig
+&
+IMaxAccum
+(
+double
+iMaxAccum,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+229
+242
+ClosedLoopConfig
+&
+AllowedClosedLoopError
+(
+double
+allowedError,
+243
+ClosedLoopSlot
+slot =
+kSlot0
+);
+244
+251
+ClosedLoopConfig
+&
+PositionWrappingEnabled
+(
+bool
+enabled);
+252
+260
+ClosedLoopConfig
+&
+PositionWrappingMinInput
+(
+double
+minInput);
+261
+269
+ClosedLoopConfig
+&
+PositionWrappingMaxInput
+(
+double
+maxInput);
+270
+278
+ClosedLoopConfig
+&
+PositionWrappingInputRange
+(
+double
+minInput,
+279
+double
+maxInput);
+280
+293
+ClosedLoopConfig
+&
+SetFeedbackSensor
+(
+FeedbackSensor
+sensor);
+294
+295
+std::
+string
+Flatten
+() override;
+296
+297
+MAXMotionConfig
+maxMotion
+;
+298
+SmartMotionConfig
+smartMotion
+;
+299
+FeedForwardConfig
+feedForward
+;
+300
+};
+// ClosedLoopConfig
+301
+302
+}
+// namespace rev::spark
+BaseConfig.h
+ClosedLoopTypes.h
+FeedForwardConfig.h
+MAXMotionConfig.h
+SmartMotionConfig.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::spark::ClosedLoopConfig
+Definition:
+ClosedLoopConfig.h:41
+rev::spark::ClosedLoopConfig::PositionWrappingMaxInput
+ClosedLoopConfig & PositionWrappingMaxInput(double maxInput)
+Definition:
+ClosedLoopConfig.cpp:178
+rev::spark::ClosedLoopConfig::VelocityFF
+ClosedLoopConfig & VelocityFF(double ff, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:109
+rev::spark::ClosedLoopConfig::IMaxAccum
+ClosedLoopConfig & IMaxAccum(double iMaxAccum, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:152
+rev::spark::ClosedLoopConfig::Pid
+ClosedLoopConfig & Pid(double p, double i, double d, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:80
+rev::spark::ClosedLoopConfig::P
+ClosedLoopConfig & P(double p, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:91
+rev::spark::ClosedLoopConfig::DFilter
+ClosedLoopConfig & DFilter(double dFilter, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:115
+rev::spark::ClosedLoopConfig::ClosedLoopConfig
+ClosedLoopConfig(const ClosedLoopConfig &)=delete
+rev::spark::ClosedLoopConfig::feedForward
+FeedForwardConfig feedForward
+Definition:
+ClosedLoopConfig.h:299
+rev::spark::ClosedLoopConfig::ClosedLoopConfig
+ClosedLoopConfig(ClosedLoopConfig &&) noexcept=delete
+rev::spark::ClosedLoopConfig::MinOutput
+ClosedLoopConfig & MinOutput(double minOutput, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:128
+rev::spark::ClosedLoopConfig::ClosedLoopConfig
+ClosedLoopConfig()=default
+rev::spark::ClosedLoopConfig::PositionWrappingMinInput
+ClosedLoopConfig & PositionWrappingMinInput(double minInput)
+Definition:
+ClosedLoopConfig.cpp:172
+rev::spark::ClosedLoopConfig::smartMotion
+SmartMotionConfig smartMotion
+Definition:
+ClosedLoopConfig.h:298
+rev::spark::ClosedLoopConfig::SetFeedbackSensor
+ClosedLoopConfig & SetFeedbackSensor(FeedbackSensor sensor)
+Definition:
+ClosedLoopConfig.cpp:193
+rev::spark::ClosedLoopConfig::AllowedClosedLoopError
+ClosedLoopConfig & AllowedClosedLoopError(double allowedError, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:159
+rev::spark::ClosedLoopConfig::PositionWrappingInputRange
+ClosedLoopConfig & PositionWrappingInputRange(double minInput, double maxInput)
+Definition:
+ClosedLoopConfig.cpp:184
+rev::spark::ClosedLoopConfig::PositionWrappingEnabled
+ClosedLoopConfig & PositionWrappingEnabled(bool enabled)
+Definition:
+ClosedLoopConfig.cpp:167
+rev::spark::ClosedLoopConfig::~ClosedLoopConfig
+~ClosedLoopConfig() override=default
+rev::spark::ClosedLoopConfig::D
+ClosedLoopConfig & D(double d, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:103
+rev::spark::ClosedLoopConfig::MaxOutput
+ClosedLoopConfig & MaxOutput(double maxOutput, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:135
+rev::spark::ClosedLoopConfig::I
+ClosedLoopConfig & I(double i, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:97
+rev::spark::ClosedLoopConfig::Flatten
+std::string Flatten() override
+Definition:
+ClosedLoopConfig.cpp:198
+rev::spark::ClosedLoopConfig::OutputRange
+ClosedLoopConfig & OutputRange(double minOutput, double maxOutput, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:142
+rev::spark::ClosedLoopConfig::Apply
+ClosedLoopConfig & Apply(ClosedLoopConfig &config)
+Definition:
+ClosedLoopConfig.cpp:44
+rev::spark::ClosedLoopConfig::IZone
+ClosedLoopConfig & IZone(double iZone, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:122
+rev::spark::ClosedLoopConfig::operator=
+ClosedLoopConfig & operator=(const ClosedLoopConfig &)=delete
+rev::spark::ClosedLoopConfig::maxMotion
+MAXMotionConfig maxMotion
+Definition:
+ClosedLoopConfig.h:297
+rev::spark::ClosedLoopConfig::Pidf
+ClosedLoopConfig & Pidf(double p, double i, double d, double ff, ClosedLoopSlot slot=kSlot0)
+Definition:
+ClosedLoopConfig.cpp:67
+rev::spark::FeedForwardConfig
+Definition:
+FeedForwardConfig.h:36
+rev::spark::MAXMotionConfig
+Definition:
+MAXMotionConfig.h:36
+rev::spark::SmartMotionConfig
+Definition:
+SmartMotionConfig.h:36
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::FeedbackSensor
+FeedbackSensor
+Definition:
+ClosedLoopTypes.h:37
+rev::spark::ClosedLoopSlot
+ClosedLoopSlot
+Definition:
+ClosedLoopTypes.h:35
+rev::spark::kSlot0
+@ kSlot0
+Definition:
+ClosedLoopTypes.h:35
+src
+main
+native
+include
+rev
+config
+ClosedLoopConfig.h
+Generated by
+1.9.2

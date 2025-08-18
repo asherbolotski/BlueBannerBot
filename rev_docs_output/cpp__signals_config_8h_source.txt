@@ -1,0 +1,720 @@
+REVLib - C++
+SignalsConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include "
+rev/config/BaseConfig.h
+"
+32
+33
+namespace
+rev::spark
+{
+34
+35
+class
+SignalsConfig
+:
+public
+BaseConfig
+{
+36
+public
+:
+37
+SignalsConfig
+() =
+default
+;
+38
+~SignalsConfig
+()
+override
+=
+default
+;
+39
+40
+SignalsConfig
+(
+const
+SignalsConfig
+&) =
+delete
+;
+41
+SignalsConfig
+&
+operator=
+(
+const
+SignalsConfig
+&) =
+delete
+;
+42
+SignalsConfig
+(
+SignalsConfig
+&&) noexcept = delete;
+43
+SignalsConfig
+& operator=(
+SignalsConfig
+&&) noexcept = delete;
+44
+54
+SignalsConfig
+&
+Apply
+(
+SignalsConfig
+& config);
+55
+70
+SignalsConfig
+&
+AppliedOutputPeriodMs
+(
+int
+periodMs);
+71
+90
+[[deprecated]]
+SignalsConfig
+&
+AppliedOutputAlwaysOn
+(
+bool
+enabled);
+91
+107
+SignalsConfig
+&
+BusVoltagePeriodMs
+(
+int
+periodMs);
+108
+127
+[[deprecated]]
+SignalsConfig
+&
+BusVoltageAlwaysOn
+(
+bool
+enabled);
+128
+144
+SignalsConfig
+&
+OutputCurrentPeriodMs
+(
+int
+periodMs);
+145
+164
+[[deprecated]]
+SignalsConfig
+&
+OutputCurrentAlwaysOn
+(
+bool
+enabled);
+165
+181
+SignalsConfig
+&
+MotorTemperaturePeriodMs
+(
+int
+periodMs);
+182
+201
+[[deprecated]]
+SignalsConfig
+&
+MotorTemperatureAlwaysOn
+(
+bool
+enabled);
+202
+218
+SignalsConfig
+&
+LimitsPeriodMs
+(
+int
+periodMs);
+219
+238
+[[deprecated]]
+SignalsConfig
+&
+LimitsAlwaysOn
+(
+bool
+enabled);
+239
+251
+SignalsConfig
+&
+FaultsPeriodMs
+(
+int
+periodMs);
+252
+270
+SignalsConfig
+&
+FaultsAlwaysOn
+(
+bool
+enabled);
+271
+283
+SignalsConfig
+&
+WarningsPeriodMs
+(
+int
+periodMs);
+284
+302
+SignalsConfig
+&
+WarningsAlwaysOn
+(
+bool
+enabled);
+303
+314
+SignalsConfig
+&
+PrimaryEncoderVelocityPeriodMs
+(
+int
+periodMs);
+315
+332
+SignalsConfig
+&
+PrimaryEncoderVelocityAlwaysOn
+(
+bool
+enabled);
+333
+344
+SignalsConfig
+&
+PrimaryEncoderPositionPeriodMs
+(
+int
+periodMs);
+345
+362
+SignalsConfig
+&
+PrimaryEncoderPositionAlwaysOn
+(
+bool
+enabled);
+363
+374
+SignalsConfig
+&
+AnalogVoltagePeriodMs
+(
+int
+periodMs);
+375
+392
+SignalsConfig
+&
+AnalogVoltageAlwaysOn
+(
+bool
+enabled);
+393
+404
+SignalsConfig
+&
+AnalogVelocityPeriodMs
+(
+int
+periodMs);
+405
+422
+SignalsConfig
+&
+AnalogVelocityAlwaysOn
+(
+bool
+enabled);
+423
+434
+SignalsConfig
+&
+AnalogPositionPeriodMs
+(
+int
+periodMs);
+435
+452
+SignalsConfig
+&
+AnalogPositionAlwaysOn
+(
+bool
+enabled);
+453
+465
+SignalsConfig
+&
+ExternalOrAltEncoderVelocity
+(
+int
+periodMs);
+466
+484
+SignalsConfig
+&
+ExternalOrAltEncoderVelocityAlwaysOn
+(
+bool
+enabled);
+485
+497
+SignalsConfig
+&
+ExternalOrAltEncoderPosition
+(
+int
+periodMs);
+498
+516
+SignalsConfig
+&
+ExternalOrAltEncoderPositionAlwaysOn
+(
+bool
+enabled);
+517
+528
+SignalsConfig
+&
+AbsoluteEncoderVelocityPeriodMs
+(
+int
+periodMs);
+529
+546
+SignalsConfig
+&
+AbsoluteEncoderVelocityAlwaysOn
+(
+bool
+enabled);
+547
+558
+SignalsConfig
+&
+AbsoluteEncoderPositionPeriodMs
+(
+int
+periodMs);
+559
+576
+SignalsConfig
+&
+AbsoluteEncoderPositionAlwaysOn
+(
+bool
+enabled);
+577
+588
+SignalsConfig
+&
+IAccumulationPeriodMs
+(
+int
+periodMs);
+589
+606
+SignalsConfig
+&
+IAccumulationAlwaysOn
+(
+bool
+enabled);
+607
+618
+SignalsConfig
+&
+SetpointPeriodMs
+(
+int
+periodMs);
+619
+636
+SignalsConfig
+&
+SetpointAlwaysOn
+(
+bool
+enabled);
+637
+648
+SignalsConfig
+&
+IsAtSetpointPeriodMs
+(
+int
+periodMs);
+649
+666
+SignalsConfig
+&
+IsAtSetpointAlwaysOn
+(
+bool
+enabled);
+667
+679
+SignalsConfig
+&
+SelectedSlotPeriodMs
+(
+int
+periodMs);
+680
+697
+SignalsConfig
+&
+SelectedSlotAlwaysOn
+(
+bool
+enabled);
+698
+712
+SignalsConfig
+&
+MaxMotionSetpointPositionPeriodMs
+(
+int
+periodMs);
+713
+732
+SignalsConfig
+&
+MaxMotionSetpointPositionAlwaysOn
+(
+bool
+enabled);
+733
+747
+SignalsConfig
+&
+MaxMotionSetpointVelocityPeriodMs
+(
+int
+periodMs);
+748
+767
+SignalsConfig
+&
+MaxMotionSetpointVelocityAlwaysOn
+(
+bool
+enabled);
+768
+769
+private:
+770
+void
+SetPeriodMsCore(
+int
+parameterId,
+int
+periodMs);
+771
+void
+SetAlwaysOnCore(
+int
+parameterId,
+bool
+enabled);
+772
+};
+// class SignalsConfig
+773
+774
+}
+// namespace rev::spark
+BaseConfig.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::spark::SignalsConfig
+Definition:
+SignalsConfig.h:35
+rev::spark::SignalsConfig::AnalogVelocityPeriodMs
+SignalsConfig & AnalogVelocityPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:145
+rev::spark::SignalsConfig::BusVoltageAlwaysOn
+SignalsConfig & BusVoltageAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:58
+rev::spark::SignalsConfig::WarningsAlwaysOn
+SignalsConfig & WarningsAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:110
+rev::spark::SignalsConfig::PrimaryEncoderVelocityPeriodMs
+SignalsConfig & PrimaryEncoderVelocityPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:115
+rev::spark::SignalsConfig::SetpointPeriodMs
+SignalsConfig & SetpointPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:217
+rev::spark::SignalsConfig::AnalogVoltageAlwaysOn
+SignalsConfig & AnalogVoltageAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:140
+rev::spark::SignalsConfig::ExternalOrAltEncoderPositionAlwaysOn
+SignalsConfig & ExternalOrAltEncoderPositionAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:181
+rev::spark::SignalsConfig::SelectedSlotAlwaysOn
+SignalsConfig & SelectedSlotAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:242
+rev::spark::SignalsConfig::AppliedOutputAlwaysOn
+SignalsConfig & AppliedOutputAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:47
+rev::spark::SignalsConfig::AbsoluteEncoderPositionAlwaysOn
+SignalsConfig & AbsoluteEncoderPositionAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:202
+rev::spark::SignalsConfig::operator=
+SignalsConfig & operator=(const SignalsConfig &)=delete
+rev::spark::SignalsConfig::SignalsConfig
+SignalsConfig(SignalsConfig &&) noexcept=delete
+rev::spark::SignalsConfig::PrimaryEncoderPositionPeriodMs
+SignalsConfig & PrimaryEncoderPositionPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:125
+rev::spark::SignalsConfig::PrimaryEncoderPositionAlwaysOn
+SignalsConfig & PrimaryEncoderPositionAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:130
+rev::spark::SignalsConfig::ExternalOrAltEncoderVelocity
+SignalsConfig & ExternalOrAltEncoderVelocity(int periodMs)
+Definition:
+SignalsConfig.cpp:165
+rev::spark::SignalsConfig::OutputCurrentAlwaysOn
+SignalsConfig & OutputCurrentAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:68
+rev::spark::SignalsConfig::OutputCurrentPeriodMs
+SignalsConfig & OutputCurrentPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:63
+rev::spark::SignalsConfig::LimitsPeriodMs
+SignalsConfig & LimitsPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:85
+rev::spark::SignalsConfig::ExternalOrAltEncoderVelocityAlwaysOn
+SignalsConfig & ExternalOrAltEncoderVelocityAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:170
+rev::spark::SignalsConfig::IAccumulationPeriodMs
+SignalsConfig & IAccumulationPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:207
+rev::spark::SignalsConfig::IAccumulationAlwaysOn
+SignalsConfig & IAccumulationAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:212
+rev::spark::SignalsConfig::AnalogVelocityAlwaysOn
+SignalsConfig & AnalogVelocityAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:150
+rev::spark::SignalsConfig::AnalogPositionAlwaysOn
+SignalsConfig & AnalogPositionAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:160
+rev::spark::SignalsConfig::Apply
+SignalsConfig & Apply(SignalsConfig &config)
+Definition:
+SignalsConfig.cpp:37
+rev::spark::SignalsConfig::AbsoluteEncoderPositionPeriodMs
+SignalsConfig & AbsoluteEncoderPositionPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:197
+rev::spark::SignalsConfig::MaxMotionSetpointVelocityPeriodMs
+SignalsConfig & MaxMotionSetpointVelocityPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:257
+rev::spark::SignalsConfig::BusVoltagePeriodMs
+SignalsConfig & BusVoltagePeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:53
+rev::spark::SignalsConfig::AbsoluteEncoderVelocityPeriodMs
+SignalsConfig & AbsoluteEncoderVelocityPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:187
+rev::spark::SignalsConfig::SetpointAlwaysOn
+SignalsConfig & SetpointAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:222
+rev::spark::SignalsConfig::MaxMotionSetpointPositionPeriodMs
+SignalsConfig & MaxMotionSetpointPositionPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:247
+rev::spark::SignalsConfig::SignalsConfig
+SignalsConfig()=default
+rev::spark::SignalsConfig::WarningsPeriodMs
+SignalsConfig & WarningsPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:105
+rev::spark::SignalsConfig::AppliedOutputPeriodMs
+SignalsConfig & AppliedOutputPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:42
+rev::spark::SignalsConfig::IsAtSetpointPeriodMs
+SignalsConfig & IsAtSetpointPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:227
+rev::spark::SignalsConfig::AbsoluteEncoderVelocityAlwaysOn
+SignalsConfig & AbsoluteEncoderVelocityAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:192
+rev::spark::SignalsConfig::MotorTemperatureAlwaysOn
+SignalsConfig & MotorTemperatureAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:79
+rev::spark::SignalsConfig::PrimaryEncoderVelocityAlwaysOn
+SignalsConfig & PrimaryEncoderVelocityAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:120
+rev::spark::SignalsConfig::SignalsConfig
+SignalsConfig(const SignalsConfig &)=delete
+rev::spark::SignalsConfig::FaultsPeriodMs
+SignalsConfig & FaultsPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:95
+rev::spark::SignalsConfig::LimitsAlwaysOn
+SignalsConfig & LimitsAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:90
+rev::spark::SignalsConfig::SelectedSlotPeriodMs
+SignalsConfig & SelectedSlotPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:237
+rev::spark::SignalsConfig::~SignalsConfig
+~SignalsConfig() override=default
+rev::spark::SignalsConfig::ExternalOrAltEncoderPosition
+SignalsConfig & ExternalOrAltEncoderPosition(int periodMs)
+Definition:
+SignalsConfig.cpp:176
+rev::spark::SignalsConfig::AnalogVoltagePeriodMs
+SignalsConfig & AnalogVoltagePeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:135
+rev::spark::SignalsConfig::IsAtSetpointAlwaysOn
+SignalsConfig & IsAtSetpointAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:232
+rev::spark::SignalsConfig::AnalogPositionPeriodMs
+SignalsConfig & AnalogPositionPeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:155
+rev::spark::SignalsConfig::MaxMotionSetpointVelocityAlwaysOn
+SignalsConfig & MaxMotionSetpointVelocityAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:262
+rev::spark::SignalsConfig::MotorTemperaturePeriodMs
+SignalsConfig & MotorTemperaturePeriodMs(int periodMs)
+Definition:
+SignalsConfig.cpp:74
+rev::spark::SignalsConfig::MaxMotionSetpointPositionAlwaysOn
+SignalsConfig & MaxMotionSetpointPositionAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:252
+rev::spark::SignalsConfig::FaultsAlwaysOn
+SignalsConfig & FaultsAlwaysOn(bool enabled)
+Definition:
+SignalsConfig.cpp:100
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+src
+main
+native
+include
+rev
+config
+SignalsConfig.h
+Generated by
+1.9.2

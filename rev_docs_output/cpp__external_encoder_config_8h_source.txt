@@ -1,0 +1,272 @@
+REVLib - C++
+ExternalEncoderConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include "
+rev/config/BaseConfig.h
+"
+32
+33
+namespace
+rev::spark
+{
+34
+35
+class
+ExternalEncoderConfig
+:
+public
+BaseConfig
+{
+36
+public
+:
+37
+enum
+Type
+{
+kQuadrature
+= 0 };
+38
+39
+static
+Type
+FromId
+(
+int
+id
+) {
+return
+kQuadrature
+; }
+40
+41
+ExternalEncoderConfig
+() =
+default
+;
+42
+~ExternalEncoderConfig
+()
+override
+=
+default
+;
+43
+44
+ExternalEncoderConfig
+(
+const
+ExternalEncoderConfig
+&) =
+delete
+;
+45
+ExternalEncoderConfig
+&
+operator=
+(
+const
+ExternalEncoderConfig
+&) =
+delete
+;
+46
+ExternalEncoderConfig
+(
+ExternalEncoderConfig
+&&) noexcept = delete;
+47
+ExternalEncoderConfig
+& operator=(
+ExternalEncoderConfig
+&&) noexcept = delete;
+48
+58
+ExternalEncoderConfig
+&
+Apply
+(
+ExternalEncoderConfig
+& config);
+59
+67
+ExternalEncoderConfig
+&
+CountsPerRevolution
+(
+int
+cpr);
+68
+77
+ExternalEncoderConfig
+&
+Inverted
+(
+bool
+inverted);
+78
+88
+ExternalEncoderConfig
+&
+PositionConversionFactor
+(
+double
+factor);
+89
+99
+ExternalEncoderConfig
+&
+VelocityConversionFactor
+(
+double
+factor);
+100
+111
+ExternalEncoderConfig
+&
+AverageDepth
+(
+int
+depth);
+112
+125
+ExternalEncoderConfig
+&
+MeasurementPeriod
+(
+int
+periodMs);
+126
+};
+127
+128
+}
+// namespace rev::spark
+BaseConfig.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::spark::ExternalEncoderConfig
+Definition:
+ExternalEncoderConfig.h:35
+rev::spark::ExternalEncoderConfig::Inverted
+ExternalEncoderConfig & Inverted(bool inverted)
+Definition:
+ExternalEncoderConfig.cpp:47
+rev::spark::ExternalEncoderConfig::operator=
+ExternalEncoderConfig & operator=(const ExternalEncoderConfig &)=delete
+rev::spark::ExternalEncoderConfig::VelocityConversionFactor
+ExternalEncoderConfig & VelocityConversionFactor(double factor)
+Definition:
+ExternalEncoderConfig.cpp:59
+rev::spark::ExternalEncoderConfig::Apply
+ExternalEncoderConfig & Apply(ExternalEncoderConfig &config)
+Definition:
+ExternalEncoderConfig.cpp:35
+rev::spark::ExternalEncoderConfig::FromId
+static Type FromId(int id)
+Definition:
+ExternalEncoderConfig.h:39
+rev::spark::ExternalEncoderConfig::CountsPerRevolution
+ExternalEncoderConfig & CountsPerRevolution(int cpr)
+Definition:
+ExternalEncoderConfig.cpp:41
+rev::spark::ExternalEncoderConfig::ExternalEncoderConfig
+ExternalEncoderConfig(ExternalEncoderConfig &&) noexcept=delete
+rev::spark::ExternalEncoderConfig::AverageDepth
+ExternalEncoderConfig & AverageDepth(int depth)
+Definition:
+ExternalEncoderConfig.cpp:66
+rev::spark::ExternalEncoderConfig::PositionConversionFactor
+ExternalEncoderConfig & PositionConversionFactor(double factor)
+Definition:
+ExternalEncoderConfig.cpp:52
+rev::spark::ExternalEncoderConfig::Type
+Type
+Definition:
+ExternalEncoderConfig.h:37
+rev::spark::ExternalEncoderConfig::kQuadrature
+@ kQuadrature
+Definition:
+ExternalEncoderConfig.h:37
+rev::spark::ExternalEncoderConfig::MeasurementPeriod
+ExternalEncoderConfig & MeasurementPeriod(int periodMs)
+Definition:
+ExternalEncoderConfig.cpp:72
+rev::spark::ExternalEncoderConfig::ExternalEncoderConfig
+ExternalEncoderConfig()=default
+rev::spark::ExternalEncoderConfig::ExternalEncoderConfig
+ExternalEncoderConfig(const ExternalEncoderConfig &)=delete
+rev::spark::ExternalEncoderConfig::~ExternalEncoderConfig
+~ExternalEncoderConfig() override=default
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+src
+main
+native
+include
+rev
+config
+ExternalEncoderConfig.h
+Generated by
+1.9.2

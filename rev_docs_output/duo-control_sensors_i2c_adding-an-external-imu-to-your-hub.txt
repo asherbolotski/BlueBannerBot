@@ -1,0 +1,226 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Configuring the 9-Axis IMU (REV-31-3332)
+9-Axis IMU in Blocks
+9-Axis IMU in OnBot Java
+Other Compatible External IMUs
+Was this helpful?
+Export as PDF
+All Control Hubs feature an internal IMU. If your Expansion Hub was purchased
+BEFORE
+December 2021, it has an internal IMU installed.
+Configuring the 9-Axis IMU (
+REV-31-3332)
+To use the 9-Axis IMU the Control Hub must be running Robot Controller App v10.0 or newer.
+A full configuration walkthrough is available here.
+The 9-Axis IMU is configured similar to other I2C devices. First, navigate to the Control Hub Portal or Expansion Hub where it is connected in the configuration menu.
+Configuration menu on the Driver Hub
+Next, scroll to find the option to add something to the I2C Bus.
+Note:
+The internal IMU appears in I2C Bus 0. For this example, we are adding the 9-Axis IMU to I2C Bus 1.
+I2C Bus options in the configuration menu
+Once in the menu, click "Add". This will show the option to add a new sensor to this I2C Bus.
+Option to add a new I2C device to the bus
+Scroll to select the REV 9-Axis IMU from the dropdown menu.
+9-Axis IMU within the available dropdown menu
+Name the IMU something relevant that will be easy to identify later. Remember the built-in IMU, if applicable, may also appear as an option while programming.
+Naming the IMU to identify it while programming
+Finally, select "Done" and complete the remainder of your configuration process.
+The "Done" option will save the added sensor
+9-Axis IMU in Blocks
+Once configured, the 9-Axis IMU will appear as an option under "Sensors" in the Blocks menu.
+The IMU listing in the Blocks side menu
+When calling the IMU, the configured 9-Axis IMU will appear as the assigned name in the dropdown option on the individual block.
+IMU selection dropdown
+9-Axis IMU in OnBot Java
+When "Setup Code for Configured Hardware" is checked while creating a new OpMode in OnBot Java, the IMU will automatically be added to the hardwareMap using the assigned name from configuration.
+An internal IMU, if applicable, will retain its default name based on the version of IMU (BNO055 or BHI260AP).
+The configured IMU appearing in OnBot's hardwareMap
+Other Compatible External IMUs
+There are a few options that will work for giving your Hub Gyro/IMU function.
+navX2 Sensor Bundle
+- Also supported in the FTC programming environment. Code examples are listed on AndyMark's page, and this product includes the correct cables to use within FTC.
+Adafruit 9-DOF Absolute Orientation IMU
+- This is the same IMU as in Control Hubs from before 2022, but will require you to either create an adapter cable or solder a cut
+sensor cable
+to the board. Plugging this in and configuring the IMU on I2C port zero will allow you to use and program the same as an internal IMU.
+Integrating Gyro
+with our
+Logic Level Converter
+and
+Sensor Cable Adapter
+- This is supported in the FTC Programing environment but is just a single-axis gyro, not a full IMU.
+Previous
+Orientating the IMU
+Next
+Encoders
+Last updated
+2 months ago
+Was this helpful?

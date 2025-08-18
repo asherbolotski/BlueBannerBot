@@ -1,0 +1,357 @@
+REVLib - C++
+LimitSwitchConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include "
+rev/ClosedLoopTypes.h
+"
+32
+#include "
+rev/config/BaseConfig.h
+"
+33
+34
+namespace
+rev::spark
+{
+35
+36
+class
+LimitSwitchConfig
+:
+public
+BaseConfig
+{
+37
+public
+:
+38
+enum
+Behavior
+: uint32_t {
+39
+kKeepMovingMotor
+= 0,
+40
+kStopMovingMotor
+= 1,
+41
+kKeepMovingMotorAndSetPosition
+= 2,
+42
+kStopMovingMotorAndSetPosition
+= 3,
+43
+};
+44
+enum
+Type
+{
+kNormallyOpen
+= 0,
+kNormallyClosed
+= 1 };
+45
+46
+LimitSwitchConfig
+() =
+default
+;
+47
+~LimitSwitchConfig
+()
+override
+=
+default
+;
+48
+49
+LimitSwitchConfig
+(
+const
+LimitSwitchConfig
+&) =
+delete
+;
+50
+LimitSwitchConfig
+&
+operator=
+(
+const
+LimitSwitchConfig
+&) =
+delete
+;
+51
+LimitSwitchConfig
+(
+LimitSwitchConfig
+&&) noexcept = delete;
+52
+LimitSwitchConfig
+& operator=(
+LimitSwitchConfig
+&&) noexcept = delete;
+53
+63
+LimitSwitchConfig
+&
+Apply
+(
+LimitSwitchConfig
+& config);
+64
+77
+LimitSwitchConfig
+&
+SetSparkMaxDataPortConfig
+();
+78
+87
+[[deprecated]]
+LimitSwitchConfig
+&
+ForwardLimitSwitchEnabled
+(
+bool
+enabled);
+88
+96
+LimitSwitchConfig
+&
+ForwardLimitSwitchTriggerBehavior
+(
+Behavior
+behavior);
+97
+104
+LimitSwitchConfig
+&
+ForwardLimitSwitchType
+(
+Type
+type);
+105
+113
+LimitSwitchConfig
+&
+ForwardLimitSwitchPosition
+(
+double
+position);
+114
+123
+[[deprecated]]
+LimitSwitchConfig
+&
+ReverseLimitSwitchEnabled
+(
+bool
+enabled);
+124
+132
+LimitSwitchConfig
+&
+ReverseLimitSwitchTriggerBehavior
+(
+Behavior
+behavior);
+133
+140
+LimitSwitchConfig
+&
+ReverseLimitSwitchType
+(
+Type
+type);
+141
+149
+LimitSwitchConfig
+&
+ReverseLimitSwitchPosition
+(
+double
+position);
+150
+158
+LimitSwitchConfig
+&
+LimitSwitchPositionSensor
+(
+FeedbackSensor
+sensor);
+159
+};
+160
+161
+}
+// namespace rev::spark
+BaseConfig.h
+ClosedLoopTypes.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::spark::LimitSwitchConfig
+Definition:
+LimitSwitchConfig.h:36
+rev::spark::LimitSwitchConfig::ReverseLimitSwitchType
+LimitSwitchConfig & ReverseLimitSwitchType(Type type)
+Definition:
+LimitSwitchConfig.cpp:91
+rev::spark::LimitSwitchConfig::SetSparkMaxDataPortConfig
+LimitSwitchConfig & SetSparkMaxDataPortConfig()
+Definition:
+LimitSwitchConfig.cpp:41
+rev::spark::LimitSwitchConfig::LimitSwitchConfig
+LimitSwitchConfig(const LimitSwitchConfig &)=delete
+rev::spark::LimitSwitchConfig::ForwardLimitSwitchPosition
+LimitSwitchConfig & ForwardLimitSwitchPosition(double position)
+Definition:
+LimitSwitchConfig.cpp:69
+rev::spark::LimitSwitchConfig::operator=
+LimitSwitchConfig & operator=(const LimitSwitchConfig &)=delete
+rev::spark::LimitSwitchConfig::ForwardLimitSwitchType
+LimitSwitchConfig & ForwardLimitSwitchType(Type type)
+Definition:
+LimitSwitchConfig.cpp:61
+rev::spark::LimitSwitchConfig::ForwardLimitSwitchTriggerBehavior
+LimitSwitchConfig & ForwardLimitSwitchTriggerBehavior(Behavior behavior)
+Definition:
+LimitSwitchConfig.cpp:53
+rev::spark::LimitSwitchConfig::LimitSwitchConfig
+LimitSwitchConfig()=default
+rev::spark::LimitSwitchConfig::ReverseLimitSwitchEnabled
+LimitSwitchConfig & ReverseLimitSwitchEnabled(bool enabled)
+Definition:
+LimitSwitchConfig.cpp:78
+rev::spark::LimitSwitchConfig::LimitSwitchConfig
+LimitSwitchConfig(LimitSwitchConfig &&) noexcept=delete
+rev::spark::LimitSwitchConfig::Apply
+LimitSwitchConfig & Apply(LimitSwitchConfig &config)
+Definition:
+LimitSwitchConfig.cpp:36
+rev::spark::LimitSwitchConfig::ReverseLimitSwitchPosition
+LimitSwitchConfig & ReverseLimitSwitchPosition(double position)
+Definition:
+LimitSwitchConfig.cpp:99
+rev::spark::LimitSwitchConfig::LimitSwitchPositionSensor
+LimitSwitchConfig & LimitSwitchPositionSensor(FeedbackSensor sensor)
+Definition:
+LimitSwitchConfig.cpp:108
+rev::spark::LimitSwitchConfig::ForwardLimitSwitchEnabled
+LimitSwitchConfig & ForwardLimitSwitchEnabled(bool enabled)
+Definition:
+LimitSwitchConfig.cpp:48
+rev::spark::LimitSwitchConfig::Behavior
+Behavior
+Definition:
+LimitSwitchConfig.h:38
+rev::spark::LimitSwitchConfig::kKeepMovingMotorAndSetPosition
+@ kKeepMovingMotorAndSetPosition
+Definition:
+LimitSwitchConfig.h:41
+rev::spark::LimitSwitchConfig::kStopMovingMotorAndSetPosition
+@ kStopMovingMotorAndSetPosition
+Definition:
+LimitSwitchConfig.h:42
+rev::spark::LimitSwitchConfig::kKeepMovingMotor
+@ kKeepMovingMotor
+Definition:
+LimitSwitchConfig.h:39
+rev::spark::LimitSwitchConfig::kStopMovingMotor
+@ kStopMovingMotor
+Definition:
+LimitSwitchConfig.h:40
+rev::spark::LimitSwitchConfig::Type
+Type
+Definition:
+LimitSwitchConfig.h:44
+rev::spark::LimitSwitchConfig::kNormallyClosed
+@ kNormallyClosed
+Definition:
+LimitSwitchConfig.h:44
+rev::spark::LimitSwitchConfig::kNormallyOpen
+@ kNormallyOpen
+Definition:
+LimitSwitchConfig.h:44
+rev::spark::LimitSwitchConfig::ReverseLimitSwitchTriggerBehavior
+LimitSwitchConfig & ReverseLimitSwitchTriggerBehavior(Behavior behavior)
+Definition:
+LimitSwitchConfig.cpp:83
+rev::spark::LimitSwitchConfig::~LimitSwitchConfig
+~LimitSwitchConfig() override=default
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::FeedbackSensor
+FeedbackSensor
+Definition:
+ClosedLoopTypes.h:37
+src
+main
+native
+include
+rev
+config
+LimitSwitchConfig.h
+Generated by
+1.9.2

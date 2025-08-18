@@ -1,0 +1,85 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics
+Interface RelativeEncoder
+All Known Implementing Classes:
+SparkFlexExternalEncoder
+,
+SparkMaxAlternateEncoder
+,
+SparkRelativeEncoder
+public interface
+RelativeEncoder
+Get an instance of this interface by using
+SparkBase.getEncoder()
+,
+SparkMax.getAlternateEncoder()
+, or
+SparkFlex.getExternalEncoder()
+.
+Method Summary
+All Methods
+Instance Methods
+Abstract Methods
+Modifier and Type
+Method
+Description
+double
+getPosition
+()
+Get the position of the motor.
+double
+getVelocity
+()
+Get the velocity of the motor.
+REVLibError
+setPosition
+(double position)
+Set the position of the encoder.
+Method Details
+getPosition
+double
+getPosition
+()
+Get the position of the motor. This returns the native units of 'rotations' by default, and can
+ be changed by a scale factor using
+AlternateEncoderConfig.positionConversionFactor(double)
+, or
+ExternalEncoderConfig.positionConversionFactor(double)
+, or
+EncoderConfig.positionConversionFactor(double)
+.
+Returns:
+Number of rotations of the motor
+getVelocity
+double
+getVelocity
+()
+Get the velocity of the motor. This returns the native units of 'RPM' by default, and can be
+ changed by a scale factor using
+AlternateEncoderConfig.velocityConversionFactor(double)
+, or
+ExternalEncoderConfig.velocityConversionFactor(double)
+, or
+EncoderConfig.velocityConversionFactor(double)
+.
+Returns:
+Number the RPM of the motor
+setPosition
+REVLibError
+setPosition
+(double position)
+Set the position of the encoder. By default the units are 'rotations' and can be changed by a
+ scale factor using
+AlternateEncoderConfig.positionConversionFactor(double)
+, or
+ExternalEncoderConfig.positionConversionFactor(double)
+, or
+EncoderConfig.positionConversionFactor(double)
+.
+Parameters:
+position
+- Number of rotations of the motor
+Returns:
+REVLibError.kOk
+if successful

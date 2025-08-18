@@ -1,0 +1,330 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class LimitSwitchConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.LimitSwitchConfig
+public class
+LimitSwitchConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+LimitSwitchConfig.Behavior
+static enum
+LimitSwitchConfig.Type
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+LimitSwitchConfig
+()
+Create a new object to configure a LimitSwitch.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+LimitSwitchConfig
+apply
+(
+LimitSwitchConfig
+config)
+Applies settings from another
+LimitSwitchConfig
+to this one.
+LimitSwitchConfig
+forwardLimitSwitchEnabled
+(boolean enabled)
+Deprecated.
+Use the
+forwardLimitSwitchTriggerBehavior(com.revrobotics.spark.config.LimitSwitchConfig.Behavior)
+instead
+LimitSwitchConfig
+forwardLimitSwitchPosition
+(double position)
+Set the triggered position value of the forward limit switch (used when the enable mode is set
+ to kEnabled_SetValueOnTrigger).
+LimitSwitchConfig
+forwardLimitSwitchTriggerBehavior
+(
+LimitSwitchConfig.Behavior
+behavior)
+Set the trigger behavior based on the forward limit switch state.
+LimitSwitchConfig
+forwardLimitSwitchType
+(
+LimitSwitchConfig.Type
+type)
+Set the normal state of the forward limit switch.
+LimitSwitchConfig
+limitSwitchPositionSensor
+(
+FeedbackSensor
+sensor)
+Specifies the feedback sensor that the triggered position value is set on.
+LimitSwitchConfig
+reverseLimitSwitchEnabled
+(boolean enabled)
+Deprecated.
+Use the
+reverseLimitSwitchTriggerBehavior(com.revrobotics.spark.config.LimitSwitchConfig.Behavior)
+instead
+LimitSwitchConfig
+reverseLimitSwitchPosition
+(double position)
+Set the triggered position value of the reverse limit switch (used when the enable mode is set
+ to kEnabled_SetValueOnTrigger).
+LimitSwitchConfig
+reverseLimitSwitchTriggerBehavior
+(
+LimitSwitchConfig.Behavior
+behavior)
+Set the trigger behavior based on the reverse limit switch state.
+LimitSwitchConfig
+reverseLimitSwitchType
+(
+LimitSwitchConfig.Type
+type)
+Set the normal state of the reverse limit switch.
+LimitSwitchConfig
+setSparkMaxDataPortConfig
+()
+Configures the data port to use limit switches, which is specifically required for SPARK MAX.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LimitSwitchConfig
+public
+LimitSwitchConfig
+()
+Create a new object to configure a LimitSwitch.
+Method Details
+apply
+public
+LimitSwitchConfig
+apply
+(
+LimitSwitchConfig
+config)
+Applies settings from another
+LimitSwitchConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+LimitSwitchConfig
+to copy settings from
+Returns:
+The updated
+LimitSwitchConfig
+for method chaining
+setSparkMaxDataPortConfig
+public
+LimitSwitchConfig
+setSparkMaxDataPortConfig
+()
+Configures the data port to use limit switches, which is specifically required for SPARK MAX.
+NOTE: This method is only necessary when using limit switches with a SPARK MAX without
+ configuring any of its settings
+IMPORTANT: SPARK MAX does not support using limit switches in conjunction with an alternate
+ encoder.
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+forwardLimitSwitchEnabled
+@Deprecated
+public
+LimitSwitchConfig
+forwardLimitSwitchEnabled
+(boolean enabled)
+Deprecated.
+Use the
+forwardLimitSwitchTriggerBehavior(com.revrobotics.spark.config.LimitSwitchConfig.Behavior)
+instead
+Set whether to enable/disable motor shutdown based on the forward limit switch state. This does
+ not not affect the result of the isPressed() command.
+Parameters:
+enabled
+- True for halting the motor when triggered
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+forwardLimitSwitchTriggerBehavior
+public
+LimitSwitchConfig
+forwardLimitSwitchTriggerBehavior
+(
+LimitSwitchConfig.Behavior
+behavior)
+Set the trigger behavior based on the forward limit switch state. This does not not affect the
+ result of the isPressed() command.
+Parameters:
+behavior
+- The trigger behavior
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+forwardLimitSwitchType
+public
+LimitSwitchConfig
+forwardLimitSwitchType
+(
+LimitSwitchConfig.Type
+type)
+Set the normal state of the forward limit switch.
+Parameters:
+type
+- kNormallyOpen or kNormallyClosed
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+forwardLimitSwitchPosition
+public
+LimitSwitchConfig
+forwardLimitSwitchPosition
+(double position)
+Set the triggered position value of the forward limit switch (used when the enable mode is set
+ to kEnabled_SetValueOnTrigger).
+Parameters:
+position
+- user specified position value
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+reverseLimitSwitchEnabled
+@Deprecated
+public
+LimitSwitchConfig
+reverseLimitSwitchEnabled
+(boolean enabled)
+Deprecated.
+Use the
+reverseLimitSwitchTriggerBehavior(com.revrobotics.spark.config.LimitSwitchConfig.Behavior)
+instead
+Set whether to enable/disable motor shutdown based on the reverse limit switch state. This does
+ not not affect the result of the isPressed() command.
+Parameters:
+enabled
+- True for halting the motor when triggered
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+reverseLimitSwitchTriggerBehavior
+public
+LimitSwitchConfig
+reverseLimitSwitchTriggerBehavior
+(
+LimitSwitchConfig.Behavior
+behavior)
+Set the trigger behavior based on the reverse limit switch state. This does not not affect the
+ result of the isPressed() command.
+Parameters:
+behavior
+- The trigger behavior
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+reverseLimitSwitchType
+public
+LimitSwitchConfig
+reverseLimitSwitchType
+(
+LimitSwitchConfig.Type
+type)
+Set the normal state of the reverse limit switch.
+Parameters:
+type
+- kNormallyOpen or kNormallyClosed
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+reverseLimitSwitchPosition
+public
+LimitSwitchConfig
+reverseLimitSwitchPosition
+(double position)
+Set the triggered position value of the reverse limit switch (used when the enable mode is set
+ to kEnabled_SetValueOnTrigger).
+Parameters:
+position
+- user specified position value
+Returns:
+The modified
+LimitSwitchConfig
+object for method chaining
+limitSwitchPositionSensor
+public
+LimitSwitchConfig
+limitSwitchPositionSensor
+(
+FeedbackSensor
+sensor)
+Specifies the feedback sensor that the triggered position value is set on. This applies for
+ both forward and reverse limit switches.
+Parameters:
+sensor
+- The feedback sensor to set the position value on
+Returns:
+The modified LimitSwitchConfig object for method chaining

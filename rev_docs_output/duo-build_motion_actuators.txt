@@ -1,0 +1,466 @@
+REV DUO Build System
+REV DUO Build System Overview
+Structure
+Introduction to Structure
+15mm Extrusion
+15mm x 30mm Extrusion
+15mm x 45mm C Channel
+45mm x 45mm U Channel
+Flat Plate
+Flat Beam
+L Beam
+Brackets
+Corrugated Plastic Sheets
+M3 Hardware
+Motion
+Introduction to Motion
+Hex Shaft and Spacers
+Bearings
+Sprockets and Chain
+Advanced Sprockets and Chain
+Chain Tool
+Timing Belts and Pulleys
+Gears
+Advanced Gears
+Wheels
+Linear Motion
+Choosing an Actuator
+Motors
+HD Hex Motor
+Pinion Pressing Guide
+Pinion Removal Guide
+Core Hex Motor
+Servos
+Smart Robot Servo
+Building Techniques
+Tips and Tricks for Building
+Supporting Motion
+Constraining Motion
+Compatibility
+Build Guides
+Linear Motion Kit
+Three Stage Cascading Lift
+Three Stage Continuous Lift
+Channel Drivetrain
+Single Sprocket Shaft Assembly
+Double Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Channel Drivetrain - Mecanum Upgrade
+90mm Single Sprocket Shaft Assembly
+75mm Single Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behaviour
+Mecanum Drivetrain V2
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Mecanum Drivetrain Kit
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Extrusion Chain Drivetrain
+Pre-Loading Brackets
+Traction Wheel Assembly
+Omni Wheel Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Making the Chain Links
+Final Assembly
+Extrusion Gear Drivetrain
+Pre-Loading Brackets
+Omni Wheel Assembly
+Middle Grip Wheel Assembly
+Front Grip Wheel Assembly
+Gear Idler Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Final Assembly
+Class Bot V2
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Class Bot
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Electronics and Communication
+REV Control System
+Sensors
+Powered by GitBook
+On this page
+Introduction
+Core Concepts
+Choosing an Actuator Walkthrough
+Step 1: Calculate Work
+Step 2: Calculating Power
+Step 3: Choosing an Actuator
+Step 4: Estimating Performance
+Step 5: Powertrain Design
+Was this helpful?
+Export as PDF
+Introduction
+Choosing between actuators can be a difficult process. Without applying physics and math, you may be left wondering how to make the choice between an HD Hex Motor (
+REV-41-1291
+) and a Core Hex Motor (
+REV-41-1300
+)? This section will take you through the process and mathematics to help you make the best decision for your robot!
+Before getting too far here are some general guidelines for where REV DUO actuators are best utilized.
+Actuator
+Uses
+HD Hex Motor (
+REV-41-1291
+)
+Drivetrains, Elevators, and Arms
+Core Hex Motor (
+REV-41-1300
+)
+Lighter duty arms and intakes
+Smart Robot Servo (
+REV-41-1097
+)
+Lighter duty intakes, switches, and latches
+Though these basic suggestions are here to guide you in the right direction, all robots are different. Follow through the rest of this guide to find the best fit for your mechanisms.
+Core Concepts
+When designing a robot, selecting the correct actuator for the application is a critical design challenge. Some tools can be used to estimate the performance of a motor in a particular application.
+Understanding these basic concepts is required to make optimized design decisions which consider the trade-offs inherent to any design. This section will briefly cover the definition of these concepts and then explain them in relationship to basic powertrain concepts.
+Speed
+Angular Velocity
+Torque
+Work
+Power
+Speed
+is the measure of how fast an object is moving. The
+speed
+of an object is how far it will travel in a given amount of time. For rotating parts like gears and wheels,
+speed
+is expressed in how many revolutions are made in a given amount of time. Under ideal conditions, the rotation of a wheel is converted into linear
+speed
+and can be calculated by multiplying the diameter of the wheel by the rotations for a given time. The SI unit for
+speed
+is meters per second, but
+speed
+is also commonly expressed in feet per second.
+Angular Velocity
+is how the speed of a rotating object is described. The SI unit for the
+Angular Velocity
+is radians per second (rad/s), revolutions per minute is also commonly used.
+Torque
+is roughly the measure of the turning force on an object like a gear or a wheel. Mathematically,
+torque
+is defined as the rate of change of the angular momentum of an object. This can also be stated as a force that acts normal (at 90 degrees) to a radial lever arm which causes the object to rotate. A common example of torque is the use of a wrench in order to tighten or loosen a bolt. In that example, using a longer wrench can produce more
+torque
+on the bolt than using a shorter wrench.
+Torque
+is commonly expressed in N⋅m or in⋅lbs.
+When
+torque
+is turning an object like a spur gear, the gear will create a straight line (linear) force at the point where the teeth contact the other gear. The magnitude of the
+torque
+created is the product of the rotational force applied and the length of the lever arm which in the case of a gear, is half of the pitch diameter (the radius).
+Work
+is concept used to describe changes in energy. Path independent
+work
+is defined as force times displacement; for example if a 1 kilogram(kg) weight is lifted vertically 1 meter(m) against gravity at a constant velocity the work done is:
+1
+(
+k
+g
+)
+∗
+9.8
+(
+m
+/
+s
+2
+)
+∗
+1
+(
+m
+)
+=
+9.8
+(
+k
+g
+∗
+m
+2
+/
+s
+2
+)
+1(kg)*9.8(m/s^2)*1(m) = 9.8 (kg*m^2/s^2)
+1
+(
+k
+g
+)
+∗
+9.8
+(
+m
+/
+s
+2
+)
+∗
+1
+(
+m
+)
+=
+9.8
+(
+k
+g
+∗
+m
+2
+/
+s
+2
+)
+or 9.8 joules(J).
+Power (P)
+is the rate of work over time. The concept of
+power
+includes both a physical change and a time period in which the change occurs. This is different from the concept of work which only measures a physical change. The difference in these two concepts is that it takes the same amount of work to carry a brick up a mountain whether you walk or run but running takes more
+power
+because the work is done in a shorter amount of time. The SI unit for
+power
+is the Watt (W) which is equivalent to one joule per second (J/s). Rotational
+power
+is calculated by multiplying
+torque
+and
+angular velocity
+.
+In competitive robotics, the total amount of available power is determined by the motors and batteries allowed. The maximum speed at which an arm can lift a certain load is dictated by the maximum system
+power
+.
+Choosing an Actuator Walkthrough
+This section will utilize key metrics and terms from the
+Motor
+and
+Servo
+pages. Please visit those pages before going through this walk-through.
+The first round of analysis to narrow down your actuator is to compare the the maximum output power of the actuator to the power required to run the mechanism.
+Lets say you are building an elevator that lifts a game piece. Before you can begin your calculations you have to make some basic assumptions about your design. In this case, assume zero frictional losses and instantaneous acceleration. Consider also, the following information:
+Game piece weight: 0.5 kg
+Lifter weight: 1.5 kg
+Lifter maximum height: 1.5 meters
+Time to full extension: 5 seconds
+For extra practice try running the same calculations but with t = 10 seconds instead of t = 5 seconds.
+Step 1:
+Calculate Work
+Work
+is a concept used to describe changes in energy. Path Independent
+work
+is defined as force times displacement. Since Force is mass times acceleration the following formula for work can be derived:
+W
+=
+m
+∗
+a
+∗
+d
+W = m * a * d
+W
+=
+m
+∗
+a
+∗
+d
+As a standard when calculating work, calculate
+Net Work,
+or the total amount of forces displacing your mechanism. In the example, the only force to account for is the acceleration against gravity at a constant velocity, as it has been assumed there are no frictional forces at play. Therefore in the example Work is:
+2
+(
+k
+g
+)
+∗
+9.8
+(
+m
+/
+s
+2
+)
+∗
+1.5
+(
+m
+)
+=
+29.4
+j
+o
+u
+l
+e
+s
+(
+j
+)
+2(kg) * 9.8(m/s^2) *1.5(m) = 29.4 joules(j)
+2
+(
+k
+g
+)
+∗
+9.8
+(
+m
+/
+s
+2
+)
+∗
+1.5
+(
+m
+)
+=
+29.4
+j
+o
+u
+l
+es
+(
+j
+)
+Where the 2(kg) = the combined mass of the elevator and the game element.
+The example given is a simplified version assuming that no other forces are at play. For optimal results take time to consider what forces may affect the work done by your mechanism.
+Step 2: Calculating Power
+Power (P)
+is the rate of work over time. The difference between work and power is that it takes the same amount of work to carry a brick up a mountain whether you walk or run, but running takes more power because the work is done in done in a shorter amount of time. So, power can be represented as:
+P
+=
+W
+/
+t
+P = W/t
+P
+=
+W
+/
+t
+,where t = time period
+In the example, work was calculated to be 29.4. It was also stated that the time period is 5 seconds. With those numbers known power can be calculated as:
+29.4
+J
+/
+5
+s
+=
+5.88
+W
+a
+t
+t
+s
+29.4 J / 5s = 5.88    Watts
+29.4
+J
+/5
+s
+=
+5.88
+Wa
+tt
+s
+What is power if the elevator reached full height in 10 seconds rather than 5?
+When you are building a mechanism it is advisable to apply a
+safety factor (sf)
+to the power of the mechanism to ensure that your mechanism is able to withstand things like unexpected loads or degradation over time.  For this example, apply a safety factor of 2.
+Remember these calculations are made with an assumption of no friction. The safety factor helps to account for some of the assumptions made with this example.
+5.88
+W
+∗
+2
+s
+f
+=
+12
+w
+a
+t
+t
+s
+5.88W * 2 sf = 12 watts
+5.88
+W
+∗
+2
+s
+f
+=
+12
+w
+a
+tt
+s
+After applying the safety factor of 2 and rounding, it is found that 12 watts of power are needed to power the mechanism. Now that the power estimate is known it is time to decide which actuator meets the criteria given.
+What do you get for the t = 10 seconds calculation if sf = 2?
+Step 3: Choosing an Actuator
+Take the known power estimate of 12 watts and compare it against the
+Maximum Output Power
+for the various actuators in the key metric table. Choose a motor that has a maximum output power greater than that of the estimated power for the mechanism. With those parameters given, the likely choices for the elevator are any of the HD Hex Motor variants.
+Key Metric Comparison
+What actuator would you choose for the same mechanism if the amount of power you need is 6W?
+Step 4: Estimating Performance
+A motor performance graph can be used both for selecting a motor and for understanding the motors behavior once installed in the robot.  The below prototypical performance graph can be used to estimate the performance of a motor.
+The prototypical performance graph exhibits standard curves to help calculate where your motor falls on the performance scale.
+Using the Performance Curve to Select an Actuator
+When selecting a motor the expected power requirement for the motor is used. In the example estimate power was found to be 12 watts. The graphic below for finding power/torque range has a power estimate similar to that of the example (12 watts is 80% of max power). This will still be a good example of how to use the motor performance graph to estimate your metrics.
+Using the Performance Curve to Understand Behavior
+If you have already selected an actuator and installed it you may want to check to see what your robots performance is. This process is similar to the estimation to select a motor.
+Previously the power estimate was used to find the other metrics, now amperage will be used as it can be reported by the Control Hub (
+REV-31-1595
+) and Expansion Hub (
+REV-31-1153
+). When amperage is known, draw a line horizontally at the known value using the current scale, then at the point your horizontal line intersects the current curve, draw a vertical line. The points at which the vertical line intersects the key metric curves will give you the estimated performance for each metric.
+When designing with
+minimal constraints it is best maximize power and efficiency
+. The point of maximum efficiency usually occurs around the 25% of maximum torque point.
+Step 5: Powertrain Design
+Once a motor has been selected, a power train can be designed. The goal of the power train is getting the final
+torque
+and
+angular velocity
+to the necessary values within the possible range that can be produced by the motor. When designing the power train, the fewer elements present in the power train the more efficient the power train will be. For example, using 30:72 gear box and a 20:20 chain drive will be less efficient than directly using 20:54 chain drive.
+As a rule, gears are more efficient than chain drive.
+Motor performance curves are useful at this stage of design as well because given an estimated power requirement you can estimate an angular velocity and torque range that the motor will be outputting. When designing the power train, the values used should be at the lower end of the viable rpm and torque range as the motor can be given more power to bring it into performance should the estimates be off.
+Previous
+Linear Motion
+Next
+Motors
+Last updated
+2 months ago
+Was this helpful?

@@ -1,0 +1,717 @@
+REVLib - C++
+Public Member Functions
+|
+List of all members
+rev::spark::FeedForwardConfig Class Reference
+#include <
+FeedForwardConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Public Member Functions
+FeedForwardConfig
+()=default
+~FeedForwardConfig
+() override=default
+FeedForwardConfig
+(const
+FeedForwardConfig
+&)=delete
+FeedForwardConfig
+&
+operator=
+(const
+FeedForwardConfig
+&)=delete
+FeedForwardConfig
+(
+FeedForwardConfig
+&&) noexcept=delete
+FeedForwardConfig
+&
+operator=
+(
+FeedForwardConfig
+&&) noexcept=delete
+FeedForwardConfig
+&
+Apply
+(
+FeedForwardConfig
+&config)
+FeedForwardConfig
+&
+kS
+(double kS,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+kV
+(double kV,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+kA
+(double kA,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+kG
+(double kG,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+kCos
+(double kCos,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+kCosRatio
+(double kCosRatio,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+sv
+(double
+kS
+, double
+kV
+,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+sva
+(double
+kS
+, double
+kV
+, double
+kA
+,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+svag
+(double
+kS
+, double
+kV
+, double
+kA
+, double
+kG
+,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+svacr
+(double
+kS
+, double
+kV
+, double
+kA
+, double
+kCos
+, double
+kCosRatio
+,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+sg
+(double
+kS
+, double
+kG
+,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+FeedForwardConfig
+&
+scr
+(double
+kS
+, double
+kCos
+, double
+kCosRatio
+,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+virtual std::string
+Flatten
+()
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Constructor & Destructor Documentation
+◆
+FeedForwardConfig()
+[1/3]
+rev::spark::FeedForwardConfig::FeedForwardConfig
+(
+)
+default
+◆
+~FeedForwardConfig()
+rev::spark::FeedForwardConfig::~FeedForwardConfig
+(
+)
+override
+default
+◆
+FeedForwardConfig()
+[2/3]
+rev::spark::FeedForwardConfig::FeedForwardConfig
+(
+const
+FeedForwardConfig
+&
+)
+delete
+◆
+FeedForwardConfig()
+[3/3]
+rev::spark::FeedForwardConfig::FeedForwardConfig
+(
+FeedForwardConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+FeedForwardConfig
+& rev::spark::FeedForwardConfig::operator=
+(
+const
+FeedForwardConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+FeedForwardConfig
+& rev::spark::FeedForwardConfig::operator=
+(
+FeedForwardConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+FeedForwardConfig
+& FeedForwardConfig::Apply
+(
+FeedForwardConfig
+&
+config
+)
+Applies settings from another
+FeedForwardConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+FeedForwardConfig
+to copy settings from
+Returns
+The updated
+FeedForwardConfig
+for method chaining
+◆
+kS()
+FeedForwardConfig
+& FeedForwardConfig::kS
+(
+double
+kS
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kS Static Gain of the controller for a specific closed loop slot.
+Parameters
+kS
+The kS gain in Volts
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+kV()
+FeedForwardConfig
+& FeedForwardConfig::kV
+(
+double
+kV
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kV Velocity Gain of the controller for a specific closed loop slot.
+This is not applied in Position control mode.
+Parameters
+kV
+The kV gain in Volts
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+kA()
+FeedForwardConfig
+& FeedForwardConfig::kA
+(
+double
+kA
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kA Acceleration Gain of the controller for a specific closed loop slot.
+This is only applied in MAXMotion control modes
+Parameters
+kA
+The kA gain in Volts
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+kG()
+FeedForwardConfig
+& FeedForwardConfig::kG
+(
+double
+kG
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kG Static Gravity Gain of the controller for a specific closed loop slot.
+This is statically applied, for an elevator or linear mechanism. Set it to 0 if kCos is being used.
+This is only applied in Position and MAXMotion Position control modes
+Parameters
+kG
+The kG gain in Volts
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+kCos()
+FeedForwardConfig
+& FeedForwardConfig::kCos
+(
+double
+kCos
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kCos Cosine Gravity Gain of the controller for a specific closed loop slot.
+This is multiplied by the cosine of the absolute position of the mechanism (See
+kCosRatio, ClosedLoopSlot slot)
+for info on configuring this) for an arm mechanism. Set it to 0 if kG is being used.
+This is only applied in Position and MAXMotion Position control modes
+Parameters
+kCos
+The kCos gain in Volts
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+kCosRatio()
+FeedForwardConfig
+& FeedForwardConfig::kCosRatio
+(
+double
+kCosRatio
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kCosRatio of the controller for a specific closed loop slot.
+This sets the ratio that is used to calculate the absolute position of your arm mechanism for use with kCos. This is applied after the conversion factor and should convert from those units to absolute rotations of your mechanism. Ensure your selected encoder is zeroed such that 0 = horizontal.
+Parameters
+kCosRatio
+The kCosRatio in Volts
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+sv()
+FeedForwardConfig
+& FeedForwardConfig::sv
+(
+double
+kS
+,
+double
+kV
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kS and kV gains for the provided slot in one call.
+For more information on the kS and kV gains, see
+FeedForwardConfig#kS(double)
+and
+FeedForwardConfig#kV(double)
+.
+Parameters
+kS
+The kS gain in Volts
+kV
+The kV gain in Volts per velocity
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+sva()
+FeedForwardConfig
+& FeedForwardConfig::sva
+(
+double
+kS
+,
+double
+kV
+,
+double
+kA
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kS, kV, and kA gains for the provided slot in one call.
+For more information on the kS, kV, and kA gains, see
+FeedForwardConfig#kS(double)
+,
+FeedForwardConfig#kV(double)
+, and
+FeedForwardConfig#kA(double)
+.
+Parameters
+kS
+The kS gain in Volts
+kV
+The kV gain in Volts per velocity
+kA
+The kA gain in Volts per velocity per second
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+svag()
+FeedForwardConfig
+& FeedForwardConfig::svag
+(
+double
+kS
+,
+double
+kV
+,
+double
+kA
+,
+double
+kG
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kS, kV, kA, and kG gains for the provided slot in one call.
+For more information on the kS, kV, kA, and kG gains, see
+FeedForwardConfig#kS(double)
+,
+FeedForwardConfig#kV(double)
+,
+FeedForwardConfig#kA(double)
+, and
+FeedForwardConfig#kG(double)
+.
+Parameters
+kS
+The kS gain in Volts
+kV
+The kV gain in Volts per velocity
+kA
+The kA gain in Volts per velocity per second
+kG
+The kG gain in Volts
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+svacr()
+FeedForwardConfig
+& FeedForwardConfig::svacr
+(
+double
+kS
+,
+double
+kV
+,
+double
+kA
+,
+double
+kCos
+,
+double
+kCosRatio
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kS, kV, kA, kCos, and kCosRatio gains for the provided slot in one call.
+For more information on the kS, kV, kA, kCos, and kCosRatio gains, see
+FeedForwardConfig#kS(double)
+,
+FeedForwardConfig#kV(double)
+,
+FeedForwardConfig#kA(double)
+,
+FeedForwardConfig#kCos(double)
+, and
+FeedForwardConfig#kCosRatio(double)
+.
+Parameters
+kS
+The kS gain in Volts
+kV
+The kV gain in Volts per velocity
+kA
+The kA gain in Volts per velocity per second
+kCos
+The kCos gain in Volts
+kCosRatio
+The ratio used to calculate the absolute position of your arm mechanism for use with kCos
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+sg()
+FeedForwardConfig
+& FeedForwardConfig::sg
+(
+double
+kS
+,
+double
+kG
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kS and kG gains for the provided slot in one call.
+For more information on the kS and kG gains, see
+FeedForwardConfig#kS(double)
+and
+FeedForwardConfig#kG(double)
+.
+Parameters
+kS
+The kS gain in Volts
+kG
+The kG gain in Volts
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+◆
+scr()
+FeedForwardConfig
+& FeedForwardConfig::scr
+(
+double
+kS
+,
+double
+kCos
+,
+double
+kCosRatio
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the kS, kCos, and kCosRatio gains for the provided slot in one call.
+For more information on the kS, kCos, and kCosRatio gains, see
+FeedForwardConfig#kS(double)
+,
+FeedForwardConfig#kCos(double)
+, and
+FeedForwardConfig#kCosRatio(double)
+.
+Parameters
+kS
+The kS gain in Volts
+kCos
+The kCos gain in Volts
+kCosRatio
+The ratio used to calculate the absolute position of your arm mechanism for use with kCos
+Returns
+The modified
+FeedForwardConfig
+object for method chaining
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+FeedForwardConfig.h
+src/main/native/cpp/config/
+FeedForwardConfig.cpp
+rev
+spark
+FeedForwardConfig
+Generated by
+1.9.2

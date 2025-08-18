@@ -1,0 +1,486 @@
+REVLib - C++
+Classes
+|
+Public Types
+|
+Public Member Functions
+|
+List of all members
+rev::ColorSensorV3 Class Reference
+#include <
+ColorSensorV3.h
+>
+Classes
+struct
+RawColor
+Public Types
+enum class
+GainFactor
+{
+k1x
+= 0
+,
+k3x
+= 1
+,
+k6x
+= 2
+,
+k9x
+= 3
+,
+k18x
+= 4
+}
+enum class
+LEDPulseFrequency
+{
+k60kHz
+= 0x18
+,
+k70kHz
+= 0x40
+,
+k80kHz
+= 0x28
+,
+k90kHz
+= 0x30
+,
+k100kHz
+= 0x38
+}
+enum class
+LEDCurrent
+{
+kPulse2mA
+= 0
+,
+kPulse5mA
+= 1
+,
+kPulse10mA
+= 2
+,
+kPulse25mA
+= 3
+,
+kPulse50mA
+= 4
+,
+kPulse75mA
+= 5
+,
+kPulse100mA
+= 6
+,
+kPulse125mA
+= 7
+}
+enum class
+ProximityResolution
+{
+k8bit
+= 0x00
+,
+k9bit
+= 0x08
+,
+k10bit
+= 0x10
+,
+k11bit
+= 0x18
+ }
+enum class
+ProximityMeasurementRate
+{
+k6ms
+= 1
+,
+k12ms
+= 2
+,
+k25ms
+= 3
+,
+k50ms
+= 4
+,
+k100ms
+= 5
+,
+k200ms
+= 6
+,
+k400ms
+= 7
+}
+enum class
+ColorResolution
+{
+k20bit
+= 0x00
+,
+k19bit
+= 0x10
+,
+k18bit
+= 0x20
+,
+k17bit
+= 0x30
+,
+k16bit
+= 0x40
+,
+k13bit
+= 0x50
+}
+enum class
+ColorMeasurementRate
+{
+k25ms
+= 0
+,
+k50ms
+= 1
+,
+k100ms
+= 2
+,
+k200ms
+= 3
+,
+k500ms
+= 4
+,
+k1000ms
+= 5
+,
+k2000ms
+= 7
+}
+Public Member Functions
+ColorSensorV3
+(frc::I2C::Port port)
+ColorSensorV3
+(
+ColorSensorV3
+&&)=default
+ColorSensorV3
+&
+operator=
+(
+ColorSensorV3
+&&)=default
+frc::Color
+GetColor
+()
+RawColor
+GetRawColor
+()
+CIEColor
+GetCIEColor
+()
+double
+GetIR
+()
+uint32_t
+GetProximity
+()
+void
+SetGain
+(
+GainFactor
+gain)
+void
+ConfigureProximitySensorLED
+(
+LEDPulseFrequency
+freq,
+LEDCurrent
+current, uint8_t pulses)
+void
+ConfigureProximitySensor
+(
+ProximityResolution
+res,
+ProximityMeasurementRate
+rate)
+void
+ConfigureColorSensor
+(
+ColorResolution
+res,
+ColorMeasurementRate
+rate)
+bool
+HasReset
+()
+bool
+IsConnected
+()
+Detailed Description
+REV Robotics Color Sensor V3.
+This class allows access to a REV Robotics color sensor V3 on an I2C bus.
+Member Enumeration Documentation
+◆
+GainFactor
+enum class
+rev::ColorSensorV3::GainFactor
+strong
+Enumerator
+k1x
+k3x
+k6x
+k9x
+k18x
+◆
+LEDPulseFrequency
+enum class
+rev::ColorSensorV3::LEDPulseFrequency
+strong
+Enumerator
+k60kHz
+k70kHz
+k80kHz
+k90kHz
+k100kHz
+◆
+LEDCurrent
+enum class
+rev::ColorSensorV3::LEDCurrent
+strong
+Enumerator
+kPulse2mA
+kPulse5mA
+kPulse10mA
+kPulse25mA
+kPulse50mA
+kPulse75mA
+kPulse100mA
+kPulse125mA
+◆
+ProximityResolution
+enum class
+rev::ColorSensorV3::ProximityResolution
+strong
+Enumerator
+k8bit
+k9bit
+k10bit
+k11bit
+◆
+ProximityMeasurementRate
+enum class
+rev::ColorSensorV3::ProximityMeasurementRate
+strong
+Enumerator
+k6ms
+k12ms
+k25ms
+k50ms
+k100ms
+k200ms
+k400ms
+◆
+ColorResolution
+enum class
+rev::ColorSensorV3::ColorResolution
+strong
+Enumerator
+k20bit
+k19bit
+k18bit
+k17bit
+k16bit
+k13bit
+◆
+ColorMeasurementRate
+enum class
+rev::ColorSensorV3::ColorMeasurementRate
+strong
+Enumerator
+k25ms
+k50ms
+k100ms
+k200ms
+k500ms
+k1000ms
+k2000ms
+Constructor & Destructor Documentation
+◆
+ColorSensorV3()
+[1/2]
+ColorSensorV3::ColorSensorV3
+(
+frc::I2C::Port
+port
+)
+explicit
+Constructs a
+ColorSensorV3
+.
+Note that the REV Color Sensor is really two devices in one package: a color sensor providing red, green, blue and IR values, and a proximity sensor.
+Parameters
+port
+The I2C port the color sensor is attached to
+◆
+ColorSensorV3()
+[2/2]
+rev::ColorSensorV3::ColorSensorV3
+(
+ColorSensorV3
+&&
+)
+default
+Member Function Documentation
+◆
+operator=()
+ColorSensorV3
+& rev::ColorSensorV3::operator=
+(
+ColorSensorV3
+&&
+)
+default
+◆
+GetColor()
+frc::Color ColorSensorV3::GetColor
+(
+)
+Get the normalized RGB color from the sensor (normalized based on total R + G + B)
+Returns
+frc::Color class with normalized sRGB values
+◆
+GetRawColor()
+ColorSensorV3::RawColor
+ColorSensorV3::GetRawColor
+(
+)
+Get the raw color value from the sensor.
+Returns
+Raw color values from sensopr
+◆
+GetCIEColor()
+CIEColor
+ColorSensorV3::GetCIEColor
+(
+)
+Get the color converted to CIE XYZ color space using factory calibrated constants.
+https://en.wikipedia.org/wiki/CIE_1931_color_space
+Returns
+CIEColor
+value from sensor
+◆
+GetIR()
+double ColorSensorV3::GetIR
+(
+)
+Get the normalzied IR value from the sensor. Works best when within 2 inches and perpendicular to surface of interest.
+Returns
+Color class with normalized values
+◆
+GetProximity()
+uint32_t ColorSensorV3::GetProximity
+(
+)
+Get the raw proximity value from the sensor ADC. This value is largest when an object is close to the sensor and smallest when far away.
+Returns
+Proximity measurement value, ranging from 0 to 2047 in default configuration
+◆
+SetGain()
+void ColorSensorV3::SetGain
+(
+ColorSensorV3::GainFactor
+gain
+)
+Set the gain factor applied to color ADC measurements.
+By default, the gain is set to 3x.
+Parameters
+gain
+Gain factor applied to color ADC measurements measurements
+◆
+ConfigureProximitySensorLED()
+void ColorSensorV3::ConfigureProximitySensorLED
+(
+LEDPulseFrequency
+freq
+,
+LEDCurrent
+current
+,
+uint8_t
+pulses
+)
+Configure the the IR LED used by the proximity sensor.
+These settings are only needed for advanced users, the defaults will work fine for most teams. Consult the APDS-9151 for more information on these configuration settings and how they will affect proximity sensor measurements.
+Parameters
+freq
+The pulse modulation frequency for the proximity sensor LED
+current
+The pulse current for the proximity sensor LED
+pulses
+The number of pulses per measurement of the proximity sensor LED
+◆
+ConfigureProximitySensor()
+void ColorSensorV3::ConfigureProximitySensor
+(
+ProximityResolution
+res
+,
+ProximityMeasurementRate
+rate
+)
+Configure the proximity sensor.
+These settings are only needed for advanced users, the defaults will work fine for most teams. Consult the APDS-9151 for more information on these configuration settings and how they will affect proximity sensor measurements.
+Parameters
+res
+Bit resolution output by the proximity sensor ADC.
+rate
+Measurement rate of the proximity sensor
+◆
+ConfigureColorSensor()
+void ColorSensorV3::ConfigureColorSensor
+(
+ColorResolution
+res
+,
+ColorMeasurementRate
+rate
+)
+Configure the color sensor.
+These settings are only needed for advanced users, the defaults will work fine for most teams. Consult the APDS-9151 for more information on these configuration settings and how they will affect color sensor measurements.
+Parameters
+res
+Bit resolution output by the respective light sensor ADCs
+rate
+Measurement rate of the light sensor
+◆
+HasReset()
+bool ColorSensorV3::HasReset
+(
+)
+Indicates if the device reset. Based on the power on status flag in the status register. Per the datasheet:
+Part went through a power-up event, either because the part was turned on or because there was power supply voltage disturbance (default at first register read).
+This flag is self clearing
+Returns
+true if the device was reset
+◆
+IsConnected()
+bool ColorSensorV3::IsConnected
+(
+)
+Indicates if the device can currently be communicated with.
+Returns
+true if the device is currently connected and responsive
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/
+ColorSensorV3.h
+src/main/native/cpp/
+ColorSensorV3.cpp
+rev
+ColorSensorV3
+Generated by
+1.9.2

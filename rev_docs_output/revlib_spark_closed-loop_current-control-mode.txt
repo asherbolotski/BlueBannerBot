@@ -1,0 +1,66 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+Current Control uses a PID controller to run the motor at a consistent current providing a consistent torque. The PID controller is run using the setpoint, in Amps, and the internally measured current draw.
+It is called as shown below:
+Java
+C++
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kCurrent
+);
+API Docs:
+setReference
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kCurrent);
+API Reference:
+SetReference
+Current Control mode will turn your mechanism continuously and will speed up to maximum velocity if unloaded. Use caution when running this mode and avoid using it on mechanisms with a limited range of motion.
+Previous
+Velocity Control Mode
+Next
+MAXMotion Position Control
+Last updated
+7 months ago
+Was this helpful?

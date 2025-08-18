@@ -1,0 +1,872 @@
+REVLib - C++
+Public Member Functions
+|
+Public Attributes
+|
+List of all members
+rev::spark::ClosedLoopConfig Class Reference
+#include <
+ClosedLoopConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Public Member Functions
+ClosedLoopConfig
+()=default
+~ClosedLoopConfig
+() override=default
+ClosedLoopConfig
+(const
+ClosedLoopConfig
+&)=delete
+ClosedLoopConfig
+&
+operator=
+(const
+ClosedLoopConfig
+&)=delete
+ClosedLoopConfig
+(
+ClosedLoopConfig
+&&) noexcept=delete
+ClosedLoopConfig
+&
+operator=
+(
+ClosedLoopConfig
+&&) noexcept=delete
+ClosedLoopConfig
+&
+Apply
+(
+ClosedLoopConfig
+&config)
+ClosedLoopConfig
+&
+Apply
+(
+SmartMotionConfig
+&config)
+ClosedLoopConfig
+&
+Apply
+(
+MAXMotionConfig
+&config)
+ClosedLoopConfig
+&
+Apply
+(
+FeedForwardConfig
+&config)
+ClosedLoopConfig
+&
+Pidf
+(double p, double i, double d, double ff,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+Pid
+(double p, double i, double d,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+P
+(double p,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+I
+(double i,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+D
+(double d,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+VelocityFF
+(double ff,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+DFilter
+(double dFilter,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+IZone
+(double iZone,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+MinOutput
+(double minOutput,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+MaxOutput
+(double maxOutput,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+OutputRange
+(double minOutput, double maxOutput,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+IMaxAccum
+(double iMaxAccum,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+AllowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+ClosedLoopConfig
+&
+PositionWrappingEnabled
+(bool enabled)
+ClosedLoopConfig
+&
+PositionWrappingMinInput
+(double minInput)
+ClosedLoopConfig
+&
+PositionWrappingMaxInput
+(double maxInput)
+ClosedLoopConfig
+&
+PositionWrappingInputRange
+(double minInput, double maxInput)
+ClosedLoopConfig
+&
+SetFeedbackSensor
+(
+FeedbackSensor
+sensor)
+std::string
+Flatten
+() override
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+Public Attributes
+MAXMotionConfig
+maxMotion
+SmartMotionConfig
+smartMotion
+FeedForwardConfig
+feedForward
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Constructor & Destructor Documentation
+◆
+ClosedLoopConfig()
+[1/3]
+rev::spark::ClosedLoopConfig::ClosedLoopConfig
+(
+)
+default
+◆
+~ClosedLoopConfig()
+rev::spark::ClosedLoopConfig::~ClosedLoopConfig
+(
+)
+override
+default
+◆
+ClosedLoopConfig()
+[2/3]
+rev::spark::ClosedLoopConfig::ClosedLoopConfig
+(
+const
+ClosedLoopConfig
+&
+)
+delete
+◆
+ClosedLoopConfig()
+[3/3]
+rev::spark::ClosedLoopConfig::ClosedLoopConfig
+(
+ClosedLoopConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+ClosedLoopConfig
+& rev::spark::ClosedLoopConfig::operator=
+(
+const
+ClosedLoopConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+ClosedLoopConfig
+& rev::spark::ClosedLoopConfig::operator=
+(
+ClosedLoopConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+[1/4]
+ClosedLoopConfig
+& ClosedLoopConfig::Apply
+(
+ClosedLoopConfig
+&
+config
+)
+Applies settings from another
+ClosedLoopConfig
+to this one, including all of its nested configurations.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+ClosedLoopConfig
+to copy settings from
+Returns
+The updated
+ClosedLoopConfig
+for method chaining
+◆
+Apply()
+[2/4]
+ClosedLoopConfig
+& ClosedLoopConfig::Apply
+(
+SmartMotionConfig
+&
+config
+)
+Applies settings from a
+SmartMotionConfig
+to this
+ClosedLoopConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+SmartMotionConfig
+to copy settings from
+Returns
+The updated
+ClosedLoopConfig
+for method chaining
+◆
+Apply()
+[3/4]
+ClosedLoopConfig
+& ClosedLoopConfig::Apply
+(
+MAXMotionConfig
+&
+config
+)
+Applies settings from a
+MAXMotionConfig
+to this
+ClosedLoopConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+MAXMotionConfig
+to copy settings from
+Returns
+The updated
+ClosedLoopConfig
+for method chaining
+◆
+Apply()
+[4/4]
+ClosedLoopConfig
+& ClosedLoopConfig::Apply
+(
+FeedForwardConfig
+&
+config
+)
+Applies settings from a
+FeedForwardConfig
+to this
+ClosedLoopConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+FeedForwardConfig
+to copy settings from
+Returns
+The updated
+ClosedLoopConfig
+for method chaining
+◆
+Pidf()
+ClosedLoopConfig
+& ClosedLoopConfig::Pidf
+(
+double
+p
+,
+double
+i
+,
+double
+d
+,
+double
+ff
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the PIDF gains of the controller for a specific closed loop slot.
+Parameters
+p
+The proportional gain value
+i
+The integral gain value
+d
+The derivative gain value
+ff
+The velocity feedforward value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+Deprecated:
+Use FeedForwardConfig::V(double v, ClosedLoopSlot slot) to set a Velocity Feedforward
+◆
+Pid()
+ClosedLoopConfig
+& ClosedLoopConfig::Pid
+(
+double
+p
+,
+double
+i
+,
+double
+d
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the PID gains of the controller for a specific closed loop slot.
+Parameters
+p
+The proportional gain value
+i
+The integral gain value
+d
+The derivative gain value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+P()
+ClosedLoopConfig
+& ClosedLoopConfig::P
+(
+double
+p
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the proportional gain of the controller for a specific closed loop slot.
+Parameters
+p
+The proportional gain value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+I()
+ClosedLoopConfig
+& ClosedLoopConfig::I
+(
+double
+i
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the integral gain of the controller for a specific closed loop slot.
+Parameters
+i
+The integral gain value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+D()
+ClosedLoopConfig
+& ClosedLoopConfig::D
+(
+double
+d
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the derivative gain of the controller for a specific closed loop slot.
+Parameters
+d
+The derivative gain value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+VelocityFF()
+ClosedLoopConfig
+& ClosedLoopConfig::VelocityFF
+(
+double
+ff
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the velocity feedforward gain of the controller for a specific closed loop slot.
+Parameters
+ff
+The velocity feedforward gain value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+Deprecated:
+Use FeedForwardConfig::V(double v, ClosedLoopSlot slot) to set this gain
+◆
+DFilter()
+ClosedLoopConfig
+& ClosedLoopConfig::DFilter
+(
+double
+dFilter
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the derivative filter of the controller for a specific closed loop slot.
+Parameters
+dFilter
+The derivative filter value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+IZone()
+ClosedLoopConfig
+& ClosedLoopConfig::IZone
+(
+double
+iZone
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the integral zone of the controller for a specific closed loop slot.
+Parameters
+iZone
+The integral zone value
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+MinOutput()
+ClosedLoopConfig
+& ClosedLoopConfig::MinOutput
+(
+double
+minOutput
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the minimum output of the controller for a specific closed loop slot.
+Parameters
+minOutput
+The minimum output value in the range [-1, 1]
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+MaxOutput()
+ClosedLoopConfig
+& ClosedLoopConfig::MaxOutput
+(
+double
+maxOutput
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the maximum output of the controller for a specific closed loop slot.
+Parameters
+maxOutput
+The maximum output value in the range [-1, 1]
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+OutputRange()
+ClosedLoopConfig
+& ClosedLoopConfig::OutputRange
+(
+double
+minOutput
+,
+double
+maxOutput
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the output range of the controller for a specific closed loop slot.
+Parameters
+minOutput
+The minimum output value in the range [-1, 1]
+maxOutput
+The maximum output value in the range [-1, 1]
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+IMaxAccum()
+ClosedLoopConfig
+& ClosedLoopConfig::IMaxAccum
+(
+double
+iMaxAccum
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the maximum I accumulator of the controller for a specific closed loop slot. This value is used to constrain the I accumulator to help manage integral wind-up.
+Parameters
+iMaxAccum
+The max value to constrain the I accumulator to
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+AllowedClosedLoopError()
+ClosedLoopConfig
+& ClosedLoopConfig::AllowedClosedLoopError
+(
+double
+allowedError
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the allowed closed loop error for the controller for a specific PID slot. This value is how much deviation from the setpoint is tolerated and is useful in preventing oscillation around the setpoint. Natively, the units are in rotations but will be affected by the position conversion factor.
+Parameters
+allowedError
+The allowed error with the position conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+PositionWrappingEnabled()
+ClosedLoopConfig
+& ClosedLoopConfig::PositionWrappingEnabled
+(
+bool
+enabled
+)
+Enable or disable PID wrapping for position closed loop control.
+Parameters
+enabled
+True to enable position PID wrapping
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+PositionWrappingMinInput()
+ClosedLoopConfig
+& ClosedLoopConfig::PositionWrappingMinInput
+(
+double
+minInput
+)
+Set the minimum input value for PID wrapping with position closed loop control.
+Parameters
+minInput
+The value of min input for the position
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+PositionWrappingMaxInput()
+ClosedLoopConfig
+& ClosedLoopConfig::PositionWrappingMaxInput
+(
+double
+maxInput
+)
+Set the maximum input value for PID wrapping with position closed loop control
+Parameters
+maxInput
+The value of max input for the position
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+PositionWrappingInputRange()
+ClosedLoopConfig
+& ClosedLoopConfig::PositionWrappingInputRange
+(
+double
+minInput
+,
+double
+maxInput
+)
+Set the input range for PID wrapping with position closed loop control
+Parameters
+minInput
+The value of min input for the position
+maxInput
+The value of max input for the position
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+SetFeedbackSensor()
+ClosedLoopConfig
+& ClosedLoopConfig::SetFeedbackSensor
+(
+FeedbackSensor
+sensor
+)
+Set the feedback sensor of the controller. The controller will use this sensor as the source of feedback for its closed loop control.
+The default feedback sensor is assumed to be the primary encoder for either brushless or brushed mode. This can be changed to another feedback sensor for the controller such as an analog sensor, absolute encoder, or alternate/external encoder.
+Parameters
+sensor
+The feedback sensor
+Returns
+The modified
+ClosedLoopConfig
+object for method chaining
+◆
+Flatten()
+std::string ClosedLoopConfig::Flatten
+(
+)
+override
+virtual
+Reimplemented from
+rev::BaseConfig
+.
+Member Data Documentation
+◆
+maxMotion
+MAXMotionConfig
+rev::spark::ClosedLoopConfig::maxMotion
+◆
+smartMotion
+SmartMotionConfig
+rev::spark::ClosedLoopConfig::smartMotion
+◆
+feedForward
+FeedForwardConfig
+rev::spark::ClosedLoopConfig::feedForward
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+ClosedLoopConfig.h
+src/main/native/cpp/config/
+ClosedLoopConfig.cpp
+rev
+spark
+ClosedLoopConfig
+Generated by
+1.9.2

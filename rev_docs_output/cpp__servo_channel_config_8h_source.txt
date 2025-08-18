@@ -1,0 +1,277 @@
+REVLib - C++
+ServoChannelConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include "
+rev/ServoChannel.h
+"
+32
+#include "
+rev/config/BaseConfig.h
+"
+33
+34
+namespace
+rev::servohub
+{
+35
+36
+class
+ServoChannelConfig
+:
+public
+BaseConfig
+{
+37
+public
+:
+38
+explicit
+ServoChannelConfig
+(
+ServoChannel::ChannelId
+channelId);
+39
+~ServoChannelConfig
+()
+override
+=
+default
+;
+40
+41
+ServoChannelConfig
+(
+const
+ServoChannelConfig
+&) =
+delete
+;
+42
+ServoChannelConfig
+&
+operator=
+(
+const
+ServoChannelConfig
+&) =
+delete
+;
+43
+ServoChannelConfig
+(
+ServoChannelConfig
+&&) noexcept = delete;
+44
+ServoChannelConfig
+& operator=(
+ServoChannelConfig
+&&) noexcept = delete;
+45
+55
+ServoChannelConfig
+&
+Apply
+(
+ServoChannelConfig
+& config);
+56
+65
+ServoChannelConfig
+&
+PulseRange
+(uint32_t minPulse_us,
+66
+uint32_t centerPulse_us,
+67
+uint32_t maxPulse_us);
+68
+69
+struct
+PulseRange_t
+{
+70
+uint32_t
+minPulse_us
+;
+71
+uint32_t
+centerPulse_us
+;
+72
+uint32_t
+maxPulse_us
+;
+73
+};
+74
+82
+ServoChannelConfig
+&
+PulseRange
+(
+const
+PulseRange_t
+& pulseRange_us);
+83
+84
+enum class
+BehaviorWhenDisabled
+{
+85
+kDoNotSupplyPower
+= 0,
+86
+kSupplyPower
+= 1,
+87
+};
+101
+ServoChannelConfig
+&
+DisableBehavior
+(
+BehaviorWhenDisabled
+behavior);
+102
+103
+private
+:
+104
+ServoChannel::ChannelId
+m_channelId;
+105
+};
+106
+107
+}
+// namespace rev::servohub
+BaseConfig.h
+ServoChannel.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::servohub::ServoChannelConfig
+Definition:
+ServoChannelConfig.h:36
+rev::servohub::ServoChannelConfig::ServoChannelConfig
+ServoChannelConfig(ServoChannelConfig &&) noexcept=delete
+rev::servohub::ServoChannelConfig::~ServoChannelConfig
+~ServoChannelConfig() override=default
+rev::servohub::ServoChannelConfig::ServoChannelConfig
+ServoChannelConfig(ServoChannel::ChannelId channelId)
+Definition:
+ServoChannelConfig.cpp:59
+rev::servohub::ServoChannelConfig::DisableBehavior
+ServoChannelConfig & DisableBehavior(BehaviorWhenDisabled behavior)
+Definition:
+ServoChannelConfig.cpp:110
+rev::servohub::ServoChannelConfig::PulseRange
+ServoChannelConfig & PulseRange(uint32_t minPulse_us, uint32_t centerPulse_us, uint32_t maxPulse_us)
+Definition:
+ServoChannelConfig.cpp:93
+rev::servohub::ServoChannelConfig::Apply
+ServoChannelConfig & Apply(ServoChannelConfig &config)
+Definition:
+ServoChannelConfig.cpp:62
+rev::servohub::ServoChannelConfig::BehaviorWhenDisabled
+BehaviorWhenDisabled
+Definition:
+ServoChannelConfig.h:84
+rev::servohub::ServoChannelConfig::BehaviorWhenDisabled::kSupplyPower
+@ kSupplyPower
+rev::servohub::ServoChannelConfig::BehaviorWhenDisabled::kDoNotSupplyPower
+@ kDoNotSupplyPower
+rev::servohub::ServoChannelConfig::operator=
+ServoChannelConfig & operator=(const ServoChannelConfig &)=delete
+rev::servohub::ServoChannelConfig::ServoChannelConfig
+ServoChannelConfig(const ServoChannelConfig &)=delete
+rev::servohub::ServoChannel::ChannelId
+ChannelId
+Definition:
+ServoChannel.h:48
+rev::servohub
+Definition:
+ServoChannelConfig.h:34
+rev::servohub::ServoChannelConfig::PulseRange_t
+Definition:
+ServoChannelConfig.h:69
+rev::servohub::ServoChannelConfig::PulseRange_t::maxPulse_us
+uint32_t maxPulse_us
+Definition:
+ServoChannelConfig.h:72
+rev::servohub::ServoChannelConfig::PulseRange_t::centerPulse_us
+uint32_t centerPulse_us
+Definition:
+ServoChannelConfig.h:71
+rev::servohub::ServoChannelConfig::PulseRange_t::minPulse_us
+uint32_t minPulse_us
+Definition:
+ServoChannelConfig.h:70
+src
+main
+native
+include
+rev
+config
+ServoChannelConfig.h
+Generated by
+1.9.2

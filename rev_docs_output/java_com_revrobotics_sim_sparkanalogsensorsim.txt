@@ -1,0 +1,219 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.sim
+Class SparkAnalogSensorSim
+java.lang.Object
+com.revrobotics.sim.SparkAnalogSensorSim
+public class
+SparkAnalogSensorSim
+extends
+Object
+Constructor Summary
+Constructors
+Constructor
+Description
+SparkAnalogSensorSim
+(
+SparkFlex
+motor)
+Create a Spark Absolute Encoder simulation object for a Spark Flex.
+SparkAnalogSensorSim
+(
+SparkMax
+motor)
+Create a Spark Analog Sensor simulation object for a Spark MAX.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+getInverted
+()
+Get the inversion state of the sensor
+double
+getPosition
+()
+Get the position of the sensor, with the conversion factor applied
+double
+getPositionConversionFactor
+()
+Get the position conversion factor of the sensor (1 by default)
+double
+getVelocity
+()
+Get the velocity of the sensor, with the conversion factor applied
+double
+getVelocityConversionFactor
+()
+Get the velocity conversion factor of the sensor (1 by default)
+double
+getVoltage
+()
+Get the voltage of the sensor
+void
+iterate
+(double velocity,
+ double dt)
+Move the sensor at the input velocity
+void
+setInverted
+(boolean inverted)
+Set the inversion state of the sensor
+void
+setPosition
+(double position)
+Set the position of the sensor, after your conversion factor
+void
+setVelocity
+(double velocity)
+Set the velocity of the sensor, after the conversion factor
+void
+setVoltage
+(double voltage)
+Set the voltage of the sensor
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SparkAnalogSensorSim
+public
+SparkAnalogSensorSim
+(
+SparkMax
+motor)
+Create a Spark Analog Sensor simulation object for a Spark MAX. This will allow you to
+ read/write data from the simulated sensor and view it in the Sim GUI.
+Parameters:
+motor
+- The CANSparkMax associated with the sensor
+SparkAnalogSensorSim
+public
+SparkAnalogSensorSim
+(
+SparkFlex
+motor)
+Create a Spark Absolute Encoder simulation object for a Spark Flex. This will allow you to
+ read/write data from the simulated sensor and view it in the Sim GUI.
+Parameters:
+motor
+- The CANSparkFlex associated with the sensor
+Method Details
+setVoltage
+public
+void
+setVoltage
+(double voltage)
+Set the voltage of the sensor
+Parameters:
+voltage
+- the voltage to set
+getVoltage
+public
+double
+getVoltage
+()
+Get the voltage of the sensor
+Returns:
+the voltage of the sensor
+setPosition
+public
+void
+setPosition
+(double position)
+Set the position of the sensor, after your conversion factor
+Parameters:
+position
+- the position to set
+getPosition
+public
+double
+getPosition
+()
+Get the position of the sensor, with the conversion factor applied
+Returns:
+the position of the sensor
+setVelocity
+public
+void
+setVelocity
+(double velocity)
+Set the velocity of the sensor, after the conversion factor
+Parameters:
+velocity
+- the velocity to set
+getVelocity
+public
+double
+getVelocity
+()
+Get the velocity of the sensor, with the conversion factor applied
+Returns:
+the velocity of the sensor
+setInverted
+public
+void
+setInverted
+(boolean inverted)
+Set the inversion state of the sensor
+Parameters:
+inverted
+- if the sensor is inverted or not
+getInverted
+public
+boolean
+getInverted
+()
+Get the inversion state of the sensor
+Returns:
+if the sensor is inverted or not
+getPositionConversionFactor
+public
+double
+getPositionConversionFactor
+()
+Get the position conversion factor of the sensor (1 by default)
+Returns:
+the conversion factor
+getVelocityConversionFactor
+public
+double
+getVelocityConversionFactor
+()
+Get the velocity conversion factor of the sensor (1 by default)
+Returns:
+the conversion factor
+iterate
+public
+void
+iterate
+(double velocity,
+ double dt)
+Move the sensor at the input velocity
+Parameters:
+velocity
+- the velocity of the sensor
+dt
+- the time interval of the calculation

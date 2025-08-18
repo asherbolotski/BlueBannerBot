@@ -1,0 +1,70 @@
+REV Hardware Client
+REV Hardware Client Overview
+Changelog
+Getting Started
+Installation
+Navigating the Client
+Troubleshooting
+REV DUO
+Control Hub
+Updating a Control Hub
+Restoring Control Hub Data
+Driver Hub
+Updating a Driver Hub
+Expansion Hub
+Android Devices
+Installing RC/DS Applications
+Using the Log Viewer
+REV ION
+SPARK Flex
+Updating a SPARK Flex
+SPARK MAX
+Updating a SPARK MAX
+Power Distribution Hub
+Updating a Power Distribution Hub
+Pneumatic Hub
+Updating a Pneumatic Hub
+Telemetry Tab
+Running Multiple SPARK Motor Controllers
+Recovery Mode
+Crossover
+Servo Hub
+Powered by GitBook
+On this page
+Running One SPARK Motor Controller
+Running Multiple SPARKs
+Was this helpful?
+Export as PDF
+This guide will help illustrate how to use the REV Hardware Client to run multiple ION motor controllers and motor pairs over CAN using various modes, including position, velocity, and duty cycle.
+Running One SPARK Motor Controller
+Connect your SPARK to the REV Hardware Client via a USB-C cable plugged into the SPARK itself or another device on the CAN network. If available, other CAN Devices will appear on the left under "Connected Hardware". In our example, we have plugged into the Power Distribution Hub. 
+
+Then, click the "Telemetry" tab to continue.
+Note: For best results, ensure all devices have the latest firmware installed.
+As a safety precaution, USB control is disabled on all REV Devices if a roboRIO has been detected at any time while the control system is on. To resolve the lockout, power cycle your control system after disconnecting the roboRIO.
+Here, all available devices should be visible on the left. Click the first device you wish to configure.
+While the motor is running, you can select different signals to display on the graph, providing valuable telemetry data for prototyping or troubleshooting. To track key metrics, select Voltage, Primary Encoder Position, and Primary Encoder Velocity to visualize these signals on the graph during operation.
+After selecting your signals, click the "Start Graph" button to begin data collection before clicking the "Run Motor" button.
+Below "Run Motor," you'll find the Mode and Setpoint settings, which determine the motor's behavior while running. For this guide, leave the Mode at Percent and the Setpoint at 0.05. Ensure the motor is securely fastened before clicking "Run Motor."
+Congratulations, you've successfully run your SPARK MAX through the REV Hardware Client!
+If you are only using multiple SPARK MAXs and a power source, you can terminate both ends of your CAN Bus with 120Ω resistors!
+Running Multiple SPARKs
+With the Power Distribution Hub and all SPARK devices wired, updated, and connected via CAN, plug the provided orange USB-C cable into the Power Distribution Hub. You should then see all the respective hardware appear on the left. Click the "Telemetry" tab to continue.
+A roboRIO lockout can occur when it is active on the CAN bus while the REV Hardware Client is connected. To resolve this issue, power cycle all SPARK motor controllers after disconnecting the roboRIO.
+Here, all available devices should be visible on the left. Click the first device you wish to configure.
+After selecting your desired signals, click on the "Run Multiple" tab. You'll notice that our SPARK Flex is checked, meaning that it's ready to run. We need to check off the SPARK MAX so that both run at the same time. When you're done, click on the back button highlighted in orange to return to the Telemetry Devices tray.
+In the previous step, we selected the signals for our SPARK Flex. The same needs to be done for our SPARK MAX, click on it to continue.
+After selecting your signals for the second motor controller, click on the
+Run Multiple
+tab.
+After selecting your signals, click the "Start Graph" button to begin data collection before clicking the "Run Motor" button.
+Below "Run Motor," you'll find the Mode and Setpoint settings, which determine the motor's behavior while running. For this guide, leave the Mode at Percent and the Setpoint at 0.03. Ensure the motor is securely fastened before clicking "Run Motor."
+Congratulations, you've successfully run multiple SPARK Motor Controllers through the REV Hardware Client!
+If you are only using multiple SPARK MAXs and a power source, you can terminate both ends of your CAN Bus with 120Ω resistors!
+Previous
+Telemetry Tab
+Next
+Recovery Mode
+Last updated
+2 months ago
+Was this helpful?

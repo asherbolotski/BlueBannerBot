@@ -1,0 +1,127 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+Brushless vs. Brushed Motor Basics
+Key Terms
+General Application Information
+Was this helpful?
+Export as PDF
+DC Motors consist of two major parts, the part that rotates, or the “rotor”, and the part that is stationary, or the “stator”. A DC motor uses these parts to convert electrical energy into rotational mechanical energy using electricity and permanent magnets. Two types of DC motors are used in FIRST Robotics Competition: Brushed DC Motors and Brushless DC motors. Both types are useful in various robot applications, and both have their trade-offs.
+Brushless vs. Brushed Motor Basics
+Operating a brushed DC motor is simple; provide DC electrical power and the motor spins. In a brushed motor, the rotor consists of electrical winding wires and the stator consists of permanent magnets. Since the electrical part is spinning, there needs to be a way to connect the external power wires to the spinning rotor. This is accomplished through conductive “brushes” that make contact with the stator, automatically sequencing the power to make the rotor spin. Brushes make it easy on us, but they produce extra friction which reduces the efficiency of the motor.
+Brushless DC motors don’t have brushes. They still have both electrical winding wires and permanent magnets, but the locations are flipped. The stator now consists of the electrical parts, and the spinning rotor consists of the magnets. This means there is no more brush friction within the motor, making a brushless motor more power-efficient. However, you can’t just give it DC power and expect it to spin. Without the brushes doing the sequencing for us, you must use a specialized motor controller that is designed for brushless motors to properly sequence the power and get the rotor spinning.
+The REV NEO Brushless Motor runs an 8mm keyed output shaft which allows for an easy transition from CIM-style brushed motors into brushless.
+Swap a set of NEO Brushless Motors into your drivetrain or use one in an elevator to save weight and maintain peak performance. When paired with the SPARK MAX, you can use the integrated hall-effect sensors to calculate incremental position or speed from the NEO.
+Key Terms
+Stall Torque
+Stall Current
+Free Speed
+Operating Voltage
+Stall Torque
+is measured when the motors RPM is zero and the motor is drawing its full
+Stall Current
+. This value is the maximum torque the motor is ever capable of outputting. Keep in mind the motor is not capable of outputting this torque for an indefinite period of time. Waste energy will be released into the motor as heat. When the motor is producing more waste heat than the motor body is capable of dissipating the motor will eventually overheat and fail.
+Stall Current
+is the maximum amount of current the motor will draw. The stall current is measured at the point when the motor has torque that the RPM goes down to zero. This is also the point at which the most waste heat will be dissipated into the motor body.
+Free Speed
+is the
+angular velocity
+that a motor will spin at when powered at the
+Operating Voltage
+with zero load on the motor’s output shaft. This RPM is the fastest
+angular velocity
+the motor will ever spin at. Once the motor is under load its
+angular velocity
+will decrease.
+Operating Voltage
+is the expected voltage that the motor will experience during operation. If a robot is built using a 12 volt battery the
+Operating Voltage
+of the motor will be 12 volts. When controlling the RPM of the motor the DC speed controller will modulate the effective voltage seen by the motor. The lower the voltage seen by the motor the slower it will spin. DC motors have a maximum rated voltage if this voltage is exceeded the motor will fail prematurely.
+The key metrics defined above are interrelated. Take some time to familiarize yourself with the definitions and how they connect together.
+General Application Information
+In order to ensure that an electric motor lasts as long as possible a few rules of thumb should be kept in mind:
+Smooth loading
+- large torque spikes or sudden changes in direction can cause excess wear and premature failure of gearbox components. This is only an issue when the torque spike exceeds the rated stall torque of the motor. When shock loading is necessary, it is best to utilize mechanical braking or a hard stop that absorbs the impact instead of the motor.
+Overheating
+- when a motor is loaded at near its maximum operating torque it will produce more waste heat than when operating at a lower operating torque. If this heat this allowed to build up the motor can wear out prematurely or fail spontaneously.
+Poorly supported output shaft
+, most motor output shafts are not designed to take large thrust forces or forces normal to the shaft. Bearings need to be used to support the axle when loads in these directions are expected.
+Previous
+Frequently Asked Questions
+Next
+NEO Vortex
+Last updated
+1 year ago
+Was this helpful?

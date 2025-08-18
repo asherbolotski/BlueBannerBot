@@ -1,0 +1,160 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class AnalogSensorConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.AnalogSensorConfig
+public class
+AnalogSensorConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+AnalogSensorConfig
+()
+Create a new object to configure an AnalogSensor.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+AnalogSensorConfig
+apply
+(
+AnalogSensorConfig
+config)
+Applies settings from another
+AnalogSensorConfig
+to this one.
+AnalogSensorConfig
+inverted
+(boolean inverted)
+Set the phase of the analog sensor so that it is in phase with the motor itself.
+AnalogSensorConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the analog sensor.
+AnalogSensorConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the analog sensor.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+AnalogSensorConfig
+public
+AnalogSensorConfig
+()
+Create a new object to configure an AnalogSensor.
+Method Details
+apply
+public
+AnalogSensorConfig
+apply
+(
+AnalogSensorConfig
+config)
+Applies settings from another
+AnalogSensorConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+AnalogSensorConfig
+to copy settings from
+Returns:
+The updated
+AnalogSensorConfig
+for method chaining
+inverted
+public
+AnalogSensorConfig
+inverted
+(boolean inverted)
+Set the phase of the analog sensor so that it is in phase with the motor itself.
+Parameters:
+inverted
+- The phase of the analog sensor
+Returns:
+The modified
+AnalogSensorConfig
+object for method chaining
+positionConversionFactor
+public
+AnalogSensorConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the analog sensor. Position is returned in native
+ units of volts and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+AnalogSensorConfig
+object for method chaining
+velocityConversionFactor
+public
+AnalogSensorConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the analog sensor. Velocity is returned in native
+ units of volts per second and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+AnalogSensorConfig
+object for method chaining

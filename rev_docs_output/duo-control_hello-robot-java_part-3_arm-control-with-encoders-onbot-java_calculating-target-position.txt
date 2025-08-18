@@ -1,0 +1,332 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+What's Needed for the Conversion
+Ticks per Revolution
+Total Gear Reduction
+Adding Arm Encoders to the Program
+Establishing Initialization Variables
+Adding Calculations to the Variables
+Adjusting our If/Else Statement
+Was this helpful?
+Export as PDF
+Now that we have an estimate for our target position let's see if we can refine it to be more precise using similar methods to what we covered during the
+Drivetrain Encoders section
+.
+What's Needed for the Conversion
+Ticks per Revolution
+Recall, that ticks per revolution of the encoder shaft is different than the ticks per revolution of the shaft that is controlling a mechanism, such as what we determined on our
+Drivetrain
+.
+For more information on the effect of motion transmission across a mechanism check out the
+Compound Gearing
+section.
+The amount of ticks per revolution of the encoder shaft is dependent on the motor and encoder. Manufacturers of motors with built-in encoders will have information on the amount of ticks per revolution.
+Visit the manufacturers website for your motor or encoders for more information on encoder counts. For HD Hex Motors or Core Hex Motors visit the
+Motor
+documentation.
+In the
+Core Hex Motor specifications
+there are two different Encoder Counts per Revolution numbers:
+At the motor - 4 counts/revolution
+At the output - 288 counts/revolution
+At the motor is the number of encoder counts on the shaft that encoder is on. This number is equivalent to the 28 counts per revolution we used for the HD Hex Motor.
+The 288 counts "at the output" accounts for the change in resolution after the motion is transmitted from the motor to the built in 72:1 gearbox.
+Lets use the
+288 as ticks per revolution
+so that we do not have to account for the gearbox in our total gear reduction variable.
+Total Gear Reduction
+Since we built the the gear reduction from the motor gearbox into the ticks per revolution the main focus of this section is calculating the gear reduction of the arm joint.
+The motor shaft drives a 45 tooth gear that transmits motion to a 125 tooth gear. The total gear ratio is 125T:45T. To calculate the gear reduction for this gear train, we can simply divide 125 by 45.
+125
+45
+=
+2.777778
+\frac{125}{45} = 2.777778
+45
+125
+​
+=
+2.777778
+To summarize, for the Class Bot V2 the following information is true:
+Ticks per revolution
+288 ticks
+Total gear reduction
+2.777778
+Adding Arm Encoders to the Program
+Establishing Initialization Variables
+Now that we have this information let's create two constant variables:
+COUNTS_PER_MOTOR_REV
+GEAR_REDUCTION
+Add the
+COUNTS_PER_MOTOR_REV
+and
+GEAR_REDUCTION
+variables to the OpMode beneath where the hardware variables are created.
+Copy
+public class HelloRobot_ArmEncoder extends LinearOpMode {
+private DcMotor arm;
+static final double     COUNTS_PER_MOTOR_REV    = 288;
+static final double     GEAR_REDUCTION    = 2.7778;
+Now that these two variables have been defined, we can use them to calculate two other variables: the amount of encoder counts per rotation of the 125T driven gear and the number of counts per degree moved.
+Adding Calculations to the Variables
+Calculating counts per revolution of the 125T gear (or
+COUNTS_PER_GEAR_REV
+)is the same formula used in
+Converting Encoder Ticks
+for our
+COUNTS_PER_WHEEL_REV
+variable.
+So to get this variable we can multiply
+COUNTS_PER_MOTOR_REV
+by
+GEAR_REDUCTION
+.
+Copy
+static final double  COUNTS_PER_GEAR_REV    = COUNTS_PER_MOTOR_REV * GEAR_REDUCTION;
+To calculate the number of counts per degree or moved or
+COUNTS_PER_DEGREE
+divide the
+COUNTS_PER_GEAR_REV
+variable by 360.
+Copy
+static final double     COUNTS_PER_DEGREE    = COUNTS_PER_GEAR_REV/360;
+Add both these variables to the OpMode:
+Copy
+public class HelloRobot_ArmEncoder extends LinearOpMode {
+private DcMotor arm;
+static final double     COUNTS_PER_MOTOR_REV    = 288;
+static final double     GEAR_REDUCTION    = 2.7778;
+static final double     COUNTS_PER_GEAR_REV    = COUNTS_PER_MOTOR_REV * GEAR_REDUCTION;
+static final double     COUNTS_PER_DEGREE    = COUNTS_PER_GEAR_REV/360;
+Adjusting our If/Else Statement
+We need to create one more non-constant variable that will act as our position. This will be called
+armPosition
+.
+Copy
+public void runOpMode() {
+arm = hardwareMap.get(DcMotor.class, "arm");
+int armPosition;
+waitForStart();
+Add this variable to the
+if(gamepad1.dpad_up)
+section of the
+Target Position if/else
+statement.
+To get to the 90 degree position, the arm needs to move roughly 45 degrees, therefore set arm position equal to
+COUNTS_PER_DEGREE
+times 45.
+Copy
+while (opModeIsActive()) {
+if(gamepad1.dpad_up){
+armPosition = (int)(COUNTS_PER_DEGREE * 45);
+arm.setTargetPosition(83);
+arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+arm.setPower(0.4);
+}
+Change the target position to
+armPosition
+.
+Copy
+if(gamepad1.dpad_up){
+armPosition = (int)(COUNTS_PER_DEGREE * 45);
+arm.setTargetPosition(armPosition);
+arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+arm.setPower(0.4);
+}
+else if (gamepad1.dpad_down){
+arm.setTargetPosition(0);
+arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+arm.setPower(0.4);
+}
+We could change what
+armPosition
+is equal to in the
+gamepad1.dpad_down
+portion of the
+if/else if
+statement such as:
+Copy
+else if (gamepad1.dpad_down){
+armPosition = (int)(COUNTS_PER_DEGREE * 0);
+arm.setTargetPosition(armPosition);
+arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+arm.setPower(0.4);
+}
+In this case we would consistently redefine
+armPosition
+to match the needs of whatever positions we want to create.
+Since our only two positions at the moment are our starting position and our 90 degree position it isn't necessary. However, it is a good practice to create a variable in situations like this. If we want to add another position later, we can easily edit the variable to fit our needs.
+Previous
+Estimating the Position of the Arm
+Next
+Using Limits to Control Range of Motion
+Last updated
+8 months ago
+Was this helpful?

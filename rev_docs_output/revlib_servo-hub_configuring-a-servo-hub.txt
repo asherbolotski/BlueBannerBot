@@ -1,0 +1,213 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Configuration Classes
+API Documentation
+Persisting Parameters
+Use Cases
+Was this helpful?
+Export as PDF
+This page will discuss information about configuration concepts specific to the Servo Hub. For more information on general configuration in REVLib, see
+this page
+.
+Configuration Classes
+Though Servo Hub has its own configuration class,
+ServoHubConfig
+, the majority of configuration occurs in the
+ServoChannelConfig
+class.
+API Documentation
+For more information about what configurations and sub-configuration classes the Servo Hub provides, refer to the links below:
+ServoHubConfig
+Java
+C++
+Persisting Parameters
+Configuring a Servo Hub automatically persists the configuration settings between power cycles when calling the
+configure()
+method.
+Persisting parameters involves saving them to the Servo Hub's memory, which is time-intensive and blocks communication with the device.
+Use Cases
+It is recommended to update the the majority of device parameters during the initial configuration of the device at the start of your program to ensure that the controller retains its configuration in the event of a power cycle during operation e.g. due to a breaker trip or a brownout.
+It is generally recommended to not make updates to the configuration mid-operation to avoid blocking the program and affecting the performance of the robot.
+Below is an example of either case:
+Java
+C++
+Copy
+Robot()
+{
+ServoHubConfig
+config
+=
+new
+ServoHubConfig()
+;
+config
+.
+channel0
+.
+pulseRange
+(
+500
+,
+1500
+,
+2500
+)
+.
+disableBehavior
+(
+ServoChannelConfig
+.
+BehaviorWhenDisabled
+.
+kSupplyPower
+);
+// Persist parameters and reset any not explicitly set above to
+// their defaults.
+servoHub
+.
+configure
+(config
+,
+ServoHub
+.
+ResetMode
+.
+kResetSafeParameters
+);
+}
+void
+reduceRange()
+{
+ServoHubConfig
+config
+=
+new
+ServoHubConfig()
+;
+config
+.
+channel0
+.
+pulseRange
+(
+500
+,
+1500
+,
+2500
+)
+// Don't reset the parameters the at are not explicitly set above
+servoHub
+.
+configure
+(config
+,
+ServoHub
+.
+ResetMode
+.
+kNoResetSafeParameters
+);
+}
+Copy
+using
+namespace
+rev
+::
+servohub;
+Robot() {
+ServoHubConfig config;
+config
+.
+channel0
+.
+pulseRange
+(
+500
+,
+1500
+,
+2500
+)
+.
+disableBehavior
+(ServoChannelConfig
+::
+BehaviorWhenDisabled
+::
+kSupplyPower);
+// Persist parameters and reset any not explicitly set above to
+// their defaults.
+servoHub
+.
+configure
+(config
+,
+ServoHub
+::
+ResetMode
+::
+kResetSafeParameters);
+}
+void
+reduceRange
+() {
+ServoHubConfig config;
+config
+.
+channel0
+.
+pulseRange
+(
+500
+,
+1500
+,
+2500
+)
+// Don't reset the parameters the at are not explicitly set above
+servoHub
+.
+configure
+(config
+,
+ResetMode
+.
+kNoResetSafeParameters);
+}
+Previous
+Simulating Additional Sensors and Auxiliary Devices
+Next
+Commanding Servos
+Last updated
+7 months ago
+Was this helpful?

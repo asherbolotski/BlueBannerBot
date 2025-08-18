@@ -1,0 +1,100 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.sim
+Class MovingAverageFilterSim
+java.lang.Object
+com.revrobotics.sim.MovingAverageFilterSim
+public class
+MovingAverageFilterSim
+extends
+Object
+Simulate a moving average filter where samples are normally at some fixed rate that is different
+ than the rate provided by the simulation.
+A sum of sample deltas is stored until the cumulative sample delta is greater than or equal to
+ the sample rate. Two cases are possible:
+1) The cumulative delta between samples is *greater or equal* to the sample rate. In this
+ case, take a simple linear interpolation between the sample before and after the sample time, and
+ add this new sample to the moving average.
+2) The cumulative delta between the samples is *less* than the sample rate. In this case,
+ store the last value, and accumulate the delta time.
+Constructor Summary
+Constructors
+Constructor
+Description
+MovingAverageFilterSim
+(int taps,
+ double sampleRate)
+Create a MovingAverageFilterSim object.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+get
+()
+Get the current value of the filter
+void
+put
+(double value,
+ double delta)
+Put a new measurement into the moving average filter.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+MovingAverageFilterSim
+public
+MovingAverageFilterSim
+(int taps,
+ double sampleRate)
+Create a MovingAverageFilterSim object.
+Parameters:
+taps
+- number of samples in moving average filter
+sampleRate
+- sample rate of moving average filter to simulate
+Method Details
+put
+public
+void
+put
+(double value,
+ double delta)
+Put a new measurement into the moving average filter. This will add any number of samples (or
+ none) depending on the time delta provided.
+Parameters:
+value
+- new measurement value
+delta
+- time delta between last measurement value
+get
+public
+double
+get
+()
+Get the current value of the filter
+Returns:
+filtered value

@@ -1,0 +1,125 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+Dynamometer Characterization
+Parts of a Dynamometer
+Testing Process
+Data Analysis
+Calibration
+Current Limiting
+Data Characterization
+REV's in-house Dynamometer
+Was this helpful?
+Export as PDF
+Dynamometer Characterization
+The data for Motor Curves provided in our documentation is generated with an inertia-type dynamometer, or dyno, and then further analyzed by our engineers.
+Parts of a Dynamometer
+The dynamometer REV Robotics uses consists of the following major components mounted directly to the main shaft:
+Flywheel
+- A weighted flywheel supported by ball bearings
+Encoder
+- An encoder that collects data during the test
+Motor Mount
+- An adjustable system where the motor is equipped with a coupling so its output lines up with the rotational axis of the dynamometer
+Motor and ESC
+- The motor and ESC (Electronic Speed Controller or Motor Controller) are always tested as a unit. Some examples of this are the SPARK MAX and NEO or the Falcon 500 Motor and Talon FX ESC
+Power Supply
+- A high current power supply system capable of supplying 12V at 200A with minimal voltage sag while handling voltage spikes and braking conditions.
+Testing Process
+A test starts at rest and consists of applying a constant throttle setting to the motor and motor controller. Generally, this value is 100%, but any value can be used. The motor is allowed to accelerate the flywheel while data is recorded with timestamps.
+The data recorded during testing includes:
+The speed and position of the flywheel encoder
+The DC current at the input of the ESC
+The bus voltage at the input of the ESC
+Any data provided by the ESC, this may vary from controller to controller
+This is generally collected over CAN
+Data Analysis
+Using the speed and position data, the acceleration of the flywheel can be calculated throughout the timespan of the test. The moment of inertia of the rotating portion of the dyno is known to a high degree of precision. This includes the flywheel, shaft, hub, motor rotor, couplings, etc. Using the acceleration and moment of inertia, the torque produced by the motor can be calculated.
+Calibration
+At thousands of RPM, the flywheel and shaft system can generate enough drag to affect the results of the test significantly. To determine the drag in the system from air movement and viscous friction, the dyno is spun up to a very high speed and allowed to freely rotate until it comes to a stop. During this process, speed and position data are recorded and then used to calculate the drag torque. The drag torque is added to the motor torque calculated from each acceleration measurement during a motor test so that our results are calibrated for our specific dyno setup.
+Current Limiting
+At low speeds, a motor will typically draw more current than the set current limit on its ESC. Current limiting may affect the duty cycle and commutating of the motor, causing the data to deviate from “raw” motor performance. Current limiting processes within an ESC's software can also cause excess noise in current, voltage, and acceleration data collected by the dyno. For these reasons, the low-speed section where current limiting is in effect is usually removed from the data set before characterizing the motor.
+Data Characterization
+Characterization is accomplished by correlating torque and current with velocity. These relationships are usually extremely linear and a best fit can be used to approximate and extrapolate the motor’s performance outside of the test region. Additional processing can be applied to compensate for voltage drop in the power supply lines at high currents.
+REV's in-house Dynamometer
+REV Robotics has designed a dynamometer that we are working to make open source and available to the public. In creating this dynamometer, we have focused on using as many off-the-shelf components as possible in an effort to make this design easy for members of the community to build.
+Below are some photos of our progress!
+Previous
+Pinion Pressing Guide
+Next
+Motor Comparison
+Last updated
+1 year ago
+Was this helpful?

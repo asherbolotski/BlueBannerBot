@@ -1,0 +1,829 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class FeedForwardConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.FeedForwardConfig
+public class
+FeedForwardConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+FeedForwardConfig
+()
+Create a new object to configure Feed Forward.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+FeedForwardConfig
+apply
+(
+FeedForwardConfig
+config)
+Applies settings from another
+FeedForwardConfig
+to this one.
+FeedForwardConfig
+kA
+(double kA)
+Set the kA Acceleration Gain of the controller.
+FeedForwardConfig
+kA
+(double kA,
+ClosedLoopSlot
+slot)
+Set the kA Acceleration Gain of the controller for a specific closed loop slot.
+FeedForwardConfig
+kCos
+(double kCos)
+Set the kCos Cosine Gravity Gain of the controller.
+FeedForwardConfig
+kCos
+(double kCos,
+ClosedLoopSlot
+slot)
+Set the kCos Cosine Gravity Gain of the controller for a specific closed loop slot.
+FeedForwardConfig
+kCosRatio
+(double kCosRatio)
+Set the kCosRatio of the controller.
+FeedForwardConfig
+kCosRatio
+(double kCosRatio,
+ClosedLoopSlot
+slot)
+Set the kCosRatio of the controller for a specific closed loop slot.
+FeedForwardConfig
+kG
+(double kG)
+Set the kG Static Gravity Gain of the controller.
+FeedForwardConfig
+kG
+(double kG,
+ClosedLoopSlot
+slot)
+Set the kG Static Gravity Gain of the controller for a specific closed loop slot.
+FeedForwardConfig
+kS
+(double kS)
+Set the kS Static Gain of the controller.
+FeedForwardConfig
+kS
+(double kS,
+ClosedLoopSlot
+slot)
+Set the kS Static Gain of the controller for a specific closed loop slot.
+FeedForwardConfig
+kV
+(double kV)
+Set the kV Velocity Gain of the controller.
+FeedForwardConfig
+kV
+(double kV,
+ClosedLoopSlot
+slot)
+Set the kV Velocity Gain of the controller for a specific closed loop slot.
+FeedForwardConfig
+scr
+(double kS,
+ double kCos,
+ double kCosRatio)
+Set the kS, kCos, and kCosRatio gains for slot 0 in one call.
+FeedForwardConfig
+scr
+(double kS,
+ double kCos,
+ double kCosRatio,
+ClosedLoopSlot
+slot)
+Set the kS, kCos, and kCosRatio gains for the provided slot in one call.
+FeedForwardConfig
+sg
+(double kS,
+ double kG)
+Set the kS and kG gains for slot 0 in one call.
+FeedForwardConfig
+sg
+(double kS,
+ double kG,
+ClosedLoopSlot
+slot)
+Set the kS and kG gains for the provided slot in one call.
+FeedForwardConfig
+sv
+(double kS,
+ double kV)
+Set the kS and kV gains for slot 0 in one call.
+FeedForwardConfig
+sv
+(double kS,
+ double kV,
+ClosedLoopSlot
+slot)
+Set the kS and kV gains for the provided slot in one call.
+FeedForwardConfig
+sva
+(double kS,
+ double kV,
+ double kA)
+Set the kS, kV, and kA gains for slot 0 in one call.
+FeedForwardConfig
+sva
+(double kS,
+ double kV,
+ double kA,
+ClosedLoopSlot
+slot)
+Set the kS, kV, and kA gains for the provided slot in one call.
+FeedForwardConfig
+svacr
+(double kS,
+ double kV,
+ double kA,
+ double kCos,
+ double kCosRatio)
+Set the kS, kV, kA, kCos, and kCosRatio gains for slot 0 in one call.
+FeedForwardConfig
+svacr
+(double kS,
+ double kV,
+ double kA,
+ double kCos,
+ double kCosRatio,
+ClosedLoopSlot
+slot)
+Set the kS, kV, kA, kCos, and kCosRatio gains for the provided slot in one call.
+FeedForwardConfig
+svag
+(double kS,
+ double kV,
+ double kA,
+ double kG)
+Set the kS, kV, kA, and kG gains for slot 0 in one call.
+FeedForwardConfig
+svag
+(double kS,
+ double kV,
+ double kA,
+ double kG,
+ClosedLoopSlot
+slot)
+Set the kS, kV, kA, and kG gains for the provided slot in one call.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+FeedForwardConfig
+public
+FeedForwardConfig
+()
+Create a new object to configure Feed Forward.
+Method Details
+apply
+public
+FeedForwardConfig
+apply
+(
+FeedForwardConfig
+config)
+Applies settings from another
+FeedForwardConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+FeedForwardConfig
+to copy settings from
+Returns:
+The updated
+FeedForwardConfig
+for method chaining
+kS
+public
+FeedForwardConfig
+kS
+(double kS)
+Set the kS Static Gain of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+kS(double, ClosedLoopSlot)
+.
+Parameters:
+kS
+- The kS gain in Volts
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kV
+public
+FeedForwardConfig
+kV
+(double kV)
+Set the kV Velocity Gain of the controller.
+This is not applied in Position control mode.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+kV(double, ClosedLoopSlot)
+.
+Parameters:
+kV
+- The kV gain in Volts per velocity
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kA
+public
+FeedForwardConfig
+kA
+(double kA)
+Set the kA Acceleration Gain of the controller.
+This is only applied in MAXMotion control modes
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+kA(double, ClosedLoopSlot)
+.
+Parameters:
+kA
+- The kA gain in Volts per velocity per second
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kG
+public
+FeedForwardConfig
+kG
+(double kG)
+Set the kG Static Gravity Gain of the controller.
+This is statically applied, for an elevator or linear mechanism. For an arm or rotary
+ mechanism, see
+kCos(double, ClosedLoopSlot)
+. Set this to 0 if kCos is
+ being used.
+This is only applied in Position and MAXMotion Position control modes
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+kG(double, ClosedLoopSlot)
+.
+Parameters:
+kG
+- The kG gain in Volts
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kCos
+public
+FeedForwardConfig
+kCos
+(double kCos)
+Set the kCos Cosine Gravity Gain of the controller.
+This is multiplied by the cosine of the absolute position of the mechanism (See
+kCosRatio(double kCosRatio)
+for info on configuring this) for an arm
+ mechanism. Set it to 0 if kG is being used.
+This is only applied in Position and MAXMotion Position control modes
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+kCos(double, ClosedLoopSlot)
+.
+Parameters:
+kCos
+- The kCos gain in Volts
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kCosRatio
+public
+FeedForwardConfig
+kCosRatio
+(double kCosRatio)
+Set the kCosRatio of the controller.
+This sets the ratio that is used to calculate the absolute position of your arm mechanism
+ for use with kCos. This is applied after the conversion factor and should convert from those
+ units to absolute rotations of your mechanism. Ensure your selected encoder is zeroed such that
+ 0 = horizontal.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+kCosRatio(double, ClosedLoopSlot)
+.
+Parameters:
+kCosRatio
+- The kCosRatio
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kS
+public
+FeedForwardConfig
+kS
+(double kS,
+ClosedLoopSlot
+slot)
+Set the kS Static Gain of the controller for a specific closed loop slot.
+Parameters:
+kS
+- The kS gain in Volts
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kV
+public
+FeedForwardConfig
+kV
+(double kV,
+ClosedLoopSlot
+slot)
+Set the kV Velocity Gain of the controller for a specific closed loop slot.
+This is not applied in Position control mode.
+Parameters:
+kV
+- The kV gain in Volts per velocity
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kA
+public
+FeedForwardConfig
+kA
+(double kA,
+ClosedLoopSlot
+slot)
+Set the kA Acceleration Gain of the controller for a specific closed loop slot.
+This is only applied in MAXMotion control modes
+Parameters:
+kA
+- The kA gain in Volts per velocity per second
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kG
+public
+FeedForwardConfig
+kG
+(double kG,
+ClosedLoopSlot
+slot)
+Set the kG Static Gravity Gain of the controller for a specific closed loop slot.
+This is statically applied, for an elevator or linear mechanism. For an arm or rotary
+ mechanism, see
+kCos(double, ClosedLoopSlot)
+. Set this to 0 if kCos is
+ being used.
+This is only applied in Position and MAXMotion Position control modes
+Parameters:
+kG
+- The kG gain in Volts
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kCos
+public
+FeedForwardConfig
+kCos
+(double kCos,
+ClosedLoopSlot
+slot)
+Set the kCos Cosine Gravity Gain of the controller for a specific closed loop slot.
+This is multiplied by the cosine of the absolute position of the mechanism (See
+kCosRatio(double kCosRatio, ClosedLoopSlot slot)
+for info on configuring
+ this) for an arm mechanism. Set it to 0 if kG is being used.
+This is only applied in Position and MAXMotion Position control modes
+Parameters:
+kCos
+- The kCos gain in Volts
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+kCosRatio
+public
+FeedForwardConfig
+kCosRatio
+(double kCosRatio,
+ClosedLoopSlot
+slot)
+Set the kCosRatio of the controller for a specific closed loop slot.
+This sets the ratio that is used to calculate the absolute position of your arm mechanism
+ for use with kCos. This is applied after the conversion factor and should convert from those
+ units to absolute rotations of your mechanism. Ensure your selected encoder is zeroed such that
+ 0 = horizontal.
+Parameters:
+kCosRatio
+- The kCosRatio
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+sv
+public
+FeedForwardConfig
+sv
+(double kS,
+ double kV)
+Set the kS and kV gains for slot 0 in one call.
+For more information on the kS and kV gains, see
+kS(double)
+and
+kV(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+sva
+public
+FeedForwardConfig
+sva
+(double kS,
+ double kV,
+ double kA)
+Set the kS, kV, and kA gains for slot 0 in one call.
+For more information on the kS, kV, and kA gains, see
+kS(double)
+,
+kV(double)
+, and
+kA(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+kA
+- The kA gain in Volts per velocity per second
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+svag
+public
+FeedForwardConfig
+svag
+(double kS,
+ double kV,
+ double kA,
+ double kG)
+Set the kS, kV, kA, and kG gains for slot 0 in one call.
+For more information on the kS, kV, kA, and kG gains, see
+kS(double)
+,
+kV(double)
+,
+kA(double)
+, and
+kG(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+kA
+- The kA gain in Volts per velocity per second
+kG
+- The kG gain in Volts
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+svacr
+public
+FeedForwardConfig
+svacr
+(double kS,
+ double kV,
+ double kA,
+ double kCos,
+ double kCosRatio)
+Set the kS, kV, kA, kCos, and kCosRatio gains for slot 0 in one call.
+For more information on the kS, kV, kA, kCos, and kCosRatio gains, see
+kS(double)
+,
+kV(double)
+,
+kA(double)
+,
+kCos(double)
+, and
+kCosRatio(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+kA
+- The kA gain in Volts per velocity per second
+kCos
+- The kCos gain in Volts
+kCosRatio
+- The ratio used to calculate the absolute position of your arm mechanism for
+     use with kCos
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+sg
+public
+FeedForwardConfig
+sg
+(double kS,
+ double kG)
+Set the kS and kG gains for slot 0 in one call.
+For more information on the kS and kG gains, see
+kS(double)
+and
+kG(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kG
+- The kG gain in Volts
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+scr
+public
+FeedForwardConfig
+scr
+(double kS,
+ double kCos,
+ double kCosRatio)
+Set the kS, kCos, and kCosRatio gains for slot 0 in one call.
+For more information on the kS, kCos, and kCosRatio gains, see
+kS(double)
+,
+kCos(double)
+, and
+kCosRatio(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kCos
+- The kCos gain in Volts
+kCosRatio
+- The ratio used to calculate the absolute position of your arm mechanism for
+     use with kCos
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+sv
+public
+FeedForwardConfig
+sv
+(double kS,
+ double kV,
+ClosedLoopSlot
+slot)
+Set the kS and kV gains for the provided slot in one call.
+For more information on the kS and kV gains, see
+kS(double)
+and
+kV(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+sva
+public
+FeedForwardConfig
+sva
+(double kS,
+ double kV,
+ double kA,
+ClosedLoopSlot
+slot)
+Set the kS, kV, and kA gains for the provided slot in one call.
+For more information on the kS, kV, and kA gains, see
+kS(double)
+,
+kV(double)
+, and
+kA(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+kA
+- The kA gain in Volts per velocity per second
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+svag
+public
+FeedForwardConfig
+svag
+(double kS,
+ double kV,
+ double kA,
+ double kG,
+ClosedLoopSlot
+slot)
+Set the kS, kV, kA, and kG gains for the provided slot in one call.
+For more information on the kS, kV, kA, and kG gains, see
+kS(double)
+,
+kV(double)
+,
+kA(double)
+, and
+kG(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+kA
+- The kA gain in Volts per velocity per second
+kG
+- The kG gain in Volts
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+svacr
+public
+FeedForwardConfig
+svacr
+(double kS,
+ double kV,
+ double kA,
+ double kCos,
+ double kCosRatio,
+ClosedLoopSlot
+slot)
+Set the kS, kV, kA, kCos, and kCosRatio gains for the provided slot in one call.
+For more information on the kS, kV, kA, kCos, and kCosRatio gains, see
+kS(double)
+,
+kV(double)
+,
+kA(double)
+,
+kCos(double)
+, and
+kCosRatio(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kV
+- The kV gain in Volts per velocity
+kA
+- The kA gain in Volts per velocity per second
+kCos
+- The kCos gain in Volts
+kCosRatio
+- The ratio used to calculate the absolute position of your arm mechanism for
+     use with kCos
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+sg
+public
+FeedForwardConfig
+sg
+(double kS,
+ double kG,
+ClosedLoopSlot
+slot)
+Set the kS and kG gains for the provided slot in one call.
+For more information on the kS and kG gains, see
+kS(double)
+and
+kG(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kG
+- The kG gain in Volts
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining
+scr
+public
+FeedForwardConfig
+scr
+(double kS,
+ double kCos,
+ double kCosRatio,
+ClosedLoopSlot
+slot)
+Set the kS, kCos, and kCosRatio gains for the provided slot in one call.
+For more information on the kS, kCos, and kCosRatio gains, see
+kS(double)
+,
+kCos(double)
+, and
+kCosRatio(double)
+.
+Parameters:
+kS
+- The kS gain in Volts
+kCos
+- The kCos gain in Volts
+kCosRatio
+- The ratio used to calculate the absolute position of your arm mechanism for
+     use with kCos
+Returns:
+The modified
+FeedForwardConfig
+object for method chaining

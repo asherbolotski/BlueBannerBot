@@ -1,0 +1,292 @@
+REVLib - C++
+Classes
+|
+Public Types
+|
+Public Member Functions
+|
+Protected Member Functions
+|
+Protected Attributes
+|
+Friends
+|
+List of all members
+rev::servohub::ServoHubLowLevel Class Reference
+#include <
+ServoHubLowLevel.h
+>
+Inherited by
+rev::servohub::ServoHub
+.
+Classes
+struct
+FirmwareVersion
+struct
+PeriodicStatus0
+struct
+PeriodicStatus1
+struct
+PeriodicStatus2
+struct
+PeriodicStatus3
+struct
+PeriodicStatus4
+Public Types
+enum class
+CommunicationMode
+{
+kNone
+= 0
+,
+kCAN
+= 1
+,
+kRS_485
+= 2
+ }
+Public Member Functions
+virtual
+~ServoHubLowLevel
+()
+int
+GetDeviceId
+() const
+FirmwareVersion
+GetFirmwareVersion
+() const
+std::string
+GetFirmwareVersionString
+() const
+void
+SetPeriodicFrameTimeout
+(int timeout_ms)
+REVLibError
+SetCANTimeout
+(int timeout_ms)
+void
+SetCANMaxRetries
+(int numRetries)
+void
+SetControlFramePeriodMs
+(int period_ms)
+int
+GetControlFramePeriodMs
+() const
+PeriodicStatus0
+GetPeriodicStatus0
+() const
+PeriodicStatus1
+GetPeriodicStatus1
+() const
+PeriodicStatus2
+GetPeriodicStatus2
+() const
+PeriodicStatus3
+GetPeriodicStatus3
+() const
+PeriodicStatus4
+GetPeriodicStatus4
+() const
+void
+CreateSimFaultManager
+()
+Protected Member Functions
+ServoHubLowLevel
+(int deviceID)
+Protected Attributes
+void *
+m_servoHubHandle
+{nullptr}
+Friends
+class
+ServoHubSimFaultManager
+Member Enumeration Documentation
+◆
+CommunicationMode
+enum class
+rev::servohub::ServoHubLowLevel::CommunicationMode
+strong
+Enumerator
+kNone
+kCAN
+kRS_485
+Constructor & Destructor Documentation
+◆
+~ServoHubLowLevel()
+ServoHubLowLevel::~ServoHubLowLevel
+(
+)
+virtual
+Closes the
+ServoHub
+◆
+ServoHubLowLevel()
+ServoHubLowLevel::ServoHubLowLevel
+(
+int
+deviceID
+)
+explicit
+protected
+Member Function Documentation
+◆
+GetDeviceId()
+int ServoHubLowLevel::GetDeviceId
+(
+)
+const
+Get the configured Device ID of the
+ServoHub
+.
+Returns
+int device ID
+◆
+GetFirmwareVersion()
+ServoHubLowLevel::FirmwareVersion
+ServoHubLowLevel::GetFirmwareVersion
+(
+)
+const
+Get the firmware version of the
+ServoHub
+.
+Returns
+Firmware version represented in the struct
+◆
+GetFirmwareVersionString()
+std::string ServoHubLowLevel::GetFirmwareVersionString
+(
+)
+const
+Get the firmware version of the
+ServoHub
+as a string.
+Returns
+std::string Human readable firmware version string
+◆
+SetPeriodicFrameTimeout()
+void ServoHubLowLevel::SetPeriodicFrameTimeout
+(
+int
+timeout_ms
+)
+Set the amount of time to wait for a periodic status frame before returning a timeout error. This timeout will apply to all periodic status frames for the
+ServoHub
+servo controller.
+To prevent invalid timeout errors, the minimum timeout for a given periodic status is 2.1 times its period. To use the minimum timeout for all status frames, set timeout_ms to 0.
+The default timeout is 500ms.
+Parameters
+timeout_ms
+The timeout in milliseconds
+◆
+SetCANTimeout()
+REVLibError
+ServoHubLowLevel::SetCANTimeout
+(
+int
+timeout_ms
+)
+Sets the timeout duration for waiting for CAN responses from the device.
+Parameters
+timeout_ms
+The timeout in milliseconds.
+Returns
+REVLibError::kOk
+if successful
+◆
+SetCANMaxRetries()
+void ServoHubLowLevel::SetCANMaxRetries
+(
+int
+numRetries
+)
+Set the maximum number of times to retry an RTR CAN frame. This applies to calls such as GetFirmwareVersion where a request is made to the
+ServoHub
+and a response is expected. Anytime sending the request or receiving the response fails, it will retry the request a number of times, no more than the value set by this method. If an attempt succeeds, it will immediately return. The minimum number of retries is 0, where only a single attempt will be made and will return regardless of success or failure.
+The default maximum is 5 retries.
+Parameters
+numRetries
+The maximum number of retries
+◆
+SetControlFramePeriodMs()
+void ServoHubLowLevel::SetControlFramePeriodMs
+(
+int
+period_ms
+)
+Set the control frame send period for the native CAN Send thread.
+Parameters
+period_ms
+The send period in milliseconds between 1ms and 100ms or set to 0 to disable periodic sends.
+◆
+GetControlFramePeriodMs()
+int ServoHubLowLevel::GetControlFramePeriodMs
+(
+)
+const
+Set the control frame send period for the native CAN Send thread.
+Returns
+int The send period in milliseconds.
+◆
+GetPeriodicStatus0()
+ServoHubLowLevel::PeriodicStatus0
+ServoHubLowLevel::GetPeriodicStatus0
+(
+)
+const
+◆
+GetPeriodicStatus1()
+ServoHubLowLevel::PeriodicStatus1
+ServoHubLowLevel::GetPeriodicStatus1
+(
+)
+const
+◆
+GetPeriodicStatus2()
+ServoHubLowLevel::PeriodicStatus2
+ServoHubLowLevel::GetPeriodicStatus2
+(
+)
+const
+◆
+GetPeriodicStatus3()
+ServoHubLowLevel::PeriodicStatus3
+ServoHubLowLevel::GetPeriodicStatus3
+(
+)
+const
+◆
+GetPeriodicStatus4()
+ServoHubLowLevel::PeriodicStatus4
+ServoHubLowLevel::GetPeriodicStatus4
+(
+)
+const
+◆
+CreateSimFaultManager()
+void ServoHubLowLevel::CreateSimFaultManager
+(
+)
+Create the sim gui Fault Manager for this Servo Hub device
+Friends And Related Function Documentation
+◆
+ServoHubSimFaultManager
+friend class
+ServoHubSimFaultManager
+friend
+Member Data Documentation
+◆
+m_servoHubHandle
+void* rev::servohub::ServoHubLowLevel::m_servoHubHandle {nullptr}
+protected
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/
+ServoHubLowLevel.h
+src/main/native/cpp/
+ServoHubLowLevel.cpp
+rev
+servohub
+ServoHubLowLevel
+Generated by
+1.9.2

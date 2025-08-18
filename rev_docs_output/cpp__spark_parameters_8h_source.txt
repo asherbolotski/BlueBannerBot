@@ -1,0 +1,1672 @@
+REVLib - C++
+SparkParameters.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+/*
+30
+* This file is auto-generated. Do NOT modify it directly.
+31
+* See https://github.com/REVrobotics/SparkParameters
+32
+*/
+33
+34
+#pragma once
+35
+36
+#include <stdint.h>
+37
+38
+namespace
+rev::spark
+{
+39
+40
+enum
+SparkParameter
+: uint8_t {
+41
+kCANID
+= 0,
+// uint32_t
+42
+kInputMode
+= 1,
+// uint32_t
+43
+kMotorType
+= 2,
+// uint32_t
+44
+kCommutationAdvance
+= 3,
+// float
+45
+kControlType
+= 5,
+// uint32_t
+46
+kIdleMode
+= 6,
+// uint32_t
+47
+kInputDeadband
+= 7,
+// float
+48
+kClosedLoopControlSensor
+= 9,
+// uint32_t
+49
+kPolePairs
+= 10,
+// uint32_t
+50
+kCurrentChop
+= 11,
+// float
+51
+kCurrentChopCycles
+= 12,
+// uint32_t
+52
+kP_0
+= 13,
+// float
+53
+kI_0
+= 14,
+// float
+54
+kD_0
+= 15,
+// float
+55
+kV_0
+= 16,
+// float
+56
+kIZone_0
+= 17,
+// float
+57
+kDFilter_0
+= 18,
+// float
+58
+kOutputMin_0
+= 19,
+// float
+59
+kOutputMax_0
+= 20,
+// float
+60
+kP_1
+= 21,
+// float
+61
+kI_1
+= 22,
+// float
+62
+kD_1
+= 23,
+// float
+63
+kV_1
+= 24,
+// float
+64
+kIZone_1
+= 25,
+// float
+65
+kDFilter_1
+= 26,
+// float
+66
+kOutputMin_1
+= 27,
+// float
+67
+kOutputMax_1
+= 28,
+// float
+68
+kP_2
+= 29,
+// float
+69
+kI_2
+= 30,
+// float
+70
+kD_2
+= 31,
+// float
+71
+kV_2
+= 32,
+// float
+72
+kIZone_2
+= 33,
+// float
+73
+kDFilter_2
+= 34,
+// float
+74
+kOutputMin_2
+= 35,
+// float
+75
+kOutputMax_2
+= 36,
+// float
+76
+kP_3
+= 37,
+// float
+77
+kI_3
+= 38,
+// float
+78
+kD_3
+= 39,
+// float
+79
+kV_3
+= 40,
+// float
+80
+kIZone_3
+= 41,
+// float
+81
+kDFilter_3
+= 42,
+// float
+82
+kOutputMin_3
+= 43,
+// float
+83
+kOutputMax_3
+= 44,
+// float
+84
+kInverted
+= 45,
+// bool
+85
+kLimitSwitchFwdPolarity
+= 50,
+// bool
+86
+kLimitSwitchRevPolarity
+= 51,
+// bool
+87
+kHardLimitFwdEn
+= 52,
+// uint32_t
+88
+kHardLimitRevEn
+= 53,
+// uint32_t
+89
+kSoftLimitFwdEn
+= 54,
+// bool
+90
+kSoftLimitRevEn
+= 55,
+// bool
+91
+kOpenLoopRampRate
+= 56,
+// float
+92
+kFollowerID
+= 57,
+// uint32_t
+93
+kFollowerConfig
+= 58,
+// uint32_t
+94
+kSmartCurrentStallLimit
+= 59,
+// uint32_t
+95
+kSmartCurrentFreeLimit
+= 60,
+// uint32_t
+96
+kSmartCurrentConfig
+= 61,
+// uint32_t
+97
+kSmartCurrentReserved
+= 62,
+// uint32_t
+98
+kMotorKv
+= 63,
+// uint32_t
+99
+kEncoderCountsPerRev
+= 69,
+// uint32_t
+100
+kEncoderAverageDepth
+= 70,
+// uint32_t
+101
+kEncoderSampleDelta
+= 71,
+// uint32_t
+102
+kEncoderInverted
+= 72,
+// bool
+103
+kVoltageCompensationMode
+= 74,
+// uint32_t
+104
+kCompensatedNominalVoltage
+= 75,
+// float
+105
+kSmartMotionMaxVelocity_0
+= 76,
+// float
+106
+kSmartMotionMaxAccel_0
+= 77,
+// float
+107
+kSmartMotionMinVelOutput_0
+= 78,
+// float
+108
+kSmartMotionAllowedClosedLoopError_0
+= 79,
+// float
+109
+kSmartMotionAccelStrategy_0
+= 80,
+// uint32_t
+110
+kSmartMotionMaxVelocity_1
+= 81,
+// float
+111
+kSmartMotionMaxAccel_1
+= 82,
+// float
+112
+kSmartMotionMinVelOutput_1
+= 83,
+// float
+113
+kSmartMotionAllowedClosedLoopError_1
+= 84,
+// float
+114
+kSmartMotionAccelStrategy_1
+= 85,
+// uint32_t
+115
+kSmartMotionMaxVelocity_2
+= 86,
+// float
+116
+kSmartMotionMaxAccel_2
+= 87,
+// float
+117
+kSmartMotionMinVelOutput_2
+= 88,
+// float
+118
+kSmartMotionAllowedClosedLoopError_2
+= 89,
+// float
+119
+kSmartMotionAccelStrategy_2
+= 90,
+// uint32_t
+120
+kSmartMotionMaxVelocity_3
+= 91,
+// float
+121
+kSmartMotionMaxAccel_3
+= 92,
+// float
+122
+kSmartMotionMinVelOutput_3
+= 93,
+// float
+123
+kSmartMotionAllowedClosedLoopError_3
+= 94,
+// float
+124
+kSmartMotionAccelStrategy_3
+= 95,
+// uint32_t
+125
+kIMaxAccum_0
+= 96,
+// float
+126
+kAllowedClosedLoopError_0
+= 97,
+// float
+127
+kIMaxAccum_1
+= 100,
+// float
+128
+kAllowedClosedLoopError_1
+= 101,
+// float
+129
+kIMaxAccum_2
+= 104,
+// float
+130
+kAllowedClosedLoopError_2
+= 105,
+// float
+131
+kIMaxAccum_3
+= 108,
+// float
+132
+kAllowedClosedLoopError_3
+= 109,
+// float
+133
+kPositionConversionFactor
+= 112,
+// float
+134
+kVelocityConversionFactor
+= 113,
+// float
+135
+kClosedLoopRampRate
+= 114,
+// float
+136
+kSoftLimitForward
+= 115,
+// float
+137
+kSoftLimitReverse
+= 116,
+// float
+138
+kAnalogPositionConversion
+= 119,
+// float
+139
+kAnalogVelocityConversion
+= 120,
+// float
+140
+kAnalogAverageDepth
+= 121,
+// uint32_t
+141
+kAnalogSensorMode
+= 122,
+// uint32_t
+142
+kAnalogInverted
+= 123,
+// bool
+143
+kAnalogSampleDelta
+= 124,
+// uint32_t
+144
+kCompatibilityPortConfig
+= 127,
+// uint32_t
+145
+kAltEncoderCountsPerRev
+= 128,
+// uint32_t
+146
+kAltEncoderAverageDepth
+= 129,
+// uint32_t
+147
+kAltEncoderSampleDelta
+= 130,
+// uint32_t
+148
+kAltEncoderInverted
+= 131,
+// bool
+149
+kAltEncoderPositionConversion
+= 132,
+// float
+150
+kAltEncoderVelocityConversion
+= 133,
+// float
+151
+kUvwSensorSampleRate
+= 136,
+// float
+152
+kUvwSensorAverageDepth
+= 137,
+// uint32_t
+153
+kNumParameters
+= 138,
+// uint32_t
+154
+kDutyCyclePositionFactor
+= 139,
+// float
+155
+kDutyCycleVelocityFactor
+= 140,
+// float
+156
+kDutyCycleInverted
+= 141,
+// bool
+157
+kDutyCycleSensorMode
+= 142,
+// uint32_t
+158
+kDutyCycleAverageDepth
+= 143,
+// uint32_t
+159
+kDutyCycleOffsetLegacy
+= 145,
+// float
+160
+kPositionPIDWrapEnable
+= 149,
+// bool
+161
+kPositionPIDMinInput
+= 150,
+// float
+162
+kPositionPIDMaxInput
+= 151,
+// float
+163
+kDutyCycleZeroCentered
+= 152,
+// bool
+164
+kDutyCycleSensorPrescaler
+= 153,
+// uint32_t
+165
+kDutyCycleOffset
+= 154,
+// float
+166
+kProductId
+= 155,
+// uint32_t
+167
+kDeviceMajorVersion
+= 156,
+// uint32_t
+168
+kDeviceMinorVersion
+= 157,
+// uint32_t
+169
+kStatus0Period
+= 158,
+// uint32_t
+170
+kStatus1Period
+= 159,
+// uint32_t
+171
+kStatus2Period
+= 160,
+// uint32_t
+172
+kStatus3Period
+= 161,
+// uint32_t
+173
+kStatus4Period
+= 162,
+// uint32_t
+174
+kStatus5Period
+= 163,
+// uint32_t
+175
+kStatus6Period
+= 164,
+// uint32_t
+176
+kStatus7Period
+= 165,
+// uint32_t
+177
+kMAXMotionCruiseVelocity_0
+= 166,
+// float
+178
+kMAXMotionMaxAccel_0
+= 167,
+// float
+179
+kMAXMotionMaxJerk_0
+= 168,
+// float
+180
+kMAXMotionAllowedProfileError_0
+= 169,
+// float
+181
+kMAXMotionPositionMode_0
+= 170,
+// uint32_t
+182
+kMAXMotionCruiseVelocity_1
+= 171,
+// float
+183
+kMAXMotionMaxAccel_1
+= 172,
+// float
+184
+kMAXMotionMaxJerk_1
+= 173,
+// float
+185
+kMAXMotionAllowedProfileError_1
+= 174,
+// float
+186
+kMAXMotionPositionMode_1
+= 175,
+// uint32_t
+187
+kMAXMotionCruiseVelocity_2
+= 176,
+// float
+188
+kMAXMotionMaxAccel_2
+= 177,
+// float
+189
+kMAXMotionMaxJerk_2
+= 178,
+// float
+190
+kMAXMotionAllowedProfileError_2
+= 179,
+// float
+191
+kMAXMotionPositionMode_2
+= 180,
+// uint32_t
+192
+kMAXMotionCruiseVelocity_3
+= 181,
+// float
+193
+kMAXMotionMaxAccel_3
+= 182,
+// float
+194
+kMAXMotionMaxJerk_3
+= 183,
+// float
+195
+kMAXMotionAllowedProfileError_3
+= 184,
+// float
+196
+kMAXMotionPositionMode_3
+= 185,
+// uint32_t
+197
+kForceEnableStatus_0
+= 186,
+// bool
+198
+kForceEnableStatus_1
+= 187,
+// bool
+199
+kForceEnableStatus_2
+= 188,
+// bool
+200
+kForceEnableStatus_3
+= 189,
+// bool
+201
+kForceEnableStatus_4
+= 190,
+// bool
+202
+kForceEnableStatus_5
+= 191,
+// bool
+203
+kForceEnableStatus_6
+= 192,
+// bool
+204
+kForceEnableStatus_7
+= 193,
+// bool
+205
+kFollowerModeLeaderId
+= 194,
+// uint32_t
+206
+kFollowerModeIsInverted
+= 195,
+// bool
+207
+kDutyCycleEncoderStartPulseUs
+= 196,
+// float
+208
+kDutyCycleEncoderEndPulseUs
+= 197,
+// float
+209
+kParamTableVersion
+= 198,
+// uint32_t
+210
+kStatus8Period
+= 199,
+// uint32_t
+211
+kForceEnableStatus_8
+= 200,
+// bool
+212
+kLimitSwitchPositionSensor
+= 201,
+// uint32_t
+213
+kLimitSwitchFwdPosition
+= 202,
+// float
+214
+kLimitSwitchRevPosition
+= 203,
+// float
+215
+kS_0
+= 204,
+// float
+216
+kA_0
+= 205,
+// float
+217
+kG_0
+= 206,
+// float
+218
+kCos_0
+= 207,
+// float
+219
+kCosRatio_0
+= 208,
+// float
+220
+kS_1
+= 209,
+// float
+221
+kA_1
+= 210,
+// float
+222
+kG_1
+= 211,
+// float
+223
+kCos_1
+= 212,
+// float
+224
+kCosRatio_1
+= 213,
+// float
+225
+kS_2
+= 214,
+// float
+226
+kA_2
+= 215,
+// float
+227
+kG_2
+= 216,
+// float
+228
+kCos_2
+= 217,
+// float
+229
+kCosRatio_2
+= 218,
+// float
+230
+kS_3
+= 219,
+// float
+231
+kA_3
+= 220,
+// float
+232
+kG_3
+= 221,
+// float
+233
+kCos_3
+= 222,
+// float
+234
+kCosRatio_3
+= 223,
+// float
+235
+kStatus9Period
+= 224,
+// uint32_t
+236
+kForceEnableStatus_9
+= 225,
+// bool
+237
+};
+238
+239
+}
+// namespace rev::spark
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::SparkParameter
+SparkParameter
+Definition:
+SparkParameters.h:40
+rev::spark::kAllowedClosedLoopError_2
+@ kAllowedClosedLoopError_2
+Definition:
+SparkParameters.h:130
+rev::spark::kCompatibilityPortConfig
+@ kCompatibilityPortConfig
+Definition:
+SparkParameters.h:144
+rev::spark::kIMaxAccum_0
+@ kIMaxAccum_0
+Definition:
+SparkParameters.h:125
+rev::spark::kAnalogVelocityConversion
+@ kAnalogVelocityConversion
+Definition:
+SparkParameters.h:139
+rev::spark::kMAXMotionPositionMode_0
+@ kMAXMotionPositionMode_0
+Definition:
+SparkParameters.h:181
+rev::spark::kOutputMin_2
+@ kOutputMin_2
+Definition:
+SparkParameters.h:74
+rev::spark::kS_2
+@ kS_2
+Definition:
+SparkParameters.h:225
+rev::spark::kCANID
+@ kCANID
+Definition:
+SparkParameters.h:41
+rev::spark::kClosedLoopRampRate
+@ kClosedLoopRampRate
+Definition:
+SparkParameters.h:135
+rev::spark::kStatus8Period
+@ kStatus8Period
+Definition:
+SparkParameters.h:210
+rev::spark::kA_3
+@ kA_3
+Definition:
+SparkParameters.h:231
+rev::spark::kSmartMotionAllowedClosedLoopError_1
+@ kSmartMotionAllowedClosedLoopError_1
+Definition:
+SparkParameters.h:113
+rev::spark::kCos_2
+@ kCos_2
+Definition:
+SparkParameters.h:228
+rev::spark::kFollowerModeLeaderId
+@ kFollowerModeLeaderId
+Definition:
+SparkParameters.h:205
+rev::spark::kOutputMin_1
+@ kOutputMin_1
+Definition:
+SparkParameters.h:66
+rev::spark::kCompensatedNominalVoltage
+@ kCompensatedNominalVoltage
+Definition:
+SparkParameters.h:104
+rev::spark::kCommutationAdvance
+@ kCommutationAdvance
+Definition:
+SparkParameters.h:44
+rev::spark::kAltEncoderVelocityConversion
+@ kAltEncoderVelocityConversion
+Definition:
+SparkParameters.h:150
+rev::spark::kMAXMotionMaxJerk_2
+@ kMAXMotionMaxJerk_2
+Definition:
+SparkParameters.h:189
+rev::spark::kUvwSensorAverageDepth
+@ kUvwSensorAverageDepth
+Definition:
+SparkParameters.h:152
+rev::spark::kSmartCurrentConfig
+@ kSmartCurrentConfig
+Definition:
+SparkParameters.h:96
+rev::spark::kAltEncoderCountsPerRev
+@ kAltEncoderCountsPerRev
+Definition:
+SparkParameters.h:145
+rev::spark::kVelocityConversionFactor
+@ kVelocityConversionFactor
+Definition:
+SparkParameters.h:134
+rev::spark::kI_1
+@ kI_1
+Definition:
+SparkParameters.h:61
+rev::spark::kForceEnableStatus_9
+@ kForceEnableStatus_9
+Definition:
+SparkParameters.h:236
+rev::spark::kIMaxAccum_3
+@ kIMaxAccum_3
+Definition:
+SparkParameters.h:131
+rev::spark::kV_0
+@ kV_0
+Definition:
+SparkParameters.h:55
+rev::spark::kP_3
+@ kP_3
+Definition:
+SparkParameters.h:76
+rev::spark::kMAXMotionAllowedProfileError_2
+@ kMAXMotionAllowedProfileError_2
+Definition:
+SparkParameters.h:190
+rev::spark::kDutyCycleSensorPrescaler
+@ kDutyCycleSensorPrescaler
+Definition:
+SparkParameters.h:164
+rev::spark::kDutyCyclePositionFactor
+@ kDutyCyclePositionFactor
+Definition:
+SparkParameters.h:154
+rev::spark::kA_1
+@ kA_1
+Definition:
+SparkParameters.h:221
+rev::spark::kA_2
+@ kA_2
+Definition:
+SparkParameters.h:226
+rev::spark::kSmartCurrentStallLimit
+@ kSmartCurrentStallLimit
+Definition:
+SparkParameters.h:94
+rev::spark::kI_0
+@ kI_0
+Definition:
+SparkParameters.h:53
+rev::spark::kEncoderInverted
+@ kEncoderInverted
+Definition:
+SparkParameters.h:102
+rev::spark::kSmartMotionMaxVelocity_2
+@ kSmartMotionMaxVelocity_2
+Definition:
+SparkParameters.h:115
+rev::spark::kDFilter_2
+@ kDFilter_2
+Definition:
+SparkParameters.h:73
+rev::spark::kSmartMotionMaxVelocity_1
+@ kSmartMotionMaxVelocity_1
+Definition:
+SparkParameters.h:110
+rev::spark::kParamTableVersion
+@ kParamTableVersion
+Definition:
+SparkParameters.h:209
+rev::spark::kDFilter_1
+@ kDFilter_1
+Definition:
+SparkParameters.h:65
+rev::spark::kAnalogInverted
+@ kAnalogInverted
+Definition:
+SparkParameters.h:142
+rev::spark::kForceEnableStatus_3
+@ kForceEnableStatus_3
+Definition:
+SparkParameters.h:200
+rev::spark::kOutputMax_2
+@ kOutputMax_2
+Definition:
+SparkParameters.h:75
+rev::spark::kSoftLimitForward
+@ kSoftLimitForward
+Definition:
+SparkParameters.h:136
+rev::spark::kStatus1Period
+@ kStatus1Period
+Definition:
+SparkParameters.h:170
+rev::spark::kInputDeadband
+@ kInputDeadband
+Definition:
+SparkParameters.h:47
+rev::spark::kMAXMotionPositionMode_2
+@ kMAXMotionPositionMode_2
+Definition:
+SparkParameters.h:191
+rev::spark::kStatus2Period
+@ kStatus2Period
+Definition:
+SparkParameters.h:171
+rev::spark::kFollowerConfig
+@ kFollowerConfig
+Definition:
+SparkParameters.h:93
+rev::spark::kMAXMotionAllowedProfileError_3
+@ kMAXMotionAllowedProfileError_3
+Definition:
+SparkParameters.h:195
+rev::spark::kHardLimitFwdEn
+@ kHardLimitFwdEn
+Definition:
+SparkParameters.h:87
+rev::spark::kPositionPIDMaxInput
+@ kPositionPIDMaxInput
+Definition:
+SparkParameters.h:162
+rev::spark::kStatus9Period
+@ kStatus9Period
+Definition:
+SparkParameters.h:235
+rev::spark::kDutyCycleAverageDepth
+@ kDutyCycleAverageDepth
+Definition:
+SparkParameters.h:158
+rev::spark::kMAXMotionMaxJerk_0
+@ kMAXMotionMaxJerk_0
+Definition:
+SparkParameters.h:179
+rev::spark::kOutputMin_0
+@ kOutputMin_0
+Definition:
+SparkParameters.h:58
+rev::spark::kP_0
+@ kP_0
+Definition:
+SparkParameters.h:52
+rev::spark::kS_3
+@ kS_3
+Definition:
+SparkParameters.h:230
+rev::spark::kCurrentChopCycles
+@ kCurrentChopCycles
+Definition:
+SparkParameters.h:51
+rev::spark::kInverted
+@ kInverted
+Definition:
+SparkParameters.h:84
+rev::spark::kStatus4Period
+@ kStatus4Period
+Definition:
+SparkParameters.h:173
+rev::spark::kLimitSwitchFwdPolarity
+@ kLimitSwitchFwdPolarity
+Definition:
+SparkParameters.h:85
+rev::spark::kDutyCycleOffset
+@ kDutyCycleOffset
+Definition:
+SparkParameters.h:165
+rev::spark::kStatus3Period
+@ kStatus3Period
+Definition:
+SparkParameters.h:172
+rev::spark::kSoftLimitFwdEn
+@ kSoftLimitFwdEn
+Definition:
+SparkParameters.h:89
+rev::spark::kMAXMotionMaxJerk_1
+@ kMAXMotionMaxJerk_1
+Definition:
+SparkParameters.h:184
+rev::spark::kMAXMotionPositionMode_3
+@ kMAXMotionPositionMode_3
+Definition:
+SparkParameters.h:196
+rev::spark::kSmartMotionMinVelOutput_0
+@ kSmartMotionMinVelOutput_0
+Definition:
+SparkParameters.h:107
+rev::spark::kI_2
+@ kI_2
+Definition:
+SparkParameters.h:69
+rev::spark::kP_2
+@ kP_2
+Definition:
+SparkParameters.h:68
+rev::spark::kSmartMotionMaxAccel_3
+@ kSmartMotionMaxAccel_3
+Definition:
+SparkParameters.h:121
+rev::spark::kClosedLoopControlSensor
+@ kClosedLoopControlSensor
+Definition:
+SparkParameters.h:48
+rev::spark::kLimitSwitchFwdPosition
+@ kLimitSwitchFwdPosition
+Definition:
+SparkParameters.h:213
+rev::spark::kSmartMotionAccelStrategy_0
+@ kSmartMotionAccelStrategy_0
+Definition:
+SparkParameters.h:109
+rev::spark::kLimitSwitchRevPosition
+@ kLimitSwitchRevPosition
+Definition:
+SparkParameters.h:214
+rev::spark::kMAXMotionPositionMode_1
+@ kMAXMotionPositionMode_1
+Definition:
+SparkParameters.h:186
+rev::spark::kSoftLimitRevEn
+@ kSoftLimitRevEn
+Definition:
+SparkParameters.h:90
+rev::spark::kCos_1
+@ kCos_1
+Definition:
+SparkParameters.h:223
+rev::spark::kSmartMotionMinVelOutput_3
+@ kSmartMotionMinVelOutput_3
+Definition:
+SparkParameters.h:122
+rev::spark::kIZone_3
+@ kIZone_3
+Definition:
+SparkParameters.h:80
+rev::spark::kControlType
+@ kControlType
+Definition:
+SparkParameters.h:45
+rev::spark::kCos_0
+@ kCos_0
+Definition:
+SparkParameters.h:218
+rev::spark::kOutputMin_3
+@ kOutputMin_3
+Definition:
+SparkParameters.h:82
+rev::spark::kInputMode
+@ kInputMode
+Definition:
+SparkParameters.h:42
+rev::spark::kAllowedClosedLoopError_3
+@ kAllowedClosedLoopError_3
+Definition:
+SparkParameters.h:132
+rev::spark::kSoftLimitReverse
+@ kSoftLimitReverse
+Definition:
+SparkParameters.h:137
+rev::spark::kForceEnableStatus_2
+@ kForceEnableStatus_2
+Definition:
+SparkParameters.h:199
+rev::spark::kDFilter_0
+@ kDFilter_0
+Definition:
+SparkParameters.h:57
+rev::spark::kDeviceMajorVersion
+@ kDeviceMajorVersion
+Definition:
+SparkParameters.h:167
+rev::spark::kG_0
+@ kG_0
+Definition:
+SparkParameters.h:217
+rev::spark::kOutputMax_0
+@ kOutputMax_0
+Definition:
+SparkParameters.h:59
+rev::spark::kForceEnableStatus_5
+@ kForceEnableStatus_5
+Definition:
+SparkParameters.h:202
+rev::spark::kIZone_1
+@ kIZone_1
+Definition:
+SparkParameters.h:64
+rev::spark::kI_3
+@ kI_3
+Definition:
+SparkParameters.h:77
+rev::spark::kP_1
+@ kP_1
+Definition:
+SparkParameters.h:60
+rev::spark::kD_2
+@ kD_2
+Definition:
+SparkParameters.h:70
+rev::spark::kMAXMotionCruiseVelocity_2
+@ kMAXMotionCruiseVelocity_2
+Definition:
+SparkParameters.h:187
+rev::spark::kAnalogSensorMode
+@ kAnalogSensorMode
+Definition:
+SparkParameters.h:141
+rev::spark::kStatus5Period
+@ kStatus5Period
+Definition:
+SparkParameters.h:174
+rev::spark::kDutyCycleEncoderStartPulseUs
+@ kDutyCycleEncoderStartPulseUs
+Definition:
+SparkParameters.h:207
+rev::spark::kLimitSwitchRevPolarity
+@ kLimitSwitchRevPolarity
+Definition:
+SparkParameters.h:86
+rev::spark::kMAXMotionCruiseVelocity_3
+@ kMAXMotionCruiseVelocity_3
+Definition:
+SparkParameters.h:192
+rev::spark::kG_2
+@ kG_2
+Definition:
+SparkParameters.h:227
+rev::spark::kSmartMotionMaxAccel_0
+@ kSmartMotionMaxAccel_0
+Definition:
+SparkParameters.h:106
+rev::spark::kMAXMotionMaxJerk_3
+@ kMAXMotionMaxJerk_3
+Definition:
+SparkParameters.h:194
+rev::spark::kDutyCycleOffsetLegacy
+@ kDutyCycleOffsetLegacy
+Definition:
+SparkParameters.h:159
+rev::spark::kCosRatio_1
+@ kCosRatio_1
+Definition:
+SparkParameters.h:224
+rev::spark::kAnalogPositionConversion
+@ kAnalogPositionConversion
+Definition:
+SparkParameters.h:138
+rev::spark::kPolePairs
+@ kPolePairs
+Definition:
+SparkParameters.h:49
+rev::spark::kDeviceMinorVersion
+@ kDeviceMinorVersion
+Definition:
+SparkParameters.h:168
+rev::spark::kForceEnableStatus_7
+@ kForceEnableStatus_7
+Definition:
+SparkParameters.h:204
+rev::spark::kSmartMotionAllowedClosedLoopError_2
+@ kSmartMotionAllowedClosedLoopError_2
+Definition:
+SparkParameters.h:118
+rev::spark::kDutyCycleInverted
+@ kDutyCycleInverted
+Definition:
+SparkParameters.h:156
+rev::spark::kD_0
+@ kD_0
+Definition:
+SparkParameters.h:54
+rev::spark::kForceEnableStatus_6
+@ kForceEnableStatus_6
+Definition:
+SparkParameters.h:203
+rev::spark::kHardLimitRevEn
+@ kHardLimitRevEn
+Definition:
+SparkParameters.h:88
+rev::spark::kDutyCycleSensorMode
+@ kDutyCycleSensorMode
+Definition:
+SparkParameters.h:157
+rev::spark::kAnalogSampleDelta
+@ kAnalogSampleDelta
+Definition:
+SparkParameters.h:143
+rev::spark::kCosRatio_2
+@ kCosRatio_2
+Definition:
+SparkParameters.h:229
+rev::spark::kLimitSwitchPositionSensor
+@ kLimitSwitchPositionSensor
+Definition:
+SparkParameters.h:212
+rev::spark::kMotorType
+@ kMotorType
+Definition:
+SparkParameters.h:43
+rev::spark::kMAXMotionMaxAccel_1
+@ kMAXMotionMaxAccel_1
+Definition:
+SparkParameters.h:183
+rev::spark::kOutputMax_3
+@ kOutputMax_3
+Definition:
+SparkParameters.h:83
+rev::spark::kSmartMotionMinVelOutput_1
+@ kSmartMotionMinVelOutput_1
+Definition:
+SparkParameters.h:112
+rev::spark::kMAXMotionCruiseVelocity_1
+@ kMAXMotionCruiseVelocity_1
+Definition:
+SparkParameters.h:182
+rev::spark::kMAXMotionCruiseVelocity_0
+@ kMAXMotionCruiseVelocity_0
+Definition:
+SparkParameters.h:177
+rev::spark::kDFilter_3
+@ kDFilter_3
+Definition:
+SparkParameters.h:81
+rev::spark::kStatus6Period
+@ kStatus6Period
+Definition:
+SparkParameters.h:175
+rev::spark::kIZone_2
+@ kIZone_2
+Definition:
+SparkParameters.h:72
+rev::spark::kIMaxAccum_1
+@ kIMaxAccum_1
+Definition:
+SparkParameters.h:127
+rev::spark::kD_1
+@ kD_1
+Definition:
+SparkParameters.h:62
+rev::spark::kG_3
+@ kG_3
+Definition:
+SparkParameters.h:232
+rev::spark::kAnalogAverageDepth
+@ kAnalogAverageDepth
+Definition:
+SparkParameters.h:140
+rev::spark::kAltEncoderSampleDelta
+@ kAltEncoderSampleDelta
+Definition:
+SparkParameters.h:147
+rev::spark::kEncoderCountsPerRev
+@ kEncoderCountsPerRev
+Definition:
+SparkParameters.h:99
+rev::spark::kForceEnableStatus_1
+@ kForceEnableStatus_1
+Definition:
+SparkParameters.h:198
+rev::spark::kSmartMotionMaxAccel_1
+@ kSmartMotionMaxAccel_1
+Definition:
+SparkParameters.h:111
+rev::spark::kFollowerModeIsInverted
+@ kFollowerModeIsInverted
+Definition:
+SparkParameters.h:206
+rev::spark::kStatus0Period
+@ kStatus0Period
+Definition:
+SparkParameters.h:169
+rev::spark::kNumParameters
+@ kNumParameters
+Definition:
+SparkParameters.h:153
+rev::spark::kS_0
+@ kS_0
+Definition:
+SparkParameters.h:215
+rev::spark::kSmartMotionMaxAccel_2
+@ kSmartMotionMaxAccel_2
+Definition:
+SparkParameters.h:116
+rev::spark::kSmartMotionAccelStrategy_2
+@ kSmartMotionAccelStrategy_2
+Definition:
+SparkParameters.h:119
+rev::spark::kForceEnableStatus_4
+@ kForceEnableStatus_4
+Definition:
+SparkParameters.h:201
+rev::spark::kMotorKv
+@ kMotorKv
+Definition:
+SparkParameters.h:98
+rev::spark::kSmartMotionMaxVelocity_3
+@ kSmartMotionMaxVelocity_3
+Definition:
+SparkParameters.h:120
+rev::spark::kMAXMotionAllowedProfileError_1
+@ kMAXMotionAllowedProfileError_1
+Definition:
+SparkParameters.h:185
+rev::spark::kAltEncoderPositionConversion
+@ kAltEncoderPositionConversion
+Definition:
+SparkParameters.h:149
+rev::spark::kPositionConversionFactor
+@ kPositionConversionFactor
+Definition:
+SparkParameters.h:133
+rev::spark::kV_1
+@ kV_1
+Definition:
+SparkParameters.h:63
+rev::spark::kV_3
+@ kV_3
+Definition:
+SparkParameters.h:79
+rev::spark::kSmartMotionAccelStrategy_1
+@ kSmartMotionAccelStrategy_1
+Definition:
+SparkParameters.h:114
+rev::spark::kS_1
+@ kS_1
+Definition:
+SparkParameters.h:220
+rev::spark::kMAXMotionMaxAccel_0
+@ kMAXMotionMaxAccel_0
+Definition:
+SparkParameters.h:178
+rev::spark::kIdleMode
+@ kIdleMode
+Definition:
+SparkParameters.h:46
+rev::spark::kForceEnableStatus_0
+@ kForceEnableStatus_0
+Definition:
+SparkParameters.h:197
+rev::spark::kD_3
+@ kD_3
+Definition:
+SparkParameters.h:78
+rev::spark::kProductId
+@ kProductId
+Definition:
+SparkParameters.h:166
+rev::spark::kCosRatio_3
+@ kCosRatio_3
+Definition:
+SparkParameters.h:234
+rev::spark::kAllowedClosedLoopError_1
+@ kAllowedClosedLoopError_1
+Definition:
+SparkParameters.h:128
+rev::spark::kStatus7Period
+@ kStatus7Period
+Definition:
+SparkParameters.h:176
+rev::spark::kSmartMotionMinVelOutput_2
+@ kSmartMotionMinVelOutput_2
+Definition:
+SparkParameters.h:117
+rev::spark::kCurrentChop
+@ kCurrentChop
+Definition:
+SparkParameters.h:50
+rev::spark::kAltEncoderInverted
+@ kAltEncoderInverted
+Definition:
+SparkParameters.h:148
+rev::spark::kOpenLoopRampRate
+@ kOpenLoopRampRate
+Definition:
+SparkParameters.h:91
+rev::spark::kDutyCycleVelocityFactor
+@ kDutyCycleVelocityFactor
+Definition:
+SparkParameters.h:155
+rev::spark::kOutputMax_1
+@ kOutputMax_1
+Definition:
+SparkParameters.h:67
+rev::spark::kDutyCycleEncoderEndPulseUs
+@ kDutyCycleEncoderEndPulseUs
+Definition:
+SparkParameters.h:208
+rev::spark::kSmartMotionAllowedClosedLoopError_0
+@ kSmartMotionAllowedClosedLoopError_0
+Definition:
+SparkParameters.h:108
+rev::spark::kSmartMotionAllowedClosedLoopError_3
+@ kSmartMotionAllowedClosedLoopError_3
+Definition:
+SparkParameters.h:123
+rev::spark::kDutyCycleZeroCentered
+@ kDutyCycleZeroCentered
+Definition:
+SparkParameters.h:163
+rev::spark::kEncoderSampleDelta
+@ kEncoderSampleDelta
+Definition:
+SparkParameters.h:101
+rev::spark::kSmartCurrentReserved
+@ kSmartCurrentReserved
+Definition:
+SparkParameters.h:97
+rev::spark::kSmartCurrentFreeLimit
+@ kSmartCurrentFreeLimit
+Definition:
+SparkParameters.h:95
+rev::spark::kSmartMotionAccelStrategy_3
+@ kSmartMotionAccelStrategy_3
+Definition:
+SparkParameters.h:124
+rev::spark::kIZone_0
+@ kIZone_0
+Definition:
+SparkParameters.h:56
+rev::spark::kG_1
+@ kG_1
+Definition:
+SparkParameters.h:222
+rev::spark::kMAXMotionAllowedProfileError_0
+@ kMAXMotionAllowedProfileError_0
+Definition:
+SparkParameters.h:180
+rev::spark::kPositionPIDMinInput
+@ kPositionPIDMinInput
+Definition:
+SparkParameters.h:161
+rev::spark::kCosRatio_0
+@ kCosRatio_0
+Definition:
+SparkParameters.h:219
+rev::spark::kUvwSensorSampleRate
+@ kUvwSensorSampleRate
+Definition:
+SparkParameters.h:151
+rev::spark::kPositionPIDWrapEnable
+@ kPositionPIDWrapEnable
+Definition:
+SparkParameters.h:160
+rev::spark::kFollowerID
+@ kFollowerID
+Definition:
+SparkParameters.h:92
+rev::spark::kMAXMotionMaxAccel_2
+@ kMAXMotionMaxAccel_2
+Definition:
+SparkParameters.h:188
+rev::spark::kV_2
+@ kV_2
+Definition:
+SparkParameters.h:71
+rev::spark::kVoltageCompensationMode
+@ kVoltageCompensationMode
+Definition:
+SparkParameters.h:103
+rev::spark::kForceEnableStatus_8
+@ kForceEnableStatus_8
+Definition:
+SparkParameters.h:211
+rev::spark::kA_0
+@ kA_0
+Definition:
+SparkParameters.h:216
+rev::spark::kSmartMotionMaxVelocity_0
+@ kSmartMotionMaxVelocity_0
+Definition:
+SparkParameters.h:105
+rev::spark::kCos_3
+@ kCos_3
+Definition:
+SparkParameters.h:233
+rev::spark::kAllowedClosedLoopError_0
+@ kAllowedClosedLoopError_0
+Definition:
+SparkParameters.h:126
+rev::spark::kIMaxAccum_2
+@ kIMaxAccum_2
+Definition:
+SparkParameters.h:129
+rev::spark::kAltEncoderAverageDepth
+@ kAltEncoderAverageDepth
+Definition:
+SparkParameters.h:146
+rev::spark::kEncoderAverageDepth
+@ kEncoderAverageDepth
+Definition:
+SparkParameters.h:100
+rev::spark::kMAXMotionMaxAccel_3
+@ kMAXMotionMaxAccel_3
+Definition:
+SparkParameters.h:193
+src
+main
+native
+include
+rev
+config
+SparkParameters.h
+Generated by
+1.9.2

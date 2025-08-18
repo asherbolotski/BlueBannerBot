@@ -1,0 +1,316 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Power and Motor Connections
+Servo-PWM Input
+Zero-Power Behavior
+LED Status Codes
+Specifications
+Was this helpful?
+Export as PDF
+The SPARKmini Motor Controller (
+REV-31-1230
+) is an inexpensive in-line brushed DC motor controller designed to give
+FIRST®
+Tech Challenge teams more bang for their buck. It offers the same performance characteristics as the REV Control Hub (
+REV-31-1595
+) or Expansion Hub
+(
+REV-31-1153
+) motor ports in a small 60mm x 22mm footprint. Now FTC teams can add a SPARKmini Motor Controller to utilize more than four DC motors from a single Hub in a space-efficient package.
+Power and Motor Connections
+The SPARKmini has three integrated wires with connectors dedicated to power, control, and the motor; one
+XT30 connector
+for power, one 3-wire servo-PWM connector for control, and one
+JST-VH
+connector for the motor. The figure below shows each of these connections.
+Connect the power wire to a free XT30 port on the REV Control Hub , REV Expansion Hub (REV-31-1153), or through an XT30 Power Distribution Block (REV-31-1293) that is connected to a free Control/Expansion Hub XT30 port. Connect the control wire to an open servo port on the hub and the motor wire to a JST-VH port on a motor, like the REV HD Hex Motor (
+REV-41-1301
+) or the REV Core Hex Motor (
+REV-41-1300
+).
+DO NOT reverse polarity on the power input connections. The SPARKmini does not contain reverse polarity protection. This can permanently damage the SPARKmini and will void the warranty.
+DO NOT swap the motor and power connections. This can result in uncontrolled motor operation and can permanently damage the SPARKmini, voiding the warranty.
+Servo-PWM Input
+A motor’s speed is controlled by varying the voltage that is applied to it. The SPARKmini’s output voltage can be controlled by sending it an extended-range servo-PWM pulse. The extended 500µs to 2500µs servo-pulse corresponds to full-reverse and full-forward rotation with 1500µs as the neutral position (no rotation). The pulses are proportionally related to the motor output duty cycle, therefore variable speed can be achieved with pulses in between the extremes. The following table describes the pulse ranges in more detail.
+Table - Control Signal Pulse Ranges
+Pulse Width (
+p
+in µs)
+Full Reverse
+Prop. Reverse
+Neutral
+Prop. Forward
+Full Forward
+p
+≤ 500
+500 <
+p
+< 1490
+1490 ≤
+p
+≤ 1510
+1510 <
+p
+< 2500
+2500 ≤
+p
+Zero-Power Behavior
+When the SPARKmini is receiving a neutral command it will not provide any power to the attached motor. There are two options for how the SPARKmini handles this zero-power state:
+Brake
+- Motor terminals are shorted to each other to dissipate electrical energy, effectively braking the motor.
+Coast
+- Motor terminals are disconnected, allowing the motor to spin down at its own rate.
+The zero-power behavior can be selected via a switch located towards the center of the SPARKmini housing, shown in Figure 2. Each mode can be selected by sliding the switch to either the Brake (B) or Coast (C) positions.
+Coast/Brake Switch
+The SPARKmini will indicate whether it is in Brake or Coast mode via the Status LED, located in the center of the housing, whenever it is outputting zero-power. Solid or flashing blue indicates Brake Mode while solid or flashing yellow indicates Coast Mode. See the LED Status Codes section for more details.
+LED Status Codes
+Specifications
+Parameter
+Min
+Typ
+Max
+Unit
+Supply voltage range (VIN)
+6.0
+12
+20
+V
+Supply voltage absolute maximum
+-
+-
+25
+V
+Continuous output current
+-
+-
+15
+A
+Peak output current
+-
+-
+20
+A
+Output voltage range
+- VIN
+-
++ VIN
+V
+Output frequency
+-
+10
+-
+kHz
+Input pulse width range
+500
+-
+2500
+µs
+Input frequency
+16
+50
+200
+Hz
+Input timeout
+-
+65.5
+-
+ms
+Input deadband
+-
+±10
+-
+µs
+Input low-level voltage
+-0.3
+-
+0.8
+V
+Input high-level voltage
+2.0
+5.0
+5.3
+V
+Weight
+-
+0.87
+-
+oz
+Dimensions (excluding wires)
+-
+60 x 22 x 12
+-
+mm
+Previous
+Adding More Motors
+Next
+Adding an Expansion Hub
+Last updated
+11 months ago
+Was this helpful?

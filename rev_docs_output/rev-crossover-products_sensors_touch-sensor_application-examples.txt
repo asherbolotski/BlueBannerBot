@@ -1,0 +1,132 @@
+REV Crossover
+REV Crossover Landing
+Sensors
+Through Bore Encoder
+Specifications
+Application Examples
+Color Sensor V3
+Specifications
+Application Examples
+Discontinued Color Sensors
+V2 Specifications & Examples
+V1 Specifications & Examples
+2m Distance Sensor
+Specifications
+Application Examples
+Magnetic Limit Switch
+Specifications
+Application Examples
+Touch Sensor
+Specifications
+Application Examples
+Potentiometer
+Specifications
+Application Examples
+9-Axis IMU
+Specifications
+Configuring the 9-Axis IMU
+Blinkin LED Driver
+Blinkin LED Driver Overview
+Blinkin Specifications
+Blinkin Getting Started
+LED Pattern Tables
+Blinkin Troubleshooting
+REV ION Application Examples
+REV DUO Application Examples
+UltraPlanetary System
+UltraPlanetary System Overview
+UltraPlanetary Features
+Cartridge Details
+Load Ratings
+Assembly Instructions
+Mounting Brackets
+Ultra 90 Degree Gearbox
+Assembly Instructions
+Rotation Direction
+Servos & Accessories
+Servo Hub
+Servo Hub Wiring
+Configuring the Servo Hub with a Control Hub
+Channel Power
+Channel Pulse
+Servo Hub Status LED Patterns
+Troubleshooting
+REVLib for Servo Hub
+Smart Robot Servo
+SRS Gear Replacement
+SRS Programmer
+Switching Operating Modes
+Servo Power Module
+Indicators
+Digital LED Indicator
+Specifications
+Application Examples
+Gamepad
+Gamepad Overview
+Remapping Guide
+Powered by GitBook
+On this page
+Application Information
+FTC Applications
+Was this helpful?
+Export as PDF
+Application Information
+The REV Touch Sensor features an off-center button. Because this sensor requires a contact interface; the sensor must be mounted with regards to the location of the button and the object, or mechanism, intended to trigger the sensor.
+Common applications for the Touch Sensor, such as limit switches, require consideration for unconstrained, or twisting motion. Limit switches limit the range of motion for a mechanism. If the mechanism is not properly
+constrained
+, there is a risk that the contact interface will not trigger the Touch Sensor.
+FTC Applications
+Configuring in the Control System
+Configure the Touch Sensor as "REV Touch Sensor" as shown in the image below.
+In this example, the Touch Sensor is configured on port one. It is touched on briefly in the
+Pinout Section
+that the Touch Sensor only sends a signal to the Control Hub through the n+1 communication channel. Because of this limitation, the Touch Sensor will only work when configured on the odd-numbered digital ports.
+Programming Applications
+The code blocks below give a basic example of how to use the Touch Sensor to limit the motion range of a motor using if/else logic. If the button is pressed then the motor stops. Otherwise, the motor is allowed to move.
+To learn more about programming Touch Sensors check out Hello Robot for
+Blocks
+and
+OnBot Java
+!
+Blocks
+OnBot Java
+The code assumes the sensor has been named "test_touch" and the motor has been named "test_motor" in configuration.
+Copy
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+@TeleOp
+public class HelloRobot_TouchSensor extends LinearOpMode {
+TouchSensor test_touch;  // Touch sensor Object
+private DcMotor test_motor = null;
+private Servo test_servo = null;
+@Override
+public void runOpMode() {
+test_motor = hardwareMap.get(DcMotor.class, "test_motor");
+test_touch = hardwareMap.get(TouchSensor.class, "test_touch");
+// Wait for the game to start (driver presses PLAY)
+waitForStart();
+// run until the end of the match (driver presses STOP)
+while (opModeIsActive()) {
+if (touchSensor.isPressed()){
+//Touch Sensor is pressed.
+test_motor.setPower(0);
+telemetry.addData("Touch Sensor", "Is Pressed");
+} else {
+//Touch Sensor is not pressed
+test_motor.setPower(0.3);
+telemetry.addData("Touch Sensor", "Is Not Pressed");
+}
+telemetry.update();
+}
+}
+}
+Previous
+Specifications
+Next
+Potentiometer
+Last updated
+9 months ago
+Was this helpful?

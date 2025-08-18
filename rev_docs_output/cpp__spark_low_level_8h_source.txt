@@ -1,0 +1,1479 @@
+REVLib - C++
+SparkLowLevel.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2018-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include <stdint.h>
+32
+33
+#include <string>
+34
+#include <vector>
+35
+36
+#include <frc/motorcontrol/MotorController.h>
+37
+38
+#include "
+rev/ClosedLoopTypes.h
+"
+39
+#include "
+rev/REVLibError.h
+"
+40
+41
+// Defined in HIL tester source
+42
+class
+ConfigBase;
+43
+44
+namespace
+rev::spark
+{
+45
+46
+class
+SparkBase;
+47
+48
+class
+SparkLowLevel
+:
+public
+frc::MotorController {
+49
+friend
+class
+SparkBase
+;
+50
+friend
+class
+SparkMax
+;
+51
+friend
+class
+SparkFlex
+;
+52
+friend
+class
+SparkAnalogSensor
+;
+53
+friend
+class
+SparkMaxAlternateEncoder
+;
+54
+friend
+class
+SparkLimitSwitch
+;
+55
+friend
+class
+SparkClosedLoopController
+;
+56
+friend
+class
+SparkRelativeEncoder
+;
+57
+friend
+class
+SparkAbsoluteEncoder
+;
+58
+friend
+class
+SparkFlexExternalEncoder
+;
+59
+friend
+class
+SparkAbsoluteEncoderSim
+;
+60
+friend
+class
+SparkAnalogSensorSim
+;
+61
+friend
+class
+SparkExternalEncoderSim
+;
+62
+friend
+class
+SparkLimitSwitchSim
+;
+63
+friend
+class
+SparkMaxAlternateEncoderSim
+;
+64
+friend
+class
+SparkRelativeEncoderSim
+;
+65
+friend
+class
+SparkSimFaultManager
+;
+66
+67
+// Defined in HIL tester source
+68
+friend
+class ::ConfigBase;
+69
+70
+public
+:
+71
+static
+const
+uint16_t
+kAPIMajorVersion
+;
+72
+static
+const
+uint8_t
+kAPIMinorVersion
+;
+73
+static
+const
+uint8_t
+kAPIBuildVersion
+;
+74
+static
+const
+uint32_t
+kAPIVersion
+;
+75
+76
+enum class
+MotorType
+{
+kBrushed
+= 0,
+kBrushless
+= 1 };
+77
+78
+enum class
+ControlType
+{
+79
+kDutyCycle
+= 0,
+80
+kVelocity
+= 1,
+81
+kVoltage
+= 2,
+82
+kPosition
+= 3,
+87
+kSmartMotion
+88
+[[deprecated(
+"We recommend migrating to MAXMotion instead."
+)]] = 4,
+89
+kCurrent
+= 5,
+94
+kSmartVelocity
+95
+[[deprecated(
+"We recommend migrating to MAXMotion instead."
+)]] = 6,
+96
+kMAXMotionPositionControl
+= 7,
+97
+kMAXMotionVelocityControl
+= 8,
+98
+};
+99
+100
+enum class
+ParameterStatus
+{
+101
+kOK
+= 0,
+102
+kInvalidID
+= 1,
+103
+kMismatchType
+= 2,
+104
+kAccessMode
+= 3,
+105
+kInvalid
+= 4,
+106
+kNotImplementedDeprecated
+= 5,
+107
+};
+108
+109
+enum class
+PeriodicFrame
+{
+110
+kStatus0
+= 0,
+111
+kStatus1
+= 1,
+112
+kStatus2
+= 2,
+113
+kStatus3
+= 3,
+114
+kStatus4
+= 4,
+115
+kStatus5
+= 5,
+116
+kStatus6
+= 6,
+117
+kStatus7
+= 7,
+118
+kStatus8
+= 8,
+119
+kStatus9
+= 9,
+120
+};
+121
+122
+struct
+PeriodicStatus0
+{
+123
+double
+appliedOutput
+;
+124
+double
+voltage
+;
+125
+double
+current
+;
+126
+uint8_t
+motorTemperature
+;
+127
+bool
+hardForwardLimitReached
+;
+128
+bool
+hardReverseLimitReached
+;
+129
+bool
+softForwardLimitReached
+;
+130
+bool
+softReverseLimitReached
+;
+131
+bool
+inverted
+;
+132
+bool
+primaryHeartbeatLock
+;
+133
+uint64_t
+timestamp
+;
+134
+};
+135
+136
+struct
+PeriodicStatus1
+{
+137
+bool
+otherFault
+;
+138
+bool
+motorTypeFault
+;
+139
+bool
+sensorFault
+;
+140
+bool
+canFault
+;
+141
+bool
+temperatureFault
+;
+142
+bool
+drvFault
+;
+143
+bool
+escEepromFault
+;
+144
+bool
+firmwareFault
+;
+145
+bool
+brownoutWarning
+;
+146
+bool
+overcurrentWarning
+;
+147
+bool
+escEepromWarning
+;
+148
+bool
+extEepromWarning
+;
+149
+bool
+sensorWarning
+;
+150
+bool
+stallWarning
+;
+151
+bool
+hasResetWarning
+;
+152
+bool
+otherWarning
+;
+153
+bool
+otherStickyFault
+;
+154
+bool
+motorTypeStickyFault
+;
+155
+bool
+sensorStickyFault
+;
+156
+bool
+canStickyFault
+;
+157
+bool
+temperatureStickyFault
+;
+158
+bool
+drvStickyFault
+;
+159
+bool
+escEepromStickyFault
+;
+160
+bool
+firmwareStickyFault
+;
+161
+bool
+brownoutStickyWarning
+;
+162
+bool
+overcurrentStickyWarning
+;
+163
+bool
+escEepromStickyWarning
+;
+164
+bool
+extEepromStickyWarning
+;
+165
+bool
+sensorStickyWarning
+;
+166
+bool
+stallStickyWarning
+;
+167
+bool
+hasResetStickyWarning
+;
+168
+bool
+otherStickyWarning
+;
+169
+bool
+isFollower
+;
+170
+uint64_t
+timestamp
+;
+171
+};
+172
+173
+struct
+PeriodicStatus2
+{
+174
+double
+primaryEncoderVelocity
+;
+175
+double
+primaryEncoderPosition
+;
+176
+uint64_t
+timestamp
+;
+177
+};
+178
+179
+struct
+PeriodicStatus3
+{
+180
+double
+analogVoltage
+;
+181
+double
+analogVelocity
+;
+182
+double
+analogPosition
+;
+183
+uint64_t
+timestamp
+;
+184
+};
+185
+186
+struct
+PeriodicStatus4
+{
+187
+double
+externalOrAltEncoderVelocity
+;
+188
+double
+externalOrAltEncoderPosition
+;
+189
+uint64_t
+timestamp
+;
+190
+};
+191
+192
+struct
+PeriodicStatus5
+{
+193
+double
+dutyCycleEncoderVelocity
+;
+194
+double
+dutyCycleEncoderPosition
+;
+195
+uint64_t
+timestamp
+;
+196
+};
+197
+198
+struct
+PeriodicStatus6
+{
+199
+double
+unadjustedDutyCycle
+;
+200
+double
+dutyCyclePeriod
+;
+201
+bool
+dutyCycleNoSignal
+;
+202
+uint64_t
+timestamp
+;
+203
+};
+204
+205
+struct
+PeriodicStatus7
+{
+206
+double
+iAccumulation
+;
+207
+uint64_t
+timestamp
+;
+208
+};
+209
+210
+struct
+PeriodicStatus8
+{
+211
+double
+setpoint
+;
+212
+bool
+isAtSetpoint
+;
+213
+ClosedLoopSlot
+selectedPidSlot
+;
+214
+uint64_t
+timestamp
+;
+215
+};
+216
+struct
+PeriodicStatus9
+{
+217
+double
+maxMotionSetpointPosition
+;
+218
+double
+maxMotionSetpointVelocity
+;
+219
+uint64_t
+timestamp
+;
+220
+};
+221
+222
+enum class
+SparkModel
+{
+223
+kSparkMax
+= 0,
+224
+kSparkFlex
+= 1,
+225
+kUnknown
+= 255,
+226
+};
+227
+231
+virtual
+~SparkLowLevel
+();
+232
+240
+uint32_t
+GetFirmwareVersion
+();
+241
+242
+uint32_t
+GetFirmwareVersion
+(
+bool
+& isDebugBuild);
+243
+250
+std::string
+GetFirmwareString
+();
+251
+259
+std::vector<uint8_t>
+GetSerialNumber
+();
+260
+267
+int
+GetDeviceId
+()
+const
+;
+268
+275
+MotorType
+GetMotorType
+();
+276
+283
+PeriodicStatus0
+GetPeriodicStatus0
+();
+284
+291
+PeriodicStatus1
+GetPeriodicStatus1
+();
+292
+299
+PeriodicStatus2
+GetPeriodicStatus2
+();
+300
+307
+PeriodicStatus3
+GetPeriodicStatus3
+();
+308
+315
+PeriodicStatus4
+GetPeriodicStatus4
+();
+316
+323
+PeriodicStatus5
+GetPeriodicStatus5
+();
+324
+331
+PeriodicStatus6
+GetPeriodicStatus6
+();
+332
+339
+PeriodicStatus7
+GetPeriodicStatus7
+();
+340
+347
+PeriodicStatus8
+GetPeriodicStatus8
+();
+348
+355
+PeriodicStatus9
+GetPeriodicStatus9
+();
+356
+370
+void
+SetPeriodicFrameTimeout
+(
+int
+timeoutMs);
+371
+386
+void
+SetCANMaxRetries
+(
+int
+numRetries);
+387
+397
+void
+SetControlFramePeriodMs
+(
+int
+periodMs);
+398
+402
+void
+CreateSimFaultManager
+();
+403
+404
+protected
+:
+405
+REVLibError
+SetpointCommand
+(
+406
+double
+value,
+SparkLowLevel::ControlType
+ctrl =
+ControlType::kDutyCycle
+,
+407
+ClosedLoopSlot
+pidSlot =
+ClosedLoopSlot::kSlot0
+,
+408
+double
+arbFeedforward = 0,
+int
+arbFFUnits = 0);
+409
+410
+float
+GetSafeFloat
+(
+float
+f);
+411
+412
+MotorType
+m_motorType
+;
+413
+SparkModel
+m_expectedSparkModel
+;
+414
+// The type is void* because we don't want to expose c_Spark_handle to
+415
+// the consumers of this header file
+416
+void
+*
+m_sparkMaxHandle
+;
+417
+418
+private
+:
+419
+explicit
+SparkLowLevel
+(
+int
+deviceID,
+MotorType
+type,
+SparkModel
+model);
+420
+421
+int
+m_deviceID;
+422
+};
+423
+424
+}
+// namespace rev::spark
+ClosedLoopTypes.h
+REVLibError.h
+rev::spark::SparkAbsoluteEncoder
+Definition:
+SparkAbsoluteEncoder.h:44
+rev::spark::SparkAbsoluteEncoderSim
+Definition:
+SparkAbsoluteEncoderSim.h:43
+rev::spark::SparkAnalogSensor
+Definition:
+SparkAnalogSensor.h:51
+rev::spark::SparkAnalogSensorSim
+Definition:
+SparkAnalogSensorSim.h:43
+rev::spark::SparkBase
+Definition:
+SparkBase.h:58
+rev::spark::SparkClosedLoopController
+Definition:
+SparkClosedLoopController.h:50
+rev::spark::SparkExternalEncoderSim
+Definition:
+SparkExternalEncoderSim.h:42
+rev::spark::SparkFlexExternalEncoder
+Definition:
+SparkFlexExternalEncoder.h:42
+rev::spark::SparkFlex
+Definition:
+SparkFlex.h:37
+rev::spark::SparkLimitSwitch
+Definition:
+SparkLimitSwitch.h:48
+rev::spark::SparkLimitSwitchSim
+Definition:
+SparkLimitSwitchSim.h:43
+rev::spark::SparkLowLevel
+Definition:
+SparkLowLevel.h:48
+rev::spark::SparkLowLevel::GetPeriodicStatus8
+PeriodicStatus8 GetPeriodicStatus8()
+Definition:
+SparkLowLevel.cpp:290
+rev::spark::SparkLowLevel::kAPIMinorVersion
+static const uint8_t kAPIMinorVersion
+Definition:
+SparkLowLevel.h:72
+rev::spark::SparkLowLevel::ParameterStatus
+ParameterStatus
+Definition:
+SparkLowLevel.h:100
+rev::spark::SparkLowLevel::ParameterStatus::kInvalidID
+@ kInvalidID
+rev::spark::SparkLowLevel::ParameterStatus::kMismatchType
+@ kMismatchType
+rev::spark::SparkLowLevel::ParameterStatus::kAccessMode
+@ kAccessMode
+rev::spark::SparkLowLevel::ParameterStatus::kInvalid
+@ kInvalid
+rev::spark::SparkLowLevel::ParameterStatus::kOK
+@ kOK
+rev::spark::SparkLowLevel::ParameterStatus::kNotImplementedDeprecated
+@ kNotImplementedDeprecated
+rev::spark::SparkLowLevel::SetpointCommand
+REVLibError SetpointCommand(double value, SparkLowLevel::ControlType ctrl=ControlType::kDutyCycle, ClosedLoopSlot pidSlot=ClosedLoopSlot::kSlot0, double arbFeedforward=0, int arbFFUnits=0)
+Definition:
+SparkLowLevel.cpp:318
+rev::spark::SparkLowLevel::GetMotorType
+MotorType GetMotorType()
+Definition:
+SparkLowLevel.cpp:121
+rev::spark::SparkLowLevel::MotorType
+MotorType
+Definition:
+SparkLowLevel.h:76
+rev::spark::SparkLowLevel::MotorType::kBrushed
+@ kBrushed
+rev::spark::SparkLowLevel::MotorType::kBrushless
+@ kBrushless
+rev::spark::SparkLowLevel::m_expectedSparkModel
+SparkModel m_expectedSparkModel
+Definition:
+SparkLowLevel.h:413
+rev::spark::SparkLowLevel::SetControlFramePeriodMs
+void SetControlFramePeriodMs(int periodMs)
+Definition:
+SparkLowLevel.cpp:133
+rev::spark::SparkLowLevel::GetSafeFloat
+float GetSafeFloat(float f)
+Definition:
+SparkLowLevel.cpp:329
+rev::spark::SparkLowLevel::m_motorType
+MotorType m_motorType
+Definition:
+SparkLowLevel.h:412
+rev::spark::SparkLowLevel::GetPeriodicStatus2
+PeriodicStatus2 GetPeriodicStatus2()
+Definition:
+SparkLowLevel.cpp:209
+rev::spark::SparkLowLevel::GetPeriodicStatus9
+PeriodicStatus9 GetPeriodicStatus9()
+Definition:
+SparkLowLevel.cpp:305
+rev::spark::SparkLowLevel::~SparkLowLevel
+virtual ~SparkLowLevel()
+Definition:
+SparkLowLevel.cpp:83
+rev::spark::SparkLowLevel::GetPeriodicStatus4
+PeriodicStatus4 GetPeriodicStatus4()
+Definition:
+SparkLowLevel.cpp:236
+rev::spark::SparkLowLevel::GetPeriodicStatus3
+PeriodicStatus3 GetPeriodicStatus3()
+Definition:
+SparkLowLevel.cpp:222
+rev::spark::SparkLowLevel::GetPeriodicStatus0
+PeriodicStatus0 GetPeriodicStatus0()
+Definition:
+SparkLowLevel.cpp:138
+rev::spark::SparkLowLevel::kAPIMajorVersion
+static const uint16_t kAPIMajorVersion
+Definition:
+SparkLowLevel.h:71
+rev::spark::SparkLowLevel::m_sparkMaxHandle
+void * m_sparkMaxHandle
+Definition:
+SparkLowLevel.h:416
+rev::spark::SparkLowLevel::GetPeriodicStatus5
+PeriodicStatus5 GetPeriodicStatus5()
+Definition:
+SparkLowLevel.cpp:251
+rev::spark::SparkLowLevel::GetPeriodicStatus1
+PeriodicStatus1 GetPeriodicStatus1()
+Definition:
+SparkLowLevel.cpp:165
+rev::spark::SparkLowLevel::SetPeriodicFrameTimeout
+void SetPeriodicFrameTimeout(int timeoutMs)
+Definition:
+SparkLowLevel.cpp:123
+rev::spark::SparkLowLevel::GetFirmwareString
+std::string GetFirmwareString()
+Definition:
+SparkLowLevel.cpp:102
+rev::spark::SparkLowLevel::SparkModel
+SparkModel
+Definition:
+SparkLowLevel.h:222
+rev::spark::SparkLowLevel::SparkModel::kSparkMax
+@ kSparkMax
+rev::spark::SparkLowLevel::SparkModel::kUnknown
+@ kUnknown
+rev::spark::SparkLowLevel::SparkModel::kSparkFlex
+@ kSparkFlex
+rev::spark::SparkLowLevel::GetSerialNumber
+std::vector< uint8_t > GetSerialNumber()
+Definition:
+SparkLowLevel.cpp:117
+rev::spark::SparkLowLevel::GetPeriodicStatus6
+PeriodicStatus6 GetPeriodicStatus6()
+Definition:
+SparkLowLevel.cpp:264
+rev::spark::SparkLowLevel::kAPIVersion
+static const uint32_t kAPIVersion
+Definition:
+SparkLowLevel.h:74
+rev::spark::SparkLowLevel::SetCANMaxRetries
+void SetCANMaxRetries(int numRetries)
+Definition:
+SparkLowLevel.cpp:128
+rev::spark::SparkLowLevel::CreateSimFaultManager
+void CreateSimFaultManager()
+Definition:
+SparkLowLevel.cpp:334
+rev::spark::SparkLowLevel::kAPIBuildVersion
+static const uint8_t kAPIBuildVersion
+Definition:
+SparkLowLevel.h:73
+rev::spark::SparkLowLevel::GetFirmwareVersion
+uint32_t GetFirmwareVersion()
+Definition:
+SparkLowLevel.cpp:87
+rev::spark::SparkLowLevel::PeriodicFrame
+PeriodicFrame
+Definition:
+SparkLowLevel.h:109
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus1
+@ kStatus1
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus3
+@ kStatus3
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus8
+@ kStatus8
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus9
+@ kStatus9
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus7
+@ kStatus7
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus4
+@ kStatus4
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus2
+@ kStatus2
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus6
+@ kStatus6
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus5
+@ kStatus5
+rev::spark::SparkLowLevel::PeriodicFrame::kStatus0
+@ kStatus0
+rev::spark::SparkLowLevel::GetPeriodicStatus7
+PeriodicStatus7 GetPeriodicStatus7()
+Definition:
+SparkLowLevel.cpp:278
+rev::spark::SparkLowLevel::ControlType
+ControlType
+Definition:
+SparkLowLevel.h:78
+rev::spark::SparkLowLevel::ControlType::kDutyCycle
+@ kDutyCycle
+rev::spark::SparkLowLevel::ControlType::kVoltage
+@ kVoltage
+rev::spark::SparkLowLevel::ControlType::kVelocity
+@ kVelocity
+rev::spark::SparkLowLevel::ControlType::kCurrent
+@ kCurrent
+rev::spark::SparkLowLevel::ControlType::kMAXMotionPositionControl
+@ kMAXMotionPositionControl
+rev::spark::SparkLowLevel::ControlType::kSmartVelocity
+@ kSmartVelocity
+rev::spark::SparkLowLevel::ControlType::kMAXMotionVelocityControl
+@ kMAXMotionVelocityControl
+rev::spark::SparkLowLevel::ControlType::kSmartMotion
+@ kSmartMotion
+rev::spark::SparkLowLevel::ControlType::kPosition
+@ kPosition
+rev::spark::SparkLowLevel::GetDeviceId
+int GetDeviceId() const
+Definition:
+SparkLowLevel.cpp:119
+rev::spark::SparkMaxAlternateEncoder
+Definition:
+SparkMaxAlternateEncoder.h:46
+rev::spark::SparkMaxAlternateEncoderSim
+Definition:
+SparkMaxAlternateEncoderSim.h:42
+rev::spark::SparkMax
+Definition:
+SparkMax.h:37
+rev::spark::SparkRelativeEncoder
+Definition:
+SparkRelativeEncoder.h:46
+rev::spark::SparkRelativeEncoderSim
+Definition:
+SparkRelativeEncoderSim.h:43
+rev::spark::SparkSimFaultManager
+Definition:
+SparkSimFaultManager.h:43
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::ClosedLoopSlot
+ClosedLoopSlot
+Definition:
+ClosedLoopTypes.h:35
+rev::spark::kSlot0
+@ kSlot0
+Definition:
+ClosedLoopTypes.h:35
+rev::REVLibError
+REVLibError
+Definition:
+REVLibError.h:33
+rev::spark::SparkLowLevel::PeriodicStatus0
+Definition:
+SparkLowLevel.h:122
+rev::spark::SparkLowLevel::PeriodicStatus0::inverted
+bool inverted
+Definition:
+SparkLowLevel.h:131
+rev::spark::SparkLowLevel::PeriodicStatus0::hardForwardLimitReached
+bool hardForwardLimitReached
+Definition:
+SparkLowLevel.h:127
+rev::spark::SparkLowLevel::PeriodicStatus0::softForwardLimitReached
+bool softForwardLimitReached
+Definition:
+SparkLowLevel.h:129
+rev::spark::SparkLowLevel::PeriodicStatus0::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:133
+rev::spark::SparkLowLevel::PeriodicStatus0::current
+double current
+Definition:
+SparkLowLevel.h:125
+rev::spark::SparkLowLevel::PeriodicStatus0::appliedOutput
+double appliedOutput
+Definition:
+SparkLowLevel.h:123
+rev::spark::SparkLowLevel::PeriodicStatus0::voltage
+double voltage
+Definition:
+SparkLowLevel.h:124
+rev::spark::SparkLowLevel::PeriodicStatus0::primaryHeartbeatLock
+bool primaryHeartbeatLock
+Definition:
+SparkLowLevel.h:132
+rev::spark::SparkLowLevel::PeriodicStatus0::hardReverseLimitReached
+bool hardReverseLimitReached
+Definition:
+SparkLowLevel.h:128
+rev::spark::SparkLowLevel::PeriodicStatus0::softReverseLimitReached
+bool softReverseLimitReached
+Definition:
+SparkLowLevel.h:130
+rev::spark::SparkLowLevel::PeriodicStatus0::motorTemperature
+uint8_t motorTemperature
+Definition:
+SparkLowLevel.h:126
+rev::spark::SparkLowLevel::PeriodicStatus1
+Definition:
+SparkLowLevel.h:136
+rev::spark::SparkLowLevel::PeriodicStatus1::extEepromWarning
+bool extEepromWarning
+Definition:
+SparkLowLevel.h:148
+rev::spark::SparkLowLevel::PeriodicStatus1::brownoutStickyWarning
+bool brownoutStickyWarning
+Definition:
+SparkLowLevel.h:161
+rev::spark::SparkLowLevel::PeriodicStatus1::motorTypeStickyFault
+bool motorTypeStickyFault
+Definition:
+SparkLowLevel.h:154
+rev::spark::SparkLowLevel::PeriodicStatus1::drvStickyFault
+bool drvStickyFault
+Definition:
+SparkLowLevel.h:158
+rev::spark::SparkLowLevel::PeriodicStatus1::isFollower
+bool isFollower
+Definition:
+SparkLowLevel.h:169
+rev::spark::SparkLowLevel::PeriodicStatus1::escEepromStickyWarning
+bool escEepromStickyWarning
+Definition:
+SparkLowLevel.h:163
+rev::spark::SparkLowLevel::PeriodicStatus1::firmwareFault
+bool firmwareFault
+Definition:
+SparkLowLevel.h:144
+rev::spark::SparkLowLevel::PeriodicStatus1::sensorStickyFault
+bool sensorStickyFault
+Definition:
+SparkLowLevel.h:155
+rev::spark::SparkLowLevel::PeriodicStatus1::sensorWarning
+bool sensorWarning
+Definition:
+SparkLowLevel.h:149
+rev::spark::SparkLowLevel::PeriodicStatus1::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:170
+rev::spark::SparkLowLevel::PeriodicStatus1::stallStickyWarning
+bool stallStickyWarning
+Definition:
+SparkLowLevel.h:166
+rev::spark::SparkLowLevel::PeriodicStatus1::hasResetStickyWarning
+bool hasResetStickyWarning
+Definition:
+SparkLowLevel.h:167
+rev::spark::SparkLowLevel::PeriodicStatus1::brownoutWarning
+bool brownoutWarning
+Definition:
+SparkLowLevel.h:145
+rev::spark::SparkLowLevel::PeriodicStatus1::firmwareStickyFault
+bool firmwareStickyFault
+Definition:
+SparkLowLevel.h:160
+rev::spark::SparkLowLevel::PeriodicStatus1::overcurrentWarning
+bool overcurrentWarning
+Definition:
+SparkLowLevel.h:146
+rev::spark::SparkLowLevel::PeriodicStatus1::canFault
+bool canFault
+Definition:
+SparkLowLevel.h:140
+rev::spark::SparkLowLevel::PeriodicStatus1::stallWarning
+bool stallWarning
+Definition:
+SparkLowLevel.h:150
+rev::spark::SparkLowLevel::PeriodicStatus1::otherFault
+bool otherFault
+Definition:
+SparkLowLevel.h:137
+rev::spark::SparkLowLevel::PeriodicStatus1::hasResetWarning
+bool hasResetWarning
+Definition:
+SparkLowLevel.h:151
+rev::spark::SparkLowLevel::PeriodicStatus1::sensorFault
+bool sensorFault
+Definition:
+SparkLowLevel.h:139
+rev::spark::SparkLowLevel::PeriodicStatus1::overcurrentStickyWarning
+bool overcurrentStickyWarning
+Definition:
+SparkLowLevel.h:162
+rev::spark::SparkLowLevel::PeriodicStatus1::canStickyFault
+bool canStickyFault
+Definition:
+SparkLowLevel.h:156
+rev::spark::SparkLowLevel::PeriodicStatus1::drvFault
+bool drvFault
+Definition:
+SparkLowLevel.h:142
+rev::spark::SparkLowLevel::PeriodicStatus1::otherStickyFault
+bool otherStickyFault
+Definition:
+SparkLowLevel.h:153
+rev::spark::SparkLowLevel::PeriodicStatus1::escEepromFault
+bool escEepromFault
+Definition:
+SparkLowLevel.h:143
+rev::spark::SparkLowLevel::PeriodicStatus1::escEepromStickyFault
+bool escEepromStickyFault
+Definition:
+SparkLowLevel.h:159
+rev::spark::SparkLowLevel::PeriodicStatus1::escEepromWarning
+bool escEepromWarning
+Definition:
+SparkLowLevel.h:147
+rev::spark::SparkLowLevel::PeriodicStatus1::otherStickyWarning
+bool otherStickyWarning
+Definition:
+SparkLowLevel.h:168
+rev::spark::SparkLowLevel::PeriodicStatus1::otherWarning
+bool otherWarning
+Definition:
+SparkLowLevel.h:152
+rev::spark::SparkLowLevel::PeriodicStatus1::extEepromStickyWarning
+bool extEepromStickyWarning
+Definition:
+SparkLowLevel.h:164
+rev::spark::SparkLowLevel::PeriodicStatus1::sensorStickyWarning
+bool sensorStickyWarning
+Definition:
+SparkLowLevel.h:165
+rev::spark::SparkLowLevel::PeriodicStatus1::temperatureStickyFault
+bool temperatureStickyFault
+Definition:
+SparkLowLevel.h:157
+rev::spark::SparkLowLevel::PeriodicStatus1::temperatureFault
+bool temperatureFault
+Definition:
+SparkLowLevel.h:141
+rev::spark::SparkLowLevel::PeriodicStatus1::motorTypeFault
+bool motorTypeFault
+Definition:
+SparkLowLevel.h:138
+rev::spark::SparkLowLevel::PeriodicStatus2
+Definition:
+SparkLowLevel.h:173
+rev::spark::SparkLowLevel::PeriodicStatus2::primaryEncoderPosition
+double primaryEncoderPosition
+Definition:
+SparkLowLevel.h:175
+rev::spark::SparkLowLevel::PeriodicStatus2::primaryEncoderVelocity
+double primaryEncoderVelocity
+Definition:
+SparkLowLevel.h:174
+rev::spark::SparkLowLevel::PeriodicStatus2::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:176
+rev::spark::SparkLowLevel::PeriodicStatus3
+Definition:
+SparkLowLevel.h:179
+rev::spark::SparkLowLevel::PeriodicStatus3::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:183
+rev::spark::SparkLowLevel::PeriodicStatus3::analogVoltage
+double analogVoltage
+Definition:
+SparkLowLevel.h:180
+rev::spark::SparkLowLevel::PeriodicStatus3::analogVelocity
+double analogVelocity
+Definition:
+SparkLowLevel.h:181
+rev::spark::SparkLowLevel::PeriodicStatus3::analogPosition
+double analogPosition
+Definition:
+SparkLowLevel.h:182
+rev::spark::SparkLowLevel::PeriodicStatus4
+Definition:
+SparkLowLevel.h:186
+rev::spark::SparkLowLevel::PeriodicStatus4::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:189
+rev::spark::SparkLowLevel::PeriodicStatus4::externalOrAltEncoderPosition
+double externalOrAltEncoderPosition
+Definition:
+SparkLowLevel.h:188
+rev::spark::SparkLowLevel::PeriodicStatus4::externalOrAltEncoderVelocity
+double externalOrAltEncoderVelocity
+Definition:
+SparkLowLevel.h:187
+rev::spark::SparkLowLevel::PeriodicStatus5
+Definition:
+SparkLowLevel.h:192
+rev::spark::SparkLowLevel::PeriodicStatus5::dutyCycleEncoderVelocity
+double dutyCycleEncoderVelocity
+Definition:
+SparkLowLevel.h:193
+rev::spark::SparkLowLevel::PeriodicStatus5::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:195
+rev::spark::SparkLowLevel::PeriodicStatus5::dutyCycleEncoderPosition
+double dutyCycleEncoderPosition
+Definition:
+SparkLowLevel.h:194
+rev::spark::SparkLowLevel::PeriodicStatus6
+Definition:
+SparkLowLevel.h:198
+rev::spark::SparkLowLevel::PeriodicStatus6::dutyCycleNoSignal
+bool dutyCycleNoSignal
+Definition:
+SparkLowLevel.h:201
+rev::spark::SparkLowLevel::PeriodicStatus6::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:202
+rev::spark::SparkLowLevel::PeriodicStatus6::dutyCyclePeriod
+double dutyCyclePeriod
+Definition:
+SparkLowLevel.h:200
+rev::spark::SparkLowLevel::PeriodicStatus6::unadjustedDutyCycle
+double unadjustedDutyCycle
+Definition:
+SparkLowLevel.h:199
+rev::spark::SparkLowLevel::PeriodicStatus7
+Definition:
+SparkLowLevel.h:205
+rev::spark::SparkLowLevel::PeriodicStatus7::iAccumulation
+double iAccumulation
+Definition:
+SparkLowLevel.h:206
+rev::spark::SparkLowLevel::PeriodicStatus7::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:207
+rev::spark::SparkLowLevel::PeriodicStatus8
+Definition:
+SparkLowLevel.h:210
+rev::spark::SparkLowLevel::PeriodicStatus8::isAtSetpoint
+bool isAtSetpoint
+Definition:
+SparkLowLevel.h:212
+rev::spark::SparkLowLevel::PeriodicStatus8::setpoint
+double setpoint
+Definition:
+SparkLowLevel.h:211
+rev::spark::SparkLowLevel::PeriodicStatus8::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:214
+rev::spark::SparkLowLevel::PeriodicStatus8::selectedPidSlot
+ClosedLoopSlot selectedPidSlot
+Definition:
+SparkLowLevel.h:213
+rev::spark::SparkLowLevel::PeriodicStatus9
+Definition:
+SparkLowLevel.h:216
+rev::spark::SparkLowLevel::PeriodicStatus9::maxMotionSetpointVelocity
+double maxMotionSetpointVelocity
+Definition:
+SparkLowLevel.h:218
+rev::spark::SparkLowLevel::PeriodicStatus9::maxMotionSetpointPosition
+double maxMotionSetpointPosition
+Definition:
+SparkLowLevel.h:217
+rev::spark::SparkLowLevel::PeriodicStatus9::timestamp
+uint64_t timestamp
+Definition:
+SparkLowLevel.h:219
+src
+main
+native
+include
+rev
+SparkLowLevel.h
+Generated by
+1.9.2

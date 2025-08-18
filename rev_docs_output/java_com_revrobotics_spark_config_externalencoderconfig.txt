@@ -1,0 +1,222 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class ExternalEncoderConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.ExternalEncoderConfig
+public class
+ExternalEncoderConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static enum
+ExternalEncoderConfig.Type
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Constructor Summary
+Constructors
+Constructor
+Description
+ExternalEncoderConfig
+()
+Create a new object to configure an ExternalEncoder.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+ExternalEncoderConfig
+apply
+(
+ExternalEncoderConfig
+config)
+Applies settings from another
+ExternalEncoderConfig
+to this one.
+ExternalEncoderConfig
+averageDepth
+(int depth)
+Set the sampling depth of the velocity calculation process of the external encoder.
+ExternalEncoderConfig
+countsPerRevolution
+(int cpr)
+Set the counts per revolutions of the external encoder.
+ExternalEncoderConfig
+inverted
+(boolean inverted)
+Set the phase of the external encoder so that it is in phase with the motor itself.
+ExternalEncoderConfig
+measurementPeriod
+(int periodMs)
+Set the position measurement period used to calculate the velocity of the external encoder.
+ExternalEncoderConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the external encoder.
+ExternalEncoderConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the external encoder.
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+flatten
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+ExternalEncoderConfig
+public
+ExternalEncoderConfig
+()
+Create a new object to configure an ExternalEncoder.
+Method Details
+apply
+public
+ExternalEncoderConfig
+apply
+(
+ExternalEncoderConfig
+config)
+Applies settings from another
+ExternalEncoderConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+ExternalEncoderConfig
+to copy settings from
+Returns:
+The updated
+ExternalEncoderConfig
+for method chaining
+countsPerRevolution
+public
+ExternalEncoderConfig
+countsPerRevolution
+(int cpr)
+Set the counts per revolutions of the external encoder.
+Parameters:
+cpr
+- The counts per rotation
+Returns:
+The modified
+ExternalEncoderConfig
+object for method chaining
+inverted
+public
+ExternalEncoderConfig
+inverted
+(boolean inverted)
+Set the phase of the external encoder so that it is in phase with the motor itself.
+Parameters:
+inverted
+- The phase of the encoder
+Returns:
+The modified
+ExternalEncoderConfig
+object for method chaining
+positionConversionFactor
+public
+ExternalEncoderConfig
+positionConversionFactor
+(double factor)
+Set the conversion factor for the position of the external encoder. Position is returned in
+ native units of rotations and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+ExternalEncoderConfig
+object for method chaining
+velocityConversionFactor
+public
+ExternalEncoderConfig
+velocityConversionFactor
+(double factor)
+Set the conversion factor for the velocity of the external encoder. Velocity is returned in
+ native units of rotations per minute and will be multiplied by this conversion factor.
+Parameters:
+factor
+- The conversion factor to multiply the native units by
+Returns:
+The modified
+ExternalEncoderConfig
+object for method chaining
+averageDepth
+public
+ExternalEncoderConfig
+averageDepth
+(int depth)
+Set the sampling depth of the velocity calculation process of the external encoder. This value
+ sets the number of samples in the average for velocity readings. For a quadrature encoder, this
+ can be any value from 1 to 64 (default).
+Parameters:
+depth
+- The velocity calculation process's sampling depth
+Returns:
+The modified
+ExternalEncoderConfig
+object for method chaining
+measurementPeriod
+public
+ExternalEncoderConfig
+measurementPeriod
+(int periodMs)
+Set the position measurement period used to calculate the velocity of the external encoder. For
+ a quadrature encoder, this number may be between 1 and 100 (default).
+The basic formula to calculate velocity is change in position / change in time. This
+ parameter sets the change in time for measurement.
+Parameters:
+periodMs
+- Measurement period in milliseconds
+Returns:
+The modified
+ExternalEncoderConfig
+object for method chaining

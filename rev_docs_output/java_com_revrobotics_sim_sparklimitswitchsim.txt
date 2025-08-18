@@ -1,0 +1,124 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.sim
+Class SparkLimitSwitchSim
+java.lang.Object
+com.revrobotics.sim.SparkLimitSwitchSim
+public class
+SparkLimitSwitchSim
+extends
+Object
+Constructor Summary
+Constructors
+Constructor
+Description
+SparkLimitSwitchSim
+(
+SparkFlex
+motor,
+ boolean forward)
+Create a Limit Switch simulation object for a Spark Flex.
+SparkLimitSwitchSim
+(
+SparkMax
+motor,
+ boolean forward)
+Create a Limit Switch simulation object for a Spark MAX.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+boolean
+getEnabled
+()
+Get the enabled state of the limit switch
+boolean
+getPressed
+()
+Get the state of the limit switch
+void
+setPressed
+(boolean state)
+Set the state of the limit switch
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+SparkLimitSwitchSim
+public
+SparkLimitSwitchSim
+(
+SparkMax
+motor,
+ boolean forward)
+Create a Limit Switch simulation object for a Spark MAX. This will allow you to read/write data
+ from the simulated sensor and view it in the Sim GUI.
+Parameters:
+motor
+- The CANSparkMax associated with the sensor
+forward
+- if the switch is forward or not
+SparkLimitSwitchSim
+public
+SparkLimitSwitchSim
+(
+SparkFlex
+motor,
+ boolean forward)
+Create a Limit Switch simulation object for a Spark Flex. This will allow you to read/write
+ data from the simulated sensor and view it in the Sim GUI.
+Parameters:
+motor
+- The CANSparkMax associated with the sensor
+forward
+- if the switch is forward or not
+Method Details
+setPressed
+public
+void
+setPressed
+(boolean state)
+Set the state of the limit switch
+Parameters:
+state
+- if the switch is pressed or not
+getPressed
+public
+boolean
+getPressed
+()
+Get the state of the limit switch
+Returns:
+if the switch is pressed or not
+getEnabled
+public
+boolean
+getEnabled
+()
+Get the enabled state of the limit switch
+Enable the limit switch via the original SparkLimitSwitch object
+Returns:
+if the switch is enabled or not

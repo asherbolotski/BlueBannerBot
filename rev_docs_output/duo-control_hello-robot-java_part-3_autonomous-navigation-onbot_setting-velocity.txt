@@ -1,0 +1,395 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Setting Velocity in our Program
+Adding Ticks per Second as a Variable
+Changing from Power to Velocity
+DcMotor vs. DcMotorEx
+Full Program
+Was this helpful?
+Export as PDF
+Setting Velocity in our Program
+Velocity is a closed loop control within the
+SDK
+that uses the encoder counts to determine the approximate power/speed the motors need to go in order to meet the set velocity.
+To set a velocity, its important to understand the maximum velocity in RPM your motor is capable of. For the Class Bot V2 the motors are capable of a maximum RPM of 300. With a drivetrain, you are likely to get better control by setting velocity lower than the maximum. In this case, lets set the velocity to 175 RPM!
+Since RPM is the amount of revolutions per minute, a conversion needs to be made from RPM to ticks per second (TPS). To do this, divide the RPM by 60 to get the amount of rotations per second.
+Rotations per second can then be multiplied by
+COUNTS_PER_WHEEL_REV
+, to get the amount of ticks per second.
+T
+P
+S
+=
+175
+60
+∗
+C
+P
+W
+R
+TPS = \frac{175}{60} * CPWR
+TPS
+=
+60
+175
+​
+∗
+CP
+W
+R
+Adding Ticks per Second as a Variable
+Create a new double variable called
+TPS
+. Add
+TPS
+the to the OpMode under where
+rightTarget
+is defined:
+Copy
+public
+void
+runOpMode()
+{
+leftmotor
+=
+hardwareMap
+.
+get
+(
+DcMotor
+.
+class
+,
+"leftmotor"
+);
+rightmotor
+=
+hardwareMap
+.
+get
+(
+DcMotor
+.
+class
+,
+"rightmotor"
+);
+rightmotor
+.
+setDirection
+(
+DcMotor
+.
+Direction
+.
+REVERSE
+);
+leftmotor
+.
+setMode
+(
+DcMotor
+.
+RunMode
+.
+STOP_AND_RESET_ENCODER
+);
+rightmotor
+.
+setMode
+(
+DcMotor
+.
+RunMode
+.
+STOP_AND_RESET_ENCODER
+);
+int
+leftTarget
+=
+(
+int
+)(
+610
+*
+COUNTS_PER_MM);
+int
+rightTarget
+=
+(
+int
+)(
+610
+*
+COUNTS_PER_MM);
+double
+TPS
+=
+(
+175
+/
+60
+)
+*
+COUNTS_PER_WHEEL_REV;
+waitForStart()
+;
+Changing from Power to Velocity
+Exchange the
+setPower();
+functions for
+setVelocity();
+Add
+TPS
+as the parameter for
+setVelocity();
+Copy
+waitForStart();
+leftmotor.setTargetPosition(leftTarget);
+rightmotor.setTargetPosition(rightTarget);
+leftmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+rightmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+leftmotor.setVelocity(TPS);
+rightmotor.setVelocity(TPS);
+while (opModeIsActive() && (leftmotor.isBusy() && rightmotor.isBusy())){
+}
+With the velocity set, let's give our program a test run after building!
+DcMotor vs. DcMotorEx
+With the current state of the code you are likely to get errors similar to the ones pictured below:
+This is because the
+setVelocity();
+function is a function of the
+DcMotorEx
+Interface. The
+DcMotorEx
+Interface is an extension of the
+DcMotor
+Interface, that provides enhanced motor functionality, such as access to closed loop control functions.
+To use
+setVelocity();
+the motor variables need to be changed to
+DcMotorEx
+as seen below:
+Copy
+public class HelloRobot_Encoder extends LinearOpMode {
+private DcMotorEx leftmotor;
+private DcMotorEx rightmotor;
+Copy
+public void runOpMode() {
+leftmotor = hardwareMap.get(DcMotorEx.class, "leftmotor");
+rightmotor = hardwareMap.get(DcMotorEx.class, "rightmotor");
+Since
+DcMotorEx
+is an extension of
+DcMotor
+,
+DcMotor
+specific functions can be used by variables defined as
+DcMotorEx
+.
+Full Program
+Copy
+@Autonomous
+public class HelloRobot_Encoder extends LinearOpMode {
+private DcMotorEx leftmotor;
+private DcMotorEx rightmotor;
+static final double     COUNTS_PER_MOTOR_REV    = 28.0;
+static final double     DRIVE_GEAR_REDUCTION    = 30.24;
+static final double     WHEEL_CIRCUMFERENCE_MM  = 90.0 * 3.14;
+static final double     COUNTS_PER_WHEEL_REV    = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
+static final double     COUNTS_PER_MM           = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_MM;
+@Override
+public void runOpMode() {
+leftmotor = hardwareMap.get(DcMotorEx.class, "leftmotor");
+rightmotor = hardwareMap.get(DcMotorEx.class, "rightmotor");
+rightmotor.setDirection(DcMotor.Direction.REVERSE);
+leftmotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+rightmotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+int leftTarget = (int)(610 * COUNTS_PER_MM);
+int rightTarget = (int)(610 * COUNTS_PER_MM);
+double TPS = (175/ 60) * COUNTS_PER_WHEEL_REV;
+waitForStart();
+leftmotor.setTargetPosition(leftTarget);
+rightmotor.setTargetPosition(rightTarget);
+leftmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+rightmotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+leftmotor.setVelocity(TPS);
+rightmotor.setVelocity(TPS);
+while (opModeIsActive() && (leftmotor.isBusy() && rightmotor.isBusy())) {
+}
+}
+}
+Previous
+Moving to a Target Distance
+Next
+Turning the Drivetrain Using RUN_TO_POSITION
+Last updated
+8 months ago
+Was this helpful?

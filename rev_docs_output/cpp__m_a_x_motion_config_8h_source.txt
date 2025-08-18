@@ -1,0 +1,323 @@
+REVLib - C++
+MAXMotionConfig.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#include "
+rev/ClosedLoopTypes.h
+"
+32
+#include "
+rev/config/BaseConfig.h
+"
+33
+34
+namespace
+rev::spark
+{
+35
+36
+class
+MAXMotionConfig
+:
+public
+BaseConfig
+{
+37
+public
+:
+38
+enum
+MAXMotionPositionMode
+: uint32_t {
+39
+kMAXMotionTrapezoidal
+= 0,
+40
+#if 0
+// TODO(rylan): Add when S-curve is supported
+41
+kMAXMotionSCurve = 1
+42
+#endif
+43
+};
+44
+45
+MAXMotionConfig
+() =
+default
+;
+46
+~MAXMotionConfig
+()
+override
+=
+default
+;
+47
+48
+MAXMotionConfig
+(
+const
+MAXMotionConfig
+&) =
+delete
+;
+49
+MAXMotionConfig
+&
+operator=
+(
+const
+MAXMotionConfig
+&) =
+delete
+;
+50
+MAXMotionConfig
+(
+MAXMotionConfig
+&&) noexcept = delete;
+51
+MAXMotionConfig
+& operator=(
+MAXMotionConfig
+&&) noexcept = delete;
+52
+62
+MAXMotionConfig
+&
+Apply
+(
+MAXMotionConfig
+& config);
+63
+75
+[[deprecated(
+76
+"Use
+MAXMotionConfig
+::
+CruiseVelocity
+instead")]]
+MAXMotionConfig
+&
+77
+MaxVelocity
+(
+double
+maxVelocity,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+78
+89
+MAXMotionConfig
+&
+CruiseVelocity
+(
+double
+cruiseVelocity,
+90
+ClosedLoopSlot
+slot =
+kSlot0
+);
+91
+103
+MAXMotionConfig
+&
+MaxAcceleration
+(
+double
+maxAcceleration,
+104
+ClosedLoopSlot
+slot =
+kSlot0
+);
+105
+119
+[[deprecated(
+120
+"Use
+MAXMotionConfig
+::
+AllowedProfileError
+instead")]]
+MAXMotionConfig
+&
+121
+AllowedClosedLoopError
+(
+double
+allowedError,
+ClosedLoopSlot
+slot =
+kSlot0
+);
+122
+135
+MAXMotionConfig
+&
+AllowedProfileError
+(
+double
+allowedError,
+136
+ClosedLoopSlot
+slot =
+kSlot0
+);
+137
+146
+MAXMotionConfig
+&
+PositionMode
+(
+MAXMotionPositionMode
+mode,
+147
+ClosedLoopSlot
+slot =
+kSlot0
+);
+148
+};
+149
+150
+}
+// namespace rev::spark
+BaseConfig.h
+ClosedLoopTypes.h
+rev::BaseConfig
+Definition:
+BaseConfig.h:40
+rev::spark::MAXMotionConfig
+Definition:
+MAXMotionConfig.h:36
+rev::spark::MAXMotionConfig::operator=
+MAXMotionConfig & operator=(const MAXMotionConfig &)=delete
+rev::spark::MAXMotionConfig::MAXMotionConfig
+MAXMotionConfig(MAXMotionConfig &&) noexcept=delete
+rev::spark::MAXMotionConfig::AllowedProfileError
+MAXMotionConfig & AllowedProfileError(double allowedError, ClosedLoopSlot slot=kSlot0)
+Definition:
+MAXMotionConfig.cpp:77
+rev::spark::MAXMotionConfig::MaxVelocity
+MAXMotionConfig & MaxVelocity(double maxVelocity, ClosedLoopSlot slot=kSlot0)
+Definition:
+MAXMotionConfig.cpp:46
+rev::spark::MAXMotionConfig::CruiseVelocity
+MAXMotionConfig & CruiseVelocity(double cruiseVelocity, ClosedLoopSlot slot=kSlot0)
+Definition:
+MAXMotionConfig.cpp:54
+rev::spark::MAXMotionConfig::Apply
+MAXMotionConfig & Apply(MAXMotionConfig &config)
+Definition:
+MAXMotionConfig.cpp:41
+rev::spark::MAXMotionConfig::MAXMotionConfig
+MAXMotionConfig(const MAXMotionConfig &)=delete
+rev::spark::MAXMotionConfig::MaxAcceleration
+MAXMotionConfig & MaxAcceleration(double maxAcceleration, ClosedLoopSlot slot=kSlot0)
+Definition:
+MAXMotionConfig.cpp:62
+rev::spark::MAXMotionConfig::PositionMode
+MAXMotionConfig & PositionMode(MAXMotionPositionMode mode, ClosedLoopSlot slot=kSlot0)
+Definition:
+MAXMotionConfig.cpp:85
+rev::spark::MAXMotionConfig::MAXMotionConfig
+MAXMotionConfig()=default
+rev::spark::MAXMotionConfig::MAXMotionPositionMode
+MAXMotionPositionMode
+Definition:
+MAXMotionConfig.h:38
+rev::spark::MAXMotionConfig::kMAXMotionTrapezoidal
+@ kMAXMotionTrapezoidal
+Definition:
+MAXMotionConfig.h:39
+rev::spark::MAXMotionConfig::AllowedClosedLoopError
+MAXMotionConfig & AllowedClosedLoopError(double allowedError, ClosedLoopSlot slot=kSlot0)
+Definition:
+MAXMotionConfig.cpp:69
+rev::spark::MAXMotionConfig::~MAXMotionConfig
+~MAXMotionConfig() override=default
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::ClosedLoopSlot
+ClosedLoopSlot
+Definition:
+ClosedLoopTypes.h:35
+rev::spark::kSlot0
+@ kSlot0
+Definition:
+ClosedLoopTypes.h:35
+src
+main
+native
+include
+rev
+config
+MAXMotionConfig.h
+Generated by
+1.9.2

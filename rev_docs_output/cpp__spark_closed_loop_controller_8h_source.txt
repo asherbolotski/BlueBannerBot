@@ -1,0 +1,393 @@
+REVLib - C++
+SparkClosedLoopController.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2018-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+#ifdef _MSC_VER
+32
+// Disable deprecation warnings for this file when using VS compiler
+33
+#pragma warning(disable : 4996)
+34
+#endif
+35
+36
+#ifdef __GNUC__
+37
+#pragma GCC diagnostic push
+38
+#pragma GCC diagnostic ignored "-Wdeprecated"
+39
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+40
+#endif
+41
+42
+#include "
+rev/ClosedLoopTypes.h
+"
+43
+#include "
+rev/REVLibError.h
+"
+44
+#include "
+rev/SparkLowLevel.h
+"
+45
+46
+namespace
+rev::spark
+{
+47
+48
+class
+SparkBase;
+49
+50
+class
+SparkClosedLoopController
+{
+51
+friend
+class
+SparkBase
+;
+52
+53
+public
+:
+57
+enum class
+ArbFFUnits
+{
+kVoltage
+= 0,
+kPercentOut
+= 1 };
+58
+59
+SparkClosedLoopController
+(
+SparkClosedLoopController
+&&) =
+default
+;
+60
+SparkClosedLoopController
+&
+operator=
+(
+SparkClosedLoopController
+&&) =
+default
+;
+61
+62
+SparkClosedLoopController
+(
+const
+SparkClosedLoopController
+& rhs) =
+default
+;
+63
+64
+~SparkClosedLoopController
+() =
+default
+;
+65
+95
+REVLibError
+SetSetpoint
+(
+double
+setpoint,
+SparkLowLevel::ControlType
+ctrl,
+96
+ClosedLoopSlot
+slot =
+ClosedLoopSlot::kSlot0
+,
+97
+double
+arbFeedforward = 0,
+98
+SparkClosedLoopController::ArbFFUnits
+arbFFUnits =
+99
+ArbFFUnits::kVoltage
+);
+100
+131
+[[deprecated]]
+REVLibError
+SetReference
+(
+132
+double
+setpoint,
+SparkLowLevel::ControlType
+ctrl,
+133
+ClosedLoopSlot
+slot =
+ClosedLoopSlot::kSlot0
+,
+double
+arbFeedforward = 0,
+134
+SparkClosedLoopController::ArbFFUnits
+arbFFUnits =
+135
+ArbFFUnits::kVoltage
+);
+136
+142
+SparkLowLevel::ControlType
+GetControlType
+()
+const
+{
+return
+m_controlType; }
+143
+157
+REVLibError
+SetIAccum
+(
+double
+iAccum);
+158
+165
+double
+GetIAccum
+()
+const
+;
+166
+172
+double
+GetSetpoint
+()
+const
+;
+173
+179
+bool
+IsAtSetpoint
+()
+const
+;
+180
+186
+ClosedLoopSlot
+GetSelectedSlot
+()
+const
+;
+187
+196
+double
+GetMAXMotionSetpointPosition
+()
+const
+;
+197
+206
+double
+GetMAXMotionSetpointVelocity
+()
+const
+;
+207
+208
+private
+:
+209
+SparkBase
+* m_device;
+210
+211
+SparkLowLevel::ControlType
+m_controlType{
+212
+SparkLowLevel::ControlType::kDutyCycle
+};
+213
+214
+explicit
+SparkClosedLoopController
+(
+SparkBase
+& device);
+215
+};
+216
+217
+}
+// namespace rev::spark
+218
+219
+#ifdef __GNUC__
+220
+#pragma GCC diagnostic pop
+221
+#endif
+ClosedLoopTypes.h
+REVLibError.h
+SparkLowLevel.h
+rev::spark::SparkBase
+Definition:
+SparkBase.h:58
+rev::spark::SparkClosedLoopController
+Definition:
+SparkClosedLoopController.h:50
+rev::spark::SparkClosedLoopController::GetMAXMotionSetpointVelocity
+double GetMAXMotionSetpointVelocity() const
+Definition:
+SparkClosedLoopController.cpp:99
+rev::spark::SparkClosedLoopController::GetControlType
+SparkLowLevel::ControlType GetControlType() const
+Definition:
+SparkClosedLoopController.h:142
+rev::spark::SparkClosedLoopController::SparkClosedLoopController
+SparkClosedLoopController(SparkClosedLoopController &&)=default
+rev::spark::SparkClosedLoopController::GetIAccum
+double GetIAccum() const
+Definition:
+SparkClosedLoopController.cpp:64
+rev::spark::SparkClosedLoopController::SetIAccum
+REVLibError SetIAccum(double iAccum)
+Definition:
+SparkClosedLoopController.cpp:58
+rev::spark::SparkClosedLoopController::GetMAXMotionSetpointPosition
+double GetMAXMotionSetpointPosition() const
+Definition:
+SparkClosedLoopController.cpp:92
+rev::spark::SparkClosedLoopController::IsAtSetpoint
+bool IsAtSetpoint() const
+Definition:
+SparkClosedLoopController.cpp:78
+rev::spark::SparkClosedLoopController::SparkBase
+friend class SparkBase
+Definition:
+SparkClosedLoopController.h:51
+rev::spark::SparkClosedLoopController::SetReference
+REVLibError SetReference(double setpoint, SparkLowLevel::ControlType ctrl, ClosedLoopSlot slot=ClosedLoopSlot::kSlot0, double arbFeedforward=0, SparkClosedLoopController::ArbFFUnits arbFFUnits=ArbFFUnits::kVoltage)
+Definition:
+SparkClosedLoopController.cpp:52
+rev::spark::SparkClosedLoopController::SparkClosedLoopController
+SparkClosedLoopController(const SparkClosedLoopController &rhs)=default
+rev::spark::SparkClosedLoopController::ArbFFUnits
+ArbFFUnits
+Definition:
+SparkClosedLoopController.h:57
+rev::spark::SparkClosedLoopController::ArbFFUnits::kPercentOut
+@ kPercentOut
+rev::spark::SparkClosedLoopController::ArbFFUnits::kVoltage
+@ kVoltage
+rev::spark::SparkClosedLoopController::GetSetpoint
+double GetSetpoint() const
+Definition:
+SparkClosedLoopController.cpp:71
+rev::spark::SparkClosedLoopController::GetSelectedSlot
+ClosedLoopSlot GetSelectedSlot() const
+Definition:
+SparkClosedLoopController.cpp:85
+rev::spark::SparkClosedLoopController::~SparkClosedLoopController
+~SparkClosedLoopController()=default
+rev::spark::SparkClosedLoopController::SetSetpoint
+REVLibError SetSetpoint(double setpoint, SparkLowLevel::ControlType ctrl, ClosedLoopSlot slot=ClosedLoopSlot::kSlot0, double arbFeedforward=0, SparkClosedLoopController::ArbFFUnits arbFFUnits=ArbFFUnits::kVoltage)
+Definition:
+SparkClosedLoopController.cpp:39
+rev::spark::SparkClosedLoopController::operator=
+SparkClosedLoopController & operator=(SparkClosedLoopController &&)=default
+rev::spark::SparkLowLevel::ControlType
+ControlType
+Definition:
+SparkLowLevel.h:78
+rev::spark::SparkLowLevel::ControlType::kDutyCycle
+@ kDutyCycle
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+rev::spark::ClosedLoopSlot
+ClosedLoopSlot
+Definition:
+ClosedLoopTypes.h:35
+rev::spark::kSlot0
+@ kSlot0
+Definition:
+ClosedLoopTypes.h:35
+rev::REVLibError
+REVLibError
+Definition:
+REVLibError.h:33
+src
+main
+native
+include
+rev
+SparkClosedLoopController.h
+Generated by
+1.9.2

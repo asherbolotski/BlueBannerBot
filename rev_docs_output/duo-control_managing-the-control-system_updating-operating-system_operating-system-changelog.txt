@@ -1,0 +1,229 @@
+DUO Control System
+Introduction
+Getting Started with Control Hub
+Connect to the Robot Controller Console
+Updating Wi-Fi Settings
+Connecting Driver Station to Control Hub
+Wiring Diagram
+Next Steps
+Getting Started with Driver Hub
+Adding More Motors
+SPARKmini Motor Controller
+Adding an Expansion Hub
+Troubleshooting the Control System
+General Troubleshooting
+Control Hub Troubleshooting
+Driver Hub Troubleshooting
+Driver Hub Battery Troubleshooting
+Expansion Hub Troubleshooting
+Status LED Blink Codes
+12V Battery Best Practices and Troubleshooting
+System Overview
+Control Hub Specifications
+Expansion Hub Specifications
+Driver Hub Specifications
+Port Pinouts
+Protection Features
+Cables and Connectors
+XT-30 - Power Cable
+JST VH - Motor Power
+JST PH - Sensors and RS485
+Integrated Sensors
+Dimensions and Important Component Locations
+Updating and Managing
+Managing Wi-Fi on the Control Hub
+REV Hardware Client
+Updating Firmware
+Firmware Changelog
+Updating Operating System
+Control Hub Operating System Changelog
+Updating Robot Controller Application
+Updating Robot Controller Application via Android Studio
+Updating the Driver Hub
+Driver Hub OS - Change Log
+Accessing Log Files
+Android Studio - Deploying Code Wirelessly
+Hello Robot - Intro to Blocks Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - Blocks
+Creating an OpMode - Blocks
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motors Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control Blocks Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - Blocks
+Establishing Variables in Blocks
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - Blocks
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - Blocks
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - Blocks
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - Blocks
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Part 4: Going Beyond!
+Exploring Functions
+Programming Mecanum - Simplified
+Programming Mecanum - Refined
+Hello Robot - Intro to OnBot Java Programming
+Welcome to Hello Robot!
+Where to Program - Client vs. Browser
+What is an OpMode?
+Setting up a Configuration
+Common Errors in Configuration
+Using a Gamepad
+Part 1: Tackling the Basics
+Tackling the Basics Directory - OnBot
+Creating an OpMode - OnBot
+Programming Essentials
+Programming Servos
+Programming Servo Basics
+Using a Gamepad with a Servo
+Programming Servo Telemetry
+Programming Motors
+Programming Motor Basics
+Programming a Motor with a Gamepad
+Programming Motor Telemetry
+Programming Touch Sensors
+Programming Color Sensors
+Color Sensor Telemetry
+Detecting Color
+Part 2: Robot Control
+Robot Control OnBot Java Directory
+Programming Drivetrain Motors
+Arcade Style TeleOp - OnBot Java
+Establishing Variables in OnBot Java
+Motor Power vs. Robot Movement
+Programming Arcade Drive
+Arm Control - OnBot Java
+Adding a Limit Switch
+Robot Control Full Program
+Part 3: Autonomous and Encoders
+ElapsedTime - OnBot Java
+ElapsedTime Setup
+ElapsedTime Logic
+ElapsedTime - Multiple Movements
+Encoder Basics
+Drivetrain Encoders - OnBot Java
+Converting Encoder Ticks to a Distance
+Moving to a Target Distance
+Setting Velocity
+Turning the Drivetrain Using RUN_TO_POSITION
+Arm Control with Encoders - OnBot Java
+Estimating the Position of the Arm
+Calculating Target Position
+Using Limits to Control Range of Motion
+Sensors
+Introduction to Sensors
+Digital
+Analog
+I2C
+IMU
+Orientating the IMU
+Adding an External IMU to your Hub
+Encoders
+REV Motor Encoders
+Through Bore Encoder
+Using 3rd Party Sensors
+Sensor Compatibility Chart
+Useful Links
+REV DUO Build System
+Legacy Documentation
+Configuring Your Android Devices
+Expansion Hub with Android Device Robot Controller
+Driver Station and Robot Controller Pairing
+Wiring Diagram
+Configuration
+REV Hub Interface Software
+Powered by GitBook
+On this page
+Version 1.1.6 - Latest Version
+Version 1.1.4
+Version 1.1.3
+Version 1.1.2
+Version 1.1.1
+Version 1.1.0
+Source Files for Control Hub OS:
+Was this helpful?
+Export as PDF
+When updating from OS 1.1.1 or earlier to OS 1.1.2 or later, the Control Hub will switch to the 5 GHz band, regardless of the previous Wi-Fi band setting. Some devices do not support 5 GHz Wi-Fi, and will not be able to connect to the Control Hub wirelessly while it is using the 5 GHz Wi-Fi band. To switch to the 2.4 GHz band without needing a computer, see the
+Changing Wi-Fi Band section
+.
+Version 1.1.6 - Latest Version
+Important security updates for the Control Hub Wi-Fi driver
+Download Control Hub OS Version 1.1.6
+Version 1.1.4
+Reduces the frequency of an issue that could cause the BHI260AP IMU to reset after an ESD event
+Download Content Hub OS Version 1.1.4
+Version 1.1.3
+Adds support for new alternative built-in BHI260AP IMU on Control Hub
+Improves reliability of the Wi-Fi access point monitoring feature
+Download Control Hub OS Version 1.1.3
+Version 1.1.2
+Adds support for Auto Channel Selection, where the Control Hub will pick the least busy Wi-Fi channel on the selected Wi-Fi band when it starts up
+Migrates all users to Auto Channel Selection on the 5 GHz band by default.
+If you find that you are unable to connect to the Control Hub after updating, you should perform a Wi-Fi Factory Reset by holding down the Control Hub's button as it boots, until you see a colorful light sequence. That will reset the Wi-Fi settings and switch to the 2.4 GHz Wi-Fi band.
+Allows switching the Wi-Fi band between 2.4 GHz and 5 GHz by holding down the Control Hub's button when the hub has been booted for at least 20 seconds
+If version 5.5 or later of the Robot Controller app is installed, the Control Hub's light will blink magenta when the band is switched to 5 GHz, or yellow when the band is switched to 2.4 GHz.
+Continuously monitors the Wi-Fi access point status, and will attempt to restart it if it goes down for any reason
+Continuously monitors the Robot Controller app, and restarts it if it crashes or hangs (requires version 6.1 or later of the Robot Controller app)
+Allows the Robot Controller app to access the current Wi-Fi band and channel
+Always backs up the FTC Robot Controller app data before it is uninstalled, in order to preserve Wi-Fi settings
+Improves Wi-Fi reliability
+Prevents issue that could cause device to boot into recovery mode
+Enables use of mouse button in recovery mode
+Download Control Hub OS Version 1.1.2
+Version 1.1.1
+Fixed bug where Wi-Fi access point would sometimes fail to start after an Operating System update
+Stopped the FtcAccessPointService UI auto-starting on boot
+Allowed Wi-Fi beacon rate to be changed by the FTC Robot Controller app
+Version 1.1.0
+Improved reliability of making changes to Wi-Fi access point settings
+Updated to latest Realtek Wi-Fi driver
+Increased Wi-Fi beacon rate to 6mbps, which reduces congestion when many Control Hubs are being used in an area
+Enabled 802.11w, which prevents Wi-Fi deauthentication attacks when the Control Hub is used with a client device that also supports 802.11w
+Added WifiLog.txt file for debugging and disconnection analysis
+Improved reliability of FtcAccessPointService UI (accessed through an HDMI monitor)
+Added 5 GHz channels to FtcAccessPointService UI
+Ensured app data is not lost when installing a Robot Controller with a different signature via the Manage webpage
+Fixed issue where Wi-Fi SSID would sometimes be AndroidAP
+Source Files for Control Hub OS:
+Linux Kernel Source
+U-Boot Source
+Previous
+Updating Operating System
+Next
+Updating Robot Controller Application
+Last updated
+1 month ago
+Was this helpful?

@@ -1,0 +1,157 @@
+REV ION Brushless
+REV ION Brushless Overview
+Quick Links
+Frequently Asked Questions
+NEO Brushless Motors
+Brushless DC Motor Basics
+NEO Vortex
+Docking a SPARK Flex
+Vortex Shafts
+Installing a Shaft
+NEO Vortex Solo Adapter
+NEO V1.1
+NEO V1
+Pinion Pressing Guides
+NEO 550
+Pinion Pressing Guide
+Dynamometer Testing
+Motor Comparison
+SPARK Flex Motor Controller
+SPARK Flex Overview
+Flex Dock
+SPARK Flex Specifications
+SPARK Flex Feature Description
+Power and Motor Connections
+Control Connections
+Data Port
+Mounting Holes
+Control Interfaces
+Mode Button
+Operating Modes
+SPARK Flex Getting Started
+Wiring the SPARK Flex
+Make it Spin!
+Basic Configurations
+SPARK Flex Status LED Patterns
+SPARK Flex Troubleshooting
+SPARK Flex Operating Modes
+SPARK MAX Motor Controller
+SPARK MAX Overview
+SPARK MAX Specifications
+Power and Motor Connections
+Control Connections
+Encoder Port
+Data Port
+SPARK MAX Getting Started
+Wiring the SPARK MAX
+Make it Spin!
+Basic Configurations
+SPARK MAX Status LED Patterns
+SPARK MAX Troubleshooting
+SPARK MAX Operating Modes
+SPARK MAX Control Interfaces
+SPARK MAX Configuration Parameters
+Using Encoders with the SPARK MAX
+Absolute Encoders
+Alternate Encoder Mode
+Securing the Encoder Adapters
+Calibration for MAXSwerve
+REVLib
+REVLib Overview
+Migrating to REVLib 2025
+Closed-Loop Control
+REVLib Code Examples (2025)
+Tips and Tricks
+Anderson Powerpole Connectors
+REV Hardware Client Documentation
+Legacy Documentation
+SPARK Motor Controller
+SPARK MAX Client
+Navigating the SPARK MAX Client
+Updating Device Firmware
+Recovery Mode with the SPARK MAX Client
+SPARK MAX Client Troubleshooting
+Powered by GitBook
+On this page
+Incremental vs Absolute Encoders
+How to Connect an Encoder
+Absolute Encoders
+Incremental Encoders
+Receiving both Incremental and Absolute Encoder Feedback
+Using Limit Switches with an Encoder
+Was this helpful?
+Export as PDF
+The SPARK MAX can accept data from encoders through both the Encoder Port and the Data Port on the top of the motor controller. Encoders have a different method of connecting to the SPARK MAX that depends on what motor you are using and what type of encoder it is. When preparing your encoders, be sure to set up your SPARK MAX correctly for the type of devices you are using.
+Incremental vs Absolute Encoders
+Incremental encoders measure a change in position as a mechanism rotates while absolute encoders will report an exact position at any time, including at startup. A common analogy to help with knowing the difference is that incremental encoders are like a stopwatch that measures a change in time and absolute encoders are like a clock where you can know exactly what time it is.
+With SPARK MAX Firmware Versions 1.6.0 and newer, absolute encoders are compatible with the SPARK MAX Data Port.
+How to Connect an Encoder
+To connect an encoder to your SPARK MAX, start by identifying what type of encoder you are using. Below is a flowchart to help generally identify the method you should use.
+Running a brushless motor, like the NEO and NEO 550, without the integrated encoder plugged into the SPARK MAX's Encoder Port can damage your motor.
+Absolute Encoders
+Absolute encoders will work with the default pinout of the SPARK MAX Data Port if the latest firmware has been installed. When using an absolute or duty cycle encoder it is recommended to use one of the following methods to connect your encoder to the SPARK MAX.
+Check out our documentation of the
+Through Bore Encoder.
+Through Bore Encoder (REV-11-1271)
+: Connect with
+Absolute Encoder Adapter (REV-11-3326)
+Other Absolute Encoder: Connect with
+SPARK MAX Data Port Breakout Board (REV-11-1278)
+Use the Data Port Pinout to match the signals from your encoder
+Absolute Encoders are only supported through the SPARK MAX Data Port at this time
+Absolute Encoder Wiring Examples
+Absolute Encoder Adapter
+Data Port Breakout Board
+Easily connect a Through Bore Encoder to your SPARK MAX with an Absolute Encoder Adapter and a 6-Pin JST PH Cable.
+For encoders that need a custom wiring harness, you can use the following solder pads on a SPARK MAX Data Port Breakout Board with any generic absolute encoder.
+Incremental Encoders
+If you are using an Incremental Encoder with a
+brushed motor
+you can plug your encoder into the SPARK MAX's front Encoder Port directly. If you are driving a NEO or NEO 550
+brushless motor
+with your SPARK MAX, you will need to configure Alternate Encoder Mode to accommodate the additional encoder input from the Data Port. When using an incremental or quadrature encoder it is recommended to use one of the following methods to connect your encoder to the SPARK MAX.
+Check out our documentation of the
+Through Bore Encoder.
+NEO
+or
+NEO 550
+Internal Encoder:
+MUST
+be connected to the SPARK MAX Encoder Port
+Through Bore Encoder (REV-11-1271)
+With brushless motor: Connect with
+Alternate Encoder Adapter (REV-11-1881)
+.
+You will need to configure Alternate Encoder Mode.
+With brushed motor: Connect to the Encoder Port
+Other Incremental Encoder
+With a brushless motor: Connect the encoder with
+SPARK MAX Data Port Breakout Board (REV-11-1278)
+. Use the Alternate Encoder Mode Data Port Pinout to match the signals from your encoder.
+You will need to configure Alternate Encoder Mode.
+With brushed motor: Connect to the Encoder Port with a
+6-Pin JST Breakout Board (REV-11-1276)
+using the Encoder Port pinout
+With a brushed motor: Connect the encoder with
+SPARK MAX Data Port Breakout Board (REV-11-1278)
+or a similar custom cable. Use the Data Port Pinout to match the signals from your encoder.
+Incremental Encoder Wiring Examples
+Alternate Encoder Adapter
+Brushed Motor
+Data Port Breakout Board
+Easily connect a Through Bore Encoder to your SPARK MAX with an Alternate Encoder Adapter and a 6-Pin JST PH Cable. When using the Alternate Encoder Adapter make sure the switch is set to "index".
+A Through Bore Encoder, or any incremental encoder with the same pinout, can be plugged in directly to the SPARK MAX's Encoder Port.
+For encoders that need a custom wiring harness, you can use the following solder pads on a SPARK MAX Data Port Breakout Board with any generic incremental encoder.
+Receiving both Incremental and Absolute Encoder Feedback
+Receiving both Incremental and Absolute encoder feedback from a single encoder through the SPARK MAX directly is not currently supported. To do this you will need to wire the encoder directly to your roboRIO or robot controller.
+Using Limit Switches with an Encoder
+Currently, Limit Switch inputs are only supported when using an absolute encoder or an incremental encoder run through the SPARK MAX's Encoder port.
+Please note, the limit switch inputs cannot be used at the same time as an Alternate Encoder Mode.
+The limit switch pins are repurposed for the alternate encoder and are thus disabled.
+Previous
+SPARK MAX Configuration Parameters
+Next
+Absolute Encoders
+Last updated
+2 months ago
+Was this helpful?

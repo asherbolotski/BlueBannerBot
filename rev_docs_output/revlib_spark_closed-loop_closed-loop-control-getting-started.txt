@@ -1,0 +1,332 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Setting up Closed-Loop Control
+PID Constants and Configuration
+PID Parameters
+F Parameter
+MAXMotion Parameters
+Smart Motion Parameters
+Slots
+Was this helpful?
+Export as PDF
+Setting up Closed-Loop Control
+Closed-loop control in REVLib is accessed through the SPARK's closed loop controller object. This object is specific to each motor and contains all the methods needed to control your motor with closed-loop control. It can be accessed as shown below:
+Java
+C++
+Copy
+// Initialize the motor (Flex/MAX are setup the same way)
+SparkFlex
+m_motor
+=
+new
+SparkFlex(deviceID
+,
+MotorType
+.
+kBrushless
+)
+;
+// Initialize the closed loop controller
+SparkClosedLoopController
+m_controller
+=
+m_motor
+.
+getClosedLoopController
+();
+API Docs:
+SparkFlex
+,
+SparkClosedLoopController
+Copy
+using
+namespace
+rev
+::
+spark;
+// Initialize the motor (Flex/MAX are setup the same way)
+SparkMax m_motor{deviceID, SparkMax::MotorType::kBrushless};
+// Initialize the closed loop controller
+SparkClosedLoopController m_controller
+=
+m_motor
+.
+GetClosedLoopController
+();
+API Docs:
+SparkMax
+,
+SparkClosedLoopController
+To drive your motor in a closed-loop control mode, address the closed loop controller object and give it a set point (a target in whatever units are required by your control mode:
+position
+,
+velocity
+, or
+current
+) and a control mode as shown below:
+This will run your motor in the provided mode, but it won't move until you've configured the
+PID constants.
+Java
+C++
+Copy
+// Set the setpoint of the PID controller in raw position mode
+m_controller
+.
+setReference
+(setPoint
+,
+ControlType
+.
+kPosition
+);
+API Docs:
+setReference
+,
+ControlType
+Copy
+// Set the setpoint of the PID controller in raw position mode
+m_controller
+.
+SetReference
+(setPoint
+,
+SparkBase
+::
+ControlType
+::
+kPosition);
+API Docs:
+SetReference
+,
+ControlType
+The provided example above runs the motor in position control mode, which is just a conventional PID loop reading the motor's current position from the configured encoder and taking a setpoint in rotations.
+Use caution when running motors in closed-loop modes, as they may move very quickly and unexpectedly if improperly tuned.
+PID Constants and Configuration
+To run a PID loop, several constants are required. For a more advanced controller, even more parameters need to be set and tuned.
+This section uses concepts about configuration which is discussed
+here
+. For more information about SPARK specific configuration, see
+this page
+.
+PID Parameters
+A PID controller has 3 core parameters or gains. For more information on these gains and how to tune them, see
+Getting Started with PID Tuning
+.
+These gains can be configured on the with the
+closedLoop
+member of a
+SparkFlexConfig
+or
+SparkMaxConfig
+object as seen below:
+Java
+C++
+Copy
+SparkFlexConfig config = new SparkFlexConfig();
+// Set PID gains
+config.closedLoop
+.p(kP)
+.i(kI)
+.d(kD)
+.outputRange(kMinOutput, kMaxOutput);
+API Docs:
+ClosedLoopConfig
+Copy
+using namespace rev::spark;
+SparkFlexConfig config;
+// Set PID gains
+config.closedLoop
+.P(kP)
+.I(kI)
+.D(kD)
+.OutputRange(kMinOutput, kMaxOutput);
+API Docs:
+ClosedLoopConfig
+F Parameter
+The SPARK family of motor controllers also offer an F term, which is a velocity feed-forward. This is unique to each type of motor, and can be calculated by taking the reciprocal of the motor's velocity constant (Kv), in other words 1/Kv.
+Note that this is not the same as an arbitrary feed forward. The F parameter is multiplied by the velocity setpoint to achieve more consistent velocity control, while an arbFF value that is passed in with the setpoint can be used to apply kS, kV, kA, and kG gains. For more info on arbFF, see
+Arbitrary Feed Forward
+.
+The Kv values for the NEO family of Brushless Motors are documented within each motor's specifications table:
+NEO Vortex
+,
+NEO V1.1
+,
+NEO 550
+For a NEO Vortex, this value is 1/565. This is only needed when running a velocity-based control loop (velocity mode, Smart Motion, and Smart Velocity). The F parameter can be set as seen below:
+Java
+C++
+Copy
+SparkMaxConfig config = new SparkMaxConfig();
+// Set kFF
+config.closedLoop.velocityFF(1/Kv);
+API Docs:
+ClosedLoopConfig
+Copy
+using namespace rev::spark;
+SparkMaxConfig config;
+// Set kFF
+config.closedLoop.VelocityFF(1/Kv);
+API Docs:
+ClosedLoopConfig
+The F parameter should only be set when using a velocity-based PID controller, and should be set to zero otherwise to avoid unwanted behavior.
+MAXMotion Parameters
+MAXMotion has parameters that allow you to configure and tune the motion profiles generated by MAXMotion. The parameters can be set through the
+maxMotion
+member of the
+closedLoop
+config.
+The MAXMotion Max Velocity parameter only applies to MAXMotion Position Control Mode, while MAXMotion Velocity Control Mode does not honor it in order to ensure any setpoint is reachable. This means any top-speed clamping you want to do must be done
+before
+you send the setpoint to the Motor Controller.
+Java
+C++
+Copy
+SparkMaxConfig config = new SparkMaxConfig();
+// Set MAXMotion parameters
+config.closedloop.maxMotion
+.maxVelocity(maxVel)
+.maxAcceleration(maxAccel)
+.allowedClosedLoopError(allowedErr);
+API Docs:
+MAXMotionConfig
+Copy
+using namespace rev::spark;
+SparkMaxConfig config;
+// Set MAXMotion parameters
+config.closedloop.maxMotion
+.MaxVelocity(maxVel)
+.MaxAcceleration(maxAccel)
+.AllowedClosedLoopError(allowedErr);
+API Docs:
+MAXMotionConfig
+Smart Motion Parameters
+Smart Motion is deprecated and marked for removal. It is recommended to use MAXMotion instead.
+Smart Motion
+and
+Smart Velocity
+have parameters that allow you to configure and tune the motion profiles that they generate. The parameters can be set through the
+smartMotion
+member of the
+closedLoop
+config.
+Java
+C++
+Copy
+SparkMaxConfig config = new SparkMaxConfig();
+// Set Smart Motion and Smart Velocity parameters.
+config.closedloop.smartMotion
+.maxVelocity(maxVel)
+.minOutputVelocity(minVel)
+.maxAcceleration(maxAccel)
+.allowedClosedLoopError(allowerErr);
+API Docs:
+SmartMotionConfig
+Copy
+using namespace rev::spark;
+SparkMaxConfig config;
+// Set Smart Motion and Smart Velocity parameters.
+config.closedloop.smartMotion
+.MaxVelocity(maxVel)
+.MinOutputVelocity(minVel)
+.MaxAcceleration(maxAccel)
+.AllowedClosedLoopError(allowerErr);
+API Docs:
+SmartMotionConfig
+Maximum Velocity is in units of Revolutions per Minute (RPM)
+Maximum Acceleration is in units of RPM per Second (RPM/s)
+Slots
+The SPARK MAX and SPARK Flex each have 4 closed-loop slots, each with their own set of constants. These slots are numbered 0-3. You can pass the desired as an argument to each of the applicable configurations.
+Java
+C++
+Copy
+SparkFlexConfig config = new SparkFlexConfig();
+config.closedLoop
+// Set PID gains for position control in slot 0.
+// We don't have to pass a slot number since the default is slot 0.
+.p(kP)
+.i(kI)
+.d(kD)
+.outputRange(kMinOutput, kMaxOutput)
+// Set PID gains for velocity control in slot 1
+.p(kP1, ClosedLoopSlot.kSlot1)
+.i(kI1, ClosedLoopSlot.kSlot1)
+.p(kD1, ClosedLoopSlot.kSlot1)
+.velocityFF(kFF1, ClosedLoopSlot.kSlot1);
+API Docs:
+ClosedLoopConfig
+Copy
+using namespace rev::spark;
+SparkFlexConfig config;
+config.closedLoop
+// Set PID gains for position control in slot 0.
+// We don't have to pass a slot number since the default is slot 0.
+.P(kP)
+.I(kI)
+.D(kD)
+.OutputRange(kMinOutput, kMaxOutput)
+// Set PID gains for velocity control in slot 1
+.P(kP1, ClosedLoopSlot::kSlot1)
+.I(kI1, ClosedLoopSlot::kSlot1)
+.D(kD1, ClosedLoopSlot::kSlot1)
+.VelocityFF(kFF1, ClosedLoopSlot::kSlot1);
+API Docs:
+ClosedLoopConfig
+When applying the setpoint, pass the slot number and the motor controller will switch to the appropriate config.
+Java
+C++
+Copy
+// Use the PID gains in slot 0 for position control
+m_controller.setReference(setPoint, ControlType.kPosition, 0);
+// Use the PID gains in slot 1 for velocity control
+m_controller.setReference(setPoint, ControlType.kVelocity, 1);
+API Docs:
+setReference
+,
+ControlType
+Copy
+using namespace rev::spark;
+// Use the PID gains in slot 0 for position control
+m_controller.SetReference(setPoint, SparkBase::ControlType::kPosition, 0);
+// Use the PID gains in slot 1 for velocity control
+m_controller.SetReference(setPoint, SparkBase::ControlType::kVelocity, 1);
+API Docs:
+SetReference
+,
+ControlType
+Previous
+Closed Loop Control
+Next
+Getting Started with PID Tuning
+Last updated
+6 months ago
+Was this helpful?

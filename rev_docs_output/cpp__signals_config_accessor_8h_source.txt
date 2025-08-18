@@ -1,0 +1,476 @@
+REVLib - C++
+SignalsConfigAccessor.h
+Go to the documentation of this file.
+1
+/*
+2
+* Copyright (c) 2024-2025 REV Robotics
+3
+*
+4
+* Redistribution and use in source and binary forms, with or without
+5
+* modification, are permitted provided that the following conditions are met:
+6
+*
+7
+* 1. Redistributions of source code must retain the above copyright notice,
+8
+*    this list of conditions and the following disclaimer.
+9
+* 2. Redistributions in binary form must reproduce the above copyright
+10
+*    notice, this list of conditions and the following disclaimer in the
+11
+*    documentation and/or other materials provided with the distribution.
+12
+* 3. Neither the name of REV Robotics nor the names of its
+13
+*    contributors may be used to endorse or promote products derived from
+14
+*    this software without specific prior written permission.
+15
+*
+16
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+17
+* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+18
+* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+19
+* ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+20
+* LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+21
+* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+22
+* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+23
+* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+24
+* CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+25
+* ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+26
+* POSSIBILITY OF SUCH DAMAGE.
+27
+*/
+28
+29
+#pragma once
+30
+31
+namespace
+rev::spark
+{
+32
+33
+class
+SignalsConfigAccessor
+{
+34
+friend
+class
+SparkBaseConfigAccessor
+;
+35
+36
+protected
+:
+37
+explicit
+SignalsConfigAccessor
+(
+void
+* sparkHandle);
+38
+39
+private
+:
+40
+void
+* m_sparkHandle;
+41
+42
+public
+:
+43
+int
+GetAppliedOutputPeriodMs
+();
+44
+bool
+GetAppliedOutputAlwaysOn
+();
+45
+int
+GetBusVoltagePeriodMs
+();
+46
+bool
+GetBusVoltageAlwaysOn
+();
+47
+int
+GetOutputCurrentPeriodMs
+();
+48
+bool
+GetOutputCurrentAlwaysOn
+();
+49
+int
+GetMotorTemperaturePeriodMs
+();
+50
+bool
+GetMotorTemperatureAlwaysOn
+();
+51
+int
+GetLimitsPeriodMs
+();
+52
+bool
+GetLimitsAlwaysOn
+();
+53
+int
+GetFaultsPeriodMs
+();
+54
+bool
+GetFaultsAlwaysOn
+();
+55
+int
+GetWarningsPeriodMs
+();
+56
+bool
+GetWarningsAlwaysOn
+();
+57
+int
+GetPrimaryEncoderVelocityPeriodMs
+();
+58
+bool
+GetPrimaryEncoderVelocityAlwaysOn
+();
+59
+int
+GetPrimaryEncoderPositionPeriodMs
+();
+60
+bool
+GetPrimaryEncoderPositionAlwaysOn
+();
+61
+int
+GetAnalogVoltagePeriodMs
+();
+62
+bool
+GetAnalogVoltageAlwaysOn
+();
+63
+int
+GetAnalogVelocityPeriodMs
+();
+64
+bool
+GetAnalogVelocityAlwaysOn
+();
+65
+int
+GetAnalogPositionPeriodMs
+();
+66
+bool
+GetAnalogPositionAlwaysOn
+();
+67
+int
+GetExternalOrAltEncoderVelocityPeriodMs
+();
+68
+bool
+GetExternalOrAltEncoderVelocityAlwaysOn
+();
+69
+int
+GetExternalOrAltEncoderPositionPeriodMs
+();
+70
+bool
+GetExternalOrAltEncoderPositionAlwaysOn
+();
+71
+int
+GetAbsoluteEncoderVelocityPeriodMs
+();
+72
+bool
+GetAbsoluteEncoderVelocityAlwaysOn
+();
+73
+int
+GetAbsoluteEncoderPositionPeriodMs
+();
+74
+bool
+GetAbsoluteEncoderPositionAlwaysOn
+();
+75
+int
+GetIAccumulationPeriodMs
+();
+76
+bool
+GetIAccumulationAlwaysOn
+();
+77
+int
+GetSetpointPeriodMs
+();
+78
+bool
+GetSetpointAlwaysOn
+();
+79
+int
+GetIsAtSetpointPeriodMs
+();
+80
+bool
+GetIsAtSetpointAlwaysOn
+();
+81
+int
+GetSelectedSlotPeriodMs
+();
+82
+bool
+GetSelectedSlotAlwaysOn
+();
+83
+int
+GetMAXMotionSetpointPositionPeriodMs
+();
+84
+bool
+GetMAXMotionSetpointPositionAlwaysOn
+();
+85
+int
+GetMAXMotionSetpointVelocityPeriodMs
+();
+86
+bool
+GetMAXMotionSetpointVelocityAlwaysOn
+();
+87
+};
+88
+89
+}
+// namespace rev::spark
+rev::spark::SignalsConfigAccessor
+Definition:
+SignalsConfigAccessor.h:33
+rev::spark::SignalsConfigAccessor::GetAnalogVoltageAlwaysOn
+bool GetAnalogVoltageAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:173
+rev::spark::SignalsConfigAccessor::GetPrimaryEncoderPositionPeriodMs
+int GetPrimaryEncoderPositionPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:152
+rev::spark::SignalsConfigAccessor::GetPrimaryEncoderVelocityPeriodMs
+int GetPrimaryEncoderVelocityPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:138
+rev::spark::SignalsConfigAccessor::GetAnalogPositionAlwaysOn
+bool GetAnalogPositionAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:201
+rev::spark::SignalsConfigAccessor::GetAbsoluteEncoderVelocityAlwaysOn
+bool GetAbsoluteEncoderVelocityAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:243
+rev::spark::SignalsConfigAccessor::GetAbsoluteEncoderPositionAlwaysOn
+bool GetAbsoluteEncoderPositionAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:257
+rev::spark::SignalsConfigAccessor::GetAnalogVelocityPeriodMs
+int GetAnalogVelocityPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:180
+rev::spark::SignalsConfigAccessor::GetMAXMotionSetpointVelocityAlwaysOn
+bool GetMAXMotionSetpointVelocityAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:341
+rev::spark::SignalsConfigAccessor::GetMAXMotionSetpointVelocityPeriodMs
+int GetMAXMotionSetpointVelocityPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:334
+rev::spark::SignalsConfigAccessor::GetExternalOrAltEncoderPositionAlwaysOn
+bool GetExternalOrAltEncoderPositionAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:229
+rev::spark::SignalsConfigAccessor::SignalsConfigAccessor
+SignalsConfigAccessor(void *sparkHandle)
+Definition:
+SignalsConfigAccessor.cpp:37
+rev::spark::SignalsConfigAccessor::GetIAccumulationPeriodMs
+int GetIAccumulationPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:264
+rev::spark::SignalsConfigAccessor::GetIAccumulationAlwaysOn
+bool GetIAccumulationAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:271
+rev::spark::SignalsConfigAccessor::GetWarningsAlwaysOn
+bool GetWarningsAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:131
+rev::spark::SignalsConfigAccessor::GetExternalOrAltEncoderPositionPeriodMs
+int GetExternalOrAltEncoderPositionPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:222
+rev::spark::SignalsConfigAccessor::GetSelectedSlotPeriodMs
+int GetSelectedSlotPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:306
+rev::spark::SignalsConfigAccessor::GetAbsoluteEncoderVelocityPeriodMs
+int GetAbsoluteEncoderVelocityPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:236
+rev::spark::SignalsConfigAccessor::GetMotorTemperatureAlwaysOn
+bool GetMotorTemperatureAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:89
+rev::spark::SignalsConfigAccessor::GetFaultsAlwaysOn
+bool GetFaultsAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:117
+rev::spark::SignalsConfigAccessor::GetMAXMotionSetpointPositionPeriodMs
+int GetMAXMotionSetpointPositionPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:320
+rev::spark::SignalsConfigAccessor::GetMotorTemperaturePeriodMs
+int GetMotorTemperaturePeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:82
+rev::spark::SignalsConfigAccessor::GetOutputCurrentPeriodMs
+int GetOutputCurrentPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:68
+rev::spark::SignalsConfigAccessor::GetAnalogVelocityAlwaysOn
+bool GetAnalogVelocityAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:187
+rev::spark::SignalsConfigAccessor::GetIsAtSetpointAlwaysOn
+bool GetIsAtSetpointAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:299
+rev::spark::SignalsConfigAccessor::GetAnalogVoltagePeriodMs
+int GetAnalogVoltagePeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:166
+rev::spark::SignalsConfigAccessor::GetExternalOrAltEncoderVelocityAlwaysOn
+bool GetExternalOrAltEncoderVelocityAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:215
+rev::spark::SignalsConfigAccessor::GetPrimaryEncoderVelocityAlwaysOn
+bool GetPrimaryEncoderVelocityAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:145
+rev::spark::SignalsConfigAccessor::GetIsAtSetpointPeriodMs
+int GetIsAtSetpointPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:292
+rev::spark::SignalsConfigAccessor::GetAbsoluteEncoderPositionPeriodMs
+int GetAbsoluteEncoderPositionPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:250
+rev::spark::SignalsConfigAccessor::GetMAXMotionSetpointPositionAlwaysOn
+bool GetMAXMotionSetpointPositionAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:327
+rev::spark::SignalsConfigAccessor::GetWarningsPeriodMs
+int GetWarningsPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:124
+rev::spark::SignalsConfigAccessor::GetOutputCurrentAlwaysOn
+bool GetOutputCurrentAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:75
+rev::spark::SignalsConfigAccessor::GetExternalOrAltEncoderVelocityPeriodMs
+int GetExternalOrAltEncoderVelocityPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:208
+rev::spark::SignalsConfigAccessor::GetLimitsPeriodMs
+int GetLimitsPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:96
+rev::spark::SignalsConfigAccessor::GetAnalogPositionPeriodMs
+int GetAnalogPositionPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:194
+rev::spark::SignalsConfigAccessor::GetSetpointAlwaysOn
+bool GetSetpointAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:285
+rev::spark::SignalsConfigAccessor::GetLimitsAlwaysOn
+bool GetLimitsAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:103
+rev::spark::SignalsConfigAccessor::GetAppliedOutputAlwaysOn
+bool GetAppliedOutputAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:47
+rev::spark::SignalsConfigAccessor::GetFaultsPeriodMs
+int GetFaultsPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:110
+rev::spark::SignalsConfigAccessor::GetBusVoltagePeriodMs
+int GetBusVoltagePeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:54
+rev::spark::SignalsConfigAccessor::GetBusVoltageAlwaysOn
+bool GetBusVoltageAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:61
+rev::spark::SignalsConfigAccessor::GetSetpointPeriodMs
+int GetSetpointPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:278
+rev::spark::SignalsConfigAccessor::GetSelectedSlotAlwaysOn
+bool GetSelectedSlotAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:313
+rev::spark::SignalsConfigAccessor::GetPrimaryEncoderPositionAlwaysOn
+bool GetPrimaryEncoderPositionAlwaysOn()
+Definition:
+SignalsConfigAccessor.cpp:159
+rev::spark::SignalsConfigAccessor::GetAppliedOutputPeriodMs
+int GetAppliedOutputPeriodMs()
+Definition:
+SignalsConfigAccessor.cpp:40
+rev::spark::SparkBaseConfigAccessor
+Definition:
+SparkBaseConfigAccessor.h:42
+rev::spark
+Definition:
+SparkLowLevel.cpp:40
+src
+main
+native
+include
+rev
+config
+SignalsConfigAccessor.h
+Generated by
+1.9.2

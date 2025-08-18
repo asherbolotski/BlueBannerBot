@@ -1,0 +1,127 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark
+Class SparkRelativeEncoder
+java.lang.Object
+com.revrobotics.spark.SparkRelativeEncoder
+All Implemented Interfaces:
+RelativeEncoder
+public class
+SparkRelativeEncoder
+extends
+Object
+implements
+RelativeEncoder
+Get an instance of this class by using
+SparkBase.getEncoder()
+.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Modifier and Type
+Method
+Description
+double
+getPosition
+()
+Get the position of the motor.
+double
+getVelocity
+()
+Get the velocity of the motor.
+REVLibError
+setPosition
+(double position)
+Set the position of the encoder.
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Method Details
+getPosition
+public
+double
+getPosition
+()
+Description copied from interface:
+RelativeEncoder
+Get the position of the motor. This returns the native units of 'rotations' by default, and can
+ be changed by a scale factor using
+AlternateEncoderConfig.positionConversionFactor(double)
+, or
+ExternalEncoderConfig.positionConversionFactor(double)
+, or
+EncoderConfig.positionConversionFactor(double)
+.
+Specified by:
+getPosition
+in interface
+RelativeEncoder
+Returns:
+Number of rotations of the motor
+getVelocity
+public
+double
+getVelocity
+()
+Description copied from interface:
+RelativeEncoder
+Get the velocity of the motor. This returns the native units of 'RPM' by default, and can be
+ changed by a scale factor using
+AlternateEncoderConfig.velocityConversionFactor(double)
+, or
+ExternalEncoderConfig.velocityConversionFactor(double)
+, or
+EncoderConfig.velocityConversionFactor(double)
+.
+Specified by:
+getVelocity
+in interface
+RelativeEncoder
+Returns:
+Number the RPM of the motor
+setPosition
+public
+REVLibError
+setPosition
+(double position)
+Description copied from interface:
+RelativeEncoder
+Set the position of the encoder. By default the units are 'rotations' and can be changed by a
+ scale factor using
+AlternateEncoderConfig.positionConversionFactor(double)
+, or
+ExternalEncoderConfig.positionConversionFactor(double)
+, or
+EncoderConfig.positionConversionFactor(double)
+.
+Specified by:
+setPosition
+in interface
+RelativeEncoder
+Parameters:
+position
+- Number of rotations of the motor
+Returns:
+REVLibError.kOk
+if successful

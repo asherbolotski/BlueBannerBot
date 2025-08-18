@@ -1,0 +1,414 @@
+REVLib - C++
+Public Types
+|
+Public Member Functions
+|
+List of all members
+rev::spark::MAXMotionConfig Class Reference
+#include <
+MAXMotionConfig.h
+>
+Inherits
+rev::BaseConfig
+.
+Public Types
+enum
+MAXMotionPositionMode
+: uint32_t {
+kMAXMotionTrapezoidal
+= 0
+ }
+Public Member Functions
+MAXMotionConfig
+()=default
+~MAXMotionConfig
+() override=default
+MAXMotionConfig
+(const
+MAXMotionConfig
+&)=delete
+MAXMotionConfig
+&
+operator=
+(const
+MAXMotionConfig
+&)=delete
+MAXMotionConfig
+(
+MAXMotionConfig
+&&) noexcept=delete
+MAXMotionConfig
+&
+operator=
+(
+MAXMotionConfig
+&&) noexcept=delete
+MAXMotionConfig
+&
+Apply
+(
+MAXMotionConfig
+&config)
+MAXMotionConfig
+&
+MaxVelocity
+(double maxVelocity,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+MAXMotionConfig
+&
+CruiseVelocity
+(double cruiseVelocity,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+MAXMotionConfig
+&
+MaxAcceleration
+(double maxAcceleration,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+MAXMotionConfig
+&
+AllowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+MAXMotionConfig
+&
+AllowedProfileError
+(double allowedError,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+MAXMotionConfig
+&
+PositionMode
+(
+MAXMotionPositionMode
+mode,
+ClosedLoopSlot
+slot=
+kSlot0
+)
+Public Member Functions inherited from
+rev::BaseConfig
+virtual
+~BaseConfig
+()=default
+virtual std::string
+Flatten
+()
+Additional Inherited Members
+Protected Types inherited from
+rev::BaseConfig
+using
+REVLibConfig_t
+= std::variant< int32_t, uint32_t, float, bool >
+Protected Member Functions inherited from
+rev::BaseConfig
+BaseConfig
+()=default
+BaseConfig
+(const
+BaseConfig
+&)=delete
+BaseConfig
+&
+operator=
+(const
+BaseConfig
+&)=delete
+BaseConfig
+(
+BaseConfig
+&&) noexcept=delete
+BaseConfig
+&
+operator=
+(
+BaseConfig
+&&) noexcept=delete
+template<typename ConfigType >
+void
+PutParameter
+(uint8_t parameterId, ConfigType value)
+std::optional<
+REVLibConfig_t
+>
+GetParameter
+(uint8_t parameterId)
+void
+RemoveParameter
+(uint8_t parameterId)
+void
+Apply
+(
+BaseConfig
+&config)
+Static Protected Member Functions inherited from
+rev::BaseConfig
+static std::optional<
+REVLibConfig_t
+>
+GetParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+static void
+RemoveParameter
+(
+BaseConfig
+&fromConfig, uint8_t parameterId)
+Member Enumeration Documentation
+◆
+MAXMotionPositionMode
+enum
+rev::spark::MAXMotionConfig::MAXMotionPositionMode
+: uint32_t
+Enumerator
+kMAXMotionTrapezoidal
+Constructor & Destructor Documentation
+◆
+MAXMotionConfig()
+[1/3]
+rev::spark::MAXMotionConfig::MAXMotionConfig
+(
+)
+default
+◆
+~MAXMotionConfig()
+rev::spark::MAXMotionConfig::~MAXMotionConfig
+(
+)
+override
+default
+◆
+MAXMotionConfig()
+[2/3]
+rev::spark::MAXMotionConfig::MAXMotionConfig
+(
+const
+MAXMotionConfig
+&
+)
+delete
+◆
+MAXMotionConfig()
+[3/3]
+rev::spark::MAXMotionConfig::MAXMotionConfig
+(
+MAXMotionConfig
+&&
+)
+delete
+noexcept
+Member Function Documentation
+◆
+operator=()
+[1/2]
+MAXMotionConfig
+& rev::spark::MAXMotionConfig::operator=
+(
+const
+MAXMotionConfig
+&
+)
+delete
+◆
+operator=()
+[2/2]
+MAXMotionConfig
+& rev::spark::MAXMotionConfig::operator=
+(
+MAXMotionConfig
+&&
+)
+delete
+noexcept
+◆
+Apply()
+MAXMotionConfig
+& MAXMotionConfig::Apply
+(
+MAXMotionConfig
+&
+config
+)
+Applies settings from another
+MAXMotionConfig
+to this one.
+Settings in the provided config will overwrite existing values in this object. Settings not specified in the provided config remain unchanged.
+Parameters
+config
+The
+MAXMotionConfig
+to copy settings from
+Returns
+The updated
+MAXMotionConfig
+for method chaining
+◆
+MaxVelocity()
+MAXMotionConfig
+& MAXMotionConfig::MaxVelocity
+(
+double
+maxVelocity
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the cruise velocity for the MAXMotion mode of the controller for a specific closed loop slot. Natively, the units are in RPM but will be affected by the velocity conversion factor.
+Parameters
+maxVelocity
+The maximum velocity with the velocity conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+MAXMotionConfig
+object for method chaining
+Deprecated:
+Use
+MAXMotionConfig::CruiseVelocity
+instead
+◆
+CruiseVelocity()
+MAXMotionConfig
+& MAXMotionConfig::CruiseVelocity
+(
+double
+cruiseVelocity
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the cruise velocity for the MAXMotion mode of the controller for a specific closed loop slot. Natively, the units are in RPM but will be affected by the velocity conversion factor.
+Parameters
+maxVelocity
+The maximum velocity with the velocity conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+MAXMotionConfig
+object for method chaining
+◆
+MaxAcceleration()
+MAXMotionConfig
+& MAXMotionConfig::MaxAcceleration
+(
+double
+maxAcceleration
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the maximum acceleration for the MAXMotion mode of the controller for a specific closed loop slot. This is the rate at which the velocity will increase until the max velocity is reached. Natively, the units are in RPM per second but will be affected by the velocity conversion factor.
+Parameters
+maxAcceleration
+The maximum acceleration with the velocity conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+MAXMotionConfig
+object for method chaining
+◆
+AllowedClosedLoopError()
+MAXMotionConfig
+& MAXMotionConfig::AllowedClosedLoopError
+(
+double
+allowedError
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the allowed profile error for the MAXMotion mode of the controller for a specific PID slot. This value is how much deviation from the profile is tolerated before the profile is regenerated. Natively, the units are in rotations but will be affected by the position conversion factor.
+Parameters
+allowedError
+The allowed error with the position conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+MAXMotionConfig
+object for method chaining
+Deprecated:
+Use
+MAXMotionConfig::AllowedProfileError
+instead
+◆
+AllowedProfileError()
+MAXMotionConfig
+& MAXMotionConfig::AllowedProfileError
+(
+double
+allowedError
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the allowed profile error for the MAXMotion mode of the controller for a specific PID slot. This value is how much deviation from the profile is tolerated before the profile is regenerated. Natively, the units are in rotations but will be affected by the position conversion factor.
+Parameters
+allowedError
+The allowed error with the position conversion factor applied
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+MAXMotionConfig
+object for method chaining
+◆
+PositionMode()
+MAXMotionConfig
+& MAXMotionConfig::PositionMode
+(
+MAXMotionPositionMode
+mode
+,
+ClosedLoopSlot
+slot
+=
+kSlot0
+)
+Set the MAXMotion position control mode of the controller for a specific closed loop slot.
+Parameters
+mode
+The MAXmotion position mode
+slot
+The closed loop slot to set the values for
+Returns
+The modified
+MAXMotionConfig
+object for method chaining
+The documentation for this class was generated from the following files:
+src/main/native/include/rev/config/
+MAXMotionConfig.h
+src/main/native/cpp/config/
+MAXMotionConfig.cpp
+rev
+spark
+MAXMotionConfig
+Generated by
+1.9.2

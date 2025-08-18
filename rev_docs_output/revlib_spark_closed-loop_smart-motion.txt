@@ -1,0 +1,81 @@
+REVLib
+REVLib
+Installation
+Changelog
+REVLib Code Examples (GitHub)
+Migrating to REVLib 2025
+Configuring Devices
+Retrieving Configurations
+Flexibility with Configurations
+SPARK Motor Controllers
+SPARK MAX vs SPARK Flex
+Configuring a SPARK
+Closed Loop Control
+Closed Loop Control Getting Started
+Getting Started with PID Tuning
+Position Control Mode
+Velocity Control Mode
+Current Control Mode
+MAXMotion Position Control
+MAXMotion Velocity Control
+Smart Motion Control
+Smart Velocity Control
+Simulation
+Simulation Getting Started
+REVLib Simulation Feature Overview
+Simulating Additional Sensors and Auxiliary Devices
+Servo Hub
+Configuring a Servo Hub
+Commanding Servos
+Powered by GitBook
+On this page
+Was this helpful?
+Export as PDF
+Smart Motion Control is a complex control mode that allows for smoother and more controlled movements from one position to another. By configuring the maximum velocity and acceleration, as shown in
+Smart Motion Parameters
+, this control mode will create a motion that accelerates, holds a constant "cruise" velocity, and then decelerates to a stop at the setpoint.
+Tuning the PID Controller for Smart Motion may be difficult on mechanisms with a very limited range of motion.
+This control mode takes a setpoint in units of rotations, but the underlying implementation executes a Velocity PID controller, so the PID tuning process will be more like a Velocity controller.
+The
+Smart Motion Example Program
+is a good tool for tuning this control loop, as it allows you to toggle between Smart Motion and Velocity control to fine-tune the constants and parameters.
+Smart Motion's function is the same as that of
+WPILib's TrapezoidalProfile
+, which uses an underlying position-based PID controller which may be easier to tune and can sometimes provide better results.
+Running Smart Motion Control is as easy as any other control mode: configure the constants, pick your setpoints, and set it as the mode when you apply the position target, as seen below:
+Java
+C++
+Copy
+m_controller
+.
+setReference
+(setPoint
+,
+SparkBase
+.
+ControlType
+.
+kSmartMotion
+);
+API Docs:
+setReference
+Copy
+using
+namespace
+rev
+::
+spark;
+m_controller.SetReference(setPoint, SparkBase::ControlType::kSmartMotion);
+API Reference:
+SetReference
+Using the Velocity Control mode will rotate your mechanism continuously. Please exercise caution while tuning. Utilize hard and soft limits to protect your robot.
+This graph was generated with a very slow acceleration and max velocity to show the curve. Once your constants are dialed in, these can be increased to make your motion quick and precise. This graph was made using a Spark Flex driving a 1:1 rubber flywheel.
+Smart Motion is deprecated as of the 2025 release of REVLib, and teams using it should migrate to MAXMotion Position Control Mode
+Smart Motion Control is a complex control mode that allows for smoother and more controlled movements from one position to another. By configuring the maximum velocity and acceleration, as shown in
+Previous
+MAXMotion Velocity Control
+Next
+Smart Velocity Control
+Last updated
+7 months ago
+Was this helpful?

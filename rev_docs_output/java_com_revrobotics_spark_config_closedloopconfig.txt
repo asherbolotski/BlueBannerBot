@@ -1,0 +1,987 @@
+JavaScript is disabled on your browser.
+Package
+com.revrobotics.spark.config
+Class ClosedLoopConfig
+java.lang.Object
+com.revrobotics.config.BaseConfig
+com.revrobotics.spark.config.ClosedLoopConfig
+public class
+ClosedLoopConfig
+extends
+BaseConfig
+Nested Class Summary
+Nested classes/interfaces inherited from class com.revrobotics.config.
+BaseConfig
+BaseConfig.CANType
+Field Summary
+Fields
+Modifier and Type
+Field
+Description
+final
+FeedForwardConfig
+feedForward
+final
+MAXMotionConfig
+maxMotion
+final
+SmartMotionConfig
+smartMotion
+Constructor Summary
+Constructors
+Constructor
+Description
+ClosedLoopConfig
+()
+Create a new object to configure a ClosedLoopController.
+Method Summary
+All Methods
+Instance Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+ClosedLoopConfig
+allowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Set the allowed closed loop error for the controller for a specific PID slot.
+ClosedLoopConfig
+apply
+(
+ClosedLoopConfig
+config)
+Applies settings from another
+ClosedLoopConfig
+to this one, including all of its nested
+ configurations.
+ClosedLoopConfig
+apply
+(
+FeedForwardConfig
+config)
+Applies settings from a
+FeedForwardConfig
+to this
+ClosedLoopConfig
+.
+ClosedLoopConfig
+apply
+(
+MAXMotionConfig
+config)
+Applies settings from a
+MAXMotionConfig
+to this
+ClosedLoopConfig
+.
+ClosedLoopConfig
+apply
+(
+SmartMotionConfig
+config)
+Applies settings from a
+SmartMotionConfig
+to this
+ClosedLoopConfig
+.
+ClosedLoopConfig
+d
+(double d)
+Set the derivative gain of the controller.
+ClosedLoopConfig
+d
+(double d,
+ClosedLoopSlot
+slot)
+Set the derivative gain of the controller for a specific closed loop slot.
+ClosedLoopConfig
+dFilter
+(double dFilter)
+Set the derivative filter of the controller.
+ClosedLoopConfig
+dFilter
+(double dFilter,
+ClosedLoopSlot
+slot)
+Set the derivative filter of the controller for a specific closed loop slot.
+ClosedLoopConfig
+feedbackSensor
+(
+FeedbackSensor
+sensor)
+Set the feedback sensor of the controller.
+String
+flatten
+()
+ClosedLoopConfig
+i
+(double i)
+Set the integral gain of the controller.
+ClosedLoopConfig
+i
+(double i,
+ClosedLoopSlot
+slot)
+Set the integral gain of the controller for a specific closed loop slot.
+ClosedLoopConfig
+iMaxAccum
+(double iMaxAccum)
+Set the maximum I accumulator of the controller.
+ClosedLoopConfig
+iMaxAccum
+(double iMaxAccum,
+ClosedLoopSlot
+slot)
+Set the maximum I accumulator of the controller for a specific closed loop slot.
+ClosedLoopConfig
+iZone
+(double iZone)
+Set the integral zone of the controller.
+ClosedLoopConfig
+iZone
+(double iZone,
+ClosedLoopSlot
+slot)
+Set the integral zone of the controller for a specific closed loop slot.
+ClosedLoopConfig
+maxOutput
+(double maxOutput)
+Set the maximum output of the controller.
+ClosedLoopConfig
+maxOutput
+(double maxOutput,
+ClosedLoopSlot
+slot)
+Set the maximum output of the controller for a specific closed loop slot.
+ClosedLoopConfig
+minOutput
+(double minOutput)
+Set the minimum output of the controller.
+ClosedLoopConfig
+minOutput
+(double minOutput,
+ClosedLoopSlot
+slot)
+Set the minimum output of the controller for a specific closed loop slot.
+ClosedLoopConfig
+outputRange
+(double minOutput,
+ double maxOutput)
+Set the output range of the controller.
+ClosedLoopConfig
+outputRange
+(double minOutput,
+ double maxOutput,
+ClosedLoopSlot
+slot)
+Set the output range of the controller for a specific closed loop slot.
+ClosedLoopConfig
+p
+(double p)
+Set the proportional gain of the controller.
+ClosedLoopConfig
+p
+(double p,
+ClosedLoopSlot
+slot)
+Set the proportional gain of the controller for a specific closed loop slot.
+ClosedLoopConfig
+pid
+(double p,
+ double i,
+ double d)
+Set the PID gains of the controller.
+ClosedLoopConfig
+pid
+(double p,
+ double i,
+ double d,
+ClosedLoopSlot
+slot)
+Set the PID gains of the controller for a specific closed loop slot.
+ClosedLoopConfig
+pidf
+(double p,
+ double i,
+ double d,
+ double ff)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+ClosedLoopConfig
+pidf
+(double p,
+ double i,
+ double d,
+ double ff,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+ClosedLoopConfig
+positionWrappingEnabled
+(boolean enabled)
+Enable or disable PID wrapping for position closed loop control.
+ClosedLoopConfig
+positionWrappingInputRange
+(double minInput,
+ double maxInput)
+Set the input range for PID wrapping with position closed loop control
+ClosedLoopConfig
+positionWrappingMaxInput
+(double maxInput)
+Set the maximum input value for PID wrapping with position closed loop control
+ClosedLoopConfig
+positionWrappingMinInput
+(double minInput)
+Set the minimum input value for PID wrapping with position closed loop control.
+ClosedLoopConfig
+velocityFF
+(double ff)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+ClosedLoopConfig
+velocityFF
+(double ff,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+Methods inherited from class com.revrobotics.config.
+BaseConfig
+apply
+,
+getParameter
+,
+getParameter
+,
+putParameter
+,
+putParameter
+,
+putParameter
+,
+removeParameter
+,
+removeParameter
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Field Details
+smartMotion
+public final
+SmartMotionConfig
+smartMotion
+maxMotion
+public final
+MAXMotionConfig
+maxMotion
+feedForward
+public final
+FeedForwardConfig
+feedForward
+Constructor Details
+ClosedLoopConfig
+public
+ClosedLoopConfig
+()
+Create a new object to configure a ClosedLoopController.
+Method Details
+apply
+public
+ClosedLoopConfig
+apply
+(
+ClosedLoopConfig
+config)
+Applies settings from another
+ClosedLoopConfig
+to this one, including all of its nested
+ configurations.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+ClosedLoopConfig
+to copy settings from
+Returns:
+The updated
+ClosedLoopConfig
+for method chaining
+apply
+public
+ClosedLoopConfig
+apply
+(
+SmartMotionConfig
+config)
+Applies settings from a
+SmartMotionConfig
+to this
+ClosedLoopConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+SmartMotionConfig
+to copy settings from
+Returns:
+The updated
+ClosedLoopConfig
+for method chaining
+apply
+public
+ClosedLoopConfig
+apply
+(
+MAXMotionConfig
+config)
+Applies settings from a
+MAXMotionConfig
+to this
+ClosedLoopConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+MAXMotionConfig
+to copy settings from
+Returns:
+The updated
+ClosedLoopConfig
+for method chaining
+apply
+public
+ClosedLoopConfig
+apply
+(
+FeedForwardConfig
+config)
+Applies settings from a
+FeedForwardConfig
+to this
+ClosedLoopConfig
+.
+Settings in the provided config will overwrite existing values in this object. Settings not
+ specified in the provided config remain unchanged.
+Parameters:
+config
+- The
+FeedForwardConfig
+to copy settings from
+Returns:
+The updated
+ClosedLoopConfig
+for method chaining
+pidf
+@Deprecated
+(
+forRemoval
+=true)
+public
+ClosedLoopConfig
+pidf
+(double p,
+ double i,
+ double d,
+ double ff)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+Set the PIDF gains of the controller. This will set the gains for closed loop slot 0.
+To set the gains for a specific closed loop slot, use
+pidf(double, double, double, double, ClosedLoopSlot)
+.
+Parameters:
+p
+- The proportional gain value
+i
+- The integral gain value
+d
+- The derivative gain value
+ff
+- The velocity feedforward value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+pidf
+@Deprecated
+(
+forRemoval
+=true)
+public
+ClosedLoopConfig
+pidf
+(double p,
+ double i,
+ double d,
+ double ff,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+Set the PIDF gains of the controller for a specific closed loop slot.
+Parameters:
+p
+- The proportional gain value
+i
+- The integral gain value
+d
+- The derivative gain value
+ff
+- The velocity feedforward value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+pid
+public
+ClosedLoopConfig
+pid
+(double p,
+ double i,
+ double d)
+Set the PID gains of the controller. This will set the gains for closed loop slot 0.
+To set the gains for a specific closed loop slot, use
+pid(double, double, double, ClosedLoopSlot)
+.
+Parameters:
+p
+- The proportional gain value
+i
+- The integral gain value
+d
+- The derivative gain value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+pid
+public
+ClosedLoopConfig
+pid
+(double p,
+ double i,
+ double d,
+ClosedLoopSlot
+slot)
+Set the PID gains of the controller for a specific closed loop slot.
+Parameters:
+p
+- The proportional gain value
+i
+- The integral gain value
+d
+- The derivative gain value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+p
+public
+ClosedLoopConfig
+p
+(double p)
+Set the proportional gain of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+p(double, ClosedLoopSlot)
+.
+Parameters:
+p
+- The proportional gain value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+p
+public
+ClosedLoopConfig
+p
+(double p,
+ClosedLoopSlot
+slot)
+Set the proportional gain of the controller for a specific closed loop slot.
+Parameters:
+p
+- The proportional gain value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+i
+public
+ClosedLoopConfig
+i
+(double i)
+Set the integral gain of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+i(double, ClosedLoopSlot)
+.
+Parameters:
+i
+- The integral gain value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+i
+public
+ClosedLoopConfig
+i
+(double i,
+ClosedLoopSlot
+slot)
+Set the integral gain of the controller for a specific closed loop slot.
+Parameters:
+i
+- The integral gain value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+d
+public
+ClosedLoopConfig
+d
+(double d)
+Set the derivative gain of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+d(double, ClosedLoopSlot)
+.
+Parameters:
+d
+- The derivative gain value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+d
+public
+ClosedLoopConfig
+d
+(double d,
+ClosedLoopSlot
+slot)
+Set the derivative gain of the controller for a specific closed loop slot.
+Parameters:
+d
+- The derivative gain value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+velocityFF
+@Deprecated
+(
+forRemoval
+=true)
+public
+ClosedLoopConfig
+velocityFF
+(double ff)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+Set the velocity feedforward gain of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+velocityFF(double, ClosedLoopSlot)
+.
+Parameters:
+ff
+- The velocity feedforward gain value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+velocityFF
+@Deprecated
+(
+forRemoval
+=true)
+public
+ClosedLoopConfig
+velocityFF
+(double ff,
+ClosedLoopSlot
+slot)
+Deprecated, for removal: This API element is subject to removal in a future version.
+Use
+feedForward
+to set feedforward gains
+Set the velocity feedforward gain of the controller for a specific closed loop slot.
+Parameters:
+ff
+- The velocity feedforward gain value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+dFilter
+public
+ClosedLoopConfig
+dFilter
+(double dFilter)
+Set the derivative filter of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+dFilter(double, ClosedLoopSlot)
+.
+Parameters:
+dFilter
+- The derivative filter value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+dFilter
+public
+ClosedLoopConfig
+dFilter
+(double dFilter,
+ClosedLoopSlot
+slot)
+Set the derivative filter of the controller for a specific closed loop slot.
+Parameters:
+dFilter
+- The derivative filter value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+iZone
+public
+ClosedLoopConfig
+iZone
+(double iZone)
+Set the integral zone of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+dFilter(double, ClosedLoopSlot)
+.
+Parameters:
+iZone
+- The integral zone value
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+iZone
+public
+ClosedLoopConfig
+iZone
+(double iZone,
+ClosedLoopSlot
+slot)
+Set the integral zone of the controller for a specific closed loop slot.
+Parameters:
+iZone
+- The integral zone value
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+minOutput
+public
+ClosedLoopConfig
+minOutput
+(double minOutput)
+Set the minimum output of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+minOutput(double, ClosedLoopSlot)
+.
+Parameters:
+minOutput
+- The minimum output value in the range [-1, 1]
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+minOutput
+public
+ClosedLoopConfig
+minOutput
+(double minOutput,
+ClosedLoopSlot
+slot)
+Set the minimum output of the controller for a specific closed loop slot.
+Parameters:
+minOutput
+- The minimum output value in the range [-1, 1]
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+maxOutput
+public
+ClosedLoopConfig
+maxOutput
+(double maxOutput)
+Set the maximum output of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+maxOutput(double, ClosedLoopSlot)
+.
+Parameters:
+maxOutput
+- The maximum output value in the range [-1, 1]
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+maxOutput
+public
+ClosedLoopConfig
+maxOutput
+(double maxOutput,
+ClosedLoopSlot
+slot)
+Set the maximum output of the controller for a specific closed loop slot.
+Parameters:
+maxOutput
+- The maximum output value in the range [-1, 1]
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+outputRange
+public
+ClosedLoopConfig
+outputRange
+(double minOutput,
+ double maxOutput)
+Set the output range of the controller.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+outputRange(double, double, ClosedLoopSlot)
+.
+Parameters:
+minOutput
+- The minimum output value in the range [-1, 1]
+maxOutput
+- The maximum output value in the range [-1, 1]
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+outputRange
+public
+ClosedLoopConfig
+outputRange
+(double minOutput,
+ double maxOutput,
+ClosedLoopSlot
+slot)
+Set the output range of the controller for a specific closed loop slot.
+Parameters:
+minOutput
+- The minimum output value in the range [-1, 1]
+maxOutput
+- The maximum output value in the range [-1, 1]
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+iMaxAccum
+public
+ClosedLoopConfig
+iMaxAccum
+(double iMaxAccum)
+Set the maximum I accumulator of the controller. This value is used to constrain the I
+ accumulator to help manage integral wind-up.
+This will set the value for closed loop slot 0. To set the value for a specific closed loop
+ slot, use
+iMaxAccum(double, ClosedLoopSlot)
+.
+Parameters:
+iMaxAccum
+- The max value to constrain the I accumulator to
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+iMaxAccum
+public
+ClosedLoopConfig
+iMaxAccum
+(double iMaxAccum,
+ClosedLoopSlot
+slot)
+Set the maximum I accumulator of the controller for a specific closed loop slot. This value is
+ used to constrain the I accumulator to help manage integral wind-up.
+Parameters:
+iMaxAccum
+- The max value to constrain the I accumulator to
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+allowedClosedLoopError
+public
+ClosedLoopConfig
+allowedClosedLoopError
+(double allowedError,
+ClosedLoopSlot
+slot)
+Set the allowed closed loop error for the controller for a specific PID slot. This value is how
+ much deviation from the setpoint is tolerated and is useful in preventing oscillation around
+ the setpoint. Natively, the units are in rotations but will be affected by the position
+ conversion factor.
+Parameters:
+allowedError
+- The allowed error with the position conversion factor applied
+slot
+- The closed loop slot to set the values for
+Returns:
+The modified ClosedLoopConfig object for method chaining
+positionWrappingEnabled
+public
+ClosedLoopConfig
+positionWrappingEnabled
+(boolean enabled)
+Enable or disable PID wrapping for position closed loop control.
+Parameters:
+enabled
+- True to enable position PID wrapping
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+positionWrappingMinInput
+public
+ClosedLoopConfig
+positionWrappingMinInput
+(double minInput)
+Set the minimum input value for PID wrapping with position closed loop control.
+Parameters:
+minInput
+- The value of min input for the position
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+positionWrappingMaxInput
+public
+ClosedLoopConfig
+positionWrappingMaxInput
+(double maxInput)
+Set the maximum input value for PID wrapping with position closed loop control
+Parameters:
+maxInput
+- The value of max input for the position
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+positionWrappingInputRange
+public
+ClosedLoopConfig
+positionWrappingInputRange
+(double minInput,
+ double maxInput)
+Set the input range for PID wrapping with position closed loop control
+Parameters:
+minInput
+- The value of min input for the position
+maxInput
+- The value of max input for the position
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+feedbackSensor
+public
+ClosedLoopConfig
+feedbackSensor
+(
+FeedbackSensor
+sensor)
+Set the feedback sensor of the controller. The controller will use this sensor as the source of
+ feedback for its closed loop control.
+The default feedback sensor is assumed to be the primary encoder for either brushless or
+ brushed mode. This can be changed to another feedback sensor for the controller such as an
+ analog sensor, absolute encoder, or alternate/external encoder.
+Parameters:
+sensor
+- The feedback sensor
+Returns:
+The modified
+ClosedLoopConfig
+object for method chaining
+flatten
+public
+String
+flatten
+()
+Overrides:
+flatten
+in class
+BaseConfig

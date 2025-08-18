@@ -1,0 +1,1364 @@
+REV DUO Build System
+REV DUO Build System Overview
+Structure
+Introduction to Structure
+15mm Extrusion
+15mm x 30mm Extrusion
+15mm x 45mm C Channel
+45mm x 45mm U Channel
+Flat Plate
+Flat Beam
+L Beam
+Brackets
+Corrugated Plastic Sheets
+M3 Hardware
+Motion
+Introduction to Motion
+Hex Shaft and Spacers
+Bearings
+Sprockets and Chain
+Advanced Sprockets and Chain
+Chain Tool
+Timing Belts and Pulleys
+Gears
+Advanced Gears
+Wheels
+Linear Motion
+Choosing an Actuator
+Motors
+HD Hex Motor
+Pinion Pressing Guide
+Pinion Removal Guide
+Core Hex Motor
+Servos
+Smart Robot Servo
+Building Techniques
+Tips and Tricks for Building
+Supporting Motion
+Constraining Motion
+Compatibility
+Build Guides
+Linear Motion Kit
+Three Stage Cascading Lift
+Three Stage Continuous Lift
+Channel Drivetrain
+Single Sprocket Shaft Assembly
+Double Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Channel Drivetrain - Mecanum Upgrade
+90mm Single Sprocket Shaft Assembly
+75mm Single Sprocket Shaft Assembly
+Drive Shaft Assembly
+UltraPlanetary Gearbox Assembly
+Making the Chain Links
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behaviour
+Mecanum Drivetrain V2
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Mecanum Drivetrain Kit
+UltraPlanetary Gearbox Assembly
+Drive Rail Assembly
+Final Assembly
+Mecanum Wheel Setup and Behavior
+Mecanum Drivetrain Example Code
+Extrusion Chain Drivetrain
+Pre-Loading Brackets
+Traction Wheel Assembly
+Omni Wheel Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Making the Chain Links
+Final Assembly
+Extrusion Gear Drivetrain
+Pre-Loading Brackets
+Omni Wheel Assembly
+Middle Grip Wheel Assembly
+Front Grip Wheel Assembly
+Gear Idler Assembly
+UltraPlanetary Gearbox Assembly
+Internal Chassis Frame Assembly
+Final Assembly
+Class Bot V2
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Class Bot
+Pre-Loading Brackets
+Internal Robot Frame Assembly
+External Robot Frame Assembly
+Wheel Assemblies
+Arm Gear Assemblies
+Arm Assemblies
+Final Assembly
+Electronics and Communication
+REV Control System
+Sensors
+Powered by GitBook
+On this page
+Sprocket and Chain Physics
+Chain Drive
+Sprocket Ratio
+Idlers
+Compound Gearing
+Spacing and Center to Center Distances
+Spacing
+Center to Center Distance
+Sprocket Measurements
+Was this helpful?
+Export as PDF
+Sprocket and Chain Physics
+Sprockets are one common way to transmit power and change the output torque or speed of a mechanical system. Understanding these basic concepts is required to make optimized design decisions. This section will briefly cover the definition of these concepts and then explain them in relationship to basic
+sprocket and chain
+designs.
+Speed
+Torque
+Power
+Speed
+is the measure of how fast an object is moving. The speed of an object is how far it will travel in a given amount of time. The SI unit for speed is meters per second but speed is also commonly expressed in feet per second.
+Torque
+is roughly the measure of the turning force on an object like a sprocket or a wheel. Mathematically, torque is defined as the rate of change of the angular momentum of an object. A common example of torque is a wrench attached to a bolt produces a torque to tighten or loosen it. Torque is commonly expressed in N⋅m or in⋅lbs.
+When torque is turning an object, like a sprocket, the sprocket will create a straight line (linear) force at the point where the teeth contact the chain. The magnitude of the torque created is the product of the rotational force applied and the length of the lever arm, which in the case of a sprocket, is half of the pitch diameter (the radius).
+Power (P)
+is the rate of work over time. The concept of power includes both a physical change and a time period which the change occurs. This is distinct from the concept of work which only measures a physical change. It takes the same amount of work to carry a brick up a mountain whether you walk or run, but running takes more power because the work is done in a shorter amount of time. The SI unit for power is the watt(W) which is the same as one joule per second (J/s).
+Often in competition robotics the total power is fixed by the motors and the batteries available. The maximum speed at which an arm can lift a certain load is dictated by the maximum system power.
+Chain Drive
+By selecting sprockets with different sizes relative to the input sprocket varies the output speed and the output torque.  Total power is not effected through these changes.
+Sprocket and chain is a very efficient way to transmit torque over long distances. Modest
+reductions
+can be accomplished using sprockets and chain, but gears typically provide a more space efficient solution for higher ratio reductions.
+Sprocket Ratio
+When a larger sprocket drives a smaller one, for one rotation of the larger sprocket the smaller sprocket must complete more revolutions so the output will be faster than the input. If the situation is reversed and a smaller sprocket drives a larger output sprocket, then for one rotation of the input the output will complete less than one revolution resulting in a speed decrease from the input. The
+ratio
+of the sizes of the two sprockets is proportional to the speed and torque changes between them.
+The
+ratio
+in size from the input (driving) sprocket to the output (driven) sprocket determines if the output is faster (less torque) or has more torque (slower). To calculate exactly how the sprocket size ratio effects the relationship from input to output use the ratio of the number of teeth between the two sprockets.
+In the image below, the ratio of the number of teeth from the input sprocket to the output sprocket is 20T:15T which means the input needs to turn 1.3 rotations for the output to complete one rotation
+20
+T
+/
+15
+T
+=
+1.3
+20T/15T =1.3
+20
+T
+/15
+T
+=
+1.3
+.
+Idlers
+Now lets add a 15 tooth
+idler
+sprocket into the example on the outside of the chain loop. An
+idler
+sprocket is any sprocket meshed with the chain which does not drive any shaft or do any work.
+Idlers
+do not change the system reduction which remains 20T:15T.
+Regardless of the number or size of idler sprockets, only the input and output sprocket determine the reduction.
+All sprockets on the same side of a chain have the same rotation. The driving and driven sprocket are inside the chain and are rotating counter clockwise while the idler sprocket is outside of the chain loop and is rotating clockwise.  This property is useful sometime when it is desirable to have two shafts powered from the same source, but with opposite rotations.  Common examples of this on robots are intakes and dual wheeled shooters.
+Idlers can be used to tension chain or increase the amount of chain wrap around a sprocket.  From the figure below, all power transmission sprockets should have chain wrapped approximately 180° around the circumference of the sprocket.  This amount of wrap is necessary so that there are sufficient teeth engaged with the chain to transmit the torque.  Too little wrap (<120°) and the chain will skip under heavy load, while excessive wrap (>200°) can decrease system efficiency. The sprocket outside of the chain is noted with a warning because it has a chain wrap of <90°.  If this sprocket is an idler, then it is unpowered and minimal chain wrap is acceptable, however if this sprocket will be driving a shaft which is doing work, this amount of wrap would be insufficient.
+Sprocket and chain is an efficient way to transmit torque long distances in a robot. A common example of this is a sprocket and chain drivetrain. In this example the sprockets on the ends are linked to the drive wheels and the center sprocket would be driven by a motor (not shown). Because the driving and driven sprockets are all inside the chain, they all have the same rotation direction. The smaller sprockets on the outside of the chain loop are used to increase the amount of chain wrap on the center driving sprocket.
+Compound Gearing
+Some designs may require more reduction than is practical in a single stage. The ratio from the smallest sprocket available to the largest is 54:15, so if a greater reduction then 3.6x is required, multiple reduction stages can be used in the same mechanism which is called a compound gear reduction. There are multiple gear or sprocket pairs in a compound reduction with each pair linked by a shared axle. When using sprockets and chain in a multi stage reduction, it’s very common to use gears for the first stage and then use sprockets and chain for the last stage. The figure below is an example of a two-stage reduction using all gears, but one of the pairs could be replaced with sprockets and chain. The driving gear (input) of each pair is highlighted in orange.
+Reduction is calculated the same for gears and sprockets based on the ratio of the number of teeth. To calculate the total reduction of a compound reduction, identify the reduction of each stage and then multiply each reduction together.
+CR
+=
+R
+1
+×
+R
+2
+×
+…
+×
+R
+n
+\text{CR}=\text{R}_1×\text{R}_2 ×\text{…} ×\text{R}_n
+CR
+=
+R
+1
+​
+×
+R
+2
+​
+×
+…
+×
+R
+n
+​
+Where:
+CR is the total Compound Reduction
+Rn is the total reduction of each stage
+Using the image above as an example the compound reduction is 12:1.
+CR
+=
+R
+1
+×
+R
+2
+=
+60
+30
+×
+90
+15
+=
+2
+×
+6
+=
+12
+\text{CR}=\text{R}_1×   \text{R}_2 =\frac{60}{30}× \frac{90}{15}=2 ×6=12
+CR
+=
+R
+1
+​
+×
+R
+2
+​
+=
+30
+60
+​
+×
+15
+90
+​
+=
+2
+×
+6
+=
+12
+For any gear system there are a limited number of gear and sprocket sizes available so in addition to being able to create greater reductions using compound reductions it is also possible to create a wider range of reduction values or the same reduction of a single stage, but with smaller diameter motion components.
+Each additional compound stage will result in a decrease in efficiency of the system.
+Spacing and Center to Center Distances
+When REV Robotics Sprockets are used in conjunction with the
+slots
+on
+Extrusion
+or
+Channel
+, the
+center to center distance
+between axles is completely adjustable. Slide and retighten the shaft mounting plates anywhere along the slots to adjust chain tension. This system allows any combination of compatible REV Robotics Sprocket to be used together, allowing for a high level of flexibility. When adjusting the reduction of a system, just a single sprocket can be replaced reducing the amount of reassembly time.
+When using the pitch featured on the
+Extended Motion Pattern
+a similar level of flexibility can be achieved in sprocket spacing by using Tensioning Bushings (
+REV-41-1702
+) with M3 Standoffs (
+REV-41-1492
+).
+Spacing
+In order for sprockets to work effectively, it’s important that the
+center-to-center distance
+is correctly adjusted. The sprocket and chain example with the red 'X;, in the image below, may work under very light loads, but they will certainly not work and will skip under any significant loading. The sprockets in this example are too close together so chain is loose enough that it can skip on the sprocket teeth. The sprockets, with the green check mark, are correctly spaced which will provide smooth reliable operation.
+To correctly space REV Robotics Sprockets along slots, use the following procedure:
+Securely fix the axle of either the input or output sprocket. In the case of a gear train with multiple idlers or a compound reduction, consider which axle makes the most sense to fix such as the very first input gear or the very last gear.
+Starting with the fixed axle, then identify all the driving and driven sprockets for any sprockets on that axle. One by one loosen these axles, slide them until the chain is tensioned and then retighten the axle mounts.
+Continue the procedure from Step 2 for each fixed axle until all the chains are tight and all the axles have been retightened.
+The process highlighted above works with the slots but the process with the Extended Motion Pattern may require center to center distance calculations.
+Center to Center Distance
+It is possible to mathematically calculate the number of links needed between two sprockets or the correct center to center distances for two sprockets for a given chain length. These methods are appropriate for robot planning purposes, but assembling your robot using these measurement is typically impractical. The details of these calculations are included for completeness, but most modern CAD packages or numerous free online calculators can also generate the correct values.
+Center to center distance in inches
+CDC
+=
+P
+8
+[
+2
+L
+−
+(
+N
++
+n
+)
++
+(
+2
+L
+−
+(
+N
++
+n
+)
+)
+2
+−
+8
+π
+2
+×
+(
+N
+−
+n
+)
+2
+]
+\text{CDC} = \frac{P}{8}\left[2L - (N+n) + \sqrt{(2L-(N+n))^2-\frac{8}{\pi^2}\times(N - n)^2} \right]
+CDC
+=
+8
+P
+​
+[
+2
+L
+−
+(
+N
++
+n
+)
++
+(
+2
+L
+−
+(
+N
++
+n
+)
+)
+2
+−
+π
+2
+8
+​
+×
+(
+N
+−
+n
+)
+2
+​
+]
+Chain length in pitches
+L
+=
+2
+C
+P
++
+N
++
+n
+2
++
+P
+(
+N
+−
+n
+2
+π
+)
+2
+C
+L = \frac{2C}{P} + \frac{N+n}{2} + \frac{P(\frac{N -n}{2\pi})^2}{C}
+L
+=
+P
+2
+C
+​
++
+2
+N
++
+n
+​
++
+C
+P
+(
+2
+π
+N
+−
+n
+​
+)
+2
+​
+Where:
+C= Center to Center Distance
+L= Chain Length in Pitches
+P= Pitch of Chain
+N= Number of Teeth on Large Sprocket
+n= Number of Teeth on Small Sprocket
+Calculate center to center distance
+Calculate center to center distance using the '
+center to center distance in inches'
+formula and the chain drive example in the above image.
+Where:
+L = 48
+P = 0.25
+N = 20
+n = 15
+CDC
+=
+0.25
+8
+[
+2
+(
+48
+)
+−
+(
+20
++
+15
+)
++
+(
+2
+(
+48
+)
+−
+(
+20
++
+15
+)
+)
+2
+−
+8
+π
+2
+×
+(
+20
+−
+15
+)
+2
+]
+=
+0.25
+8
+[
+96
+−
+35
++
+(
+96
+−
+35
+)
+2
+−
+8
+π
+2
+×
+(
+5
+)
+2
+]
+=
+0.25
+8
+[
+61
++
+(
+61
+)
+2
+−
+8
+π
+2
+×
+25
+]
+=
+0.25
+8
+[
+61
++
+3721
+−
+200
+π
+2
+]
+0.25
+8
+[
+61
++
+3721
+−
+20.24642
+]
+=
+0.03125
+[
+61
++
+60.833
+]
+=
+3.807
+\text{CDC} = \frac{0.25}{8}\left[2(48) - (20+15) + \sqrt{(2(48)-(20+15))^2-\frac{8}{\pi^2}\times(20 - 15)^2} \right]\newline= \frac{0.25}{8}\left[ 96 - 35 +\sqrt{(96-35)^2 - \frac{8}{\pi^2} \times (5)^2} \right]\newline=\frac{0.25}{8} \left[ 61 + \sqrt{(61)^2 - \frac{8}{\pi^2}\times25}\right]\newline = \frac{0.25}{8}\left[ 61 + \sqrt{3721 - \frac{200}{\pi^2}}\right]\newline\frac{0.25}{8}\left[61+\sqrt{3721-20.24642}\right]\newline = 0.03125\left[61+60.833\right]\newline = 3.807
+CDC
+=
+8
+0.25
+​
+[
+2
+(
+48
+)
+−
+(
+20
++
+15
+)
++
+(
+2
+(
+48
+)
+−
+(
+20
++
+15
+)
+)
+2
+−
+π
+2
+8
+​
+×
+(
+20
+−
+15
+)
+2
+​
+]
+=
+8
+0.25
+​
+[
+96
+−
+35
++
+(
+96
+−
+35
+)
+2
+−
+π
+2
+8
+​
+×
+(
+5
+)
+2
+​
+]
+=
+8
+0.25
+​
+[
+61
++
+(
+61
+)
+2
+−
+π
+2
+8
+​
+×
+25
+​
+]
+=
+8
+0.25
+​
+[
+61
++
+3721
+−
+π
+2
+200
+​
+​
+]
+8
+0.25
+​
+[
+61
++
+3721
+−
+20.24642
+​
+]
+=
+0.03125
+[
+61
++
+60.833
+]
+=
+3.807
+After running calculations, the center to center distance for the example is
+3.807 inches
+Calculate chain length
+In most design cases the chain length is not known ahead of time, but the two sprockets in the reduction and an approximate center-to-center distance to fit the reduction is known. For this example, a 20:15 reduction is needed, and the whole solution must fit in a space of five inches or less.
+In this example the whole solutions must fit into a five-inch space, so in addition to the center to center distance, the chain clearance radius for both sprockets must be accounted for. Use
+Sprocket Measurement Details
+to look up the chain clearance diameter (A) for both the 15 tooth and 20 tooth sprocket and subtract the radius of each from the total given solution size to get the maximum center to center distance available.
+Maximum CDC
+=
+Total Solution Width
+−
+Clearance Radius 1
+−
+Clearance Radius 2
+\text{Maximum CDC} = \text{Total Solution Width} - \text{Clearance Radius 1}-\text{Clearance Radius 2}
+Maximum CDC
+=
+Total Solution Width
+−
+Clearance Radius 1
+−
+Clearance Radius 2
+Where:
+Total Solution Width
+=
+5
+inches
+Clearance Radius 1
+=
+15
+T
+c
+h
+a
+i
+n
+c
+l
+e
+a
+r
+a
+n
+c
+e
+d
+i
+a
+m
+e
+t
+e
+r
+(
+A
+)
+=
+1.45
+inches
+Clearance Radius 2
+=
+20
+T
+c
+h
+a
+i
+n
+c
+l
+e
+a
+r
+a
+n
+c
+e
+d
+i
+a
+m
+e
+t
+e
+r
+(
+A
+)
+=
+1.85
+inches
+\text{Total Solution Width} = 5  \text {inches}\newline\text{Clearance Radius 1}\,=15T_{chain\, clearance\, diameter(A)} = 1.45\,\text{inches}\newline\text{Clearance Radius 2} =20T_{chain\, clearance\, diameter(A)} = 1.85\,\text{inches}
+Total Solution Width
+=
+5
+inches
+Clearance Radius 1
+=
+15
+T
+c
+hain
+c
+l
+e
+a
+r
+an
+ce
+d
+iam
+e
+t
+er
+(
+A
+)
+​
+=
+1.45
+inches
+Clearance Radius 2
+=
+20
+T
+c
+hain
+c
+l
+e
+a
+r
+an
+ce
+d
+iam
+e
+t
+er
+(
+A
+)
+​
+=
+1.85
+inches
+Maximum CDC Available
+=
+5
+−
+1.45
+2
+−
+1.85
+2
+Maximum CDC Available
+=
+3.35
+inches
+\text{Maximum CDC Available} = 5 - \frac{1.45}{2} - \frac{1.85}{2}\newline\text{Maximum CDC Available} = 3.35 \text{inches}
+Maximum CDC Available
+=
+5
+−
+2
+1.45
+​
+−
+2
+1.85
+​
+Maximum CDC Available
+=
+3.35
+inches
+Using the center to center distance of 3.371 inches as the maximum spacing for this reduction to fit into a five-inch space, solve the
+chain length in pitches equation
+.
+Where:
+C= 3.35
+P= 0.25
+N= 20
+n= 15
+L
+=
+[
+2
+(
+3.35
+)
+0.25
+]
++
+[
+20
++
+15
+2
+]
++
+[
+0.25
+(
+20
+−
+15
+2
+π
+)
+2
+3.35
+]
+L
+=
+[
+6.7
+0.25
+]
++
+[
+35
+2
+]
++
+[
+0.25
+(
+5
+2
+π
+)
+2
+3.35
+]
+L
+=
+26.8
++
+17.5
++
+[
+0.25
+(
+0.796
+)
+2
+3.35
+]
+L
+=
+44.3
++
+[
+0.25
+×
+0.634
+3.35
+]
+L
+=
+44.3
++
+0.1585
+3.35
+L
+=
+44.347
+L =\left[ \frac{2(3.35)}{0.25} \right]+\left[ \frac{20+15}{2}\right] + \left[\frac{0.25(\frac{20 -15}{2\pi})^2}{3.35}\right]\\L = \left[\frac{6.7}{0.25}\right] +\left[\frac{35}{2}\right]+ \left[\frac{0.25(\frac{5}{2\pi})^2}{3.35}\right]\\L = 26.8 + 17.5 + \left[\frac{0.25(0.796)^2}{3.35}\right]\newline L = 44.3 + \left[\frac{0.25\times 0.634}{3.35} \right]\\L = 44.3 + \frac{0.1585}{3.35}\\ L = 44.347
+L
+=
+[
+0.25
+2
+(
+3.35
+)
+​
+]
++
+[
+2
+20
++
+15
+​
+]
++
+[
+3.35
+0.25
+(
+2
+π
+20
+−
+15
+​
+)
+2
+​
+]
+L
+=
+[
+0.25
+6.7
+​
+]
++
+[
+2
+35
+​
+]
++
+[
+3.35
+0.25
+(
+2
+π
+5
+​
+)
+2
+​
+]
+L
+=
+26.8
++
+17.5
++
+[
+3.35
+0.25
+(
+0.796
+)
+2
+​
+]
+L
+=
+44.3
++
+[
+3.35
+0.25
+×
+0.634
+​
+]
+L
+=
+44.3
++
+3.35
+0.1585
+​
+L
+=
+44.347
+Since it is
+not possible to have a fraction of a pitch length in the chain, the number obtained by solving the formula must be rounded to a whole even number
+. In this example because the center to center distance used was the maximum allowed, the exact pitch length should be rounded down to 44 to meet the design requirements.
+Now that the maximum even pitch lengths in the chain has been calculated, this value can be plugged back into
+center to center distance formula
+to find the exact center to center distance using a 44 link chain:
+Where:
+L = 44
+P = 0.25
+N = 20
+n = 15
+CDC
+=
+0.25
+8
+[
+2
+(
+44
+)
+−
+(
+20
++
+15
+)
++
+(
+2
+(
+44
+)
+−
+(
+20
++
+15
+)
+)
+2
+−
+8
+π
+2
+×
+(
+20
+−
+15
+)
+2
+]
+CDC
+=
+0.25
+8
+[
+88
+−
+35
++
+(
+88
+−
+35
+)
+2
+−
+8
+π
+2
+×
+25
+]
+CDC
+=
+0.25
+8
+[
+53
++
+(
+53
+)
+2
+−
+200
+π
+2
+]
+CDC
+=
+0.25
+8
+[
+53
++
+2809
+−
+20.24642
+]
+CDC
+=
+0.03125
+[
+53
++
+52.809
+]
+CDC
+=
+3.307
+inches
+\text{CDC} = \frac{0.25}{8}\left[2(44) - (20+15) + \sqrt{(2(44)-(20+15))^2-\frac{8}{\pi^2}\times(20 - 15)^2} \right]\\\text{CDC} = \frac{0.25}{8}\left[88- 35 + \sqrt{(88-35)^2-\frac{8}{\pi^2}\times25} \right]\\\text{CDC} = \frac{0.25}{8}\left[53 + \sqrt{(53)^2-\frac{200}{\pi^2}} \right]\\\\\text{CDC} = \frac{0.25}{8}\left[53 + \sqrt{2809-20.24642} \right]\\\text{CDC} = 0.03125\left[53 + 52.809\right]\\\text{CDC} = 3.307 \text{inches}
+CDC
+=
+8
+0.25
+​
+[
+2
+(
+44
+)
+−
+(
+20
++
+15
+)
++
+(
+2
+(
+44
+)
+−
+(
+20
++
+15
+)
+)
+2
+−
+π
+2
+8
+​
+×
+(
+20
+−
+15
+)
+2
+​
+]
+CDC
+=
+8
+0.25
+​
+[
+88
+−
+35
++
+(
+88
+−
+35
+)
+2
+−
+π
+2
+8
+​
+×
+25
+​
+]
+CDC
+=
+8
+0.25
+​
+[
+53
++
+(
+53
+)
+2
+−
+π
+2
+200
+​
+​
+]
+CDC
+=
+8
+0.25
+​
+[
+53
++
+2809
+−
+20.24642
+​
+]
+CDC
+=
+0.03125
+[
+53
++
+52.809
+]
+CDC
+=
+3.307
+inches
+For a 15T:20T reduction the longest chain which will fit in under 5-inches using a 44 link chain which gives a center-to-center distance is 3.307 inches and the total solution width of 4.957 inches.
+Sprocket Measurements
+Plastic Sprockets
+​
+Chain Clearance Diameter A
+Pitch Diameter B
+15 Tooth Sprocket
+​
+REV-41-1339
+​
+1.45 in
+36.9 mm
+1.2 in
+30.5 mm
+20 Tooth Sprocket
+​
+REV-41-1340
+​
+1.85 in
+46.9 mm
+1.6 in
+40.6 mm
+26 Tooth Sprocket
+​
+REV-41-1342
+​
+2.32 in
+59.0 mm
+2.07 in
+52.7 mm
+40 Tooth Sprocket
+​
+REV-41-1343
+​
+3.43 in
+87.3 mm
+3.19 in
+80.9 mm
+54 Tooth Sprocket
+​
+REV-41-1341
+​
+4.55 in
+115.6 mm
+4.3 in
+109.2 mm
+The
+Motion Interface Pattern
+is a circular M3 hole pattern on a 16mm diameter that interfaces with certain REV Brackets and the UltraPlanetary 5mm Hex Output (
+REV-41-1615
+).
+The 10 tooth #25 sprocket does not have a motion pattern due to size constraints. However, the 10 Tooth Sprocket shares features of the other Plastic Sprockets, like compatibility with #25 Chain. The table below provides the outer diameter and pitch diameter of the 10 Tooth Sprocket.
+Chain Clearance Diameter A
+Pitch Diameter B
+10 Tooth Sprocket
+​
+REV-41-1338
+​
+0.95 in
+24.1 mm
+0.80 in
+20.2 mm
+Metal Sprockets
+Chain Clearance Diameter A
+Pitch Diameter B
+15 Tooth Sprocket
+REV-41-1717
+1.45 in
+36.9 mm
+1.2 in
+30.5 mm
+20 Tooth Sprocket
+REV-41-1720
+1.85 in
+46.9 mm
+1.6 in
+40.6 mm
+26 Tooth Sprocket
+​
+REV-41-1342
+​
+2.32 in
+59.0 mm
+2.07 in
+52.7 mm
+32 Tooth Sprocket
+REV-41-1722
+2.80 in 
+87.3 mm
+2.55 in
+64.8 mm
+40 Tooth Sprocket
+REV-41-1723
+3.43 in
+87.3 mm
+3.19 in
+80.9 mm
+The 10 Tooth Metal #25 Sprocket (
+REV-41-1716
+) while still being #25 Chain compatible differs from the other metal sprockets significantly. See the
+drawing
+for relevant information for the 10 Tooth Metal #25 Sprocket.
+Previous
+Sprockets and Chain
+Next
+Chain Tool
+Last updated
+2 months ago
+Was this helpful?

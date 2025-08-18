@@ -1,0 +1,156 @@
+REV ION Build System
+REV ION Build System Overview
+FRC Robot Basics Guide
+System Standards
+Structure
+Introduction to Structure
+Brackets
+MAXSpline Brackets
+Structure Brackets
+Actuator Brackets
+MAX Pattern Plates
+Hardware
+Extrusion
+Bumper Brackets
+MAXComposite
+Motion
+Introduction to Motion
+Shafts / Spacers / Collars
+MAXHubs
+Tubes / Bushings / Axles
+Bearings / Bearing Blocks
+Pivot Joints
+Linear Actuators
+Gears
+Advanced Gears
+Addendum Shifting in Gears
+Sprockets and Chain
+Advanced Sprockets and Chain
+Chain Tool
+Belts and Pulleys
+Ratio Plates
+NEO Brushless Motors
+Servos
+Smart Robot Servo
+Wheels
+Traction
+Grip
+Omni
+Compliant
+Flap
+Gearboxes
+2 Motor Gearbox - Through Bore
+2 Motor Drivetrain Gearbox - Through Bore
+MAXPlanetary System
+System Features
+Mounting Features
+Load Ratings
+Assembly Tips and Tricks
+MAXSwerve
+MAXSwerve Build Guide
+MAXSwerve Drivetrain Onshape
+MAXSwerve Calibration
+Wiring MAXSwerve
+Programming MAXSwerve
+MAXSwerve Module Inspection
+MAXSwerve Spiky Wheel
+Aluminum MAXSwerve Wheels
+MAXSwerve Wheel V1 Evaluation
+MAXSwerve Wheel V1 Tread Reinforcement
+MAXSwerve Tips and Tricks
+Onshape Examples
+Onshape CAD Examples
+Low Complexity
+Medium Complexity
+High Complexity
+Building Techniques
+Supporting Motion
+Constraining Motion
+Build Guides
+MAXSwerve Module Assembly
+Motor Orientation
+MAXSwerve SPARK MAX Mounting Bracket Assembly
+MAXSwerve Pack Contents
+MAXSwerve Assembly Tips
+MAXSwerve Drivetrain Assembly
+Elevator Bearing Block Assembly
+MAXPlanetary Gearbox Assembly
+NEO & CIM
+NEO Vortex
+NEO 550 & 550 Sized Motors
+775 Sized Motors
+Falcon
+Shaft Retention Assembly
+Spacer Installation
+MAX 90 Degree Gearbox Assembly
+2 Motor Drivetrain Gearbox Assembly
+2 Motor Gearbox Assembly
+Linear Actuator Assembly
+MAX 180 Degree Gearbox Assembly
+Drivetrain Bumper Kit Assembly
+West Coast Drivetrain with MAXTube
+AM14U5 (FRC Kit of Parts Chassis)
+REV ION West Coast Drivetrain Assembly
+REV ION Control System
+REV Hardware Client
+Power Distribution Hub
+Radio Power Module
+Mini Power Module
+Brushless Motors and Controllers
+Pneumatics
+Sensors & Indicators
+Powered by GitBook
+On this page
+MAXSwerve Code Templates
+Java Template
+C++ Template
+Adjusting Slew Rate Parameters
+DirectionSlewRate
+MagnitudeSlewRate
+RotationalSlewRate
+MAXSwerve Template Changelog:
+Was this helpful?
+Export as PDF
+MAXSwerve Code Templates
+Below are two GitHub Repositories for template projects that will control an FRC swerve drivetrain built with REV MAXSwerve Modules.
+Note that this is meant to be used with a drivetrain composed of four MAXSwerve Modules, each configured with two SPARK MAXs, a NEO as the driving motor, a NEO 550 as the steering motor, and a REV Through Bore Encoder as the absolute turning encoder.
+Java Template
+C++ Template
+Adjusting Slew Rate Parameters
+Within the
+Constants
+file for both the Java and C++ MAXSwerve Templates, there are three variables that your team can tune for your robot's Slew Rate needs.  To determine the default values we loaded a test MAXSwerve Drivetrain to approximately 140lbs (Including bumpers and battery) and tuned the parameters until we found values that made the MAXSwerve Wheels last the longest amount of time.
+DirectionSlewRate
+DirectionSlewRate is the most important parameter for reducing MAXSwerve Wheel failures. Lower values limit the rate of change of the direction of the robot. This avoids high-speed J turns that put destructive side loads on the wheels. Note that direction changes faster than the slew rate are allowed at lower speeds. The value here is the slew rate at 100% linear speed.
+MagnitudeSlewRate
+The MagnitudeSlewRate, or acceleration, in the linear direction. Generally, adjustments to the direction slew rate should be applied here as well (i.e. both should be increased or both should be reduced).
+RotationalSlewRate
+RotationalSlewRate is not a major contributor to wheel wear but may help smooth other motions out. If the robot has to do a lot of spinning due to defense or a particular style of mechanism, reducing this could help reduce tread wear.
+Java Slew Rate Limiting Code Segment
+C++ Slew Rate Limiting Code Segment
+Copy
+// Driving Parameters - Note that these are not the maximum capable speeds of
+// the robot, rather the allowed maximum speeds
+public static final double kMaxSpeedMetersPerSecond = 4.8;
+public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+public static final double kDirectionSlewRate = 1.2; // radians per second
+public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
+public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+Copy
+// Driving Parameters - Note that these are not the maximum capable speeds of
+// the robot, rather the allowed maximum speeds
+constexpr units::meters_per_second_t kMaxSpeed = 4.8_mps;
+constexpr units::radians_per_second_t kMaxAngularSpeed{2 * std::numbers::pi};
+constexpr double kDirectionSlewRate = 1.2;   // radians per second
+constexpr double kMagnitudeSlewRate = 1.8;   // percent per second (1 = 100%)
+constexpr double kRotationalSlewRate = 2.0;  // percent per second (1 = 100%)
+MAXSwerve Template Changelog:
+V2023.1
+Added a configurable rate limiting system to prevent excessive loads from causing premature wheel failure.
+Previous
+Wiring MAXSwerve
+Next
+MAXSwerve Module Inspection
+Last updated
+9 months ago
+Was this helpful?

@@ -1,0 +1,966 @@
+REVLib - C++
+Classes
+|
+Enumerations
+rev::spark Namespace Reference
+Classes
+class
+AbsoluteEncoderConfig
+class
+AbsoluteEncoderConfigAccessor
+class
+AlternateEncoderConfig
+class
+AlternateEncoderConfigAccessor
+class
+AnalogSensorConfig
+class
+AnalogSensorConfigAccessor
+class
+ClosedLoopConfig
+class
+ClosedLoopConfigAccessor
+class
+EncoderConfig
+class
+EncoderConfigAccessor
+class
+ExternalEncoderConfig
+class
+ExternalEncoderConfigAccessor
+class
+FeedForwardConfig
+class
+FeedForwardConfigAccessor
+class
+LimitSwitchConfig
+class
+LimitSwitchConfigAccessor
+class
+MAXMotionConfig
+class
+MAXMotionConfigAccessor
+class
+MovingAverageFilterSim
+class
+NoiseGenerator
+class
+SignalsConfig
+class
+SignalsConfigAccessor
+class
+SmartMotionConfig
+class
+SmartMotionConfigAccessor
+class
+SoftLimitConfig
+class
+SoftLimitConfigAccessor
+class
+SparkAbsoluteEncoder
+class
+SparkAbsoluteEncoderSim
+class
+SparkAnalogSensor
+class
+SparkAnalogSensorSim
+class
+SparkBase
+class
+SparkBaseConfig
+class
+SparkBaseConfigAccessor
+class
+SparkClosedLoopController
+class
+SparkExternalEncoderSim
+class
+SparkFlex
+class
+SparkFlexConfig
+class
+SparkFlexConfigAccessor
+class
+SparkFlexExternalEncoder
+class
+SparkFlexSim
+class
+SparkLimitSwitch
+class
+SparkLimitSwitchSim
+class
+SparkLowLevel
+class
+SparkMax
+class
+SparkMaxAlternateEncoder
+class
+SparkMaxAlternateEncoderSim
+class
+SparkMaxConfig
+class
+SparkMaxConfigAccessor
+class
+SparkMaxSim
+class
+SparkRelativeEncoder
+class
+SparkRelativeEncoderSim
+class
+SparkSim
+class
+SparkSimFaultManager
+class
+SparkSoftLimit
+Enumerations
+enum
+ClosedLoopSlot
+{
+kSlot0
+= 0
+,
+kSlot1
+= 1
+,
+kSlot2
+= 2
+,
+kSlot3
+= 3
+ }
+enum
+FeedbackSensor
+: uint32_t {
+kNoSensor
+= 0
+,
+kPrimaryEncoder
+= 1
+,
+kAnalogSensor
+= 2
+,
+kAlternateOrExternalEncoder
+= 3
+,
+kAbsoluteEncoder
+= 4
+}
+enum
+SparkParameter
+: uint8_t {
+kCANID
+= 0
+,
+kInputMode
+= 1
+,
+kMotorType
+= 2
+,
+kCommutationAdvance
+= 3
+,
+kControlType
+= 5
+,
+kIdleMode
+= 6
+,
+kInputDeadband
+= 7
+,
+kClosedLoopControlSensor
+= 9
+,
+kPolePairs
+= 10
+,
+kCurrentChop
+= 11
+,
+kCurrentChopCycles
+= 12
+,
+kP_0
+= 13
+,
+kI_0
+= 14
+,
+kD_0
+= 15
+,
+kV_0
+= 16
+,
+kIZone_0
+= 17
+,
+kDFilter_0
+= 18
+,
+kOutputMin_0
+= 19
+,
+kOutputMax_0
+= 20
+,
+kP_1
+= 21
+,
+kI_1
+= 22
+,
+kD_1
+= 23
+,
+kV_1
+= 24
+,
+kIZone_1
+= 25
+,
+kDFilter_1
+= 26
+,
+kOutputMin_1
+= 27
+,
+kOutputMax_1
+= 28
+,
+kP_2
+= 29
+,
+kI_2
+= 30
+,
+kD_2
+= 31
+,
+kV_2
+= 32
+,
+kIZone_2
+= 33
+,
+kDFilter_2
+= 34
+,
+kOutputMin_2
+= 35
+,
+kOutputMax_2
+= 36
+,
+kP_3
+= 37
+,
+kI_3
+= 38
+,
+kD_3
+= 39
+,
+kV_3
+= 40
+,
+kIZone_3
+= 41
+,
+kDFilter_3
+= 42
+,
+kOutputMin_3
+= 43
+,
+kOutputMax_3
+= 44
+,
+kInverted
+= 45
+,
+kLimitSwitchFwdPolarity
+= 50
+,
+kLimitSwitchRevPolarity
+= 51
+,
+kHardLimitFwdEn
+= 52
+,
+kHardLimitRevEn
+= 53
+,
+kSoftLimitFwdEn
+= 54
+,
+kSoftLimitRevEn
+= 55
+,
+kOpenLoopRampRate
+= 56
+,
+kFollowerID
+= 57
+,
+kFollowerConfig
+= 58
+,
+kSmartCurrentStallLimit
+= 59
+,
+kSmartCurrentFreeLimit
+= 60
+,
+kSmartCurrentConfig
+= 61
+,
+kSmartCurrentReserved
+= 62
+,
+kMotorKv
+= 63
+,
+kEncoderCountsPerRev
+= 69
+,
+kEncoderAverageDepth
+= 70
+,
+kEncoderSampleDelta
+= 71
+,
+kEncoderInverted
+= 72
+,
+kVoltageCompensationMode
+= 74
+,
+kCompensatedNominalVoltage
+= 75
+,
+kSmartMotionMaxVelocity_0
+= 76
+,
+kSmartMotionMaxAccel_0
+= 77
+,
+kSmartMotionMinVelOutput_0
+= 78
+,
+kSmartMotionAllowedClosedLoopError_0
+= 79
+,
+kSmartMotionAccelStrategy_0
+= 80
+,
+kSmartMotionMaxVelocity_1
+= 81
+,
+kSmartMotionMaxAccel_1
+= 82
+,
+kSmartMotionMinVelOutput_1
+= 83
+,
+kSmartMotionAllowedClosedLoopError_1
+= 84
+,
+kSmartMotionAccelStrategy_1
+= 85
+,
+kSmartMotionMaxVelocity_2
+= 86
+,
+kSmartMotionMaxAccel_2
+= 87
+,
+kSmartMotionMinVelOutput_2
+= 88
+,
+kSmartMotionAllowedClosedLoopError_2
+= 89
+,
+kSmartMotionAccelStrategy_2
+= 90
+,
+kSmartMotionMaxVelocity_3
+= 91
+,
+kSmartMotionMaxAccel_3
+= 92
+,
+kSmartMotionMinVelOutput_3
+= 93
+,
+kSmartMotionAllowedClosedLoopError_3
+= 94
+,
+kSmartMotionAccelStrategy_3
+= 95
+,
+kIMaxAccum_0
+= 96
+,
+kAllowedClosedLoopError_0
+= 97
+,
+kIMaxAccum_1
+= 100
+,
+kAllowedClosedLoopError_1
+= 101
+,
+kIMaxAccum_2
+= 104
+,
+kAllowedClosedLoopError_2
+= 105
+,
+kIMaxAccum_3
+= 108
+,
+kAllowedClosedLoopError_3
+= 109
+,
+kPositionConversionFactor
+= 112
+,
+kVelocityConversionFactor
+= 113
+,
+kClosedLoopRampRate
+= 114
+,
+kSoftLimitForward
+= 115
+,
+kSoftLimitReverse
+= 116
+,
+kAnalogPositionConversion
+= 119
+,
+kAnalogVelocityConversion
+= 120
+,
+kAnalogAverageDepth
+= 121
+,
+kAnalogSensorMode
+= 122
+,
+kAnalogInverted
+= 123
+,
+kAnalogSampleDelta
+= 124
+,
+kCompatibilityPortConfig
+= 127
+,
+kAltEncoderCountsPerRev
+= 128
+,
+kAltEncoderAverageDepth
+= 129
+,
+kAltEncoderSampleDelta
+= 130
+,
+kAltEncoderInverted
+= 131
+,
+kAltEncoderPositionConversion
+= 132
+,
+kAltEncoderVelocityConversion
+= 133
+,
+kUvwSensorSampleRate
+= 136
+,
+kUvwSensorAverageDepth
+= 137
+,
+kNumParameters
+= 138
+,
+kDutyCyclePositionFactor
+= 139
+,
+kDutyCycleVelocityFactor
+= 140
+,
+kDutyCycleInverted
+= 141
+,
+kDutyCycleSensorMode
+= 142
+,
+kDutyCycleAverageDepth
+= 143
+,
+kDutyCycleOffsetLegacy
+= 145
+,
+kPositionPIDWrapEnable
+= 149
+,
+kPositionPIDMinInput
+= 150
+,
+kPositionPIDMaxInput
+= 151
+,
+kDutyCycleZeroCentered
+= 152
+,
+kDutyCycleSensorPrescaler
+= 153
+,
+kDutyCycleOffset
+= 154
+,
+kProductId
+= 155
+,
+kDeviceMajorVersion
+= 156
+,
+kDeviceMinorVersion
+= 157
+,
+kStatus0Period
+= 158
+,
+kStatus1Period
+= 159
+,
+kStatus2Period
+= 160
+,
+kStatus3Period
+= 161
+,
+kStatus4Period
+= 162
+,
+kStatus5Period
+= 163
+,
+kStatus6Period
+= 164
+,
+kStatus7Period
+= 165
+,
+kMAXMotionCruiseVelocity_0
+= 166
+,
+kMAXMotionMaxAccel_0
+= 167
+,
+kMAXMotionMaxJerk_0
+= 168
+,
+kMAXMotionAllowedProfileError_0
+= 169
+,
+kMAXMotionPositionMode_0
+= 170
+,
+kMAXMotionCruiseVelocity_1
+= 171
+,
+kMAXMotionMaxAccel_1
+= 172
+,
+kMAXMotionMaxJerk_1
+= 173
+,
+kMAXMotionAllowedProfileError_1
+= 174
+,
+kMAXMotionPositionMode_1
+= 175
+,
+kMAXMotionCruiseVelocity_2
+= 176
+,
+kMAXMotionMaxAccel_2
+= 177
+,
+kMAXMotionMaxJerk_2
+= 178
+,
+kMAXMotionAllowedProfileError_2
+= 179
+,
+kMAXMotionPositionMode_2
+= 180
+,
+kMAXMotionCruiseVelocity_3
+= 181
+,
+kMAXMotionMaxAccel_3
+= 182
+,
+kMAXMotionMaxJerk_3
+= 183
+,
+kMAXMotionAllowedProfileError_3
+= 184
+,
+kMAXMotionPositionMode_3
+= 185
+,
+kForceEnableStatus_0
+= 186
+,
+kForceEnableStatus_1
+= 187
+,
+kForceEnableStatus_2
+= 188
+,
+kForceEnableStatus_3
+= 189
+,
+kForceEnableStatus_4
+= 190
+,
+kForceEnableStatus_5
+= 191
+,
+kForceEnableStatus_6
+= 192
+,
+kForceEnableStatus_7
+= 193
+,
+kFollowerModeLeaderId
+= 194
+,
+kFollowerModeIsInverted
+= 195
+,
+kDutyCycleEncoderStartPulseUs
+= 196
+,
+kDutyCycleEncoderEndPulseUs
+= 197
+,
+kParamTableVersion
+= 198
+,
+kStatus8Period
+= 199
+,
+kForceEnableStatus_8
+= 200
+,
+kLimitSwitchPositionSensor
+= 201
+,
+kLimitSwitchFwdPosition
+= 202
+,
+kLimitSwitchRevPosition
+= 203
+,
+kS_0
+= 204
+,
+kA_0
+= 205
+,
+kG_0
+= 206
+,
+kCos_0
+= 207
+,
+kCosRatio_0
+= 208
+,
+kS_1
+= 209
+,
+kA_1
+= 210
+,
+kG_1
+= 211
+,
+kCos_1
+= 212
+,
+kCosRatio_1
+= 213
+,
+kS_2
+= 214
+,
+kA_2
+= 215
+,
+kG_2
+= 216
+,
+kCos_2
+= 217
+,
+kCosRatio_2
+= 218
+,
+kS_3
+= 219
+,
+kA_3
+= 220
+,
+kG_3
+= 221
+,
+kCos_3
+= 222
+,
+kCosRatio_3
+= 223
+,
+kStatus9Period
+= 224
+,
+kForceEnableStatus_9
+= 225
+}
+Enumeration Type Documentation
+◆
+ClosedLoopSlot
+enum
+rev::spark::ClosedLoopSlot
+Enumerator
+kSlot0
+kSlot1
+kSlot2
+kSlot3
+◆
+FeedbackSensor
+enum
+rev::spark::FeedbackSensor
+: uint32_t
+Enumerator
+kNoSensor
+kPrimaryEncoder
+kAnalogSensor
+kAlternateOrExternalEncoder
+kAbsoluteEncoder
+◆
+SparkParameter
+enum
+rev::spark::SparkParameter
+: uint8_t
+Enumerator
+kCANID
+kInputMode
+kMotorType
+kCommutationAdvance
+kControlType
+kIdleMode
+kInputDeadband
+kClosedLoopControlSensor
+kPolePairs
+kCurrentChop
+kCurrentChopCycles
+kP_0
+kI_0
+kD_0
+kV_0
+kIZone_0
+kDFilter_0
+kOutputMin_0
+kOutputMax_0
+kP_1
+kI_1
+kD_1
+kV_1
+kIZone_1
+kDFilter_1
+kOutputMin_1
+kOutputMax_1
+kP_2
+kI_2
+kD_2
+kV_2
+kIZone_2
+kDFilter_2
+kOutputMin_2
+kOutputMax_2
+kP_3
+kI_3
+kD_3
+kV_3
+kIZone_3
+kDFilter_3
+kOutputMin_3
+kOutputMax_3
+kInverted
+kLimitSwitchFwdPolarity
+kLimitSwitchRevPolarity
+kHardLimitFwdEn
+kHardLimitRevEn
+kSoftLimitFwdEn
+kSoftLimitRevEn
+kOpenLoopRampRate
+kFollowerID
+kFollowerConfig
+kSmartCurrentStallLimit
+kSmartCurrentFreeLimit
+kSmartCurrentConfig
+kSmartCurrentReserved
+kMotorKv
+kEncoderCountsPerRev
+kEncoderAverageDepth
+kEncoderSampleDelta
+kEncoderInverted
+kVoltageCompensationMode
+kCompensatedNominalVoltage
+kSmartMotionMaxVelocity_0
+kSmartMotionMaxAccel_0
+kSmartMotionMinVelOutput_0
+kSmartMotionAllowedClosedLoopError_0
+kSmartMotionAccelStrategy_0
+kSmartMotionMaxVelocity_1
+kSmartMotionMaxAccel_1
+kSmartMotionMinVelOutput_1
+kSmartMotionAllowedClosedLoopError_1
+kSmartMotionAccelStrategy_1
+kSmartMotionMaxVelocity_2
+kSmartMotionMaxAccel_2
+kSmartMotionMinVelOutput_2
+kSmartMotionAllowedClosedLoopError_2
+kSmartMotionAccelStrategy_2
+kSmartMotionMaxVelocity_3
+kSmartMotionMaxAccel_3
+kSmartMotionMinVelOutput_3
+kSmartMotionAllowedClosedLoopError_3
+kSmartMotionAccelStrategy_3
+kIMaxAccum_0
+kAllowedClosedLoopError_0
+kIMaxAccum_1
+kAllowedClosedLoopError_1
+kIMaxAccum_2
+kAllowedClosedLoopError_2
+kIMaxAccum_3
+kAllowedClosedLoopError_3
+kPositionConversionFactor
+kVelocityConversionFactor
+kClosedLoopRampRate
+kSoftLimitForward
+kSoftLimitReverse
+kAnalogPositionConversion
+kAnalogVelocityConversion
+kAnalogAverageDepth
+kAnalogSensorMode
+kAnalogInverted
+kAnalogSampleDelta
+kCompatibilityPortConfig
+kAltEncoderCountsPerRev
+kAltEncoderAverageDepth
+kAltEncoderSampleDelta
+kAltEncoderInverted
+kAltEncoderPositionConversion
+kAltEncoderVelocityConversion
+kUvwSensorSampleRate
+kUvwSensorAverageDepth
+kNumParameters
+kDutyCyclePositionFactor
+kDutyCycleVelocityFactor
+kDutyCycleInverted
+kDutyCycleSensorMode
+kDutyCycleAverageDepth
+kDutyCycleOffsetLegacy
+kPositionPIDWrapEnable
+kPositionPIDMinInput
+kPositionPIDMaxInput
+kDutyCycleZeroCentered
+kDutyCycleSensorPrescaler
+kDutyCycleOffset
+kProductId
+kDeviceMajorVersion
+kDeviceMinorVersion
+kStatus0Period
+kStatus1Period
+kStatus2Period
+kStatus3Period
+kStatus4Period
+kStatus5Period
+kStatus6Period
+kStatus7Period
+kMAXMotionCruiseVelocity_0
+kMAXMotionMaxAccel_0
+kMAXMotionMaxJerk_0
+kMAXMotionAllowedProfileError_0
+kMAXMotionPositionMode_0
+kMAXMotionCruiseVelocity_1
+kMAXMotionMaxAccel_1
+kMAXMotionMaxJerk_1
+kMAXMotionAllowedProfileError_1
+kMAXMotionPositionMode_1
+kMAXMotionCruiseVelocity_2
+kMAXMotionMaxAccel_2
+kMAXMotionMaxJerk_2
+kMAXMotionAllowedProfileError_2
+kMAXMotionPositionMode_2
+kMAXMotionCruiseVelocity_3
+kMAXMotionMaxAccel_3
+kMAXMotionMaxJerk_3
+kMAXMotionAllowedProfileError_3
+kMAXMotionPositionMode_3
+kForceEnableStatus_0
+kForceEnableStatus_1
+kForceEnableStatus_2
+kForceEnableStatus_3
+kForceEnableStatus_4
+kForceEnableStatus_5
+kForceEnableStatus_6
+kForceEnableStatus_7
+kFollowerModeLeaderId
+kFollowerModeIsInverted
+kDutyCycleEncoderStartPulseUs
+kDutyCycleEncoderEndPulseUs
+kParamTableVersion
+kStatus8Period
+kForceEnableStatus_8
+kLimitSwitchPositionSensor
+kLimitSwitchFwdPosition
+kLimitSwitchRevPosition
+kS_0
+kA_0
+kG_0
+kCos_0
+kCosRatio_0
+kS_1
+kA_1
+kG_1
+kCos_1
+kCosRatio_1
+kS_2
+kA_2
+kG_2
+kCos_2
+kCosRatio_2
+kS_3
+kA_3
+kG_3
+kCos_3
+kCosRatio_3
+kStatus9Period
+kForceEnableStatus_9
+rev
+spark
+Generated by
+1.9.2
