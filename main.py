@@ -69,7 +69,7 @@ class QueryRequest(BaseModel):
     history: List[Dict[str, str]] = Field(default_factory=list)
 
 EMBEDDING_MODEL = "text-embedding-3-small"
-GPT_MODEL = "gpt-4o"
+GPT_MODEL = "gpt-5-mini"
 
 
 # --- 3. The Core RAG Logic in an API Endpoint ---
