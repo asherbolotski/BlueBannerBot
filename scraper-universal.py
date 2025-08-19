@@ -7,11 +7,10 @@ import time
 # --- 1. Configuration: Add new websites to this list ---
 SITES_TO_SCRAPE = [
     {
-        "base_url": "https://docs.revrobotics.com/",
-        "allowed_domain": "docs.revrobotics.com",
-        "output_dir": "rev_docs_output",
-        # This is the ideal selector for the main content on the actual documentation pages.
-        "content_selector": ("main", {"class": "flex-grow"})
+    "base_url": "https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary",
+    "allowed_domain": "docs.limelightvision.io",
+    "output_dir": "limelight_docs_output",
+    "content_selector": ("article", {"class": "theme-doc-markdown"}) 
     },
 ]
 

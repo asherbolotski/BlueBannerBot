@@ -7,9 +7,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
 
 # --- 1. Configuration: Add new directories to this list ---
 DIRECTORIES_TO_INGEST = [
-    {"path": "rev_docs_output", "content_type": "text"},
-    {"path": "scraped_data_javadoc", "content_type": "code"},
-    {"path": "wpilib_docs_output", "content_type": "text"},
+    {"path": "scraped_data_javadoc", "content_type": "code"}
     # Add the output directories from the scraper here
 ]
 
@@ -54,7 +52,7 @@ def main():
     if INDEX_NAME not in pc.list_indexes().names():
         print(f"Index '{INDEX_NAME}' not found. Creating it now...")
         pc.create_index(
-            name=INDEX_NAME, dimension=EMBEDDING_DIMENSIONS, metric="cosine",
+            name=INDEX_NAME, dimension=EMBEDDING_DIMENSIONS, metric="dotproduct",
             spec=ServerlessSpec(cloud='aws', region='us-east-1')
         )
         while not pc.describe_index(INDEX_NAME).status['ready']:
@@ -88,6 +86,8 @@ def main():
                 chunks = chunk_text(file_text, content_type)
                 print(f"  - Created {len(chunks)} chunks using '{content_type}' splitter.")
 
+                # --- UPDATED: Process and upsert in smaller batches ---
+                batch_size = 100 # A safe batch size for Pinecone
                 vectors_to_upsert = []
                 for i, chunk in enumerate(chunks):
                     embedding = get_embedding(chunk)
@@ -98,11 +98,13 @@ def main():
                             "values": embedding,
                             "metadata": {"text": chunk, "source": filename}
                         })
-                
-                if vectors_to_upsert:
-                    print(f"  - Upserting {len(vectors_to_upsert)} vectors to Pinecone...")
-                    index.upsert(vectors=vectors_to_upsert)
-                    print("  - Batch upsert complete.")
+                    
+                    # When the batch is full, or we're at the last chunk, upsert.
+                    if len(vectors_to_upsert) >= batch_size or (i == len(chunks) - 1 and vectors_to_upsert):
+                        print(f"  - Upserting batch of {len(vectors_to_upsert)} vectors to Pinecone...")
+                        index.upsert(vectors=vectors_to_upsert)
+                        print("  - Batch upsert complete.")
+                        vectors_to_upsert = [] # Clear the batch
 
     print("\n--- All Ingestion Complete ---")
     print(f"Final index stats: {index.describe_index_stats()}")
