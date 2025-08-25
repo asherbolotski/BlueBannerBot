@@ -6,7 +6,6 @@ from typing import List, Dict
 from openai import OpenAI
 from pinecone import Pinecone
 from fastapi.middleware.cors import CORSMiddleware
-# NEW: Import the library for creating sparse vectors for keyword search
 from pinecone_text.sparse import BM25Encoder
 
 # --- 1. Load Environment Variables and Initialize Clients ---
@@ -40,12 +39,9 @@ except Exception as e:
     print(f"Failed to initialize Pinecone client or connect to index: {e}")
     exit()
 
-# NEW: Initialize the BM25Encoder for creating sparse vectors
-# This encoder is used for the keyword search part of hybrid search.
-# It does not need to be "fit" on data for this general use case.
+# Initialize the BM25Encoder for creating sparse vectors
 bm25_encoder = BM25Encoder.default()
 print("BM25 encoder for sparse vectors initialized.")
-
 
 # --- 2. FastAPI App Setup ---
 app = FastAPI(
@@ -68,11 +64,53 @@ class QueryRequest(BaseModel):
     question: str
     history: List[Dict[str, str]] = Field(default_factory=list)
 
+# NEW: Pydantic model for the summary request
+class SummaryRequest(BaseModel):
+    history: List[Dict[str, str]]
+
 EMBEDDING_MODEL = "text-embedding-3-small"
 GPT_MODEL = "gpt-5-mini"
 
 
-# --- 3. The Core RAG Logic in an API Endpoint ---
+# --- 3. New Endpoint for Summarization ---
+@app.post("/summarize")
+async def summarize_history(request: SummaryRequest):
+    """
+    Summarizes the chat history using a language model.
+    """
+    try:
+        print("Summarizing chat history...")
+        
+        # Prepare the conversation for the summarization prompt
+        conversation_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in request.history])
+        
+        summary_prompt = f"""
+        Please provide a concise summary of the following conversation history.
+        Do not add any conversational text like "Here is a summary".
+        The summary should be objective and capture the key topics discussed.
+        
+        ---
+        Conversation:
+        {conversation_text}
+        """
+        
+        # Call the LLM to get the summary
+        summary_response = openai_client.chat.completions.create(
+            model=GPT_MODEL,
+            messages=[{"role": "user", "content": summary_prompt}]
+        )
+        
+        summary = summary_response.choices[0].message.content.strip()
+        print(f"Summary created: {summary}")
+        
+        return {"summary": summary}
+        
+    except Exception as e:
+        print(f"An error occurred in /summarize endpoint: {e}")
+        raise HTTPException(status_code=500, detail="An internal server error occurred.")
+
+
+# --- 4. The Core RAG Logic with Summary Integration ---
 @app.post("/ask")
 async def ask_question(request: QueryRequest):
     """
@@ -80,7 +118,23 @@ async def ask_question(request: QueryRequest):
     and uses GPT-4o to generate a conversational answer.
     """
     try:
-        # --- NEW: Hybrid Search Logic ---
+        # Check if the history is too long and needs to be summarized.
+        # This is a simple threshold; you can adjust it.
+        # For example, summarize every 10-15 messages.
+        if len(request.history) > 10:
+            print("Chat history is long, requesting a summary...")
+            summary_response = await summarize_history(SummaryRequest(history=request.history))
+            summary = summary_response["summary"]
+            
+            # Replace the long history with a single summary message.
+            # We keep the last few messages for immediate context.
+            # This is a hybrid approach, but better than a full history.
+            summary_message = {"role": "system", "content": f"Summary of conversation so far: {summary}"}
+            last_few_messages = request.history[-4:]
+            request.history = [summary_message] + last_few_messages
+            print("History has been summarized and updated.")
+
+        # --- Hybrid Search Logic ---
         # Step 1: Create the DENSE vector for semantic search
         print(f"Creating dense vector for question: '{request.question}'")
         dense_vector = openai_client.embeddings.create(
@@ -97,7 +151,7 @@ async def ask_question(request: QueryRequest):
         query_results = index.query(
             vector=dense_vector,
             sparse_vector=sparse_vector,
-            top_k=5, # Retrieve a mix of the best 5 results from both search types
+            top_k=5, 
             include_metadata=True
         )
         

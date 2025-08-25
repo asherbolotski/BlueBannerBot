@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blue Banner Bot</title>
-    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts for a modern look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -41,7 +39,6 @@
 <body class="flex items-center justify-center h-screen">
 
     <div class="flex flex-col w-full max-w-3xl h-full bg-white/70 backdrop-blur-sm border border-slate-200/50 rounded-xl shadow-2xl">
-        <!-- Header Section -->
         <header class="p-4 border-b border-slate-200/50 flex items-center justify-between">
             <div class="flex items-center">
                 <div>
@@ -50,19 +47,15 @@
             </div>
         </header>
 
-        <!-- Chat Window -->
         <main id="chat-window" class="flex-1 p-6 overflow-y-auto">
-            <!-- Initial welcome message from the AI -->
             <div class="flex mb-4">
             </div>
         </main>
 
-        <!-- Input Area -->
         <footer class="p-4 bg-white/50">
             <div class="relative">
                 <input type="text" id="user-input" placeholder="Ask a question..." class="w-full p-4 pr-14 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition shadow-sm">
                 <button id="send-btn" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-slate-400 transition">
-                    <!-- Send Icon SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>
@@ -74,10 +67,11 @@
         const chatWindow = document.getElementById('chat-window');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
-        const API_URL = "https://bluebannerbot-backend-156059279653.us-central1.run.app/ask";
+        const API_URL = "https://bluebannerbot-backend-156059279653.us-central1.run.app"; // New base URL
 
         // --- NEW: Array to store the conversation history ---
         let chatHistory = [];
+        const HISTORY_LIMIT = 10; // Summarize history when it reaches this length
 
         function addMessage(message, sender) {
             const messageDiv = document.createElement('div');
@@ -117,6 +111,7 @@
             const question = userInput.value.trim();
             if (!question) return;
 
+            // Add the user message to history first
             addMessage(question, 'user');
             userInput.value = '';
             sendBtn.disabled = true;
@@ -124,13 +119,37 @@
             showLoadingIndicator();
 
             try {
-                // --- NEW: Send the question AND the history to the backend ---
-                const response = await fetch(API_URL, {
+                // Check if history is too long and needs summarization
+                if (chatHistory.length > HISTORY_LIMIT) {
+                    console.log("History length exceeds limit, summarizing...");
+                    const summaryResponse = await fetch(`${API_URL}/summarize`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ history: chatHistory }),
+                    });
+
+                    if (summaryResponse.ok) {
+                        const data = await summaryResponse.json();
+                        const summary = data.summary;
+                        
+                        // Replace old history with the new summary plus the last few messages
+                        // to maintain immediate context
+                        const lastFewMessages = chatHistory.slice(-4);
+                        chatHistory = [{ "role": "system", "content": `Summary of conversation so far: ${summary}` }];
+                        chatHistory.push(...lastFewMessages);
+                        console.log("History summarized successfully.");
+                    } else {
+                        console.error("Failed to summarize history.");
+                    }
+                }
+
+                // Send the new question and the (potentially summarized) history
+                const response = await fetch(`${API_URL}/ask`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         question: question,
-                        history: chatHistory.slice(0, -1)
+                        history: chatHistory.slice(0, -1) // slice is still needed to remove the pending user question
                     }),
                 });
 
