@@ -52,14 +52,32 @@
             </div>
         </main>
 
-        <footer class="p-4 bg-white/50">
-            <div class="relative">
+        <footer class="p-4 bg-white/50 flex justify-between items-center">
+            <div class="relative w-full mr-2">
                 <input type="text" id="user-input" placeholder="Ask a question..." class="w-full p-4 pr-14 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition shadow-sm">
                 <button id="send-btn" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-slate-400 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>
+            <button id="feedback-btn" class="bg-slate-200 text-slate-700 rounded-xl px-4 py-2 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 transition">
+                Feedback
+            </button>
         </footer>
+    </div>
+
+    <div id="feedback-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+            <h2 class="text-lg font-semibold mb-4">Submit Feedback</h2>
+            <textarea id="feedback-input" class="w-full h-32 p-3 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your feedback here..."></textarea>
+            <div class="mt-4 flex justify-end space-x-2">
+                <button id="cancel-feedback-btn" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-md hover:bg-slate-300">Cancel</button>
+                <button id="submit-feedback-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="feedback-toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-green-500 text-white rounded-full shadow-lg hidden">
+        Feedback submitted! Thank you.
     </div>
 
     <script>
@@ -67,11 +85,17 @@
         const chatWindow = document.getElementById('chat-window');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
-        const API_URL = "https://bluebannerbot-backend-156059279653.us-central1.run.app"; // New base URL
+        const API_URL = "https://bluebannerbot-backend-156059279653.us-central1.run.app"; 
 
-        // --- NEW: Array to store the conversation history ---
+        const feedbackBtn = document.getElementById('feedback-btn');
+        const feedbackModal = document.getElementById('feedback-modal');
+        const feedbackInput = document.getElementById('feedback-input');
+        const cancelFeedbackBtn = document.getElementById('cancel-feedback-btn');
+        const submitFeedbackBtn = document.getElementById('submit-feedback-btn');
+        const feedbackToast = document.getElementById('feedback-toast');
+
         let chatHistory = [];
-        const HISTORY_LIMIT = 10; // Summarize history when it reaches this length
+        const HISTORY_LIMIT = 10;
 
         function addMessage(message, sender) {
             const messageDiv = document.createElement('div');
@@ -85,7 +109,6 @@
             chatWindow.appendChild(messageDiv);
             chatWindow.scrollTop = chatWindow.scrollHeight;
 
-            // --- NEW: Add the message to our history array ---
             const role = (sender === 'user') ? 'user' : 'assistant';
             chatHistory.push({ "role": role, "content": message.replace(/<br>/g, '\n') });
         }
@@ -111,7 +134,6 @@
             const question = userInput.value.trim();
             if (!question) return;
 
-            // Add the user message to history first
             addMessage(question, 'user');
             userInput.value = '';
             sendBtn.disabled = true;
@@ -119,7 +141,6 @@
             showLoadingIndicator();
 
             try {
-                // Check if history is too long and needs summarization
                 if (chatHistory.length > HISTORY_LIMIT) {
                     console.log("History length exceeds limit, summarizing...");
                     const summaryResponse = await fetch(`${API_URL}/summarize`, {
@@ -132,8 +153,6 @@
                         const data = await summaryResponse.json();
                         const summary = data.summary;
                         
-                        // Replace old history with the new summary plus the last few messages
-                        // to maintain immediate context
                         const lastFewMessages = chatHistory.slice(-4);
                         chatHistory = [{ "role": "system", "content": `Summary of conversation so far: ${summary}` }];
                         chatHistory.push(...lastFewMessages);
@@ -143,13 +162,12 @@
                     }
                 }
 
-                // Send the new question and the (potentially summarized) history
                 const response = await fetch(`${API_URL}/ask`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         question: question,
-                        history: chatHistory.slice(0, -1) // slice is still needed to remove the pending user question
+                        history: chatHistory.slice(0, -1)
                     }),
                 });
 
@@ -180,6 +198,46 @@
         userInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') handleSendMessage();
         });
+
+        // Feedback Modal Event Listeners
+        feedbackBtn.addEventListener('click', () => {
+            feedbackModal.style.display = 'flex';
+        });
+
+        cancelFeedbackBtn.addEventListener('click', () => {
+            feedbackModal.style.display = 'none';
+            feedbackInput.value = '';
+        });
+
+        submitFeedbackBtn.addEventListener('click', async () => {
+            const feedbackMessage = feedbackInput.value.trim();
+            if (!feedbackMessage) return;
+
+            try {
+                const response = await fetch(`${API_URL}/feedback`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: feedbackMessage }),
+                });
+
+                if (response.ok) {
+                    feedbackToast.style.display = 'block';
+                    setTimeout(() => {
+                        feedbackToast.style.display = 'none';
+                    }, 3000);
+                } else {
+                    console.error("Failed to submit feedback.");
+                    alert("Failed to submit feedback. Please try again later.");
+                }
+            } catch (error) {
+                console.error("Error submitting feedback:", error);
+                alert("An error occurred. Please check the console.");
+            } finally {
+                feedbackModal.style.display = 'none';
+                feedbackInput.value = '';
+            }
+        });
+
     </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -7,6 +8,7 @@ from openai import OpenAI
 from pinecone import Pinecone
 from fastapi.middleware.cors import CORSMiddleware
 from pinecone_text.sparse import BM25Encoder
+from datetime import datetime
 
 # --- 1. Load Environment Variables and Initialize Clients ---
 load_dotenv()
@@ -64,15 +66,40 @@ class QueryRequest(BaseModel):
     question: str
     history: List[Dict[str, str]] = Field(default_factory=list)
 
-# NEW: Pydantic model for the summary request
+# Pydantic model for the summary request
 class SummaryRequest(BaseModel):
     history: List[Dict[str, str]]
+
+# NEW: Pydantic model for the feedback request
+class FeedbackRequest(BaseModel):
+    message: str
 
 EMBEDDING_MODEL = "text-embedding-3-small"
 GPT_MODEL = "gpt-5-mini"
 
+# --- 3. New Endpoint for Feedback ---
+@app.post("/feedback")
+async def receive_feedback(request: FeedbackRequest):
+    """
+    Receives feedback from the user and logs it to Cloud Logging.
+    """
+    try:
+        feedback_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "message": request.message
+        }
+        
+        # Log the feedback to stdout, which Cloud Run's Cloud Logging will capture.
+        print(json.dumps(feedback_entry))
+        
+        return {"status": "success", "message": "Feedback received. Thank you!"}
+        
+    except Exception as e:
+        # Log the error to stderr, which Cloud Logging also captures.
+        print(json.dumps({"error": str(e)}), file=os.sys.stderr)
+        raise HTTPException(status_code=500, detail="Failed to process feedback.")
 
-# --- 3. New Endpoint for Summarization ---
+# --- 4. New Endpoint for Summarization ---
 @app.post("/summarize")
 async def summarize_history(request: SummaryRequest):
     """
@@ -110,7 +137,7 @@ async def summarize_history(request: SummaryRequest):
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
 
 
-# --- 4. The Core RAG Logic with Summary Integration ---
+# --- 5. The Core RAG Logic with Summary Integration ---
 @app.post("/ask")
 async def ask_question(request: QueryRequest):
     """
