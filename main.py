@@ -10,6 +10,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pinecone_text.sparse import BM25Encoder
 from datetime import datetime
 
+#resource.type="cloud_run_revision"
+#resource.labels.service_name="bluebannerbot-backend"
+#jsonPayload.message:*
+
 # --- 1. Load Environment Variables and Initialize Clients ---
 load_dotenv()
 
