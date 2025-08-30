@@ -18,6 +18,7 @@ You can ask technical questions about specific components, rules, or programming
 To provide accurate and relevant answers, the bot pulls information from a curated list of trusted FRC resources, including:
 
 - **[WPILib Docs](https://docs.wpilib.org/):** The official documentation for the FRC control system software library.
+- **[WPILib Java Docs](https://github.wpilib.org/allwpilib/docs/release/java/index.html):** The official Java API documentation for FRC libraries.
 - **[REV Robotics](https://docs.revrobotics.com/):** Documentation for REV hardware and software products like the NEO motors, Spark MAX controllers, and more.
 - **[CTRE Phoenix](https://docs.ctre-phoenix.com/):** Documentation for Cross The Road Electronics products, including the Talon motor controllers and CANivore.
 - **[AndyMark](https://www.andymark.com/):** Product specifications and guides for various mechanical and electrical components.
@@ -45,7 +46,10 @@ The magic happens on the backend, powered by a **Python API using FastAPI**. Tec
 
 I'm always working on making Blue Banner Bot even better! Here are some features on the roadmap:
 
-- **Work in Progress**
+- WPILib C++ docs
+- Benchmarking/finetuning against forum responses
+- More data sources, such as the game manual, LimeLight, PhotonVision
+- User recommended features - use the feedback form below!
 
 ---
 
@@ -73,3 +77,5 @@ You can leave a tip [here](https://paypal.me/asherbolotski).
 ---
 
 Thank you for using **Blue Banner Bot**!
+
+- Asher Bolotski, Blue Banner Bot Developer
