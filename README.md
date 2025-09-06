@@ -1,4 +1,5 @@
 # 🤖 Blue Banner Bot
+# https://github.com/asherbolotski/BlueBannerBot
 
 ## What is it?
 
