@@ -10,10 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pinecone_text.sparse import BM25Encoder
 from datetime import datetime
 
-#resource.type="cloud_run_revision"
-#resource.labels.service_name="bluebannerbot-backend"
-#jsonPayload.message:*
-
 # --- 1. Load Environment Variables and Initialize Clients ---
 load_dotenv()
 
@@ -70,18 +66,16 @@ class QueryRequest(BaseModel):
     question: str
     history: List[Dict[str, str]] = Field(default_factory=list)
 
-# Pydantic model for the summary request
 class SummaryRequest(BaseModel):
     history: List[Dict[str, str]]
 
-# NEW: Pydantic model for the feedback request
 class FeedbackRequest(BaseModel):
     message: str
 
 EMBEDDING_MODEL = "text-embedding-3-small"
 GPT_MODEL = "gpt-5-mini"
 
-# --- 3. New Endpoint for Feedback ---
+# --- 3. Endpoint for Feedback with Structured Logging ---
 @app.post("/feedback")
 async def receive_feedback(request: FeedbackRequest):
     """
@@ -89,8 +83,9 @@ async def receive_feedback(request: FeedbackRequest):
     """
     try:
         feedback_entry = {
+            "event_type": "feedback_submitted",
             "timestamp": datetime.now().isoformat(),
-            "message": request.message
+            "message_length": len(request.message)
         }
         
         # Log the feedback to stdout, which Cloud Run's Cloud Logging will capture.
@@ -99,11 +94,17 @@ async def receive_feedback(request: FeedbackRequest):
         return {"status": "success", "message": "Feedback received. Thank you!"}
         
     except Exception as e:
+        error_log = {
+            "event_type": "error_occurred",
+            "endpoint": "/feedback",
+            "timestamp": datetime.now().isoformat(),
+            "error_message": str(e)
+        }
         # Log the error to stderr, which Cloud Logging also captures.
-        print(json.dumps({"error": str(e)}), file=os.sys.stderr)
+        print(json.dumps(error_log), file=os.sys.stderr)
         raise HTTPException(status_code=500, detail="Failed to process feedback.")
 
-# --- 4. New Endpoint for Summarization ---
+# --- 4. Endpoint for Summarization ---
 @app.post("/summarize")
 async def summarize_history(request: SummaryRequest):
     """
@@ -111,21 +112,17 @@ async def summarize_history(request: SummaryRequest):
     """
     try:
         print("Summarizing chat history...")
-        
-        # Prepare the conversation for the summarization prompt
         conversation_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in request.history])
         
         summary_prompt = f"""
         Please provide a concise summary of the following conversation history.
         Do not add any conversational text like "Here is a summary".
         The summary should be objective and capture the key topics discussed.
-        
         ---
         Conversation:
         {conversation_text}
         """
         
-        # Call the LLM to get the summary
         summary_response = openai_client.chat.completions.create(
             model=GPT_MODEL,
             messages=[{"role": "user", "content": summary_prompt}]
@@ -137,47 +134,46 @@ async def summarize_history(request: SummaryRequest):
         return {"summary": summary}
         
     except Exception as e:
-        print(f"An error occurred in /summarize endpoint: {e}")
+        error_log = {
+            "event_type": "error_occurred",
+            "endpoint": "/summarize",
+            "timestamp": datetime.now().isoformat(),
+            "error_message": str(e)
+        }
+        print(json.dumps(error_log), file=os.sys.stderr)
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
 
 
-# --- 5. The Core RAG Logic with Summary Integration ---
+# --- 5. The Core RAG Logic with Structured Logging ---
 @app.post("/ask")
 async def ask_question(request: QueryRequest):
     """
     This endpoint receives a question and chat history, retrieves context,
-    and uses GPT-4o to generate a conversational answer.
+    and uses a model to generate a conversational answer.
     """
     try:
-        # Check if the history is too long and needs to be summarized.
-        # This is a simple threshold; you can adjust it.
-        # For example, summarize every 10-15 messages.
         if len(request.history) > 10:
             print("Chat history is long, requesting a summary...")
             summary_response = await summarize_history(SummaryRequest(history=request.history))
             summary = summary_response["summary"]
             
-            # Replace the long history with a single summary message.
-            # We keep the last few messages for immediate context.
-            # This is a hybrid approach, but better than a full history.
             summary_message = {"role": "system", "content": f"Summary of conversation so far: {summary}"}
             last_few_messages = request.history[-4:]
             request.history = [summary_message] + last_few_messages
             print("History has been summarized and updated.")
 
-        # --- Hybrid Search Logic ---
-        # Step 1: Create the DENSE vector for semantic search
+        # Step 1: Create the DENSE vector
         print(f"Creating dense vector for question: '{request.question}'")
         dense_vector = openai_client.embeddings.create(
             input=[request.question],
             model=EMBEDDING_MODEL
         ).data[0].embedding
 
-        # Step 2: Create the SPARSE vector for keyword search
+        # Step 2: Create the SPARSE vector
         print(f"Creating sparse vector for question: '{request.question}'")
         sparse_vector = bm25_encoder.encode_queries(request.question)
 
-        # Step 3: Query Pinecone using both vectors for hybrid search
+        # Step 3: Query Pinecone
         print("Querying Pinecone with hybrid search...")
         query_results = index.query(
             vector=dense_vector,
@@ -193,7 +189,7 @@ async def ask_question(request: QueryRequest):
             print("No relevant context found in Pinecone.")
             context_string = "No relevant documents found."
 
-        # Step 4: Combine history and new question for the prompt (Memory)
+        # Step 4: Combine history and new question for the prompt
         system_prompt = """
         You are a helpful robotics competition technical assistant called Blue Banner Bot. 
         Answer the user's question based on the provided chat history and the retrieved context documents.
@@ -206,8 +202,8 @@ async def ask_question(request: QueryRequest):
         messages.extend(request.history)
         messages.append({"role": "user", "content": request.question})
 
-        # Step 5: Send the complete conversation to GPT-4o
-        print("Sending request to GPT-4o for final answer...")
+        # Step 5: Send the complete conversation to the model
+        print(f"Sending request to {GPT_MODEL} for final answer...")
         completion_response = openai_client.chat.completions.create(
             model=GPT_MODEL,
             messages=messages
@@ -216,10 +212,28 @@ async def ask_question(request: QueryRequest):
         final_answer = completion_response.choices[0].message.content
         print(f"Received answer: {final_answer}")
         
+        # <<< START: NEW STRUCTURED LOGGING >>>
+        question_log_entry = {
+            "event_type": "question_asked",
+            "timestamp": datetime.now().isoformat(),
+            "question_length": len(request.question),
+            "conversation_length": len(request.history) + 1
+        }
+        print(json.dumps(question_log_entry))
+        # <<< END: NEW STRUCTURED LOGGING >>>
+        
         return {"answer": final_answer}
 
     except Exception as e:
-        print(f"An error occurred in /ask endpoint: {e}")
+        # <<< START: NEW STRUCTURED ERROR LOGGING >>>
+        error_log = {
+            "event_type": "error_occurred",
+            "endpoint": "/ask",
+            "timestamp": datetime.now().isoformat(),
+            "error_message": str(e)
+        }
+        print(json.dumps(error_log), file=os.sys.stderr)
+        # <<< END: NEW STRUCTURED ERROR LOGGING >>>
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
 
 @app.get("/")
