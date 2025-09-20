@@ -85,6 +85,7 @@ async def receive_feedback(request: FeedbackRequest):
         feedback_entry = {
             "event_type": "feedback_submitted",
             "timestamp": datetime.now().isoformat(),
+            "message": request.message,
             "message_length": len(request.message)
         }
         
