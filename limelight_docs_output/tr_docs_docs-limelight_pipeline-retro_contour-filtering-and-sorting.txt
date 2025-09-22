@@ -1,0 +1,72 @@
+Kontur Filtreleme ve Sıralama
+Renk eşikleme işleminden sonra, Limelight bir kontur listesi oluşturur. Ardından, her kontur en sıkı uyum sağlayan sınırlayıcı dikdörtgen, "döndürülmemiş" dikdörtgen ve "dışbükey örtü" ile sarılır. Bunlar, "en iyi" konturu belirlemek için bir dizi filtreden geçirilir. Birden fazla kontur tüm filtrelerden geçerse, Limelight "Sıralama Modu" Kontrolünü kullanarak en iyi konturu seçer.
+Sıralama Modları
+​
+Konturların diğer tüm filtrelerden geçtikten sonra nasıl sıralanacağını kontrol eder.
+2019'da, "en yakın" sıralama modu eklendi. Bu mod, yapılandırılabilir artı işaretine en yakın hedefi seçecektir.
+Hedef Alanı
+​
+Sınırlayıcı dikdörtgen alanlarının kabul edilebilir aralığını, ekranın yüzdesi olarak kontrol eder. Stadyum ışıklarını filtrelemek için minimum alanı artırabilir ve saha yakınındaki büyük ekranlar gibi şeyleri filtrelemek için maksimum değeri azaltabilirsiniz.
+Alan kaydırıcısı doğrusal olarak ölçeklendirilmemiş, dördüncü dereceden ölçeklendirilmiştir. Bu, birçok FRC hedefinin bulunduğu alan değerlerinin alt ucuna yakın ekstra hassasiyet sağlamak için yapılmıştır. Bir karenin alanı, kenar uzunluğunun karesiyle ölçeklenir, ancak x^4 ölçeklendirme, ihtiyaç duyulan yerde daha fazla hassasiyet sağlar.
+Hedef Doluluk
+​
+Doluluk, seçilen konturun sınırlayıcı dikdörtgenindeki "açık" piksellerin yüzdesidir. Katı bir dikdörtgen hedef, 1.0'a yakın bir doluluğa sahip olacakken, U şeklindeki bir hedef düşük bir doluluğa sahip olacaktır.
+Hedef En-Boy Oranı
+​
+En-boy oranı, seçilen konturun sınırlayıcı dikdörtgeninin genişliğinin yüksekliğine bölünmesiyle tanımlanır. Düşük bir en-boy oranı "uzun" bir dikdörtgeni tanımlarken, yüksek bir en-boy oranı "geniş" bir dikdörtgeni tanımlar.
+En-boy oranı kaydırıcısı da ikinci dereceden ölçeklendirilmiştir.
+Yön Filtresi
+​
+Konturları yönelimlerine göre reddeder.
+Akıllı Benek Reddetme
+​
+Diğer tüm filtrelerden geçmiş olan göreceli olarak küçük (alan filtresiyle mutlak olarak küçük olana karşı) konturları reddeder. Bu, bir hedefin kısa menzil ve uzun menzilden izlenebilir kalması gerekiyorsa çok önemlidir.
+Bu özellik, robotlar hedeflere çok yakınken Limelight'ın LED yansımalarını reddetmek için 2019 sezonunda tanıtıldı.
+Hedef Gruplama
+​
+Hedef "gruplamayı" kontrol eder. İki şekilden oluşan "hedefleri" aramak için çift moda, üç şekilden oluşan hedefleri aramak için üçlü moda ayarlayın.
+Akıllı Hedef Gruplama, değişken sayıda hedefi gruplayabilir ve aykırı değerleri reddedebilir. 2022'de üst hub hedefini izlemeye yardımcı olmak için eklendi.
+Kesişim Filtresi (Yalnızca Çift Hedefler)
+​
+Kontur gruplarını, sonsuza kadar uzatıldıklarında nasıl kesişeceklerine göre reddeder.
+Akıllı Hedef Gruplama
+​
+Tüm bireysel hedef filtrelerinden geçen hedefleri otomatik olarak gruplar.
+-grup boyutu kaydırıcı minimumu- ile -grup boyutu kaydırıcı maksimumu- arasında dinamik olarak herhangi bir sayıda hedefi gruplayacaktır
+Aykırı Değer Reddetme
+​
+Grup hedefleri normal hedeflerden daha zorlu olsa da, daha fazla bilgi ve filtreleme fırsatı sağlarlar. Bir hedefin birbirine yakın birden fazla hedeften oluştuğunu biliyorsanız, aslında tek başına duran aykırı hedefleri reddedebilirsiniz.
+Neredeyse tamamen iyi hedef filtrelemeye güvenmelisiniz ve yalnızca kamera akışınızda sahte aykırı değerler görürseniz veya bekliyorsanız aykırı değer reddetmeyi kullanmalısınız. Standart hedef filtrelemeniz zayıfsa, aykırı değer tespiti size karşı çalışmaya başlayabilir!
+Çıktı
+​
+Bu sekme, görüntü işleme hattının son aşamasında ne olacağını kontrol eder
+Hedefleme Bölgesi
+​
+Seçilen konturun sınırlayıcı dikdörtgeninin ilgi noktasını kontrol eder. Varsayılan olarak, tx ve ty izleme parametreleri, artı işaretinizden seçilen dikdörtgenin merkezine olan ofsetleri temsil eder. Bir hedef boyut değiştiriyorsa veya bazen birleşen iki hedeften oluşuyorsa başka bir seçenek kullanabilirsiniz.
+Ham Köşeler Gönderilsin mi?
+​
+JSON, NetworkTables ve API sonuçlarına köşe konumlarını dahil etmek için bu kontrolü "evet" olarak ayarlayın. "Kontur Filtreleme" sayfasındaki "Kontur Basitleştirme" değerini ayarlayarak gönderilen köşe sayısını ayarlayın.
+JSON NT üzerinden Gönderilsin mi?
+​
+NetworkTables üzerinden JSON göndermek için bu kontrolü "evet" olarak ayarlayın.
+Artı İşareti Kalibrasyonu
+​
+Hedefleme değerlerinizin "orijinini" kontrol eder. Diyelim ki robotunuzdaki bir atıcının her zaman merkezin biraz soluna bakacak şekilde kalibre edilmesi gerekiyor. Robotunuzu hizalayabilir, "kalibre et"e tıklayabilir ve tüm hedefleme değerleriniz yeni artı işaretinize göre gönderilecektir. Daha fazla ayrıntı için kalibrasyon sayfasına bakın!
+3D
+​
+Burada PnP nokta tabanlı poz tahmini ile deney yapın.
+3D Hesapla
+​
+Poz tahmininin etkin olup olmadığını kontrol eder. Bunun çalışması için 960x720 yüksek çözünürlüklü modu etkinleştirmeniz gerekir.
+Dışbükeyi Zorla
+​
+SolvePnP için bir hedefin yalnızca "en dış" köşelerini seçmek için bu seçeneği kullanın.
+Kontur Basitleştirme
+​
+Hedeften küçük, gürültülü kenarları kaldırmak için bu seçeneği kullanın.
+Kabul Edilebilir Hata
+​
+Limelight, yalnızca belirli bir piksel puanıyla yeniden projeksiyon testini geçerse bir hedef döndürecektir.
+Hedef Z-Ofseti
+​
+Hedefinizin 3D Derinlik değerini (Z-Ekseni) otomatik olarak ayarlar.

@@ -1,0 +1,140 @@
+API REST/HTTP
+Limelight OS possède un serveur REST/HTTP fonctionnant sur
+(adresseip):5807
+LimelightLib Python
+est une bibliothèque open-source qui utilise l'API HTTP/REST de Limelight.
+Remarque : par exemple http://(adresse-ip-limelight):5807/results
+Général
+​
+Méthode
+Route
+Description
+GET
+/results
+Récupérer le dump JSON complet des résultats de ciblage actuels
+GET
+/status
+Récupérer un objet JSON de statut avec température, fps, nom de l'appareil, index du pipeline, utilisation CPU, utilisation RAM
+GET
+/hwreport
+Renvoie un tableau JSON des rapports matériels complets. Un rapport matériel contient des informations lisibles comme le champ de vision, le décalage principal, etc.
+Gestion des Pipelines
+​
+Méthode
+Route
+Description
+GET
+/pipeline-default
+Obtenir le pipeline par défaut (JSON)
+GET
+/pipeline-atindex
+Obtenir le pipeline[n] de la caméra (JSON). Charge le pipeline depuis le disque. Inclure un paramètre d'URL 'index' dans la requête.
+POST
+/pipeline-switch
+Passer à un pipeline différent. Inclure un paramètre d'URL 'index' dans la requête.
+POST
+/reload-pipeline
+Forcer la caméra à recharger le pipeline actuel et toutes les ressources du pipeline
+POST
+/update-pipeline
+Accepte du JSON avec une ou plusieurs mises à jour de paramètres. Définir le paramètre d'URL "flush" à 1 pour enregistrer ces paramètres sur le disque.
+POST
+/upload-pipeline
+Télécharger un pipeline. Envoyer des données JSON dans le corps de la requête. Inclure éventuellement un paramètre 'index'. Écrase le pipeline sur le disque
+Gestion de la Caméra
+​
+Méthode
+Route
+Description
+POST
+/set-imumode
+Définir le mode IMU (JSON)
+POST
+/set-throttle
+Définir le nombre d'images à ignorer entre les images traitées pour la gestion thermique
+POST
+/set-imuassistalpha
+Définir l'alpha du filtre complémentaire du mode d'assistance IMU (par défaut 0.001)
+Gestion des Ressources
+​
+Méthode
+Route
+Description
+POST
+/upload-fieldmap
+Télécharger une carte de terrain. Envoyer des données JSON dans le corps de la requête. Inclure éventuellement un paramètre 'index'.
+POST
+/upload-python
+Télécharger du code Python. Envoyer le code en texte brut dans le corps de la requête. Inclure éventuellement un paramètre 'index'.
+POST
+/upload-nn
+Télécharger un réseau neuronal. Inclure un paramètre 'type' ("detector" ou "classifier"), le contenu du fichier dans le corps de la requête, et éventuellement inclure un paramètre 'index'.
+POST
+/upload-nnlabels
+Télécharger des étiquettes de réseau neuronal. Inclure un paramètre 'type' ("detector" ou "classifier"), le fichier dans le corps de la requête, et éventuellement inclure un paramètre 'index'.
+GET
+/getsnapscriptnames
+Liste des noms de snapscriptpro
+Python et Orientation du Robot
+​
+Méthode
+Route
+Description
+POST
+/update-pythoninputs
+Mettre à jour les entrées Python pour les pipelines SnapScript. Envoyer des données JSON (tableau) dans le corps de la requête.
+POST
+/update-robotorientation
+Mettre à jour l'orientation du robot. Envoyer des données JSON (tableau) dans le corps de la requête. Par exemple "[45,0,0,0,0,0]". L'utilisation de cette méthode désactive les mises à jour d'orientation basées sur NetworkTables jusqu'au redémarrage/reboot
+Calibration
+​
+Méthode
+Route
+Description
+GET
+/cal-default
+Renvoie le résultat de calibration par défaut
+GET
+/cal-file
+Renvoie le résultat de calibration personnalisé (système de fichiers)
+GET
+/cal-eeprom
+Renvoie le résultat de calibration personnalisé (eeprom)
+GET
+/cal-latest
+Renvoie le dernier résultat de calibration personnalisé. Ce résultat n'est pas utilisé sauf s'il est enregistré dans le système de fichiers ou l'eeprom
+POST
+/cal-eeprom
+Mettre à jour le résultat de calibration eeprom. Envoyer les données de calibration dans le corps de la requête.
+POST
+/cal-file
+Mettre à jour le résultat de calibration du système de fichiers. Envoyer les données de calibration dans le corps de la requête.
+DELETE
+/cal-latest
+Supprimer le dernier résultat de calibration
+DELETE
+/cal-eeprom
+Supprimer le résultat de calibration eeprom
+DELETE
+/cal-file
+Supprimer le résultat de calibration du système de fichiers
+Instantanés
+​
+Méthode
+Route
+Description
+POST
+/capture-snapshot
+Capturer un instantané. Inclure un paramètre d'URL 'snapname' pour nommer l'instantané.
+POST
+/upload-snapshot
+Télécharger un instantané nommé. Inclure un paramètre d'URL 'snapname' et un fichier image dans le corps de la requête.
+GET
+/snapshotmanifest
+Renvoie une liste des noms de fichiers d'instantanés
+DELETE
+/delete-snapshots
+Supprime tous les instantanés
+DELETE
+/delete-snapshot
+Supprimer un instantané spécifique. Inclure un paramètre 'snapname' dans la requête.

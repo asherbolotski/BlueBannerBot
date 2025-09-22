@@ -1,0 +1,211 @@
+Limelight 4 Hızlı Başlangıç
+Donanım Özellikleri
+​
+Boyutlar: 3.154in x 1.894in (80.11mm x 48.11mm)
+Kalınlık: 1.160in (29.46mm)
+Ağırlık: 0.3 lb
+#10 / M4 Geçmeli Montaj Delikleri
+M3 Dişli montaj delikleri
+Güç Girişi: 5V-26V Çalışma Aralığında Buck-Boost (3.5V - 35V mutlak maksimum)
+Robotik uygulamalar için geliştirilmiş geçici bastırma
+12W maksimum güç tüketimi
+Sensör: OV9281 Global Shutter Monokrom (1280x800 @ 120FPS, 640x400 @ 240FPS)
+IMX462 Arka Aydınlatmalı Yükseltme Kiti yakında geliyor.
+Değiştirilebilir M12 Lens
+82 derece Yatay Görüş Alanı, 56.2 derece Dikey Görüş Alanı
+Siyah Anodize, Tamamen Alüminyum Muhafaza
+Gigabit Ethernet RJ45 Portu (POE artık desteklenmiyor)
+Weidmuller Güç Girişi Portu
+USB C Görüntüleme ve Bağlantı Portu
+Dahili IMU
+Dahili M.2 A+E Key Port ile Hailo 8 AI Hızlandırıcı desteği.
+Yazılım Özellikleri (Limelight OS)
+​
+Tak-Çalıştır yüksek performanslı görüntü işleme. Deneyim gerektirmez.
+Görüntü işleme hattı yapılandırması için kendi kendine barındırılan tarayıcı tabanlı kullanıcı arayüzü
+REST/HTTP, Websocket, NetworkTables, ModbusTCP ve ROS desteği
+Windows, Linux, MacOS ve Android'de tak-çalıştır USB-Ethernet Sürücü desteği ile USB bağlantısı
+Sürükle-Bırak 20FPS MobileNetSSD nesne dedektörü sinir ağı desteği (CPU Çıkarımı)
+Sürükle-Bırak 80FPS YoloV8 nesne dedektörü sinir ağı desteği (Hailo-8 gerektirir)
+Yapılandırılabilir Sabit pozlama, sensör kazancı, çözünürlük ve kare hızı.
+10 Anında değiştirilebilir Görüntü İşleme Hattı yapılandırması:
+OpenCV 4.10, numpy vb. ile Özel Python İşleme Hatları.
+2D, 3D AprilTag Takibi ve Robot Lokalizasyonu
+MegaTag1 ile Tam 3D Lokalizasyon (Robot GPS)
+MegaTag2 ile Harici IMU Füzyonu ile Daha Yüksek Doğruluklu Tam 3D Lokalizasyon (Robot GPS)
+MegaTag2 için daha yüksek doğruluk için Dahili IMU Füzyonu
+Dahili IMU ve Harici IMU veya Kamera Tabanlı Yalpa Tahmini birleştirmek için IMU Yardım Modları
+Dedektör Ölçek Küçültme ile 240FPS'ye kadar performans
+Web arayüzünde Tam 3D Görselleştirici
+120-240FPS Renkli Blob işleme hatları
+Sinir Ağı Nesne Algılama İşleme Hatları
+Sinir Ağı Görüntü Sınıflandırma İşleme Hatları
+Barkod Takip İşleme Hatları
+Lens Odaklama İşleme Hattı
+Düşük gecikme süreli yayın için Vizör işleme hattı
+Yüksek doğruluklu görüntü işleme hatları için yerleşik Charuco İç Kalibrasyon arayüzü.
+İç Kalibrasyon görselleştirme
+Yerleşik düşük gecikmeli MJPEG Yayını. Yapılandırılabilir yayın yönlendirmesi
+1. Limelight 4'ü Monte Etme
+​
+Geçmeli Delik Montajı
+​
+1 1/4" #10-32 veya #10-24 vidalar ve nylock somunlar kullanın
+Alternatif olarak, 38mm M4 cıvatalar ve nylock somunlar kullanın
+Anodizasyonu korumak için plastik pullar kullanın
+Dişli Montaj (Arka Taraf)
+​
+2x M3 dişli montaj noktaları
+Hafif diş sabitleyici uygulaması düşünün
+2. Limelight 4'ü Kablolama
+​
+Güç
+​
+Limelight'ınızdan PDP, PDH veya Mini PDP'nizdeki bir yuvaya iki adet 18-20AWG kablo bağlayın
+5A veya 10A sigorta kullanın
+POE artık desteklenmiyor
+Not
+: Önceki modellerden farklı olarak, LL4 özel bir VRM gerektirmeden akü bağlantısının kesilmesi ve rejeneratif frenleme olaylarına dayanabilir
+(Gerekli Değil) Optimum sonuçlar için Weidmuller yüksükler kullanın (Resimde, 20AWG Kablo ile Weidmuller 20AWG Turuncu yüksükler)
+Yüksükler:
+https://www.digikey.com/en/products/detail/weidm%C3%BCller/0409500000/491834
+https://store.ctr-electronics.com/products/weidmuller-ferrule-pack-of-20?variant=43631135195309
+Düşük maliyetli Yüksük sıkma aletleri:
+https://store.ctr-electronics.com/products/ferrule-crimper-by-iwiss?_pos=2&_sid=616edc4f4&_ss=r
+https://www.amazon.com/Ferrule-Crimping-Hexagonal-Ferrules-Connectors/dp/B09724DCJH?th=1
+Ethernet
+​
+Limelight'ınızdan robot radyonuza bir ethernet kablosu bağlayın
+Bükümlü Cat6 kablolar ve çok telli kablolar kullanın (ideal olarak 20AWG)
+Ethernet kablonuza bir gerilim giderici ekleyin
+POE artık desteklenmiyor
+USB ile Yazılım Yükleme
+​
+Flash moduna girmek için, USB C üzerinden bağlarken yapılandırma düğmesini basılı tutun
+Yazılım yüklerken, Limelight 4'ü USB üzerinden beslemek güvenlidir.
+USB-Ethernet Arayüzü
+​
+Limelight 4, Windows, Linux ve MacOS ile tak-çalıştır bağlantı sağlayan USB-Ethernet işlevselliğine sahiptir. Web arayüzünü ve diğer tüm özellikleri USB üzerinden kullanabilirsiniz.
+Bu arayüzü kullanırken, Limelight 4 çoğu USB portunun güç derecesini aşacaktır. USB-Ethernet kullanırken Limelight 4'ü weidmuller port üzerinden beslemek önerilir.
+Windows'ta Limelight 4 yapılandırma kullanıcı arayüzü (USB-Ethernet):
+http://172.28.0.1:5801
+Linux'ta Limelight 4 yapılandırma kullanıcı arayüzü (USB-Ethernet):
+http://172.29.0.1:5801
+3. Web Arayüzüne Erişim
+​
+Limelight 4'ünüzü ağınıza bağladıktan sonra:
+Robotunuzu açın ve dizüstü bilgisayarınızı robotunuzun ağına bağlayın
+Web arayüzüne erişmek için şu yöntemlerden birini kullanın:
+Yöntem 1
+: Limelight Hardware Manager uygulamasını açın, Limelight'ları tarayın ve göründüğünde Limelight'ınıza çift tıklayın
+Yöntem 2
+: Bir web tarayıcısı açın ve
+http://limelight.local:5801
+adresine gidin
+Yöntem 3
+: Bir web tarayıcısı açın ve Limelight'ınızın statik IP adresine 5801 portu ile gidin (yapılandırılmışsa)
+Yöntem 4 (USB)
+: USB-C ile bağlanın ve şu adreslere gidin:
+Windows:
+http://172.28.0.1:5801
+Linux/Mac:
+http://172.29.0.1:5801
+Bağlandığınızda, şunlara erişebilirsiniz:
+Ayarlar sekmesi - Takım numarası, ana bilgisayar adı ve diğer sistem ayarlarını yapılandırın
+Görüntü İşleme Hattı sekmeleri - Görüntü işleme hatlarınızı kurun ve ayarlayın
+Kamera ve Nişangâh sekmesi - Kamera ayarlarını ve nişangâh parametrelerini ayarlayın
+3D Görselleştirme sekmesi - Gerçek zamanlı AprilTag algılama ve lokalizasyonu görüntüleyin
+Tüm yapılandırma bu web arayüzü üzerinden yapılır. Değişiklikler otomatik olarak Limelight'ınıza kaydedilir.
+4. LimelightOS'u Güncelleme
+​
+uyarı
+Yükseltmeden önce işleme hatlarınızı ve betiklerinizi yedekleyin - bu işlem sırasında silineceklerdir!
+Limelight'ınızı kapatın
+En son
+USB sürücüleri/RPIboot, Limelight OS imajı ve Balena Flash aracını
+indirin
+Dizüstü bilgisayarınızdan Limelight'ınıza bir USB-C kablosu bağlarken yapılandırma düğmesini basılı tutun
+Windows başlat menüsünden "rpiboot-CM4-CM5 - Mass Storage Gadget" programını çalıştırın
+RPIBoot Limelight'ınızı başarıyla bağladıysa aşağıdakini görmelisiniz.
+Başka bir şey görürseniz, USB Kablosunu çıkarın, düğmeye tekrar basın, usb kablosunu yeniden takın ve rpiboot yardımcı programını yeniden başlatın.
+"Balena Etcher"ı yönetici olarak çalıştırın
+"Flash From File" (Dosyadan Yükle) seçeneğine tıklayın ve en son .zip imajını seçin
+"Select Target" (Hedef Seç) seçeneğine tıklayın ve "Drives" (Sürücüler) menüsünden "mmcblk0 USB Device" seçin
+"Flash" (Yükle) seçeneğine tıklayın ve tamamlanmasını bekleyin
+İşlem tamamlandığında USB kablosunu çıkarın
+5. Limelight 4'ünüzü Odaklama
+​
+Robotunuzu açın.
+Bölüm 3'te açıklandığı gibi web arayüzüne bağlanın
+İşleme hattı değiştirmeyi etkinleştirmek için "Ignore NT pipeline index" seçeneğine tıklayın ve 9 numaralı işleme hattına geçin
+İşleme hattı türünü "focus" (odak) olarak ayarlayın
+Yapılandırma sekmesine gidin ve yayın kalitesini maksimuma çıkarın
+Kameranın, bir ARUCO panosu, ayrıntılı bir sahne veya bir siemens yıldızı gibi çok sayıda özellik ve kontrast içeren bir şeye doğrultulduğundan emin olun
+Ekrandaki odak puanını en üst düzeye çıkarmak için lensi çevirin
+Odaklandıktan sonra, lens etrafına 3-8 damla süper yapıştırıcı veya süper yapıştırıcı jel uygulayın
+6. Ağ Yapılandırması
+​
+Takım Numarasını Ayarlama (FRC / Networktables için Gerekli)
+​
+Robotunuzu çalıştırın ve dizüstü bilgisayarınızı robotunuzun ağına bağlayın
+Limelight Donanım Yöneticisi'ni açın, Limelight'ları tarayın ve görünen girişe çift tıklayın
+Alternatif olarak,
+http://limelight.local:5801
+adresine gidin
+"Ayarlar" sekmesine gidin
+Takım numaranızı girin ve "Takım Numarasını Güncelle" düğmesine basın
+Benzersiz Ana Bilgisayar Adı Ayarlama (Yalnızca birden fazla Limelight kullanan FRC / Networktables sistemleri için gerekli)
+​
+Birden fazla Limelight kullanıyorsanız, her Limelight'ın benzersiz bir ana bilgisayar adı olmalıdır
+Ayarlar sekmesinde, bir ana bilgisayar adı yapılandırın ve "ana bilgisayar adını ayarla" düğmesine tıklayın.
+Statik IP Ayarlama (Önerilen, zorunlu değil)
+​
+"IP Ataması"nı "Statik" olarak değiştirin
+IP adresini "10.TE.AM.11" olarak ayarlayın
+916 numaralı takım 10.9.16.xx kullanır
+9106 numaralı takım 10.91.6.xx kullanır
+9016 numaralı takım 10.90.16.xx kullanır
+Netmask'ı "255.255.255.0" olarak ayarlayın
+Gateway'i "10.TE.AM.1" olarak ayarlayın
+"Güncelle"ye tıklayın
+Robotunuzu yeniden başlatın
+Yapılandırma panelinize 10.TE.AM.11:5801 adresinden ve kamera yayınınıza 10.TE.AM.11:5800 adresinden erişin
+Birden fazla Limelight kullanıyorsanız, her Limelight'a benzersiz bir statik IP adresi verin. Gateway'ler ve netmask'lar tüm Limelight'larda aynı olmalıdır.
+S. Neden statik IP adresi kullanımını öneriyoruz?
+C. Limelight'ın başlangıç süresinden birkaç saniye kazandırır.
+İkinci olarak, takımlar geçmişte gerçek FRC sahalarda ve etkinlik radyo yazılımlarında
+DHCP ataması ve mDNS yanıtlayıcıları ile sorunlar yaşamıştır.
+Robo-rio ve sürücü istasyonunuzda da statik IP adresleri ayarlamanızı öneririz.
+Tüm bu cihazlarda kullanılacak ağ ayarları
+bu web sayfasının
+alt yarısında bulunabilir.
+7. Hailo AI Hızlandırıcı Modülü Kurulumu (İsteğe Bağlı)
+​
+İsteğe bağlı Hailo AI hızlandırıcı modülüne sahipseniz, kurmak için şu adımları izleyin:
+Dahil edilen termal pedi Hailo SOC'ye (Sistem Çipi) takın
+Dahil edilen 1.5mm Allen anahtarını kullanarak üç adet 8mm M2 muhafaza vidasını çıkarın
+Bu vidaları bir kenara koyun (dişli kilitleme malzemesi içerirler)
+Muhafazayı dikkatlice açın (not: kamera kablosu muhafazayı ne kadar açabileceğinizi sınırlayacaktır)
+Hailo modülünü uygun yuvaya yerleştirin
+Hailo modülünü sabitlemek için vida gerekmez
+Muhafazayı orijinal üç adet 8mm M2 vida ile yeniden takın
+Hailo modülünü kurduktan sonra, LimelightOS'un en son sürümüne g üncellediğinizden emin olun.
+8. Sorun Giderme
+​
+Durum Çubuğu Göstergeleri
+​
+Yavaş Cylon (Tarama)
+: Mevcut pipeline tarafından hedef algılanmadı
+Hızlı Cylon (Tarama)
+: Mevcut pipeline tarafından hedefler algılandı
+Yavaş Değişen LED Yanıp Sönmesi
+: Donanım hatası (kamera kablosu bağlı değil, sensör hasarı vb.)
+limelight.local:5801 çalışmıyorsa
+​
+Bonjour'un kurulu olup olmadığını kontrol edin (Windows: program ekle/kaldır)
+İki Bonjour öğeniz varsa "bonjour print services"i kaldırın
+Eksikse İndirmeler sayfasından Bonjour'u kurun
+IP adresini sıfırlama
+​
+Limelight'ınız başladıktan sonra yapılandırma düğmesini 10 saniye basılı tutun
+Ağ yapılandırması bir sonraki başlatmada dinamik adreslemeye sıfırlanacaktır

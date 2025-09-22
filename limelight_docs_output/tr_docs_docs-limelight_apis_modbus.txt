@@ -1,0 +1,243 @@
+Modbus API
+Limelight OS,
+(ipaddress):502
+adresinde çalışan bir Modbus TCP sunucusu içerir.
+Tam Sayılar: Tam sayılar İŞARETLİDİR ve iki tümleyen kullanılarak kodlanır. Bu yöntem evrensel olarak tanınır ve doğru işaret yorumlamasını sağlar.
+Kayan Noktalı Sayılar: Kayan noktalı sayılar IEEE 754 standardı kullanılarak kodlanır. Modbus protokolünün 16-bit kayıt sınırlamasına uymak için, kayan noktalı sayılar iki parçaya ayrılır:
+Yüksek sıralı 16 bit ikinci kayıtta, düşük sıralı 16 bit ise ilk kayıtta saklanır.
+Küçük endian formatı, Modbus spesifikasyonuyla uyumluluğu sağlar.
+USB ve Ethernet Limelight'lar
+ModbusTool
+ile test edilebilir.
+Modbus, parça inceleme ve endüstriyel otomasyon kullanım durumları için destek sağlar. Modbus ile başlamak için aşağıdakileri yapmanız gerekir:
+Limelight'ınıza Ethernet veya USB-C üzerinden bağlanın ve bir pipeline yapılandırın.
+Tüm pipeline'lar modbus üzerinden sonuçlar çıkarsa da, python snapscript pipeline'larımız özel giriş çıkış verilerini desteklediği için endüstriyel kullanım durumları için son derece çok yönlüdür.
+Limelight'ınıza statik bir IP adresi verin
+Limelight'ınızı bir modbus ağına bağlayın.
+Modbus Kayıt Spesifikasyonu
+Giriş / Salt Okunur Kayıtlar
+​
+Kayıt
+Anahtar
+Tür
+Açıklama
+0
+hb
+int
+Heartbeat değeri. Her kare başına bir kez artar
+1
+pipelineIndex
+int
+Mevcut aktif pipeline indeksi (0 .. 9).
+2
+validTarget
+int
+Geçerli bir hedef varsa 1, yoksa 0.
+3
+resultsCount
+int
+Toplam sonuç sayısı. Tüm fiducial tespitlerini, sinir ağı tespitlerini vb. içerir
+4
+ID
+int
+ID / Takım Numarası
+5
+modbusMode
+int
+Modbus Sunucu Çıkış Modu.
+6
+cpuTemp
+int
+CPU sıcaklığı (Celsius).
+7
+cpuUsage
+int
+CPU kullanım yüzdesi.
+8
+ramUsage
+int
+RAM kullanım yüzdesi.
+9
+currentFPS
+int
+Mevcut saniyedeki kare sayısı.
+10
+captureLatency
+int
+Yakalama gecikmesi. (milisaniye)
+11
+targetLatency
+int
+İşleme gecikmesi. (milisaniye)
+12-15
+rezerve edilmiş
+int
+Çıkış Modu 0'a ayarlanırsa:
+Kayıt
+Anahtar
+Tür
+Açıklama
+16,17
+tx
+float32
+Hedefe yatay açısal ofset (derece)
+18,19
+ty
+float32
+Hedefe dikey açısal ofset (derece)
+20,21
+txnc
+float32
+Hedefe yatay açısal ofset (ana piksele göre) (derece)
+22,23
+tync
+float32
+Hedefe dikey açısal ofset (ana piksele göre) (derece)
+24,25
+ta
+float32 (0-1)
+Hedefin alanı (görüntü boyutunun yüzdesi olarak)
+26
+fiducialID
+int
+Mevcut AprilTag ID'si
+27
+classifierClass
+int
+Mevcut sınıflandırıcı pipeline çıktısının Sınıf İndeksi. Sınıflandırıcı sonuçları yoksa -1
+28
+detectorClass
+int
+Mevcut dedektör pipeline çıktısının Sınıf İndeksi. Dedektör sonuçları yoksa -1
+29
+rezerve edilmiş
+int
+30,31
+python[0]
+float32
+Özel python çıkış dizisi [0]
+32,33
+python[1]
+float32
+Özel python çıkış dizisi [1]
+34,35
+python[2]
+float32
+Özel python çıkış dizisi [2]
+36,37
+python[3]
+float32
+Özel python çıkış dizisi [3]
+38,39
+python[4]
+float32
+Özel python çıkış dizisi [4]
+40,41
+python[5]
+float32
+Özel python çıkış dizisi [5]
+42,43
+python[6]
+float32
+Özel python çıkış dizisi [6]
+44,45
+python[7]
+float32
+Özel python çıkış dizisi [7]
+Holding / Yazma Kayıtları
+​
+Kayıt
+Anahtar
+Tür
+Açıklama
+0
+unlocked
+int
+Pipeline'ı açar. Pipeline değiştirmeyi ve özel giriş verilerini etkinleştirmek için 1'e ayarlayın
+1
+pipeIndex
+int
+"unlocked" 1'e ayarlanmışsa pipeline indeksini ayarlar
+2
+outputMode
+int
+Çıkış modunu ayarlar. 0 - standart, 1 - rawtargets (Yapım Aşamasında)
+3
+rezerve edilmiş
+int
+4
+rezerve edilmiş
+int
+5
+rezerve edilmiş
+int
+6
+rezerve edilmiş
+int
+7
+rezerve edilmiş
+int
+8
+pythonInput[0]
+int
+Özel python giriş dizisi [0]
+9
+pythonInput[1]
+int
+Özel python giriş dizisi [1]
+10
+pythonInput[2]
+int
+Özel python giriş dizisi [2]
+11
+pythonInput[3]
+int
+Özel python giriş dizisi [3]
+12
+pythonInput[4]
+int
+Özel python giriş dizisi [4]
+13
+pythonInput[5]
+int
+Özel python giriş dizisi [5]
+14
+pythonInput[6]
+int
+Özel python giriş dizisi [6]
+15
+pythonInput[7]
+int
+Özel python giriş dizisi [7]
+16,17
+pythonInput[8]
+float32
+Özel python giriş dizisi [8]
+18,19
+pythonInput[9]
+float32
+Özel python giriş dizisi [9]
+20,21
+pythonInput[10]
+float32
+Özel python giriş dizisi [10]
+22,23
+pythonInput[11]
+float32
+Özel python giriş dizisi [11]
+24,25
+pythonInput[12]
+float32
+Özel python giriş dizisi [12]
+26,27
+pythonInput[13]
+float32
+Özel python giriş dizisi [13]
+28,29
+pythonInput[14]
+float32
+Özel python giriş dizisi [14]
+30,31
+pythonInput[15]
+float32
+Özel python giriş dizisi [15]

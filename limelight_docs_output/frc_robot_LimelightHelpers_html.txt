@@ -1,0 +1,1694 @@
+JavaScript is disabled on your browser.
+Package
+frc.robot
+Class LimelightHelpers
+java.lang.Object
+frc.robot.LimelightHelpers
+public class
+LimelightHelpers
+extends
+Object
+LimelightHelpers provides static methods and classes for interfacing with Limelight vision cameras in FRC.
+ This library supports all Limelight features including AprilTag tracking, Neural Networks, and standard color/retroreflective tracking.
+Nested Class Summary
+Nested Classes
+Modifier and Type
+Class
+Description
+static class
+LimelightHelpers.IMUData
+Encapsulates the state of an internal Limelight IMU.
+static class
+LimelightHelpers.LimelightResults
+Limelight Results object, parsed from a Limelight's JSON results output.
+static class
+LimelightHelpers.LimelightTarget_Barcode
+Represents a Barcode Target Result extracted from JSON Output
+static class
+LimelightHelpers.LimelightTarget_Classifier
+Represents a Neural Classifier Pipeline Result extracted from JSON Output
+static class
+LimelightHelpers.LimelightTarget_Detector
+Represents a Neural Detector Pipeline Result extracted from JSON Output
+static class
+LimelightHelpers.LimelightTarget_Fiducial
+Represents an AprilTag/Fiducial Target Result extracted from JSON Output
+static class
+LimelightHelpers.LimelightTarget_Retro
+Represents a Color/Retroreflective Target Result extracted from JSON Output
+static class
+LimelightHelpers.PoseEstimate
+Represents a 3D Pose Estimate.
+static class
+LimelightHelpers.RawDetection
+Represents a Limelight Raw Neural Detector result from Limelight's NetworkTables output.
+static class
+LimelightHelpers.RawFiducial
+Represents a Limelight Raw Fiducial result from Limelight's NetworkTables output.
+Constructor Summary
+Constructors
+Constructor
+Description
+LimelightHelpers
+()
+Method Summary
+All Methods
+Static Methods
+Concrete Methods
+Deprecated Methods
+Modifier and Type
+Method
+Description
+static void
+Flush
+()
+static double[]
+getBotpose
+(
+String
+limelightName)
+Deprecated.
+static double[]
+getBotPose
+(
+String
+limelightName)
+static double[]
+getBotPose_TargetSpace
+(
+String
+limelightName)
+static double[]
+getBotpose_wpiBlue
+(
+String
+limelightName)
+Deprecated.
+static double[]
+getBotPose_wpiBlue
+(
+String
+limelightName)
+static double[]
+getBotpose_wpiRed
+(
+String
+limelightName)
+Deprecated.
+static double[]
+getBotPose_wpiRed
+(
+String
+limelightName)
+static Pose2d
+getBotPose2d
+(
+String
+limelightName)
+Gets the Pose2d for easy use with Odometry vision pose estimator
+ (addVisionMeasurement)
+static Pose2d
+getBotPose2d_wpiBlue
+(
+String
+limelightName)
+Gets the Pose2d for easy use with Odometry vision pose estimator
+ (addVisionMeasurement)
+static Pose2d
+getBotPose2d_wpiRed
+(
+String
+limelightName)
+Gets the Pose2d for easy use with Odometry vision pose estimator
+ (addVisionMeasurement)
+static Pose3d
+getBotPose3d
+(
+String
+limelightName)
+static Pose3d
+getBotPose3d_TargetSpace
+(
+String
+limelightName)
+Gets the robot's 3D pose with respect to the currently tracked target's coordinate system.
+static Pose3d
+getBotPose3d_wpiBlue
+(
+String
+limelightName)
+(Recommended) Gets the robot's 3D pose in the WPILib Blue Alliance Coordinate System.
+static Pose3d
+getBotPose3d_wpiRed
+(
+String
+limelightName)
+(Not Recommended) Gets the robot's 3D pose in the WPILib Red Alliance Coordinate System.
+static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiBlue
+(
+String
+limelightName)
+Gets the MegaTag1 Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
+static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+String
+limelightName)
+Gets the MegaTag2 Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
+static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiRed
+(
+String
+limelightName)
+Gets the Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) when you are on the RED
+ alliance
+static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiRed_MegaTag2
+(
+String
+limelightName)
+Gets the Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) when you are on the RED
+ alliance
+static double[]
+getCameraPose_TargetSpace
+(
+String
+limelightName)
+static Pose3d
+getCameraPose3d_RobotSpace
+(
+String
+limelightName)
+Gets the camera's 3D pose with respect to the robot's coordinate system.
+static Pose3d
+getCameraPose3d_TargetSpace
+(
+String
+limelightName)
+Gets the camera's 3D pose with respect to the currently tracked target's coordinate system.
+static
+String
+getClassifierClass
+(
+String
+limelightName)
+Gets the current neural classifier result class name.
+static int
+getClassifierClassIndex
+(
+String
+limelightName)
+Gets the classifier class index from the currently running neural classifier pipeline
+static double
+getCurrentPipelineIndex
+(
+String
+limelightName)
+Gets the active pipeline index.
+static
+String
+getCurrentPipelineType
+(
+String
+limelightName)
+Gets the current pipeline type.
+static
+String
+getDetectorClass
+(
+String
+limelightName)
+Gets the primary neural detector result class name.
+static int
+getDetectorClassIndex
+(
+String
+limelightName)
+Gets the detector class index from the primary result of the currently running neural detector pipeline.
+static double
+getFiducialID
+(
+String
+limelightName)
+static
+LimelightHelpers.IMUData
+getIMUData
+(
+String
+limelightName)
+Gets the current IMU data from NetworkTables.
+static
+String
+getJSONDump
+(
+String
+limelightName)
+Gets the full JSON results dump.
+static double
+getLatency_Capture
+(
+String
+limelightName)
+Gets the capture latency.
+static double
+getLatency_Pipeline
+(
+String
+limelightName)
+Gets the pipeline's processing latency contribution.
+static
+LimelightHelpers.LimelightResults
+getLatestResults
+(
+String
+limelightName)
+Gets the latest JSON results output and returns a LimelightResults object.
+static DoubleArrayEntry
+getLimelightDoubleArrayEntry
+(
+String
+tableName,
+String
+entryName)
+static double
+getLimelightNTDouble
+(
+String
+tableName,
+String
+entryName)
+static double[]
+getLimelightNTDoubleArray
+(
+String
+tableName,
+String
+entryName)
+static
+String
+getLimelightNTString
+(
+String
+tableName,
+String
+entryName)
+static
+String
+[]
+getLimelightNTStringArray
+(
+String
+tableName,
+String
+entryName)
+static NetworkTable
+getLimelightNTTable
+(
+String
+tableName)
+static NetworkTableEntry
+getLimelightNTTableEntry
+(
+String
+tableName,
+String
+entryName)
+static
+URL
+getLimelightURLString
+(
+String
+tableName,
+String
+request)
+static
+String
+getNeuralClassID
+(
+String
+limelightName)
+static double[]
+getPythonScriptData
+(
+String
+limelightName)
+static
+String
+[]
+getRawBarcodeData
+(
+String
+limelightName)
+static
+LimelightHelpers.RawDetection
+[]
+getRawDetections
+(
+String
+limelightName)
+Gets the latest raw neural detector results from NetworkTables
+static
+LimelightHelpers.RawFiducial
+[]
+getRawFiducials
+(
+String
+limelightName)
+Gets the latest raw fiducial/AprilTag detection results from NetworkTables.
+static double[]
+getT2DArray
+(
+String
+limelightName)
+T2D is an array that contains several targeting metrcis
+static double
+getTA
+(
+String
+limelightName)
+Gets the target area as a percentage of the image (0-100%).
+static double[]
+getTargetColor
+(
+String
+limelightName)
+static int
+getTargetCount
+(
+String
+limelightName)
+Gets the number of targets currently detected.
+static double[]
+getTargetPose_CameraSpace
+(
+String
+limelightName)
+static double[]
+getTargetPose_RobotSpace
+(
+String
+limelightName)
+static Pose3d
+getTargetPose3d_CameraSpace
+(
+String
+limelightName)
+Gets the target's 3D pose with respect to the camera's coordinate system.
+static Pose3d
+getTargetPose3d_RobotSpace
+(
+String
+limelightName)
+Gets the target's 3D pose with respect to the robot's coordinate system.
+static boolean
+getTV
+(
+String
+limelightName)
+Does the Limelight have a valid target?
+static double
+getTX
+(
+String
+limelightName)
+Gets the horizontal offset from the crosshair to the target in degrees.
+static double
+getTXNC
+(
+String
+limelightName)
+Gets the horizontal offset from the principal pixel/point to the target in degrees.
+static double
+getTY
+(
+String
+limelightName)
+Gets the vertical offset from the crosshair to the target in degrees.
+static double
+getTYNC
+(
+String
+limelightName)
+Gets the vertical offset from the principal pixel/point to the target in degrees.
+static double[]
+pose2dToArray
+(Pose2d pose)
+Converts a Pose2d object to an array of doubles in the format [x, y, z, roll, pitch, yaw].
+static double[]
+pose3dToArray
+(Pose3d pose)
+Converts a Pose3d object to an array of doubles in the format [x, y, z, roll, pitch, yaw].
+static void
+printPoseEstimate
+(
+LimelightHelpers.PoseEstimate
+pose)
+Prints detailed information about a PoseEstimate to standard output.
+static void
+setCameraPose_RobotSpace
+(
+String
+limelightName,
+ double forward,
+ double side,
+ double up,
+ double roll,
+ double pitch,
+ double yaw)
+Sets the camera pose relative to the robot.
+static void
+setCropWindow
+(
+String
+limelightName,
+ double cropXMin,
+ double cropXMax,
+ double cropYMin,
+ double cropYMax)
+Sets the crop window for the camera.
+static void
+SetFidcuial3DOffset
+(
+String
+limelightName,
+ double x,
+ double y,
+ double z)
+Sets the 3D point-of-interest offset for the current fiducial pipeline.
+static void
+setFiducial3DOffset
+(
+String
+limelightName,
+ double offsetX,
+ double offsetY,
+ double offsetZ)
+Sets 3D offset point for easy 3D targeting.
+static void
+SetFiducialDownscalingOverride
+(
+String
+limelightName,
+ float downscale)
+Sets the downscaling factor for AprilTag detection.
+static void
+SetFiducialIDFiltersOverride
+(
+String
+limelightName,
+ int[] validIDs)
+Overrides the valid AprilTag IDs that will be used for localization.
+static void
+SetIMUMode
+(
+String
+limelightName,
+ int mode)
+Configures the IMU mode for MegaTag2 Localization
+static void
+setLEDMode_ForceBlink
+(
+String
+limelightName)
+static void
+setLEDMode_ForceOff
+(
+String
+limelightName)
+static void
+setLEDMode_ForceOn
+(
+String
+limelightName)
+static void
+setLEDMode_PipelineControl
+(
+String
+limelightName)
+Sets LED mode to be controlled by the current pipeline.
+static void
+setLimelightNTDouble
+(
+String
+tableName,
+String
+entryName,
+ double val)
+static void
+setLimelightNTDoubleArray
+(
+String
+tableName,
+String
+entryName,
+ double[] val)
+static void
+setPipelineIndex
+(
+String
+limelightName,
+ int pipelineIndex)
+static void
+setPriorityTagID
+(
+String
+limelightName,
+ int ID)
+static void
+setPythonScriptData
+(
+String
+limelightName,
+ double[] outgoingPythonData)
+static void
+SetRobotOrientation
+(
+String
+limelightName,
+ double yaw,
+ double yawRate,
+ double pitch,
+ double pitchRate,
+ double roll,
+ double rollRate)
+Sets robot orientation values used by MegaTag2 localization algorithm.
+static void
+SetRobotOrientation_NoFlush
+(
+String
+limelightName,
+ double yaw,
+ double yawRate,
+ double pitch,
+ double pitchRate,
+ double roll,
+ double rollRate)
+static void
+setStreamMode_PiPMain
+(
+String
+limelightName)
+Enables Picture-in-Picture mode with secondary stream in the corner.
+static void
+setStreamMode_PiPSecondary
+(
+String
+limelightName)
+Enables Picture-in-Picture mode with primary stream in the corner.
+static void
+setStreamMode_Standard
+(
+String
+limelightName)
+Enables standard side-by-side stream mode.
+static
+CompletableFuture
+<
+Boolean
+>
+takeSnapshot
+(
+String
+tableName,
+String
+snapshotName)
+Asynchronously take snapshot.
+static Pose2d
+toPose2D
+(double[] inData)
+Takes a 6-length array of pose data and converts it to a Pose2d object.
+static Pose3d
+toPose3D
+(double[] inData)
+Takes a 6-length array of pose data and converts it to a Pose3d object.
+static
+Boolean
+validPoseEstimate
+(
+LimelightHelpers.PoseEstimate
+pose)
+Methods inherited from class java.lang.
+Object
+clone
+,
+equals
+,
+finalize
+,
+getClass
+,
+hashCode
+,
+notify
+,
+notifyAll
+,
+toString
+,
+wait
+,
+wait
+,
+wait
+Constructor Details
+LimelightHelpers
+public
+LimelightHelpers
+()
+Method Details
+toPose3D
+public static
+Pose3d
+toPose3D
+(double[] inData)
+Takes a 6-length array of pose data and converts it to a Pose3d object.
+ Array format: [x, y, z, roll, pitch, yaw] where angles are in degrees.
+Parameters:
+inData
+- Array containing pose data [x, y, z, roll, pitch, yaw]
+Returns:
+Pose3d object representing the pose, or empty Pose3d if invalid data
+toPose2D
+public static
+Pose2d
+toPose2D
+(double[] inData)
+Takes a 6-length array of pose data and converts it to a Pose2d object.
+ Uses only x, y, and yaw components, ignoring z, roll, and pitch.
+ Array format: [x, y, z, roll, pitch, yaw] where angles are in degrees.
+Parameters:
+inData
+- Array containing pose data [x, y, z, roll, pitch, yaw]
+Returns:
+Pose2d object representing the pose, or empty Pose2d if invalid data
+pose3dToArray
+public static
+double[]
+pose3dToArray
+(Pose3d pose)
+Converts a Pose3d object to an array of doubles in the format [x, y, z, roll, pitch, yaw].
+ Translation components are in meters, rotation components are in degrees.
+Parameters:
+pose
+- The Pose3d object to convert
+Returns:
+A 6-element array containing [x, y, z, roll, pitch, yaw]
+pose2dToArray
+public static
+double[]
+pose2dToArray
+(Pose2d pose)
+Converts a Pose2d object to an array of doubles in the format [x, y, z, roll, pitch, yaw].
+ Translation components are in meters, rotation components are in degrees.
+ Note: z, roll, and pitch will be 0 since Pose2d only contains x, y, and yaw.
+Parameters:
+pose
+- The Pose2d object to convert
+Returns:
+A 6-element array containing [x, y, 0, 0, 0, yaw]
+getRawFiducials
+public static
+LimelightHelpers.RawFiducial
+[]
+getRawFiducials
+(
+String
+limelightName)
+Gets the latest raw fiducial/AprilTag detection results from NetworkTables.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Array of RawFiducial objects containing detection details
+getRawDetections
+public static
+LimelightHelpers.RawDetection
+[]
+getRawDetections
+(
+String
+limelightName)
+Gets the latest raw neural detector results from NetworkTables
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Array of RawDetection objects containing detection details
+printPoseEstimate
+public static
+void
+printPoseEstimate
+(
+LimelightHelpers.PoseEstimate
+pose)
+Prints detailed information about a PoseEstimate to standard output.
+ Includes timestamp, latency, tag count, tag span, average tag distance,
+ average tag area, and detailed information about each detected fiducial.
+Parameters:
+pose
+- The PoseEstimate object to print. If null, prints "No PoseEstimate available."
+validPoseEstimate
+public static
+Boolean
+validPoseEstimate
+(
+LimelightHelpers.PoseEstimate
+pose)
+getLimelightNTTable
+public static
+NetworkTable
+getLimelightNTTable
+(
+String
+tableName)
+Flush
+public static
+void
+Flush
+()
+getLimelightNTTableEntry
+public static
+NetworkTableEntry
+getLimelightNTTableEntry
+(
+String
+tableName,
+String
+entryName)
+getLimelightDoubleArrayEntry
+public static
+DoubleArrayEntry
+getLimelightDoubleArrayEntry
+(
+String
+tableName,
+String
+entryName)
+getLimelightNTDouble
+public static
+double
+getLimelightNTDouble
+(
+String
+tableName,
+String
+entryName)
+setLimelightNTDouble
+public static
+void
+setLimelightNTDouble
+(
+String
+tableName,
+String
+entryName,
+ double val)
+setLimelightNTDoubleArray
+public static
+void
+setLimelightNTDoubleArray
+(
+String
+tableName,
+String
+entryName,
+ double[] val)
+getLimelightNTDoubleArray
+public static
+double[]
+getLimelightNTDoubleArray
+(
+String
+tableName,
+String
+entryName)
+getLimelightNTString
+public static
+String
+getLimelightNTString
+(
+String
+tableName,
+String
+entryName)
+getLimelightNTStringArray
+public static
+String
+[]
+getLimelightNTStringArray
+(
+String
+tableName,
+String
+entryName)
+getLimelightURLString
+public static
+URL
+getLimelightURLString
+(
+String
+tableName,
+String
+request)
+getTV
+public static
+boolean
+getTV
+(
+String
+limelightName)
+Does the Limelight have a valid target?
+Parameters:
+limelightName
+- Name of the Limelight camera ("" for default)
+Returns:
+True if a valid target is present, false otherwise
+getTX
+public static
+double
+getTX
+(
+String
+limelightName)
+Gets the horizontal offset from the crosshair to the target in degrees.
+Parameters:
+limelightName
+- Name of the Limelight camera ("" for default)
+Returns:
+Horizontal offset angle in degrees
+getTY
+public static
+double
+getTY
+(
+String
+limelightName)
+Gets the vertical offset from the crosshair to the target in degrees.
+Parameters:
+limelightName
+- Name of the Limelight camera ("" for default)
+Returns:
+Vertical offset angle in degrees
+getTXNC
+public static
+double
+getTXNC
+(
+String
+limelightName)
+Gets the horizontal offset from the principal pixel/point to the target in degrees.  This is the most accurate 2d metric if you are using a calibrated camera and you don't need adjustable crosshair functionality.
+Parameters:
+limelightName
+- Name of the Limelight camera ("" for default)
+Returns:
+Horizontal offset angle in degrees
+getTYNC
+public static
+double
+getTYNC
+(
+String
+limelightName)
+Gets the vertical offset from the principal pixel/point to the target in degrees. This is the most accurate 2d metric if you are using a calibrated camera and you don't need adjustable crosshair functionality.
+Parameters:
+limelightName
+- Name of the Limelight camera ("" for default)
+Returns:
+Vertical offset angle in degrees
+getTA
+public static
+double
+getTA
+(
+String
+limelightName)
+Gets the target area as a percentage of the image (0-100%).
+Parameters:
+limelightName
+- Name of the Limelight camera ("" for default)
+Returns:
+Target area percentage (0-100)
+getT2DArray
+public static
+double[]
+getT2DArray
+(
+String
+limelightName)
+T2D is an array that contains several targeting metrcis
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Array containing  [targetValid, targetCount, targetLatency, captureLatency, tx, ty, txnc, tync, ta, tid, targetClassIndexDetector, 
+ targetClassIndexClassifier, targetLongSidePixels, targetShortSidePixels, targetHorizontalExtentPixels, targetVerticalExtentPixels, targetSkewDegrees]
+getTargetCount
+public static
+int
+getTargetCount
+(
+String
+limelightName)
+Gets the number of targets currently detected.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Number of detected targets
+getClassifierClassIndex
+public static
+int
+getClassifierClassIndex
+(
+String
+limelightName)
+Gets the classifier class index from the currently running neural classifier pipeline
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Class index from classifier pipeline
+getDetectorClassIndex
+public static
+int
+getDetectorClassIndex
+(
+String
+limelightName)
+Gets the detector class index from the primary result of the currently running neural detector pipeline.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Class index from detector pipeline
+getClassifierClass
+public static
+String
+getClassifierClass
+(
+String
+limelightName)
+Gets the current neural classifier result class name.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Class name string from classifier pipeline
+getDetectorClass
+public static
+String
+getDetectorClass
+(
+String
+limelightName)
+Gets the primary neural detector result class name.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Class name string from detector pipeline
+getLatency_Pipeline
+public static
+double
+getLatency_Pipeline
+(
+String
+limelightName)
+Gets the pipeline's processing latency contribution.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Pipeline latency in milliseconds
+getLatency_Capture
+public static
+double
+getLatency_Capture
+(
+String
+limelightName)
+Gets the capture latency.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Capture latency in milliseconds
+getCurrentPipelineIndex
+public static
+double
+getCurrentPipelineIndex
+(
+String
+limelightName)
+Gets the active pipeline index.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Current pipeline index (0-9)
+getCurrentPipelineType
+public static
+String
+getCurrentPipelineType
+(
+String
+limelightName)
+Gets the current pipeline type.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+Pipeline type string (e.g. "retro", "apriltag", etc)
+getJSONDump
+public static
+String
+getJSONDump
+(
+String
+limelightName)
+Gets the full JSON results dump.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+JSON string containing all current results
+getBotpose
+@Deprecated
+public static
+double[]
+getBotpose
+(
+String
+limelightName)
+Deprecated.
+Switch to getBotPose
+Parameters:
+limelightName
+-
+Returns:
+getBotpose_wpiRed
+@Deprecated
+public static
+double[]
+getBotpose_wpiRed
+(
+String
+limelightName)
+Deprecated.
+Switch to getBotPose_wpiRed
+Parameters:
+limelightName
+-
+Returns:
+getBotpose_wpiBlue
+@Deprecated
+public static
+double[]
+getBotpose_wpiBlue
+(
+String
+limelightName)
+Deprecated.
+Switch to getBotPose_wpiBlue
+Parameters:
+limelightName
+-
+Returns:
+getBotPose
+public static
+double[]
+getBotPose
+(
+String
+limelightName)
+getBotPose_wpiRed
+public static
+double[]
+getBotPose_wpiRed
+(
+String
+limelightName)
+getBotPose_wpiBlue
+public static
+double[]
+getBotPose_wpiBlue
+(
+String
+limelightName)
+getBotPose_TargetSpace
+public static
+double[]
+getBotPose_TargetSpace
+(
+String
+limelightName)
+getCameraPose_TargetSpace
+public static
+double[]
+getCameraPose_TargetSpace
+(
+String
+limelightName)
+getTargetPose_CameraSpace
+public static
+double[]
+getTargetPose_CameraSpace
+(
+String
+limelightName)
+getTargetPose_RobotSpace
+public static
+double[]
+getTargetPose_RobotSpace
+(
+String
+limelightName)
+getTargetColor
+public static
+double[]
+getTargetColor
+(
+String
+limelightName)
+getFiducialID
+public static
+double
+getFiducialID
+(
+String
+limelightName)
+getNeuralClassID
+public static
+String
+getNeuralClassID
+(
+String
+limelightName)
+getRawBarcodeData
+public static
+String
+[]
+getRawBarcodeData
+(
+String
+limelightName)
+getBotPose3d
+public static
+Pose3d
+getBotPose3d
+(
+String
+limelightName)
+getBotPose3d_wpiRed
+public static
+Pose3d
+getBotPose3d_wpiRed
+(
+String
+limelightName)
+(Not Recommended) Gets the robot's 3D pose in the WPILib Red Alliance Coordinate System.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Pose3d object representing the robot's position and orientation in Red Alliance field space
+getBotPose3d_wpiBlue
+public static
+Pose3d
+getBotPose3d_wpiBlue
+(
+String
+limelightName)
+(Recommended) Gets the robot's 3D pose in the WPILib Blue Alliance Coordinate System.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Pose3d object representing the robot's position and orientation in Blue Alliance field space
+getBotPose3d_TargetSpace
+public static
+Pose3d
+getBotPose3d_TargetSpace
+(
+String
+limelightName)
+Gets the robot's 3D pose with respect to the currently tracked target's coordinate system.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Pose3d object representing the robot's position and orientation relative to the target
+getCameraPose3d_TargetSpace
+public static
+Pose3d
+getCameraPose3d_TargetSpace
+(
+String
+limelightName)
+Gets the camera's 3D pose with respect to the currently tracked target's coordinate system.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Pose3d object representing the camera's position and orientation relative to the target
+getTargetPose3d_CameraSpace
+public static
+Pose3d
+getTargetPose3d_CameraSpace
+(
+String
+limelightName)
+Gets the target's 3D pose with respect to the camera's coordinate system.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Pose3d object representing the target's position and orientation relative to the camera
+getTargetPose3d_RobotSpace
+public static
+Pose3d
+getTargetPose3d_RobotSpace
+(
+String
+limelightName)
+Gets the target's 3D pose with respect to the robot's coordinate system.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Pose3d object representing the target's position and orientation relative to the robot
+getCameraPose3d_RobotSpace
+public static
+Pose3d
+getCameraPose3d_RobotSpace
+(
+String
+limelightName)
+Gets the camera's 3D pose with respect to the robot's coordinate system.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+Pose3d object representing the camera's position and orientation relative to the robot
+getBotPose2d_wpiBlue
+public static
+Pose2d
+getBotPose2d_wpiBlue
+(
+String
+limelightName)
+Gets the Pose2d for easy use with Odometry vision pose estimator
+ (addVisionMeasurement)
+Parameters:
+limelightName
+-
+Returns:
+getBotPoseEstimate_wpiBlue
+public static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiBlue
+(
+String
+limelightName)
+Gets the MegaTag1 Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
+Parameters:
+limelightName
+-
+Returns:
+getBotPoseEstimate_wpiBlue_MegaTag2
+public static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+String
+limelightName)
+Gets the MegaTag2 Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
+ Make sure you are calling setRobotOrientation() before calling this method.
+Parameters:
+limelightName
+-
+Returns:
+getBotPose2d_wpiRed
+public static
+Pose2d
+getBotPose2d_wpiRed
+(
+String
+limelightName)
+Gets the Pose2d for easy use with Odometry vision pose estimator
+ (addVisionMeasurement)
+Parameters:
+limelightName
+-
+Returns:
+getBotPoseEstimate_wpiRed
+public static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiRed
+(
+String
+limelightName)
+Gets the Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) when you are on the RED
+ alliance
+Parameters:
+limelightName
+-
+Returns:
+getBotPoseEstimate_wpiRed_MegaTag2
+public static
+LimelightHelpers.PoseEstimate
+getBotPoseEstimate_wpiRed_MegaTag2
+(
+String
+limelightName)
+Gets the Pose2d and timestamp for use with WPILib pose estimator (addVisionMeasurement) when you are on the RED
+ alliance
+Parameters:
+limelightName
+-
+Returns:
+getBotPose2d
+public static
+Pose2d
+getBotPose2d
+(
+String
+limelightName)
+Gets the Pose2d for easy use with Odometry vision pose estimator
+ (addVisionMeasurement)
+Parameters:
+limelightName
+-
+Returns:
+getIMUData
+public static
+LimelightHelpers.IMUData
+getIMUData
+(
+String
+limelightName)
+Gets the current IMU data from NetworkTables.
+ IMU data is formatted as [robotYaw, Roll, Pitch, Yaw, gyroX, gyroY, gyroZ, accelX, accelY, accelZ].
+ Returns all zeros if data is invalid or unavailable.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+Returns:
+IMUData object containing all current IMU data
+setPipelineIndex
+public static
+void
+setPipelineIndex
+(
+String
+limelightName,
+ int pipelineIndex)
+setPriorityTagID
+public static
+void
+setPriorityTagID
+(
+String
+limelightName,
+ int ID)
+setLEDMode_PipelineControl
+public static
+void
+setLEDMode_PipelineControl
+(
+String
+limelightName)
+Sets LED mode to be controlled by the current pipeline.
+Parameters:
+limelightName
+- Name of the Limelight camera
+setLEDMode_ForceOff
+public static
+void
+setLEDMode_ForceOff
+(
+String
+limelightName)
+setLEDMode_ForceBlink
+public static
+void
+setLEDMode_ForceBlink
+(
+String
+limelightName)
+setLEDMode_ForceOn
+public static
+void
+setLEDMode_ForceOn
+(
+String
+limelightName)
+setStreamMode_Standard
+public static
+void
+setStreamMode_Standard
+(
+String
+limelightName)
+Enables standard side-by-side stream mode.
+Parameters:
+limelightName
+- Name of the Limelight camera
+setStreamMode_PiPMain
+public static
+void
+setStreamMode_PiPMain
+(
+String
+limelightName)
+Enables Picture-in-Picture mode with secondary stream in the corner.
+Parameters:
+limelightName
+- Name of the Limelight camera
+setStreamMode_PiPSecondary
+public static
+void
+setStreamMode_PiPSecondary
+(
+String
+limelightName)
+Enables Picture-in-Picture mode with primary stream in the corner.
+Parameters:
+limelightName
+- Name of the Limelight camera
+setCropWindow
+public static
+void
+setCropWindow
+(
+String
+limelightName,
+ double cropXMin,
+ double cropXMax,
+ double cropYMin,
+ double cropYMax)
+Sets the crop window for the camera. The crop window in the UI must be completely open.
+Parameters:
+limelightName
+- Name of the Limelight camera
+cropXMin
+- Minimum X value (-1 to 1)
+cropXMax
+- Maximum X value (-1 to 1)
+cropYMin
+- Minimum Y value (-1 to 1)
+cropYMax
+- Maximum Y value (-1 to 1)
+setFiducial3DOffset
+public static
+void
+setFiducial3DOffset
+(
+String
+limelightName,
+ double offsetX,
+ double offsetY,
+ double offsetZ)
+Sets 3D offset point for easy 3D targeting.
+SetRobotOrientation
+public static
+void
+SetRobotOrientation
+(
+String
+limelightName,
+ double yaw,
+ double yawRate,
+ double pitch,
+ double pitchRate,
+ double roll,
+ double rollRate)
+Sets robot orientation values used by MegaTag2 localization algorithm.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+yaw
+- Robot yaw in degrees. 0 = robot facing red alliance wall in FRC
+yawRate
+- (Unnecessary) Angular velocity of robot yaw in degrees per second
+pitch
+- (Unnecessary) Robot pitch in degrees
+pitchRate
+- (Unnecessary) Angular velocity of robot pitch in degrees per second
+roll
+- (Unnecessary) Robot roll in degrees
+rollRate
+- (Unnecessary) Angular velocity of robot roll in degrees per second
+SetRobotOrientation_NoFlush
+public static
+void
+SetRobotOrientation_NoFlush
+(
+String
+limelightName,
+ double yaw,
+ double yawRate,
+ double pitch,
+ double pitchRate,
+ double roll,
+ double rollRate)
+SetIMUMode
+public static
+void
+SetIMUMode
+(
+String
+limelightName,
+ int mode)
+Configures the IMU mode for MegaTag2 Localization
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+mode
+- IMU mode.
+SetFidcuial3DOffset
+public static
+void
+SetFidcuial3DOffset
+(
+String
+limelightName,
+ double x,
+ double y,
+ double z)
+Sets the 3D point-of-interest offset for the current fiducial pipeline. 
+ https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#point-of-interest-tracking
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+x
+- X offset in meters
+y
+- Y offset in meters
+z
+- Z offset in meters
+SetFiducialIDFiltersOverride
+public static
+void
+SetFiducialIDFiltersOverride
+(
+String
+limelightName,
+ int[] validIDs)
+Overrides the valid AprilTag IDs that will be used for localization.
+ Tags not in this list will be ignored for robot pose estimation.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+validIDs
+- Array of valid AprilTag IDs to track
+SetFiducialDownscalingOverride
+public static
+void
+SetFiducialDownscalingOverride
+(
+String
+limelightName,
+ float downscale)
+Sets the downscaling factor for AprilTag detection.
+ Increasing downscale can improve performance at the cost of potentially reduced detection range.
+Parameters:
+limelightName
+- Name/identifier of the Limelight
+downscale
+- Downscale factor. Valid values: 1.0 (no downscale), 1.5, 2.0, 3.0, 4.0. Set to 0 for pipeline control.
+setCameraPose_RobotSpace
+public static
+void
+setCameraPose_RobotSpace
+(
+String
+limelightName,
+ double forward,
+ double side,
+ double up,
+ double roll,
+ double pitch,
+ double yaw)
+Sets the camera pose relative to the robot.
+Parameters:
+limelightName
+- Name of the Limelight camera
+forward
+- Forward offset in meters
+side
+- Side offset in meters
+up
+- Up offset in meters
+roll
+- Roll angle in degrees
+pitch
+- Pitch angle in degrees
+yaw
+- Yaw angle in degrees
+setPythonScriptData
+public static
+void
+setPythonScriptData
+(
+String
+limelightName,
+ double[] outgoingPythonData)
+getPythonScriptData
+public static
+double[]
+getPythonScriptData
+(
+String
+limelightName)
+takeSnapshot
+public static
+CompletableFuture
+<
+Boolean
+>
+takeSnapshot
+(
+String
+tableName,
+String
+snapshotName)
+Asynchronously take snapshot.
+getLatestResults
+public static
+LimelightHelpers.LimelightResults
+getLatestResults
+(
+String
+limelightName)
+Gets the latest JSON results output and returns a LimelightResults object.
+Parameters:
+limelightName
+- Name of the Limelight camera
+Returns:
+LimelightResults object containing all current target data

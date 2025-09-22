@@ -1,0 +1,188 @@
+Mesafe Tahmini
+Sabit Açılı Kamera Kullanımı
+​
+Eğer görüntü işleme kameranız robotunuza, yer düzlemi ile görüş hattı arasındaki açı değişmeyecek şekilde monte edilmişse, bu tekniği kullanarak bir hedefe olan mesafeyi çok doğru bir şekilde hesaplayabilirsiniz. Daha sonra bu mesafe değerini, robotunuzu mükemmel menzile girmek için ileri geri sürmek veya bir fırlatma mekanizmasının gücünü ayarlamak için kullanabilirsiniz.
+Aşağıdaki diyagrama bakın. Bu bağlamda, tüm değişkenler bilinmektedir: hedefin yüksekliği (h2) sahadaki bir özellik olduğu için bilinir. Kameranızın yerden yüksekliği (h1) ve montaj açısı (a1) bilinmektedir. Limelight (veya görüntü işleme sisteminiz) size hedefe olan y açısını (a2) söyleyebilir.
+Aşağıdaki denklemi kullanarak d'yi çözebiliriz:
+tan(a1+a2) = (h2-h1) / d
+"d = (h2-h1) / tan(a1+a2)"
+"tan" fonksiyonu genellikle radyan cinsinden bir girdi bekler. Bir açı ölçümünü dereceden radyana dönüştürmek için (3.14159/180.0) ile çarpın. Aşağıda tam kod örneğini görebilirsiniz.
+Java
+C++
+NetworkTable
+table
+=
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+;
+NetworkTableEntry
+ty
+=
+table
+.
+getEntry
+(
+"ty"
+)
+;
+double
+targetOffsetAngle_Vertical
+=
+ty
+.
+getDouble
+(
+0.0
+)
+;
+// limelight'ınız tam dikey konumdan kaç derece geriye dönük?
+double
+limelightMountAngleDegrees
+=
+25.0
+;
+// Limelight lensinin merkezinden zemine olan mesafe
+double
+limelightLensHeightInches
+=
+20.0
+;
+// hedeften zemine olan mesafe
+double
+goalHeightInches
+=
+60.0
+;
+double
+angleToGoalDegrees
+=
+limelightMountAngleDegrees
++
+targetOffsetAngle_Vertical
+;
+double
+angleToGoalRadians
+=
+angleToGoalDegrees
+*
+(
+3.14159
+/
+180.0
+)
+;
+//mesafeyi hesapla
+double
+distanceFromLimelightToGoalInches
+=
+(
+goalHeightInches
+-
+limelightLensHeightInches
+)
+/
+Math
+.
+tan
+(
+angleToGoalRadians
+)
+;
+std
+::
+shared_ptr
+<
+NetworkTable
+>
+table
+=
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+;
+double
+targetOffsetAngle_Vertical
+=
+table
+->
+GetNumber
+(
+"ty"
+,
+0.0
+)
+;
+// limelight'ınız tam dikey konumdan kaç derece geriye dönük?
+double
+limelightMountAngleDegrees
+=
+25.0
+;
+// Limelight lensinin merkezinden zemine olan mesafe
+double
+limelightLensHeightInches
+=
+20.0
+;
+// hedeften zemine olan mesafe
+double
+goalHeightInches
+=
+60.0
+;
+double
+angleToGoalDegrees
+=
+limelightMountAngleDegrees
++
+targetOffsetAngle_Vertical
+;
+double
+angleToGoalRadians
+=
+angleToGoalDegrees
+*
+(
+3.14159
+/
+180.0
+)
+;
+//mesafeyi hesapla
+double
+distanceFromLimelightToGoalInches
+=
+(
+goalHeightInches
+-
+limelightLensHeightInches
+)
+/
+tan
+(
+angleToGoalRadians
+)
+;
+Bu tekniği kullanırken kameranızın montaj açısını dikkatle seçmek önemlidir. Hedefe hem çok yakınken hem de çok uzaktayken görebilmeniz gerekir. Ayrıca bu açının değişmesini istemezsiniz, bu yüzden kamerayı sağlam bir şekilde monte edin ve montaj geometrinizde yuva kullanmaktan kaçının.
+Eğer a1 açısının ne olduğunu belirlemekte zorlanıyorsanız, yukarıdaki denklemi a1 için çözmek için de kullanabilirsiniz. Robotunuzu bilinen bir mesafeye yerleştirin (kameranızın lensinden ölçerek) ve aynı denklemi a1 için çözün.
+Hedefinizin kameranızla neredeyse aynı yükseklikte olduğu durumlarda, bu teknik kullanışlı değildir.
+Mesafeyi Tahmin Etmek İçin Alan Kullanımı
+​
+Mesafeyi tahmin etmenin bir başka basit yolu, takip ettiğiniz konturun alanını kullanmaktır. Bu uygulaması çok basit bir yöntemdir, ancak size son derece doğru sonuçlar vermez. Tek yapmanız gereken, görüntü kameranızı bilinen bir mesafeden hedefe doğrultmak ve lekenin alanını not etmektir. Gerçek sahadaki görüş hedefinin doğru bir temsilini kullandığınızdan ve istediğiniz atış konumundan ona doğrulttuğunuzdan emin olun. Daha sonra bunu birkaç farklı mesafeden yapabilir ve bu değerlerden bir tablo oluşturabilirsiniz. 2016'da, hedeften ne kadar uzakta olduğumuza bağlı olarak 2 eksenli kulemizin nişanını ayarlamak için bu yöntemi kullandık.

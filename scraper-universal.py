@@ -7,20 +7,11 @@ import time
 # --- 1. Configuration: Modified for CTRE Documentation ---
 SITES_TO_SCRAPE = [
     {
-        # --- NEW: Configuration for CTRE Phoenix Pro / Phoenix 6 ---
-        # This covers the latest generation of CTRE devices and software.
-        "base_url": "https://pro.docs.ctr-electronics.com/en/latest/index.html",
-        "allowed_domain": "pro.docs.ctr-electronics.com",
-        "output_dir": "ctre_phoenix_pro_output",
-        "content_selector": ("div", {"role": "main"}) # The main content area in CTRE's docs
-    },
-    {
-        # --- NEW: Configuration for CTRE Phoenix 5 ---
-        # This covers the previous generation, which is still very common.
-        "base_url": "https://docs.ctr-electronics.com/en/latest/index.html",
-        "allowed_domain": "docs.ctr-electronics.com",
-        "output_dir": "ctre_phoenix5_output",
-        "content_selector": ("div", {"role": "main"})
+        # --- NEW: Configuration for Limelight Docs ---
+        "base_url": "https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary",
+        "allowed_domain": "limelightvision.io",
+        "output_dir": "limelight_docs_output",
+        "content_selector": ("div", {"class": "theme-doc-markdown markdown"})
     },
 ]
 

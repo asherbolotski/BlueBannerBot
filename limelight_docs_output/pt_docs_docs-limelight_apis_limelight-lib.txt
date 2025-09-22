@@ -1,0 +1,1876 @@
+Programação FRC com Limelight Lib (WPILib Java & C++)
+https://github.com/LimelightVision/limelightlib-wpijava
+https://github.com/LimelightVision/limelightlib-wpicpp
+JavaDocs:
+https://limelightlib-wpijava-reference.limelightvision.io
+Uso
+​
+Esta é uma biblioteca de arquivo único. Tudo o que você precisa fazer é copiar o arquivo LimelightHelpers.java da versão mais recente (
+https://github.com/LimelightVision/limelightlib-wpijava/releases
+) para a pasta "robot" do seu projeto Java. Você não precisa criar objetos para seus Limelights - a biblioteca é simples e funcional para maximizar a facilidade de uso e confiabilidade.
+Dicas para o Sucesso
+​
+Comece de forma simples! Muitas equipes de FRC bem-sucedidas usam abordagens básicas de forma eficaz. Por exemplo, a Equipe 2056 em 2024 usou um pipeline de cores padrão de 90FPS em vez de redes neurais para rastreamento de peças do jogo.
+Pense sobre o que você realmente precisa: Você precisa de localização completa no campo, ou um simples centramento de alvo funcionaria (por exemplo,
+driveSpeed = result.getTx() * 0.03
+)?
+Conceitos Chave
+​
+1. Uso Básico
+​
+Cada método aceita um parâmetro de nome do Limelight. Deixe em branco ou nulo para usar "limelight":
+// Dados básicos de mira
+double
+tx
+=
+LimelightHelpers
+.
+getTX
+(
+""
+)
+;
+// Deslocamento horizontal do retículo ao alvo em graus
+double
+ty
+=
+LimelightHelpers
+.
+getTY
+(
+""
+)
+;
+// Deslocamento vertical do retículo ao alvo em graus
+double
+ta
+=
+LimelightHelpers
+.
+getTA
+(
+""
+)
+;
+// Área do alvo (0% a 100% da imagem)
+boolean
+hasTarget
+=
+LimelightHelpers
+.
+getTV
+(
+""
+)
+;
+// Você tem um alvo válido?
+double
+txnc
+=
+LimelightHelpers
+.
+getTXNC
+(
+""
+)
+;
+// Deslocamento horizontal do pixel/ponto principal ao alvo em graus
+double
+tync
+=
+LimelightHelpers
+.
+getTYNC
+(
+""
+)
+;
+// Deslocamento vertical do pixel/ponto principal ao alvo em graus
+2. Gerenciamento de Pipelines
+​
+Pipelines são como programas instantaneamente intercambiáveis que alteram como o Limelight processa imagens. Você pode configurar 10 pipelines diferentes na interface web:
+// Mudar para pipeline 0
+LimelightHelpers
+.
+setPipelineIndex
+(
+""
+,
+0
+)
+;
+3. Controle de LED
+​
+Para Limelights com LEDs de iluminação brilhante, você pode controlar os LEDs para diferentes situações:
+// Deixar o pipeline atual controlar os LEDs
+LimelightHelpers
+.
+setLEDMode_PipelineControl
+(
+""
+)
+;
+// Forçar LEDs ligados/desligados/piscando
+LimelightHelpers
+.
+setLEDMode_ForceOn
+(
+""
+)
+;
+LimelightHelpers
+.
+setLEDMode_ForceOff
+(
+""
+)
+;
+LimelightHelpers
+.
+setLEDMode_ForceBlink
+(
+""
+)
+;
+4. Localização no Campo Com MegaTag
+​
+(Veja a documentação do MegaTag e o Tutorial de Estimativa de Pose Swerve para mais detalhes.)
+// Na sua função periódica:
+LimelightHelpers
+.
+PoseEstimate
+limelightMeasurement
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+"limelight"
+)
+;
+if
+(
+limelightMeasurement
+.
+tagCount
+>=
+2
+)
+{
+// Só confie na medição se virmos múltiplas tags
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+0.7
+,
+0.7
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+limelightMeasurement
+.
+pose
+,
+limelightMeasurement
+.
+timestampSeconds
+)
+;
+}
+5. Localização no Campo Com MegaTag2
+​
+(Veja a documentação do MegaTag2 e o Tutorial de Estimativa de Pose Swerve para mais detalhes.)
+O MegaTag2 melhora a precisão da localização fundindo dados de orientação do robô com visão. Ao fornecer dados do giroscópio, você ajuda o MegaTag2 a restringir o problema de localização e fornecer resultados excelentes mesmo se apenas uma única tag estiver visível:
+// Primeiro, informe ao Limelight a orientação atual do seu robô
+double
+robotYaw
+=
+m_gyro
+.
+getYaw
+(
+)
+;
+LimelightHelpers
+.
+SetRobotOrientation
+(
+""
+,
+robotYaw
+,
+0.0
+,
+0.0
+,
+0.0
+,
+0.0
+,
+0.0
+)
+;
+// Obtenha a estimativa de pose
+LimelightHelpers
+.
+PoseEstimate
+limelightMeasurement
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+""
+)
+;
+// Adicione ao seu estimador de pose
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.5
+,
+.5
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+limelightMeasurement
+.
+pose
+,
+limelightMeasurement
+.
+timestampSeconds
+)
+;
+6. Funcionalidade Especial de AprilTag
+​
+// Defina uma janela de recorte personalizada para melhor desempenho (-1 a 1 para cada valor)
+LimelightHelpers
+.
+setCropWindow
+(
+""
+,
+-
+0.5
+,
+0.5
+,
+-
+0.5
+,
+0.5
+)
+;
+// Altere a pose da câmera em relação ao centro do robô (x para frente, y para esquerda, z para cima, em graus)
+LimelightHelpers
+.
+setCameraPose_RobotSpace
+(
+""
+,
+0.5
+,
+// Deslocamento para frente (metros)
+0.0
+,
+// Deslocamento lateral (metros)
+0.5
+,
+// Deslocamento de altura (metros)
+0.0
+,
+// Rolagem (graus)
+30.0
+,
+// Inclinação (graus)
+0.0
+// Guinada (graus)
+)
+;
+// Definir ponto de rastreamento de deslocamento de AprilTag (metros)
+LimelightHelpers
+.
+setFiducial3DOffset
+(
+""
+,
+0.0
+,
+// Deslocamento para frente
+0.0
+,
+// Deslocamento lateral
+0.5
+// Deslocamento de altura
+)
+;
+// Configurar detecção de AprilTag
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+""
+,
+new
+int
+[
+]
+{
+1
+,
+2
+,
+3
+,
+4
+}
+)
+;
+// Rastrear apenas estes IDs de tag
+LimelightHelpers
+.
+SetFiducialDownscalingOverride
+(
+""
+,
+2.0f
+)
+;
+// Processar em metade da resolução para melhorar a taxa de quadros e reduzir o alcance
+7. Integração com Python
+​
+Comunique-se com SnapScripts personalizados em Python:
+// Enviar dados para Python
+double
+[
+]
+dataToSend
+=
+{
+1.0
+,
+2.0
+,
+3.0
+}
+;
+LimelightHelpers
+.
+setPythonScriptData
+(
+""
+,
+dataToSend
+)
+;
+// Obter dados do Python
+double
+[
+]
+dataFromPython
+=
+LimelightHelpers
+.
+getPythonScriptData
+(
+""
+)
+;
+8. Obtendo Resultados Detalhados de NetworkTables (RawTargets)
+​
+Para máximo desempenho, você pode acessar dados brutos de alvos diretamente do NetworkTables, evitando a análise JSON:
+// Obter dados brutos de AprilTag/Fiducial
+RawFiducial
+[
+]
+fiducials
+=
+LimelightHelpers
+.
+getRawFiducials
+(
+""
+)
+;
+for
+(
+RawFiducial
+fiducial
+:
+fiducials
+)
+{
+int
+id
+=
+fiducial
+.
+id
+;
+// ID da tag
+double
+txnc
+=
+fiducial
+.
+txnc
+;
+// Deslocamento X (sem retículo)
+double
+tync
+=
+fiducial
+.
+tync
+;
+// Deslocamento Y (sem retículo)
+double
+ta
+=
+fiducial
+.
+ta
+;
+// Área do alvo
+double
+distToCamera
+=
+fiducial
+.
+distToCamera
+;
+// Distância até a câmera
+double
+distToRobot
+=
+fiducial
+.
+distToRobot
+;
+// Distância até o robô
+double
+ambiguity
+=
+fiducial
+.
+ambiguity
+;
+// Ambiguidade da pose da tag
+}
+// Obter resultados brutos do detector neural
+RawDetection
+[
+]
+detections
+=
+LimelightHelpers
+.
+getRawDetections
+(
+""
+)
+;
+for
+(
+RawDetection
+detection
+:
+detections
+)
+{
+int
+classID
+=
+detection
+.
+classId
+;
+double
+txnc
+=
+detection
+.
+txnc
+;
+double
+tync
+=
+detection
+.
+tync
+;
+double
+ta
+=
+detection
+.
+ta
+;
+// Acesse coordenadas dos cantos se necessário
+double
+corner0X
+=
+detection
+.
+corner0_X
+;
+double
+corner0Y
+=
+detection
+.
+corner0_Y
+;
+// ... cantos 1-3 disponíveis de forma similar
+}
+9. Obtendo Resultados Detalhados de JSON (Objeto Results)
+​
+O objeto Results fornece acesso abrangente a todos os tipos de dados do Limelight. Pode levar até 2 ms para analisar no RoboRIO, então não recomendamos usar essa abordagem no FRC:
+LimelightResults
+results
+=
+LimelightHelpers
+.
+getLatestResults
+(
+""
+)
+;
+if
+(
+results
+.
+valid
+)
+{
+// Alvos de cor/retroreflexivos
+if
+(
+results
+.
+targets_Retro
+.
+length
+>
+0
+)
+{
+LimelightTarget_Retro
+target
+=
+results
+.
+targets_Retro
+[
+0
+]
+;
+double
+skew
+=
+target
+.
+ts
+;
+// Inclinação/rotação do alvo
+double
+shortSide
+=
+target
+.
+short_side
+;
+// Lado mais curto em pixels
+double
+longSide
+=
+target
+.
+long_side
+;
+// Lado mais longo em pixels
+Pose3d
+targetPose
+=
+target
+.
+getCameraPose_TargetSpace
+(
+)
+;
+}
+// AprilTags/Fiduciais
+if
+(
+results
+.
+targets_Fiducials
+.
+length
+>
+0
+)
+{
+LimelightTarget_Fiducial
+tag
+=
+results
+.
+targets_Fiducials
+[
+0
+]
+;
+double
+id
+=
+tag
+.
+fiducialID
+;
+// ID da tag
+String
+family
+=
+tag
+.
+fiducialFamily
+;
+// Família da tag (ex: "16h5")
+// Dados de Pose 3D
+Pose3d
+robotPoseField
+=
+tag
+.
+getRobotPose_FieldSpace
+(
+)
+;
+// Pose do robô no espaço do campo
+Pose3d
+cameraPoseTag
+=
+tag
+.
+getCameraPose_TargetSpace
+(
+)
+;
+// Pose da câmera em relação à tag
+Pose3d
+robotPoseTag
+=
+tag
+.
+getRobotPose_TargetSpace
+(
+)
+;
+// Pose do robô em relação à tag
+Pose3d
+tagPoseCamera
+=
+tag
+.
+getTargetPose_CameraSpace
+(
+)
+;
+// Pose da tag em relação à câmera
+Pose3d
+tagPoseRobot
+=
+tag
+.
+getTargetPose_RobotSpace
+(
+)
+;
+// Pose da tag em relação ao robô
+// Dados de mira 2D
+double
+tx
+=
+tag
+.
+tx
+;
+// Deslocamento horizontal do retículo
+double
+ty
+=
+tag
+.
+ty
+;
+// Deslocamento vertical do retículo
+double
+ta
+=
+tag
+.
+ta
+;
+// Área do alvo (0-100% da imagem)
+}
+// Detecções de rede neural
+if
+(
+results
+.
+targets_Detector
+.
+length
+>
+0
+)
+{
+LimelightTarget_Detector
+detection
+=
+results
+.
+targets_Detector
+[
+0
+]
+;
+String
+className
+=
+detection
+.
+className
+;
+double
+confidence
+=
+detection
+.
+confidence
+;
+double
+area
+=
+detection
+.
+ta
+;
+}
+// Resultados do classificador
+if
+(
+results
+.
+targets_Classifier
+.
+length
+>
+0
+)
+{
+LimelightTarget_Classifier
+result
+=
+results
+.
+targets_Classifier
+[
+0
+]
+;
+String
+class_name
+=
+result
+.
+className
+;
+double
+confidence
+=
+result
+.
+confidence
+;
+int
+classID
+=
+(
+int
+)
+result
+.
+classID
+;
+}
+// Resultados de código de barras/QR
+if
+(
+results
+.
+targets_Barcode
+.
+length
+>
+0
+)
+{
+LimelightTarget_Barcode
+barcode
+=
+results
+.
+targets_Barcode
+[
+0
+]
+;
+String
+data
+=
+barcode
+.
+data
+;
+String
+family
+=
+barcode
+.
+family
+;
+}
+}
+10. Gerenciamento de Snapshots
+​
+Tire snapshots para ajuste offline de pipeline:
+// Tire um snapshot para visualizá-lo mais tarde na interface web
+LimelightHelpers
+.
+takeSnapshot
+(
+""
+,
+"auto_shot_1"
+)
+;
+11. Funcionalidades Diversas
+​
+// Alterar modos de stream
+LimelightHelpers
+.
+setStreamMode_Standard
+(
+""
+)
+;
+// Streams lado a lado
+LimelightHelpers
+.
+setStreamMode_PiPMain
+(
+""
+)
+;
+// Stream secundária no canto
+LimelightHelpers
+.
+setStreamMode_PiPSecondary
+(
+""
+)
+;
+// Stream primária no canto
+Métodos Estáticos LimelightHelpers
+​
+Dados do Alvo
+​
+public
+static
+boolean
+getTV
+(
+String
+limelightName
+)
+public
+static
+double
+getTX
+(
+String
+limelightName
+)
+public
+static
+double
+getTY
+(
+String
+limelightName
+)
+public
+static
+double
+getTXNC
+(
+String
+limelightName
+)
+public
+static
+double
+getTYNC
+(
+String
+limelightName
+)
+public
+static
+double
+getTA
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getT2DArray
+(
+String
+limelightName
+)
+public
+static
+int
+getTargetCount
+(
+String
+limelightName
+)
+public
+static
+RawFiducial
+[
+]
+getRawFiducials
+(
+String
+limelightName
+)
+public
+static
+RawDetection
+[
+]
+getRawDetections
+(
+String
+limelightName
+)
+Resultados da Rede Neural
+​
+public
+static
+int
+getClassifierClassIndex
+(
+String
+limelightName
+)
+public
+static
+int
+getDetectorClassIndex
+(
+String
+limelightName
+)
+public
+static
+String
+getClassifierClass
+(
+String
+limelightName
+)
+public
+static
+String
+getDetectorClass
+(
+String
+limelightName
+)
+Estimativa de Pose
+​
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiRed
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiRed_MegaTag2
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_wpiRed
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getCameraPose3d_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getTargetPose3d_CameraSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getTargetPose3d_RobotSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getCameraPose3d_RobotSpace
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d_wpiRed
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_wpiRed
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getCameraPose_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetPose_CameraSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetPose_RobotSpace
+(
+String
+limelightName
+)
+Configuração da Câmera/Pipeline
+​
+public
+static
+void
+setPipelineIndex
+(
+String
+limelightName
+,
+int
+pipelineIndex
+)
+public
+static
+void
+setPriorityTagID
+(
+String
+limelightName
+,
+int
+ID
+)
+public
+static
+double
+getCurrentPipelineIndex
+(
+String
+limelightName
+)
+public
+static
+String
+getCurrentPipelineType
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_PipelineControl
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceOff
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceBlink
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceOn
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_Standard
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_PiPMain
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_PiPSecondary
+(
+String
+limelightName
+)
+public
+static
+void
+setCropWindow
+(
+String
+limelightName
+,
+double
+cropXMin
+,
+double
+cropXMax
+,
+double
+cropYMin
+,
+double
+cropYMax
+)
+public
+static
+void
+setCameraPose_RobotSpace
+(
+String
+limelightName
+,
+double
+forward
+,
+double
+side
+,
+double
+up
+,
+double
+roll
+,
+double
+pitch
+,
+double
+yaw
+)
+Configurações Avançadas de AprilTag/Fiducial
+​
+public
+static
+void
+setFiducial3DOffset
+(
+String
+limelightName
+,
+double
+offsetX
+,
+double
+offsetY
+,
+double
+offsetZ
+)
+public
+static
+void
+SetRobotOrientation
+(
+String
+limelightName
+,
+double
+yaw
+,
+double
+yawRate
+,
+double
+pitch
+,
+double
+pitchRate
+,
+double
+roll
+,
+double
+rollRate
+)
+public
+static
+void
+SetFiducialIDFiltersOverride
+(
+String
+limelightName
+,
+int
+[
+]
+validIDs
+)
+public
+static
+void
+SetFiducialDownscalingOverride
+(
+String
+limelightName
+,
+float
+downscale
+)
+Resultados e Acesso a Dados
+​
+public
+static
+double
+getLatency_Pipeline
+(
+String
+limelightName
+)
+public
+static
+double
+getLatency_Capture
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetColor
+(
+String
+limelightName
+)
+public
+static
+double
+getFiducialID
+(
+String
+limelightName
+)
+public
+static
+String
+getNeuralClassID
+(
+String
+limelightName
+)
+public
+static
+String
+[
+]
+getRawBarcodeData
+(
+String
+limelightName
+)
+public
+static
+String
+getJSONDump
+(
+String
+limelightName
+)
+public
+static
+LimelightResults
+getLatestResults
+(
+String
+limelightName
+)
+Interface de Script Python
+​
+public
+static
+void
+setPythonScriptData
+(
+String
+limelightName
+,
+double
+[
+]
+outgoingPythonData
+)
+public
+static
+double
+[
+]
+getPythonScriptData
+(
+String
+limelightName
+)
+Métodos Utilitários
+​
+public
+static
+CompletableFuture
+<
+Boolean
+>
+takeSnapshot
+(
+String
+tableName
+,
+String
+snapshotName
+)
+public
+static
+NetworkTable
+getLimelightNTTable
+(
+String
+tableName
+)
+public
+static
+NetworkTableEntry
+getLimelightNTTableEntry
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+double
+getLimelightNTDouble
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+void
+setLimelightNTDouble
+(
+String
+tableName
+,
+String
+entryName
+,
+double
+val
+)
+public
+static
+void
+setLimelightNTDoubleArray
+(
+String
+tableName
+,
+String
+entryName
+,
+double
+[
+]
+val
+)
+public
+static
+double
+[
+]
+getLimelightNTDoubleArray
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+String
+getLimelightNTString
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+URL
+getLimelightURLString
+(
+String
+tableName
+,
+String
+request
+)
+Classes Principais
+​
+PoseEstimate
+​
+Representa uma Estimativa de Pose 3D
+Propriedades Públicas:
+Pose2d pose
+- A pose estimada
+double timestampSeconds
+- Timestamp da estimativa
+double latency
+- Latência de processamento
+int tagCount
+- Número de tags utilizadas
+double tagSpan
+- Distância entre as tags detectadas
+double avgTagDist
+- Distância média até as tags
+double avgTagArea
+- Área média das tags
+RawFiducial[] rawFiducials
+- Detecções brutas de fiduciais
+boolean isMegaTag2
+- Se este é um resultado MegaTag2
+(Derivado de NetworkTables) RawFiducial
+​
+Representa dados brutos de detecção de AprilTag/Fiducial
+Propriedades Públicas:
+int id
+- Número de ID do AprilTag
+double txnc
+- Deslocamento horizontal do centro da câmera em graus
+double tync
+- Deslocamento vertical do centro da câmera em graus
+double ta
+- Área do alvo (0-100% da imagem)
+double distToCamera
+- Distância da câmera ao alvo em metros
+double distToRobot
+- Distância do robô ao alvo em metros
+double ambiguity
+- Pontuação de ambiguidade da pose do AprilTag
+(Derivado de NetworkTables) RawDetection
+​
+Representa dados brutos de detecção de rede neural
+Propriedades Públicas:
+int classId
+- ID da classe da rede neural
+double txnc
+- Deslocamento horizontal do centro da câmera em graus
+double tync
+- Deslocamento vertical do centro da câmera em graus
+double ta
+- Área do alvo (0-100% da imagem)
+double corner0_X
+- Coordenada X do primeiro canto
+double corner0_Y
+- Coordenada Y do primeiro canto
+double corner1_X
+- Coordenada X do segundo canto
+double corner1_Y
+- Coordenada Y do segundo canto
+double corner2_X
+- Coordenada X do terceiro canto
+double corner2_Y
+- Coordenada Y do terceiro canto
+double corner3_X
+- Coordenada X do quarto canto
+double corner3_Y
+- Coordenada Y do quarto canto
+(Derivado de JSON) LimelightResults
+​
+Contém todos os resultados da saída JSON de um Limelight
+Propriedades Públicas:
+String error
+- Mensagem de erro, se houver
+double pipelineID
+- Índice do pipeline atual
+double latency_pipeline
+- Latência de processamento do pipeline (ms)
+double latency_capture
+- Latência de captura de imagem (ms)
+double latency_jsonParse
+- Latência de análise JSON (ms)
+double timestamp_LIMELIGHT_publish
+- Timestamp quando os dados foram publicados
+double timestamp_RIOFPGA_capture
+- Timestamp quando o FPGA do RoboRIO capturou os dados
+boolean valid
+- Se o alvo é válido
+double[] botpose
+- Pose do robô no espaço do campo
+double[] botpose_wpired
+- Pose do robô no espaço da aliança Vermelha do WPILib
+double[] botpose_wpiblue
+- Pose do robô no espaço da aliança Azul do WPILib
+double botpose_tagcount
+- Número de tags usadas para estimativa de pose
+double botpose_span
+- Distância entre as tags detectadas
+double botpose_avgdist
+- Distância média até as tags detectadas
+double botpose_avgarea
+- Área média das tags detectadas
+double[] camerapose_robotspace
+- Pose da câmera em relação ao robô
+LimelightTarget_Retro[] targets_Retro
+- Array de alvos retroreflexivos
+LimelightTarget_Fiducial[] targets_Fiducials
+- Array de alvos AprilTag
+LimelightTarget_Classifier[] targets_Classifier
+- Array de resultados do classificador
+LimelightTarget_Detector[] targets_Detector
+- Array de resultados do detector
+LimelightTarget_Barcode[] targets_Barcode
+- Array de resultados de código de barras
+Métodos Públicos:
+Pose3d getBotPose3d()
+Pose3d getBotPose3d_wpiRed()
+Pose3d getBotPose3d_wpiBlue()
+Pose2d getBotPose2d()
+Pose2d getBotPose2d_wpiRed()
+Pose2d getBotPose2d_wpiBlue()
+(Derivado de JSON) LimelightTarget_Retro
+​
+Representa um Resultado de Alvo Colorido/Retroreflexivo
+Propriedades Públicas:
+double ta
+- Área do alvo (0-100% da imagem)
+double tx
+- Deslocamento horizontal da mira ao alvo (-29,8 a 29,8 graus)
+double ty
+- Deslocamento vertical da mira ao alvo (-24,85 a 24,85 graus)
+double tx_pixels
+- Deslocamento horizontal em pixels
+double ty_pixels
+- Deslocamento vertical em pixels
+double tx_nocrosshair
+- Deslocamento horizontal do centro da câmera
+double ty_nocrosshair
+- Deslocamento vertical do centro da câmera
+double ts
+- Inclinação ou rotação do alvo (-90 a 0 graus)
+M étodos Públicos:
+Pose3d getCameraPose_TargetSpace()
+Pose3d getRobotPose_FieldSpace()
+Pose3d getRobotPose_TargetSpace()
+Pose3d getTargetPose_CameraSpace()
+Pose3d getTargetPose_RobotSpace()
+Pose2d getCameraPose_TargetSpace2D()
+Pose2d getRobotPose_FieldSpace2D()
+Pose2d getRobotPose_TargetSpace2D()
+Pose2d getTargetPose_CameraSpace2D()
+Pose2d getTargetPose_RobotSpace2D()
+(Derivado de JSON) LimelightTarget_Fiducial
+​
+Representa um Resultado de Alvo AprilTag/Fiducial
+Propriedades Públicas:
+double fiducialID
+- Número de ID do AprilTag
+String fiducialFamily
+- Tipo de família do AprilTag
+Todas as propriedades de LimelightTarget_Retro
+Métodos Públicos:
+Todos os métodos de LimelightTarget_Retro
+(Derivado de JSON) LimelightTarget_Barcode
+​
+Representa um Resultado de Alvo de Código de Barras
+Propriedades Públicas:
+String family
+- Tipo de família do código de barras (ex: "QR", "DataMatrix")
+String data
+- Conteúdo de dados decodificados do código de barras
+double tx_pixels
+- Deslocamento horizontal em pixels
+double ty_pixels
+- Deslocamento vertical em pixels
+double tx
+- Deslocamento horizontal da mira
+double ty
+- Deslocamento vertical da mira
+double tx_nocrosshair
+- Deslocamento horizontal do centro da câmera
+double ty_nocrosshair
+- Deslocamento vertical do centro da câmera
+double ta
+- Área do alvo
+double[][] corners
+- Coordenadas dos cantos
+Métodos Públicos:
+String getFamily()
+(Derivado de JSON) LimelightTarget_Classifier
+​
+Representa um Resultado de Pipeline de Classificador Neural
+Propriedades Públicas:
+String className
+- Nome da classe detectada
+double classID
+- Número de ID da classe detectada
+double confidence
+- Confiança da detecção (0-100%)
+double zone
+- Zona de detecção
+double tx
+- Deslocamento horizontal da mira
+double ty
+- Deslocamento vertical da mira
+double txp
+- Deslocamento horizontal em pixels
+double typ
+- Deslocamento vertical em pixels
+(Derivado de JSON) LimelightTarget_Detector
+​
+Representa um Resultado de Pipeline de Detector Neural
+Propriedades Públicas:
+String className
+- Nome da classe detectada
+double classID
+- Número de ID da classe detectada
+double confidence
+- Confiança da detecção (0-100%)
+double ta
+- Área do alvo
+double tx
+- Deslocamento horizontal da mira
+double ty
+- Deslocamento vertical da mira
+double txp
+- Deslocamento horizontal em pixels
+double typ
+- Deslocamento vertical em pixels
+double tx_nocrosshair
+- Deslocamento horizontal do centro da câmera
+double ty_nocrosshair
+- Deslocamento vertical do centro da câmera

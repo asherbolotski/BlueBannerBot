@@ -1,0 +1,964 @@
+Guide de programmation FTC Java & Blockly
+(Captures d'écran Blockly à venir !)
+Assurez-vous d'avoir lu le
+Guide de démarrage rapide pour la programmation FTC
+.
+Javadoc FTC Limelight :
+Javadoc
+Exemple FTC de base :
+Exemple FTC
+Dépôt d'exemples complets :
+Dépôt d'exemples Limelight FTC
+Conseils pour réussir
+​
+Commencez par la solution la plus simple. Dans FRC, nous avons appris que les meilleures équipes logicielles utilisent souvent les approches les plus simples. Par exemple, l'équipe FRC 2056 en 2024 a utilisé un pipeline couleur standard à 90FPS au lieu d'un réseau neuronal pour suivre les pièces de jeu.
+Voici un exemple du type de question à se poser lorsque vous commencez à programmer : En téléopération, avez-vous besoin de connaître la position de votre robot sur le terrain, ou avez-vous simplement besoin de vous déplacer latéralement jusqu'à ce que votre réticule soit centré sur une balise spécifique (strafeSpeed = result.getTx()*.03) ?
+Concepts Clés
+​
+1. Initialisation
+​
+Nous devons configurer notre Limelight3A dans notre code robot.
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLResult
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLResultTypes
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLStatus
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+Limelight3A
+;
+Limelight3A
+limelight
+;
+@Override
+public
+void
+init
+(
+)
+{
+limelight
+=
+hardwareMap
+.
+get
+(
+Limelight3A
+.
+class
+,
+"limelight"
+)
+;
+limelight
+.
+setPollRateHz
+(
+100
+)
+;
+// Ceci définit la fréquence à laquelle nous demandons des données à Limelight (100 fois par seconde)
+limelight
+.
+start
+(
+)
+;
+// Ceci indique à Limelight de commencer à regarder !
+}
+2. Gestion des Pipelines
+​
+Les pipelines sont comme de petits programmes instantanément interchangeables qui modifient la façon dont Limelight voit le monde. Vous pouvez configurer 10 pipelines différents dans l'interface web Limelight, chacun pour une tâche différente. Voici comment passer de l'un à l'autre :
+limelight
+.
+pipelineSwitch
+(
+0
+)
+;
+// Passer au pipeline numéro 0
+C'est une commande "fire-and-forget". Limelight changera de pipeline en quelques millisecondes, mais votre code n'attendra pas que cela se produise avant de continuer. Si vous souhaitez vérifier l'index du pipeline actuel, appelez
+result.getPipelineIndex()
+Consultez la section suivante pour en savoir plus sur l'obtention de l'objet LLResult.
+3. Obtenir et Utiliser les Résultats
+​
+LLResult est comme un conteneur rempli d'informations sur ce que Limelight voit. Voici comment nous acquérons et utilisons ces informations :
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+double
+tx
+=
+result
+.
+getTx
+(
+)
+;
+// À quel point la cible est à gauche ou à droite (degrés)
+double
+ty
+=
+result
+.
+getTy
+(
+)
+;
+// À quel point la cible est en haut ou en bas (degrés)
+double
+ta
+=
+result
+.
+getTa
+(
+)
+;
+// Quelle taille la cible semble avoir (0%-100% de l'image)
+telemetry
+.
+addData
+(
+"Target X"
+,
+tx
+)
+;
+telemetry
+.
+addData
+(
+"Target Y"
+,
+ty
+)
+;
+telemetry
+.
+addData
+(
+"Target Area"
+,
+ta
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Limelight"
+,
+"Pas de Cibles"
+)
+;
+}
+4. Communiquer avec les SnapScripts Python
+​
+Vous pouvez écrire vos propres pipelines Python SnapScript dans l'interface web. Utilisez notre générateur de SnapScript basé sur LLM pour vous aider à écrire votre code.
+Voici comment envoyer des nombres du code robot vers Python et récupérer des nombres en retour :
+// Envoyer des nombres à Python
+double
+[
+]
+inputs
+=
+{
+1.0
+,
+2.0
+,
+3.0
+,
+4.0
+,
+5.0
+,
+6.0
+,
+7.0
+,
+8.0
+}
+;
+limelight
+.
+updatePythonInputs
+(
+inputs
+)
+;
+// Récupérer des nombres de Python
+double
+[
+]
+pythonOutputs
+=
+result
+.
+getPythonOutput
+(
+)
+;
+if
+(
+pythonOutputs
+!=
+null
+&&
+pythonOutputs
+.
+length
+>
+0
+)
+{
+double
+firstOutput
+=
+pythonOutputs
+[
+0
+]
+;
+telemetry
+.
+addData
+(
+"Sortie Python :"
+,
+firstOutput
+)
+;
+}
+5. Où est mon Robot ? (MegaTag 1)
+​
+Limelight peut aider à déterminer où se trouve votre robot sur le terrain en utilisant des AprilTags. Votre Limelight est préinstallé avec une carte d'AprilTag pour le jeu actuel, mais vous pouvez concevoir et télécharger vos propres cartes à l'aide de notre constructeur de carte 3D.
+Avant d'essayer d'obtenir la position de votre robot, faites ce qui suit :
+Activez "Full 3D" dans l'onglet "Advanced" de votre pipeline AprilTag dans l'interface web.
+Utilisez l'interface web pour positionner votre caméra par rapport au centre de l'empreinte de votre robot.
+Le système de coordonnées pour botPose correspond au système de coordonnées standard FTC.
+(0,0,0) est le centre du sol du terrain
+Pour les configurations non-diamant, 0 degré de lacet signifie que l'alliance bleue est sur le côté gauche de votre robot, et l'alliance rouge est sur le côté droit de votre robot.
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose
+(
+)
+;
+if
+(
+botpose
+!=
+null
+)
+{
+double
+x
+=
+botpose
+.
+getPosition
+(
+)
+.
+x
+;
+double
+y
+=
+botpose
+.
+getPosition
+(
+)
+.
+y
+;
+telemetry
+.
+addData
+(
+"Position MT1"
+,
+"("
++
+x
++
+", "
++
+y
++
+")"
+)
+;
+}
+}
+6. Où est mon Robot ? (MegaTag 2)
+​
+MegaTag 2 est comme MegaTag 1, mais il fusionne les données de votre IMU pour une précision accrue :
+// D'abord, indiquez à Limelight dans quelle direction votre robot est orienté
+double
+robotYaw
+=
+imu
+.
+getAngularOrientation
+(
+)
+.
+firstAngle
+;
+limelight
+.
+updateRobotOrientation
+(
+robotYaw
+)
+;
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose_mt2
+=
+result
+.
+getBotpose_MT2
+(
+)
+;
+if
+(
+botpose_mt2
+!=
+null
+)
+{
+double
+x
+=
+botpose_mt2
+.
+getPosition
+(
+)
+.
+x
+;
+double
+y
+=
+botpose_mt2
+.
+getPosition
+(
+)
+.
+y
+;
+telemetry
+.
+addData
+(
+"Position MT2 :"
+,
+"("
++
+x
++
+", "
++
+y
++
+")"
+)
+;
+}
+}
+7. Types de Résultats Internes
+​
+Selon la façon dont vous avez configuré vos pipelines, vous aurez accès à différents types de listes de résultats détaillés au sein de l'objet parent LLResults.
+Vous n'aurez probablement pas besoin d'utiliser ces listes de résultats. Nous vous recommandons d'utiliser les méthodes de base getTx(), getTy() chaque fois que possible.
+7.1 Résultats de Couleur
+​
+Les résultats de couleur aident à trouver des cibles colorées :
+List
+<
+ColorResult
+>
+colorTargets
+=
+result
+.
+getColorResults
+(
+)
+;
+for
+(
+ColorResult
+colorTarget
+:
+colorTargets
+)
+{
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// Où elle se trouve (gauche-droite)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// Où elle se trouve (haut-bas)
+double
+area
+=
+colorTarget
+.
+getTargetArea
+(
+)
+;
+// taille (0-100)
+telemetry
+.
+addData
+(
+"Cible Couleur"
+,
+"occupe "
++
+area
++
+"% de l'image"
+)
+;
+}
+7.2 Résultats Fiduciels/AprilTag
+​
+Les fiduciels sont des marqueurs spéciaux (comme les AprilTags) qui aident Limelight à déterminer où il se trouve :
+List
+<
+FiducialResult
+>
+fiducials
+=
+result
+.
+getFiducialResults
+(
+)
+;
+for
+(
+FiducialResult
+fiducial
+:
+fiducials
+)
+{
+int
+id
+=
+fiducial
+.
+getFiducialId
+(
+)
+;
+// Le numéro d'ID du fiduciel
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// Où il se trouve (gauche-droite)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// Où il se trouve (haut-bas)
+double
+StrafeDistance_3D
+=
+fiducial
+.
+getRobotPoseTargetSpace
+(
+)
+.
+getY
+(
+)
+;
+telemetry
+.
+addData
+(
+"Fiduciel "
++
+id
+,
+"est à "
++
+distance
++
+" mètres"
+)
+;
+}
+Si vous souhaitez utiliser les informations de pose 3D dans chaque FiducialResult, vous pouvez utiliser les méthodes suivantes :
+fiducial
+.
+getRobotPoseTargetSpace
+(
+)
+;
+// Pose du robot par rapport au système de coordonnées AprilTag (le plus utile)
+fiducial
+.
+getCameraPoseTargetSpace
+(
+)
+;
+// Pose de la caméra par rapport à l'AprilTag (utile)
+fiducial
+.
+getRobotPoseFieldSpace
+(
+)
+;
+// Pose du robot dans le système de coordonnées du terrain basée uniquement sur ce tag (utile)
+fiducial
+.
+getTargetPoseCameraSpace
+(
+)
+;
+// Pose de l'AprilTag dans le système de coordonnées de la caméra (pas très utile)
+fiducial
+.
+getTargetPoseRobotSpace
+(
+)
+;
+// Pose de l'AprilTag dans le système de coordonnées du robot (pas très utile)
+7.3 Résultats de Code-barres
+​
+Le pipeline de code-barres de Limelight est efficace pour détecter et suivre les codes QR.
+List
+<
+BarcodeResult
+>
+barcodes
+=
+result
+.
+getBarcodeResults
+(
+)
+;
+for
+(
+BarcodeResult
+barcode
+:
+barcodes
+)
+{
+String
+data
+=
+barcode
+.
+getData
+(
+)
+;
+// Ce que dit le code-barres
+String
+family
+=
+barcode
+.
+getFamily
+(
+)
+;
+// Quel type de code-barres c'est
+telemetry
+.
+addData
+(
+"Code-barres"
+,
+data
++
+" ("
++
+family
++
+")"
+)
+;
+}
+7.4 Résultats de Classificateur
+​
+Les classificateurs neuronaux permettent à Limelight de dire "Je pense que c'est une image de...".
+List
+<
+ClassifierResult
+>
+classifications
+=
+result
+.
+getClassifierResults
+(
+)
+;
+for
+(
+ClassifierResult
+classification
+:
+classifications
+)
+{
+String
+className
+=
+classification
+.
+getClassName
+(
+)
+;
+// Ce que Limelight pense voir
+double
+confidence
+=
+classification
+.
+getConfidence
+(
+)
+;
+// Score de confiance
+telemetry
+.
+addData
+(
+"Je vois un"
+,
+className
++
+" ("
++
+confidence
++
+"%)"
+)
+;
+}
+7.5 Résultats de Détecteur
+​
+Les détecteurs trouvent des objets spécifiques et nous indiquent où ils se trouvent :
+List
+<
+DetectorResult
+>
+detections
+=
+result
+.
+getDetectorResults
+(
+)
+;
+for
+(
+DetectorResult
+detection
+:
+detections
+)
+{
+String
+className
+=
+detection
+.
+getClassName
+(
+)
+;
+// Ce qui a été détecté
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// Où il se trouve (gauche-droite)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// Où il se trouve (haut-bas)
+telemetry
+.
+addData
+(
+className
+,
+"à ("
++
+x
++
+", "
++
+y
++
+") degrés"
+)
+;
+}
+8. Les Données sont-elles Récentes ?
+​
+Parfois, nous voulons connaître l'âge (en millisecondes) de nos données de résultats.
+long
+staleness
+=
+result
+.
+getStaleness
+(
+)
+;
+if
+(
+staleness
+<
+100
+)
+{
+// Moins de 100 millisecondes
+telemetry
+.
+addData
+(
+"Données"
+,
+"Bonnes"
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Données"
+,
+"Anciennes ("
++
+staleness
++
+" ms)"
+)
+;
+}
+9. Cartes de Terrain Personnalisées
+​
+Vous pouvez informer Limelight de votre disposition de terrain spécifique :
+LLFieldMap
+fieldMap
+=
+new
+LLFieldMap
+(
+)
+;
+// Vous devrez remplir ceci avec les données du terrain
+boolean
+success
+=
+limelight
+.
+uploadFieldmap
+(
+fieldMap
+,
+null
+)
+;
+// null signifie utiliser l'emplacement par défaut
+if
+(
+success
+)
+{
+telemetry
+.
+addData
+(
+"Carte du Terrain"
+,
+"Téléchargée avec succès !"
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Carte du Terrain"
+,
+"Oups, échec du téléchargement"
+)
+;
+}
+10. Prendre des Instantanés :
+​
+Limelight peut prendre des instantanés pour vous aider à déboguer les pipelines hors du terrain :
+limelight
+.
+captureSnapshot
+(
+"auto_pov_10s"
+)
+;
+Dans l'onglet Input de l'interface web, vous pouvez sélectionner cet instantané comme "source d'image" pour vérifier/ajuster vos pipelines.
+Pour effacer les anciens instantanés :
+limelight
+.
+deleteSnapshots
+(
+)
+;
+telemetry
+.
+addData
+(
+"Instantanés"
+,
+"Tous effacés !"
+)
+;

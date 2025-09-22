@@ -1,0 +1,59 @@
+Özel Dedektör Modeli Eğitimi
+Roboflow, Google Colab ve kendi veri setinizle, Limelight için hızlı bir şekilde özel dedektör modelleri eğitebilirsiniz.
+İşte atmanız gereken adımların genel bir özeti:
+İlgilendiğiniz nesnelerin görüntülerini toplayın ve açıklayın.
+Bu bağlamda "açıklama", ilgilenilen nesnelerin etrafına sınırlayıcı kutular çizme işlemidir. Tüm bunlar Roboflow'un web arayüzünde yapılabilir.
+Alternatif olarak, Roboflow Universe'den halka açık bir veri seti seçebilirsiniz
+Açıklamalı veri setini .tfrecord olarak dışa aktarın, Google Drive'a yükleyin ve Google Colab ile ücretsiz eğitim Notebook'umuzu kullanın.
+Google Colab, bulutta güçlü GPU'lar kullanarak ücretsiz olarak sinir ağları eğitmenize olanak tanır.
+Eğitim:
+1. Veri Seti
+​
+Limelight Eğitim Notebook'u sıkıştırılmış bir .tfrecord veri seti bekler. Roboflow, tek bir tıklamayla .tfrecord arşivlerini dışa aktarabilir.
+Roboflow
+ile kendi veri setinizi oluşturabilir veya önceden açıklanmış veri setleri için
+Roboflow Universe
+'i inceleyebilirsiniz.
+Kendi veri setinizi oluşturmayı seçerseniz, aşağıdakileri okuyun:
+Veri setinizin çeşitliliğini en üst düzeye çıkarmalısınız. Veri setinizin çeşitliliği, Limelight'ınızın dağıtıldıktan sonra göreceği çeşitliliği aşmalıdır.
+Veri setinizin kalitesi ve doğruluğu son derece önemlidir. Sınırlayıcı kutularınızın doğru olduğundan ve tek bir kuralı izlediğinden emin olun.
+Örneğin, kısmen gizlenmiş bir nesnenin sınırlayıcı kutusu yalnızca nesnenin görünen kısmını yakalamalıdır.
+Sınıf etiketleri için tüm küçük harfleri kullanın
+Sınıf etiketlerinin sayısını en aza indirin.
+Roboflow'un artırmalarını kullanın, ancak bunların mantıklı olduğundan emin olun. Örneğin, kırmızı ve mavi topları tespit ediyorsanız, artırılmış veri setinizde renk tonunu tersine çevirmediğinizden veya ağır bir şekilde değiştirmediğinizden emin olun.
+Bir veri setini etiketledikten veya bulduktan sonra, Roboflow'un "Veri Setini İndir" düğmesini kullanarak Tensorflow TFRecord olarak dışa aktarın. Bu arşivi Google Drive'ınıza yükleyin.
+2. Modeli Eğitme
+​
+Özel dedektörünüzü eğitmek için
+Limelight Dedektör Eğitim Notebook'u
+ile bir Google Colab Oturumu başlatın.
+Notebook herhangi bir kod değişikliği gerektirmez. Modelinizi eğitmek için şu adımları izleyin:
+Bölüm 1
+​
+İlk bölümü genişletin ve ilk üç kod bloğunun sol üst köşesindeki oynat düğmesine tıklayın. Zaman kazanmak için son "test" kod bloğu atlanabilir.
+Eğer bir yeniden başlatma düğmesi görürseniz, görmezden gelin.
+Eğer bunun gibi bir pencere görürseniz, "İptal"e tıklayın
+Bölüm 1.1
+​
+Bölümü genişletin, ilk kod bloğunu çalıştırın ve tfrecord.zip dosyanızın Google Drive bağlantısını girin. Google Drive'da tfrecord.zip dosyanızın "bağlantıya sahip herkes" tarafından erişilebilir olduğundan emin olun
+Bölüm 2
+​
+Tfrecord.zip'i açmak ve ayrıştırmak için iki kod bloğunu çalıştırın
+Bölüm 3
+​
+Eğitime hazırlanmak için bölüm 3'teki tüm kod bloklarını çalıştırın
+Bölüm 4
+​
+Eğitimi başlatmak için bölüm 4'teki tüm kod bloklarını çalıştırın.
+Eğitim betiği çalışırken, ilerlemeyi izlemek için dosya panelini ve tensorboard'u yenileyebilirsiniz. Her 2000 adımda "training_progress" klasöründe yeni bir kontrol noktası görünmelidir.
+Eğitim otomatik olarak 40000 adımda duracak olsa da, bu bölümün son kod bloğundaki durdurma düğmesiyle istediğiniz zaman durdurabilirsiniz. Kontrol noktaları mevcut olduğu sürece, niceleme ve derlemeye geçebilirsiniz.
+Bölüm 5 - 7
+​
+Bir etiket dosyası oluşturmak ve modeli uyumlu FlatBuffer formatına dönüştürmek için bölüm 5'teki tüm kod bloklarını çalıştırın
+INT8 / 8bit çıkarım için modeli nicelemek üzere bölüm 6'daki tüm kod bloklarını çalıştırın.
+Modeli Google Coral ve Limelight için hazırlamak üzere bölüm 7'deki tüm kod bloklarını çalıştırın. Son kod bloğu biraz zaman alacak ve eğitilen modeli .zip dosyası olarak indirecektir.
+Limelight'a Yükleme
+​
+Colab oturumunuzdan arşivi açın.
+FTC Takımları - Eğer bir Limelight3A'nız varsa, 8bit tflite modelini ve labels.txt'yi yükleyin. Çalışma zamanı motorunu "coral"dan "cpu"ya değiştirmeniz gerekecektir
+FRC Takımları - Eğer bir Google Coral'ınız varsa, limelight_neural_detector_coral.tflite ve labels.txt dosyalarını Limelight'ınıza yükleyin.

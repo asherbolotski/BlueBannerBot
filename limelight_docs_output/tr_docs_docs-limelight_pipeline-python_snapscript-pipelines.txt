@@ -1,0 +1,229 @@
+Python SnapScript Hatları
+Python komut dosyaları ile, kendi hatlarınızı hızlı bir şekilde oluşturmak için OpenCV'nin tüm gücünden yararlanabilirsiniz. Python yorumlayıcısı, Limelight'ın C++ arka ucuna entegre edilmiştir, böylece hatalar ve çökmeler düzgün bir şekilde ele alınır.
+Normal SnapScript hatları doğrudan Limelight web arayüzünde programlanır.
+Limelight donanımı, kamera arayüzünü, ağ bağlantısını, yayını ve temel görüntü ön işlemeyi halleder. Tek yapmanız gereken runPipeline() adlı bir python fonksiyonu yazmaktır.
+Sunduğumuz en önemli özelliklerden biri tek tıklamayla artı işaretidir. Artı işareti, çift artı işareti, tx, ty, ta, ts, tvert ve diğer tüm standart limelight NetworkTables okumaları, python runPipeline() fonksiyonundan döndürdüğünüz kontura otomatik olarak kilitlenecektir.
+Kendi gerçek zamanlı görselleştirmelerinizi, eşikleme, filtreleme yazın ve istenirse arka ucumuzu tamamen atlayın.
+Limelight'ın python komut dosyası, tam OpenCV ve numpy kütüphanelerine erişime sahiptir.
+Görüntüye erişimin ötesinde, runPipeline() fonksiyonu ayrıca robottan gelen verilere de erişebilir. FTC takımları updatePythonInputs() kullanabilir
+ve FRC takımları "llrobot" NetworkTables sayı dizisini güncelleyebilir. Görselleştirme veya gelişmiş uygulamalar için robotlarınızdan python komut dosyalarınıza herhangi bir veri gönderin (IMU verileri, konum verileri, robot hızı vb. python komut dosyalarında kullanmak için gönderilebilir)
+runPipeline fonksiyonu ayrıca getPythonOutputs() ve "llpython" networktables sayı dizisinden erişilebilen bir sayı dizisi çıktısı verir. Bu, Limelight'ın artı işaretini ve diğer işlevlerini tamamen atlayıp kendi özel verilerinizi robotlarınıza geri gönderebileceğiniz anlamına gelir.
+Python komut dosyaları c++ ortamımızda korumalı alanda çalışır, bu nedenle çökmeler konusunda endişelenmenize gerek yoktur. Komut dosyalarındaki değişiklikler anında uygulanır ve tüm hata mesajları doğrudan web arayüzüne yazdırılır.
+Minimal Limelight Python Komut Dosyası
+​
+import
+cv2
+import
+numpy
+as
+np
+# runPipeline() her kare için Limelight'ın arka ucu tarafından çağrılır.
+def
+runPipeline
+(
+image
+,
+llrobot
+)
+:
+# giriş görüntüsünü HSV renk uzayına dönüştür
+img_hsv
+=
+cv2
+.
+cvtColor
+(
+image
+,
+cv2
+.
+COLOR_BGR2HSV
+)
+# hsv'yi, aşağıdaki HSV Min/Max değerleri içinde
+# yer almayan pikselleri kaldırarak ikili bir görüntüye dönüştür
+img_threshold
+=
+cv2
+.
+inRange
+(
+img_hsv
+,
+(
+60
+,
+70
+,
+70
+)
+,
+(
+85
+,
+255
+,
+255
+)
+)
+# yeni ikili görüntüde konturları bul
+contours
+,
+_
+=
+cv2
+.
+findContours
+(
+img_threshold
+,
+cv2
+.
+RETR_EXTERNAL
+,
+cv2
+.
+CHAIN_APPROX_SIMPLE
+)
+largestContour
+=
+np
+.
+array
+(
+[
+[
+]
+]
+)
+# robota geri göndermek için boş bir değer dizisi başlat
+llpython
+=
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+# eğer konturlar tespit edildiyse, onları çiz
+if
+len
+(
+contours
+)
+>
+0
+:
+cv2
+.
+drawContours
+(
+image
+,
+contours
+,
+-
+1
+,
+255
+,
+2
+)
+# en büyük konturu kaydet
+largestContour
+=
+max
+(
+contours
+,
+key
+=
+cv2
+.
+contourArea
+)
+# konturu çevreleyen döndürülmemiş sınırlayıcı kutuyu al
+x
+,
+y
+,
+w
+,
+h
+=
+cv2
+.
+boundingRect
+(
+largestContour
+)
+# döndürülmemiş sınırlayıcı kutuyu çiz
+cv2
+.
+rectangle
+(
+image
+,
+(
+x
+,
+y
+)
+,
+(
+x
++
+w
+,
+y
++
+h
+)
+,
+(
+0
+,
+255
+,
+255
+)
+,
+2
+)
+# robota geri göndermek için bazı özel veriler kaydet
+llpython
+=
+[
+1
+,
+x
+,
+y
+,
+w
+,
+h
+,
+9
+,
+8
+,
+7
+]
+#LL artı işareti için en büyük konturu, değiştirilmiş görüntüyü ve özel robot verilerini döndür
+return
+largestContour
+,
+image
+,
+llpython

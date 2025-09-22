@@ -1,0 +1,243 @@
+使用 Swerve 进行瞄准和测距
+完整示例项目请查看
+这里
+// 使用 Limelight 进行简单的比例转向控制。
+// "比例控制"是一种控制算法，其输出与误差成正比。
+// 在这种情况下，我们将返回一个与 Limelight 的 "tx" 值成正比的角速度。
+double
+limelight_aim_proportional
+(
+)
+{
+// kP (比例常数)
+// 这是一个手动调整的数值，用于确定我们比例控制循环的灵敏度
+// 如果它太高，机器人会围绕目标振荡。
+// 如果它太低，机器人将永远无法到达目标
+// 如果机器人从未朝正确方向转向，应该反转 kP。
+double
+kP
+=
+.035
+;
+// tx 范围从 (-hfov/2) 到 (hfov/2) 度。如果你的目标在
+// limelight 3 视野的最右边缘，tx 应该返回大约 31 度。
+double
+targetingAngularVelocity
+=
+LimelightHelpers
+.
+getTX
+(
+"limelight"
+)
+*
+kP
+;
+// 转换为弧度/秒，用于我们的驱动方法
+targetingAngularVelocity
+*=
+Drivetrain
+.
+kMaxAngularSpeed
+;
+// 反转，因为当目标在准星右侧时，tx 为正值
+targetingAngularVelocity
+*=
+-
+1.0
+;
+return
+targetingAngularVelocity
+;
+}
+// 使用 Limelight 的 "ty" 值进行简单的比例测距控制
+// 如果你的 Limelight 安装高度和目标安装高度不同，这种方法效果最佳。
+// 如果你的 limelight 和目标安装在相同或相似的高度，请使用 "ta"（面积）而不是 "ty" 进行目标测距
+double
+limelight_range_proportional
+(
+)
+{
+double
+kP
+=
+.1
+;
+double
+targetingForwardSpeed
+=
+LimelightHelpers
+.
+getTY
+(
+"limelight"
+)
+*
+kP
+;
+targetingForwardSpeed
+*=
+Drivetrain
+.
+kMaxSpeed
+;
+targetingForwardSpeed
+*=
+-
+1.0
+;
+return
+targetingForwardSpeed
+;
+}
+private
+void
+drive
+(
+boolean
+fieldRelative
+)
+{
+// 获取 x 速度。我们反转这个值是因为 Xbox 控制器在我们向前推时返回负值。
+var
+xSpeed
+=
+-
+m_xspeedLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getLeftY
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxSpeed
+;
+// 获取 y 速度或横向/平移速度。我们反转这个值是因为
+// 当我们向左拉时，我们希望得到一个正值。默认情况下，Xbox 控制器
+// 在你向右拉时返回正值。
+var
+ySpeed
+=
+-
+m_yspeedLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getLeftX
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxSpeed
+;
+// 获取角速度。我们反转这个值是因为当我们向左拉时，我们希望得到一个
+// 正值（记住，在数学中逆时针为正）。默认情况下，Xbox 控制器
+// 在你向右拉时返回正值。
+var
+rot
+=
+-
+m_rotLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getRightX
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxAngularSpeed
+;
+// 当 A 按钮被按下时，用我们的 limelight 方法的输出覆盖一些驱动值
+if
+(
+m_controller
+.
+getAButton
+(
+)
+)
+{
+final
+var
+rot_limelight
+=
+limelight_aim_proportional
+(
+)
+;
+rot
+=
+rot_limelight
+;
+final
+var
+forward_limelight
+=
+limelight_range_proportional
+(
+)
+;
+xSpeed
+=
+forward_limelight
+;
+// 使用 Limelight 时，关闭相对于场地的驱动。
+fieldRelative
+=
+false
+;
+}
+m_swerve
+.
+drive
+(
+xSpeed
+,
+ySpeed
+,
+rot
+,
+fieldRelative
+,
+getPeriod
+(
+)
+)
+;
+}

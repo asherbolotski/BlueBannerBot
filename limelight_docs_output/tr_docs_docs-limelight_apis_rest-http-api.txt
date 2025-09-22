@@ -1,0 +1,141 @@
+REST/HTTP API
+Limelight OS,
+(ipaddress):5807
+adresinde çalışan bir REST/HTTP sunucusu içerir
+LimelightLib Python
+, Limelight HTTP/REST API'sini kullanan açık kaynaklı bir kütüphanedir.
+Not: örneğin http://(limelight-ip-address):5807/results
+Genel
+​
+Metod
+Rota
+Açıklama
+GET
+/results
+Mevcut hedefleme sonuçlarının tam JSON dökümünü alın
+GET
+/status
+Sıcaklık, fps, cihaz adı, pipeline indeksi, cpu kullanımı, ram kullanımı içeren JSON durum nesnesi alın
+GET
+/hwreport
+Tam donanım raporlarının JSON dizisini döndürür. Donanım raporu, FOV, ana ofset vb. gibi insan tarafından okunabilir bilgiler içerir
+Pipeline Yönetimi
+​
+Metod
+Rota
+Açıklama
+GET
+/pipeline-default
+Varsayılan pipeline'ı alın (JSON)
+GET
+/pipeline-atindex
+Kameradan pipeline[n]'i alın (JSON). Pipeline'ı diskten yükler. İstekte bir 'index' url parametresi ekleyin.
+POST
+/pipeline-switch
+Farklı bir pipeline'a geçin. İstekte bir 'index' url parametresi ekleyin.
+POST
+/reload-pipeline
+Kamerayı mevcut pipeline'ı ve tüm pipeline kaynaklarını yeniden yüklemeye zorlayın
+POST
+/update-pipeline
+Bir veya daha fazla ayar güncellemesi içeren JSON kabul eder. Bu ayarları diske kaydetmek için url parametresi "flush" değerini 1 olarak ayarlayın.
+POST
+/upload-pipeline
+Bir pipeline yükleyin. İstek gövdesinde JSON verisi gönderin. İsteğe bağlı olarak bir 'index' parametresi ekleyin. Diskteki pipeline'ın üzerine yazar
+Kamera Yönetimi
+​
+Metod
+Rota
+Açıklama
+POST
+/set-imumode
+IMU Modunu Ayarlayın (JSON)
+POST
+/set-throttle
+Termal yönetim için işlenen kareler arasında atlanacak kare sayısını ayarlayın
+POST
+/set-imuassistalpha
+IMU Yardım Modu tamamlayıcı filtre alfasını ayarlayın (varsayılan 0.001)
+Kaynak Yönetimi
+​
+Metod
+Rota
+Açıklama
+POST
+/upload-fieldmap
+Bir saha haritası yükleyin. İstek gövdesinde JSON verisi gönderin. İsteğe bağlı olarak bir 'index' parametresi ekleyin.
+POST
+/upload-python
+Python kodu yükleyin. Kodu istek gövdesinde düz metin olarak gönderin. İsteğe bağlı olarak bir 'index' parametresi ekleyin.
+POST
+/upload-nn
+Bir sinir ağı yükleyin. Bir 'type' parametresi ("detector" veya "classifier"), istek gövdesinde dosya içeriği ve isteğe bağlı olarak bir 'index' parametresi ekleyin.
+POST
+/upload-nnlabels
+Sinir ağı etiketleri yükleyin. Bir 'type' parametresi ("detector" veya "classifier"), istek gövdesinde dosya ve isteğe bağlı olarak bir 'index' parametresi ekleyin.
+GET
+/getsnapscriptnames
+SnapScriptPro adlarının listesi
+Python ve Robot Yönelimi
+​
+Metod
+Rota
+Açıklama
+POST
+/update-pythoninputs
+SnapScript pipeline'ları için Python girişlerini güncelleyin. İstek gövdesinde JSON verisi (dizi) gönderin.
+POST
+/update-robotorientation
+Robot yönelimini güncelleyin. İstek gövdesinde JSON verisi (dizi) gönderin. Örneğin "[45,0,0,0,0,0]". Bu metodun kullanımı, yeniden başlatmaya/yeniden önyüklemeye kadar NetworkTables tabanlı yönelim güncellemelerini devre dışı bırakır
+Kalibrasyon
+​
+Metod
+Rota
+Açıklama
+GET
+/cal-default
+Varsayılan kalibrasyon sonucunu döndürür
+GET
+/cal-file
+Özel kalibrasyon sonucunu döndürür (dosya sistemi)
+GET
+/cal-eeprom
+Özel kalibrasyon sonucunu döndürür (eeprom)
+GET
+/cal-latest
+En son özel kalibrasyon sonucunu döndürür. Bu sonuç, dosya sistemine veya eeprom'a kaydedilmediği sürece kullanılmaz
+POST
+/cal-eeprom
+Eeprom kalibrasyon sonucunu güncelleyin. İstek gövdesinde kalibrasyon verisi gönderin.
+POST
+/cal-file
+Dosya sistemi kalibrasyon sonucunu güncelleyin. İstek gövdesinde kalibrasyon verisi gönderin.
+DELETE
+/cal-latest
+En son kalibrasyon sonucunu silin
+DELETE
+/cal-eeprom
+Eeprom kalibrasyon sonucunu silin
+DELETE
+/cal-file
+Dosya sistemi kalibrasyon sonucunu silin
+Anlık Görüntüler
+​
+Metod
+Rota
+Açıklama
+POST
+/capture-snapshot
+Bir anlık görüntü yakalayın. Anlık görüntüyü adlandırmak için bir 'snapname' url parametresi ekleyin.
+POST
+/upload-snapshot
+Adlandırılmış bir anlık görüntü yükleyin. Bir 'snapname' url parametresi ve istek gövdesinde bir görüntü dosyası ekleyin.
+GET
+/snapshotmanifest
+Anlık görüntü dosya adlarının bir listesini döndürür
+DELETE
+/delete-snapshots
+Tüm anlık görüntüleri siler
+DELETE
+/delete-snapshot
+Belirli bir anlık görüntüyü siler. İstekte bir 'snapname' parametresi ekleyin.

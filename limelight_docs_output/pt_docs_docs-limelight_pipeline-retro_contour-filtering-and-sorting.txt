@@ -1,0 +1,72 @@
+Filtragem e Ordenação de Contornos
+Após a limiarização de cor, o Limelight gera uma lista de contornos. Em seguida, cada contorno é envolvido em um retângulo de ajuste mais próximo, um retângulo "não rotacionado" e um "casco convexo". Estes são passados por uma série de filtros para determinar o "melhor" contorno. Se vários contornos passarem por todos os filtros, o Limelight escolhe o melhor contorno usando o Controle "Modo de Ordenação".
+Modos de Ordenação
+​
+Controla como os contornos são ordenados depois de passarem por todos os outros filtros.
+Em 2019, o modo de ordenação "mais próximo" foi adicionado. Este modo selecionará o alvo que estiver mais próximo da mira configurável.
+Área do Alvo
+​
+Controla o intervalo de áreas aceitáveis do retângulo delimitador, como porcentagens da tela. Você pode aumentar a área mínima para ajudar a filtrar luzes do estádio e diminuir o valor máximo para ajudar a filtrar coisas como grandes displays próximos ao campo.
+O controle deslizante de área não é escalado linearmente, mas quarticamente. Isso é feito para fornecer precisão extra próximo ao limite inferior dos valores de área, onde muitos alvos FRC se encontram. A área de um quadrado escala quadraticamente com o comprimento do seu lado, mas o escalonamento x^4 fornece ainda maior precisão onde é necessário.
+Preenchimento do Alvo
+​
+Preenchimento é a porcentagem de pixels "ativos" no retângulo delimitador do contorno escolhido. Um alvo de retângulo sólido terá um preenchimento próximo a 1.0, enquanto um alvo em forma de U terá um preenchimento baixo.
+Proporção do Alvo
+​
+A proporção é definida pela largura do retângulo delimitador do contorno escolhido dividida por sua altura. Uma proporção baixa descreve um retângulo "alto", enquanto uma proporção alta descreve um retângulo "largo".
+O controle deslizante de proporção também é escalado quadraticamente.
+Filtro de Direção
+​
+Rejeita contornos com base em sua orientação.
+Rejeição Inteligente de Manchas
+​
+Rejeita contornos relativamente pequenos (em oposição a absolutamente pequenos com o filtro de área) que passaram por todos os outros filtros. Isso é essencial se um alvo deve permanecer rastreável de curta e longa distância.
+Este recurso foi introduzido na temporada de 2019 para rejeitar reflexos de LED do Limelight quando os robôs estavam muito próximos aos alvos.
+Agrupamento de Alvos
+​
+Controla o "agrupamento" de alvos. Defina para o modo duplo para procurar "alvos" que consistem em duas formas, ou modo triplo para procurar alvos que consistem em três formas.
+O Agrupamento Inteligente de Alvos pode agrupar um número variável de alvos e rejeitar valores discrepantes. Foi adicionado em 2022 para ajudar a rastrear o alvo do hub superior.
+Filtro de Interseção (Apenas Alvos Duplos)
+​
+Rejeita grupos de contornos com base em como eles se cruzariam se estendidos ao infinito.
+Agrupamento Inteligente de Alvos
+​
+Agrupa automaticamente alvos que passam por todos os filtros de alvos individuais.
+Agrupará dinamicamente qualquer número de alvos entre -mínimo do controle deslizante de tamanho do grupo- e -máximo do controle deslizante de tamanho do grupo-
+Rejeição de Valores Discrepantes
+​
+Embora os alvos de grupo sejam mais desafiadores que os alvos normais, eles fornecem mais informações e oportunidades para filtragem. Se você sabe que um objetivo é composto por múltiplos alvos que estão próximos uns dos outros, você pode rejeitar alvos discrepantes que se destacam sozinhos.
+Você deve confiar quase inteiramente em uma boa filtragem de alvos padrão e usar a rejeição de valores discrepantes apenas se você vir ou esperar valores discrepantes espúrios em seu fluxo de câmera. Se você tiver uma filtragem de alvo padrão ruim, a detecção de valores discrepantes pode começar a trabalhar contra você!
+Saída
+​
+Esta aba controla o que acontece durante o último estágio do pipeline de visão
+Região de Mira
+​
+Controla o ponto de interesse do retângulo delimitador do contorno escolhido. Por padrão, os parâmetros de rastreamento tx e ty representam os deslocamentos da sua mira até o centro do retângulo escolhido. Você pode usar outra opção se um alvo mudar de tamanho ou for composto por dois alvos que às vezes se fundem.
+Enviar Cantos Brutos?
+​
+Defina este controle como "sim" para incluir localizações de cantos em JSON, NetworkTables e resultados da API. Ajuste o número de cantos enviados ajustando o valor "Simplificação de Contorno" na página "Filtragem de Contorno".
+Enviar JSON via NT?
+​
+Defina este controle como "sim" para enviar JSON via NetworkTables.
+Calibração da Mira
+​
+Controla a "origem" dos seus valores de mira. Digamos que um lançador em seu robô precise ser calibrado de forma que sempre aponte um pouco à esquerda do centro. Você pode alinhar seu robô, clicar em "calibrar", e todos os seus valores de mira serão enviados em relação à sua nova mira. Veja a página de calibração para mais detalhes!
+3D
+​
+Experimente com a estimativa de pose baseada em pontos PnP aqui.
+Computar 3D
+​
+Controla se a estimativa de pose está habilitada. Você deve habilitar o modo de alta resolução 960x720 para que isso funcione.
+Forçar Convexo
+​
+Use esta opção para selecionar apenas os cantos "mais externos" de um alvo para SolvePnP.
+Simplificação de Contorno
+​
+Use esta opção para remover bordas pequenas e ruidosas do alvo.
+Erro Aceitável
+​
+O Limelight só retornará um alvo se ele passar em um teste de reprojeção com uma certa pontuação em pixels.
+Deslocamento Z do Objetivo
+​
+Ajusta automaticamente o valor de Profundidade 3D do seu alvo (Eixo Z).

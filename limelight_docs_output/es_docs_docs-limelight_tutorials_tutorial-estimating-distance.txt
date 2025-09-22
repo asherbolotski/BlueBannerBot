@@ -1,0 +1,188 @@
+Estimación de Distancia
+Usando una Cámara con Ángulo Fijo
+​
+Si tu cámara de seguimiento de visión está montada en tu robot de manera que el ángulo entre el plano del suelo y su línea de visión no cambia, entonces puedes usar esta técnica para calcular con gran precisión la distancia a un objetivo. Puedes usar este valor de distancia para conducir tu robot hacia adelante y hacia atrás para conseguir el rango perfecto o ajustar la potencia de un mecanismo de lanzamiento.
+Observa el siguiente diagrama. En este contexto, todas las variables son conocidas: la altura del objetivo (h2) es conocida porque es una propiedad del campo. La altura de tu cámara sobre el suelo (h1) es conocida y su ángulo de montaje es conocido (a1). El Limelight (o tu sistema de visión) puede indicarte el ángulo y hacia el objetivo (a2).
+Podemos resolver d usando la siguiente ecuación:
+tan(a1+a2) = (h2-h1) / d
+"d = (h2-h1) / tan(a1+a2)"
+La función "tan" generalmente espera una entrada medida en radianes. Para convertir una medida de ángulo de grados a radianes, multiplica por (3.14159/180.0). Mira el ejemplo de código completo a continuación.
+Java
+C++
+NetworkTable
+table
+=
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+;
+NetworkTableEntry
+ty
+=
+table
+.
+getEntry
+(
+"ty"
+)
+;
+double
+targetOffsetAngle_Vertical
+=
+ty
+.
+getDouble
+(
+0.0
+)
+;
+// ¿cuántos grados hacia atrás está rotado tu limelight desde la posición perfectamente vertical?
+double
+limelightMountAngleDegrees
+=
+25.0
+;
+// distancia desde el centro de la lente del Limelight hasta el suelo
+double
+limelightLensHeightInches
+=
+20.0
+;
+// distancia desde el objetivo hasta el suelo
+double
+goalHeightInches
+=
+60.0
+;
+double
+angleToGoalDegrees
+=
+limelightMountAngleDegrees
++
+targetOffsetAngle_Vertical
+;
+double
+angleToGoalRadians
+=
+angleToGoalDegrees
+*
+(
+3.14159
+/
+180.0
+)
+;
+//calcular distancia
+double
+distanceFromLimelightToGoalInches
+=
+(
+goalHeightInches
+-
+limelightLensHeightInches
+)
+/
+Math
+.
+tan
+(
+angleToGoalRadians
+)
+;
+std
+::
+shared_ptr
+<
+NetworkTable
+>
+table
+=
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+;
+double
+targetOffsetAngle_Vertical
+=
+table
+->
+GetNumber
+(
+"ty"
+,
+0.0
+)
+;
+// ¿cuántos grados hacia atrás está rotado tu limelight desde la posición perfectamente vertical?
+double
+limelightMountAngleDegrees
+=
+25.0
+;
+// distancia desde el centro de la lente del Limelight hasta el suelo
+double
+limelightLensHeightInches
+=
+20.0
+;
+// distancia desde el objetivo hasta el suelo
+double
+goalHeightInches
+=
+60.0
+;
+double
+angleToGoalDegrees
+=
+limelightMountAngleDegrees
++
+targetOffsetAngle_Vertical
+;
+double
+angleToGoalRadians
+=
+angleToGoalDegrees
+*
+(
+3.14159
+/
+180.0
+)
+;
+//calcular distancia
+double
+distanceFromLimelightToGoalInches
+=
+(
+goalHeightInches
+-
+limelightLensHeightInches
+)
+/
+tan
+(
+angleToGoalRadians
+)
+;
+Cuando uses esta técnica, es importante elegir cuidadosamente el ángulo de montaje de tu cámara. Querrás poder ver el objetivo tanto cuando estés demasiado cerca como demasiado lejos. También no querrás que este ángulo cambie, así que móntalo de forma segura y evita usar ranuras en tu geometría de montaje.
+Si tienes problemas para averiguar cuál es el ángulo a1, también puedes usar la ecuación anterior para resolver a1. Simplemente coloca tu robot a una distancia conocida (midiendo desde la lente de tu cámara) y resuelve la misma ecuación para a1.
+En el caso de que tu objetivo esté casi a la misma altura que tu cámara, esta técnica no es útil.
+Usando el Área para Estimar la Distancia
+​
+Otra forma simple de estimar la distancia es usar el área del contorno que estás siguiendo. Este es un método muy simple de implementar, pero no te da resultados extremadamente precisos. Todo lo que haces es apuntar tu cámara de visión al objetivo desde una distancia conocida y tomar nota del área del blob. Asegúrate de que estás usando una representación precisa del objetivo de visión del campo real y asegúrate de que estás apuntando a él desde tu ubicación de disparo deseada. Luego puedes hacer esto desde algunas distancias diferentes y hacer una tabla con estos valores. En 2016 usamos este método para ajustar la puntería de nuestra torreta de 2 ejes basándonos en qué tan lejos estábamos de la meta.

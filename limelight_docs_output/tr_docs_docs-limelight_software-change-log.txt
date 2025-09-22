@@ -1,0 +1,708 @@
+Yazılım Değişiklik Günlüğü ve Geri Bildirim
+Sorunları ve özellik isteklerini e-posta ile veya
+Limelight Geri Bildirim Deposu
+üzerinden gönderin
+Limelight OS 2025.1 (FİNAL SÜRÜM - 24.02.25 TEST SÜRÜMÜ - 18.02.25)
+​
+24.02.25 - 2025.1 test sürümünde ortaya çıkan bağlantı sorunu düzeltildi.
+LL4 IMU Güncellemeleri
+​
+Geliştirilmiş IMU sensör füzyonu
+Titreşim ve FRC seviyesindeki darbelere karşı önemli ölçüde daha iyi performans. Füzyon yaklaşımında büyük değişiklikler.
+Yukarıdaki görüntü, bir FRC robotu ile oldukça şiddetli ~5 dakikalık bir antrenman seansının sonucunu göstermektedir. Bu seansta şunların yönlerini ölçtük:
+2025.0 çalıştıran bir Limelight 4 (llyawOLD)
+2025.1 çalıştıran bir Limelight 4 (llyaw)
+Bir Pigeon 2.0
+İki LL4 de aynı yönde monte edilmiştir. 2025.1 çalıştıran LL4'ün genel doğruluğundaki büyük iyileştirmeye dikkat edin.
+IMU Modu 3 - IMU_ASSIST_MT1 - Dahili IMU, sürekli yön düzeltmesi için filtrelenmiş MT1 sapma tahminlerini kullanacaktır
+IMU Modu 4 - IMU_ASSIST_EXTERNALIMU - Dahili IMU, sürekli yön düzeltmesi için harici IMU'yu kullanacaktır
+imuassistalpha_set NT Anahtarı eklendi (varsayılan 0.001) - Tamamlayıcı filtre alfa / güç. Daha yüksek değerler, dahili imu'nun yardım kaynağına daha hızlı yakınsamasına neden olacaktır
+Varsayılan değer düşük bir değer olan 0.001'e ayarlanmıştır çünkü artık dahili IMU'ya eskisinden daha fazla güveniyoruz. Yardım modları, dahili imu'yu hızlı hareketler sırasında dahili IMU'nun tepki verme yeteneğine zarar vermeden seçilen yardım kaynağına doğru çok nazikçe "çekmek" için tasarlanmıştır.
+LL4 Termal Performans Güncellemeleri
+​
+'throttle_set' eklendi. Her N atlanan kareden sonra bir kareyi işler. Örnek desenler:
+throttle_set=1: [atla, işle, atla, işle]
+throttle_set=2: [atla, atla, işle, atla, atla, işle]
+Çıktılar, atlanan karelerde sıfırlanmaz/sıfırlanmaz.
+LL4'ünüzün sıcaklığını yönetmek için devre dışı bırakıldığında bunu yüksek bir sayıya (50-200) ayarlayın.
+İsteğe bağlı olarak, bir pipeline'ı vizör olarak yapılandırabilir ve devre dışı bırakıldığında bu pipeline'a geçebilirsiniz.
+LL4 ve LL3G için Yeni FPS Seçenekleri
+​
+1280x800 çözünürlükte 60FPS, 55FPS, 45FPS ve 30FPS eklendi.
+Daha düşük yakalama hızlarını kullanmak, AC aydınlatma nedeniyle görüntü patlaması/nefes almasını önlemek için pozlama süresini artırmanıza olanak tanır.
+REST API Güncellemeleri
+​
+IMU Modu REST API eklendi - 'update-imumode'
+Throttle REST API eklendi - 'update-throttle'
+IMU ASSIST ALPHA REST API eklendi - 'update-imuassistalpha'
+FMap Güncellemeleri
+​
+FMap Json dosyaları artık isteğe bağlı olarak base64 kodlu bir SVG gömebilir
+FMap Json dosyaları artık isteğe bağlı olarak base64 kodlu bir PNG gömebilir
+ReefScape Sinir Ağları Yüklendi
+​
+B2 Hailo Modeli, FRC2025 için en iyi performans gösteren modelimizdir. LL4'e daha iyi uyum sağlamak için monokrom görüntülerle eğitilmiştir.
+LL3A Güncellemeleri
+​
+3A, 2025 güncellemeleriyle tam olarak desteklenmektedir
+Hata Düzeltmeleri
+​
+Dahili IMU'su olmayan Limelightlar imumode_set'i görmezden gelir
+Limelight 3G'ye yükseltilen Limelight 3'ler, dahili fanı düzgün şekilde kullanacaktır
+Hailo tabanlı Sinir Dedektörü pipeline'larında kırpma düzeltildi
+Hailo tabanlı AprilTag pipeline'larında kırpma düzeltildi
+Limelight OS 2025.0 (15.01.24)
+​
+LL4 Desteği
+​
+Hailo nesne algılama ve Hailo hızlandırmalı AprilTags desteği eklendi
+LL4'ün dahili IMU'su için destek eklendi
+"imumode_set" NT Anahtarı eklendi
+0 - Harici IMU kullan, dahili IMU'yu başlatma
+1 - Harici IMU kullan, dahili IMU'yu başlat
+2 - Dahili IMU kullan
+2025 Saha Güncellemeleri
+​
+Saha genişliği ve saha yüksekliği artık .fmap dosyalarının bir parçası
+Varsayılan .fmap, 2025 sahasına uyacak şekilde güncellendi
+Varsayılan saha görüntüsü güncellendi
+Çevrimiçi harita oluşturucu artık saha genişliği ve saha yüksekliğini yapılandırmanıza olanak tanır
+İndirme sayfasındaki 2025 fmap bağlantısı güncellendi.
+Hata Düzeltmeleri
+​
+"Tüm anlık görüntüleri sil" düğmesi düzeltildi
+Limelight OS 2024.10.2 (28.10.24)
+​
+Python Snapscript Düzeltmesi (TEŞEKKÜRLER - FTC TEAM 23251 TRIPLE FAULT)
+​
+Python Çıktıları, Limelight3A ile Control Hub kullanırken artık donmayacak
+Python Çıktıları, python pipeline'ları arasında geçiş yaparken artık donmayacak
+MT2 Uç Durum
+​
+https://github.com/LimelightVision/limelight-feedback/issues/23
+Bir robot olmadan MT2'yi test ederken, geometrik bir imkansızlık oluşturmak kolaydır.
+Bu uç durum, mt2 botpose'u sıfırlamazdı - kamera pozunu sıfırlardı.
+Bu uç durum tespit edildiğinde robot artık (0,0,0) konumuna yerleştirilir
+Statik IP Adresleme
+​
+https://github.com/LimelightVision/limelight-feedback/issues/25
+IP Adresi ayarlayıcısına, adres .1-.10 veya .20-.255 ile bitiyorsa, bu adreslerin FMS veya diğer cihazlarla çakışabileceğine dair bir uyarı eklendi
+2024.10.1'de, adresleme şeması "otomatik" olarak ayarlandığında UI bazen statik bir IP'nin yapılandırıldığını önerebilirdi
+STDDevs NetworkTables
+​
+https://github.com/LimelightVision/limelight-feedback/issues/24
+NetworkTables'daki "stddevs", mt1 ve mt2 için tüm stddevs'leri içerir (double array, 12 eleman)
+Model Yükleme Uç Durumu
+​
+Bir sınıflandırıcı modeli bir dedektör pipeline'ına yüklenirse, görüntüde "modeli kontrol et" görüntülenecektir
+Bir dedektör modeli bir sınıflandırıcı pipeline'ına yüklenirse, görüntüde "modeli kontrol et" görüntülenecektir
+Limelight OS 2024.10.1 (15.09.24)
+​
+Limelight 3A Güncellemeleri
+​
+Varsayılan renk dengesi değerleri güncellendi
+Varsayılan AprilTag boyutu yapılandırması 101.6 mm olarak güncellendi
+Varsayılan video akışı kare hızı 30FPS'ye düşürüldü
+Akış bit hızını azaltmak için video akışı sıkıştırması biraz artırıldı
+AprilTag Boyutu Uyarısı
+​
+Yapılandırılan AprilTag boyutu, yüklenen saha haritasındaki boyutlarla eşleşmiyorsa, saha uzayı görselleştiricisine bir uyarı eklendi.
+CameraPose_RobotSpace Hata Düzeltmesi
+​
+UI'nin yapılandırılmış Kamera Pozunu NetworkTables/LimelightLib/REST'ten geçersiz kılma işlemi tekrar düzgün çalışıyor.
+Limelight OS 2024.10 (04.09.24)
+​
+FTC için Limelight 3A Desteği
+​
+Limelight3A tam olarak desteklenmektedir
+3A hem FTC hem de FRC'de kullanılabilir
+AprilTag Harita Güncellemeleri
+​
+Harita düzenleyici artık standart ve elmas FTC harita oluşturmayı destekliyor
+LLOS web arayüzü, yüklenen haritaya göre doğru saha türünü otomatik olarak gösterecektir
+Araçlar ve arayüzler genelinde tüm saha görselleştiricileri, ittifak bölgelerini ve ftc karo ızgaralarını gösterir.
+3D görselleştirici performansı iyileştirildi.
+ControlHub ve RoboRio'da USB Limelight Desteği.
+​
+FTC takımları, Control Hub'da tek bir USB özellikli Limelight kullanabilir
+FRC takımları, RoboRio'da 16 adete kadar USB özellikli Limelight kullanabilir. USB limelightlar, ethernet limelightlar gibi networktables'ı otomatik olarak doldurur.
+Birden fazla USB Limelight kullanmak için, her LL'ye benzersiz bir USB indeksi ve benzersiz bir ana bilgisayar adı verin.
+USB Bağlantı Yükseltmeleri
+​
+MacOS artık internet erişimi için USB Ethernet Limelight arayüzünü kullanmıyor
+Windows artık internet erişimi için USB Ethernet Limelight arayüzünü kullanmaya çalışmıyor
+REST API Güncellemeleri
+​
+update-robotorientation POST isteği düzeltildi.
+MT2 artık NetworkTables olmadan tamamen erişilebilir.
+update-robotorientation rotası kullanıldıktan sonra, NetworkTables yönlendirme güncellemeleri yeniden başlatılana kadar devre dışı bırakılır.
+Limelight OS 2024.9.1 (07.07.24)
+​
+Harita Oluşturucu Aracı artık WPILib .json apriltag düzenlerini kabul ediyor/dönüştürüyor
+Python Snapscripts'e AprilTag3 eklendi (from apriltag import apriltag)
+Örnekler github deposunda örneğe bakın
+Windows'ta USB bağlantı ağ geçidi sorunu düzeltildi.
+Limelight OS 2024.9 (7/5/24)
+​
+MegaTag Yükseltmeleri
+​
+Limelight OS, NetworkTables 4.0'a geçiş yaptı
+MegaTag2 artık roboRIO'dan zaman damgalı IMU güncellemelerini almak için NT4'ün getAtomic() fonksiyonunu kullanıyor.
+Zaman damgalı görüntü karelerimiz, interpolasyon yapılmadan önce en ilgili iki IMU örneğiyle eşleştiriliyor.
+NT4 flush() LimelightLib'e eklendi. Flush() fonksiyonunu Limelight OS'un eski sürümlerine eklemek, 2024.9 performansına oldukça yaklaşmanızı sağlar, ancak NT4 doğruluğun her zaman yüksek olmasını garanti eder.
+MT2 görselleştirici robotu artık yeşil tamponlara sahip ve MT1'in görselleştirici robotu sarı tamponlar kullanıyor.
+Metrikler artık daraltılabilir ve sanal robotlar gizlenebilir.
+Aşağıdaki video, robot tarafında flush() kullanan 2024.9'un MegaTag 2'sinin (yeşil robot), Flush() kullanmayan 2024.5'in MegaTag2'sine (kırmızı robot) göre nasıl daha sağlam olduğunu gösteriyor
+USB ID ve Yeni USB IP Adresleri
+​
+Herhangi bir sistemde birden fazla USB Limelight kullanmak için ayarlar sayfasında "USB ID" ayarlayın.
+Sisteminizde görünen USB-Ethernet arayüzü, USB ID tarafından belirlenen bir IP adresi kullanacaktır
+Linux/Android/Mac Sistemleri artık varsayılan olarak 172.29.0.0/24 alt ağını kullanacak
+Windows sistemleri artık varsayılan olarak 172.28.0.0/24 alt ağını kullanacak.
+USBID ayarlanırsa, alt ağ Linux/Android/Mac için 172.29.(USBID).0/24'e ve Windows için 172.28.(USBID).0/24'e değişir.
+Artık, örneğin, ana bilgisayar adlarını ve USB ID'lerini ayarlayarak tek bir USB Hub'a dört Limelight cihazı bağlayabilirsiniz
+CPU Sinir Ağı Sınıflandırıcıları
+​
+Google Coral olmadan sinir ağı sınıflandırmasını etkinleştirmek için bir CPU .tflite sınıflandırıcısı yükleyin. LL3 varyantlarında 15-18 FPS bekleyebilirsiniz.
+2024.9, varsayılan bir CPU sınıflandırıcısı ile birlikte gelir.
+Bu özelliği etkinleştirmek için sınıflandırıcı çalışma zamanını "CPU" olarak ayarlayın
+CPU Sinir Ağı Dedektörleri
+​
+Google Coral olmadan sinir ağı tespitini etkinleştirmek için bir CPU .tflite dedektörü yükleyin. LL3 varyantlarında 10 FPS bekleyebilirsiniz.
+2024.9, varsayılan bir CPU dedektörü ile birlikte gelir.
+Bu özelliği etkinleştirmek için dedektör çalışma zamanını "CPU" olarak ayarlayın
+Limelight OS 2024.8 (7/3/24)
+​
+Json sonuç nesnesine python çıktısı (PythonOut), tx, ty, txnc, tync, ta eklendi
+MT2 gecikme telafisi daha da iyileştirildi
+Limelight OS 2024.7 (5/21/24)
+​
+Linux 6.6'ya yükseltme
+Hata Düzeltmeleri
+​
+Görüntü işleme hattı dönüşümü düzeltildi
+Kalibrasyon yüklemeleri, anlık görüntü yüklemeleri ve nn yüklemeleri düzeltildi
+Limelight OS 2024.6 (5/8/24)
+​
+LimelightLib Python
+​
+pip install limelightlib-python
+Python kütüphanemiz, herhangi bir platformda USB ve Ethernet Limelight'larla etkileşim kurmanıza olanak tanır.
+Web arayüzü etkileşimi olmadan tam Limelight yapılandırmasına izin verir.
+Pipeline'ları, sinir ağlarını, saha haritalarını vb. yükleyin
+İsteğe bağlı "diske kaydet" seçeneğiyle herhangi bir pipeline parametresinde gerçek zamanlı değişiklikler yapın
+Özel python giriş verilerini gönderin, robot yönelimini ayarlayın vb.
+MegaTag2 Yükseltmeleri
+​
+MegaTag2 Gyro gecikme telafisi iyileştirildi. Yakında daha fazla iyileştirme bekleyin!
+Arayüze "Gyro gecikme ayarı" kaydırıcısı eklendi. MegaTag 2 gecikme telafisini manuel olarak ayarlamak için, robotunuzu döndürebilir ve dönerken lokalizasyon sonuçları mükemmel olana kadar kaydırıcıyı ayarlayabilirsiniz.
+Standart Sapma Metrikleri
+​
+3D Saha görselleştirici artık MegaTag1 ve Megatag2 için x, y ve yaw standart sapmalarını içeriyor.
+Yeni "Odak" Pipeline Türü
+​
+"Odak" modundayken, bir akış kalitesi kaydırıcısına ve bir kırpma kutusu kaydırıcısına erişiminiz olacak
+"Odak" puanını maksimize etmek için lensi döndürün.
+Kameranız sabit bir konumdaysa, bu bir dakikadan az sürer. Sabit/monte edilmiş bir Limelight ile odaklanmanızı öneririz.
+Yeni "Barkodlar" Pipeline Türü
+​
+1280x800'de 50-60FPS Çoklu QR Kodu Algılama ve Çözme
+1280x800'de 50-60FPS Çoklu DataMatrix Algılama ve Çözme
+1280x800'de 30FPS Çoklu UPC, EAN, Code128 ve PDF417
+Barkod veri dizeleri "rawbarcodes" nt dizisine gönderilir.
+Barkodlar pipeline'ı, tx, ty, ta, tcornxy vb. gibi tüm 2D metrikleri doldurur.
+Tamamen Yeni REST API
+​
+https://docs.limelightvision.io/docs/docs-limelight/apis/rest-http-api
+REST / HTTP API'miz sıfırdan yeniden oluşturuldu.
+REST API, web arayüzü etkileşimi olmadan tam Limelight yapılandırmasına izin verir.
+Pipeline'ları, sinir ağlarını, saha haritalarını vb. yükleyin
+İsteğe bağlı "diske kaydet" seçeneğiyle herhangi bir pipeline parametresinde gerçek zamanlı değişiklikler yapın
+Python giriş verilerini gönderin, robot yönelimini ayarlayın vb.
+Kamera Yönlendirme Ayarını Arayüzden Kaldırma (KIRILMA DEĞİŞİKLİĞİ)
+​
+Bu, "akış yönlendirmesi" seçeneğiyle değiştirildi. Kalibrasyon ve hedefleme bu seçenekten asla etkilenmez.
+Yeni seçenek yalnızca akışı etkiler. Baş Aşağı, 90 Derece Saat Yönünde, 90 Derece Saat Yönünün Tersine, Yatay Ayna ve Dikey Ayna
+Takımların artık döndürülmüş kameralar kullanırken tx ve ty'yi gerektiği şekilde manuel olarak tersine çevirmeleri gerekecek.
+GRIP Desteğini Kaldırma (KIRILMA DEĞİŞİKLİĞİ)
+​
+"Sürücü" sıfır işleme modunu kaldırma (KIRILMA DEĞİŞİKLİĞİ)
+​
+Bu, "Vizör" pipeline türüyle değiştirildi
+"Vizör" Pipeline türü ekleme
+​
+Vizör pipeline'ı, minimum gecikme için tüm işlemeyi devre dışı bırakır
+Bu, takımların yalnızca görüntüleme modları için kendi "Sürücü" pipeline'larını tasarlamalarına olanak tanır
+Pipeline Dosyaları artık JSON formatını kullanıyor (KIRILMA DEĞİŞİKLİĞİ)
+​
+Pipeline'lar hala .vpr dosya uzantısını kullanır
+(2024.6'da bazı durumlarda bozuk) Arayüz, "yükle" düğmesini kullandığınızda pipeline'ları otomatik olarak JSON'a dönüştürür.
+(Tam işlevsel) Pipeline'larınızı yükseltmek için
+https://tools.limelightvision.io/pipeline-upgrade
+adresini de kullanabilirsiniz
+Kalibrasyon Kullanıcı Deneyimi İyileştirmesi
+​
+Kalibrasyon ayarları artık önbelleğe alınıyor. Kalibrasyon yapmak istediğinizde her seferinde kalibrasyon ayarlarınızı girmeniz gerekmiyor.
+Varsayılan kalibrasyon sözlüğü, Calib.io'dan önerilen 800x600mm kaba tahta ile çalışacak şekilde güncellendi.
+Kalibrasyon Mozaiği
+​
+Daha önce, kalibrasyon görüntülerinin kalitesini belirlemek zordu
+Kalibrasyon sekmesinde artık bir "Kalibrasyon Mozaiğini İndir" düğmesi var. Mozaik, her bir görüntünün kalibrasyonunuza tam olarak ne katkıda bulunduğunu gösterecektir.
+"Ağırlık Merkezi" hedefleme bölgesi
+​
+Renk pipeline'larıyla nesne izlemeyi iyileştirmek için "Çıktı" sekmesine ağırlık merkezi hedefleme modu eklendi
+Dinamik 3D Ofset (NT: fiducial_offset_set)
+​
+Artık pipeline'ları değiştirmeden 3D Ofset'i ayarlamak mümkün. Bu, "hedef noktanızın" mesafeye veya diğer özelliklere bağlı olarak değişmesi gereken durumlar için kullanışlıdır.
+Modbus Desteği Ekleme
+​
+Limelight OS artık denetim, lojistik ve endüstriyel uygulamalar için her zaman açık bir modbus sunucusuna sahip
+Modbus kayıt özelliklerini burada görebilirsiniz:
+https://docs.limelightvision.io/docs/docs-limelight/apis/modbus
+Varsayılan modbus sunucu portu arayüzün ayarlar sekmesinden değiştirilebilir
+Modbus ve snapscript python pipeline'ları sayesinde, çift yönlü iletişime sahip tamamen özel görüntü uygulamaları artık destekleniyor.
+Özel NT sunucusu
+​
+Ayarlar sekmesi artık özel bir NT sunucusu için bir giriş içeriyor.
+Bu, bir PC üzerinde çalışan bir cam NT sunucusunu ve USB üzerinden iletişim kuran Limelight 3G'yi içeren yeni bir iş akışını etkinleştirir.
+Rawfiducial değişiklikleri
+​
+Ham fiducial'ların "alan" değeri artık ~0-1 aralığında kalibre edilmiş, normalleştirilmiş bir değerdir
+Tüm NetworkTables ve JSON Değişiklikleri
+​
+NT getpipetype eklendi - Mevcut pipeline türü dizesini alın (örn. pipe_color, pipe_fiducial)
+NT tcclass eklendi - Sınıflandırıcı pipeline'ı tarafından algılanan sınıf adı
+NT tdclass eklendi - Dedektör pipeline'ı tarafından algılanan sınıf adı
+Garantili atomik 2d hedefleme için NT t2d eklendi - [valid,targetcount, targetlatency, capturelatency, tx, ty, txnc, tync, ta, targetid, classifierID, detectorID, tlong, tshort, thor, tvert, ts(skew)]
+NT tlong, tshort, thor, tvert ve ts kaldırıldı
+NT 'crosshairs' dizisi eklendi [cx0,cy0,cx1,cy1]
+NT cx0, cy0, cx1 ve cy1 kaldırıldı
+NT rawbarcodes eklendi - Barkod verilerinin NT String Dizisi. 32 girişe kadar.
+Tüm "raw" diziler 32 hedefe kadar izin verir (8'den yükseltildi)
+fiducial_offset_set dinamik 3d Ofset ayarlayıcı eklendi
+JSON üst düzey sonuca "pType" eklendi
+JSON üst düzey sonuca "stdev_mt1" ve "stdev_mt2" eklendi (x,y,z,roll,pitch,yaw) (metre, derece)
+Diğer Dosya Formatları ve JSON Dökümlerindeki Değişiklikler
+​
+Kalibrasyon dosya formatı basitleştirildi. Eski kalibrasyonlar yükleme sırasında otomatik olarak yeni formata dönüştürülür
+Sonuçlar ve Durum JSON dökümlerinden bir iç içe geçme katmanı kaldırıldı
+Hata Düzeltmeleri
+​
+Daha önce, bir Sinir pipeline'ı aktifken bir Google Coral çıkarılırsa, pipeline kalıcı olarak "renk/retro" moduna geri dönerdi
+Artık, "CORAL KONTROL ET" veya "MODEL KONTROL ET" görüntüye yazdırılacak. Pipeline türü asla değişmeyecek
+Daha önce, fiducial ID filtresinden başarıyla geçen etiketler bazen yeşil çizgi yerine kırmızı çizgiyle çiziliyordu. Bu görselleştirme sorunu düzeltildi.
+Apriltag pipeline'ları tcornxy NT dizisini doldurur
+Apriltag pipeline'ları artık min-max alan kaydırıcısına tam olarak uyuyor. Daha önce, AprilTag pipeline'ları 2D sonuçları Etiket Alanına göre filtrelerdi, ancak 3D / Lokalizasyon Sonuçlar ını filtrelemezdi.
+Limelight OS 2024.5.0 (9/4/24)
+​
+Linux 6.1'e yükseltme
+Kamera Yığını Güncellemesi
+​
+Limelight3G'deki kamera çevre birimi kilitlenmesini düzeltmek için tüm kamera yığını güncellendi.
+Belirtiler şunları içerir
+Bu güncellemeyi uyguladıktan sonra pozlama ve kazanç ayarlarını yeniden ayarladığınızdan emin olun.
+Dinamik Ölçek Küçültme
+​
+Takımlar artık mevcut pipeline'ın ölçek küçültme ayarını geçersiz kılmak için "fiducial_downscale_set" ayarlayabilir
+0
+:UI
+kontrolü, 1:1x, 2:1.5x, 3:2x, 4:3x, 5:4x
+Yeni Helpers yöntemini 0.0 (UI Kontrolü), 1.0, 1.5, 2.0, 3.0, 4.0 ile kullanın
+Bu, sıfır ek yük gerektiren bir işlemdir.
+Dinamik ölçek küçültme ve dinamik kırpma birleştirilerek, takımlar birden fazla pipeline yönetmeden FPS'yi maksimize edebilir
+MegaTag2 İyileştirmeleri
+​
+MT2 artık 90 derece ve -90 derece yuvarlanmalı "portre" modları dahil olmak üzere Limelight yönelimi ne olursa olsun çalışır
+"rawdetections" nt dizisi
+​
+[classID, txnc, tync, ta, corner0x, corner0y, corner1x, corner2y, corner3x, corner3y, corner4x, corner4y]
+köşeler, kalibrasyon uygulanmadan piksel alanındadır
+Aşındırma/Genişletme Güncellemesi
+​
+Renk pipeline'ları artık 10 adıma kadar genişletme ve 10 adıma kadar aşındırma destekliyor
+Renk pipeline'larında artık genişletme ve aşındırma adımlarının sırasını tersine çevirmek için bir "ters morfo" seçeneği var
+LimelightLib 1.6 (9/4/24)
+​
+void SetFiducialDownscalingOverride(float downscale) eklendi
+Pipeline kontrolü için 0 olarak ayarlayın veya pipeline'ınızın ölçek küçültme ayarını geçersiz kılmak için aşağıdakilerden birini kullanın:
+1, 1.5, 2, 3, 4
+RawFiducial[] GetRawFiducials() eklendi
+RawDetection[] GetRawDetections() eklendi
+Limelight OS 2024.4.0 (4/3/24)
+​
+Bu güncellemeye fikirlerini sunan tüm takımlara teşekkür ederiz.
+Megatag 2
+​
+Megatag 2, belirsizlik içermeyen bir konumlandırıcıdır. Megatag1'den daha yüksek doğruluk ve hassasiyete sahiptir ve aşağıdaki gereksinimlerle oluşturulmuştur:
+Poz belirsizliği sorununu ortadan kaldırmak ve görüntü/köşe gürültüsüne karşı dayanıklılığı artırmak.
+Perspektif ne olursa olsun, bir veya daha fazla etiket verildiğinde mükemmel poz tahminleri sağlamak.
+Fiziksel AprilTag yerleşim hatalarına karşı dayanıklılığı artırmak
+İyi poz tahmini sonuçları için gerekli robot tarafındaki filtreleme miktarını azaltmak
+Bu oldukça belirsiz tek etiketli durumda MegaTag2 (kırmızı robot) ile Megatag (mavi robot) arasındaki farka dikkat edin:
+Megatag2, robotunuzun yönünü yeni bir metot çağrısıyla ayarlamanızı gerektirir. İşte tam bir örnek:
+LimelightHelpers
+.
+SetRobotOrientation
+(
+"limelight"
+,
+m_poseEstimator
+.
+getEstimatedPosition
+(
+)
+.
+getRotation
+(
+)
+.
+getDegrees
+(
+)
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+)
+;
+LimelightHelpers
+.
+PoseEstimate
+mt2
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+"limelight"
+)
+;
+if
+(
+Math
+.
+abs
+(
+m_gyro
+.
+getRate
+(
+)
+)
+>
+720
+)
+// açısal hızımız saniyede 720 dereceden fazlaysa, görüş güncellemelerini yoksay
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt2
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+!
+doRejectUpdate
+)
+{
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.6
+,
+.6
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+mt2
+.
+pose
+,
+mt2
+.
+timestampSeconds
+)
+;
+}
+Megatag2, tek bir etiket verildiğinde herhangi bir mesafede mükemmel, belirsizlik içermeyen sonuçlar sağlar.
+Bu, yalnızca ilgili ve istediğiniz yerleştirme toleransı dahilindeki etiketlere odaklanmanın tamamen uygun olduğu anlamına gelir.
+Bir etiket doğru konumda değilse veya ilgisizse, yeni dinamik filtre özelliğiyle filtreleyebilirsiniz.
+Dinamik Apriltag Filtreleme
+​
+MegaTag2 mümkün olduğunca çok AprilTag toplamak için çaresiz olmadığından, iyi yerleştirilmiş ve ilgili etiketleri güvenle filtreleyebilirsiniz:
+int
+[
+]
+validIDs
+=
+{
+3
+,
+4
+}
+;
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+"limelight"
+,
+validIDs
+)
+;
+MegaTag2'ye Geçiş
+​
+Megatag2'nin düzgün çalışması için robotunuzun yönünü bilmesi gerekir. 0 derece, 360 derece, 720 derece vb. bir yön, robotunuzun kırmızı ittifak duvarına baktığı anlamına gelir.
+Bu, PathPlanner, Chorero, Botpose ve Botpose_wpiblue'da kullanılan aynı kuraldır.
+Kodunuza SetRobotOrientation() ekledikten sonra, yerleşik 3D görselleştiriciyi kontrol edin. Yakın mesafede, Megatag2 ve Megatag1 tam olarak olmasa da yakından eşleşmelidir. Uzun mesafede, Megatag 2 (kırmızı robot) Megatag1'den (mavi robot) daha doğru ve daha kararlı olmalıdır.
+Yerleşik görselleştirici iyi sonuçlar gösterdiğinde, otonom dönemde robotunuzu yönlendirmek için Megatag2'yi güvenle kullanabilirsiniz.
+Eklemenizi önerdiğimiz tek filtre "maksimum açısal hız" filtresidir. Yüksek açısal hızlarda poz tahminlerinizin biraz daha az güvenilir hale geldiğini görebilirsiniz.
+Örnekler deposunda bu filtreye sahip bir Megatag2 örneği bulunmaktadır.
+if
+(
+Math
+.
+abs
+(
+m_gyro
+.
+getRate
+(
+)
+)
+>
+720
+)
+// açısal hızımız saniyede 720 dereceden fazlaysa, görüş güncellemelerini yoksay
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt2
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+LimelightLib 1.5 (4/3/24)
+​
+Ekle
+getBotPoseEstimate_wpiRed_MegaTag2()
+getBotPoseEstimate_wpiBlue_MegaTag2()
+SetRobotOrientation()
+Limelight OS 2024.3.4 (3/20/24)
+​
+Bu güncellemeye fikirlerini sunan tüm takımlara teşekkür ederiz.
+Daha Yüksek Hassasiyetli Tek Etiket Çözücü
+​
+MegaTag'in tek etiketli 3D çözücüsü geliştirildi. Uzun mesafede eskisinden çok daha kararlı.
+JSON Varsayılan Olarak Devre Dışı (Önemli Değişiklik)
+​
+JSON, bant genişliği kullanımını azaltmak ve Shuffleboard gibi otomatik abone olan gösterge panellerini kullanan takımlar için varsayılan olarak devre dışı bırakılmıştır.
+Bu ayrıca RoboRIO NT yükünü ve CPU kullanımını da azaltmalıdır.
+Çıktı sekmesinde her pipeline için JSON'u yeniden etkinleştirin.
+Bu güncelleme, daha fazla takımın poz tahmini için JSON'dan uzaklaşmasına olanak tanıyacak değişiklikleri içerir.
+Bozulması Giderilmiş Alan (Önemli Değişiklik)
+​
+Herhangi bir hedefin alanını hesaplamadan önce köşelerin bozulması giderilir.
+botpose, botpose_wpiblue ve botpose_wpired'e Fiducial Başına Metrikleri Dahil Et
+​
+[tx, ty, tz, roll, pitch, yaw, tagCount, tagSpan (metre), averageDistance (metre), averageArea (görüntünün yüzdesi), (etiketler) ]
+Megatag konumlandırma tarafından kullanılan her etiket için, yukarıdaki diziler artık (tagID, txnc, tync, ta, distanceToCamera, distanceToRobot, ambiguity) içerir.
+Belirsizlik, etiketin mevcut perspektifinin belirsizliğini gösteren 0-1 arasında yeni bir metriktir. Belirsizliği > .9 olan tek etiketli güncellemeler muhtemelen reddedilmelidir.
+"rawtargets" ve "rawfiducials" nt dizileri (Önemli Değişiklik)
+​
+rawtargets - hedef başına (txnc,tync,ta)
+rawfiducials - hedef başına (tagID, txnc, tync, ta, distanceToCamera, distanceToRobot, ambiguity)
+Önceki rawtargets NT girişleri (tx0,ty0, vb.) kaldırılmıştır.
+Hata Düzeltmeleri
+​
+priorityID bulunmadıysa tüm tek etiketli 3D bilgilerini sıfırla. Daha önce, priorityTag bulunmadığında yalnızca Tx, Ta, Ty ve Tv sıfırlanıyordu
+UI'nin "ID Filtreleri" özellikleri tarafından filtrelenen tek görünür etiket varsa botpose'u sıfırla. Daha önce, tek görünür etiket filtrelenmiş bir etiketse, botpose'lar (0,0,0) yerine sahanın merkezine sıfırlanıyordu;
+2024.2, bazı nadir durumlarda belirli networktables girişlerine NAN'lar gönderiyordu. Bu artık olmayacak.
+LimelightLib 1.4 (3/21/24)
+​
+2024.3.4 Raw Fiducials desteği eklendi. PoseEstimates artık id, txnc, tync, ta, distanceToCamera, distanceToRobot ve ambiguity içeren rawFiducials dizisini içeriyor
+Limelight Hardware Manager 1.4 (3/18/24)
+​
+Hata Düzeltmesi
+​
+Keşfedilen USB Limelight'lar iki kısmi giriş yerine tek bir giriş olarak düzgün şekilde görüntüleniyor.
+Limelight OS 2024.2.2 (3/17/24)
+​
+Hata Düzeltmesi
+​
+TX ve TY, NT girişlerinde artı işaretine uygun şekilde çalışıyor.
+Limelight OS 2024.2 (3/8/24)
+​
+Json (tx_nocross, ty_nocross) ve NT (txnc, tync) ile Sıfır-Artı hedefleme
+​
+Özel içsel kalibrasyon ile tx/ty hedefleme kullanıyorsanız, Limelight artı işareti kameranın ana pikseli ile hizalanmadığı için muhtemelen hala kameradan kameraya değişiklik görüyorsunuz. Daha büyük tx/ty doğruluğu gerektiren takımlar ya artı işaretini ana pikselle eşleşecek şekilde yapılandırabilir ya da bu yeni metrikleri kullanabilir.
+tx/ty'de potansiyel olarak önemli değişiklik
+​
+Bu sezon başlarında, özellikle json'daki tx, ty ve tx + ty için özel kalibrasyonu bozan bir hata oluştu. Limelight OS birçok durumda varsayılan kalibrasyonlara geri dönüyordu.
+Kalibrasyon Yükseltmeleri
+​
+Kalibrasyon artık kaç görüntü yakalanmış olursa olsun neredeyse anında gerçekleşiyor. Ayrıca, belirli koşullar altında yaklaşık 30'dan fazla görüntüye sahip olmanın neden olduğu bir çökmeyi de düzelttik.
+Kağıt hedeflerle 15-20 görüntüyle yaklaşık 1 piksellik bir yeniden projeksiyon hatası ve yüksek kaliteli calib.io hedeflerimizle .3 piksellik bir hata elde ediyoruz.
+Fiducial Filtreler UI Düzeltmesi
+​
+Fiducial filtre metin kutusu artık herhangi bir sayıda filtreyi kabul ediyor.
+Çeşitli
+​
+Apriltag Üreteci, 165.1 mm etiketlerle ölçeklendirmeyi önlemek için varsayılan olarak "kenarlık yok" ayarına sahiptir.
+Limelight OS 2024.1.1 (2/24/24)
+​
+priorityID düzeltildi
+Limelight OS 2024.1 (24.02.2024)
+​
+HW Metrikleri (networktables'da hw anahtarı, /status GET isteği)
+​
+Takımlar artık FPS, CPU Yükü, RAM kullanımı ve CPU Sıcaklığını kaydedebilirler.
+https://github.com/LimelightVision/limelight-feedback/issues/5
+adresindeki sorunu çözüyor.
+Kalibrasyon İyileştirmesi
+​
+Bir kalibrasyon görüntüsü tam olarak bir geçerli algılama içerdiğinde oluşabilecek çökme düzeltildi. Web arayüzü geri bildirimi iyileştirildi.
+Robot Lokalizasyon İyileştirmesi (etiket sayısı ve daha fazlası)
+​
+Tüm networktables botpose dizileri (botpose, botpose_wpiblue ve botpose_wpired) artık Etiket Sayısı, Etiket Aralığı (metre), Ortalama Mesafe (metre) ve Ortalama Alan (görüntünün yüzdesi) içeriyor.
+Bu metrikler, yüklenen saha haritasında bulunan etiketlerle hesaplanır. Özel ve/veya mobil AprilTag'ler bu metrikleri etkilemez.
+Cihaz kalibrasyonu ve bu botpose dizisi yükseltmesiyle, bu yıl kullanım durumlarının büyük çoğunluğu için JSON'un gerekli olmadığına inanıyoruz.
+JSON dökümü artık kolaylık için botpose_avgarea, botpose_avgdist, botpose_span ve botpose_tagcount içeriyor.
+[tx,ty,tz,rx,ry,rz,latency,tagcount,tagspan,avgdist,avgarea]
+Yeni Özellik: Öncelikli ID (NT Anahtarı priorityid)
+​
+Robotunuz hem odometri tabanlı özellikleri hem de tx/ty tabanlı özellikleri kullanıyorsa, muhtemelen aşağıdaki kullanıcı deneyimi sorunuyla karşılaşmışsınızdır:
+Bu güncellemeden önce, tx/ty hedefleme için tercih edilen etiket kimliğini kolayca değiştirmenin bir yolu yoktu.
+Arayüzde bir ID filtresi olmasına rağmen, bu filtre:
+dinamik değil
+etiketleri megaTag lokalizasyonundan kaldırıyor.
+Bu, takımların birkaç pipeline oluşturması gerektiği anlamına geliyordu: 3D lokalizasyon için bir tane ve tx/ty etiketi başına bir tane (etiket 7 ile mavi taraf atış için bir pipeline, etiket 6 ile mavi taraf amplifikasyon için bir pipeline, vb.).
+Yeni öncelikli ID özelliği (NT Anahtarı priorityid), Limelight'ınıza "Tüm etiket algılama, filtreleme ve sıralama tamamlandıktan sonra, öncelikli ID ile eşleşen etikete odaklan" demenize olanak tanır.
+Bu, lokalizasyonu hiçbir şekilde etkilemez ve JSON sonuçlarındaki etiketlerin sırasını sadece biraz değiştirir.
+Öncelikli kimliğiniz -1 değilse, seçilen etiket görünür olmadığı sürece tx/ty/ta 0 değerini döndürür.
+Çeşitli
+​
+3D apriltag pipeline'ında çift hedef modunu kullanırken ekran boyunca "x" sorunu düzeltildi
+REST API, sinir ağı etiket yüklemeleriyle genişletildi (/uploadlabels)
+/status json'a cihaz takma adı eklendi
+LimelightLib 1.3
+​
+LimelightLib (Java ve CPP), lokalizasyonu her zamankinden daha kolay hale getirmek için güncellendi.
+LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+if(limelightMeasurement.tagCount >= 2)
+{
+m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+m_poseEstimator.addVisionMeasurement(
+limelightMeasurement.pose,
+limelightMeasurement.timestampSeconds);
+}
+Takımlar için Yeni Kaynaklar
+​
+Limelight Geri Bildirim ve Sorun Takipçisi:
+https://github.com/LimelightVision/limelight-feedback/issues
+​
+Örnekler Deposu:
+https://github.com/LimelightVision/limelight-examples
+​
+Swerve ile Hedefleme ve Mesafe Ölçme Örneği:
+https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-swerve-aiming-and-ranging
+​
+MegaTag Lokalizasyon Örneği:
+https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-swerve-pose-estimation
+​
+Son katkıda bulunanlara teşekkürler: jasondaming, Gold876, JosephTLockwood, Andrew Gasser ve virtuald
+Limelight 2024 Güncellemeleri (06.02.2024)
+Limelight Dokümantasyon Yükseltmesi
+​
+Dokümantasyon
+kurulum sürecini kolaylaştırmak için yeniden yazıldı
+Limelight AprilTag Oluşturucu
+​
+https://tools.limelightvision.io/
+artık ilk çevrimiçi AprilTag oluşturucusunu sunuyor.
+Yazdırılabilir bir PDF oluşturmak için kağıt boyutunuzu, işaretleyici boyutunuzu ve etiket kimliklerinizi seçin.
+Safari şu anda etiketleri düzgün görüntülemeyebilir.
+Limelight Harita Oluşturucu
+​
+https://tools.limelightvision.io/map-builder
+Artık sezgisel bir kullanıcı arayüzü ile özel AprilTag haritaları oluşturabilirsiniz.
+Varsayılan aile ve etiket boyutu, 2024 sahasına uyacak şekilde güncellendi.
+Yeni Donanım Yöneticisi
+​
+Bulucu Aracı artık Limelight Donanım Yöneticisi oldu
+Sıfırdan yeniden yazıldı. Artık Limelight'ları güvenilir bir şekilde algılıyor, daha kullanışlı tanılama bilgileri sağlıyor ve düzgün çalışması için yeniden başlatma gerektirmiyor.
+İndirme sayfasından
+hemen edinin
+Kendi Sinir Ağlarınızı Eğitin
+​
+RoboFlow,
+Limelight Dedektör Eğitim Defteri
+ve yeni
+öğreticimiz
+ile kendi algılama modellerinizi ücretsiz olarak eğitebilirsiniz
+2024 AprilTag Haritası ve Not Dedektörü
+​
+Harita ve dedektör modeli, indirme sayfasına ve en son Limelight OS görüntüsüne eklendi.
+Limelight OS 2024.0 (06.02.2024)
+​
+ChArUco Kalibrasyon Düzeltmeleri
+​
+ChArUco dedektörümüzün alt piksel doğruluğu artırıldı. Pano hedefleri ve 20 görüntü ile 1-2 piksellik bir yeniden projeksiyon hatası artık elde edilebilir.
+Aynı kamera ve aynı hedefi kullanarak, 2023.6 20 piksellik bir RPE elde ederken, 2024.0 1.14 piksellik bir RPE elde etti.
+Giriş alanları artık harfleri ve özel karakterleri kabul etmiyor. Bu, çökme potansiyelini ortadan kaldırır.
+Kutudan Çıkar Çıkmaz Megatag Doğruluk İyileştirmesi
+​
+Bu güncellemeden önce, Limelight'ın dahili Megatag harita oluşturucusu, .fmap dosyası tarafından sağlanan etiket boyutları yerine kullanıcı arayüzündeki etiket boyutu kaydırıcısını referans alıyordu.
+Megatag artık fmap dosyalarında yapılandırılan etiket boyutlarına saygı gösteriyor ve boyut kaydırıcısını görmezden geliyor.
+Boyut kaydırıcınız 165.1 mm'ye ayarlanmamışsa, lokalizasyon doğruluğunda anında bir iyileşme fark edeceksiniz
+Performans Yükseltmeleri ve Hata Düzeltmeleri
+​
+Daha yüksek FPS AprilTag pipeline'ları
+Saha Uzayı Görselleştiricisinin performansı önemli ölçüde iyileştirildi.
+Hata Düzeltmeleri
+​
+3D görselleştiricilerdeki Apriltag'ler bazen yanlış veya bozuk etiket görüntüleriyle çiziliyordu. Etiketler artık her zaman doğru görüntüleniyor.
+"v" / tv / "valid" artık yalnızca geçerli algılamalar varsa "1" döndürecek. Daha önce, tv her zaman "1" idi

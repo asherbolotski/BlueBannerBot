@@ -1,0 +1,26 @@
+Posicionamiento a la Distancia Correcta
+Los robots de FRC a menudo necesitan estar posicionados a una distancia específica de un objetivo de puntuación para que su mecanismo de puntuación funcione correctamente. Puedes usar un simple bucle de control proporcional junto con la mira calibrada de limelight para hacer que tu robot se desplace fácilmente a una distancia específica del objetivo.
+Para este ejemplo, debes asegurarte de que tu robot esté apuntando al objetivo. Más adelante combinaremos la orientación y el ajuste de distancia en una sola función, pero en este ejemplo nos enfocamos únicamente en el código que lleva al robot a la distancia correcta.
+Similar al ejemplo de orientación, aquí mostramos una función que puede ejecutarse en el bucle de actualización de tu robot.
+float KpDistance = -0.1f;  // Constante de control proporcional para distancia
+float current_distance = Estimate_Distance();  // ver el 'Caso de Estudio: Estimando Distancia'
+if (joystick->GetRawButton(9))
+{
+float distance_error = desired_distance - current_distance;
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+Con algo de ajuste en la configuración de KpDistance, tu robot debería desplazarse rápida y precisamente a la distancia deseada. En comparación con la orientación, conducir a la distancia correcta suele ser más fácil porque la mayoría de los robots avanzan y retroceden con mucha más facilidad de lo que giran en su sitio.
+A continuación, describiremos un truco simple para hacer que conducir a la distancia correcta sea aún más fácil. En lugar de calcular realmente la distancia, puedes usar la mira de limelight. Simplemente posiciona tu robot a la distancia ideal del objetivo y calibra la posición y de la mira. Ahora tu ángulo y se reportará como 0.0 cuando tu robot esté a la distancia correcta. Usando este truco, nunca tendrás que calcular la distancia real y tu código puede verse algo así:
+float KpDistance = -0.1f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float distance_error = table->GetNumber("ty");
+if (joystick->GetRawButton(9))
+{
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+Si necesitas cambiar la distancia de disparo, simplemente mueve tu robot a la nueva distancia y recalibra la mira de limelight.
+Aquí hay un ejemplo de un robot usando la idea anterior. Observa cómo retrocede automáticamente hasta el rango correcto cuando el conductor deja de conducir y presiona el botón de "apuntar":

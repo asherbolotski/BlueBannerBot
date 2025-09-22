@@ -1,0 +1,26 @@
+进入射程
+FRC机器人通常需要定位在距离得分目标的特定距离，以便其得分机构能够良好工作。您可以使用简单的比例控制循环以及limelight的校准十字准线，非常容易地让您的机器人驱动到距离目标的特定距离。
+对于这个例子，您应该确保您的机器人对准目标。稍后我们将把瞄准和距离调整合并为一个功能，但在这个例子中，我们只关注驱动机器人到正确距离的代码。
+与瞄准示例类似，这里我们展示了一个可以在机器人更新循环中运行的函数。
+float KpDistance = -0.1f;  // 距离的比例控制常数
+float current_distance = Estimate_Distance();  // 参见"案例研究：估计距离"
+if (joystick->GetRawButton(9))
+{
+float distance_error = desired_distance - current_distance;
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+通过对KpDistance设置进行一些调整，您的机器人应该能够非常快速准确地驱动到所需距离。与瞄准相比，驱动到正确距离通常更容易，因为大多数机器人前进和后退比原地转弯容易得多。
+接下来我们将描述一个简单的技巧，使驱动到正确距离变得更加容易。您可以使用limelight十字准线，而不是实际计算距离。只需将您的机器人定位在您理想的距离，然后校准十字准线的y位置。现在，当您的机器人处于正确距离时，您的y角度将报告为0.0。使用这个技巧，您不必实际计算实际距离，您的代码可以看起来像这样：
+float KpDistance = -0.1f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float distance_error = table->GetNumber("ty");
+if (joystick->GetRawButton(9))
+{
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+如果您需要更改射击距离，只需将机器人移动到新的距离并重新校准limelight十字准线。
+这是一个使用上述想法的机器人示例。注意当驾驶员停止驾驶并按下"瞄准"按钮时，它如何自动后退到正确的范围：

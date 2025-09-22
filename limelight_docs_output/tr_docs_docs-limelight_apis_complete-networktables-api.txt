@@ -1,0 +1,448 @@
+NetworkTables API
+Limelight OS, FRC Robotlarında çalışan NetworkTables 4 Sunucusuna, Ayarlar Arayüzünde yapılandırılan Takım Numarası / Kimliğine göre otomatik olarak bağlanan bir NetworkTables 4 İstemcisi içerir.
+Tüm veriler, cihaz adıyla eşleşen bir tabloya yayınlanır (örn. "limelight"). Kameranıza bir ana bilgisayar adı / takma ad atanmışsa, tablo adı tam limelight adıyla eşleşecektir (örn. "limelight-top").
+LimelightLib WPIJava ve LimelightLib WPICPP, NetworkTables aracılığıyla Limelight cihazlarıyla etkileşim kurar.
+Temel Hedefleme Verileri
+​
+Aşağıdaki kodu kullanın:
+Java
+LabView
+C++
+Python
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"<variablename>"
+)
+.
+getDouble
+(
+0
+)
+;
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+->
+GetNumber
+(
+"<variablename>"
+,
+0.0
+)
+;
+NetworkTables
+.
+getTable
+(
+"limelight"
+)
+.
+getNumber
+(
+'<variablename>'
+)
+;
+bu verileri almak için:
+anahtar
+tür
+açıklama
+tv
+int
+Geçerli hedef varsa 1. Geçerli hedef yoksa 0
+tx
+double
+Artı İşaretinden Hedefe Yatay Ofset (LL1: -27 derece ile 27 derece arası / LL2: -29.8 ile 29.8 derece arası)
+ty
+double
+Artı İşaretinden Hedefe Dikey Ofset (LL1: -20.5 derece ile 20.5 derece arası / LL2: -24.85 ile 24.85 derece arası)
+txnc
+double
+Ana Pikselden Hedefe Yatay Ofset (derece)
+tync
+double
+Ana Pikselden Hedefe Dikey Ofset (derece)
+ta
+double
+Hedef Alanı (görüntünün %0'ından %100'üne)
+tl
+double
+İşlem hattının gecikme katkısı (ms). Toplam gecikmeyi elde etmek için "cl"ye ekleyin.
+cl
+double
+Yakalama işlem hattı gecikmesi (ms). Sensörün orta satırının pozlamasının sonundan izleme işlem hattının başlangıcına kadar geçen süre.
+t2d
+double
+Eşleştirilmiş zaman damgalı istatistikler için birkaç değer içeren dizi: [targetValid, targetCount, targetLatency, captureLatency, tx, ty, txnc, tync, ta, tid, targetClassIndexDetector , targetClassIndexClassifier, targetLongSidePixels, targetShortSidePixels, targetHorizontalExtentPixels, targetVerticalExtentPixels, targetSkewDegrees]
+getpipe
+int
+Kameranın gerçek aktif işlem hattı indeksi (0 .. 9)
+getpipetype
+string
+İşlem Hattı Türü örn. "pipe_color"
+json
+string
+Hedefleme sonuçlarının tam JSON dökümü. 'Çıktı' sekmesinde işlem hattı başına etkinleştirilmelidir
+tclass
+string
+Birincil sinir dedektörü sonucunun veya sinir sınıflandırıcı sonucunun sınıf adı
+tc
+doubleArray
+Artı işareti bölgesinin altındaki ortalama HSV rengini (3x3 piksel bölgesi) bir NumberArray olarak alın
+hb
+double
+Kalp atışı değeri. Her karede bir artar, 2 milyarda sıfırlanır
+hw
+doubleArray
+Donanım metrikleri [fps, cpu sıcaklığı, ram kullanımı, sıcaklık]
+crosshairs
+doubleArray
+2B Artı İşaretleri [cx0, cy0, cx1, cy1]
+tcclass
+string
+Sınıflandırıcı işlem hattının hesaplanan sınıfının adı
+tdclass
+string
+Dedektör işlem hattının birincil tespitinin adı
+AprilTag ve 3D Veriler
+​
+Aşağıdaki kodu kullanın:
+Java
+C++
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"<variablename>"
+)
+.
+getDoubleArray
+(
+new
+double
+[
+6
+]
+)
+;
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+->
+GetNumberArray
+(
+"<variablename>"
+,
+std
+::
+vector
+<
+double
+>
+(
+6
+)
+)
+;
+bu verileri almak için:
+anahtar
+tür
+açıklama
+botpose
+doubleArray
+Saha uzayında robot dönüşümü. Çeviri (X,Y,Z) metre cinsinden, Dönüş (Roll,Pitch,Yaw) derece cinsinden, toplam gecikme (cl+tl), etiket sayısı, etiket aralığı, kameradan ortalama etiket mesafesi, ortalama etiket alanı (görüntünün yüzdesi)
+botpose_wpiblue
+doubleArray
+Saha uzayında robot dönüşümü (mavi sürücü istasyonu WPILIB orijini). Çeviri (X,Y,Z) metre cinsinden, Dönüş (Roll,Pitch,Yaw) derece cinsinden, toplam gecikme (cl+tl), etiket sayısı, etiket aralığı, kameradan ortalama etiket mesafesi, ortalama etiket alanı (görüntünün yüzdesi)
+botpose_wpired
+doubleArray
+Saha uzayında robot dönüşümü (kırmızı sürücü istasyonu WPILIB orijini). Çeviri (X,Y,Z) metre cinsinden, Dönüş (Roll,Pitch,Yaw) derece cinsinden, toplam gecikme (cl+tl), etiket sayısı, etiket aralığı, kameradan ortalama etiket mesafesi, ortalama etiket alanı (görüntünün yüzdesi)
+botpose_orb
+doubleArray
+Saha uzayında robot dönüşümü (Megatag2). Çeviri (X,Y,Z) metre cinsinden, Dönüş (Roll,Pitch,Yaw) derece cinsinden, toplam gecikme (cl+tl), etiket sayısı, etiket aralığı, kameradan ortalama etiket mesafesi, ortalama etiket alanı (görüntünün yüzdesi)
+botpose_orb_wpiblue
+doubleArray
+Saha uzayında robot dönüşümü (Megatag2) (mavi sürücü istasyonu WPILIB orijini). Çeviri (X,Y,Z) metre cinsinden, Dönüş (Roll,Pitch,Yaw) derece cinsinden, toplam gecikme (cl+tl), etiket sayısı, etiket aralığı, kameradan ortalama etiket mesafesi, ortalama etiket alanı (görüntünün yüzdesi)
+botpose_orb_wpired
+doubleArray
+Saha uzayında robot dönüşümü (Megatag2) (kırmızı sürücü istasyonu WPILIB orijini). Çeviri (X,Y,Z) metre cinsinden, Dönüş (Roll,Pitch,Yaw) derece cinsinden, toplam gecikme (cl+tl), etiket sayısı, etiket aralığı, kameradan ortalama etiket mesafesi, ortalama etiket alanı (görüntünün yüzdesi)
+camerapose_targetspace
+doubleArray
+Görüş alanındaki birincil AprilTag'in koordinat sisteminde kameranın 3D dönüşümü (dizi (6))    [tx, ty, tz, pitch, yaw, roll] (metre, derece)
+targetpose_cameraspace
+doubleArray
+Kameranın koordinat sisteminde görüş alanındaki birincil AprilTag'in 3D dönüşümü (dizi (6)) [tx, ty, tz, pitch, yaw, roll]  (metre, derece)
+targetpose_robotspace
+doubleArray
+Robotun koordinat sisteminde görüş alanındaki birincil AprilTag'in 3D dönüşümü (dizi (6))   [tx, ty, tz, pitch, yaw, roll] (metre, derece)
+botpose_targetspace
+doubleArray
+Görüş alanındaki birincil AprilTag'in koordinat sisteminde robotun 3D dönüşümü (dizi (6))    [tx, ty, tz, pitch, yaw, roll] (metre, derece)
+camerapose_robotspace
+doubleArray
+Robotun koordinat sisteminde kameranın 3D dönüşümü (dizi (6))
+tid
+int
+Görüş alanındaki birincil AprilTag'in ID'si
+stddevs
+doubleArray
+MegaTag Standart Sapmalar [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x, MT2y, MT2z, MT2roll, MT2pitch, MT2yaw]
+camerapose_robotspace_set
+doubleArray
+Robotun koordinat sisteminde kameranın konumunu AYARLA.
+priorityid
+int
+tx/ty hedefleme için gereken ID'yi AYARLA. Diğer hedefleri görmezden gel. Lokalizasyonu etkilemez
+robot_orientation_set
+doubleArray
+Robot Oryantasyonunu ve açısal hızları derece ve saniyede derece cinsinden AYARLA [yaw,yawrate,pitch,pitchrate,roll,rollrate]
+fiducial_id_filters_set
+doubleArray
+Lokalizasyon için geçerli fiducial id'leri geçersiz kıl (dizi)
+fiducial_offset_set
+doubleArray
+3D İlgi Noktası Ofsetini AYARLA [x,y,z]
+Kamera Kontrolleri
+​
+Aşağıdaki kodu kullanın:
+Java
+LabView
+C++
+Python
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"<variablename>"
+)
+.
+setNumber
+(
+<
+value
+>
+)
+;
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+->
+PutNumber
+(
+"<variablename>"
+,
+<
+value
+>
+)
+;
+NetworkTables
+.
+getTable
+(
+"limelight"
+)
+.
+putNumber
+(
+'<variablename>'
+,
+<
+value
+>
+)
+bu verileri ayarlamak için:
+ledMode
+Limelight'ın LED durumunu ayarlar
+[0]
+mevcut pipeline'da ayarlanan LED Modunu kullan
+[1]
+zorla kapat
+[2]
+zorla yanıp sön
+[3]
+zorla aç
+pipeline
+Limelight'ın mevcut pipeline'ını ayarlar
+0 .. 9
+Pipeline 0..9 seç
+stream
+Limelight'ın yayın modunu ayarlar
+0
+Standart - Limelight'a bir webcam bağlıysa yan yana akışlar
+1
+PiP Ana - İkincil kamera akışı, birincil kamera akışının sağ alt köşesine yerleştirilir
+2
+PiP İkincil - Birincil kamera akışı, ikincil kamera akışının sağ alt köşesine yerleştirilir
+crop
+(Dizi) Kırpma dikdörtgenini ayarlar. Pipeline, web arayüzündeki varsayılan kırpma dikdörtgenini kullanmalıdır. Dizinin tam olarak 4 girişi olmalıdır.
+[0]
+X0 - Kırpma dikdörtgeninin Min veya Max X değeri (-1 ile 1 arası)
+[1]
+X1 - Kırpma dikdörtgeninin Min veya Max X değeri (-1 ile 1 arası)
+[2]
+Y0 - Kırpma dikdörtgeninin Min veya Max Y değeri (-1 ile 1 arası)
+[3]
+Y1 - Kırpma dikdörtgeninin Min veya Max Y değeri (-1 ile 1 arası)
+throttle_set
+(int) Devre dışıyken bunu 100-200 olarak ayarlamanızı öneririz. Sıcaklık artışını azaltmak için işlenen kareler arasında atlanacak kare sayısını ayarlar. Atlanan karelerde çıktılar sıfırlanmaz.
+Java
+C++
+double
+[
+]
+cropValues
+=
+new
+double
+[
+4
+]
+;
+cropValues
+[
+0
+]
+=
+-
+1.0
+;
+cropValues
+[
+1
+]
+=
+1.0
+;
+cropValues
+[
+2
+]
+=
+-
+1.0
+;
+cropValues
+[
+3
+]
+=
+1.0
+;
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"crop"
+)
+.
+setDoubleArray
+(
+cropValues
+)
+;
+wip
+IMU Kontrolleri
+​
+anahtar
+tür
+açıklama
+imumode_set
+int
+IMU modunu ayarla. 0 - harici imu kullan, 1 - harici imu kullan, dahili imu'yu başlat, 2 - dahili kullan, 3 - MT1 destekli yakınsama ile dahili kullan, 4 - harici IMU destekli yakınsama ile dahili IMU kullan
+imuassistalpha_set
+double
+Tamamlayıcı filtre alfa / gücü. Daha yüksek değerler, dahili imu'nun destek kaynağına daha hızlı yakınsamasına neden olur. Varsayılan değer 0.001 gibi düşük bir değere ayarlanmıştır çünkü artık dahili IMU'ya eskisinden daha fazla güveniyoruz. Destek modları, dahili imu'yu seçilen destek kaynağına doğru çok nazikçe "çekmek" için tasarlanmıştır.
+Python
+​
+Python betikleri, keyfi giriş ve çıkış verilerine izin verir.
+llpython
+Python betikleri tarafından gönderilen NumberArray. Robot kodunda erişilebilir.
+llrobot
+Robot tarafından gönderilen NumberArray. Python SnapScripts içinde erişilebilir.
+Ham Veri
+​
+Köşeler:
+Köşe koordinatlarını akışa almak için "Output" sekmesinde "send contours" seçeneğini etkinleştirin:
+tcornxy
+Köşe koordinatlarının sayı dizisi [x0,y0,x1,y1......]
+Ham Hedefler:
+Limelight, gruplama modunuzdan etkilenmeyen üç ham konturu NetworkTables'a gönderir. Yani, bunlar pipeline parametrelerinizle filtrelenir, ancak asla gruplanmaz. X ve Y, derece yerine normalleştirilmiş ekran alanında (-1 ile 1 arası) döndürülür.
+rawtargets
+[txnc,tync,ta,txnc2,tync2,ta2....]
+Ham Fiducial İşaretler:
+Tüm geçerli (filtrelenmemiş) fiducial işaretleri alın
+rawfiducials
+[id, txnc, tync, ta, distToCamera, distToRobot, ambiguity, id2.....]
+Ham Tespitler:
+Tüm geçerli (filtrelenmemiş) sinir ağı tespit sonuçlarını alın
+rawdetections
+[id, txnc, tync, ta, corner0x, corner0y, corner1x, corner1y, corner2x, corner2y, corner3x, corner3y, id2.....]
+Ham Barkodlar:
+Tüm geçerli (filtrelenmemiş) barkod sonuçlarını alın
+rawbarcodes
+barkod verilerinin string dizisi

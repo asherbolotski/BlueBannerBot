@@ -1,0 +1,174 @@
+Limelight 2/2+ Guia Rápido
+Especificações de Hardware
+​
+Dimensões: 3.853in x 2.230in (97.87mm x 56.64mm)
+Espessura: 1.000in (25.40mm)
+Massa: 0.17 lb
+Montagem com furos passantes #10 / M4
+Entrada de Energia: 4.1V-16V
+Limelight 2: 13W consumo máximo de energia
+Limelight 2+: 7W consumo máximo de energia (redução de 40%)
+Iluminação LED:
+Limelight 2: 450 lumens, iluminação verde
+Limelight 2+: 500 lumens, LEDs com brilho constante em toda a faixa de temperatura
+Sensor: OV5647 Color Rolling Shutter (320x240 @ 90FPS)
+Lente M12 substituível
+62.5° Campo de Visão Horizontal, 48.9° Campo de Visão Vertical
+Invólucro de Policarbonato Preto Resistente a Impactos
+Porta Ethernet RJ45 10/100
+Porta USB-A Host (USB 2.0)
+Luzes de Status: Verde (detecção de alvo), Amarelo (status de rede)
+Suporte para Acelerador de Rede Neural Google Coral USB
+Capacidades de Software (Limelight OS)
+​
+Visão de alto desempenho Plug-and-Play. Sem experiência necessária.
+Interface de usuário baseada em navegador auto-hospedada para configuração de pipeline de visão
+Suporte para REST/HTTP, Websocket, NetworkTables, ModbusTCP e ROS
+Exposição fixa configurável, ganho do sensor, resolução e taxa de quadros.
+Configure 10 Pipelines de Visão intercambiáveis:
+Pipelines Python personalizados com OpenCV 4.10, numpy, etc.
+Rastreamento de AprilTag 2D, 3D e Localização do Robô
+Localização 3D completa (GPS do Robô) com MegaTag1
+Localização 3D completa de maior precisão (GPS do Robô) com Fusão de IMU Externa com MegaTag2
+Visualizador 3D completo na interface web
+Pipelines de Blob Colorido a 90FPS
+Pipelines de Detecção de Objetos Neural
+Pipelines de Classificação de Imagem Neural
+Pipelines de Rastreamento de Código de Barras
+Pipeline de visor para streaming de baixa latência
+Streaming MJPEG de baixa latência integrado. Orientação de stream configurável
+1. Montando o Limelight 2/2+
+​
+Montagem com Furos Passantes
+​
+Use parafusos #10-32 ou #10-24 de 1 1/4" com porcas nylock
+Alternativamente, use parafusos M4 de 38mm com porcas nylock
+Use arruelas plásticas para preservar o acabamento do invólucro
+2. Fiação do Limelight 2/2+
+​
+Energia
+​
+Conecte dois fios 18-20AWG do seu Limelight a um slot no seu PDP/PDH
+Adicione um disjuntor de 5A ao mesmo slot
+(Não Obrigatório) Use terminais Weidmuller para resultados ideais (Na imagem, fio 20AWG com terminais laranja Weidmuller 20AWG)
+Terminais:
+https://www.digikey.com/en/products/detail/weidm%C3%BCller/0409500000/491834
+https://store.ctr-electronics.com/products/weidmuller-ferrule-pack-of-20?variant=43631135195309
+Ferramentas de crimpagem de terminais de baixo custo:
+https://store.ctr-electronics.com/products/ferrule-crimper-by-iwiss?_pos=2&_sid=616edc4f4&_ss=r
+https://www.amazon.com/Ferrule-Crimping-Hexagonal-Ferrules-Connectors/dp/B09724DCJH?th=1
+Ethernet
+​
+Conecte um cabo ethernet do seu Limelight ao rádio do seu robô
+Use cabos Cat6 trançados com fios flexíveis (idealmente 20AWG)
+Adicione um alívio de tensão ao seu cabo ethernet
+3. Acessando a Interface Web
+​
+Após conectar seu Limelight 2/2+ à sua rede:
+Ligue seu robô e conecte seu laptop à rede do robô
+Use um destes métodos para acessar a interface web:
+Método 1
+: Abra o aplicativo Limelight Hardware Manager, escaneie por Limelights e dê um duplo clique no seu Limelight quando ele aparecer
+Método 2
+: Abra um navegador web e navegue até
+http://limelight.local:5801
+Método 3
+: Abra um navegador web e navegue até o endereço IP estático do seu Limelight com a porta 5801 (se configurado)
+Uma vez conectado, você terá acesso a:
+Aba Configurações - Configure o número da equipe, nome do host e outras configurações do sistema
+Abas de Pipeline de Visão - Configure e ajuste seus pipelines de processamento de visão
+Aba Câmera e Mira - Ajuste as configurações da câmera e parâmetros da mira
+Toda a configuração é feita através desta interface web. As alterações são salvas automaticamente no seu Limelight.
+4. Atualizando o LimelightOS
+​
+cuidado
+Faça backup dos seus pipelines e scripts antes de atualizar - eles serão apagados durante este processo!
+Desligue seu Limelight
+Baixe os últimos
+drivers USB, imagem do Limelight OS e ferramenta Balena Flash
+Conecte um cabo USB->MicroUSB do seu laptop ao seu Limelight (seu Limelight ligará automaticamente)
+Execute o "Balena Etcher" como administrador
+Pode levar até 20 segundos para que sua máquina reconheça a câmera
+Selecione a imagem .zip mais recente na sua pasta de downloads
+Selecione um dispositivo "Compute Module" no menu "Drives"
+Clique em "Flash"
+Quando a gravação estiver completa, remova o cabo USB do seu Limelight
+info
+Conecte o cabo micro-USB apenas durante a gravação da imagem. O Limelight entra em um modo especial de flash enquanto o cabo microUSB está conectado. Você não poderá acessar a interface web enquanto o Limelight estiver no modo de flash.
+5. Configuração de Rede
+​
+Configurando o Número da Equipe (Obrigatório para FRC / Networktables)
+​
+Ligue seu robô e conecte seu laptop à rede do robô
+Abra o Limelight Hardware Manager, escaneie por Limelights e dê um duplo clique na entrada que aparecer
+Alternativamente, navegue até
+http://limelight.local:5801
+Vá para a aba "Settings"
+Digite o número da sua equipe e pressione "Update Team Number"
+Configurando um Nome de Host Único (Apenas Necessário para sistemas FRC / Networktables com múltiplos Limelights)
+​
+Se você estiver usando múltiplos Limelights, cada Limelight deve ter um nome de host único
+Na aba de configurações, configure um nome de host e clique no botão "set hostname"
+Configurando IP Estático (Recomendado, não obrigatório)
+​
+Mude "IP Assignment" para "Static"
+Configure o endereço IP para "10.TE.AM.11"
+Equipe 916 usa 10.9.16.xx
+Equipe 9106 usa 10.91.6.xx
+Equipe 9016 usa 10.90.16.xx
+Configure a Máscara de Rede para "255.255.255.0"
+Configure o Gateway para "10.TE.AM.1"
+Clique em "Update"
+Reinicie seu robô
+Acesse seu painel de configuração em 10.TE.AM.11:5801 e o stream da câmera em 10.TE.AM.11:5800
+Se você estiver usando múltiplos Limelights, dê a cada Limelight um endereço IP estático único
+P. Por que recomendamos o uso de um endereço IP estático?
+R. Reduz vários segundos do tempo de inicialização do Limelight.
+Segundo, as equipes historicamente tiveram problemas com atribuição DHCP e
+respondedores mDNS em campos FRC reais e com firmware de rádio de eventos.
+Recomendamos configurar endereços IP estáticos no seu robo-rio e estação do piloto também.
+As configurações de rede a serem usadas em todos esses dispositivos podem ser encontradas na metade inferior de
+esta página web
+6. Controlando os LEDs
+​
+O Limelight 2/2+ inclui LEDs de iluminação verde integrados. Esses LEDs podem ser controlados de várias maneiras:
+Via Interface Web
+​
+Navegue até a aba Camera & Crosshair na interface web
+Use o menu suspenso LED Mode para selecionar:
+On - Sempre ligado
+Off - Sempre desligado
+Blink - Piscar os LEDs
+Pipeline - LEDs ligam quando um alvo é detectado
+Via NetworkTables ou API
+​
+Configure o valor "ledMode":
+0: Padrão do pipeline
+1: Forçar desligado
+2: Forçar piscar
+3: Forçar ligado
+7. Solução de Problemas
+​
+Indicadores de Luz de Status
+​
+Luz Verde
+: Pisca lentamente (sem alvos), pisca rapidamente (alvos detectados)
+Luz Amarela
+: Pisca (sem IP estático), sólida (IP estático atribuído)
+Padrões de Diagnóstico LED
+​
+Piscar alternado Esquerda/Direita ou Superior/Inferior
+: O cabo interno da câmera se soltou ou o sensor de imagem está danificado
+Piscar Rápido (todos os LEDs)
+: O botão de reset de rede foi pressionado por pelo menos 10 segundos
+Sequência de Inicialização Repetida
+: O software está travando, possivelmente devido a danos no hardware
+Se limelight.local:5801 não funcionar
+​
+Verifique se você tem o Bonjour instalado (Windows: adicionar/remover programas)
+Desinstale "bonjour print services" se você tiver dois itens Bonjour
+Instale o Bonjour da página de Downloads se estiver faltando
+Resetar endereço IP
+​
+Segure o botão de configuração por 10 segundos após o seu Limelight ter inicializado
+A configuração de rede será redefinida para endereçamento dinâmico na próxima inicialização

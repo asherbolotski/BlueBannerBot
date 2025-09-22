@@ -1,0 +1,26 @@
+Entrando no Alcance
+Robôs da FRC frequentemente precisam ser posicionados a uma distância específica do alvo de pontuação para que seu mecanismo de pontuação funcione bem. Você pode usar um simples loop de controle proporcional junto com a mira calibrada do limelight para fazer seu robô se posicionar facilmente a uma distância específica do alvo.
+Para este exemplo, você deve garantir que seu robô esteja apontado para o alvo. Mais tarde, combinaremos a mira e o ajuste de distância em uma única função, mas neste exemplo estamos focando apenas no código que leva o robô à distância correta.
+Semelhante ao exemplo de mira, aqui mostramos uma função que pode ser executada no loop de atualização do seu robô.
+float KpDistance = -0.1f;  // Constante de controle proporcional para distância
+float current_distance = Estimate_Distance();  // veja o 'Estudo de Caso: Estimando Distância'
+if (joystick->GetRawButton(9))
+{
+float distance_error = desired_distance - current_distance;
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+Com algum ajuste da configuração KpDistance, seu robô deve dirigir-se à distância desejada de forma rápida e precisa. Comparado à mira, dirigir até a distância correta geralmente é mais fácil porque a maioria dos robôs se move para frente e para trás com muito mais facilidade do que giram no lugar.
+A seguir, descreveremos um truque simples para facilitar ainda mais o posicionamento na distância correta. Em vez de calcular a distância real, você pode usar a mira do limelight. Basta posicionar seu robô na distância ideal do alvo e calibrar a posição y da mira. Agora, seu ângulo y será reportado como 0.0 quando seu robô estiver na distância correta. Usando este truque, você nunca precisará calcular a distância real e seu código pode ser algo como:
+float KpDistance = -0.1f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float distance_error = table->GetNumber("ty");
+if (joystick->GetRawButton(9))
+{
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+Se você precisar mudar a distância de disparo, basta mover seu robô para a nova distância e recalibrar a mira do limelight.
+Aqui está um exemplo de um robô usando a ideia acima. Observe como ele recua automaticamente para o alcance correto quando o piloto para de dirigir e pressiona o botão "mirar":

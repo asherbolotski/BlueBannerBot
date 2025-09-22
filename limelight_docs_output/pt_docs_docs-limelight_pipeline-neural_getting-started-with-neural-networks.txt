@@ -1,0 +1,34 @@
+Primeiros Passos com Redes Neurais
+Com os pipelines de redes neurais da Limelight, desafios de visão computacional antes impossíveis agora são triviais. A visão baseada em aprendizado já desempenha um papel enorme em robôs de ponta e veículos autônomos, por isso estamos
+entusiasmados em trazer essa tecnologia para os estudantes da FIRST.
+info
+Limelight 1, 2 e 3 suportam visão baseada em aprendizado com a ajuda do Google Coral. O Google Coral é um acelerador USB que deve ser adquirido separadamente.
+Confira o uso do pipeline de Rede Neural da Limelight pelo Campeão Mundial de 2023, equipe 1323:
+Baixe redes neurais pré-treinadas da nossa
+página de downloads
+.
+Na FRC, as equipes sempre quiseram rastrear peças do jogo no campo durante os períodos autônomo e teleoperado.
+Usando o pipeline "Neural Detector" da Limelight, as equipes podem rastrear peças como qualquer outro alvo sem nenhum ajuste.
+Os pipelines "Neural Classifier", por outro lado, permitem que as equipes adicionem capacidades avançadas de sensoriamento aos seus robôs.
+Digamos que uma equipe queira determinar se seu robô está de posse de uma bola Vermelha, uma bola Azul, ou não está de posse de uma bola.
+Uma Limelight apontada para dentro de um robô poderia executar um classificador treinado para determinar um desses três casos. Um classificador também poderia contar o número de objetos em um funil, determinar o estado de uma característica do campo, etc.
+As redes Neural Detector e Classifier requerem a adição de um acelerador USB Google Coral. O Acelerador Google Coral é um ASIC (circuito integrado de aplicação específica)
+que é construído especificamente para inferência de redes neurais. Você pode pensar no termo "inferência" como "execução" ou "executar dados através da rede neural e produzir uma saída".
+Se você está interessado em construir uma compreensão mais profunda do aprendizado de máquina, recomendamos começar com
+este vídeo do 3blue1brown
+Programadores podem aprender mais de forma prática com
+o seguinte livro
+Pipeline Neural Detector
+​
+Para começar, certifique-se de que seu Google Coral esteja conectado à porta USB-A da sua Limelight.
+Altere o "Pipeline Type" para "Neural Detector" para começar a executar inferência no modelo de teste integrado. Baixe redes neurais pré-treinadas da nossa
+página de downloads
+e faça o upload para começar a rastrear peças do jogo.
+Altere o controle deslizante "confidence threshold" para ajustar a confiança necessária para uma detecção bem-sucedida.
+Altere a janela de recorte para ignorar facilmente objetos fora da zona de detecção desejada.
+Pipeline Neural Classifier
+​
+Para começar, certifique-se de que seu Google Coral esteja conectado à porta USB-A da sua Limelight.
+Altere o "Pipeline Type" para "Neural Classifier" para começar a executar inferência no modelo de teste integrado. Você pode treinar seus próprios modelos de classificador usando o método documentado na seção "Treinamento".
+A janela "Crop" permitirá que você controle melhor a imagem usada para inferência de rede neural. Embora os modelos de classificador sejam capazes de níveis incríveis de generalização em ambientes diversos, você
+terá maior sucesso minimizando o número de variáveis em sua imagem.

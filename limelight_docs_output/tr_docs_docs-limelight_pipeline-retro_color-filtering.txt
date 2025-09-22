@@ -1,0 +1,26 @@
+Renk Eşikleme
+Eşikleme, çoğu görüntü izleme algoritmasının kritik bir bileşenidir. Bir görüntü alıp belirli bir renk aralığında olmayan pikselleri atma işlemidir. Eşikleme sonucu genellikle her pikselin "açık" veya "kapalı" olduğu tek boyutlu bir ikili görüntüdür. Renk blobu / retroreflektif işlem hatlarında bu en kritik adımdır.
+Video Beslemesi (Akışın altında yer alır)
+​
+Mjpeg sunucusundan hangi görüntünün akışa alınacağını kontrol eder. HSV eşiklemenizi ayarlamanız gerekiyorsa "threshold" (eşik) görüntüsüne geçmelisiniz.
+Eşikleme Asaları
+​
+Asalar, kullanıcıların otomatik HSV eşiklemesi gerçekleştirmek için Limelight'ın video akışına tıklamasını sağlar.
+"Damlalık" asası, HSV parametrelerini seçilen piksel etrafında merkezler
+"Ekle" asası, seçilen pikseli dahil etmek için HSV parametrelerini ayarlar
+"Çıkar" asası, seçilen pikseli görmezden gelmek için HSV parametrelerini ayarlar
+Ton (Hue)
+​
+"Saf" bir rengi tanımlar. "0" tonu saf kırmızıyı, 1/3 (kaydırıcıda 59) tonu ise saf yeşili tanımlar. Ton, bir piksel "aydınlandıkça" veya "karardıkça" değişmediği için kullanışlıdır. Bu, ayarlanması gereken en önemli parametredir. Ton aralığınızı mümkün olduğunca küçük tutarsanız, gerçek bir FRC sahasına geçişte çok az sorun yaşarsınız veya hiç sorun yaşamazsınız.
+Doygunluk (Saturation)
+​
+Bir rengin ne kadar "saf" olduğunu tanımlar. Bunu düşünmenin başka bir yolu, bir rengin ne kadar soluk göründüğü, yani bir renkte ne kadar "beyaz" olduğudur. Düşük doygunluk, bir rengin neredeyse beyaz olduğu, yüksek doygunluk ise bir rengin neredeyse "saf" olduğu anlamına gelir.
+Değer (Value)
+​
+Bir rengin koyuluğunu veya bir renkte ne kadar "siyah" olduğunu tanımlar. Düşük bir değer, neredeyse siyah bir renge karşılık gelir. İşlem hattından siyah piksellerin geçmemesi için minimum değeri kesinlikle sıfırdan yükseltmelisiniz.
+Erozyon ve Genişleme
+​
+Erozyon, HSV eşiği sonucunu hafifçe aşındırır. Bu, birçok nesne ayarlanmış bir HSV eşiğinden geçiyorsa faydalıdır. Genişleme, HSV eşiği sonucunu hafifçe şişirir. Bunu, eşikleme sonuçlarındaki delikleri yamamak için kullanın.
+Ton Tersine Çevirme
+​
+Kırmızı hedefleri izlemek için ton tersine çevirmeyi kullanın, çünkü kırmızı hem ton aralığının başında hem de sonunda bulunur.

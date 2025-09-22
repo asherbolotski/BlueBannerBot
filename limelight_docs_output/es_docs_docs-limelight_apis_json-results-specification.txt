@@ -1,0 +1,958 @@
+Especificación de Resultados JSON
+La salida de resultados JSON de Limelight es una colección de arrays que contienen resultados de detección. Existen arrays separados para resultados retroreflectivos, fiduciales, clasificadores neuronales y detectores neuronales.
+JSON es legible por humanos y fácil de analizar en cualquier lenguaje en cualquier plataforma, por lo que es perfecto para la mayoría de los casos de uso.
+La misma salida de resultados JSON puede obtenerse utilizando las APIs REST/HTTP, Websocket y NetworkTables.
+Analizar esta salida JSON es increíblemente fácil con nuestras bibliotecas FRC.
+Limelightlib tiene funcionalidad incorporada que analiza el JSON Dump en un objeto LimelightResults.
+https://github.com/LimelightVision/limelightlib-wpijava
+https://github.com/LimelightVision/limelightlib-wpicpp
+Cada resultado JSON contiene las siguientes entradas:
+Nombre de Clave
+Descripción del Valor
+tl
+Latencia de detección (milisegundos consumidos por el bucle de seguimiento en este frame)
+cl
+Latencia de captura (milisegundos entre el final de la exposición de la fila central hasta el inicio del bucle de seguimiento)
+tx
+Desplazamiento horizontal desde la cruz al objetivo (LL1: -27 grados a 27 grados / LL2: -29.8 a 29.8 grados)
+ty
+Desplazamiento vertical desde la cruz al objetivo (LL1: -20.5 grados a 20.5 grados / LL2: -24.85 a 24.85 grados)
+txnc
+Desplazamiento horizontal desde el píxel principal al objetivo (grados)
+tync
+Desplazamiento vertical desde el píxel principal al objetivo (grados)
+ta
+Área normalizada sin distorsión del objetivo (0-100)
+PythonOut
+Datos de salida de los Pipelines SnapScript de Python
+stdev_mt1
+Desviación estándar MT1 [x, y, z, roll, pitch, yaw] (metros, grados)
+stdev_mt2
+Desviación estándar MT2 [x, y, z, roll, pitch, yaw] (metros, grados)
+pID
+Índice del Pipeline actual
+pTYPE
+Tipo de Pipeline actual, por ejemplo "pipe_color"
+ts
+Marca de tiempo en milisegundos desde el arranque
+v
+Indicador de validez. 1 = objetivos válidos, 0 = sin objetivos válidos
+botpose
+Botpose (MegaTag): x,y,z, roll, pitch, yaw (metros, grados)
+botpose_wpired
+Botpose (MegaTag, WPI Red driverstation): x,y,z, roll, pitch, yaw (metros, grados)
+botpose_wpiblue
+Botpose (MegaTag, WPI Blue driverstation): x,y,z, roll, pitch, yaw (metros, grados)
+botpose_orb
+Botpose (MegaTag2): x,y,z, roll, pitch, yaw (metros, grados)
+botpose_orb_wpired
+Botpose (MegaTag2, WPI Red driverstation): x,y,z, roll, pitch, yaw (metros, grados)
+botpose_orb_wpiblue
+Botpose (MegaTag2, WPI Blue driverstation): x,y,z, roll, pitch, yaw (metros, grados)
+botpose_avgarea
+Área promedio de las etiquetas utilizadas para calcular botpose
+botpose_avgdist
+Distancia máxima entre etiquetas utilizadas para calcular botpose (metros)
+botpose_span
+Distancia máxima entre etiquetas utilizadas para calcular botpose (metros)
+botpose_tagcount
+Número de etiquetas utilizadas para calcular botpose
+Retro
+Array de resultados del pipeline de Color/Retroreflectivo
+Fiducial
+Array de resultados del pipeline de AprilTag
+Detector
+Array de resultados del pipeline de Detector Neural
+Classifier
+Array de resultados del pipeline de Clasificador
+Barcode
+Array de resultados del pipeline de Código de Barras
+Resultados de Color/Retroreflectivo
+​
+El array "Retro" contiene entradas con la siguiente estructura:
+Nombre de Clave
+Descripción del Valor
+t6c_ts
+Pose de la cámara en el espacio del objetivo calculada por solvepnp (x,y,z,rx,ry,rz)
+t6r_fs
+Pose del robot en el espacio de campo calculada por solvepnp (x,y,z,rx,ry,rz)
+t6r_ts
+Pose del robot en el espacio del objetivo calculada por solvepnp (x,y,z,rx,ry,rz)
+t6t_cs
+Pose del objetivo en el espacio de la cámara calculada por solvepnp (x,y,z,rx,ry,rz)
+t6t_rs
+Pose del objetivo en el espacio del robot calculada por solvepnp (x,y,z,rx,ry,rz)
+ta
+El tamaño del objetivo como porcentaje de la imagen (0-1)
+tx
+Coordenada X del centro del objetivo en grados relativa a la cruz. Positivo-derecha, centro-cero
+tx_nocross
+Coordenada X del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+txp
+Coordenada X del centro del objetivo en píxeles relativa a la cruz. Positivo-derecha, centro-cero
+ty
+Coordenada Y del centro del objetivo en grados relativa a la cruz. Positivo-abajo, centro-cero
+ty_nocross
+Coordenada Y del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+typ
+Coordenada Y del centro del objetivo en píxeles relativa a la cruz. Positivo-abajo, centro-cero
+pts
+Array de esquinas (píxeles) [x0,y0,x1,y1.....]. Debe estar habilitado en la pestaña de salida
+Ejemplo JSON para Pipelines de Color / Retroreflectivo
+{
+"Barcode"
+:
+[
+]
+,
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"PythonOut"
+:
+[
+]
+,
+"Retro"
+:
+[
+{
+"pts"
+:
+[
+]
+,
+"t6c_ts"
+:
+[
+]
+,
+"t6r_fs"
+:
+[
+]
+,
+"t6r_ts"
+:
+[
+]
+,
+"t6t_cs"
+:
+[
+]
+,
+"t6t_rs"
+:
+[
+]
+,
+"ta"
+:
+0.00531171215698123
+,
+"tx"
+:
+-4.535492777705656
+,
+"tx_nocross"
+:
+-4.428826910553056
+,
+"txp"
+:
+542.53076171875
+,
+"ty"
+:
+-1.1722867231218714
+,
+"ty_nocross"
+:
+-0.09285491974145543
+,
+"typ"
+:
+504.5538635253906
+}
+,
+{
+"pts"
+:
+[
+]
+,
+"t6c_ts"
+:
+[
+]
+,
+"t6r_fs"
+:
+[
+]
+,
+"t6r_ts"
+:
+[
+]
+,
+"t6t_cs"
+:
+[
+]
+,
+"t6t_rs"
+:
+[
+]
+,
+"ta"
+:
+0.005779948551207781
+,
+"tx"
+:
+8.465099348209478
+,
+"tx_nocross"
+:
+8.571765215362078
+,
+"txp"
+:
+822.1087036132812
+,
+"ty"
+:
+-2.524207730360601
+,
+"ty_nocross"
+:
+-1.444775926980185
+,
+"typ"
+:
+533.6112060546875
+}
+,
+]
+,
+"botpose"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_avgarea"
+:
+0
+,
+"botpose_avgdist"
+:
+0
+,
+"botpose_orb"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_orb_wpiblue"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_orb_wpired"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_span"
+:
+0
+,
+"botpose_tagcount"
+:
+0
+,
+"botpose_wpiblue"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_wpired"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"cl"
+:
+37.619998931884766
+,
+"focus_metric"
+:
+0
+,
+"pID"
+:
+0
+,
+"pTYPE"
+:
+"pipe_color"
+,
+"stdev_mt1"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"stdev_mt2"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"t6c_rs"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"ta"
+:
+0.39156023412942886
+,
+"tl"
+:
+22.64053726196289
+,
+"ts"
+:
+215248.979204
+,
+"tx"
+:
+-4.3848327488723555
+,
+"txnc"
+:
+-4.278166881719756
+,
+"ty"
+:
+-1.1144596937982527
+,
+"tync"
+:
+-0.035027890417836716
+,
+"v"
+:
+1
+}
+Resultados de AprilTag/Fiducial
+​
+El array "Fiducial" contiene entradas con la siguiente estructura:
+Nombre de Clave
+Descripción del Valor
+fid
+ID de la etiqueta fiducial
+fam
+Familia Fiducial (16H5C, 25H9C, 36H11C, etc)
+pts
+Devuelve puntos de esquina individuales. Debe estar habilitado.
+skew
+Actualmente sin uso
+t6c_ts
+Pose de la cámara en el espacio del objetivo calculada por este fiducial (x,y,z,pitch,yaw,roll) (metros, grados)
+t6r_fs
+Pose del robot en el espacio de campo calculada por este fiducial (x,y,z,pitch,yaw,roll) (metros, grados)
+t6r_fs_orb
+Pose del robot en el espacio de campo calculada por este fiducial (Megatag2) (x,y,z,pitch,yaw,roll) (metros, grados)
+t6r_ts
+Pose del robot en el espacio del objetivo calculada por este fiducial (x,y,z,pitch,yaw,roll) (metros, grados)
+t6t_cs
+Pose del objetivo en el espacio de la cámara calculada por este fiducial (x,y,z,pitch,yaw,roll) (metros, grados)
+t6t_rs
+Pose del objetivo en el espacio del robot calculada por este fiducial (x,y,z,pitch,yaw,roll) (metros, grados)
+ta
+El tamaño del objetivo como porcentaje de la imagen (0-1)
+tx
+Coordenada X del centro del objetivo en grados relativa a la cruz. Positivo-derecha, centro-cero
+tx_nocross
+Coordenada X del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+txp
+Coordenada X del centro del objetivo en píxeles relativa a la cruz. Positivo-derecha, centro-cero
+ty
+Coordenada Y del centro del objetivo en grados relativa a la cruz. Positivo-abajo, centro-cero
+ty_nocross
+Coordenada Y del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+typ
+Coordenada Y del centro del objetivo en píxeles relativa a la cruz. Positivo-abajo, centro-cero
+pts
+Array de esquinas (píxeles) [x0,y0,x1,y1.....]. Debe estar habilitado en la pestaña de salida
+Ejemplo JSON para Pipelines de AprilTag
+{
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+{
+"fID"
+:
+2
+,
+"fam"
+:
+"16H5C"
+,
+"pts"
+:
+[
+]
+,
+"skew"
+:
+[
+]
+,
+"t6c_ts"
+:
+[
+0.33247368976801916
+,
+-0.05672695778305914
+,
+-2.5042031405987144
+,
+-4.680849607956358
+,
+-5.171154989721864
+,
+4.528697946312339
+]
+,
+"t6r_fs"
+:
+[
+4.738896418276903
+,
+-1.5926603672041666
+,
+0.5194469577830592
+,
+4.522658587661256
+,
+4.258580454853879
+,
+5.5236539893713275
+]
+,
+"t6r_ts"
+:
+[
+0.33247368976801916
+,
+-0.05672695778305914
+,
+-2.5042031405987144
+,
+-4.680849607956358
+,
+-5.171154989721864
+,
+4.528697946312339
+]
+,
+"t6t_cs"
+:
+[
+-0.09991902572799474
+,
+-0.1234042720218289
+,
+2.5218203039582496
+,
+4.278368708252767
+,
+5.508508005282244
+,
+-4.1112864453027775
+]
+,
+"t6t_rs"
+:
+[
+-0.09991902572799474
+,
+-0.1234042720218289
+,
+2.5218203039582496
+,
+4.278368708252767
+,
+5.508508005282244
+,
+-4.1112864453027775
+]
+,
+"ta"
+:
+0.005711808800697327
+,
+"tx"
+:
+-2.0525293350219727
+,
+"txp"
+:
+149.4874725341797
+,
+"ty"
+:
+2.7294836044311523
+,
+"typ"
+:
+107.14710235595703
+}
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+19.78130340576172
+,
+"ts"
+:
+3284447.910569
+,
+"v"
+:
+1
+}
+Resultados del Detector Neural
+​
+El array "Detector" contiene entradas con la siguiente estructura:
+Nombre de Clave
+Descripción del Valor
+class
+Cadena de texto del nombre de clase legible para humanos
+classID
+Entero de ClassID
+conf
+Confianza de la predicción
+pts
+Puntos de esquina individuales como un array de [x,y] en píxeles. Centro-cero, positivo derecha y abajo. Debe estar habilitado.
+ta
+El tamaño del objetivo como porcentaje de la imagen (0-1)
+tx
+Coordenada X del centro del objetivo en grados relativa a la cruz. Positivo-derecha, centro-cero
+tx_nocross
+Coordenada X del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+txp
+Coordenada X del centro del objetivo en píxeles relativa a la cruz. Positivo-derecha, centro-cero
+ty
+Coordenada Y del centro del objetivo en grados relativa a la cruz. Positivo-abajo, centro-cero
+ty_nocross
+Coordenada Y del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+typ
+Coordenada Y del centro del objetivo en píxeles relativa a la cruz. Positivo-abajo, centro-cero
+pts
+Array de esquinas (píxeles) [x0,y0,x1,y1.....]. Debe estar habilitado en la pestaña de salida
+Ejemplo JSON para Pipelines de Detector
+{
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+{
+"class"
+:
+"person"
+,
+"classID"
+:
+0
+,
+"conf"
+:
+0.83984375
+,
+"pts"
+:
+[
+]
+,
+"ta"
+:
+0.2608712911605835
+,
+"tx"
+:
+-2.45949649810791
+,
+"txp"
+:
+147.5
+,
+"ty"
+:
+-10.066887855529785
+,
+"typ"
+:
+165.5
+}
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+63.50614547729492
+,
+"ts"
+:
+4932985.266867
+,
+"v"
+:
+1
+}
+Resultados del Clasificador Neural
+​
+El array "Classifier" contiene entradas con la siguiente estructura:
+Nombre de Clave
+Descripción del Valor
+class
+Cadena de texto del nombre de clase legible para humanos
+classID
+Entero de ClassID
+conf
+Confianza de la predicción
+Ejemplo JSON para Pipelines de Clasificador
+{
+"Classifier"
+:
+[
+{
+"class"
+:
+"digital clock"
+,
+"classID"
+:
+531
+,
+"conf"
+:
+0.16796875
+}
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+16.704740524291992
+,
+"ts"
+:
+4751332.7542280005
+,
+"v"
+:
+1
+}
+Resultados de Código de Barras
+​
+El array "Barcode" contiene entradas con la siguiente estructura:
+Nombre de Clave
+Descripción del Valor
+fam
+Familia de código de barras, p.ej. "qr"
+data
+Datos decodificados del código de barras como cadena de texto
+ta
+El tamaño del objetivo como porcentaje de la imagen (0-1)
+tx
+Coordenada X del centro del objetivo en grados relativa a la cruz. Positivo-derecha, centro-cero
+tx_nocross
+Coordenada X del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+txp
+Coordenada X del centro del objetivo en píxeles relativa a la cruz. Positivo-derecha, centro-cero
+ty
+Coordenada Y del centro del objetivo en grados relativa a la cruz. Positivo-abajo, centro-cero
+ty_nocross
+Coordenada Y del centro del objetivo en grados relativa al píxel principal. Positivo-derecha, centro-cero
+typ
+Coordenada Y del centro del objetivo en píxeles relativa a la cruz. Positivo-abajo, centro-cero
+pts
+Array de esquinas (píxeles) [x0,y0,x1,y1.....]. Debe estar habilitado en la pestaña de salida
+Ejemplo JSON para Pipelines de Código de Barras
+{
+"Barcode"
+:
+[
+{
+"fam"
+:
+"QR"
+,
+"data"
+:
+"Hello, World!"
+,
+"txp"
+:
+150.5
+,
+"typ"
+:
+120.75
+,
+"tx"
+:
+-2.5
+,
+"ty"
+:
+1.8
+,
+"tx_nocross"
+:
+-2.3
+,
+"ty_nocross"
+:
+2.0
+,
+"ta"
+:
+0.05
+,
+"pts"
+:
+[
+[
+140
+,
+110
+]
+,
+[
+160
+,
+110
+]
+,
+[
+160
+,
+130
+]
+,
+[
+140
+,
+130
+]
+]
+}
+]
+,
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+15.2
+,
+"ts"
+:
+4751332.7542280005
+,
+"v"
+:
+1
+}

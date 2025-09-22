@@ -1,0 +1,386 @@
+Limelight 3A Guia Rápido
+Especificações de Hardware
+​
+Dimensões: 2.839in x 1.894in (72.11mm x 48.11mm)
+Espessura: 0.661in (16.80mm)
+Massa: 0.20 lb
+Montagem: 4x #10 THRU, 4x M3, 6x M4 furos de montagem rosqueados
+Entrada de Energia: 4.1V-5.75V via USB
+Consumo Máximo de Energia: 4W
+Sensor: OV5647 Color Rolling Shutter (640x480 @ 90FPS)
+Sem iluminação LED integrada
+Campo de Visão: H:54.5° V:42°
+Conectividade apenas USB-C (sem porta RJ45)
+Luz de Status: Verde (detecção de alvo)
+Otimizado para compatibilidade com FTC
+Capacidades de Software (Limelight OS)
+​
+Visão de alto desempenho plug-and-play. Sem experiência necessária.
+Interface de usuário baseada em navegador auto-hospedada para configuração de pipeline de visão
+Suporte para FTC (integração direta com Java) e FRC (interface NetworkTables)
+Exposição configurável, ganho do sensor, resolução e taxa de quadros
+Configure 10 Pipelines de Visão intercambiáveis:
+Pipelines Python personalizadas com OpenCV 4.10, numpy, etc.
+Rastreamento de AprilTag 2D, 3D e Localização do Robô
+Localização 3D completa (GPS do Robô) com MegaTag1
+Localização 3D completa de maior precisão (GPS do Robô) com Fusão de IMU Externa com MegaTag2
+20fps @ 1280x960 (redução de escala 2x), 50fps @ 640x480 (redução de escala 2x)
+Visualizador 3D completo na interface web
+Pipelines de Blob de Cor a 90FPS
+Pipelines de Detecção de Objetos Neural (apenas inferência CPU)
+Pipelines de Classificação de Imagem Neural (apenas inferência CPU)
+Pipelines de Rastreamento de Código de Barras
+Interface de Calibração de Intrínsecos Charuco integrada
+Streaming MJPEG de baixa latência integrado
+1. Montando o Limelight 3A
+​
+Montagem Rosqueada (Recomendada)
+​
+Use pelo menos 2 parafusos M3 ou M4 para montar seu LL3A em canais Rev ou GoBilda usando os furos de montagem rosqueados
+Você também pode usar fita VHB ou abraçadeiras para fixar seu Limelight
+Montagem com Furos Passantes
+​
+Use parafusos #10-32 ou #10-24 de 1 1/4" com porcas de travamento
+Alternativamente, use parafusos M4 de 28mm com porcas de travamento
+2. Conectando o Limelight 3A
+​
+Quando estiver pronto para usar seu Limelight no seu robô:
+Para FTC
+​
+Conecte um cabo USBC para USBA do seu Limelight 3A à porta USB 3.0 do seu Control Hub
+Conecte ao seu Control Hub plugando em uma porta USB 3.0 (porta azul)
+Para FRC
+​
+Conecte seu Limelight 3A à porta USB do seu roboRIO
+Use um cabo USB-C para USB-A
+O Limelight 3A não suporta Google Coral. Você ainda pode usar pipelines de detecção neural e classificação configurando o motor de execução de rede neural para "CPU".
+3. Acessando a Interface Web
+​
+Após conectar seu Limelight 3A ao seu computador via USB:
+Aguarde a luz de status verde ficar ativa (cerca de 15-20 segundos)
+Use um destes métodos para acessar a interface web:
+Método 1
+: Abra o aplicativo Limelight Hardware Manager, escaneie por Limelights e dê um duplo clique no seu Limelight 3A quando ele aparecer
+Método 2
+: Abra um navegador web e navegue até
+http://limelight.local:5801
+Uma vez conectado, você terá acesso a:
+Aba Configurações - Configure o número da equipe, nome do host e outras configurações do sistema
+Abas de Pipeline de Visão - Configure e ajuste seus pipelines de processamento de visão
+Aba Câmera e Mira - Ajuste as configurações da câmera e parâmetros da mira
+Aba de Visualização 3D - Veja a detecção e localização de AprilTag em tempo real
+Toda a configuração é feita através desta interface web. As alterações são salvas automaticamente no seu Limelight.
+4. Atualizando o LimelightOS
+​
+info
+Os Limelights vêm com uma imagem pré-instalada. Você provavelmente pode pular esta etapa por enquanto.
+Instruções de Atualização (Windows)
+atenção
+Salve seus pipelines antes de atualizar o LimelightOS. Eles serão excluídos durante a atualização.
+Baixe os drivers USB mais recentes, a imagem do Limelight OS e a ferramenta Balena Flash na
+Página de Downloads
+Reinicie sua máquina após instalar os drivers
+Segure o botão de configuração azul no seu Limelight
+Enquanto segura, conecte um cabo USB->USB-C do seu laptop ao seu Limelight (seu Limelight ligará automaticamente)
+Depois de conectar seu LL ao seu laptop, você pode soltar o botão de configuração azul
+Seu Limelight agora está no modo de flash, e seus LEDs não piscarão
+Execute o "Balena Etcher" como administrador
+Pode levar até 20 segundos para sua máquina reconhecer a câmera
+Selecione a imagem .zip mais recente na sua pasta de downloads
+Selecione um dispositivo "Compute Module" no menu "Drives"
+Clique em "Flash"
+Quando o flash estiver completo, remova o cabo USB do seu Limelight
+Instruções de Atualização (Avançado) (macOS e Linux)
+atenção
+Salve seus pipelines antes de atualizar o LimelightOS. Eles serão excluídos durante a atualização.
+nota
+Estamos trabalhando para simplificar drasticamente o processo de atualização no macOS e Linux
+Baixe a imagem do Limelight OS e a ferramenta Balena Flash na
+Página de Downloads
+Compile o driver USB Boot você mesmo:
+brew install libusb
+brew install pkg-config
+git clone --recurse-submodules --shallow-submodules --depth=1 https://github.com/raspberrypi/usbboot
+cd usbboot
+make
+cd mass-storage-gadget64
+sudo ../rpiboot -d .
+# Enquanto o rpiboot estiver em execução, sua câmera será enumerada corretamente no macOS e Linux
+# Você precisa executar o rpiboot toda vez que quiser fazer o flash.
+Segure o botão de configuração azul no seu Limelight
+Enquanto segura, conecte um cabo USB->USB-C do seu laptop ao seu Limelight (seu Limelight ligará automaticamente)
+Depois de conectar seu LL ao seu laptop, você pode soltar o botão de configuração azul
+Seu Limelight agora está no modo de flash, e seus LEDs não piscarão
+Execute o "Balena Etcher"
+Pode levar até 20 segundos para sua máquina reconhecer a câmera
+Selecione a imagem .zip mais recente na sua pasta de downloads
+Selecione um dispositivo "Compute Module" no menu "Drives"
+Clique em "Flash"
+Quando o flash estiver completo, remova o cabo USB do seu Limelight
+5. Processo de Configuração
+​
+Para FTC
+​
+Conecte seu Limelight ao seu laptop com um cabo USB
+Acesse a interface web como descrito na seção 3
+Vá para a aba Configurações e defina o número da sua equipe, depois clique em "Reiniciar Cliente de Visão"
+Configure seus pipelines conforme desejado (AprilTag, Redes Neurais, Python Personalizado, etc.)
+Quando estiver pronto para a competição, conecte seu Limelight 3A à porta USB 3.0 do seu Control Hub
+No aplicativo FTC DriverStation, clique em "Configurar Robô"
+Se você não tiver uma configuração ativa, talvez precise criar uma nova
+Clique no botão "escanear"
+Você deverá ver um "Dispositivo Ethernet" aparecer
+Você pode editar o nome deste dispositivo para "limelight" para maior clareza
+Agora você pode inicializar um objeto Limelight3A em seu código usando o mapa de hardware
+Para FRC
+​
+Conecte seu Limelight 3A ao seu laptop, aguarde a atividade da luz de status
+Acesse a interface web como descrito na seção 3
+Na aba Configurações, defina o número da sua equipe e clique em "Reiniciar Cliente de Visão"
+Configure seus pipelines conforme desejado
+Quando estiver pronto, conecte seu Limelight 3A à porta USB do seu roboRIO
+Abra seu painel de controle preferido para garantir que seu 3A esteja enviando dados para as NetworkTables do seu roboRIO
+6. Tipos de Pipeline Disponíveis
+​
+O Limelight 3A oferece os mesmos recursos de processamento de visão que outros modelos Limelight:
+Rastreamento de AprilTag e localização do robô
+Rastreamento de blob de cor
+Detecção de objetos por rede neural (apenas CPU)
+Classificação por rede neural
+Rastreamento de código de barras
+Pipelines Python personalizados
+Cada 3A vem com um mapa de campo Into The Deep integrado para FTC.
+7. Programação FTC
+​
+Exemplo Básico FTC:
+Amostra FTC
+A maioria das aplicações requer menos de 10 linhas de código:
+public
+class
+Teleop
+extends
+LinearOpMode
+{
+private
+Limelight3A
+limelight
+;
+@Override
+public
+void
+runOpMode
+(
+)
+throws
+InterruptedException
+{
+limelight
+=
+hardwareMap
+.
+get
+(
+Limelight3A
+.
+class
+,
+"limelight"
+)
+;
+telemetry
+.
+setMsTransmissionInterval
+(
+11
+)
+;
+limelight
+.
+pipelineSwitch
+(
+0
+)
+;
+/*
+* Inicia a coleta de dados.
+*/
+limelight
+.
+start
+(
+)
+;
+while
+(
+opModeIsActive
+(
+)
+)
+{
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose
+(
+)
+;
+telemetry
+.
+addData
+(
+"tx"
+,
+result
+.
+getTx
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"ty"
+,
+result
+.
+getTy
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"Botpose"
+,
+botpose
+.
+toString
+(
+)
+)
+;
+}
+}
+}
+}
+}
+Para máxima precisão de localização 3D, chame
+updateRobotOrientation()
+e use
+getBotPose_MT2()
+:
+while
+(
+opModeIsActive
+(
+)
+)
+{
+YawPitchRollAngles
+orientation
+=
+imu
+.
+getRobotYawPitchRollAngles
+(
+)
+;
+limelight
+.
+updateRobotOrientation
+(
+orientation
+.
+getYaw
+(
+AngleUnit
+.
+DEGREES
+)
+)
+;
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose_MT2
+(
+)
+;
+// Use os dados de botpose
+}
+}
+}
+Para mais informações, consulte a
+página de Programação FTC
+8. Solução de Problemas
+​
+Indicadores de Luz de Status
+​
+Luz Verde
+: Pisca lentamente (sem alvos), pisca rapidamente (alvos detectados)
+Perguntas Frequentes
+​
+Por que meu Limelight está tão quente?
+Para que o Limelight funcione o mais frio possível, é necessário que ele esteja o mais quente possível/seguro ao toque. Seu invólucro é um dissipador de calor altamente condutor que ajuda a manter a CPU a uma temperatura razoavelmente fria.
+Por que a imagem parece tão granulada?
+Para minimizar a latência, vários filtros normalmente presentes em câmeras comerciais são ignorados. O stream também é comprimido para minimizar a taxa de bits. Em 2024.10.1, alteramos os valores padrão de balanço de cores para fazer as imagens parecerem mais naturais e vibrantes ao olho humano.
+O que o Limelight oferece em comparação ao OpenCV no Control Hub?
+Um algoritmo de localização multi-tag pronto para uso, sem código, com fusão de sensores IMU do robô, redes neurais e muito mais.

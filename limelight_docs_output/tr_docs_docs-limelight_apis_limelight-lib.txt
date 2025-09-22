@@ -1,0 +1,1876 @@
+FRC Programlama Limelight Lib ile (WPILib Java & C++)
+https://github.com/LimelightVision/limelightlib-wpijava
+https://github.com/LimelightVision/limelightlib-wpicpp
+JavaDocs:
+https://limelightlib-wpijava-reference.limelightvision.io
+Kullanım
+​
+Bu tek dosyalık bir kütüphanedir. Yapmanız gereken tek şey, en son sürümdeki (
+https://github.com/LimelightVision/limelightlib-wpijava/releases
+) LimelightHelpers.java dosyasını Java projenizin "robot" klasörüne kopyalamaktır. Limelight'larınız için herhangi bir nesne oluşturmanıza gerek yok - kütüphane, kullanım kolaylığını ve güvenilirliği en üst düzeye çıkarmak için basit ve işlevseldir.
+Başarı İçin İpuçları
+​
+Basit başlayın! Birçok başarılı FRC takımı temel yaklaşımları etkili bir şekilde kullanır. Örneğin, 2024'te 2056 numaralı takım, oyun parçası takibi için sinir ağları yerine standart 90FPS renk hattını kullandı.
+Gerçekten neye ihtiyacınız olduğunu düşünün: Tam saha lokalizasyonuna mı ihtiyacınız var, yoksa basit hedef merkezleme (örneğin,
+driveSpeed = result.getTx() * 0.03
+) yeterli olur mu?
+Temel Kavramlar
+​
+1. Temel Kullanım
+​
+Her metot bir Limelight isim parametresi kabul eder. "limelight" kullanmak için boş veya null bırakın:
+// Temel hedefleme verileri
+double
+tx
+=
+LimelightHelpers
+.
+getTX
+(
+""
+)
+;
+// Yatay olarak hedefin nişangahtan sapması (derece)
+double
+ty
+=
+LimelightHelpers
+.
+getTY
+(
+""
+)
+;
+// Dikey olarak hedefin nişangahtan sapması (derece)
+double
+ta
+=
+LimelightHelpers
+.
+getTA
+(
+""
+)
+;
+// Hedef alanı (görüntünün %0 ila %100'ü)
+boolean
+hasTarget
+=
+LimelightHelpers
+.
+getTV
+(
+""
+)
+;
+// Geçerli bir hedefiniz var mı?
+double
+txnc
+=
+LimelightHelpers
+.
+getTXNC
+(
+""
+)
+;
+// Yatay olarak hedefin ana pikselden/noktadan sapması (derece)
+double
+tync
+=
+LimelightHelpers
+.
+getTYNC
+(
+""
+)
+;
+// Dikey olarak hedefin ana pikselden/noktadan sapması (derece)
+2. Pipeline Yönetimi
+​
+Pipeline'lar, Limelight'ın görüntüleri nasıl işlediğini değiştiren anında değiştirilebilir programlar gibidir. Web arayüzünde 10 farklı pipeline kurabilirsiniz:
+// Pipeline 0'a geç
+LimelightHelpers
+.
+setPipelineIndex
+(
+""
+,
+0
+)
+;
+3. LED Kontrolü
+​
+Parlak aydınlatma LED'lerine sahip Limelight'lar için, farklı durumlar için LED'leri kontrol edebilirsiniz:
+// Mevcut pipeline'ın LED'leri kontrol etmesine izin ver
+LimelightHelpers
+.
+setLEDMode_PipelineControl
+(
+""
+)
+;
+// LED'leri zorla açık/kapalı/yanıp söner yap
+LimelightHelpers
+.
+setLEDMode_ForceOn
+(
+""
+)
+;
+LimelightHelpers
+.
+setLEDMode_ForceOff
+(
+""
+)
+;
+LimelightHelpers
+.
+setLEDMode_ForceBlink
+(
+""
+)
+;
+4. MegaTag ile Saha Konumlandırma
+​
+(Daha fazla ayrıntı için MegaTag belgelerine ve Swerve Konum Tahmini Öğreticisine bakın.)
+// Periyodik fonksiyonunuzda:
+LimelightHelpers
+.
+PoseEstimate
+limelightMeasurement
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+"limelight"
+)
+;
+if
+(
+limelightMeasurement
+.
+tagCount
+>=
+2
+)
+{
+// Sadece birden fazla etiket görüyorsak ölçüme güven
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+0.7
+,
+0.7
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+limelightMeasurement
+.
+pose
+,
+limelightMeasurement
+.
+timestampSeconds
+)
+;
+}
+5. MegaTag2 ile Saha Konumlandırma
+​
+(Daha fazla ayrıntı için MegaTag2 belgelerine ve Swerve Konum Tahmini Öğreticisine bakın.)
+MegaTag2, robot yönelim verilerini görüşle birleştirerek konumlandırma doğruluğunu artırır. Jiroskop verisi sağlayarak, MegaTag2'nin konumlandırma problemini sınırlamasına yardımcı olursunuz ve sadece tek bir etiket görünür olsa bile mükemmel sonuçlar elde edersiniz:
+// Önce, Limelight'a robotunuzun mevcut yönelimini söyleyin
+double
+robotYaw
+=
+m_gyro
+.
+getYaw
+(
+)
+;
+LimelightHelpers
+.
+SetRobotOrientation
+(
+""
+,
+robotYaw
+,
+0.0
+,
+0.0
+,
+0.0
+,
+0.0
+,
+0.0
+)
+;
+// Konum tahminini al
+LimelightHelpers
+.
+PoseEstimate
+limelightMeasurement
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+""
+)
+;
+// Konum tahmininize ekleyin
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.5
+,
+.5
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+limelightMeasurement
+.
+pose
+,
+limelightMeasurement
+.
+timestampSeconds
+)
+;
+6. Özel AprilTag İşlevselliği
+​
+// Gelişmiş performans için özel kırpma penceresi ayarlayın (her değer için -1 ile 1 arası)
+LimelightHelpers
+.
+setCropWindow
+(
+""
+,
+-
+0.5
+,
+0.5
+,
+-
+0.5
+,
+0.5
+)
+;
+// Robot merkezine göre kamera konumunu değiştirin (x ileri, y sol, z yukarı, derece)
+LimelightHelpers
+.
+setCameraPose_RobotSpace
+(
+""
+,
+0.5
+,
+// İleri ofset (metre)
+0.0
+,
+// Yan ofset (metre)
+0.5
+,
+// Yükseklik ofset (metre)
+0.0
+,
+// Yuvarlanma (derece)
+30.0
+,
+// Eğim (derece)
+0.0
+// Sapma (derece)
+)
+;
+// AprilTag ofset izleme noktasını ayarlayın (metre)
+LimelightHelpers
+.
+setFiducial3DOffset
+(
+""
+,
+0.0
+,
+// İleri ofset
+0.0
+,
+// Yan ofset
+0.5
+// Yükseklik ofset
+)
+;
+// AprilTag algılama yapılandırması
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+""
+,
+new
+int
+[
+]
+{
+1
+,
+2
+,
+3
+,
+4
+}
+)
+;
+// Sadece bu etiket ID'lerini izle
+LimelightHelpers
+.
+SetFiducialDownscalingOverride
+(
+""
+,
+2.0f
+)
+;
+// Gelişmiş kare hızı ve azaltılmış menzil için yarı çözünürlükte işle
+7. Python Entegrasyonu
+​
+Özel Python SnapScripts ile iletişim kurun:
+// Python'a veri gönder
+double
+[
+]
+dataToSend
+=
+{
+1.0
+,
+2.0
+,
+3.0
+}
+;
+LimelightHelpers
+.
+setPythonScriptData
+(
+""
+,
+dataToSend
+)
+;
+// Python'dan veri al
+double
+[
+]
+dataFromPython
+=
+LimelightHelpers
+.
+getPythonScriptData
+(
+""
+)
+;
+8. NetworkTables'dan Detaylı Sonuçlar Alma (RawTargets)
+​
+Maksimum performans için, JSON ayrıştırmayı atlayarak doğrudan NetworkTables'dan ham hedef verilerine erişebilirsiniz:
+// Ham AprilTag/Fiducial verilerini al
+RawFiducial
+[
+]
+fiducials
+=
+LimelightHelpers
+.
+getRawFiducials
+(
+""
+)
+;
+for
+(
+RawFiducial
+fiducial
+:
+fiducials
+)
+{
+int
+id
+=
+fiducial
+.
+id
+;
+// Etiket ID'si
+double
+txnc
+=
+fiducial
+.
+txnc
+;
+// X ofset (nişangahsız)
+double
+tync
+=
+fiducial
+.
+tync
+;
+// Y ofset (nişangahsız)
+double
+ta
+=
+fiducial
+.
+ta
+;
+// Hedef alanı
+double
+distToCamera
+=
+fiducial
+.
+distToCamera
+;
+// Kameraya uzaklık
+double
+distToRobot
+=
+fiducial
+.
+distToRobot
+;
+// Robota uzaklık
+double
+ambiguity
+=
+fiducial
+.
+ambiguity
+;
+// Etiket poz belirsizliği
+}
+// Ham sinir ağı dedektör sonuçlarını al
+RawDetection
+[
+]
+detections
+=
+LimelightHelpers
+.
+getRawDetections
+(
+""
+)
+;
+for
+(
+RawDetection
+detection
+:
+detections
+)
+{
+int
+classID
+=
+detection
+.
+classId
+;
+double
+txnc
+=
+detection
+.
+txnc
+;
+double
+tync
+=
+detection
+.
+tync
+;
+double
+ta
+=
+detection
+.
+ta
+;
+// Gerekirse köşe koordinatlarına eriş
+double
+corner0X
+=
+detection
+.
+corner0_X
+;
+double
+corner0Y
+=
+detection
+.
+corner0_Y
+;
+// ... 1-3 köşeleri de benzer şekilde mevcut
+}
+9. JSON'dan Detaylı Sonuçlar Alma (Results Nesnesi)
+​
+Results nesnesi, tüm Limelight veri türlerine kapsamlı erişim sağlar. RoboRIO'da ayrıştırması 2 ms'ye kadar sürebilir, bu nedenle FRC'de bu yaklaşımı kullanmanızı önermiyoruz:
+LimelightResults
+results
+=
+LimelightHelpers
+.
+getLatestResults
+(
+""
+)
+;
+if
+(
+results
+.
+valid
+)
+{
+// Renk/Retroreflektif hedefler
+if
+(
+results
+.
+targets_Retro
+.
+length
+>
+0
+)
+{
+LimelightTarget_Retro
+target
+=
+results
+.
+targets_Retro
+[
+0
+]
+;
+double
+skew
+=
+target
+.
+ts
+;
+// Hedef eğimi/dönüşü
+double
+shortSide
+=
+target
+.
+short_side
+;
+// En kısa kenar (piksel)
+double
+longSide
+=
+target
+.
+long_side
+;
+// En uzun kenar (piksel)
+Pose3d
+targetPose
+=
+target
+.
+getCameraPose_TargetSpace
+(
+)
+;
+}
+// AprilTags/Fiducials
+if
+(
+results
+.
+targets_Fiducials
+.
+length
+>
+0
+)
+{
+LimelightTarget_Fiducial
+tag
+=
+results
+.
+targets_Fiducials
+[
+0
+]
+;
+double
+id
+=
+tag
+.
+fiducialID
+;
+// Etiket ID'si
+String
+family
+=
+tag
+.
+fiducialFamily
+;
+// Etiket ailesi (örn. "16h5")
+// 3B Poz Verileri
+Pose3d
+robotPoseField
+=
+tag
+.
+getRobotPose_FieldSpace
+(
+)
+;
+// Robotun saha uzayındaki pozu
+Pose3d
+cameraPoseTag
+=
+tag
+.
+getCameraPose_TargetSpace
+(
+)
+;
+// Kameranın etikete göre pozu
+Pose3d
+robotPoseTag
+=
+tag
+.
+getRobotPose_TargetSpace
+(
+)
+;
+// Robotun etikete göre pozu
+Pose3d
+tagPoseCamera
+=
+tag
+.
+getTargetPose_CameraSpace
+(
+)
+;
+// Etiketin kameraya göre pozu
+Pose3d
+tagPoseRobot
+=
+tag
+.
+getTargetPose_RobotSpace
+(
+)
+;
+// Etiketin robota göre pozu
+// 2B hedefleme verileri
+double
+tx
+=
+tag
+.
+tx
+;
+// Nişangahtan yatay sapma
+double
+ty
+=
+tag
+.
+ty
+;
+// Nişangahtan dikey sapma
+double
+ta
+=
+tag
+.
+ta
+;
+// Hedef alanı (görüntünün %0-100'ü)
+}
+// Sinir ağı algılamaları
+if
+(
+results
+.
+targets_Detector
+.
+length
+>
+0
+)
+{
+LimelightTarget_Detector
+detection
+=
+results
+.
+targets_Detector
+[
+0
+]
+;
+String
+className
+=
+detection
+.
+className
+;
+double
+confidence
+=
+detection
+.
+confidence
+;
+double
+area
+=
+detection
+.
+ta
+;
+}
+// Sınıflandırıcı sonuçları
+if
+(
+results
+.
+targets_Classifier
+.
+length
+>
+0
+)
+{
+LimelightTarget_Classifier
+result
+=
+results
+.
+targets_Classifier
+[
+0
+]
+;
+String
+class_name
+=
+result
+.
+className
+;
+double
+confidence
+=
+result
+.
+confidence
+;
+int
+classID
+=
+(
+int
+)
+result
+.
+classID
+;
+}
+// Barkod/QR kod sonuçları
+if
+(
+results
+.
+targets_Barcode
+.
+length
+>
+0
+)
+{
+LimelightTarget_Barcode
+barcode
+=
+results
+.
+targets_Barcode
+[
+0
+]
+;
+String
+data
+=
+barcode
+.
+data
+;
+String
+family
+=
+barcode
+.
+family
+;
+}
+}
+10. Anlık Görüntü Yönetimi
+​
+Çevrimdışı pipeline ayarlaması için anlık görüntüler alın:
+// Daha sonra web arayüzünde görüntülemek için bir anlık görüntü alın
+LimelightHelpers
+.
+takeSnapshot
+(
+""
+,
+"auto_shot_1"
+)
+;
+11. Çeşitli İşlevler
+​
+// Akış modlarını değiştir
+LimelightHelpers
+.
+setStreamMode_Standard
+(
+""
+)
+;
+// Yan yana akışlar
+LimelightHelpers
+.
+setStreamMode_PiPMain
+(
+""
+)
+;
+// İkincil akış k öşede
+LimelightHelpers
+.
+setStreamMode_PiPSecondary
+(
+""
+)
+;
+// Birincil akış köşede
+LimelightHelpers Statik Metodları
+​
+Hedef Verisi
+​
+public
+static
+boolean
+getTV
+(
+String
+limelightName
+)
+public
+static
+double
+getTX
+(
+String
+limelightName
+)
+public
+static
+double
+getTY
+(
+String
+limelightName
+)
+public
+static
+double
+getTXNC
+(
+String
+limelightName
+)
+public
+static
+double
+getTYNC
+(
+String
+limelightName
+)
+public
+static
+double
+getTA
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getT2DArray
+(
+String
+limelightName
+)
+public
+static
+int
+getTargetCount
+(
+String
+limelightName
+)
+public
+static
+RawFiducial
+[
+]
+getRawFiducials
+(
+String
+limelightName
+)
+public
+static
+RawDetection
+[
+]
+getRawDetections
+(
+String
+limelightName
+)
+Sinir Ağı Sonuçları
+​
+public
+static
+int
+getClassifierClassIndex
+(
+String
+limelightName
+)
+public
+static
+int
+getDetectorClassIndex
+(
+String
+limelightName
+)
+public
+static
+String
+getClassifierClass
+(
+String
+limelightName
+)
+public
+static
+String
+getDetectorClass
+(
+String
+limelightName
+)
+Konum Tahmini
+​
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiRed
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiRed_MegaTag2
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_wpiRed
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getCameraPose3d_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getTargetPose3d_CameraSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getTargetPose3d_RobotSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getCameraPose3d_RobotSpace
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d_wpiRed
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_wpiRed
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getCameraPose_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetPose_CameraSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetPose_RobotSpace
+(
+String
+limelightName
+)
+Kamera/Pipeline Yapılandırması
+​
+public
+static
+void
+setPipelineIndex
+(
+String
+limelightName
+,
+int
+pipelineIndex
+)
+public
+static
+void
+setPriorityTagID
+(
+String
+limelightName
+,
+int
+ID
+)
+public
+static
+double
+getCurrentPipelineIndex
+(
+String
+limelightName
+)
+public
+static
+String
+getCurrentPipelineType
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_PipelineControl
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceOff
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceBlink
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceOn
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_Standard
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_PiPMain
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_PiPSecondary
+(
+String
+limelightName
+)
+public
+static
+void
+setCropWindow
+(
+String
+limelightName
+,
+double
+cropXMin
+,
+double
+cropXMax
+,
+double
+cropYMin
+,
+double
+cropYMax
+)
+public
+static
+void
+setCameraPose_RobotSpace
+(
+String
+limelightName
+,
+double
+forward
+,
+double
+side
+,
+double
+up
+,
+double
+roll
+,
+double
+pitch
+,
+double
+yaw
+)
+Gelişmiş AprilTag/Fiducial Ayarları
+​
+public
+static
+void
+setFiducial3DOffset
+(
+String
+limelightName
+,
+double
+offsetX
+,
+double
+offsetY
+,
+double
+offsetZ
+)
+public
+static
+void
+SetRobotOrientation
+(
+String
+limelightName
+,
+double
+yaw
+,
+double
+yawRate
+,
+double
+pitch
+,
+double
+pitchRate
+,
+double
+roll
+,
+double
+rollRate
+)
+public
+static
+void
+SetFiducialIDFiltersOverride
+(
+String
+limelightName
+,
+int
+[
+]
+validIDs
+)
+public
+static
+void
+SetFiducialDownscalingOverride
+(
+String
+limelightName
+,
+float
+downscale
+)
+Sonuçlar ve Veri Erişimi
+​
+public
+static
+double
+getLatency_Pipeline
+(
+String
+limelightName
+)
+public
+static
+double
+getLatency_Capture
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetColor
+(
+String
+limelightName
+)
+public
+static
+double
+getFiducialID
+(
+String
+limelightName
+)
+public
+static
+String
+getNeuralClassID
+(
+String
+limelightName
+)
+public
+static
+String
+[
+]
+getRawBarcodeData
+(
+String
+limelightName
+)
+public
+static
+String
+getJSONDump
+(
+String
+limelightName
+)
+public
+static
+LimelightResults
+getLatestResults
+(
+String
+limelightName
+)
+Python Komut Dosyası Arayüzü
+​
+public
+static
+void
+setPythonScriptData
+(
+String
+limelightName
+,
+double
+[
+]
+outgoingPythonData
+)
+public
+static
+double
+[
+]
+getPythonScriptData
+(
+String
+limelightName
+)
+Yardımcı Metodlar
+​
+public
+static
+CompletableFuture
+<
+Boolean
+>
+takeSnapshot
+(
+String
+tableName
+,
+String
+snapshotName
+)
+public
+static
+NetworkTable
+getLimelightNTTable
+(
+String
+tableName
+)
+public
+static
+NetworkTableEntry
+getLimelightNTTableEntry
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+double
+getLimelightNTDouble
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+void
+setLimelightNTDouble
+(
+String
+tableName
+,
+String
+entryName
+,
+double
+val
+)
+public
+static
+void
+setLimelightNTDoubleArray
+(
+String
+tableName
+,
+String
+entryName
+,
+double
+[
+]
+val
+)
+public
+static
+double
+[
+]
+getLimelightNTDoubleArray
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+String
+getLimelightNTString
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+URL
+getLimelightURLString
+(
+String
+tableName
+,
+String
+request
+)
+Temel Sınıflar
+​
+PoseEstimate
+​
+3B Konum Tahmini temsil eder
+Genel Özellikler:
+Pose2d pose
+- Tahmin edilen konum
+double timestampSeconds
+- Tahminin zaman damgası
+double latency
+- İşlem gecikmesi
+int tagCount
+- Kullanılan etiket sayısı
+double tagSpan
+- Algılanan etiketler arasındaki mesafe
+double avgTagDist
+- Etiketlere ortalama mesafe
+double avgTagArea
+- Etiketlerin ortalama alanı
+RawFiducial[] rawFiducials
+- Ham fiducial algılamaları
+boolean isMegaTag2
+- Bunun bir MegaTag2 sonucu olup olmadığı
+(NetworkTables-türetilmiş) RawFiducial
+​
+Ham AprilTag/Fiducial algılama verilerini temsil eder
+Genel Özellikler:
+int id
+- AprilTag ID numarası
+double txnc
+- Kamera merkezinden yatay ofset (derece)
+double tync
+- Kamera merkezinden dikey ofset (derece)
+double ta
+- Hedef alanı (görüntünün %0-100'ü)
+double distToCamera
+- Kameradan hedefe olan mesafe (metre)
+double distToRobot
+- Robottan hedefe olan mesafe (metre)
+double ambiguity
+- AprilTag konum belirsizlik puanı
+(NetworkTables-türetilmiş) RawDetection
+​
+Ham sinir ağı algılama verilerini temsil eder
+Genel Özellikler:
+int classId
+- Sinir ağı sınıf ID'si
+double txnc
+- Kamera merkezinden yatay ofset (derece)
+double tync
+- Kamera merkezinden dikey ofset (derece)
+double ta
+- Hedef alanı (görüntünün %0-100'ü)
+double corner0_X
+- Birinci köşe X koordinatı
+double corner0_Y
+- Birinci köşe Y koordinatı
+double corner1_X
+- İkinci köşe X koordinatı
+double corner1_Y
+- İkinci köşe Y koordinatı
+double corner2_X
+- Üçüncü köşe X koordinatı
+double corner2_Y
+- Üçüncü köşe Y koordinatı
+double corner3_X
+- Dördüncü köşe X koordinatı
+double corner3_Y
+- Dördüncü köşe Y koordinatı
+(JSON-türetilmiş) LimelightResults
+​
+Bir Limelight'ın JSON çıktısından gelen tüm sonuçları içerir
+Genel Özellikler:
+String error
+- Varsa hata mesajı
+double pipelineID
+- Mevcut pipeline indeksi
+double latency_pipeline
+- Pipeline işleme gecikmesi (ms)
+double latency_capture
+- Görüntü yakalama gecikmesi (ms)
+double latency_jsonParse
+- JSON ayrıştırma gecikmesi (ms)
+double timestamp_LIMELIGHT_publish
+- Verilerin yayınlandığı zaman damgası
+double timestamp_RIOFPGA_capture
+- RoboRIO FPGA'nın verileri yakaladığı zaman damgası
+boolean valid
+- Hedefin geçerli olup olmadığı
+double[] botpose
+- Saha uzayında robot konumu
+double[] botpose_wpired
+- WPILib Kırmızı ittifak uzayında robot konumu
+double[] botpose_wpiblue
+- WPILib Mavi ittifak uzayında robot konumu
+double botpose_tagcount
+- Konum tahmini için kullanılan etiket sayısı
+double botpose_span
+- Algılanan etiketler arasındaki mesafe
+double botpose_avgdist
+- Algılanan etiketlere ortalama mesafe
+double botpose_avgarea
+- Algılanan etiketlerin ortalama alanı
+double[] camerapose_robotspace
+- Robota göre kamera konumu
+LimelightTarget_Retro[] targets_Retro
+- Retroreflektif hedeflerin dizisi
+LimelightTarget_Fiducial[] targets_Fiducials
+- AprilTag hedeflerinin dizisi
+LimelightTarget_Classifier[] targets_Classifier
+- Sınıflandırıcı sonuçlarının dizisi
+LimelightTarget_Detector[] targets_Detector
+- Dedektör sonuçlarının dizisi
+LimelightTarget_Barcode[] targets_Barcode
+- Barkod sonuçlarının dizisi
+Genel Metotlar:
+Pose3d getBotPose3d()
+Pose3d getBotPose3d_wpiRed()
+Pose3d getBotPose3d_wpiBlue()
+Pose2d getBotPose2d()
+Pose2d getBotPose2d_wpiRed()
+Pose2d getBotPose2d_wpiBlue()
+(JSON-türetilmiş) LimelightTarget_Retro
+​
+Renk/Retroreflektif Hedef Sonucunu temsil eder
+Genel Özellikler:
+double ta
+- Hedef alanı (görüntünün %0-100'ü)
+double tx
+- Artı işaretinden hedefe yatay ofset (-29.8 ila 29.8 derece)
+double ty
+- Artı işaretinden hedefe dikey ofset (-24.85 ila 24.85 derece)
+double tx_pixels
+- Piksel cinsinden yatay ofset
+double ty_pixels
+- Piksel cinsinden dikey ofset
+double tx_nocrosshair
+- Kamera merkezinden yatay ofset
+double ty_nocrosshair
+- Kamera merkezinden dikey ofset
+double ts
+- Hedef eğimi veya dönüşü (-90 ila 0 derece)
+Genel Metotlar:
+Pose3d getCameraPose_TargetSpace()
+Pose3d getRobotPose_FieldSpace()
+Pose3d getRobotPose_TargetSpace()
+Pose3d getTargetPose_CameraSpace()
+Pose3d getTargetPose_RobotSpace()
+Pose2d getCameraPose_TargetSpace2D()
+Pose2d getRobotPose_FieldSpace2D()
+Pose2d getRobotPose_TargetSpace2D()
+Pose2d getTargetPose_CameraSpace2D()
+Pose2d getTargetPose_RobotSpace2D()
+(JSON-türetilmiş) LimelightTarget_Fiducial
+​
+AprilTag/Fiducial Hedef Sonucunu temsil eder
+Genel Özellikler:
+double fiducialID
+- AprilTag ID numarası
+String fiducialFamily
+- AprilTag aile türü
+LimelightTarget_Retro'dan gelen tüm özellikler
+Genel Metotlar:
+LimelightTarget_Retro'dan gelen tüm metotlar
+(JSON-türetilmiş) LimelightTarget_Barcode
+​
+Barkod Hedef Sonucunu temsil eder
+Genel Özellikler:
+String family
+- Barkod aile türü (örn. "QR", "DataMatrix")
+String data
+- Çözümlenmiş barkod veri içeriği
+double tx_pixels
+- Piksel cinsinden yatay ofset
+double ty_pixels
+- Piksel cinsinden dikey ofset
+double tx
+- Artı işaretinden yatay ofset
+double ty
+- Artı işaretinden dikey ofset
+double tx_nocrosshair
+- Kamera merkezinden yatay ofset
+double ty_nocrosshair
+- Kamera merkezinden dikey ofset
+double ta
+- Hedef alanı
+double[][] corners
+- Köşe koordinatları
+Genel Metotlar:
+String getFamily()
+(JSON-türetilmiş) LimelightTarget_Classifier
+​
+Sinir Ağı Sınıflandırıcı Pipeline Sonucunu temsil eder
+Genel Özellikler:
+String className
+- Algılanan sınıf adı
+double classID
+- Algılanan sınıf ID numarası
+double confidence
+- Algılama güveni (%0-100)
+double zone
+- Algılama bölgesi
+double tx
+- Artı işaretinden yatay ofset
+double ty
+- Artı işaretinden dikey ofset
+double txp
+- Piksel cinsinden yatay ofset
+double typ
+- Piksel cinsinden dikey ofset
+(JSON-türetilmiş) LimelightTarget_Detector
+​
+Sinir Ağı Dedektör Pipeline Sonucunu temsil eder
+Genel Özellikler:
+String className
+- Algılanan sınıf adı
+double classID
+- Algılanan sınıf ID numarası
+double confidence
+- Algılama güveni (%0-100)
+double ta
+- Hedef alanı
+double tx
+- Artı işaretinden yatay ofset
+double ty
+- Artı işaretinden dikey ofset
+double txp
+- Piksel cinsinden yatay ofset
+double typ
+- Piksel cinsinden dikey ofset
+double tx_nocrosshair
+- Kamera merkezinden yatay ofset
+double ty_nocrosshair
+- Kamera merkezinden dikey ofset

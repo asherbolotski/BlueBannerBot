@@ -1,0 +1,242 @@
+2017 燃料发射器机器人
+在这个例子中，我们展示了一个完整的机器人程序，它实现了2017年锅炉目标。我们在987 steamworks机器人上测试了这个程序，并能够轻松地将燃料投入锅炉。在这个例子中，我们使用机器人的传动系统来瞄准并移动到合适的范围。我们立即发现的一点是，与我们真正的2017年机器人相比，limelight让我们能够用极少的代码量和时间来实现这个功能。
+下面的代码中还有一些其他功能，比如闪烁LED的能力和动态切换多个视觉管道的能力。这个例子还展示了如何使用Talon SRX速度控制器和磁性编码器来控制发射轮的RPM。
+#include <iostream>
+#include <string>
+#include <Drive/DifferentialDrive.h>
+#include <Joystick.h>
+#include <SampleRobot.h>
+#include <SmartDashboard/SendableChooser.h>
+#include <SmartDashboard/SmartDashboard.h>
+#include <Spark.h>
+#include <Victor.h>
+#include <Timer.h>
+#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
+//
+#define Vic_Drive_Left_1 0
+#define Vic_Drive_Left_2 1
+#define Vic_Drive_Right_1 2
+#define Vic_Drive_Right_2 3
+#define Tal_Shooter_Wheel 21
+#define Tal_Shooter_Wheel_2 2
+#define Tal_Intake 3
+#define Tal_Uptake 9
+class Robot : public frc::SampleRobot
+{
+public:
+Robot() :
+LeftDrive(Vic_Drive_Left_1),
+RightDrive(Vic_Drive_Right_1),
+LeftDrive2(Vic_Drive_Left_2),
+RightDrive2(Vic_Drive_Right_2),
+Shooter(Tal_Shooter_Wheel),
+Shooter_2(Tal_Shooter_Wheel_2),
+Intake(Tal_Intake),
+Uptake(Tal_Uptake)
+{
+// 这段代码设置两个Talon协同工作并实现PID RPM控制
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.SetClosedLoopOutputDirection(false);
+Shooter.SetStatusFrameRateMs(CTRE::MotorControl::CAN::TalonSRX::StatusFrameRateAnalogTempVbat,10);
+Shooter.SetFeedbackDevice(CTRE::MotorControl::CAN::TalonSRX::CtreMagEncoder_Relative);
+SetShooterConstants(.0002f, .00009f, .0000f, .000006f);  // 发射轮的P,I,D,F常数
+Shooter.SetAllowableClosedLoopErr(10);
+Shooter.ConfigNominalOutputVoltage(+0.f,-0.f);
+Shooter.ConfigPeakOutputVoltage(+12.f,-12.f);
+Shooter.SelectProfileSlot(0);
+Shooter.SetSensorDirection(true);
+Shooter.SetVoltageRampRate(100);
+Shooter.SetIzone(300);
+Shooter_2.SetVoltageRampRate(100);
+}
+void RobotInit()
+{
+}
+void Autonomous()
+{
+}
+/*
+* 操作员控制
+*/
+void OperatorControl() override
+{
+while (IsOperatorControl() && IsEnabled())
+{
+// 读取操纵杆！
+float left_command = m_stickLeft.GetY();
+float right_command = m_stickRight.GetY();
+// 获取limelight表格以读取跟踪数据
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float KpAim = 0.045;
+float KpDist = 0.0f; //0.09;
+float AimMinCmd = 0.095f;
+float targetX = table->GetNumber("tx", 0);
+float targetY = table->GetNumber("ty", 0);
+float targetA = table->GetNumber("ta", 0);
+// 基于校准的limelight十字准线的瞄准误差和距离误差
+float aim_error = targetX;
+float dist_error = targetY;
+// 转向调整，带有0.2度的死区（0.2度足够接近）
+float steeringAdjust = KpAim*aim_error;
+if (targetX > .2f) steeringAdjust += AimMinCmd;
+else if (targetX < -.2f) steeringAdjust -= AimMinCmd;
+// 距离调整，驱动到离目标的正确距离
+float drivingAdjust = KpDist*dist_error;
+bool doTarget = false;
+if(m_stickLeft.GetRawButton(3))         // 使用管道0进行瞄准
+{
+doTarget = true;
+table->PutNumber("pipeline", 0);
+}
+else if (m_stickLeft.GetRawButton(2))   // 使用管道1进行瞄准
+{
+doTarget = true;
+table->PutNumber("pipeline", 1);
+}
+if(doTarget)                            // 如果自动瞄准，调整驱动和转向
+{
+ShooterSetRPM(3300);
+left_command += drivingAdjust - steeringAdjust;
+right_command += drivingAdjust + steeringAdjust;
+}
+else
+{
+ShooterOff();
+}
+// 坦克驱动，发送左右传动系统电机命令
+StandardTank(left_command,right_command);
+if(m_stickRight.GetRawButton(3))        // 吸入并发射球
+{
+IntakeIn();
+UptakeUp();
+}
+else if(m_stickRight.GetRawButton(2))   // 吐出球
+{
+IntakeIn();
+UptakeDown();
+}
+else                                    // 不要动球！
+{
+IntakeOff();
+UptakeOff();
+}
+if(m_stickLeft.GetRawButton(5))         // 操纵杆按钮5 = 闪烁LED
+{
+table->PutNumber("ledMode", 2); //闪烁灯光
+}
+else
+{
+table->PutNumber("ledMode", 0); //打开灯光
+}
+// 等待电机更新时间
+frc::Wait(0.005);
+}
+}
+/*
+* 测试模式下运行
+*/
+void Test() override {}
+void StandardTank(float left, float right)
+{
+LeftDrive.Set(-left);
+LeftDrive2.Set(-left);
+RightDrive.Set(right);
+RightDrive2.Set(right);
+}
+//
+// 发射器功能 - 使用talon PID控制发射轮RPM
+// 在Talon中设置P,I,D,F常数，这些值很大程度上取决于你的机构
+//
+void SetShooterConstants(float p,float i,float d,float f)
+{
+p *= 1024.f;
+i *= 1024.f;
+d *= 1024.f;
+f *= 1024.f;
+Shooter.SetP(p);
+Shooter.SetI(i);
+Shooter.SetD(d);
+Shooter.SetF(f);
+}
+//
+// 告诉talon我们期望的发射轮RPM
+//
+void ShooterSetRPM(float desrpm)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.Set(desrpm);
+}
+//
+// 只设置功率-1..+1，现在RPM控制已设置好，不再使用此功能
+//
+void ShooterSetPower(float power)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.Set(power);
+Shooter.Set(power);
+}
+//
+// 关闭发射轮
+//
+void ShooterOff()
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter.Set(0.0f);
+Shooter_2.Set(0.0f);
+}
+//
+// 进球功能
+//
+void IntakeIn()
+{
+Intake.Set(-.8f);
+}
+void IntakeOut()
+{
+Intake.Set(.8f);
+}
+void IntakeShooting()
+{
+Intake.Set(-1.0f);
+}
+void IntakeOff()
+{
+Intake.Set(0);
+}
+//
+// 上升功能
+//
+void UptakeUp()
+{
+Uptake.Set(-1.0f);
+}
+void UptakeDown()
+{
+Uptake.Set(1.0f);
+}
+void UptakeOff()
+{
+Uptake.Set(0);
+}
+private:
+// 机器人驱动系统
+frc::Victor LeftDrive;
+frc::Victor RightDrive;
+frc::Victor LeftDrive2;
+frc::Victor RightDrive2;
+// 发射轮
+CTRE::MotorControl::CAN::TalonSRX Shooter;
+CTRE::MotorControl::CAN::TalonSRX Shooter_2;
+CTRE::MotorControl::CAN::TalonSRX Intake;
+CTRE::MotorControl::CAN::TalonSRX Uptake;
+// 操纵杆输入
+frc::Joystick m_stickLeft{0};
+frc::Joystick m_stickRight{1};
+};
+START_ROBOT_CLASS(Robot)

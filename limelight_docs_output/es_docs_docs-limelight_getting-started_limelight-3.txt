@@ -1,0 +1,190 @@
+Limelight 3 Inicio Rápido
+Especificaciones de Hardware
+​
+Dimensiones: 3.174in x 1.930in (80.61mm x 49.01mm)
+Grosor: 1.160in (29.46mm)
+Masa: 0.17 lb
+Montaje con orificios pasantes #10 / M4
+Entrada de alimentación: 4.1V-16V
+Entrada de alimentación (variante Limelight 3 con botón rojo 2025): 4.1V-24V 30V máximo absoluto
+7W consumo máximo de energía
+Iluminación LED: 600 lúmenes, iluminación verde
+Sensor: OV5647 Color Rolling Shutter (640x480 @ 90FPS)
+Lente M12 reemplazable
+62.5° Campo de visión horizontal, 48.9° Campo de visión vertical
+Carcasa de ABS negro
+Puerto Ethernet RJ45 10/100
+Puerto USB-A Host 5Gbps
+Puerto CAN Bus
+Puerto I2C
+Luces de estado: Verde (detección de objetivo), Amarillo (estado de red)
+Soporte para acelerador de redes neuronales Google Coral USB
+Capacidades de Software (Limelight OS)
+​
+Visión de alto rendimiento Plug-and-Play. No se requiere experiencia.
+Interfaz de usuario basada en navegador autoalojada para configuración de pipeline de visión
+Soporte para REST/HTTP, Websocket, NetworkTables, ModbusTCP y ROS
+Exposición fija configurable, ganancia del sensor, resolución y velocidad de fotogramas.
+Configure 10 Pipelines de Visión intercambiables en caliente:
+Pipelines personalizados en Python con OpenCV 4.10, numpy, etc.
+Seguimiento de AprilTag en 2D, 3D y localización del robot
+Localización 3D completa (GPS del robot) con MegaTag1
+Localización 3D completa de mayor precisión (GPS del robot) con fusión de IMU externa con MegaTag2
+20fps @ 1280x960 (reducción 2x), 50fps @ 640x480 (reducción 2x)
+Visualizador 3D completo en interfaz web
+Pipelines de detección de manchas de color a 90FPS
+Pipelines de detección de objetos con redes neuronales
+Pipelines de clasificación de imágenes con redes neuronales
+Pipelines de seguimiento de códigos de barras
+Pipeline de visor para transmisión de baja latencia
+Interfaz de calibración de intrínsecos Charuco incorporada para pipelines de visión de alta precisión.
+Visualización de calibración de intrínsecos
+Transmisión MJPEG incorporada de baja latencia. Orientación de transmisión configurable
+1. Montaje de Limelight 3
+​
+Montaje con orificios pasantes
+​
+Use tornillos #10-32 o #10-24 de 1 1/4" con tuercas nylock
+Alternativamente, use pernos M4 de 38mm con tuercas nylock
+Use arandelas de plástico para preservar el acabado de la carcasa
+2. Cableado de Limelight 3
+​
+Alimentación
+​
+Conecte dos cables de 18-20AWG desde su Limelight a una ranura en su PDP/PDH
+Añada un disyuntor de 5A a la misma ranura
+Importante
+: Se recomienda encarecidamente un VRM dedicado para la protección del LL3 pre-2025 (botón blanco) contra descargas de carga debido a eventos de frenado regenerativo de transmisión swerve + desconexión de batería
+(No obligatorio) Use férulas Weidmuller para obtener resultados óptimos (En la imagen, cable 20AWG con férulas naranjas Weidmuller 20AWG)
+Férulas:
+https://www.digikey.com/en/products/detail/weidm%C3%BCller/0409500000/491834
+https://store.ctr-electronics.com/products/weidmuller-ferrule-pack-of-20?variant=43631135195309
+Herramientas de crimpado de férulas de bajo costo:
+https://store.ctr-electronics.com/products/ferrule-crimper-by-iwiss?_pos=2&_sid=616edc4f4&_ss=r
+https://www.amazon.com/Ferrule-Crimping-Hexagonal-Ferrules-Connectors/dp/B09724DCJH?th=1
+Ethernet
+​
+Conecte un cable ethernet desde su Limelight hasta el radio de su robot
+Use cables Cat6 trenzados con cables flexibles (idealmente 20AWG)
+Añada un alivio de tensión a su cable ethernet
+3. Acceso a la Interfaz Web
+​
+Después de conectar su Limelight 3 a su red:
+Encienda su robot y conecte su portátil a la red de su robot
+Use uno de estos métodos para acceder a la interfaz web:
+Método 1
+: Abra la aplicación Limelight Hardware Manager, busque Limelights y haga doble clic en su Limelight cuando aparezca
+Método 2
+: Abra un navegador web y navegue a
+http://limelight.local:5801
+Método 3
+: Abra un navegador web y navegue a la dirección IP estática de su Limelight con el puerto 5801 (si está configurado)
+Una vez conectado, tendrá acceso a:
+Pestaña de Configuración - Configure el número de equipo, nombre de host y otros ajustes del sistema
+Pestañas de Pipeline de Visión - Configure y ajuste sus pipelines de procesamiento de visión
+Pestaña de Cámara y Retícula - Ajuste la configuración de la cámara y los parámetros de la retícula
+Pestaña de Visualización 3D - Vea la detección y localización de AprilTag en tiempo real
+Toda la configuración se realiza a través de esta interfaz web. Los cambios se guardan automáticamente en su Limelight.
+4. Actualización de LimelightOS
+​
+precaución
+Haga una copia de seguridad de sus pipelines y scripts antes de actualizar - ¡se borrarán durante este proceso!
+Apague su Limelight
+Descargue los últimos
+controladores USB, imagen de Limelight OS y herramienta Balena Flash
+Conecte un cable USB->USB-C desde su portátil a su Limelight (su Limelight se encenderá automáticamente)
+Ejecute "Balena Etcher" como administrador
+Puede tomar hasta 20 segundos para que su máquina reconozca la cámara
+Seleccione la imagen .zip más reciente en su carpeta de descargas
+Seleccione un dispositivo "Compute Module" en el menú "Drives"
+Haga clic en "Flash"
+Una vez completada la grabación, retire el cable USB de su Limelight
+info
+Conecte el cable USB-C solo durante la grabación. Limelight entra en un modo especial de grabación mientras el cable USB está conectado. No podrá acceder a la interfaz web mientras Limelight está en modo de grabación.
+5. Configuración de Red
+​
+Configuración del Número de Equipo (Requerido para FRC / Networktables)
+​
+Encienda su robot y conecte su portátil a la red de su robot
+Abra el Limelight Hardware Manager, busque Limelights y haga doble clic en la entrada que aparece
+Alternativamente, navegue a
+http://limelight.local:5801
+Vaya a la pestaña "Settings"
+Ingrese su número de equipo y presione "Update Team Number"
+Configuración de un Nombre de Host Único (Solo requerido para sistemas FRC / Networktables con múltiples Limelights)
+​
+Si está utilizando múltiples Limelights, cada Limelight debe tener un nombre de host único
+En la pestaña de configuración, configure un nombre de host y haga clic en el botón "set hostname"
+Configuración de IP Estática (Recomendado, no obligatorio)
+​
+Cambie "IP Assignment" a "Static"
+Establezca la dirección IP a "10.TE.AM.11"
+El equipo 916 usa 10.9.16.xx
+El equipo 9106 usa 10.91.6.xx
+El equipo 9016 usa 10.90.16.xx
+Establezca la Máscara de red a "255.255.255.0"
+Establezca la Puerta de enlace a "10.TE.AM.1"
+Haga clic en "Update"
+Reinicie su robot
+Acceda a su panel de configuración en 10.TE.AM.11:5801 y a la transmisión de la cámara en 10.TE.AM.11:5800
+Si está utilizando múltiples Limelights, asigne a cada Limelight una dirección IP estática única
+P. ¿Por qué recomendamos el uso de una dirección IP estática?
+R. Reduce varios segundos del tiempo de arranque de Limelight.
+En segundo lugar, los equipos históricamente han tenido problemas con la asignación DHCP y
+los respondedores mDNS en campos FRC reales y con el firmware de radio de eventos.
+Recomendamos configurar direcciones IP estáticas en su robo-rio y estación de conducción también.
+La configuración de red a utilizar en todos estos dispositivos se puede encontrar cerca de la mitad inferior de
+esta página web
+6. Control de los LEDs
+​
+Limelight 3 incluye LEDs de iluminación verde incorporados con 600 lúmenes de salida. Estos LEDs se pueden controlar de varias maneras:
+A través de la Interfaz Web
+​
+Navegue a la pestaña Camera & Crosshair en la interfaz web
+Use el menú desplegable LED Mode para seleccionar:
+On - Siempre encendido
+Off - Siempre apagado
+Blink - Parpadeo de los LEDs
+Pipeline - Los LEDs se encienden cuando se detecta un objetivo
+A través de NetworkTables o API
+​
+Establezca el valor "ledMode":
+0: Predeterminado del pipeline
+1: Forzar apagado
+2: Forzar parpadeo
+3: Forzar encendido
+7. Actualización a Limelight 3 Global Shutter
+​
+Imprima la nueva mitad frontal de la carcasa
+https://downloads.limelightvision.io/cad/ll3_conversion_stl.stl
+https://downloads.limelightvision.io/cad/ll3_conversion_step.stp
+Nota - puede usar la carcasa original, pero solo funcionarán los dos orificios de montaje superiores para el nuevo módulo de cámara.
+Conecte el siguiente módulo de cámara ov9281 (no conecte la placa LED)
+https://www.robotshop.com/products/ov9281-110-mono-camera-for-raspberry-pi-global-shutter-1mp
+Descargue la imagen Limelight 3G desde la página de Descargas
+¡Eso es todo!
+8. Solución de Problemas
+​
+Indicadores de Luz de Estado
+​
+Luz Verde
+: Parpadea lentamente (sin objetivos), parpadea rápidamente (objetivos detectados)
+Luz Amarilla
+: Parpadea (sin IP estática), fija (IP estática asignada)
+Patrones de Diagnóstico LED
+​
+Parpadeo alternado Izquierda/Derecha o Superior/Inferior
+: El cable interno de la cámara se ha desconectado o el sensor de imagen está dañado
+Parpadeo Rápido (todos los LEDs)
+: El botón de reinicio de red se ha mantenido presionado durante al menos 10 segundos
+Secuencia de Inicio Repetida
+: El software está fallando, posiblemente debido a daños en el hardware
+Si limelight.local:5801 no funciona
+​
+Compruebe si tiene Bonjour instalado (Windows: agregar/quitar programas)
+Desinstale "bonjour print services" si tiene dos elementos Bonjour
+Instale Bonjour desde la página de Descargas si falta
+Restablecer dirección IP
+​
+Mantenga presionado el botón de configuración durante 10 segundos después de que su Limelight haya arrancado
+La configuración de red se restablecerá a direccionamiento dinámico en el próximo arranque

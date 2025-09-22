@@ -1,0 +1,961 @@
+FTC Java ve Blockly Programlama Kılavuzu
+(Blockly ekran görüntüleri yakında gelecek!)
+FTC Programlama Hızlı Başlangıç
+kılavuzunu okuduğunuzdan emin olun.
+FTC Limelight Javadoc:
+Javadoc
+Temel FTC Örneği:
+FTC Örneği
+Tüm Örnekler Deposu:
+Limelight FTC Örnekler Deposu
+Başarı İçin İpuçları
+​
+Önce basit olanı yapın. FRC'de, en iyi yazılım takımlarının genellikle en basit yaklaşımları kullandığını öğrendik. Örneğin, FRC Takım 2056, 2024'te oyun parçalarını takip etmek için sinir ağı yerine standart 90FPS renk hattını kullandı.
+Programlamaya başlarken soracağınız soru türüne bir örnek: Teleop'ta, robotunuzun sahadaki konumunu bilmeniz mi gerekiyor, yoksa belirli bir etikete nişangâhınız ortalanana kadar yana kaymanız mı yeterli (strafeSpeed = result.getTx()*.03)?
+Temel Kavramlar
+​
+1. Başlatma
+​
+Robot kodumuza Limelight3A'yı kurmamız gerekiyor.
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLResult
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLResultTypes
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLStatus
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+Limelight3A
+;
+Limelight3A
+limelight
+;
+@Override
+public
+void
+init
+(
+)
+{
+limelight
+=
+hardwareMap
+.
+get
+(
+Limelight3A
+.
+class
+,
+"limelight"
+)
+;
+limelight
+.
+setPollRateHz
+(
+100
+)
+;
+// Bu, Limelight'tan ne sıklıkla veri istediğimizi ayarlar (saniyede 100 kez)
+limelight
+.
+start
+(
+)
+;
+// Bu, Limelight'a bakmaya başlamasını söyler!
+}
+2. Pipeline Yönetimi
+​
+Pipeline'lar, Limelight'ın dünyaya nasıl baktığını değiştiren küçük, anında değiştirilebilir programlar gibidir. Limelight web arayüzünde, her biri farklı bir görev için 10 farklı pipeline kurabilirsiniz. İşte aralarında nasıl geçiş yaparsınız:
+limelight
+.
+pipelineSwitch
+(
+0
+)
+;
+// 0 numaralı pipeline'a geç
+Bu, unut-gitsin türünde bir işlemdir. Limelight pipeline'ını milisaniyeler içinde değiştirecektir, ancak kodunuz devam etmeden önce bunun için beklemeyecektir. Mevcut pipeline indeksini kontrol etmek istiyorsanız, şunu çağırın:
+result.getPipelineIndex()
+LLResult nesnesini nasıl alacağınızı öğrenmek için bir sonraki bölüme bakın.
+3. Sonuçları Alma ve Kullanma
+​
+LLResult, Limelight'ın gördüğü şeyler hakkında bilgi dolu bir kap gibidir. İşte bu bilgileri nasıl alır ve kullanırız:
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+double
+tx
+=
+result
+.
+getTx
+(
+)
+;
+// Hedef ne kadar sola veya sağa (derece)
+double
+ty
+=
+result
+.
+getTy
+(
+)
+;
+// Hedef ne kadar yukarı veya aşağı (derece)
+double
+ta
+=
+result
+.
+getTa
+(
+)
+;
+// Hedef ne kadar büyük görünüyor (görüntünün %0-%100'ü)
+telemetry
+.
+addData
+(
+"Hedef X"
+,
+tx
+)
+;
+telemetry
+.
+addData
+(
+"Hedef Y"
+,
+ty
+)
+;
+telemetry
+.
+addData
+(
+"Hedef Alanı"
+,
+ta
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Limelight"
+,
+"Hedef Yok"
+)
+;
+}
+4. Python SnapScripts ile İletişim
+​
+Web arayüzünde kendi Python SnapScript pipeline'larınızı yazabilirsiniz. Kodunuzu yazmanıza yardımcı olması için LLM tabanlı SnapScript oluşturucumuzu kullanın.
+İşte Robot Kodundan Python'a sayılar gönderme ve geri sayılar alma yöntemi:
+// Python'a sayılar gönderme
+double
+[
+]
+inputs
+=
+{
+1.0
+,
+2.0
+,
+3.0
+,
+4.0
+,
+5.0
+,
+6.0
+,
+7.0
+,
+8.0
+}
+;
+limelight
+.
+updatePythonInputs
+(
+inputs
+)
+;
+// Python'dan sayılar alma
+double
+[
+]
+pythonOutputs
+=
+result
+.
+getPythonOutput
+(
+)
+;
+if
+(
+pythonOutputs
+!=
+null
+&&
+pythonOutputs
+.
+length
+>
+0
+)
+{
+double
+firstOutput
+=
+pythonOutputs
+[
+0
+]
+;
+telemetry
+.
+addData
+(
+"Python çıktısı:"
+,
+firstOutput
+)
+;
+}
+5. Robotum Nerede? (MegaTag 1)
+​
+Limelight, AprilTag'leri kullanarak robotunuzun sahada nerede olduğunu belirlemeye yardımcı olabilir. Limelight'ınız, mevcut oyun için önceden yüklenmiş bir AprilTag Haritası ile gelir, ancak 3D Harita Oluşturucumuz ile kendi haritalarınızı tasarlayıp yükleyebilirsiniz.
+Robotunuzun konumunu almaya çalışmadan önce, şunları yapın:
+Web arayüzündeki AprilTag pipeline'ınızın "Gelişmiş" sekmesinde "Tam 3D"yi etkinleştirin.
+Kameranızı robotunuzun ayak izinin merkezine göre konumlandırmak için web arayüzünü kullanın.
+BotPose için koordinat sistemi, standart FTC koordinat sistemine uygundur.
+(0,0,0) saha zemininin merkezidir
+Elmas olmayan konfigürasyonlar için, 0 derece Yaw, mavi ittifakın robotunuzun sol tarafında ve kırmızı ittifakın robotunuzun sağ tarafında olduğu anlamına gelir.
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose
+(
+)
+;
+if
+(
+botpose
+!=
+null
+)
+{
+double
+x
+=
+botpose
+.
+getPosition
+(
+)
+.
+x
+;
+double
+y
+=
+botpose
+.
+getPosition
+(
+)
+.
+y
+;
+telemetry
+.
+addData
+(
+"MT1 Konum"
+,
+"("
++
+x
++
+", "
++
+y
++
+")"
+)
+;
+}
+}
+6. Robotum Nerede? (MegaTag 2)
+​
+MegaTag 2, MegaTag 1 gibidir, ancak artan doğruluk için IMU verilerinizi birleştirir:
+// Önce, Limelight'a robotunuzun hangi yöne baktığını söyleyin
+double
+robotYaw
+=
+imu
+.
+getAngularOrientation
+(
+)
+.
+firstAngle
+;
+limelight
+.
+updateRobotOrientation
+(
+robotYaw
+)
+;
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose_mt2
+=
+result
+.
+getBotpose_MT2
+(
+)
+;
+if
+(
+botpose_mt2
+!=
+null
+)
+{
+double
+x
+=
+botpose_mt2
+.
+getPosition
+(
+)
+.
+x
+;
+double
+y
+=
+botpose_mt2
+.
+getPosition
+(
+)
+.
+y
+;
+telemetry
+.
+addData
+(
+"MT2 Konum:"
+,
+"("
++
+x
++
+", "
++
+y
++
+")"
+)
+;
+}
+}
+7. İç Sonuç Türleri
+​
+Pipeline'larınızı nasıl yapılandırdığınıza bağlı olarak, ana LLResults Nesnesi içindeki farklı türde ayrıntılı Sonuç Listelerine erişebilirsiniz.
+Muhtemelen bu Sonuç Listelerini kullanmanıza gerek kalmayacaktır. Mümkün olduğunca temel getTx(), getTy() kullanmanızı öneririz.
+7.1 Renk Sonuçları
+​
+Renk sonuçları renkli hedefleri bulmaya yardımcı olur:
+List
+<
+ColorResult
+>
+colorTargets
+=
+result
+.
+getColorResults
+(
+)
+;
+for
+(
+ColorResult
+colorTarget
+:
+colorTargets
+)
+{
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// Nerede (sol-sağ)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// Nerede (yukarı-aşağı)
+double
+area
+=
+colorTarget
+.
+getTargetArea
+(
+)
+;
+// boyut (0-100)
+telemetry
+.
+addData
+(
+"Renk Hedefi"
+,
+"görüntünün %"
++
+area
++
+"'sini kaplıyor"
+)
+;
+}
+7.2 Fiducial/AprilTag Sonuçları
+​
+Fiducial'lar, Limelight'ın nerede olduğunu anlamasına yardımcı olan özel işaretlerdir (AprilTag'ler gibi):
+List
+<
+FiducialResult
+>
+fiducials
+=
+result
+.
+getFiducialResults
+(
+)
+;
+for
+(
+FiducialResult
+fiducial
+:
+fiducials
+)
+{
+int
+id
+=
+fiducial
+.
+getFiducialId
+(
+)
+;
+// Fiducial'ın ID numarası
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// Nerede (sol-sağ)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// Nerede (yukarı-aşağı)
+double
+StrafeDistance_3D
+=
+fiducial
+.
+getRobotPoseTargetSpace
+(
+)
+.
+getY
+(
+)
+;
+telemetry
+.
+addData
+(
+"Fiducial "
++
+id
+,
+distance
++
+" metre uzakta"
+)
+;
+}
+Her FiducialResult içindeki 3D poz bilgisini kullanmak istiyorsanız, aşağıdaki yöntemleri kullanabilirsiniz:
+fiducial
+.
+getRobotPoseTargetSpace
+(
+)
+;
+// AprilTag Koordinat Sistemine göre robot pozu (En Kullanışlı)
+fiducial
+.
+getCameraPoseTargetSpace
+(
+)
+;
+// AprilTag'e göre kamera pozu (kullanışlı)
+fiducial
+.
+getRobotPoseFieldSpace
+(
+)
+;
+// Sadece bu etikete dayalı olarak saha koordinat sistemindeki robot pozu (kullanışlı)
+fiducial
+.
+getTargetPoseCameraSpace
+(
+)
+;
+// Kameranın koordinat sistemindeki AprilTag pozu (çok kullanışlı değil)
+fiducial
+.
+getTargetPoseRobotSpace
+(
+)
+;
+// Robotun koordinat sistemindeki AprilTag pozu (çok kullanışlı değil)
+7.3 Barkod Sonuçları
+​
+Limelight'ın barkod pipeline'ı QR Kodlarını tespit etmekte ve izlemekte iyidir.
+List
+<
+BarcodeResult
+>
+barcodes
+=
+result
+.
+getBarcodeResults
+(
+)
+;
+for
+(
+BarcodeResult
+barcode
+:
+barcodes
+)
+{
+String
+data
+=
+barcode
+.
+getData
+(
+)
+;
+// Barkodun söylediği şey
+String
+family
+=
+barcode
+.
+getFamily
+(
+)
+;
+// Ne tür bir barkod olduğu
+telemetry
+.
+addData
+(
+"Barkod"
+,
+data
++
+" ("
++
+family
++
+")"
+)
+;
+}
+7.4 Sınıflandırıcı Sonuçları
+​
+Sinir Ağı Sınıflandırıcıları, Limelight'ın "Bunun ... görüntüsü olduğunu düşünüyorum" demesine olanak tanır.
+List
+<
+ClassifierResult
+>
+classifications
+=
+result
+.
+getClassifierResults
+(
+)
+;
+for
+(
+ClassifierResult
+classification
+:
+classifications
+)
+{
+String
+className
+=
+classification
+.
+getClassName
+(
+)
+;
+// Limelight'ın ne gördüğünü düşündüğü
+double
+confidence
+=
+classification
+.
+getConfidence
+(
+)
+;
+// Güven Puanı
+telemetry
+.
+addData
+(
+"Bir tane görüyorum"
+,
+className
++
+" (%"
++
+confidence
++
+")"
+)
+;
+}
+7.5 Dedektör Sonuçları
+​
+Dedektörler belirli nesneleri bulur ve bize nerede olduklarını söyler:
+List
+<
+DetectorResult
+>
+detections
+=
+result
+.
+getDetectorResults
+(
+)
+;
+for
+(
+DetectorResult
+detection
+:
+detections
+)
+{
+String
+className
+=
+detection
+.
+getClassName
+(
+)
+;
+// Neyin tespit edildiği
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// Nerede (sol-sağ)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// Nerede (yukarı-aşağı)
+telemetry
+.
+addData
+(
+className
+,
+"("
++
+x
++
+", "
++
+y
++
+") derecede"
+)
+;
+}
+8. Veri Taze mi?
+​
+Bazen, sonuç verilerimizin yaşını (milisaniye cinsinden) bilmek isteriz.
+long
+staleness
+=
+result
+.
+getStaleness
+(
+)
+;
+if
+(
+staleness
+<
+100
+)
+{
+// 100 milisaniyeden daha az eski
+telemetry
+.
+addData
+(
+"Veri"
+,
+"İyi"
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Veri"
+,
+"Eski ("
++
+staleness
++
+" ms)"
+)
+;
+}
+9. Özel Saha Haritaları
+​
+Limelight'a özel saha düzeniniz hakkında bilgi verebilirsiniz:
+LLFieldMap
+fieldMap
+=
+new
+LLFieldMap
+(
+)
+;
+// Bunu saha verileriyle doldurmanız gerekecek
+boolean
+success
+=
+limelight
+.
+uploadFieldmap
+(
+fieldMap
+,
+null
+)
+;
+// null, varsayılan yuvayı kullan anlamına gelir
+if
+(
+success
+)
+{
+telemetry
+.
+addData
+(
+"Saha Haritası"
+,
+"Başarıyla yüklendi!"
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Saha Haritası"
+,
+"Hata, yükleme başarısız oldu"
+)
+;
+}
+10. Anlık Görüntü Alma:
+​
+Limelight, saha dışında pipeline'ları hata ayıklamanıza yardımcı olmak için anlık görüntüler alabilir:
+limelight
+.
+captureSnapshot
+(
+"auto_pov_10s"
+)
+;
+Web arayüzünün Giriş Sekmesinde, pipeline'larınızı kontrol etmek/ayarlamak için bu anlık görüntüyü "görüntü kaynağı" olarak seçebilirsiniz.
+Eski anlık görüntüleri temizlemek için:
+limelight
+.
+deleteSnapshots
+(
+)
+;
+telemetry
+.
+addData
+(
+"Anlık Görüntüler"
+,
+"Hepsi temizlendi!"
+)
+;

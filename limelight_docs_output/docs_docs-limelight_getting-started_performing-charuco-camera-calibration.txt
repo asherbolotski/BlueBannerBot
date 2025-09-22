@@ -1,0 +1,69 @@
+ChArUco Camera Calibration
+Why Does This Matter?
+​
+A fully calibrated camera will provide more accurate 2D and 3D measurements. It's useful for any task that is not based on "servoing" to the crosshair.
+With that being said, we recommend using the "servoing" method as often as you can. It's fast, precise, and suitable for tasks such as object acquisition, aiming, and aligning to targets. Don't worry about calibration unless you determine that you need greater accuracy. Every LL unit comes with a default calibration that will provide fairly good results for most use cases
+"servoing" is the process of turning your robot until your target is perfectly aligned with a configurable "crosshair". It is the easiest, and in many cases, the most reliable way to appraoch vision problems in robotics.
+What is Camera Calibration?
+​
+Intrinsics calibration is the process of determining the two following components:
+1. The Camera Matrix
+​
+The camera matrix, often denoted as K, is a 3x3 matrix that describes how the lens and sensor turn the 3D world into a 2D picture.
+[fx  0   cx]
+[0   fy  cy]
+[0   0   1]
+cx and cy are the coordinates of the principal point / principal pixel. The principal point / principal pixel is the pixel that is directly aligned with the optical axis / center of the lens. During manufacturing, the camera lens is almost never perfectly aligned with the center of the image sensor. It is crucial that we understand which pixel is the true "center" pixel
+fx and fy are computed focal lengths in pixels. fx and fy help us understand the field of view / zoom level of the camera.
+2. Distortion Coefficients
+​
+We compute 5 distortion coefficients:
+[k1, k2, p1, p2, k3]
+k1, k2, k3 are radial distortion coefficients which cause straight lines to appear curved.
+p1, p2 are tangential distortion coefficients which occur due to the lens not being parallel to the image plane
+Performing ChArUco Calibration
+​
+ChArUco calibration with Limelight was designed to be as seamless and bullet-proof as possible. Read the following steps, and then watch the video below to learn how to calibrate your camera for increased accuracy.
+info
+You only need to calibrate at one resolution (we recommend 1280x960 for LL3 and 1280x800 for LL3G). Intrinsics are auto-scaled to match your pipeline's chosen resolution, and distortion coefficients are resolution-invariant given a fixed aspect ratio and FOV. Hardware zoom pipelines and 5-megapixel pipelines are the only pipelines that will not make use of custom calibrations.
+Preparing the Board
+​
+You can use any laptop screen to calibrate your camera. For maximum accuracy, however, we recommend purchasing this
+coarse 800mmx600mm board from calib.io
+Print a ChArUco Calibration Board or use an image of a board on a large laptop or computer screen. Use
+our board from the downloads page
+, or
+generate your own
+.
+Find the "width" of the grid by adding the total number of black squares and total number of ArUco markers in one row (11 for the default Limelight calibration board).
+Find the "height" of the grid by adding the total number of black squares and total number of ArUco markers in one column (8 for the default Limelight calibration board).
+Confirm the "square size" and "marker size" measurements by measuring the side lengths of a square and a marker in millimeters.
+The square size and marker size measurements are critical, so use calipers.
+Note the dictionary type. The default board from the downloads page uses the 5x5_100 dictionary.
+Capturing Calibration Images
+​
+Ensure your board is as flat as possible.
+You should not perform calibration if your board is not flat. You may purchase special boards from calib.io, or fix your printed board to a clipboard.
+Turn on your robot and access the Limelight web UI.
+Make a 1280x960 AprilTag pipeline.
+Delete all saved snapshots by changing the "input" source type from "Camera" to "Snapshot" and clicking "Delete all snapshots".
+Change the "input" source type back to "Camera".
+Capture at least 25 snapshots of the ChArUco board to begin. Once you're familiar with the process, you'll want to go back to capture a total of at least 50 images.
+The main advantage of ChArUco calibration over standard checkerboard calibration is that it works even if only part of the board is visible to the camera. It is important to utilize this advantage.
+Your images should have a good mix of the following qualities:
+Your board spans large regions of the image.
+Your board extends past at least one edge or corner of the image (This will help compute distortion around the edges of the images).
+Your board is often positioned such that it has perspective warp (The board should not be parallel to the image plane).
+Aim for broad diversity in board positions, perspectives, and coverage.
+50% of your images should illustrate significant foreshortening. This is the effect of closer markers appearing larger than far away markers. The first and last images in the following screenshot demonstrate foreshortening
+Calibrating
+​
+Navigate to the "Calibration" tab. It's the third tab in the vertical sidebar.
+Enter the five values found in the "Preparing the Board" step.
+Click the "Calibrate with Snapshots" button. The process may take a minute or two to complete.
+Upon success, the "Latest Calibration Result" card will show the latest calibration result.
+Check the "Latest Calibration Result" card for a reasonable result with a low reprojection error (ideally less than 1).
+Download the latest calibration result and upload it to the "custom - file" calibration slot.
+You should now see three populated calibration result cards.
+Change your "preferred calibration" to "custom - file" to utilize your custom calibration result. All pipelines will use your calibration result.
+Consider capturing more screenshots and recalibrating once you are familiar with the process.

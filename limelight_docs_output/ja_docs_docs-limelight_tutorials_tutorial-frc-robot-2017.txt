@@ -1,0 +1,242 @@
+2017 燃料ランチャーロボット
+この例では、2017年のボイラーゴールを実装した完全なロボットプログラムを紹介します。このプログラムを987 Steamworksロボットでテストし、ボイラーに燃料を簡単に投入することができました。この例では、ロボットのドライブトレインを使用して照準を合わせ、射程範囲内に移動します。私たちがすぐに気づいたことは、limelightを使用することで、実際の2017年のロボットと比較して、はるかに少ないコード量と時間でこの機能を実装できたということです。
+以下のコードには、LEDを点滅させたり、複数のビジョンパイプラインを動的に切り替えたりする機能も含まれています。この例では、Talon SRXスピードコントローラーと磁気エンコーダーを使用して、シューターホイールのRPMを制御する方法も示しています。
+#include <iostream>
+#include <string>
+#include <Drive/DifferentialDrive.h>
+#include <Joystick.h>
+#include <SampleRobot.h>
+#include <SmartDashboard/SendableChooser.h>
+#include <SmartDashboard/SmartDashboard.h>
+#include <Spark.h>
+#include <Victor.h>
+#include <Timer.h>
+#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
+//
+#define Vic_Drive_Left_1 0
+#define Vic_Drive_Left_2 1
+#define Vic_Drive_Right_1 2
+#define Vic_Drive_Right_2 3
+#define Tal_Shooter_Wheel 21
+#define Tal_Shooter_Wheel_2 2
+#define Tal_Intake 3
+#define Tal_Uptake 9
+class Robot : public frc::SampleRobot
+{
+public:
+Robot() :
+LeftDrive(Vic_Drive_Left_1),
+RightDrive(Vic_Drive_Right_1),
+LeftDrive2(Vic_Drive_Left_2),
+RightDrive2(Vic_Drive_Right_2),
+Shooter(Tal_Shooter_Wheel),
+Shooter_2(Tal_Shooter_Wheel_2),
+Intake(Tal_Intake),
+Uptake(Tal_Uptake)
+{
+// このコードは2つのTalonを設定して連携させ、PID RPM制御を実装します
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.SetClosedLoopOutputDirection(false);
+Shooter.SetStatusFrameRateMs(CTRE::MotorControl::CAN::TalonSRX::StatusFrameRateAnalogTempVbat,10);
+Shooter.SetFeedbackDevice(CTRE::MotorControl::CAN::TalonSRX::CtreMagEncoder_Relative);
+SetShooterConstants(.0002f, .00009f, .0000f, .000006f);  // シューターホイールのP,I,D,F定数
+Shooter.SetAllowableClosedLoopErr(10);
+Shooter.ConfigNominalOutputVoltage(+0.f,-0.f);
+Shooter.ConfigPeakOutputVoltage(+12.f,-12.f);
+Shooter.SelectProfileSlot(0);
+Shooter.SetSensorDirection(true);
+Shooter.SetVoltageRampRate(100);
+Shooter.SetIzone(300);
+Shooter_2.SetVoltageRampRate(100);
+}
+void RobotInit()
+{
+}
+void Autonomous()
+{
+}
+/*
+* オペレーターコントロール
+*/
+void OperatorControl() override
+{
+while (IsOperatorControl() && IsEnabled())
+{
+// ジョイスティックを読み取る！
+float left_command = m_stickLeft.GetY();
+float right_command = m_stickRight.GetY();
+// トラッキングデータを読み取るためのlimelightテーブルを取得
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float KpAim = 0.045;
+float KpDist = 0.0f; //0.09;
+float AimMinCmd = 0.095f;
+float targetX = table->GetNumber("tx", 0);
+float targetY = table->GetNumber("ty", 0);
+float targetA = table->GetNumber("ta", 0);
+// キャリブレーションされたlimelightクロスヘアに基づく照準エラーと距離エラー
+float aim_error = targetX;
+float dist_error = targetY;
+// 0.2度のデッドバンドを持つステアリング調整（0.2度で十分近い）
+float steeringAdjust = KpAim*aim_error;
+if (targetX > .2f) steeringAdjust += AimMinCmd;
+else if (targetX < -.2f) steeringAdjust -= AimMinCmd;
+// 距離調整、ゴールからの正しい距離に移動
+float drivingAdjust = KpDist*dist_error;
+bool doTarget = false;
+if(m_stickLeft.GetRawButton(3))         // パイプライン0を使用して照準
+{
+doTarget = true;
+table->PutNumber("pipeline", 0);
+}
+else if (m_stickLeft.GetRawButton(2))   // パイプライン1を使用して照準
+{
+doTarget = true;
+table->PutNumber("pipeline", 1);
+}
+if(doTarget)                            // 自動照準の場合、ドライブとステアリングを調整
+{
+ShooterSetRPM(3300);
+left_command += drivingAdjust - steeringAdjust;
+right_command += drivingAdjust + steeringAdjust;
+}
+else
+{
+ShooterOff();
+}
+// タンクドライブ、左右のドライブトレインモーターコマンドを送信
+StandardTank(left_command,right_command);
+if(m_stickRight.GetRawButton(3))        // ボールを吸い込んで発射
+{
+IntakeIn();
+UptakeUp();
+}
+else if(m_stickRight.GetRawButton(2))   // ボールを吐き出す
+{
+IntakeIn();
+UptakeDown();
+}
+else                                    // ボールをそのままにする！
+{
+IntakeOff();
+UptakeOff();
+}
+if(m_stickLeft.GetRawButton(5))         // ジョイスティックボタン5 = LEDを点滅
+{
+table->PutNumber("ledMode", 2); //ライトを点滅
+}
+else
+{
+table->PutNumber("ledMode", 0); //ライトをオン
+}
+// モーター更新時間を待つ
+frc::Wait(0.005);
+}
+}
+/*
+* テストモード中に実行
+*/
+void Test() override {}
+void StandardTank(float left, float right)
+{
+LeftDrive.Set(-left);
+LeftDrive2.Set(-left);
+RightDrive.Set(right);
+RightDrive2.Set(right);
+}
+//
+// シューター機能 - talonのPIDを使用してシューターホイールのRPMを制御
+// TalonにP,I,D,F定数を設定、これらの値はメカニズムに大きく依存します
+//
+void SetShooterConstants(float p,float i,float d,float f)
+{
+p *= 1024.f;
+i *= 1024.f;
+d *= 1024.f;
+f *= 1024.f;
+Shooter.SetP(p);
+Shooter.SetI(i);
+Shooter.SetD(d);
+Shooter.SetF(f);
+}
+//
+// 希望するシューターホイールのRPMをTalonに伝える
+//
+void ShooterSetRPM(float desrpm)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.Set(desrpm);
+}
+//
+// パワーを-1..+1で設定するだけ、RPM制御が設定されている現在は使用していません
+//
+void ShooterSetPower(float power)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.Set(power);
+Shooter.Set(power);
+}
+//
+// シューターホイールをオフにする
+//
+void ShooterOff()
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter.Set(0.0f);
+Shooter_2.Set(0.0f);
+}
+//
+// インテーク機能
+//
+void IntakeIn()
+{
+Intake.Set(-.8f);
+}
+void IntakeOut()
+{
+Intake.Set(.8f);
+}
+void IntakeShooting()
+{
+Intake.Set(-1.0f);
+}
+void IntakeOff()
+{
+Intake.Set(0);
+}
+//
+// アップテーク機能
+//
+void UptakeUp()
+{
+Uptake.Set(-1.0f);
+}
+void UptakeDown()
+{
+Uptake.Set(1.0f);
+}
+void UptakeOff()
+{
+Uptake.Set(0);
+}
+private:
+// ロボットドライブシステム
+frc::Victor LeftDrive;
+frc::Victor RightDrive;
+frc::Victor LeftDrive2;
+frc::Victor RightDrive2;
+// シューターホイール
+CTRE::MotorControl::CAN::TalonSRX Shooter;
+CTRE::MotorControl::CAN::TalonSRX Shooter_2;
+CTRE::MotorControl::CAN::TalonSRX Intake;
+CTRE::MotorControl::CAN::TalonSRX Uptake;
+// ジョイスティック入力
+frc::Joystick m_stickLeft{0};
+frc::Joystick m_stickRight{1};
+};
+START_ROBOT_CLASS(Robot)

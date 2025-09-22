@@ -1,0 +1,20 @@
+Buscando Alvos Não Visíveis
+Implementar um comportamento de busca pode ser útil em algumas situações. Em alguns jogos, o alvo em que você está tentando marcar pode não estar em um local previsível, então você não pode confiar em código autônomo de navegação estimada para chegar "perto o suficiente". Em 2009, por exemplo, os alvos estavam presos aos robôs adversários que também estavam se movimentando. Outro motivo pelo qual você pode querer implementar a busca é se o sistema de tração do seu robô não for confiável/repetível o suficiente para colocá-lo exatamente no local desejado. Às vezes, sistemas de tração swerve ou omnidirecional podem ter dificuldade para dirigir até locais precisos (isso não é uma crítica aos sistemas swerve ou omnidirecionais; é apenas mais desafiador fazê-los dirigir até locais repetíveis). Alguns jogos até permitiram interação robô-robô durante o modo autônomo. Em 2006, frequentemente nos envolvíamos em duelos autônomos onde os robôs de defesa tentavam tirar os robôs de ataque da posição de pontuação. Nesse caso, você não pode ter certeza de nada! Esperamos que isso faça você pensar em algumas maneiras pelas quais ter seu robô buscando automaticamente um alvo que inicialmente não consegue ver pode ser útil.
+Felizmente, adicionar lógica de busca ao seu robô é muito fácil. Para implementar a busca, você simplesmente faz seu robô escanear um alvo e, uma vez que o encontre, começar a executar o código de mira. Usaremos o valor 'tv' ou 'target valid' (alvo válido) reportado pelo limelight para saber se vemos um alvo ou não.
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tv = table->GetNumber("tv");
+float tx = table->GetNumber("tx");
+float steering_adjust = 0.0f;
+if (tv == 0.0f)
+{
+// Não vemos o alvo, procuramos o alvo girando no lugar a uma velocidade segura.
+steering_adjust = 0.3f;
+}
+else
+{
+// Vemos o alvo, executamos o código de mira
+float heading_error = tx;
+steering_adjust = Kp * tx;
+}
+left_command+=steering_adjust;
+right_command-=steering_adjust;

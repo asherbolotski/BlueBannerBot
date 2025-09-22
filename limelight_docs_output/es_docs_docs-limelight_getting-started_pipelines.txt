@@ -1,0 +1,51 @@
+Configuración de Pipeline
+LimelightOS almacena hasta 10 pipelines de visión únicos.
+Un pipeline es como un pequeño programa que toma una imagen, procesa la imagen y proporciona un objeto de resultados para usar en el código de tu robot.
+Los pipelines funcionan desde 10fps (Redes Neuronales en CPU) hasta 90fps (seguimiento de objetos basado en color).
+Para comenzar a ajustar los pipelines, conéctate a la interfaz web a través de ethernet, wifi o USB como se describe en la guía de inicio rápido de tu unidad.
+Si eres un usuario avanzado y has cambiado el Índice USB o el Nombre de Host de tu LL, puedes acceder a la interfaz web en
+http://172.28.(usb_index).1:5801
+,
+http://172.29.(usb_index).1:5801
+, o
+http://.local:5801
+info
+Para editar múltiples pipelines, primero debes marcar la casilla "Ignorar Índice de NetworkTables" en la interfaz web. Esto le indica a la cámara que ignore cualquier código que le indique cambiar de pipeline.
+Para descargar tus pipelines para copias de seguridad y compartir, simplemente haz clic en el botón "descargar" junto al nombre de tu pipeline. Para subir un pipeline, haz clic en el botón "subir".
+Aquí hay un ejemplo de un robot que utiliza dos pipelines:
+https://thumbs.gfycat.com/UnfitLankyHadrosaurus-size_restricted.gif
+El primer pipeline está ajustado para detectar franjas verticales individuales. El segundo pipeline está ajustado para encontrar una combinación de dos franjas horizontales. El código para este robot está disponible en el caso de estudio "Apuntar y Medir Distancia".
+Observa que cuando el robot cambia de pipeline, la interfaz web carga automáticamente el nuevo pipeline.
+Pestaña de Entrada
+​
+La Pestaña de Entrada contiene controles para cambiar la imagen bruta de la cámara antes de que pase por el pipeline de procesamiento.
+Tipo de Pipeline
+​
+Controla el tipo de pipeline deseado (AprilTags, Redes Neuronales, Python, etc.)
+Imagen de Origen
+​
+Controla la fuente de la imagen que pasa por el pipeline. Cambia a "Instantánea" para probar tus pipelines de visión en Instantáneas almacenadas.
+Este control se restablece automáticamente a "Cámara" cuando se cierra la GUI.
+Resolución + Zoom
+​
+Controla la resolución de la cámara y el pipeline de visión. Recomendamos usar el pipeline de 320x240 a menos que estés utilizando funcionalidad 3D.
+Los pipelines de 320x240 se ejecutan a 90fps, mientras que los pipelines de 960x720 se ejecutan a 22 fps. En 2020, se agregaron opciones de Zoom de Hardware 2x y 3x a este campo. Las opciones de zoom no son digitales y utilizan píxeles reales del sensor al 100%.
+LEDs
+​
+Controla el modo LED predeterminado para este pipeline. Esto puede ser anulado durante una competencia con la opción "LED" de la tabla de red.
+Los usuarios de Limelight 2+ tienen acceso a un control deslizante de "Brillo LED" que permite atenuar los LEDs.
+Orientación de la Transmisión
+​
+Controla la orientación de la transmisión después de todo el procesamiento. Esto no afecta los datos de resultados de ninguna manera.
+Exposición
+​
+Controla la configuración de exposición de la cámara en intervalos de 0.01 milisegundos. Piensa en una cámara como una cuadrícula de cubos recolectores de luz - el tiempo de exposición controla cuánto tiempo están abiertos los "cubos" de tu cámara por fotograma. Reducir el tiempo de exposición oscurecerá efectivamente tu imagen. Los tiempos de exposición bajos y fijos son cruciales en FRC, ya que eliminan la mayor parte de los datos de imagen entrantes. La cinta retrorreflectiva bien iluminada destacará en una imagen mayormente negra, convirtiendo el procesamiento de visión en un proceso sencillo.
+Compensación de Nivel Negro
+​
+Aumentar la compensación de nivel negro puede oscurecer significativamente la transmisión de tu cámara. Esto debe aumentarse para eliminar aún más las luces de la arena y los puntos brillantes de tu imagen. Esta es una configuración a nivel del sensor, no una configuración digital de brillo falsa.
+Ganancia del Sensor
+​
+Aumentar la ganancia del sensor aumentará efectivamente el brillo de la imagen, pero generalmente también agregará ruido a la imagen. Puedes usar la Ganancia del Sensor y la Compensación de nivel negro para aclarar la imagen sin aumentar el tiempo de exposición. Esto minimizará el desenfoque por movimiento para aplicaciones de seguimiento de alta velocidad.
+Balance de Rojo, Balance de Azul
+​
+Controla la intensidad de los componentes de color Rojo y Azul en tu imagen. Estos controlan colectivamente el balance de blancos de tu Limelight. Recomendamos dejarlos sin modificar

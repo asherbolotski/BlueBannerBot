@@ -1,0 +1,270 @@
+Registro de Alterações de Software 2021 - 2023
+2023.6 (18/04/23)
+​
+Calibração ChArUco Fácil & Visualizadores de Calibração
+​
+A calibração ChArUco é considerada melhor que a calibração de tabuleiro de xadrez porque lida com oclusões, detecções ruins de cantos e não requer que toda a placa esteja visível. Isso torna muito mais fácil capturar cantos da placa de calibração próximos às bordas e cantos das suas imagens. Isso é crucial para a estimativa do coeficiente de distorção.
+O processo de calibração do Limelight fornece feedback em cada etapa e garantirá que você faça tudo o que é necessário para obter bons resultados de calibração. Um grande esforço foi feito para tornar este processo o mais à prova de falhas possível.
+Mais importante ainda, você pode visualizar seus resultados de calibração ao lado da calibração padrão. Com um simples olhar, você pode entender se o resultado da sua calibração é razoável ou não.
+Você também pode usar o painel de calibração como uma ferramenta de aprendizado. Você pode modificar arquivos de resultados de calibração baixados e recarregá-los para aprender como a matriz de intrínsecos e os coeficientes de distorção afetam os resultados de mira, FOV, etc.
+Dê uma olhada neste vídeo:
+2023.5.1 & 2023.5.2 (22/03/23)
+​
+Corrigida regressão introduzida na versão 2023.5.0 - Enquanto a 2023.5 corrigiu o megatag para todos os layouts não planares, reduziu o desempenho das estimativas de pose de tag única. Isso foi corrigido. As estimativas de pose de tag única usam o mesmo solucionador usado na 2023.4.
+Interface de snapshot mais ágil. A grade de snapshots agora carrega miniaturas de baixa resolução de 128p.
+O Yaw do Limelight agora é apresentado corretamente nos visualizadores 3D. É positivo no sentido anti-horário no visualizador e internamente.
+Indica quais alvos estão sendo rastreados atualmente no visualizador de espaço de campo.
+2023.5.0 (21/03/23)
+​
+Mudanças Importantes
+​
+Corrigida regressão - O "Yaw" do Limelight no Espaço do Robô estava invertido nas versões anteriores. O yaw do Limelight na interface web agora é positivo no sentido anti-horário internamente.
+Atualização da Seleção de Região
+​
+A seleção de região agora funciona como esperado em pipelines de detector neural.
+Adicionadas 5 novas opções de região para selecionar o centro, topo, esquerda, direita, topo ou fundo do retângulo do alvo não rotacionado.
+API REST "hwreport"
+​
+:5807/hwreport retornará uma resposta JSON detalhando informações de intrínsecos da câmera e distorção.
+Correção do MegaTag
+​
+Certos layouts de apriltag não coplanares estavam quebrados no MegaTag. Isso foi corrigido, e a estimativa de pose agora é estável com todas as tags de campo. Isso permite estimativa de pose estável a distâncias ainda maiores que antes.
+Maior precisão de tx e ty
+​
+TX e TY estão mais precisos do que nunca. Os alvos são totalmente não distorcidos, e o FOV é determinado inteiramente pelos intrínsecos da câmera.
+2023.4.0 (18/02/23)
+​
+Filtro de Classe do Detector Neural
+​
+Especifique as classes que você deseja rastrear para facilitar a filtragem de detecções indesejadas.
+Suporte expandido do Detector Neural
+​
+Suporte a qualquer resolução de entrada, suporte a formas de saída adicionais para suportar outras arquiteturas de detecção de objetos. Modelos baseados em EfficientDet0 agora são suportados.
+2023.3.1 (14/02/23)
+​
+Melhorias na Precisão do AprilTag
+​
+Matriz de intrínsecos melhorada e, mais importante, coeficientes de distorção melhorados para todos os modelos. Melhorias notáveis na Localização de AprilTag único.
+Upload de Detector
+​
+Upload de detector corrigido.
+2023.3 (13/02/23)
+​
+Latência de Captura (Chave NT: "cl", Resultados JSON: "cl")
+​
+A nova entrada de latência de captura representa o tempo entre o final da exposição da linha do meio do sensor de imagem do Limelight e o início do pipeline de processamento.
+Novo Limiar de Qualidade para AprilTags
+​
+AprilTags espúrios agora são mais facilmente filtrados com o novo controle deslizante de Limiar de Qualidade. O valor padrão definido em 2023.3 deve remover a maioria das detecções espúrias.
+Substituição da Pose da Câmera no Espaço do Robô (Chaves NT: "camerapose_robotspace_set", "camerapose_robotspace")
+​
+A posição do seu Limelight no espaço do robô agora pode ser ajustada em tempo real. Se a chave for definida como uma matriz de zeros, a pose definida na interface web será usada.
+Aqui está um exemplo de um Limelight em um elevador:
+Aumento da Exposição Máxima
+​
+O tempo máximo de exposição agora é de 33ms (acima de 12,5 ms). Os modos de captura de alto fps ainda são limitados a (1/fps) segundos. Pipelines de 90hz, por exemplo, não terão imagens mais brilhantes após 11ms de tempo de exposição.
+Atualizações do Botpose
+​
+Todos os três arrays de botpose nas networktables têm uma sétima entrada representando a latência total (latência de captura + latência de mira).
+Correções de Bugs
+​
+Corrigidos streams MJPEG do LL3 no shuffleboard
+Corrigido camMode - o modo de motorista agora produz imagens brilhantes e utilizáveis.
+Rótulo de exposição foi corrigido - cada "tick" representa 0,01ms e não 0,1 ms
+Corrigido o upload do detector de rede neural
+2023.2 (28/01/23)
+​
+Tornando o 3D mais fácil do que nunca.
+Botposes compatíveis com WPILib
+​
+Botpose agora é ainda mais fácil de usar diretamente.
+Estes correspondem aos sistemas de coordenadas do WPILib.
+Todos os botposes são exibidos diretamente no visualizador de espaço de campo na interface web, facilitando a confirmação rápida de que tudo está funcionando corretamente.
+Acesso mais fácil aos Dados 3D (Mudanças Importantes)
+​
+RobotPose no TargetSpace é possivelmente o dado mais útil vindo do Limelight em relação aos AprilTags. Usando apenas isso, você pode alinhar perfeitamente um sistema de tração com um AprilTag no campo.
+Chave NetworkTables "campose" agora é "camerapose_targetspace"
+Chave NetworkTables "targetpose" agora é "targetpose_cameraspace"
+Nova Chave NetworkTables - "targetpose_robotspace"
+Nova Chave NetworkTables - "botpose_targetspace"
+Upload de Rede Neural
+​
+Faça upload de modelos do teachable machine para o Pipeline Classificador do Limelight. Certifique-se de que sejam modelos compatíveis com Tensorflow Lite EdgeTPU.
+Faça upload de arquivos .tflite e arquivos de rótulos .txt separadamente.
+2023.1 (19/01/23)
+​
+MegaTag e Melhorias de Desempenho
+Corrigindo Um Erro
+​
+O parâmetro de tamanho padrão do marcador na interface foi corrigido para 152,4mm (reduzido de 203,2mm). Esta foi a causa da maioria dos problemas de precisão.
+Maior Estabilidade de Rastreamento
+​
+Existem várias maneiras de ajustar a detecção e decodificação de AprilTags. Melhoramos a estabilidade em geral, especialmente em ambientes com pouca luz/baixa exposição.
+Conversão para Escala de Cinza Ultra Rápida
+​
+A conversão para escala de cinza é 3x-6x mais rápida que antes. As equipes sempre verão um fluxo de vídeo em cinza durante o rastreamento de AprilTags.
+Recorte para Melhor Desempenho
+​
+Os pipelines de AprilTag agora têm controles deslizantes de recorte. Recortar sua imagem resultará em taxas de quadros melhoradas em qualquer resolução.
+Filtragem Mais Fácil
+​
+Agora existe um único campo "filtro de ID" nos pipelines de AprilTag que filtra a saída JSON, tags habilitadas para botpose e tags habilitadas para tx/ty. A configuração de filtro duplo era problemática e confusa.
+Mudança Importante
+​
+A chave NT "camtran" agora é "campose"
+Atualização JSON
+​
+"botpose" agora faz parte do dump de resultados json
+Atualização do Visualizador de Espaço de Campo
+​
+O visualizador de espaço de campo agora mostra o campo FRC 2023. Agora deve ser mais fácil avaliar a precisão do botpose rapidamente.
+Limelight MegaTag (novo botpose)
+​
+Minha prioridade #1 foi reescrever o botpose para maior precisão, redução de ruído e resiliência à ambiguidade. A nova implementação de botpose do Limelight é chamada MegaTag. Em vez de calcular o botpose com uma média simples de várias poses individuais no espaço de campo, o MegaTag essencialmente combina todas as tags em uma única tag 3D gigante com vários pontos-chave. Isso traz enormes benefícios.
+O GIF a seguir mostra uma situação projetada para induzir a inversão de tags: Cilindro Verde: Pose do robô por tag individual Cilindro Azul: BotPose 2023.0.1 Cilindro Branco: Novo Botpose MegaTag
+Observe como o novo botpose (cilindro branco) é extremamente estável em comparação com o antigo botpose (cilindro azul). Você também pode observar os valores tx e ty.
+Aqui está a tela completa, mostrando a ambiguidade da tag:
+Aqui estão as vantagens:
+O Botpose agora é resistente a ambiguidades (inversão de tags) se mais de uma tag estiver visível (a menos que estejam próximas e coplanares. Idealmente, os pontos-chave não são coplanares). O Botpose agora é mais resistente ao ruído nos cantos das tags se mais de uma tag estiver visível. Quanto mais distantes as tags estiverem umas das outras, melhor. Isso não se restringe a tags planares. Escala para qualquer número de tags em 3D completo e em qualquer orientação. Tags no chão e no teto funcionariam perfeitamente.
+Aqui está um diagrama demonstrando um aspecto de como isso funciona com um caso planar simples. Os resultados são na verdade melhores do que o que é mostrado, pois o MegaTag representado tem um erro significativo aplicado a três pontos em vez de um ponto. À medida que o MegaTag 3D combinado aumenta em tamanho e em número de pontos-chave, sua estabilidade aumenta.
+O upload da Rede Neural está sendo adiado para a versão 2023.2!
+2023.0.0 e 2023.0.1 (11/01/23)
+​
+Apresentando AprilTags, localização de Robô, Redes Neurais Profundas, uma interface de captura de tela reescrita e muito mais.
+Recursos, Mudanças e Correções de Bugs
+​
+Novo pipeline de captura de sensor e controle de Ganho
+Nosso novo pipeline de captura permite tempos de exposição 100x mais curtos do que eram em 2022. O novo pipeline também permite Controle de Ganho. Isso é extremamente importante para o rastreamento de AprilTags e servirá para tornar o direcionamento retroreflexivo mais confiável do que nunca. Antes do Limelight OS 2023, o ganho do sensor do Limelight era não-determinístico (implementamos alguns truques para fazê-lo funcionar mesmo assim).
+Com o novo controle deslizante "Ganho do Sensor", as equipes podem tornar as imagens mais escuras ou mais brilhantes do que nunca sem tocar no controle deslizante de exposição. Aumentar o ganho aumentará o ruído na imagem.
+Combinando ganho mais baixo com os novos tempos de exposição mais baixos, agora é possível produzir imagens quase completamente pretas com LEDs de brilho total e alvos retroreflexivos. Isso ajudará a mitigar reflexos de LED e luz solar ao rastrear alvos retroreflexivos.
+Ao aumentar o Ganho do Sensor e reduzir a exposição, as equipes poderão minimizar os efeitos do desfoque de movimento devido a altos tempos de exposição ao rastrear AprilTags.
+Conseguimos desenvolver este novo pipeline mantendo todos os recursos - 90fps, zoom por hardware, etc.
+Mais Opções de Resolução
+Existem duas novas resoluções de captura para LL1, LL2 e LL2+: 640x480x90fps e 1280x960x22fps
+Interface Web Otimizada
+A interface web agora carregará e inicializará até 3x mais rápido em redes de robôs.
+Interface de Capturas de Tela Reescrita
+O recurso de capturas de tela foi completamente reescrito para permitir uploads, downloads e exclusão de imagens. Também há novas APIs para capturar imagens detalhadas na documentação.
+Melhorias no SolvePnP
+Nosso recurso de localização de câmera baseado em solvePnP tinha um bug desagradável que estava limitando seriamente sua precisão a cada quatro quadros. Isso foi resolvido, e um novo canvas 3D completo foi construído para visualizações de SolvePNP Retroreflexivo/Colorido.
+Correção de Bug na Interface Web
+Havia um problema extremamente raro em 2022 que causava a quebra permanente da interface web durante a primeira inicialização após o flash, o que forçava o usuário a refazer o flash. A causa raiz foi encontrada e corrigida definitivamente.
+Novas APIs
+O Limelight agora inclui APIs REST e Websocket. As APIs REST, Websocket e NetworkTables suportam o novo recurso de despejo JSON, que lista todos os dados para todos os alvos em um formato legível por humanos e fácil de analisar para FRC e todas as outras aplicações.
+Visão Baseada em Aprendizado Sem Código e Suporte ao Google Coral
+​
+O Google Coral agora é suportado por todos os modelos Limelight. O Google Coral é um acelerador de hardware USB de 4TOPs (Trilhões de Operações/segundo) que é construído especificamente para inferência em redes neurais de 8 bits.
+Assim como o rastreamento retroreflexivo há alguns anos, a barreira de entrada para visão baseada em aprendizado em robôs FRC tem sido muito alta para a equipe média sequer tentar. Desenvolvemos toda a infraestrutura necessária para tornar a visão baseada em aprendizado tão fácil quanto alvos retroreflexivos com o Limelight.
+Temos um cluster de GPU na nuvem, scripts de treinamento, uma ferramenta de agregação de conjuntos de dados e uma equipe de rotulagem humana prontos para começar. Estamos entusiasmados em trazer redes neurais profundas para a comunidade FRC pela primeira vez.
+Atualmente suportamos dois tipos de modelos: modelos de Detecção de Objetos e modelos de Classificação de Imagens.
+Os modelos de detecção de objetos fornecerão "IDs de classe" e caixas delimitadoras (assim como nossos alvos retroreflexivos) para todos os objetos detectados. Isso é perfeito para rastreamento de peças de jogo em tempo real.
+Por favor, contribua para o primeiro modelo de detecção de objetos FRC enviando imagens aqui:
+https://datasets.limelightvision.io/frc2023
+Use as chaves tx, ty, ta e tclass do networktables ou o despejo JSON para usar redes de detecção
+Os modelos de classificação de imagens ingerem uma imagem e produzem um único rótulo de classe.
+Para saber mais e começar a treinar seus próprios modelos para o Limelight, confira o Teachable Machine do Google.
+https://www.youtube.com/watch?v=T2qQGqZxkD0
+Os modelos do Teachable Machine são diretamente compatíveis com o Limelight.
+Os classificadores de imagem podem ser usados para classificar o estado interno do robô, o estado dos recursos de campo e muito mais.
+Use a chave tclass do networktables para usar esses modelos.
+O Limelight OS 2023.0 não fornece a capacidade de carregar modelos personalizados. Isso será habilitado em breve no 2023.1
+Suporte a AprilTag Sem Código
+​
+AprilTags são tão fáceis quanto alvos retroreflexivos com o Limelight. Como eles têm um filtro rígido natural na forma de um ID, há ainda menos razão para que seu roboRIO faça qualquer filtragem relacionada à visão.
+Para começar, use tx, ty e ta normalmente. Nenhuma alteração de código é necessária. Classifique por qualquer característica de alvo, utilize grupos de alvos, etc.
+Como os AprilTags são sempre quadrados e sempre identificáveis de forma única, eles fornecem a plataforma perfeita para cálculos completos de pose 3D.
+O feedback que recebemos para este recurso em nossos canais de suporte tem sido extremamente positivo. Tornamos os AprilTags o mais fácil possível, desde o rastreamento 2D até uma localização completa do robô em 3D no campo
+Confira a Especificação do Mapa de Campo e o Documento do Sistema de Coordenadas para informações mais detalhadas.
+Existem quatro maneiras de usar AprilTags com o Limelight:
+AprilTags em 2D
+Use tx, ty e ta. Configure seus pipelines para procurar um ID de tag específico.
+<gif>
+Pontos de Interesse 3D com AprilTags
+Use as chaves tx, ty, ta e tid do networktables. O deslocamento do ponto de interesse é tudo o que a maioria das equipes precisará para rastrear alvos que não têm AprilTags diretamente anexados a eles.
+<gif>
+3D Completo
+Rastreie seu LL, seu robô ou tags em 3D completo. Use campose ou json para extrair dados relevantes para seu roboRio.
+<gif>
+Localização de Robô no Espaço de Campo
+Informe ao seu Limelight como ele está montado, carregue um mapa de campo, e seu LL fornecerá a pose de campo do seu robô para uso com o Estimador de Pose do WPILib.
+Nosso sistema de coordenadas de campo coloca (0,0) no centro do campo em vez de um canto.
+Use a chave botpose do networktables para este recurso.
+<gif>
+2022.3.0 (13/04/22)
+​
+Correções de bugs e heartbeat.
+Correções de Bugs
+​
+Correção de problemas de desempenho, estabilidade de stream e lag de stream relacionados a streams de câmera USB e múltiplas instâncias de stream.
+Recursos e Mudanças
+​
+Chave "hb" Heartbeat do NetworkTable
+O valor "hb" incrementa uma vez por quadro de processamento e é redefinido para zero em 2000000000.
+2022.2.3 (16/03/22)
+​
+Correções de bugs e filtragem de recorte via código do robô.
+Correções de Bugs
+​
+Correção da chave "stream" do networktables e Modos Picture-In-Picture
+Correção da chave "snapshot" do networktables. Os usuários devem definir a chave "snapshot" como "0" antes de defini-la como "1" para tirar uma captura de tela.
+Remoção de alertas supérfluos relacionados a Python da interface web
+Recursos e Mudanças
+​
+Filtragem de Recorte Manual
+Usando o array "crop" do networktables, as equipes agora podem controlar retângulos de recorte a partir do código do robô.
+Para que a chave "crop" funcione, o pipeline atual deve utilizar o retângulo de recorte padrão, totalmente aberto (-1 para minX e minY, +1 para maxX e +1 maxY).
+Além disso, o array "crop" do networktable deve ter exatamente 4 valores, e pelo menos um desses valores deve ser diferente de zero.
+2022.2.2 (23/02/22)
+​
+Atualização obrigatória para todas as equipes com base na Semana 0 e testes de confiabilidade do FMS.
+Correções de Bugs
+​
+Correção de travamento / perda de conexão / perda de rastreamento relacionados a interfaces web abertas, FMS, configurações semelhantes ao FMS, múltiplos dispositivos visualizadores, etc.
+Recursos e Mudanças
+​
+Filtragem de Recorte
+Ignore todos os pixels fora de um retângulo de recorte especificado
+Se seu volante tem pontos ideais no campo, você pode usar o filtro de recorte para ignorar a grande maioria dos pixels em pipelines específicos. Este recurso deve ajudar as equipes a reduzir a probabilidade de rastrear não-alvos.
+Se você está rastreando carga, use este recurso para procurar carga apenas dentro de uma parte específica da imagem. Considere ignorar os para-choques da sua equipe, alvos distantes, etc.
+Recurso de cantos agora compatível com agrupamento inteligente de alvos
+Este é para as equipes que desejam fazer visão personalizada mais avançada no RIO
+Limite de cantos "tcornxy" aumentado para 64 cantos
+Simplificação de contorno e recursos de força convexa agora funcionam corretamente com agrupamento inteligente de alvos e envio de cantos
+Filtro IQR máximo aumentado para 3.0
+Taxa de atualização de alvo ao vivo da interface web reduzida de 30fps para 15fps para reduzir largura de banda e carga da CPU enquanto a interface web está aberta
+2022.1 (25/01/22)
+​
+Correções de Bugs
+​
+Recebemos informações de um de nossos fornecedores sobre um problema (e uma solução!) que afeta aproximadamente 1/75 das CPUs especificamente usadas no Limelight 2 (pode estar relacionado a um lote específico). Faz sentido, e era uma das únicas diferenças de inicialização restantes entre a imagem de 2022 e a imagem de 2020.
+Corrigido os botões de upload para entradas GRIP e Modelos SolvePNP
+Recursos
+​
+Arco-íris de Matiz
+O novo arco-íris de matiz facilita a configuração do limite de matiz.
+Inversão de Matiz
+O novo recurso de inversão de matiz é fundamental se você deseja rastrear objetos vermelhos, já que o vermelho está tanto no início quanto no final da faixa de matiz:
+Novas Bibliotecas Python
+Adicionadas scipy, scikit-image, pywavelets, pillow e pyserial à nossa sandbox Python.
+2022.0 e 2022.0.3 (15/01/22)
+​
+Esta é uma grande atualização. Aqui estão as quatro principais mudanças:
+Recursos
+​
+Agrupamento Inteligente de Alvos
+Agrupa automaticamente alvos que passam por todos os filtros de alvos individuais.
+Agrupará dinamicamente qualquer número de alvos entre o -mínimo do controle deslizante de tamanho do grupo- e o -máximo do controle deslizante de tamanho do grupo-
+Rejeição de Outliers
+Embora este objetivo seja mais desafiador que outros objetivos, ele nos dá mais oportunidades de filtragem. Conceitualmente, este objetivo é mais do que uma "mancha verde". Como sabemos que o objetivo é composto por vários alvos próximos uns dos outros, podemos rejeitar alvos outliers que se destacam sozinhos.
+Você deve confiar quase inteiramente em uma boa filtragem de alvos para o objetivo deste ano, e usar a rejeição de outliers apenas se você vir ou esperar outliers espúrios em seu fluxo de câmera. Se você tiver uma filtragem padrão de alvos ruim, a detecção de outliers pode começar a trabalhar contra você!
+Atualizações da Imagem Limelight 2022
+Removemos centenas de partes móveis do nosso software. Estes são os resultados:
+Tamanho da Imagem Comprimida: 1,3 GB em 2020 → 76MB para 2022 (Reduzido por um fator de 17!)
+Tempo de download: dezenas de minutos em 2020 → segundos para 2022
+Tempo de gravação: mais de 5 minutos em 2020 → segundos para 2022
+Tempo de inicialização: mais de 35 segundos em 2020 → 14 segundos para 2022 (10 segundos até os LEDs acenderem)
+Suporte Completo a Scripts Python
+O Limelight expôs com sucesso um grande número de estudantes a algumas das capacidades de visão computacional na robótica. Com scripts Python, as equipes agora podem dar mais um passo à frente escrevendo seus próprios pipelines de processamento de imagem.
+Esta atualização é compatível com todo o Hardware Limelight, incluindo o Limelight 1.
+Problemas conhecidos: Usar zoom de hardware com Python produzirá resultados inesperados.
+2022.0.3 restaura o stream GRIP 5802 e resolve problemas de inicialização em algumas unidades LL2, revertendo algumas das otimizações de tempo de inicialização. O tempo de inicialização aumentou para 16 segundos.

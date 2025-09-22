@@ -1,0 +1,208 @@
+Limelight 4 Início Rápido
+Especificações de Hardware
+​
+Dimensões: 3.154in x 1.894in (80.11mm x 48.11mm)
+Espessura: 1.160in (29.46mm)
+Massa: 0.3 lb
+Montagem com furos passantes #10 / M4
+Furos de montagem com rosca M3
+Entrada de Energia: Buck-Boost com operação de 5V-26V (3.5V - 35V máximo absoluto)
+Supressão de transientes aprimorada para aplicações robóticas
+Consumo máximo de energia de 12W
+Sensor: OV9281 Global Shutter Monocromático (1280x800 @ 120FPS, 640x400 @ 240FPS)
+Kit de atualização IMX462 com iluminação traseira em breve.
+Lente M12 substituível
+82 graus de campo de visão horizontal, 56.2 graus de campo de visão vertical
+Invólucro de alumínio anodizado preto
+Porta Ethernet Gigabit RJ45 (POE não é mais suportado)
+Porta de entrada de energia Weidmuller
+Porta USB C para imagem e conectividade
+IMU interno
+Suporte para acelerador de IA Hailo 8 com porta interna M.2 A+E Key.
+Capacidades de Software (Limelight OS)
+​
+Visão de alto desempenho plug-and-play. Sem necessidade de experiência.
+Interface de usuário baseada em navegador auto-hospedada para configuração de pipeline de visão
+Suporte para REST/HTTP, Websocket, NetworkTables, ModbusTCP e ROS
+Conectividade USB com suporte a driver USB-Ethernet plug-and-play no Windows, Linux, MacOS e Android
+Suporte para detector de objetos MobileNetSSD com arrastar e soltar a 20FPS (Inferência na CPU)
+Suporte para detector de objetos YoloV8 com arrastar e soltar a 80FPS (Requer Hailo-8)
+Exposição fixa configurável, ganho do sensor, resolução e taxa de quadros.
+Configure 10 Pipelines de Visão intercambiáveis:
+Pipelines Python personalizados com OpenCV 4.10, numpy, etc.
+Rastreamento de AprilTag 2D, 3D e Localização do Robô
+Localização 3D completa (GPS do robô) com MegaTag1
+Localização 3D completa de maior precisão (GPS do robô) com fusão de IMU externo com MegaTag2
+Fusão de IMU interno para MegaTag2 de maior precisão
+Modos de assistência IMU para fundir IMU interno e IMU externo ou estimativa de guinada baseada em câmera
+Desempenho de até 240FPS com redução de escala do detector
+Visualizador 3D completo na interface web
+Pipelines de Blob de Cor 120-240FPS
+Pipelines de Detecção de Objetos Neural
+Pipelines de Classificação de Imagem Neural
+Pipelines de Rastreamento de Código de Barras
+Pipeline de Foco de Lente
+Pipeline de visor para streaming de baixa latência
+Interface de calibração de intrínsecos Charuco integrada para pipelines de visão de alta precisão.
+Visualização de calibração de intrínsecos
+Streaming MJPEG de baixa latência integrado. Orientação de stream configurável
+1. Montando o Limelight 4
+​
+Montagem com Furos Passantes
+​
+Use parafusos #10-32 ou #10-24 de 1 1/4" com porcas nylock
+Alternativamente, use parafusos M4 de 38mm com porcas nylock
+Use arruelas plásticas para preservar a anodização
+Montagem Rosqueada (Parte Traseira)
+​
+2x pontos de montagem com rosca M3
+Considere aplicação leve de trava-rosca
+2. Fiação do Limelight 4
+​
+Energia
+​
+Conecte dois fios 18-20AWG do seu Limelight a um slot no seu PDP, PDH ou Mini PDP
+Use um disjuntor de 5A ou 10A
+POE não é mais suportado
+Nota
+: Diferentemente dos modelos anteriores, o LL4 pode sobreviver a eventos de desconexão de bateria e frenagem regenerativa sem necessitar de um VRM dedicado
+(Não obrigatório) Use terminais Weidmuller para resultados ideais (Na imagem, fio 20AWG com terminais laranja Weidmuller 20AWG)
+Terminais:
+https://www.digikey.com/en/products/detail/weidm%C3%BCller/0409500000/491834
+https://store.ctr-electronics.com/products/weidmuller-ferrule-pack-of-20?variant=43631135195309
+Ferramentas de crimpagem de terminais de baixo custo:
+https://store.ctr-electronics.com/products/ferrule-crimper-by-iwiss?_pos=2&_sid=616edc4f4&_ss=r
+https://www.amazon.com/Ferrule-Crimping-Hexagonal-Ferrules-Connectors/dp/B09724DCJH?th=1
+Ethernet
+​
+Conecte um cabo ethernet do seu Limelight ao rádio do seu robô
+Use cabos Cat6 trançados com fios flexíveis (idealmente 20AWG)
+Adicione um alívio de tensão ao seu cabo ethernet
+POE não é mais suportado
+Gravação via USB
+​
+Para entrar no modo de gravação, mantenha o botão de configuração pressionado enquanto conecta via USB C
+Durante a gravação, é seguro alimentar o Limelight 4 via USB.
+Interface USB-Ethernet
+​
+O Limelight 4 possui funcionalidade USB-Ethernet que permite conectividade plug-and-play com Windows, Linux e MacOS. Você pode usar a interface web e todos os outros recursos via USB.
+Ao usar esta interface, o Limelight 4 excederá a classificação de energia da maioria das portas USB. Recomenda-se alimentar o Limelight 4 via porta weidmuller ao usar USB-Ethernet.
+Interface de configuração do Limelight 4 no Windows (USB-Ethernet):
+http://172.28.0.1:5801
+Interface de configuração do Limelight 4 no Linux (USB-Ethernet):
+http://172.29.0.1:5801
+3. Acessando a Interface Web
+​
+Após conectar seu Limelight 4 à sua rede:
+Ligue seu robô e conecte seu laptop à rede do robô
+Use um destes métodos para acessar a interface web:
+Método 1
+: Abra o aplicativo Limelight Hardware Manager, escaneie por Limelights e clique duas vezes no seu Limelight quando ele aparecer
+Método 2
+: Abra um navegador web e navegue até
+http://limelight.local:5801
+Método 3
+: Abra um navegador web e navegue até o endereço IP estático do seu Limelight com a porta 5801 (se configurado)
+Método 4 (USB)
+: Conecte via USB-C e navegue até:
+Windows:
+http://172.28.0.1:5801
+Linux/Mac:
+http://172.29.0.1:5801
+Uma vez conectado, você terá acesso a:
+Aba Configurações - Configure o número da equipe, nome do host e outras configurações do sistema
+Abas de Pipeline de Visão - Configure e ajuste seus pipelines de processamento de visão
+Aba Câmera e Mira - Ajuste as configurações da câmera e parâmetros da mira
+Aba Visualização 3D - Veja a detecção e localização de AprilTag em tempo real
+Toda a configuração é feita através desta interface web. As alterações são salvas automaticamente no seu Limelight.
+4. Atualizando o LimelightOS
+​
+cuidado
+Faça backup dos seus pipelines e scripts antes de atualizar - eles serão apagados durante este processo!
+Desligue seu Limelight
+Baixe os
+drivers USB/RPIboot, imagem do Limelight OS e ferramenta Balena Flash
+mais recentes
+Mantenha o botão de configuração pressionado enquanto conecta um cabo USB-C do seu laptop ao seu Limelight
+Execute "rpiboot-CM4-CM5 - Mass Storage Gadget" no menu Iniciar do Windows
+Você deverá ver o seguinte se o RPIBoot montou seu Limelight com sucesso.
+Se você ver qualquer outra coisa, remova o cabo USB, pressione o botão novamente, reinsira o cabo USB e reinicie o utilitário rpiboot.
+Execute "Balena Etcher" como administrador
+Clique em "Flash From File" e selecione a imagem .zip mais recente
+Clique em "Select Target" e escolha "mmcblk0 USB Device" no menu "Drives"
+Clique em "Flash" e aguarde a conclusão
+Remova o cabo USB quando terminar
+5. Focando seu Limelight 4
+​
+Ligue seu robô.
+Conecte-se à interface web conforme descrito na seção 3
+Clique em "Ignore NT pipeline index" para habilitar a troca de pipeline, e mude para o pipeline 9
+Defina o tipo de pipeline como "focus"
+Vá para a aba de configuração e aumente a qualidade do stream para o máximo
+Certifique-se de que a câmera esteja apontada para algo com muitos detalhes e contraste, como uma placa ARUCO, uma cena detalhada ou uma estrela de Siemens
+Gire a lente para maximizar a pontuação de foco na tela
+Uma vez focado, aplique 3-8 gotas de super cola ou gel de super cola ao redor da lente
+6. Configuração de Rede
+​
+Definindo o Número da Equipe (Obrigatório para FRC / Networktables)
+​
+Ligue seu robô e conecte seu laptop à rede do seu robô
+Abra o Limelight Hardware Manager, escaneie por Limelights e clique duas vezes na entrada que aparecer
+Alternativamente, navegue até
+http://limelight.local:5801
+Vá para a aba "Settings"
+Digite o número da sua equipe e pressione "Update Team Number"
+Definindo um Hostname Único (Apenas Obrigatório para sistemas FRC / Networktables com múltiplos Limelights)
+​
+Se você estiver usando múltiplos Limelights, cada Limelight deve ter um hostname único
+Na aba de configurações, configure um hostname e clique no botão "set hostname".
+Configurando IP Estático (Recomendado, não obrigatório)
+​
+Mude "IP Assignment" para "Static"
+Configure o endereço IP para "10.TE.AM.11"
+Equipe 916 usa 10.9.16.xx
+Equipe 9106 usa 10.91.6.xx
+Equipe 9016 usa 10.90.16.xx
+Configure a Netmask para "255.255.255.0"
+Configure o Gateway para "10.TE.AM.1"
+Clique em "Update"
+Reinicie seu robô
+Acesse seu painel de configuração em 10.TE.AM.11:5801 e o stream da câmera em 10.TE.AM.11:5800
+Se você estiver usando múltiplos Limelights, dê a cada Limelight um endereço IP estático único. Gateways e netmasks devem ser os mesmos em todos os Limelights.
+P. Por que recomendamos o uso de um endereço IP estático?
+R. Ele reduz vários segundos do tempo de inicialização do Limelight.
+Segundo, as equipes historicamente tiveram problemas com atribuição DHCP e
+respondedores mDNS em campos FRC reais e com firmware de rádio de eventos.
+Recomendamos configurar endereços IP estáticos no seu robo-rio e driverstation também.
+As configurações de rede para usar em todos esses dispositivos podem ser encontradas na metade inferior de
+esta página web
+7. Instalação do Módulo Acelerador de IA Hailo (Opcional)
+​
+Se você tem o módulo acelerador de IA Hailo opcional, siga estes passos para instalá-lo:
+Fixe a almofada térmica incluída ao SOC (System on Chip) do Hailo
+Use a chave Allen de 1,5mm incluída para remover os três parafusos M2 de 8mm do invólucro
+Guarde estes parafusos (eles têm material de travamento de rosca)
+Abra cuidadosamente o invólucro (nota: o cabo da câmera limitará o quanto você pode abri-lo)
+Insira o módulo Hailo no slot apropriado
+Não são necessários parafusos para fixar o módulo Hailo
+Recoloque o invólucro usando os três parafusos M2 de 8mm originais
+Após instalar o módulo Hailo, certifique-se de atualizar para a versão mais recente do LimelightOS.
+8. Solução de Problemas
+​
+Indicadores da Barra de Status
+​
+Cylon Lento (Escaneando)
+: Nenhum alvo detectado pelo pipeline atual
+Cylon Rápido (Escaneando)
+: Alvos detectados pelo pipeline atual
+Piscar Alternado Lento do LED
+: Erro de hardware (cabo da câmera desconectado, dano no sensor, etc.)
+Se limelight.local:5801 não funcionar
+​
+Verifique se você tem o Bonjour instalado (Windows: adicionar/remover programas)
+Desinstale "bonjour print services" se você tiver dois itens Bonjour
+Instale o Bonjour da página de Downloads se estiver faltando
+Redefinir endereço IP
+​
+Segure o botão de configuração por 10 segundos após o seu Limelight ter inicializado
+A configuração de rede será redefinida para endereçamento dinâmico na próxima inicialização

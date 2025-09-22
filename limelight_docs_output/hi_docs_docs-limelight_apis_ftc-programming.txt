@@ -1,0 +1,964 @@
+FTC Java और Blockly प्रोग्रामिंग गाइड
+(Blockly स्क्रीनशॉट जल्द ही आ रहे हैं!)
+सुनिश्चित करें कि आपने
+FTC प्रोग्रामिंग क्विक स्टार्ट
+पढ़ लिया है।
+FTC Limelight Javadoc:
+Javadoc
+बेसिक FTC उदाहरण:
+FTC Sample
+पूर्ण उदाहरण रेपो:
+Limelight FTC Examples Repo
+सफलता के लिए टिप्स
+​
+पहले सरल चीज़ करें। FRC में, हमने सीखा है कि सर्वश्रेष्ठ सॉफ्टवेयर टीमें अक्सर सबसे सरल दृष्टिकोण का उपयोग करती हैं। उदाहरण के लिए, FRC टीम 2056 ने 2024 में गेम पीस को ट्रैक करने के लिए न्यूरल नेटवर्क के बजाय मानक 90FPS कलर पाइपलाइन का उपयोग किया।
+यहां एक उदाहरण है जिस प्रकार का प्रश्न आप प्रोग्रामिंग शुरू करते समय पूछ सकते हैं: टेलीऑप में, क्या आपको अपने रोबोट की फील्ड पर स्थिति जानने की आवश्यकता है, या आपको बस तब तक स्ट्रेफ करने की आवश्यकता है जब तक आपका क्रॉसहेयर किसी विशिष्ट टैग पर केंद्रित न हो जाए (strafeSpeed = result.getTx()*.03)?
+मुख्य अवधारणाएँ
+​
+1. प्रारंभीकरण
+​
+हमें अपने रोबोट कोड में अपने Limelight3A को सेट करने की आवश्यकता है।
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLResult
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLResultTypes
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+LLStatus
+;
+import
+com
+.
+qualcomm
+.
+hardware
+.
+limelightvision
+.
+Limelight3A
+;
+Limelight3A
+limelight
+;
+@Override
+public
+void
+init
+(
+)
+{
+limelight
+=
+hardwareMap
+.
+get
+(
+Limelight3A
+.
+class
+,
+"limelight"
+)
+;
+limelight
+.
+setPollRateHz
+(
+100
+)
+;
+// यह सेट करता है कि हम Limelight से कितनी बार डेटा मांगते हैं (प्रति सेकंड 100 बार)
+limelight
+.
+start
+(
+)
+;
+// यह Limelight को देखना शुरू करने के लिए कहता है!
+}
+2. पाइपलाइन प्रबंधन
+​
+पाइपलाइन छोटे, तुरंत बदलने योग्य प्रोग्राम की तरह हैं जो बदलते हैं कि Limelight दुनिया को कैसे देखता है। आप Limelight वेब इंटरफेस में 10 अलग-अलग पाइपलाइन सेट कर सकते हैं, प्रत्येक एक अलग कार्य के लिए। यहां बताया गया है कि आप उनके बीच कैसे स्विच करते हैं:
+limelight
+.
+pipelineSwitch
+(
+0
+)
+;
+// पाइपलाइन नंबर 0 पर स्विच करें
+यह फायर-एंड-फॉरगेट है। Limelight मिलीसेकंड के भीतर अपनी पाइपलाइन बदल देगा, लेकिन आपका कोड जारी रखने से पहले इसका इंतजार नहीं करेगा। यदि आप वर्तमान पाइपलाइन इंडेक्स की जांच करना चाहते हैं, तो कॉल करें
+result.getPipelineIndex()
+LLResult ऑब्जेक्ट प्राप्त करने के बारे में जानने के लिए अगला अनुभाग देखें।
+3. परिणाम प्राप्त करना और उपयोग करना
+​
+LLResult एक ऐसा कंटेनर है जिसमें Limelight क्या देखता है, इसके बारे में जानकारी भरी होती है। यहां बताया गया है कि हम उस जानकारी को कैसे प्राप्त करते हैं और उपयोग करते हैं:
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+double
+tx
+=
+result
+.
+getTx
+(
+)
+;
+// लक्ष्य कितना बाएं या दाएं है (डिग्री)
+double
+ty
+=
+result
+.
+getTy
+(
+)
+;
+// लक्ष्य कितना ऊपर या नीचे है (डिग्री)
+double
+ta
+=
+result
+.
+getTa
+(
+)
+;
+// लक्ष्य कितना बड़ा दिखता है (छवि का 0%-100%)
+telemetry
+.
+addData
+(
+"Target X"
+,
+tx
+)
+;
+telemetry
+.
+addData
+(
+"Target Y"
+,
+ty
+)
+;
+telemetry
+.
+addData
+(
+"Target Area"
+,
+ta
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Limelight"
+,
+"No Targets"
+)
+;
+}
+4. Python SnapScripts से बात करना
+​
+आप वेब इंटरफेस में अपनी खुद की Python SnapScript पाइपलाइन लिख सकते हैं। अपना कोड लिखने में मदद के लिए हमारे LLM-आधारित SnapScript जनरेटर का उपयोग करें।
+यहां बताया गया है कि आप रोबोट कोड से Python को नंबर कैसे भेजते हैं और नंबर वापस कैसे प्राप्त करते हैं:
+// Python को नंबर भेजना
+double
+[
+]
+inputs
+=
+{
+1.0
+,
+2.0
+,
+3.0
+,
+4.0
+,
+5.0
+,
+6.0
+,
+7.0
+,
+8.0
+}
+;
+limelight
+.
+updatePythonInputs
+(
+inputs
+)
+;
+// Python से नंबर प्राप्त करना
+double
+[
+]
+pythonOutputs
+=
+result
+.
+getPythonOutput
+(
+)
+;
+if
+(
+pythonOutputs
+!=
+null
+&&
+pythonOutputs
+.
+length
+>
+0
+)
+{
+double
+firstOutput
+=
+pythonOutputs
+[
+0
+]
+;
+telemetry
+.
+addData
+(
+"Python output:"
+,
+firstOutput
+)
+;
+}
+5. मेरा रोबोट कहां है? (MegaTag 1)
+​
+Limelight AprilTags का उपयोग करके यह पता लगाने में मदद कर सकता है कि आपका रोबोट फील्ड पर कहां है। आपके Limelight में वर्तमान गेम के लिए एक AprilTag मैप पहले से इंस्टॉल है, लेकिन आप हमारे 3D मैप बिल्डर का उपयोग करके अपने खुद के मैप डिज़ाइन और अपलोड कर सकते हैं।
+अपने रोबोट की स्थिति प्राप्त करने से पहले, निम्न करें:
+वेब इंटरफेस में अपने AprilTag पाइपलाइन के "Advanced" टैब में "Full 3D" सक्षम करें।
+अपने रोबोट के फुटप्रिंट के केंद्र के सापेक्ष अपने कैमरे को स्थित करने के लिए वेब इंटरफेस का उपयोग करें।
+botPose के लिए कोऑर्डिनेट सिस्टम मानक FTC कोऑर्डिनेट सिस्टम से मेल खाता है।
+(0,0,0) फील्ड फ्लोर का केंद्र है
+गैर-डायमंड कॉन्फिगरेशन के लिए, 0 डिग्री यॉ का मतलब है कि नीला गठबंधन आपके रोबोट के बाईं ओर है, और लाल गठबंधन आपके रोबोट के दाईं ओर है।
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose
+(
+)
+;
+if
+(
+botpose
+!=
+null
+)
+{
+double
+x
+=
+botpose
+.
+getPosition
+(
+)
+.
+x
+;
+double
+y
+=
+botpose
+.
+getPosition
+(
+)
+.
+y
+;
+telemetry
+.
+addData
+(
+"MT1 Location"
+,
+"("
++
+x
++
+", "
++
+y
++
+")"
+)
+;
+}
+}
+6. मेरा रोबोट कहां है? (MegaTag 2)
+​
+MegaTag 2 MegaTag 1 की तरह है, लेक  िन यह बढ़ी हुई सटीकता के लिए आपके IMU डेटा को फ्यूज करता है:
+// पहले, Limelight को बताएं कि आपका रोबोट किस दिशा में देख रहा है
+double
+robotYaw
+=
+imu
+.
+getAngularOrientation
+(
+)
+.
+firstAngle
+;
+limelight
+.
+updateRobotOrientation
+(
+robotYaw
+)
+;
+if
+(
+result
+!=
+null
+&&
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose_mt2
+=
+result
+.
+getBotpose_MT2
+(
+)
+;
+if
+(
+botpose_mt2
+!=
+null
+)
+{
+double
+x
+=
+botpose_mt2
+.
+getPosition
+(
+)
+.
+x
+;
+double
+y
+=
+botpose_mt2
+.
+getPosition
+(
+)
+.
+y
+;
+telemetry
+.
+addData
+(
+"MT2 Location:"
+,
+"("
++
+x
++
+", "
++
+y
++
+")"
+)
+;
+}
+}
+7. इनर रिजल्ट्स टाइप्स
+​
+आपने अपनी पाइपलाइन को कैसे कॉन्फिगर किया है, इसके आधार पर आपके पास पैरेंट LLResults ऑब्जेक्ट के भीतर विभिन्न प्रकार के विस्तृत Results Lists तक पहुंच होगी।
+शायद आपको इन Results Lists का उपयोग करने की आवश्यकता नहीं होगी। हम जब भी संभव हो, बेस getTx(), getTy() का उपयोग करने की सलाह देते हैं।
+7.1 कलर रिजल्ट्स
+​
+कलर रिजल्ट्स रंगीन लक्ष्यों को खोजने में मदद करते हैं:
+List
+<
+ColorResult
+>
+colorTargets
+=
+result
+.
+getColorResults
+(
+)
+;
+for
+(
+ColorResult
+colorTarget
+:
+colorTargets
+)
+{
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// यह कहां है (बाएं-दाएं)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// यह कहां है (ऊपर-नीचे)
+double
+area
+=
+colorTarget
+.
+getTargetArea
+(
+)
+;
+// आकार (0-100)
+telemetry
+.
+addData
+(
+"Color Target"
+,
+"takes up "
++
+area
++
+"% of the image"
+)
+;
+}
+7.2 फिड्यूशियल/AprilTag रिजल्ट्स
+​
+फिड्यूशियल विशेष मार्कर (जैसे AprilTags) हैं जो Limelight को यह पता लगाने में मदद करते हैं कि यह कहां है:
+List
+<
+FiducialResult
+>
+fiducials
+=
+result
+.
+getFiducialResults
+(
+)
+;
+for
+(
+FiducialResult
+fiducial
+:
+fiducials
+)
+{
+int
+id
+=
+fiducial
+.
+getFiducialId
+(
+)
+;
+// फिड्यूशियल का ID नंबर
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// यह कहां है (बाएं-दाएं)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// यह कहां है (ऊपर-नीचे)
+double
+StrafeDistance_3D
+=
+fiducial
+.
+getRobotPoseTargetSpace
+(
+)
+.
+getY
+(
+)
+;
+telemetry
+.
+addData
+(
+"Fiducial "
++
+id
+,
+"is "
++
+distance
++
+" meters away"
+)
+;
+}
+यदि आप प्रत्येक FiducialResult के भीतर 3D पोज़ जानकारी का उपयोग करना चाहते हैं, तो आप निम्न विधियों का उपयोग कर सकते हैं:
+fiducial
+.
+getRobotPoseTargetSpace
+(
+)
+;
+// AprilTag कोऑर्डिनेट सिस्टम के सापेक्ष रोबोट पोज़ (सबसे उपयोगी)
+fiducial
+.
+getCameraPoseTargetSpace
+(
+)
+;
+// AprilTag के सापेक्ष कैमरा पोज़ (उपयोगी)
+fiducial
+.
+getRobotPoseFieldSpace
+(
+)
+;
+// केवल इस टैग के आधार पर फील्ड कोऑर्डिनेट सिस्टम में रोबोट पोज़ (उपयोगी)
+fiducial
+.
+getTargetPoseCameraSpace
+(
+)
+;
+// कैमरा के कोऑर्डिनेट सिस्टम में AprilTag पोज़ (बहुत उपयोगी नहीं)
+fiducial
+.
+getTargetPoseRobotSpace
+(
+)
+;
+// रोबोट के कोऑर्डिनेट सिस्टम में AprilTag पोज़ (बहुत उपयोगी नहीं)
+7.3 बारकोड रिजल्ट्स
+​
+Limelight की बारकोड पाइपलाइन QR कोड का पता लगाने और ट्रैक करने में अच्छी है।
+List
+<
+BarcodeResult
+>
+barcodes
+=
+result
+.
+getBarcodeResults
+(
+)
+;
+for
+(
+BarcodeResult
+barcode
+:
+barcodes
+)
+{
+String
+data
+=
+barcode
+.
+getData
+(
+)
+;
+// बारकोड क्या कहता है
+String
+family
+=
+barcode
+.
+getFamily
+(
+)
+;
+// यह किस प्रकार का बारकोड है
+telemetry
+.
+addData
+(
+"Barcode"
+,
+data
++
+" ("
++
+family
++
+")"
+)
+;
+}
+7.4 क्लासिफायर रिजल्ट्स
+​
+न्यूरल क्लासिफायर Limelight को यह कहने की अनुमति देते हैं "मुझे लगता है कि यह ... की एक छवि है"।
+List
+<
+ClassifierResult
+>
+classifications
+=
+result
+.
+getClassifierResults
+(
+)
+;
+for
+(
+ClassifierResult
+classification
+:
+classifications
+)
+{
+String
+className
+=
+classification
+.
+getClassName
+(
+)
+;
+// Limelight को क्या दिखता है
+double
+confidence
+=
+classification
+.
+getConfidence
+(
+)
+;
+// कॉन्फिडेंस स्कोर
+telemetry
+.
+addData
+(
+"I see a"
+,
+className
++
+" ("
++
+confidence
++
+"%)"
+)
+;
+}
+7.5 डिटेक्टर रिजल्ट्स
+​
+डिटेक्टर विशिष्ट वस्तुओं को खोजते हैं और हमें बताते हैं कि वे कहां हैं:
+List
+<
+DetectorResult
+>
+detections
+=
+result
+.
+getDetectorResults
+(
+)
+;
+for
+(
+DetectorResult
+detection
+:
+detections
+)
+{
+String
+className
+=
+detection
+.
+getClassName
+(
+)
+;
+// क्या पता चला
+double
+x
+=
+detection
+.
+getTargetXDegrees
+(
+)
+;
+// यह कहां है (बाएं-दाएं)
+double
+y
+=
+detection
+.
+getTargetYDegrees
+(
+)
+;
+// यह कहां है (ऊपर-नीचे)
+telemetry
+.
+addData
+(
+className
+,
+"at ("
++
+x
++
+", "
++
+y
++
+") degrees"
+)
+;
+}
+8. क्या डेटा ताजा है?
+​
+कभी-कभी, हम अपने परिणाम डेटा की आयु (मिलीसेकंड में) जानना चाहते हैं।
+long
+staleness
+=
+result
+.
+getStaleness
+(
+)
+;
+if
+(
+staleness
+<
+100
+)
+{
+// 100 मिलीसेकंड से कम पुराना
+telemetry
+.
+addData
+(
+"Data"
+,
+"Good"
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Data"
+,
+"Old ("
++
+staleness
++
+" ms)"
+)
+;
+}
+9. कस्टम फील्ड मैप्स
+​
+आप Limelight को अपने विशिष्ट फील्ड लेआउट के बारे में बता सकते हैं:
+LLFieldMap
+fieldMap
+=
+new
+LLFieldMap
+(
+)
+;
+// आपको इसे फील्ड डेटा से भरना होगा
+boolean
+success
+=
+limelight
+.
+uploadFieldmap
+(
+fieldMap
+,
+null
+)
+;
+// null का मतलब है डिफॉल्ट स्लॉट का उपयोग करें
+if
+(
+success
+)
+{
+telemetry
+.
+addData
+(
+"Field Map"
+,
+"Uploaded successfully!"
+)
+;
+}
+else
+{
+telemetry
+.
+addData
+(
+"Field Map"
+,
+"Oops, upload failed"
+)
+;
+}
+10. स्नैपशॉट लेना:
+​
+Limelight फील्ड से बाहर पाइपलाइन को डीबग करने में मदद के लिए स्नैपशॉट ले सकता है:
+limelight
+.
+captureSnapshot
+(
+"auto_pov_10s"
+)
+;
+वेब इंटरफेस के इनपुट टैब में, आप अपनी पाइपलाइन की जांच/ट्यून करने के लिए इस स्नैपशॉट को "इमेज सोर्स" के रूप में चुन सकते हैं।
+पुराने स्नैपशॉट को साफ करने के लिए:
+limelight
+.
+deleteSnapshots
+(
+)
+;
+telemetry
+.
+addData
+(
+"Snapshots"
+,
+"All cleared out!"
+)
+;

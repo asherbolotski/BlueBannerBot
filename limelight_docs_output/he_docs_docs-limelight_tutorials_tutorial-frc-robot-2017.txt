@@ -1,0 +1,242 @@
+רובוט משגר דלק 2017
+בדוגמה זו, אנו מציגים תוכנית רובוט מלאה המיישמת את יעד הדוד משנת 2017. בדקנו תוכנית זו על רובוט ה-steamworks של קבוצה 987 והצלחנו בקלות לקלוע דלק לדוד. בדוגמה זו אנו מכוונים ונעים לטווח המתאים באמצעות מערכת ההנעה של הרובוט. דבר אחד שהיה ברור לנו מיד הוא שלימלייט אפשרה לנו ליישם תכונה זו בחלק קטן מכמות הקוד והזמן בהשוואה לרובוט האמיתי שלנו משנת 2017.
+ישנן גם מספר תכונות נוספות בקוד שלהלן, כגון היכולת להבהב את נורות ה-LED ולעבור באופן דינמי בין צינורות ראייה (pipelines) שונים. דוגמה זו מראה גם כיצד להשתמש בבקר מהירות Talon SRX יחד עם מקודד מגנטי כדי לשלוט ב-RPM של גלגל היורה.
+#include <iostream>
+#include <string>
+#include <Drive/DifferentialDrive.h>
+#include <Joystick.h>
+#include <SampleRobot.h>
+#include <SmartDashboard/SendableChooser.h>
+#include <SmartDashboard/SmartDashboard.h>
+#include <Spark.h>
+#include <Victor.h>
+#include <Timer.h>
+#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
+//
+#define Vic_Drive_Left_1 0
+#define Vic_Drive_Left_2 1
+#define Vic_Drive_Right_1 2
+#define Vic_Drive_Right_2 3
+#define Tal_Shooter_Wheel 21
+#define Tal_Shooter_Wheel_2 2
+#define Tal_Intake 3
+#define Tal_Uptake 9
+class Robot : public frc::SampleRobot
+{
+public:
+Robot() :
+LeftDrive(Vic_Drive_Left_1),
+RightDrive(Vic_Drive_Right_1),
+LeftDrive2(Vic_Drive_Left_2),
+RightDrive2(Vic_Drive_Right_2),
+Shooter(Tal_Shooter_Wheel),
+Shooter_2(Tal_Shooter_Wheel_2),
+Intake(Tal_Intake),
+Uptake(Tal_Uptake)
+{
+// קוד זה מגדיר שני Talons לעבוד יחד וליישם בקרת RPM באמצעות PID
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.SetClosedLoopOutputDirection(false);
+Shooter.SetStatusFrameRateMs(CTRE::MotorControl::CAN::TalonSRX::StatusFrameRateAnalogTempVbat,10);
+Shooter.SetFeedbackDevice(CTRE::MotorControl::CAN::TalonSRX::CtreMagEncoder_Relative);
+SetShooterConstants(.0002f, .00009f, .0000f, .000006f);  // קבועי P,I,D,F עבור גלגל היורה
+Shooter.SetAllowableClosedLoopErr(10);
+Shooter.ConfigNominalOutputVoltage(+0.f,-0.f);
+Shooter.ConfigPeakOutputVoltage(+12.f,-12.f);
+Shooter.SelectProfileSlot(0);
+Shooter.SetSensorDirection(true);
+Shooter.SetVoltageRampRate(100);
+Shooter.SetIzone(300);
+Shooter_2.SetVoltageRampRate(100);
+}
+void RobotInit()
+{
+}
+void Autonomous()
+{
+}
+/*
+* בקרת מפעיל
+*/
+void OperatorControl() override
+{
+while (IsOperatorControl() && IsEnabled())
+{
+// קריאת הג'ויסטיקים!
+float left_command = m_stickLeft.GetY();
+float right_command = m_stickRight.GetY();
+// קבלת טבלת limelight לקריאת נתוני מעקב
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float KpAim = 0.045;
+float KpDist = 0.0f; //0.09;
+float AimMinCmd = 0.095f;
+float targetX = table->GetNumber("tx", 0);
+float targetY = table->GetNumber("ty", 0);
+float targetA = table->GetNumber("ta", 0);
+// שגיאת כיוון ושגיאת מרחק על בסיס צלב הכוונת המכויל של limelight
+float aim_error = targetX;
+float dist_error = targetY;
+// התאמת היגוי עם אזור מת של 0.2 מעלות (קרוב מספיק ב-0.2 מעלות)
+float steeringAdjust = KpAim*aim_error;
+if (targetX > .2f) steeringAdjust += AimMinCmd;
+else if (targetX < -.2f) steeringAdjust -= AimMinCmd;
+// התאמת מרחק, נהיגה למרחק הנכון מהיעד
+float drivingAdjust = KpDist*dist_error;
+bool doTarget = false;
+if(m_stickLeft.GetRawButton(3))         // כיוון באמצעות pipeline 0
+{
+doTarget = true;
+table->PutNumber("pipeline", 0);
+}
+else if (m_stickLeft.GetRawButton(2))   // כיוון באמצעות pipeline 1
+{
+doTarget = true;
+table->PutNumber("pipeline", 1);
+}
+if(doTarget)                            // אם מתבצע כיוון אוטומטי, התאם נהיגה והיגוי
+{
+ShooterSetRPM(3300);
+left_command += drivingAdjust - steeringAdjust;
+right_command += drivingAdjust + steeringAdjust;
+}
+else
+{
+ShooterOff();
+}
+// נהיגת טנק, שליחת פקודות מנוע לצד שמאל וימין של מערכת ההנעה
+StandardTank(left_command,right_command);
+if(m_stickRight.GetRawButton(3))        // שאיבת וירי כדורים
+{
+IntakeIn();
+UptakeUp();
+}
+else if(m_stickRight.GetRawButton(2))   // פליטת כדורים
+{
+IntakeIn();
+UptakeDown();
+}
+else                                    // השאר את הכדורים במקומם!
+{
+IntakeOff();
+UptakeOff();
+}
+if(m_stickLeft.GetRawButton(5))         // כפתור 5 בג'ויסטיק = הבהוב נורות LED
+{
+table->PutNumber("ledMode", 2); //הבהב את האורות
+}
+else
+{
+table->PutNumber("ledMode", 0); //הדלק את האורות
+}
+// המתן לזמן עדכון מנוע
+frc::Wait(0.005);
+}
+}
+/*
+* פועל במצב בדיקה
+*/
+void Test() override {}
+void StandardTank(float left, float right)
+{
+LeftDrive.Set(-left);
+LeftDrive2.Set(-left);
+RightDrive.Set(right);
+RightDrive2.Set(right);
+}
+//
+// פונקציות יורה - משתמש ב-PID של talon לשליטה ב-RPM של גלגל היורה
+// הגדר את קבועי P,I,D,F ב-Talon, ערכים אלה תלויים מאוד במנגנון שלך
+//
+void SetShooterConstants(float p,float i,float d,float f)
+{
+p *= 1024.f;
+i *= 1024.f;
+d *= 1024.f;
+f *= 1024.f;
+Shooter.SetP(p);
+Shooter.SetI(i);
+Shooter.SetD(d);
+Shooter.SetF(f);
+}
+//
+// אמור ל-talons את ה-RPM הרצוי של גלגל היורה
+//
+void ShooterSetRPM(float desrpm)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.Set(desrpm);
+}
+//
+// פשוט הגדר את העוצמה -1..+1, לא בשימוש כרגע מאז שבקרת RPM הוגדרה
+//
+void ShooterSetPower(float power)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.Set(power);
+Shooter.Set(power);
+}
+//
+// כבה את גלגל היורה
+//
+void ShooterOff()
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter.Set(0.0f);
+Shooter_2.Set(0.0f);
+}
+//
+// פונקציות קליטה (Intake)
+//
+void IntakeIn()
+{
+Intake.Set(-.8f);
+}
+void IntakeOut()
+{
+Intake.Set(.8f);
+}
+void IntakeShooting()
+{
+Intake.Set(-1.0f);
+}
+void IntakeOff()
+{
+Intake.Set(0);
+}
+//
+// פונקציות העלאה (Uptake)
+//
+void UptakeUp()
+{
+Uptake.Set(-1.0f);
+}
+void UptakeDown()
+{
+Uptake.Set(1.0f);
+}
+void UptakeOff()
+{
+Uptake.Set(0);
+}
+private:
+// מערכת הנעת הרובוט
+frc::Victor LeftDrive;
+frc::Victor RightDrive;
+frc::Victor LeftDrive2;
+frc::Victor RightDrive2;
+// גלגל יורה
+CTRE::MotorControl::CAN::TalonSRX Shooter;
+CTRE::MotorControl::CAN::TalonSRX Shooter_2;
+CTRE::MotorControl::CAN::TalonSRX Intake;
+CTRE::MotorControl::CAN::TalonSRX Uptake;
+// קלטי ג'ויסטיק
+frc::Joystick m_stickLeft{0};
+frc::Joystick m_stickRight{1};
+};
+START_ROBOT_CLASS(Robot)

@@ -1,0 +1,69 @@
+Calibración de Cámara ChArUco
+¿Por Qué Es Importante?
+​
+Una cámara completamente calibrada proporcionará mediciones 2D y 3D más precisas. Es útil para cualquier tarea que no se base en el "servoing" hacia la cruz central.
+Dicho esto, recomendamos usar el método de "servoing" siempre que sea posible. Es rápido, preciso y adecuado para tareas como la adquisición de objetos, apuntar y alinearse con objetivos. No te preocupes por la calibración a menos que determines que necesitas mayor precisión. Cada unidad LL viene con una calibración predeterminada que proporcionará resultados bastante buenos para la mayoría de los casos de uso
+"servoing" es el proceso de girar tu robot hasta que tu objetivo esté perfectamente alineado con una "cruz" configurable. Es la forma más fácil y, en muchos casos, la más confiable de abordar problemas de visión en robótica.
+¿Qué es la Calibración de Cámara?
+​
+La calibración de intrínsecos es el proceso de determinar los dos siguientes componentes:
+1. La Matriz de la Cámara
+​
+La matriz de la cámara, a menudo denotada como K, es una matriz 3x3 que describe cómo la lente y el sensor convierten el mundo 3D en una imagen 2D.
+[fx  0   cx]
+[0   fy  cy]
+[0   0   1]
+cx y cy son las coordenadas del punto principal / píxel principal. El punto principal / píxel principal es el píxel que está directamente alineado con el eje óptico / centro de la lente. Durante la fabricación, la lente de la cámara casi nunca está perfectamente alineada con el centro del sensor de imagen. Es crucial que entendamos qué píxel es el verdadero píxel "central"
+fx y fy son longitudes focales calculadas en píxeles. fx y fy nos ayudan a entender el campo de visión / nivel de zoom de la cámara.
+2. Coeficientes de Distorsión
+​
+Calculamos 5 coeficientes de distorsión:
+[k1, k2, p1, p2, k3]
+k1, k2, k3 son coeficientes de distorsión radial que hacen que las líneas rectas aparezcan curvadas.
+p1, p2 son coeficientes de distorsión tangencial que ocurren debido a que la lente no está paralela al plano de la imagen.
+Realizando la Calibración ChArUco
+​
+La calibración ChArUco con Limelight fue diseñada para ser lo más fluida y a prueba de fallos posible. Lee los siguientes pasos y luego mira el video a continuación para aprender cómo calibrar tu cámara para aumentar la precisión.
+info
+Solo necesitas calibrar en una resolución (recomendamos 1280x960 para LL3 y 1280x800 para LL3G). Los intrínsecos se escalan automáticamente para coincidir con la resolución elegida para tu pipeline, y los coeficientes de distorsión son invariantes a la resolución dado un ratio de aspecto y FOV fijos. Los pipelines con zoom por hardware y los pipelines de 5 megapíxeles son los únicos que no utilizarán calibraciones personalizadas.
+Preparando el Tablero
+​
+Puedes usar cualquier pantalla de laptop para calibrar tu cámara. Sin embargo, para máxima precisión, recomendamos comprar este
+tablero grueso de 800mmx600mm de calib.io
+Imprime un Tablero de Calibración ChArUco o usa una imagen de un tablero en una pantalla grande de laptop o computadora. Usa
+nuestro tablero de la página de descargas
+, o
+genera el tuyo propio
+.
+Encuentra el "ancho" de la cuadrícula sumando el número total de cuadrados negros y el número total de marcadores ArUco en una fila (11 para el tablero de calibración predeterminado de Limelight).
+Encuentra la "altura" de la cuadrícula sumando el número total de cuadrados negros y el número total de marcadores ArUco en una columna (8 para el tablero de calibración predeterminado de Limelight).
+Confirma las medidas de "tamaño del cuadrado" y "tamaño del marcador" midiendo las longitudes laterales de un cuadrado y un marcador en milímetros.
+Las medidas del tamaño del cuadrado y del marcador son críticas, así que usa calibradores.
+Anota el tipo de diccionario. El tablero predeterminado de la página de descargas usa el diccionario 5x5_100.
+Capturando Imágenes de Calibración
+​
+Asegúrate de que tu tablero esté lo más plano posible.
+No debes realizar la calibración si tu tablero no está plano. Puedes comprar tableros especiales de calib.io, o fijar tu tablero impreso a un portapapeles.
+Enciende tu robot y accede a la interfaz web de Limelight.
+Crea un pipeline AprilTag de 1280x960.
+Elimina todas las instantáneas guardadas cambiando el tipo de fuente de "entrada" de "Cámara" a "Instantánea" y haciendo clic en "Eliminar todas las instantáneas".
+Cambia el tipo de fuente de "entrada" de nuevo a "Cámara".
+Captura al menos 25 instantáneas del tablero ChArUco para empezar. Una vez que estés familiarizado con el proceso, querrás volver a capturar un total de al menos 50 imágenes.
+La principal ventaja de la calibración ChArUco sobre la calibración estándar de tablero de ajedrez es que funciona incluso si solo parte del tablero es visible para la cámara. Es importante aprovechar esta ventaja.
+Tus imágenes deben tener una buena mezcla de las siguientes cualidades:
+Tu tablero abarca grandes regiones de la imagen.
+Tu tablero se extiende más allá de al menos un borde o esquina de la imagen (Esto ayudará a calcular la distorsión alrededor de los bordes de las imágenes).
+Tu tablero a menudo está posicionado de tal manera que tiene deformación de perspectiva (El tablero no debe estar paralelo al plano de la imagen).
+Busca una amplia diversidad en posiciones, perspectivas y cobertura del tablero.
+El 50% de tus imágenes deben ilustrar un acortamiento significativo. Este es el efecto de que los marcadores más cercanos aparecen más grandes que los marcadores lejanos. La primera y la última imagen en la siguiente captura de pantalla demuestran el acortamiento.
+Calibrando
+​
+Navega a la pestaña "Calibración". Es la tercera pestaña en la barra lateral vertical.
+Introduce los cinco valores encontrados en el paso "Preparando el Tablero".
+Haz clic en el botón "Calibrar con Instantáneas". El proceso puede tardar uno o dos minutos en completarse.
+Al tener éxito, la tarjeta "Resultado de la Última Calibración" mostrará el resultado de la última calibración.
+Verifica la tarjeta "Resultado de la Última Calibración" para un resultado razonable con un bajo error de reproyección (idealmente menos de 1).
+Descarga el resultado de la última calibración y súbelo a la ranura de calibración "personalizada - archivo".
+Ahora deberías ver tres tarjetas de resultados de calibración pobladas.
+Cambia tu "calibración preferida" a "personalizada - archivo" para utilizar tu resultado de calibración personalizado. Todos los pipelines usarán tu resultado de calibración.
+Considera capturar más capturas de pantalla y recalibrar una vez que estés familiarizado con el proceso.

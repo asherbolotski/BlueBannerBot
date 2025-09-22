@@ -1,0 +1,143 @@
+Localización del Robot con MegaTag
+Si la pose en el espacio del robot de tu Limelight ha sido configurada en la interfaz web, y un mapa del campo ha sido cargado a través de la interfaz web, entonces la ubicación del robot en el espacio del campo
+estará disponible a través de getBotpose() y el array "botpose" de networktables (x,y,z en metros, roll, pitch, yaw en grados).
+Nuestro algoritmo de localización de robot se llama MegaTag. Si hay más de una etiqueta a la vista, es resistente a ambigüedades individuales de etiquetas y ruido en la imagen.
+Si todos los puntos clave son coplanares, todavía existe algún riesgo de inversión por ambigüedad.
+Cilindro Verde: Pose del robot por etiqueta individual
+Cilindro Azul: BotPose Antiguo
+Cilindro Blanco: MegaTag Botpose
+Nota la obvia ambigüedad de pose aquí:
+Observa cómo el nuevo botpose (cilindro blanco) es extremadamente estable comparado con el botpose antiguo (cilindro azul). También puedes observar los valores tx y ty.
+Esto no está restringido a etiquetas planas. Se escala a cualquier número de etiquetas en 3D completo y en cualquier orientación. Las etiquetas de suelo y techo funcionan perfectamente.
+Aquí hay un diagrama que demuestra un aspecto de cómo funciona esto con un caso planar simple.
+Los resultados son en realidad mejores de lo que se muestra, ya que el MegaTag representado tiene un error significativo aplicado a tres puntos en lugar de uno.
+A medida que el MegaTag 3D combinado aumenta en tamaño y en cantidad de puntos clave, su estabilidad aumenta.
+Usando el Estimador de Pose de WPILib
+​
+info
+En 2024, la mayoría del Ecosistema WPILib hizo la transición a un sistema de coordenadas de origen único.
+En 2023, el origen de tu sistema de coordenadas cambiaba según el color de tu alianza.
+Para 2024 y más allá, el origen de tu sistema de coordenadas siempre debe ser el origen "azul". Los equipos de FRC siempre deben usar botpose_wpiblue para funcionalidades relacionadas con la pose
+LimelightHelpers
+.
+PoseEstimate
+mt1
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+"limelight"
+)
+;
+if
+(
+mt1
+.
+tagCount
+==
+1
+&&
+mt1
+.
+rawFiducials
+.
+length
+==
+1
+)
+{
+if
+(
+mt1
+.
+rawFiducials
+[
+0
+]
+.
+ambiguity
+>
+.7
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt1
+.
+rawFiducials
+[
+0
+]
+.
+distToCamera
+>
+3
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+}
+if
+(
+mt1
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+!
+doRejectUpdate
+)
+{
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.5
+,
+.5
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+mt1
+.
+pose
+,
+mt1
+.
+timestampSeconds
+)
+;
+}
+Configurando la Pose en el Espacio del Robot de tu Limelight
+​
+LL Forward, LL Right y LL Up representan distancias a lo largo de los vectores hacia adelante, derecha y arriba del Robot si personificaras al robot (en metros).
+LL Roll, Pitch y Yaw representan la rotación de tu Limelight en grados. Puedes modificar estos valores y ver cómo cambia el modelo 3D del Limelight en el visor 3D.
+Limelight usa esta configuración internamente para pasar de la pose del objetivo en el espacio de la cámara -> pose del robot en el espacio del campo.

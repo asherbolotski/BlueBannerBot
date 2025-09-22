@@ -1,0 +1,390 @@
+Limelight 3A クイックスタート
+ハードウェア仕様
+​
+寸法: 2.839インチ x 1.894インチ (72.11mm x 48.11mm)
+厚さ: 0.661インチ (16.80mm)
+重量: 0.20 ポンド
+取り付け: 4x #10 貫通穴、4x M3、6x M4 ネジ穴
+電源入力: 4.1V-5.75V（USB経由）
+最大消費電力: 4W
+センサー: OV5647 カラーローリングシャッター (640x480 @ 90FPS)
+内蔵LED照明なし
+視野角: 水平:54.5° 垂直:42°
+USB-C接続のみ（RJ45ポートなし）
+ステータスライト: 緑（ターゲット検出）
+FTC互換性に最適化
+ソフトウェア機能 (Limelight OS)
+​
+プラグアンドプレイの高性能ビジョン。経験不要。
+ビジョンパイプライン設定用のセルフホスト型ブラウザベースUI
+FTC（直接Java統合）とFRC（NetworkTablesインターフェース）のサポート
+露出、センサーゲイン、解像度、フレームレートの設定可能
+10種類のホットスワップ可能なビジョンパイプラインを設定可能:
+OpenCV 4.10、numpyなどを使用したカスタムPythonパイプライン
+2D、3D AprilTagトラッキングとロボット位置特定
+MegaTag1による完全3D位置特定（ロボットGPS）
+MegaTag2による外部IMUフュージョンを使った高精度完全3D位置特定（ロボットGPS）
+20fps @ 1280x960（2倍ダウンスケール）、50fps @ 640x480（2倍ダウンスケール）
+ウェブインターフェースでの完全3Dビジュアライザー
+90FPSカラーブロブパイプライン
+ニューラルオブジェクト検出パイプライン（CPUインファレンスのみ）
+ニューラル画像分類パイプライン（CPUインファレンスのみ）
+バーコードトラッキングパイプライン
+内蔵Charucoキャリブレーションインターフェース
+内蔵低遅延MJPEGストリーミング
+1. Limelight 3Aの取り付け
+​
+ネジ穴による取り付け（推奨）
+​
+RevまたはGoBildaチャンネルにLL3Aを取り付けるには、少なくとも2つのM3またはM4ネジを使用してください
+VHBテープやジップタイを使用してLimelightを固定することもできます
+貫通穴による取り付け
+​
+1 1/4インチの#10-32または#10-24ボルトとナイロックナットを使用
+または、28mmのM4ボルトとナイロックナットを使用
+2. Limelight 3Aの配線
+​
+ロボットでLimelightを使用する準備ができたら：
+FTCの場合
+​
+USBC to USBAケーブルをLimelight 3AからコントロールハブのUSB 3.0ポートに接続します
+USB 3.0ポート（青いポート）に接続してコントロールハブに接続します
+FRCの場合
+​
+Limelight 3AをroboRIOのUSBポートに接続します
+USB-C to USB-Aケーブルを使用してください
+Limelight 3AはGoogle Coralをサポートしていません。ニューラルネットワークのランタイムエンジンを「CPU」に設定することで、ニューラル検出および分類パイプラインを引き続き使用できます。
+3. ウェブインターフェースへのアクセス
+​
+USBでLimelight 3Aをコンピュータに接続した後：
+緑色のステータスライトが点灯するまで待ちます（約15〜20秒）
+以下のいずれかの方法でウェブインターフェースにアクセスします：
+方法1
+: Limelight Hardware Managerアプリケーションを開き、Limelightをスキャンして、表示されたらLimelight 3Aをダブルクリックします
+方法2
+: ウェブブラウザを開き、
+http://limelight.local:5801
+にアクセスします
+接続すると、以下にアクセスできます：
+設定タブ - チーム番号、ホスト名、その他のシステム設定を構成
+ビジョンパイプラインタブ - ビジョン処理パイプラインの設定と調整
+カメラ＆クロスヘアタブ - カメラ設定とクロスヘアパラメータの調整
+3Dビジュアライゼーションタブ - リアルタイムのAprilTag検出と位置特定を表示
+すべての設定はこのウェブインターフェースを通じて行われます。変更は自動的にLimelightに保存されます。
+4. LimelightOSの更新
+​
+備考
+Limelightは事前インストールされたイメージで出荷されます。今はこのステップをスキップしても問題ありません。
+更新手順（Windows）
+警告
+LimelightOSを更新する前にパイプラインを保存してください。更新中に削除されます。
+最新のUSBドライバ、Limelight OSイメージ、Balena Flashツールを
+ダウンロードページ
+からダウンロードします
+ドライバをインストールした後、マシンを再起動します
+Limelightの青い設定ボタンを押し続けます
+押し続けながら、ラップトップからLimelightにUSB->USB-Cケーブルを接続します（Limelightは自動的に電源が入ります）
+LLをラップトップに接続した後、青い設定ボタンを離すことができます
+これでLimelightはフラッシュモードになり、LEDは点滅しません
+「Balena Etcher」を管理者として実行します
+マシンがカメラを認識するまで最大20秒かかる場合があります
+ダウンロードフォルダ内の最新の.zipイメージを選択します
+「ドライブ」メニューで「Compute Module」デバイスを選択します
+「フラッシュ」をクリックします
+フラッシングが完了したら、LimelightからUSBケーブルを取り外します
+更新手順（上級者向け）（macOS＆Linux）
+警告
+LimelightOSを更新する前にパイプラインを保存してください。更新中に削除されます。
+注記
+macOSとLinuxでの更新プロセスを大幅に簡素化する作業を進めています
+Limelight OSイメージとBalena Flashツールを
+ダウンロードページ
+からダウンロードします
+USB Bootドライバを自分でビルドします：
+brew install libusb
+brew install pkg-config
+git clone --recurse-submodules --shallow-submodules --depth=1 https://github.com/raspberrypi/usbboot
+cd usbboot
+make
+cd mass-storage-gadget64
+sudo ../rpiboot -d .
+# rpibbootが実行されている限り、カメラはmacOSとLinuxで正しく認識されます
+# フラッシュするたびにrpibootを実行する必要があります。
+Limelightの青い設定ボタンを押し続けます
+押し続けながら、ラップトップからLimelightにUSB->USB-Cケーブルを接続します（Limelightは自動的に電源が入ります）
+LLをラップトップに接続した後、青い設定ボタンを離すことができます
+これでLimelightはフラッシュモードになり、LEDは点滅しません
+「Balena Etcher」を実行します
+マシンがカメラを認識するまで最大20秒かかる場合があります
+ダウンロードフォルダ内の最新の.zipイメージを選択します
+「ドライブ」メニューで「Compute Module」デバイスを選択します
+「フラッシュ」をクリックします
+フラッシングが完了したら、LimelightからUSBケーブルを取り外します
+5. セットアッププロセス
+​
+FTCの場合
+​
+USBケーブルでLimelightをラップトップに接続します
+セクション3で説明したようにウェブインターフェースにアクセスします
+設定タブに移動してチーム番号を設定し、「Restart Vision Client」をクリックします
+必要に応じてパイプラインを設定します（AprilTag、ニューラルネットワーク、カスタムPythonなど）
+競技の準備ができたら、Limelight 3AをコントロールハブのUSB 3.0ポートに接続します
+FTC DriverStationアプリで「Configure Robot」をクリックします
+アクティブな設定がない場合は、新しい設定を作成する必要があるかもしれません
+「scan」ボタンをクリックします
+「Ethernet Device」が表示されるはずです
+このデバイスの名前を「limelight」に変更して明確にすることができます
+これでハードウェアマップを使用してコード内でLimelight3Aオブジェクトを初期化できます
+FRCの場合
+​
+Limelight 3Aをラップトップに接続し、ステータスライトが点灯するまで待ちます
+セクション3で説明したようにウェブインターフェースにアクセスします
+設定タブでチーム番号を設定し、「Restart Vision Client」をクリックします
+必要に応じてパイプラインを設定します
+準備ができたら、Limelight 3AをroboRIOのUSBポートに接続します
+お好みのダッシュボードを開いて、3AがroboRIOのNetworkTablesにデータを送信していることを確認します
+6. 利用可能なパイプラインタイプ
+​
+Limelight 3Aは他のLimelightモデルと同じビジョン処理機能を提供します：
+AprilTagトラッキングとロボット位置特定
+カラーブロブトラッキング
+ニューラルネットワークオブジェクト検出（CPUのみ）
+ニューラルネットワーク分類
+バーコードトラッキング
+カスタムPythonパイプライン
+各3AにはFTC用のInto The Deepフィールドマップが組み込まれています。
+7. FTCプログラミング
+​
+基本的なFTC例:
+FTCサンプル
+ほとんどのアプリケーションでは10行未満のコードで済みます:
+public
+class
+Teleop
+extends
+LinearOpMode
+{
+private
+Limelight3A
+limelight
+;
+@Override
+public
+void
+runOpMode
+(
+)
+throws
+InterruptedException
+{
+limelight
+=
+hardwareMap
+.
+get
+(
+Limelight3A
+.
+class
+,
+"limelight"
+)
+;
+telemetry
+.
+setMsTransmissionInterval
+(
+11
+)
+;
+limelight
+.
+pipelineSwitch
+(
+0
+)
+;
+/*
+* データのポーリングを開始します。
+*/
+limelight
+.
+start
+(
+)
+;
+while
+(
+opModeIsActive
+(
+)
+)
+{
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose
+(
+)
+;
+telemetry
+.
+addData
+(
+"tx"
+,
+result
+.
+getTx
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"ty"
+,
+result
+.
+getTy
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"Botpose"
+,
+botpose
+.
+toString
+(
+)
+)
+;
+}
+}
+}
+}
+}
+3D位置推定の精度を最大化するには、
+updateRobotOrientation()
+を呼び出し、
+getBotPose_MT2()
+を使用します:
+while
+(
+opModeIsActive
+(
+)
+)
+{
+YawPitchRollAngles
+orientation
+=
+imu
+.
+getRobotYawPitchRollAngles
+(
+)
+;
+limelight
+.
+updateRobotOrientation
+(
+orientation
+.
+getYaw
+(
+AngleUnit
+.
+DEGREES
+)
+)
+;
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose_MT2
+(
+)
+;
+// botposeデータを使用
+}
+}
+}
+詳細については、
+FTCプログラミングページ
+をご覧ください。
+8. トラブルシューティング
+​
+ステータスライトの表示
+​
+緑色のライト
+: ゆっくり点滅（ターゲットなし）、素早く点滅（ターゲット検出）
+よくある質問
+​
+Limelightがとても熱いのはなぜですか？
+Limelightをできるだけ冷却するためには、触れるとできるだけ熱く/安全な範囲で熱く感じる必要があります。エンクロージャは高い熱伝導性を持つヒートシンクで、CPUを適切な温度に保つのに役立っています。
+画像がとても粒状に見えるのはなぜですか？
+遅延を最小限に抑えるため、通常の商用カメラ  に存在するいくつかのフィルターをスキップしています。また、ビットレートを最小限に抑えるためにストリームが圧縮されています。2024.10.1では、人間の目により自然で鮮やかに見えるようにデフォルトのカラーバランス値を変更しました。
+LimelightはコントロールハブのOpenCVと比べて何が優れていますか？
+コード不要ですぐに使える、ロボットのIMUセンサーフュージョンを備えたマルチタグ位置推定アルゴリズム、ニューラルネットワークなどを提供します。

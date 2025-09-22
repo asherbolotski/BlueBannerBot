@@ -1,0 +1,140 @@
+API REST/HTTP
+Limelight OS cuenta con un servidor REST/HTTP que se ejecuta en
+(dirección_ip):5807
+LimelightLib Python
+es una biblioteca de código abierto que utiliza la API HTTP/REST de Limelight.
+Nota: por ejemplo, http://(dirección-ip-limelight):5807/results
+General
+​
+Método
+Ruta
+Descripción
+GET
+/results
+Obtener un volcado JSON completo de los resultados de detección actuales
+GET
+/status
+Obtener un objeto JSON de estado con temperatura, fps, nombre del dispositivo, índice de pipeline, uso de CPU, uso de RAM
+GET
+/hwreport
+Devuelve un array JSON de informes de hardware completos. Un informe de hardware contiene información legible como FOV, desplazamiento principal, etc.
+Gestión de Pipelines
+​
+Método
+Ruta
+Descripción
+GET
+/pipeline-default
+Obtener pipeline predeterminado (JSON)
+GET
+/pipeline-atindex
+Obtener pipeline[n] de la cámara (JSON). Carga el pipeline desde el disco. Incluir un parámetro URL 'index' en la solicitud.
+POST
+/pipeline-switch
+Cambiar a un pipeline diferente. Incluir un parámetro URL 'index' en la solicitud.
+POST
+/reload-pipeline
+Forzar a la cámara a recargar el pipeline actual y todos los recursos del pipeline
+POST
+/update-pipeline
+Acepta JSON con una o más actualizaciones de configuración. Establecer el parámetro URL "flush" a 1 para guardar estos ajustes en el disco.
+POST
+/upload-pipeline
+Subir un pipeline. Enviar datos JSON en el cuerpo de la solicitud. Opcionalmente incluir un parámetro 'index'. Sobrescribe el pipeline en el disco
+Gestión de la Cámara
+​
+Método
+Ruta
+Descripción
+POST
+/set-imumode
+Establecer Modo IMU (JSON)
+POST
+/set-throttle
+Establecer número de frames a omitir entre frames procesados para gestión térmica
+POST
+/set-imuassistalpha
+Establecer alfa del filtro complementario del Modo de Asistencia IMU (predeterminado 0.001)
+Gestión de Recursos
+​
+Método
+Ruta
+Descripción
+POST
+/upload-fieldmap
+Subir un mapa de campo. Enviar datos JSON en el cuerpo de la solicitud. Opcionalmente incluir un parámetro 'index'.
+POST
+/upload-python
+Subir código Python. Enviar el código como texto plano en el cuerpo de la solicitud. Opcionalmente incluir un parámetro 'index'.
+POST
+/upload-nn
+Subir una red neuronal. Incluir un parámetro 'type' ("detector" o "classifier"), el contenido del archivo en el cuerpo de la solicitud, y opcionalmente incluir un parámetro 'index'.
+POST
+/upload-nnlabels
+Subir etiquetas de red neuronal. Incluir un parámetro 'type' ("detector" o "classifier"), el archivo en el cuerpo de la solicitud, y opcionalmente incluir un parámetro 'index'.
+GET
+/getsnapscriptnames
+Lista de nombres de snapscriptpro
+Python y Orientación del Robot
+​
+Método
+Ruta
+Descripción
+POST
+/update-pythoninputs
+Actualizar entradas de Python para pipelines SnapScript. Enviar datos JSON (array) en el cuerpo de la solicitud.
+POST
+/update-robotorientation
+Actualizar orientación del robot. Enviar datos JSON (array) en el cuerpo de la solicitud. EJ: "[45,0,0,0,0,0]". El uso de este método deshabilita las actualizaciones de orientación basadas en NetworkTables hasta reiniciar
+Calibración
+​
+Método
+Ruta
+Descripción
+GET
+/cal-default
+Devuelve el resultado de calibración predeterminado
+GET
+/cal-file
+Devuelve el resultado de calibración personalizada (sistema de archivos)
+GET
+/cal-eeprom
+Devuelve el resultado de calibración personalizada (eeprom)
+GET
+/cal-latest
+Devuelve el último resultado de calibración personalizada. Este resultado no se utiliza a menos que se guarde en el sistema de archivos o en la eeprom
+POST
+/cal-eeprom
+Actualizar el resultado de calibración en la eeprom. Enviar datos de calibración en el cuerpo de la solicitud.
+POST
+/cal-file
+Actualizar el resultado de calibración en el sistema de archivos. Enviar datos de calibración en el cuerpo de la solicitud.
+DELETE
+/cal-latest
+Eliminar el último resultado de calibración
+DELETE
+/cal-eeprom
+Eliminar el resultado de calibración de la eeprom
+DELETE
+/cal-file
+Eliminar el resultado de calibración del sistema de archivos
+Instantáneas
+​
+Método
+Ruta
+Descripción
+POST
+/capture-snapshot
+Capturar una instantánea. Incluir un parámetro URL 'snapname' para nombrar la instantánea.
+POST
+/upload-snapshot
+Subir una instantánea con nombre. Incluir un parámetro URL 'snapname' y un archivo de imagen en el cuerpo de la solicitud.
+GET
+/snapshotmanifest
+Devuelve una lista de nombres de archivos de instantáneas
+DELETE
+/delete-snapshots
+Elimina todas las instantáneas
+DELETE
+/delete-snapshot
+Elimina una instantánea específica. Incluir un parámetro 'snapname' en la solicitud.

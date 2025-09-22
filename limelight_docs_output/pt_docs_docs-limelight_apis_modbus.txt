@@ -1,0 +1,241 @@
+API Modbus
+O Limelight OS possui um servidor Modbus TCP rodando em
+(endereçoip):502
+Inteiros: Os inteiros são ASSINADOS e codificados usando complemento de dois. Este método é universalmente reconhecido e garante a interpretação correta do sinal.
+Números de Ponto Flutuante: Os floats são codificados usando o padrão IEEE 754. Para cumprir a limitação de registros de 16 bits do protocolo Modbus, os números de ponto flutuante são divididos em duas partes:
+Os 16 bits de ordem superior são armazenados no segundo registro, e os 16 bits de ordem inferior no primeiro registro.
+O formato little-endian garante compatibilidade com a especificação Modbus.
+Limelights USB e Ethernet podem ser testados com
+ModbusTool
+O Modbus permite suporte para inspeção de peças e casos de uso de automação industrial. Para começar com o Modbus, você precisa fazer o seguinte:
+Conecte-se ao seu Limelight via Ethernet ou USB-C e configure um pipeline.
+Embora todos os pipelines enviem resultados via modbus, nossos pipelines de snapscript em python são extremamente versáteis para casos de uso industrial, pois suportam dados de entrada e saída personalizados.
+Dê ao seu Limelight um endereço IP estático
+Conecte seu Limelight a uma rede modbus.
+Especificação de Registros Modbus
+Registros de Entrada / Somente Leitura
+​
+Registro
+Chave
+Tipo
+Descrição
+0
+hb
+int
+Valor de heartbeat. Aumenta uma vez por quadro
+1
+pipelineIndex
+int
+Índice do pipeline ativo atual (0 .. 9).
+2
+validTarget
+int
+1 se existir um alvo válido, 0 caso contrário.
+3
+resultsCount
+int
+Contagem total de resultados. Inclui todas as detecções fiduciais, detecções neurais, etc
+4
+ID
+int
+ID / Número da Equipe
+5
+modbusMode
+int
+Modo de Saída do Servidor Modbus.
+6
+cpuTemp
+int
+Temperatura da CPU em Celsius.
+7
+cpuUsage
+int
+Porcentagem de uso da CPU.
+8
+ramUsage
+int
+Porcentagem de uso da RAM.
+9
+currentFPS
+int
+Quadros por segundo atuais.
+10
+captureLatency
+int
+Latência de captura. (milissegundos)
+11
+targetLatency
+int
+Latência de processamento. (milissegundos)
+12-15
+reservado
+int
+Se o Modo de Saída estiver definido como 0:
+Registro
+Chave
+Tipo
+Descrição
+16,17
+tx
+float32
+Deslocamento angular horizontal para o alvo em graus
+18,19
+ty
+float32
+Deslocamento angular vertical para o alvo em graus
+20,21
+txnc
+float32
+Deslocamento angular horizontal para o alvo (relativo ao pixel principal) em graus
+22,23
+tync
+float32
+Deslocamento angular vertical para o alvo (relativo ao pixel principal) em graus
+24,25
+ta
+float32 (0-1)
+Área do alvo como porcentagem do tamanho da imagem
+26
+fiducialID
+int
+ID atual do AprilTag
+27
+classifierClass
+int
+Índice de classe da saída atual do pipeline do classificador. -1 se não houver resultados do Classificador
+28
+detectorClass
+int
+Índice de classe da saída atual do pipeline do detector. -1 se não houver resultados do Detector
+29
+reservado
+int
+30,31
+python[0]
+float32
+Array de saída personalizada do python [0]
+32,33
+python[1]
+float32
+Array de saída personalizada do python [1]
+34,35
+python[2]
+float32
+Array de saída personalizada do python [2]
+36,37
+python[3]
+float32
+Array de saída personalizada do python [3]
+38,39
+python[4]
+float32
+Array de saída personalizada do python [4]
+40,41
+python[5]
+float32
+Array de saída personalizada do python [5]
+42,43
+python[6]
+float32
+Array de saída personalizada do python [6]
+44,45
+python[7]
+float32
+Array de saída personalizada do python [7]
+Registros de Retenção / Somente Escrita
+​
+Registro
+Chave
+Tipo
+Descrição
+0
+unlocked
+int
+Desbloqueia o pipeline. Defina como 1 para habilitar a troca de pipeline e dados de entrada personalizados
+1
+pipeIndex
+int
+Define o índice do pipeline se "unlocked" estiver definido como 1
+2
+outputMode
+int
+Define o modo de saída. 0 - padrão, 1 - alvos brutos (Em desenvolvimento)
+3
+reservado
+int
+4
+reservado
+int
+5
+reservado
+int
+6
+reservado
+int
+7
+reservado
+int
+8
+pythonInput[0]
+int
+Array de entrada personalizada do python [0]
+9
+pythonInput[1]
+int
+Array de entrada personalizada do python [1]
+10
+pythonInput[2]
+int
+Array de entrada personalizada do python [2]
+11
+pythonInput[3]
+int
+Array de entrada personalizada do python [3]
+12
+pythonInput[4]
+int
+Array de entrada personalizada do python [4]
+13
+pythonInput[5]
+int
+Array de entrada personalizada do python [5]
+14
+pythonInput[6]
+int
+Array de entrada personalizada do python [6]
+15
+pythonInput[7]
+int
+Array de entrada personalizada do python [7]
+16,17
+pythonInput[8]
+float32
+Array de entrada personalizada do python [8]
+18,19
+pythonInput[9]
+float32
+Array de entrada personalizada do python [9]
+20,21
+pythonInput[10]
+float32
+Array de entrada personalizada do python [10]
+22,23
+pythonInput[11]
+float32
+Array de entrada personalizada do python [11]
+24,25
+pythonInput[12]
+float32
+Array de entrada personalizada do python [12]
+26,27
+pythonInput[13]
+float32
+Array de entrada personalizada do python [13]
+28,29
+pythonInput[14]
+float32
+Array de entrada personalizada do python [14]
+30,31
+pythonInput[15]
+float32
+Array de entrada personalizada do python [15]

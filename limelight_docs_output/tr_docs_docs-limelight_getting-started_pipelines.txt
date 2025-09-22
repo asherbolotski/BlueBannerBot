@@ -1,0 +1,52 @@
+Pipeline Kurulumu
+LimelightOS 10 adede kadar benzersiz görüntü işleme hattı (pipeline) saklar.
+Bir pipeline, bir görüntüyü alan, işleyen ve robot kodunuzda kullanabileceğiniz bir sonuç nesnesi sağlayan küçük bir program gibidir.
+Pipeline'lar 10fps (CPU Sinir Ağları) ile 90fps (Renk tabanlı nesne takibi) arasında çalışır.
+Pipeline'ları ayarlamaya başlamak için, ünitenizin hızlı başlangıç kılavuzunda açıklandığı gibi ethernet, wifi veya usb üzerinden web arayüzüne bağlanın.
+İleri düzey bir kullanıcıysanız ve LL'nizin USB İndeksini veya Ana Bilgisayar Adını değiştirdiyseniz, web arayüzüne
+http://172.28.(usb_index).1:5801
+,
+http://172.29.(usb_index).1:5801
+veya
+http://.local:5801
+adreslerinden erişebilirsiniz.
+bilgi
+Birden fazla pipeline'ı düzenlemek için, önce web arayüzündeki "NetworkTables İndeksini Yoksay" onay kutusunu işaretlemelisiniz. Bu, kameraya pipeline'ları değiştirmesini söyleyen herhangi bir kodu yoksaymasını söyler.
+Yedekleme ve paylaşım için pipeline'larınızı indirmek için, pipeline'ınızın adının yanındaki "indir" düğmesine tıklamanız yeterlidir. Bir pipeline yüklemek için "yükle" düğmesine tıklayın.
+İşte iki pipeline kullanan bir robot örneği:
+https://thumbs.gfycat.com/UnfitLankyHadrosaurus-size_restricted.gif
+İlk pipeline tek dikey şeritleri hedeflemek için ayarlanmıştır. İkinci pipeline iki yatay şeridin kombinasyonunu bulmak için ayarlanmıştır. Bu robotun kodu "Hedefleme ve Mesafe" vaka çalışmasında mevcuttur.
+Robot pipeline'ları değiştirdiğinde, web arayüzünün yeni pipeline'ı otomatik olarak yüklediğine dikkat edin.
+Giriş Sekmesi
+​
+Giriş Sekmesi, ham kamera görüntüsünü işleme hattından geçirilmeden önce değiştirmek için kontroller barındırır.
+Pipeline Türü
+​
+İstenen pipeline türünü (AprilTags, Sinir Ağları, Python, vb.) kontrol eder.
+Kaynak Görüntü
+​
+Pipeline'dan geçirilen görüntünün kaynağını kontrol eder. Görüntü işleme pipeline'larınızı saklanan Anlık Görüntüler üzerinde test etmek için "Anlık Görüntü"ye geçin.
+Bu kontrol, GUI kapatıldığında otomatik olarak "Kamera"ya sıfırlanır.
+Çözünürlük + Yakınlaştırma
+​
+Kamera ve görüntü işleme pipeline'ının çözünürlüğünü kontrol eder. 3D işlevselliği kullanmıyorsanız 320x240 pipeline'ını kullanmanızı öneririz.
+320x240 pipeline'ları 90fps'de çalışırken, 960x720 pipeline'ları 22 fps'de çalışır. 2020'de, bu alana 2x ve 3x Donanım Yakınlaştırma seçenekleri eklendi. Yakınlaştırma seçenekleri dijital değildir ve %100 gerçek sensör piksellerini kullanır.
+LED'ler
+​
+Bu pipeline için varsayılan LED modunu kontrol eder. Bu, "LED" ağ tablosu seçeneği ile bir maç sırasında geçersiz kılınabilir.
+Limelight 2+ kullanıcıları, LED kısma imkanı sağlayan bir "LED Parlaklığı" Kaydırıcısına erişebilirler.
+Akış Yönlendirmesi
+​
+Tüm işlemlerden sonra akışın yönünü kontrol eder. Bu, sonuç verilerini hiçbir şekilde etkilemez.
+Pozlama
+​
+Kameranın pozlama ayarını .01 milisaniye aralıklarla kontrol eder. Bir kamerayı ışık toplayan kovalar ızgarası olarak düşünün - pozlama süresi, kameranızın "kovalarının" her kare başına ne kadar süre açık kalacağını kontrol eder. Pozlama süresini düşürmek, görüntünüzü etkili bir şekilde karartacaktır. Düşük ve sabit pozlama süreleri FRC'de çok önemlidir, çünkü gelen görüntü verilerinin büyük kısmını karartır. İyi aydınlatılmış retroreflektif bant, çoğunlukla siyah bir görüntüde öne çıkacak, görüntü işlemeyi basit bir süreç haline getirecektir.
+Siyah Seviye Ofseti
+​
+Siyah seviye ofsetini artırmak, kamera akışınızı önemli ölçüde karartabilir. Bu, arena ışıklarını ve görüntünüzdeki parlak noktaları daha fazla kaldırmak için artırılmalıdır. Bu bir sensör seviyesi ayarıdır, sahte bir dijital parlaklık ayarı değildir.
+Sensör Kazancı
+​
+Sensör kazancını artırmak, görüntünün parlaklığını etkili bir şekilde artıracaktır, ancak genellikle görüntüye gürültü de ekleyecektir. Pozlama süresini artırmadan görüntüyü aydınlatmak için Sensör Kazancı ve Siyah seviye ofsetini kullanabilirsiniz. Bu, yüksek hızlı takip uygulamaları için hareket bulanıklığını en aza indirecektir.
+Kırmızı Dengesi, Mavi Dengesi
+​
+Görüntünüzdeki Kırmızı ve Mavi renk bileşenlerinin yoğunluğunu kontrol eder. Bunlar toplu olarak Limelight'ınızın beyaz dengesini kontrol eder. Bunları değiştirmeden bırakmanızı öneririz

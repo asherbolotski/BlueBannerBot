@@ -1,0 +1,245 @@
+Swerve ile Hedefleme ve Mesafe Ayarlama
+Tam örnek projeyi
+buradan
+görebilirsiniz
+// Limelight ile basit orantısal dönüş kontrolü.
+// "orantısal kontrol", çıktının hataya orantılı olduğu bir kontrol algoritmasıdır.
+// bu durumda, Limelight'tan gelen "tx" değerine orantılı bir açısal hız döndüreceğiz.
+double
+limelight_aim_proportional
+(
+)
+{
+// kP (orantılılık sabiti)
+// bu, orantısal kontrol döngümüzün agresifliğini belirleyen elle ayarlanmış bir sayıdır
+// eğer çok yüksekse, robot etrafında salınım yapacaktır.
+// eğer çok düşükse, robot hedefine asla ulaşamayacaktır
+// eğer robot hiçbir zaman doğru yönde dönmüyorsa, kP ters çevrilmelidir.
+double
+kP
+=
+.035
+;
+// tx, derece cinsinden (-hfov/2) ile (hfov/2) arasında değişir. Hedefiniz limelight 3
+// görüntünüzün en sağ kenarındaysa, tx yaklaşık 31 derece döndürmelidir.
+double
+targetingAngularVelocity
+=
+LimelightHelpers
+.
+getTX
+(
+"limelight"
+)
+*
+kP
+;
+// sürüş metodumuz için saniyedeki radyana dönüştürün
+targetingAngularVelocity
+*=
+Drivetrain
+.
+kMaxAngularSpeed
+;
+//tx, hedef artı işaretinin sağında olduğunda pozitif olduğu için ters çevirin
+targetingAngularVelocity
+*=
+-
+1.0
+;
+return
+targetingAngularVelocity
+;
+}
+// Limelight'ın "ty" değeri ile basit orantısal mesafe kontrolü
+// bu, Limelight'ınızın montaj yüksekliği ve hedef montaj yüksekliği farklıysa en iyi şekilde çalışır.
+// eğer limelight ve hedefiniz aynı veya benzer yüksekliklere monte edilmişse, mesafe ayarı için "ty" yerine "ta" (alan) kullanın
+double
+limelight_range_proportional
+(
+)
+{
+double
+kP
+=
+.1
+;
+double
+targetingForwardSpeed
+=
+LimelightHelpers
+.
+getTY
+(
+"limelight"
+)
+*
+kP
+;
+targetingForwardSpeed
+*=
+Drivetrain
+.
+kMaxSpeed
+;
+targetingForwardSpeed
+*=
+-
+1.0
+;
+return
+targetingForwardSpeed
+;
+}
+private
+void
+drive
+(
+boolean
+fieldRelative
+)
+{
+// X hızını al. Xbox kontrolcüleri ileri ittiğimizde negatif değerler
+// döndürdüğü için bunu tersine çeviriyoruz.
+var
+xSpeed
+=
+-
+m_xspeedLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getLeftY
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxSpeed
+;
+// Y hızını veya yanal/yana kayma hızını al. Bunu tersine çeviriyoruz çünkü
+// sola çektiğimizde pozitif bir değer istiyoruz. Xbox kontrolcüleri
+// varsayılan olarak sağa çektiğinizde pozitif değerler döndürür.
+var
+ySpeed
+=
+-
+m_yspeedLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getLeftX
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxSpeed
+;
+// Açısal dönüş hızını al. Bunu tersine çeviriyoruz çünkü sola çektiğimizde
+// pozitif bir değer istiyoruz (unutmayın, matematikte saatin tersi yönünde dönüş pozitiftir).
+// Xbox kontrolcüleri varsayılan olarak sağa çektiğinizde pozitif değerler döndürür.
+var
+rot
+=
+-
+m_rotLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getRightX
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxAngularSpeed
+;
+// A düğmesi basılıyken, sürüş değerlerinin bazılarını limelight metodlarımızın çıktısıyla değiştir
+if
+(
+m_controller
+.
+getAButton
+(
+)
+)
+{
+final
+var
+rot_limelight
+=
+limelight_aim_proportional
+(
+)
+;
+rot
+=
+rot_limelight
+;
+final
+var
+forward_limelight
+=
+limelight_range_proportional
+(
+)
+;
+xSpeed
+=
+forward_limelight
+;
+//Limelight kullanırken, sahaya göre sürüşü kapat.
+fieldRelative
+=
+false
+;
+}
+m_swerve
+.
+drive
+(
+xSpeed
+,
+ySpeed
+,
+rot
+,
+fieldRelative
+,
+getPeriod
+(
+)
+)
+;
+}

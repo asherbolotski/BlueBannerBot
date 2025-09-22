@@ -1,0 +1,58 @@
+Suivi des AprilTags
+Les AprilTags sont suivis en utilisant les valeurs standard "tx", "ty" et "ta". Aucune modification de code n'est nécessaire pour passer d'un robot de suivi de couleur/rétroréfléchissant aux AprilTags.
+"botpose" et "campose" peuvent également être utilisés pour le suivi 3D dans l'espace du terrain et l'espace de la cible.
+Pour une utilisation plus avancée avec plusieurs tags, le dump des résultats JSON peut être utilisé.
+Démarrage rapide pour les AprilTags FRC
+​
+Onglet Input - Changez "Pipeline Type" en "Fiducial Markers"
+Onglet Input - Utilisez la résolution la plus élevée disponible pour le suivi 3D, ou utilisez 640x480 pour le suivi 2D pur.
+Onglet Standard - Assurez-vous que "family" est défini sur "AprilTag Classic 36h11"
+Onglet Input - Réglez "Black Level" à zéro
+Onglet Input - Réglez "Gain" à 15
+Onglet Input - Réduisez l'exposition pour réduire la perte de suivi pendant le mouvement due au flou de mouvement. Arrêtez de réduire une fois que la fiabilité du suivi diminue. Vous devrez peut-être augmenter l'exposition lors d'événements faiblement éclairés.
+Onglet Standard - Si vous souhaitez augmenter votre fréquence d'images, augmentez le "Detector Downscale"
+Si vous voulez utiliser le suivi 3D et le suivi 2D tx/ty simultanément, définissez l'ID de tag prioritaire via networktables pour configurer le tag préféré pour le suivi 2D.
+Cliquez sur l'icône "Engrenage" et assurez-vous que votre numéro d'équipe est défini et qu'une IP statique est configurée.
+Cliquez sur "Change Team Number" et "Change IP Settings" si vous avez modifié leurs paramètres correspondants. Redémarrez votre robot.
+C'est fait ! Utilisez "tx" et "ty" depuis networktables. Copiez l'exemple de code sur la page "getting started".
+Conseils
+​
+Pour un suivi idéal, considérez les points suivants :
+Vos tags doivent être aussi plats que possible.
+Votre Limelight doit être monté au-dessus ou en dessous de la hauteur du tag et incliné vers le haut/bas de manière à ce que la cible soit centrée. Votre cible doit apparaître aussi trapézoïdale que possible depuis la perspective de votre caméra. Vous ne voulez pas que votre caméra soit jamais complètement "de face" avec un tag si vous voulez éviter le retournement du tag.
+Il existe une interaction entre les variables suivantes pour le suivi des AprilTags :
+Augmenter la résolution de capture améliorera toujours la précision 3D et augmentera la stabilité 3D. Cela réduira également le taux d'ambiguïté de retournement depuis la plupart des perspectives. Cela augmentera généralement la portée. Cela réduira la fréquence d'images du pipeline.
+Augmenter le downscale du détecteur augmentera toujours la fréquence d'images du pipeline. Cela diminuera la portée effective, mais dans certains cas, cela peut être négligeable. Cela n'affectera pas la précision 3D, la stabilité 3D ou la précision du décodage.
+Réduire l'exposition améliorera toujours la résistance au flou de mouvement. C'est en fait très facile à observer. Cela peut réduire la portée.
+Réduire la luminosité et le contraste de l'image améliorera généralement la fréquence d'images du pipeline et réduira la portée.
+Augmenter le gain du capteur vous permet d'augmenter la luminosité sans augmenter l'exposition. Cela peut réduire la stabilité 3D et peut réduire la stabilité du suivi.
+Onglet Input
+​
+L'onglet Input contient des contrôles pour modifier l'image brute de la caméra avant qu'elle ne soit transmise au pipeline de traitement. Voir la page "Building a retroreflective/color pipeline" pour plus de détails.
+Pour suivre les AprilTags :
+Changez "Pipeline Type" en "Fiducial Markers"
+Réglez "Black Level" à zéro
+À ce stade, il s'agit d'équilibrer le gain du capteur et le temps d'exposition. Vous voulez pouvoir voir les tags avec l'exposition la plus courte possible pour minimiser le flou de mouvement.
+Cela nécessite généralement un réglage de gain de capteur élevé. Pour un suivi 2D simple,
+il est souvent conseillé de maximiser le gain de votre capteur, puis d'augmenter votre exposition à partir de zéro jusqu'à ce que les cibles soient suffisamment suivies. Assurez-vous que la bonne famille est sélectionnée dans l'onglet "Standard" si le suivi ne fonctionne pas.
+Onglet Standard
+​
+Family
+​
+Sélectionne le type de famille fiducial/AprilTag. Pour FRC, vous devriez sélectionner "AprilTag Classic 36h11"
+Marker Size
+​
+Définit la taille attendue des tags que votre robot rencontrera en mm. Pour FRC, cela devrait être réglé à 165.1 (152.4 pour les tags 2023)
+Detector Downscale
+​
+Augmenter ce nombre entraînera des gains de performance significatifs. Cela peut parfois réduire la portée, mais le coût est généralement minime.
+ID Filters
+​
+Les filtres ID vous permettent de spécifier exactement quels tags vous intéressent. Pour la plupart des équipes FRC, chaque pipeline devrait être configuré pour suivre exactement un ID de tag.
+Il s'agit d'une liste de nombres séparés par des virgules (par exemple "0,1"). Cette fonctionnalité est importante pour éliminer la grande majorité des faux positifs.
+Cropping
+​
+Le recadrage supprime du contenu de l'image pour des gains de performance énormes. Utilisez la clé NT "crop" pour recadrer dynamiquement pendant les matchs
+Multi-Target Sorting and Grouping
+​
+Cela permet d'obtenir exactement la même fonctionnalité de regroupement que dans les pipelines rétroréfléchissants standard. Dans la plupart des jeux, la seule fonctionnalité à modifier est le filtre "Area", qui vous permettra de filtrer les petits tags.

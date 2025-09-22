@@ -1,0 +1,26 @@
+Umbralización de Color
+La umbralización es un componente crítico de la mayoría de los algoritmos de seguimiento de visión. Consiste en tomar una imagen y descartar cualquier píxel que no esté dentro de un rango de color específico. El resultado de la umbralización es generalmente una imagen binaria unidimensional en la que cada píxel está "activado" o "desactivado". En los procesos de detección de manchas de color / retroreflectivas, este es el paso más crítico.
+Alimentación de Video (Ubicada debajo del stream)
+​
+Controla qué imagen se transmite desde el servidor mjpeg. Deberías cambiar a la imagen de "umbral" si necesitas ajustar tu umbralización HSV.
+Varitas de Umbralización
+​
+Las varitas permiten a los usuarios hacer clic en el stream de video de Limelight para realizar una umbralización HSV automática.
+La varita "Cuentagotas" centra los parámetros HSV alrededor del píxel seleccionado
+La varita "Añadir" ajusta los parámetros HSV para incluir el píxel seleccionado
+La varita "Restar" ajusta los parámetros HSV para ignorar el píxel seleccionado
+Matiz (Hue)
+​
+Describe un color "puro". Un matiz de "0" describe el rojo puro, y un matiz de 1/3 (59 en el deslizador) describe el verde puro. El matiz es útil porque no cambia cuando un píxel se "aclara" o "oscurece". Este es el parámetro más importante para ajustar. Si haces que tu rango de matiz sea lo más pequeño posible, tendrás poca o ninguna dificultad al hacer la transición a un campo FRC real.
+Saturación
+​
+Describe hasta qué punto un color es "puro". Otra forma de pensar en esto es cuán deslavado aparece un color, es decir, cuánto "blanco" hay en un color. Baja saturación significa que un color es casi blanco, y alta saturación significa que un color es casi "puro".
+Valor
+​
+Describe la oscuridad de un color, o cuánto "negro" hay en un color. Un valor bajo corresponde a un color casi negro. Definitivamente deberías aumentar el valor mínimo desde cero, para que los píxeles negros no pasen a través del proceso de procesamiento.
+Erosión y Dilatación
+​
+La erosión desgasta ligeramente el resultado de un umbral HSV. Esto es útil si muchos objetos están pasando a través de un umbral HSV ajustado. La dilatación infla ligeramente el resultado de un umbral HSV. Úsala para corregir agujeros en los resultados de umbralización.
+Inversión de Matiz
+​
+Usa la inversión de matiz para seguir objetivos rojos, ya que el rojo existe tanto al principio como al final del rango de matiz.

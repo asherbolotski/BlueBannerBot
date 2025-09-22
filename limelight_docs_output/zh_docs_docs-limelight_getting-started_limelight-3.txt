@@ -1,0 +1,191 @@
+Limelight 3 快速入门
+硬件规格
+​
+尺寸：3.174英寸 x 1.930英寸（80.61毫米 x 49.01毫米）
+厚度：1.160英寸（29.46毫米）
+重量：0.17磅
+#10 / M4 通孔安装
+电源输入：4.1V-16V
+电源输入（红色按钮2025 Limelight 3变体）：4.1V-24V，30V绝对最大值
+7W最大功耗
+LED照明：600流明，绿色照明
+传感器：OV5647彩色卷帘快门（640x480 @ 90FPS）
+可更换M12镜头
+62.5°水平视场角，48.9°垂直视场角
+黑色ABS外壳
+10/100以太网RJ45端口
+5Gbps USB-A主机端口
+CAN总线端口
+I2C端口
+状态指示灯：绿色（目标检测），黄色（网络状态）
+支持Google Coral USB神经网络加速器
+软件功能（Limelight OS）
+​
+即插即用高性能视觉系统。无需经验。
+自托管基于浏览器的UI，用于视觉管道配置
+支持REST/HTTP、Websocket、NetworkTables、ModbusTCP和ROS
+可配置固定曝光、传感器增益、分辨率和帧率
+配置10个可热插拔视觉管道：
+使用OpenCV 4.10、numpy等的自定义Python管道
+2D、3D AprilTag跟踪和机器人定位
+使用MegaTag1的完整3D定位（机器人GPS）
+使用MegaTag2的外部IMU融合实现更高精度的完整3D定位（机器人GPS）
+1280x960（2倍缩小）下20fps，640x480（2倍缩小）下50fps
+网页界面中的完整3D可视化工具
+90FPS彩色斑点管道
+神经网络对象检测管道
+神经网络图像分类管道
+条形码跟踪管道
+用于低延迟流媒体的取景器管道
+内置Charuco内参校准界面，用于高精度视觉管道
+内参校准可视化
+内置低延迟MJPEG流媒体。可配置流方向
+1. 安装Limelight 3
+​
+通孔安装
+​
+使用1 1/4英寸#10-32或#10-24螺丝和尼龙锁紧螺母
+或者，使用38毫米M4螺栓和尼龙锁紧螺母
+使用塑料垫圈保护外壳表面
+2. 连接Limelight 3
+​
+电源
+​
+从Limelight连接两根18-20AWG电线到PDP/PDH的一个插槽
+在同一插槽添加5A断路器
+重要
+：强烈建议为2025年前的LL3（白色按钮）使用专用VRM，以防止由于摆动驱动再生制动+电池断开事件导致的负载转储
+（非必需）使用Weidmuller压线套管获得最佳效果（图中为20AWG电线配合Weidmuller 20AWG橙色压线套管）
+压线套管：
+https://www.digikey.com/en/products/detail/weidm%C3%BCller/0409500000/491834
+https://store.ctr-electronics.com/products/weidmuller-ferrule-pack-of-20?variant=43631135195309
+低成本压线套管压接工具：
+https://store.ctr-electronics.com/products/ferrule-crimper-by-iwiss?_pos=2&_sid=616edc4f4&_ss=r
+https://www.amazon.com/Ferrule-Crimping-Hexagonal-Ferrules-Connectors/dp/B09724DCJH?th=1
+以太网
+​
+从Limelight连接一根以太网线到机器人无线电台
+使用绞合的Cat6线缆，带有绞合线（理想情况下为20AWG）
+为以太网线添加应力释放装置
+3. 访问Web界面
+​
+将Limelight 3连接到网络后：
+启动机器人并将笔记本电脑连接到机器人的网络
+使用以下方法之一访问Web界面：
+方法1
+：打开Limelight硬件管理器应用程序，扫描Limelight，当您的Limelight出现时双击它
+方法2
+：打开Web浏览器并导航到
+http://limelight.local:5801
+方法3
+：打开Web浏览器并导航到您的Limelight的静态IP地址，端口为5801（如果已配置）
+连接后，您将可以访问：
+设置选项卡 - 配置团队号码、主机名和其他系统设置
+视觉管道选项卡 - 设置和调整视觉处理管道
+相机和十字线选项卡 - 调整相机设置和十字线参数
+3D可视化选项卡 - 查看实时AprilTag检测和定位
+所有配置都通过此Web界面完成。更改会自动保存到您的Limelight。
+4. 更新LimelightOS
+​
+警告
+升级前备份您的管道和脚本 - 它们将在此过程中被擦除！
+关闭Limelight电源
+下载最新的
+USB驱动程序、Limelight OS镜像和Balena Flash工具
+使用USB->USB-C线缆从笔记本电脑连接到Limelight（您的Limelight将自动开机）
+以管理员身份运行"Balena Etcher"
+您的计算机可能需要长达20秒的时间来识别相机
+在下载文件夹中选择最新的.zip镜像
+在"驱动器"菜单中选择"Compute Module"设备
+点击"Flash"
+刷写完成后，从Limelight上拔下USB线缆
+信息
+仅在刷写镜像时连接USB-C线缆。当USB线缆连接时，Limelight会进入特殊的刷写模式。在Limelight处于刷写模式时，您将无法访问Web界面。
+5. 网络配置
+​
+设置团队号码（FRC / Networktables必需）
+​
+启动机器人并将笔记本电脑连接到机器人的网络
+打开Limelight硬件管理器，扫描Limelight，并双击出现的条目
+或者，导航到
+http://limelight.local:5801
+转到"设置"选项卡
+输入您的团队号码并按"更新团队号码"
+设置唯一主机名（仅对使用多个Limelight的FRC / Networktables系统必需）
+​
+如果您使用多个Limelight，每个Limelight必须有一个唯一的主机名
+在设置选项卡中，配置主机名并点击"设置主机名"按钮
+设置静态IP（推荐，非必需）
+​
+将"IP分配"更改为"静态"
+将IP地址设置为"10.TE.AM.11"
+团队916使用10.9.16.xx
+团队9106使用10.91.6.xx
+团队9016使用10.90.16.xx
+将子网掩码设置为"255.255.255.0"
+将网关设置为"10.TE.AM.1"
+点击"更新"
+重启机器人电源
+在10.TE.AM.11:5801访问您的配置面板，在10.TE.AM.11:5800访问相机流
+如果您使用多个Limelight，请为每个Limelight分配一个唯一的静态IP地址
+问：为什么我们推荐使用静态IP地址？
+答：它可以减少Limelight的启动时间数秒。
+其次，团队在实际FRC场地和使用活动无线电固件时，
+历史上曾遇到DHCP分配和mDNS响应器的问题。
+我们建议在robo-rio和驾驶站上也设置静态IP地址。
+所有这些设备上使用的网络设置可以在
+此网页
+的下半部分找到。
+6. 控制LED
+​
+Limelight 3包含内置的绿色照明LED，输出600流明。这些LED可以通过多种方式控制：
+通过Web界面
+​
+导航到Web界面中的相机和十字线选项卡
+使用LED模式下拉菜单选择：
+开 - 始终开启
+关 - 始终关闭
+闪烁 - LED闪烁
+管道 - 检测到目标时LED开启
+通过NetworkTables或API
+​
+设置"ledMode"值：
+0：管道默认
+1：强制关闭
+2：强制闪烁
+3：强制开启
+7. Limelight 3全局快门升级
+​
+打印新的前半部分外壳
+https://downloads.limelightvision.io/cad/ll3_conversion_stl.stl
+https://downloads.limelightvision.io/cad/ll3_conversion_step.stp
+注意 - 您可以使用原始外壳，但新相机模块只能使用顶部两个安装孔。
+安装以下ov9281相机模块（不要安装LED板）
+https://www.robotshop.com/products/ov9281-110-mono-camera-for-raspberry-pi-global-shutter-1mp
+从下载页面下载Limelight 3G镜像
+就这样！
+8. 故障排除
+​
+状态指示灯指示
+​
+绿色指示灯
+：缓慢闪烁（无目标），快速闪烁（检测到目标）
+黄色指示灯
+：闪烁（无静态IP），常亮（已分配静态IP）
+LED诊断模式
+​
+左/右或上/下交替闪烁
+：内部相机线缆已松动或图像传感器损坏
+快速闪烁（所有LED）
+：网络重置按钮已按住至少10秒
+重复启动序列
+：软件崩溃，可能是由于硬件损坏
+如果limelight.local:5801不工作
+​
+检查是否安装了Bonjour（Windows：添加/删除程序）
+如果有两个Bonjour项目，卸载"bonjour print services"
+如果缺少Bonjour，从下载页面安装
+重置IP地址
+​
+在Limelight启动后按住配置按钮10秒
+网络配置将在下次启动时重置为动态寻址

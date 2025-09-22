@@ -1,0 +1,26 @@
+Se mettre à distance
+Les robots FRC doivent souvent être positionnés à une distance spécifique d'un objectif de marquage pour que leur mécanisme de tir fonctionne correctement. Vous pouvez utiliser une simple boucle de contrôle proportionnelle avec le réticule calibré de Limelight pour faire avancer facilement votre robot à une distance spécifique de l'objectif.
+Pour cet exemple, assurez-vous que votre robot est orienté vers l'objectif. Plus tard, nous combinerons la visée et l'ajustement de distance en une seule fonction, mais pour cet exemple, nous nous concentrons uniquement sur le code qui amène le robot à la bonne distance.
+Comme dans l'exemple de visée, nous présentons ici une fonction qui peut être exécutée dans la boucle de mise à jour de votre robot.
+float KpDistance = -0.1f;  // Constante de contrôle proportionnelle pour la distance
+float current_distance = Estimate_Distance();  // voir 'Étude de cas: Estimation de la distance'
+if (joystick->GetRawButton(9))
+{
+float distance_error = desired_distance - current_distance;
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+Avec un peu d'ajustement du paramètre KpDistance, votre robot devrait rapidement et précisément se positionner à la distance souhaitée. Comparé à la visée, se positionner à la bonne distance est généralement plus facile car la plupart des robots avancent et reculent plus facilement qu'ils ne tournent sur place.
+Ensuite, nous allons décrire une astuce simple pour faciliter encore plus le positionnement à la bonne distance. Au lieu de calculer réellement la distance, vous pouvez utiliser le réticule de Limelight. Positionnez simplement votre robot à la distance idéale de la cible et calibrez la position y du réticule. Maintenant, votre angle y sera de 0.0 lorsque votre robot sera à la bonne distance. Grâce à cette astuce, vous n'avez jamais besoin de calculer la distance réelle et votre code peut ressembler à ceci:
+float KpDistance = -0.1f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float distance_error = table->GetNumber("ty");
+if (joystick->GetRawButton(9))
+{
+driving_adjust = KpDistance * distance_error;
+left_command += distance_adjust;
+right_command += distance_adjust;
+}
+Si vous devez changer la distance de tir, déplacez simplement votre robot à la nouvelle distance et recalibrez le réticule de Limelight.
+Voici un exemple d'un robot utilisant l'idée ci-dessus. Notez comment il recule automatiquement à la bonne distance lorsque le pilote arrête de conduire et appuie sur le bouton "viser":

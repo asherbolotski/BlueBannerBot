@@ -23,7 +23,7 @@ except Exception as e:
 # --- 2. Configuration ---
 # The directory that contains the files you want to delete entries for.
 # This should match the folder you accidentally ingested with the wrong chunker.
-TARGET_DIRECTORY = "scraped_data_javadoc"
+TARGET_DIRECTORY = "ctre_phoenix_pro_output"  # Change this to your target directory
 
 
 # --- 3. Main Deletion Logic ---

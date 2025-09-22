@@ -1,0 +1,199 @@
+Localisation de robot avec MegaTag2
+Introduit en 2024, Megatag2 est un localisateur précis et sans ambiguïté basé sur AprilTag pour les robots mobiles. Il a été conçu avec les objectifs suivants :
+Éliminer le problème d'ambiguïté de pose et augmenter la robustesse contre le bruit d'image/coin.
+Fournir d'excellentes estimations de pose à partir d'un seul tag, quelle que soit la perspective.
+Augmenter la robustesse contre les imprécisions de placement physique des AprilTags
+Réduire la quantité de filtrage nécessaire pour obtenir de bons résultats d'estimation de pose
+Megatag2 fournit d'excellents résultats à n'importe quelle distance avec un seul tag.
+Cela signifie qu'il est parfaitement viable de se concentrer uniquement sur les tags qui sont à la fois pertinents et dans la tolérance, et de filtrer tous les autres tags. Si un tag n'est pas à l'emplacement correct, filtrez-le avec
+la fonction de filtre dynamique introduite avec MegaTag2.
+int
+[
+]
+validIDs
+=
+{
+3
+,
+4
+}
+;
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+"limelight"
+,
+validIDs
+)
+;
+Contrairement à MT1, MT2 suppose que vous connaissez le cap (lacet) de votre robot. En option, Megatag2 accepte une orientation complète du robot et des vitesses angulaires.
+Exigences :
+La pose en espace robot de votre Limelight a été configurée dans l'interface web ou via l'API
+Une carte de terrain (.fmap) a été téléchargée
+LimelightHelpers.SetRobotOrientation(robotYawInDegrees,0,0,0,0,0) est appelé à chaque trame dans le code côté robot
+SetRobotOrientation suppose une origine centrée (voir le générateur de carte) ou dans le coin bleu. Positif dans le sens antihoraire, 0 degré -> face au mur de l'alliance rouge en FRC.
+Clés NetworkTables :
+botpose_orb_wpiblue
+botpose_orb_wpired
+botpose_orb
+Clés JSON :
+botpose_orb_wpiblue
+botpose_orb_wpired
+botpose_orb
+(Par cible fiducielle) t6r_fs_orb - pose du robot dans l'espace de terrain utilisant megatag2 basé uniquement sur ce tag (pas de multitag)
+Remarquez la différence entre MegaTag2 (robot rouge) et Megatag (robot bleu)
+dans ce cas à tag unique hautement ambigu
+Cylindre doré / Robot rouge : Botpose Megatag2 non filtré
+Cylindres jaunes : Botposes Megatag2 à tag unique non filtrés
+Cylindre blanc/Robot bleu : Botpose MegaTag1
+Cylindre vert : Pose de bot individuelle par tag (MT1)
+Cylindre bleu : Moyenne des poses de bot individuelles par tag (MT1)
+info
+En 2024, la plupart de l'écosystème WPILib est passé à un système de coordonnées à origine unique.
+En 2023, l'origine de votre système de coordonnées changeait en fonction de la couleur de votre alliance.
+Pour 2024 et au-delà, l'origine de votre système de coordonnées devrait toujours être l'origine "bleue". Les équipes FRC devraient toujours utiliser botpose_orb_wpiblue pour les fonctionnalités liées à la pose
+Utilisation de l'estimateur de pose de WPILib
+​
+LimelightHelpers
+.
+SetRobotOrientation
+(
+"limelight"
+,
+m_poseEstimator
+.
+getEstimatedPosition
+(
+)
+.
+getRotation
+(
+)
+.
+getDegrees
+(
+)
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+)
+;
+LimelightHelpers
+.
+PoseEstimate
+mt2
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+"limelight"
+)
+;
+// si notre vitesse angulaire est supérieure à 360 degrés par seconde, ignorer les mises à jour de vision
+if
+(
+Math
+.
+abs
+(
+m_gyro
+.
+getRate
+(
+)
+)
+>
+360
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt2
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+!
+doRejectUpdate
+)
+{
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.7
+,
+.7
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+mt2
+.
+pose
+,
+mt2
+.
+timestampSeconds
+)
+;
+}
+Configuration de la pose en espace robot de votre Limelight
+​
+LL Forward, LL Right et LL Up représentent les distances le long des vecteurs avant, droite et haut du robot si vous incarniez le robot (en mètres).
+LL Roll, Pitch et Yaw représentent la rotation de votre Limelight en degrés. Vous pouvez modifier ces valeurs et observer le changement du modèle 3D du Limelight dans la visionneuse 3D.
+Limelight utilise cette configuration en interne pour passer de la pose de la cible dans l'espace caméra à la pose du robot dans l'espace de terrain.
+Utilisation de l'IMU intégré de Limelight 4 avec "imumode_set" / SetIMUMode()
+​
+Limelight 4 dispose d'un IMU intégré. Vous pouvez l'utiliser avec MT2 pour obtenir des estimations de pose encore plus précises lors des virages.
+Vous devez initialiser l'orientation initiale de l'IMU avant que cela ne fonctionne. C'est ce qu'on appelle "l'amorçage". Une fois que votre limelight connaît l'orientation initiale de votre robot, il pourra mettre à jour l'orientation de votre robot par lui-même pour effectuer les calculs MT2.
+Pour utiliser l'IMU LL4, actuellement votre LL doit être monté en mode "paysage".
+Le flux ressemble à ceci :
+Appelez SetRobotOrientation() avec votre IMU "externe" comme un Pigeon ou un NavX. Vous pouvez continuer à appeler cette méthode aussi souvent que vous le souhaitez.
+Appelez SetIMUMode() pour configurer comment votre Limelight utilise les données IMU des IMU internes et externes.
+En général, utilisez le mode 1 pendant que votre robot attend le début de la période autonome. Passez au mode 2 lorsqu'il est activé ou lorsqu'il est activé et en train de tourner.
+Mise à zéro / Amorçage
+​
+Pour réinitialiser le lacet fusionné du robot de l'IMU interne à la valeur de lacet soumise via SetRobotOrientation(), définissez le mode IMU de votre Limelight à 1 avec LimelightHelpers.SetIMUMode().
+Pendant l'amorçage, MegaTag2 continuera à utiliser la valeur de lacet soumise via SetRobotOrientation().
+Utilisation de l'IMU interne avec MegaTag2
+​
+Pour permettre à LL4 d'utiliser son IMU interne pour la localisation MT2, définissez le mode IMU de votre Limelight à 2 avec LimelightHelpers.SetIMUMode().
+Modes IMU :
+​
+0 - Utiliser le lacet de l'IMU externe soumis via SetRobotOrientation() pour la localisation MT2. L'IMU interne est complètement ignoré.
+1 - Utiliser le lacet de l'IMU externe soumis via SetRobotOrientation(), et configurer le lacet fusionné de l'IMU interne LL4 pour qu'il corresponde à la valeur de lacet soumise.
+2 - Utiliser l'IMU interne pour la localisation MT2.
+3 -

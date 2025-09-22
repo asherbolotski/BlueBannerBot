@@ -1,0 +1,140 @@
+API REST/HTTP
+O Limelight OS possui um servidor REST/HTTP rodando em
+(endereço_ip):5807
+LimelightLib Python
+é uma biblioteca de código aberto que utiliza a API HTTP/REST do Limelight.
+Nota: ex. http://(endereço-ip-limelight):5807/results
+Geral
+​
+Método
+Rota
+Descrição
+GET
+/results
+Recupera um dump JSON completo dos resultados atuais de rastreamento
+GET
+/status
+Recupera um objeto JSON de status com temperatura, fps, nome do dispositivo, índice do pipeline, uso de CPU, uso de RAM
+GET
+/hwreport
+Retorna um array JSON de relatórios completos de hardware. Um relatório de hardware contém informações legíveis como FOV, deslocamento principal, etc.
+Gerenciamento de Pipeline
+​
+Método
+Rota
+Descrição
+GET
+/pipeline-default
+Obtém o pipeline padrão (JSON)
+GET
+/pipeline-atindex
+Obtém o pipeline[n] da câmera (JSON). Carrega o pipeline do disco. Inclua um parâmetro de URL 'index' na requisição.
+POST
+/pipeline-switch
+Muda para um pipeline diferente. Inclua um parâmetro de URL 'index' na requisição.
+POST
+/reload-pipeline
+Força a câmera a recarregar o pipeline atual e todos os recursos do pipeline
+POST
+/update-pipeline
+Aceita JSON com uma ou mais atualizações de configurações. Defina o parâmetro de URL "flush" como 1 para salvar essas configurações no disco.
+POST
+/upload-pipeline
+Faz upload de um pipeline. Envie dados JSON no corpo da requisição. Opcionalmente inclua um parâmetro 'index'. Sobrescreve o pipeline no disco
+Gerenciamento de Câmera
+​
+Método
+Rota
+Descrição
+POST
+/set-imumode
+Define o Modo IMU (JSON)
+POST
+/set-throttle
+Define o número de quadros a serem ignorados entre quadros processados para gerenciamento térmico
+POST
+/set-imuassistalpha
+Define o alfa do filtro complementar do Modo de Assistência IMU (padrão 0.001)
+Gerenciamento de Recursos
+​
+Método
+Rota
+Descrição
+POST
+/upload-fieldmap
+Faz upload de um mapa de campo. Envie dados JSON no corpo da requisição. Opcionalmente inclua um parâmetro 'index'.
+POST
+/upload-python
+Faz upload de código Python. Envie o código como texto simples no corpo da requisição. Opcionalmente inclua um parâmetro 'index'.
+POST
+/upload-nn
+Faz upload de uma rede neural. Inclua um parâmetro 'type' ("detector" ou "classifier"), o conteúdo do arquivo no corpo da requisição e opcionalmente inclua um parâmetro 'index'.
+POST
+/upload-nnlabels
+Faz upload de rótulos de rede neural. Inclua um parâmetro 'type' ("detector" ou "classifier"), o arquivo no corpo da requisição e opcionalmente inclua um parâmetro 'index'.
+GET
+/getsnapscriptnames
+Lista de nomes de snapscriptpro
+Python e Orientação do Robô
+​
+Método
+Rota
+Descrição
+POST
+/update-pythoninputs
+Atualiza entradas Python para pipelines SnapScript. Envie dados JSON (array) no corpo da requisição.
+POST
+/update-robotorientation
+Atualiza a orientação do robô. Envie dados JSON (array) no corpo da requisição. Ex: "[45,0,0,0,0,0]". O uso deste método desativa atualizações de orientação baseadas em NetworkTables até reiniciar/reinicializar
+Calibração
+​
+Método
+Rota
+Descrição
+GET
+/cal-default
+Retorna o resultado de calibração padrão
+GET
+/cal-file
+Retorna o resultado de calibração personalizada (sistema de arquivos)
+GET
+/cal-eeprom
+Retorna o resultado de calibração personalizada (eeprom)
+GET
+/cal-latest
+Retorna o resultado de calibração personalizada mais recente. Este resultado não é usado a menos que seja salvo no sistema de arquivos ou na eeprom
+POST
+/cal-eeprom
+Atualiza o resultado de calibração na eeprom. Envie dados de calibração no corpo da requisição.
+POST
+/cal-file
+Atualiza o resultado de calibração no sistema de arquivos. Envie dados de calibração no corpo da requisição.
+DELETE
+/cal-latest
+Exclui o resultado de calibração mais recente
+DELETE
+/cal-eeprom
+Exclui o resultado de calibração da eeprom
+DELETE
+/cal-file
+Exclui o resultado de calibração do sistema de arquivos
+Capturas de Tela
+​
+Método
+Rota
+Descrição
+POST
+/capture-snapshot
+Captura uma imagem. Inclua um parâmetro de URL 'snapname' para nomear a captura.
+POST
+/upload-snapshot
+Faz upload de uma captura nomeada. Inclua um parâmetro de URL 'snapname' e um arquivo de imagem no corpo da requisição.
+GET
+/snapshotmanifest
+Retorna uma lista de nomes de arquivos de captura
+DELETE
+/delete-snapshots
+Exclui todas as capturas
+DELETE
+/delete-snapshot
+Exclui uma captura específica. Inclua um parâmetro 'snapname' na requisição.

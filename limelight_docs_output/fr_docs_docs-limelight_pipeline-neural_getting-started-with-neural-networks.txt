@@ -1,0 +1,34 @@
+Démarrer avec les Réseaux de Neurones
+Avec les pipelines de réseaux de neurones de Limelight, des défis de vision par ordinateur autrefois impossibles sont désormais triviaux. La vision basée sur l'apprentissage joue déjà un rôle énorme dans les robots de pointe et les véhicules autonomes, nous sommes donc
+ravis d'apporter cette technologie aux étudiants FIRST.
+info
+Limelight 1, 2 et 3 prennent tous en charge la vision basée sur l'apprentissage avec l'aide de Google Coral. Google Coral est un accélérateur USB qui doit être acheté séparément.
+Découvrez l'utilisation du pipeline de Réseau de Neurones de Limelight par le Champion du Monde 2023, l'équipe 1323 :
+Téléchargez des réseaux de neurones préentraînés depuis notre
+page de téléchargements
+.
+En FRC, les équipes ont toujours voulu suivre les pièces de jeu sur le terrain pendant les périodes autonomes et téléopérées.
+En utilisant le pipeline "Neural Detector" de Limelight, les équipes peuvent suivre les pièces comme n'importe quelle autre cible sans aucun réglage.
+Les pipelines "Neural Classifier", quant à eux, permettent aux équipes d'ajouter des capacités de détection avancées à leurs robots.
+Imaginons qu'une équipe veuille déterminer si son robot est en possession d'une balle Rouge, d'une balle Bleue, ou n'est pas en possession d'une balle.
+Un Limelight pointé à l'intérieur d'un robot pourrait exécuter un classificateur entraîné pour déterminer l'un de ces trois cas. Un classificateur pourrait également compter le nombre d'objets dans une trémie, déterminer l'état d'une caractéristique du terrain, etc.
+Les réseaux Neural Detector et Classifier nécessitent l'ajout d'un accélérateur USB Google Coral. L'accélérateur Google Coral est un ASIC (circuit intégré à application spécifique)
+qui est spécialement conçu pour l'inférence de réseaux de neurones. Vous pouvez considérer le terme "inférence" comme "exécution" ou "faire passer des données à travers le réseau de neurones et produire une sortie".
+Si vous êtes intéressé à approfondir votre compréhension de l'apprentissage automatique, nous vous recommandons de commencer par
+cette vidéo de 3blue1brown
+Les programmeurs peuvent en apprendre davantage de manière pratique avec
+le livre suivant
+Pipeline Neural Detector
+​
+Pour commencer, assurez-vous que votre Google Coral est branché sur le port USB-A de votre Limelight.
+Changez "Pipeline Type" en "Neural Detector" pour commencer à exécuter l'inférence sur le modèle de test intégré. Téléchargez des réseaux de neurones préentraînés depuis notre
+page de téléchargements
+, et téléversez-le pour commencer à suivre les pièces de jeu.
+Modifiez le curseur "confidence threshold" pour ajuster la confiance requise pour une détection réussie.
+Modifiez la fenêtre de recadrage pour ignorer facilement les objets en dehors de la zone de détection souhaitée.
+Pipeline Neural Classifier
+​
+Pour commencer, assurez-vous que votre Google Coral est branché sur le port USB-A de votre Limelight.
+Changez "Pipeline Type" en "Neural Classifier" pour commencer à exécuter l'inférence sur le modèle de test intégré. Vous pouvez entraîner vos propres modèles de classificateur en utilisant la méthode documentée dans la section "Training".
+La fenêtre "Crop" vous permettra de mieux contrôler l'image utilisée pour l'inférence du réseau de neurones. Bien que les modèles de classificateur soient capables de niveaux incroyables de généralisation dans divers environnements, vous
+obtiendrez plus de succès en minimisant le nombre de variables dans votre image.

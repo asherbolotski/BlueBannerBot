@@ -1,0 +1,58 @@
+Seguimiento de AprilTags
+Los AprilTags se rastrean utilizando los valores estándar "tx", "ty" y "ta". No se requieren cambios de código para actualizar un robot de seguimiento de color/retroreflectivo a apriltags.
+"botpose" y "campose" también pueden utilizarse para el seguimiento 3D en el espacio del campo y el espacio del objetivo.
+Para un uso más avanzado con múltiples etiquetas, se puede utilizar el volcado de resultados JSON.
+Inicio Rápido para AprilTags en FRC
+​
+Pestaña de Entrada - Cambiar "Tipo de Pipeline" a "Marcadores Fiduciales"
+Pestaña de Entrada - Utiliza la resolución más alta disponible para seguimiento 3D, o usa 640x480 para seguimiento 2D puro.
+Pestaña Estándar - Asegúrate de que "familia" esté configurada como "AprilTag Classic 36h11"
+Pestaña de Entrada - Establece "Nivel Negro" a cero
+Pestaña de Entrada - Establece "Ganancia" a 15
+Pestaña de Entrada - Reduce la exposición para reducir la pérdida de seguimiento mientras está en movimiento debido al desenfoque por movimiento. Deja de reducir una vez que la fiabilidad del seguimiento disminuya. Es posible que necesites aumentar la exposición en eventos con poca iluminación.
+Pestaña Estándar - Si deseas aumentar tu velocidad de fotogramas, aumenta el "Reducción de Escala del Detector"
+Si quieres usar seguimiento 3D y seguimiento 2D tx/ty simultáneamente, establece la prioridad de ID de etiqueta en networktables para configurar la etiqueta preferida para el seguimiento 2D.
+Haz clic en el icono de "Engranaje" y asegúrate de que tu número de equipo esté configurado y que haya una IP estática configurada.
+Haz clic en "Cambiar Número de Equipo" y "Cambiar Configuración de IP" si cambiaste sus configuraciones correspondientes. Reinicia tu robot.
+¡Listo! Usa "tx" y "ty" desde networktables. Copia el ejemplo de código en la página de "primeros pasos".
+Consejos
+​
+Para un seguimiento ideal, considera lo siguiente:
+Tus etiquetas deben ser lo más planas posible.
+Tu Limelight debe estar montado por encima o por debajo de la altura de la etiqueta y angulado hacia arriba/abajo de manera que el objetivo esté centrado. Tu objetivo debe verse lo más trapezoidal posible desde la perspectiva de tu cámara. No quieres que tu cámara esté completamente "de frente" con una etiqueta si quieres evitar el volteo de etiquetas.
+Existe una interacción entre las siguientes variables para el Seguimiento de AprilTag:
+Aumentar la resolución de captura siempre aumentará la precisión 3D y aumentará la estabilidad 3D. Esto también reducirá la tasa de volteo por ambigüedad desde la mayoría de las perspectivas. Normalmente aumentará el alcance. Esto reducirá la velocidad de fotogramas del pipeline.
+Aumentar la reducción de escala del detector siempre aumentará la velocidad de fotogramas del pipeline. Disminuirá el alcance efectivo, pero en algunos casos esto puede ser insignificante. No afectará la precisión 3D, la estabilidad 3D o la precisión de decodificación.
+Reducir la exposición siempre mejorará la resistencia al desenfoque por movimiento. Esto es realmente fácil de observar. Puede reducir el alcance.
+Reducir el brillo y el contraste de la imagen generalmente mejorará la velocidad de fotogramas del pipeline y reducirá el alcance.
+Aumentar la ganancia del sensor te permite aumentar el brillo sin aumentar la exposición. Puede reducir la estabilidad 3D y puede reducir la estabilidad del seguimiento.
+Pestaña de Entrada
+​
+La Pestaña de Entrada alberga controles para cambiar la imagen de la cámara sin procesar antes de que pase por el pipeline de procesamiento. Consulta la página "Construyendo un pipeline retroreflectivo/de color" para más detalles.
+Para rastrear AprilTags:
+Cambia "Tipo de Pipeline" a "Marcadores Fiduciales"
+Establece "Nivel Negro" a cero
+En este punto, se trata de equilibrar la ganancia del sensor y el tiempo de exposición. Quieres poder ver las etiquetas con la menor exposición posible para minimizar el desenfoque por movimiento.
+Esto generalmente requiere una configuración de ganancia de sensor alta. Para el seguimiento 2D simple,
+a menudo es aconsejable maximizar la ganancia del sensor y luego aumentar la exposición desde cero hasta que los objetivos sean suficientemente rastreados. Asegúrate de que la familia correcta esté seleccionada en la pestaña "Estándar" si el seguimiento no funciona.
+Pestaña Estándar
+​
+Familia
+​
+Selecciona el tipo de familia fiducial/AprilTag. Para FRC, debes seleccionar "AprilTag Classic 36h11"
+Tamaño del Marcador
+​
+Establece el tamaño esperado de las etiquetas que tu robot encontrará en mm. Para FRC, esto debe establecerse en 165.1 (152.4 para etiquetas de 2023)
+Reducción de Escala del Detector
+​
+Aumentar este número resultará en mejoras significativas de rendimiento. Esto a veces resultará en un alcance reducido, pero el costo suele ser mínimo.
+Filtros de ID
+​
+Los Filtros de ID te permiten especificar exactamente qué etiquetas te interesan. Para la mayoría de los equipos de FRC, cada pipeline debe configurarse para rastrear exactamente un ID de etiqueta.
+Esta es una lista de números separados por comas (por ejemplo, "0,1"). Esta característica es importante para eliminar la gran mayoría de falsos positivos.
+Recorte
+​
+El recorte elimina contenido de la imagen para obtener enormes mejoras de rendimiento. Usa la clave NT "crop" para recortar dinámicamente durante los partidos
+Clasificación y Agrupación de Múltiples Objetivos
+​
+Esto permite la funcionalidad exacta de agrupación vista en los pipelines retroreflectivos estándar. En la mayoría de los juegos, la única característica a modificar es el filtro de "Área", que te permitirá filtrar etiquetas pequeñas.

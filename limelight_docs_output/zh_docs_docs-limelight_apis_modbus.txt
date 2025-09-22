@@ -1,0 +1,243 @@
+Modbus API
+Limelight OS 具有一个运行在
+(ipaddress):502
+的 Modbus TCP 服务器
+整数：整数是有符号的，使用二进制补码编码。这种方法被普遍认可，确保正确的符号解释。
+浮点数：浮点数使用 IEEE 754 标准编码。为了符合 Modbus 协议的 16 位寄存器限制，浮点数被分为两部分：
+高位 16 位存储在第二个寄存器中，低位 16 位存储在第一个寄存器中。
+小端格式确保与 Modbus 规范兼容。
+USB 和以太网 Limelight 可以使用
+ModbusTool
+进行测试
+Modbus 支持零件检测和工业自动化用例。要开始使用 Modbus，您需要执行以下操作：
+通过以太网或 USB-C 连接到您的 Limelight 并配置管道。
+虽然所有管道都会通过 modbus 输出结果，但我们的 python snapscript 管道对于工业用例非常通用，因为它们支持自定义输入输出数据。
+给您的 Limelight 分配一个静态 IP 地址
+将您的 Limelight 连接到 modbus 网络。
+Modbus 寄存器规范
+输入/只读寄存器
+​
+寄存器
+键
+类型
+描述
+0
+hb
+int
+心跳值。每帧增加一次
+1
+pipelineIndex
+int
+当前活动管道索引 (0 .. 9)。
+2
+validTarget
+int
+如果存在有效目标则为 1，否则为 0。
+3
+resultsCount
+int
+总结果计数。包括所有基准检测、神经检测等
+4
+ID
+int
+ID / 团队编号
+5
+modbusMode
+int
+Modbus 服务器输出模式。
+6
+cpuTemp
+int
+CPU 温度（摄氏度）。
+7
+cpuUsage
+int
+CPU 使用率百分比。
+8
+ramUsage
+int
+RAM 使用率百分比。
+9
+currentFPS
+int
+当前每秒帧数。
+10
+captureLatency
+int
+捕获延迟。（毫秒）
+11
+targetLatency
+int
+处理延迟。（毫秒）
+12-15
+保留
+int
+如果输出模式设置为 0：
+寄存器
+键
+类型
+描述
+16,17
+tx
+float32
+目标的水平角偏移（度）
+18,19
+ty
+float32
+目标的垂直角偏移（度）
+20,21
+txnc
+float32
+目标的水平角偏移（相对于主像素，度）
+22,23
+tync
+float32
+目标的垂直角偏移（相对于主像素，度）
+24,25
+ta
+float32 (0-1)
+目标面积占图像大小的百分比
+26
+fiducialID
+int
+当前 AprilTag ID
+27
+classifierClass
+int
+当前分类器管道输出的类索引。如果没有分类器结果则为 -1
+28
+detectorClass
+int
+当前检测器管道输出的类索引。如果没有检测器结果则为 -1
+29
+保留
+int
+30,31
+python[0]
+float32
+自定义 python 输出数组 [0]
+32,33
+python[1]
+float32
+自定义 python 输出数组 [1]
+34,35
+python[2]
+float32
+自定义 python 输出数组 [2]
+36,37
+python[3]
+float32
+自定义 python 输出数组 [3]
+38,39
+python[4]
+float32
+自定义 python 输出数组 [4]
+40,41
+python[5]
+float32
+自定义 python 输出数组 [5]
+42,43
+python[6]
+float32
+自定义 python 输出数组 [6]
+44,45
+python[7]
+float32
+自定义 python 输出数组 [7]
+保持/只写寄存器
+​
+寄存器
+键
+类型
+描述
+0
+unlocked
+int
+解锁管道。设置为 1 以启用管道切换和自定义输入数据
+1
+pipeIndex
+int
+如果 "unlocked" 设置为 1，则设置管道索引
+2
+outputMode
+int
+设置输出模式。0 - 标准，1 - rawtargets（开发中）
+3
+保留
+int
+4
+保留
+int
+5
+保留
+int
+6
+保留
+int
+7
+保留
+int
+8
+pythonInput[0]
+int
+自定义 python 输入数组 [0]
+9
+pythonInput[1]
+int
+自定义 python 输入数组 [1]
+10
+pythonInput[2]
+int
+自定义 python 输入数组 [2]
+11
+pythonInput[3]
+int
+自定义 python 输入数组 [3]
+12
+pythonInput[4]
+int
+自定义 python 输入数组 [4]
+13
+pythonInput[5]
+int
+自定义 python 输入数组 [5]
+14
+pythonInput[6]
+int
+自定义 python 输入数组 [6]
+15
+pythonInput[7]
+int
+自定义 python 输入数组 [7]
+16,17
+pythonInput[8]
+float32
+自定义 python 输入数组 [8]
+18,19
+pythonInput[9]
+float32
+自定义 python 输入数组 [9]
+20,21
+pythonInput[10]
+float32
+自定义 python 输入数组 [10]
+22,23
+pythonInput[11]
+float32
+自定义 python 输入数组 [11]
+24,25
+pythonInput[12]
+float32
+自定义 python 输入数组 [12]
+26,27
+pythonInput[13]
+float32
+自定义 python 输入数组 [13]
+28,29
+pythonInput[14]
+float32
+自定义 python 输入数组 [14]
+30,31
+pythonInput[15]
+float32
+自定义 python 输入数组 [15]

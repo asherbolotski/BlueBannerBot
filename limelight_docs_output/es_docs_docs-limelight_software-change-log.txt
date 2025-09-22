@@ -1,0 +1,708 @@
+Registro de cambios de software y comentarios
+Envía problemas y solicitudes de funciones por correo electrónico o al
+Repositorio de comentarios de Limelight
+Limelight OS 2025.1 (VERSIÓN FINAL - 24/2/25 VERSIÓN DE PRUEBA - 18/2/25)
+​
+24/2/25 - Solución del problema de conectividad introducido en la versión de prueba 2025.1.
+Actualizaciones de IMU para LL4
+​
+Mejora en la fusión de sensores IMU
+Rendimiento significativamente mejor bajo vibración e impactos a nivel de FRC. Cambios importantes en el enfoque de fusión.
+La imagen anterior muestra el resultado de una sesión de práctica bastante violenta de ~5 minutos con un robot FRC. En esta sesión, medimos las orientaciones de:
+Un Limelight 4 ejecutando 2025.0 (llyawOLD)
+Un Limelight 4 ejecutando 2025.1 (llyaw)
+Un Pigeon 2.0
+Los dos LL4 están montados en orientaciones idénticas. Observe la enorme mejora en la precisión general del LL4 ejecutando 2025.1
+Modo IMU 3 - IMU_ASSIST_MT1 - La IMU interna utilizará estimaciones de guiñada MT1 filtradas para corrección continua de orientación
+Modo IMU 4 - IMU_ASSIST_EXTERNALIMU - La IMU interna utilizará la IMU externa para corrección continua de orientación
+Añadida clave NT imuassistalpha_set (predeterminado 0.001) - Filtro complementario alfa / intensidad. Valores más altos harán que la IMU interna converja más rápidamente hacia la fuente de asistencia
+El valor predeterminado se establece en un valor bajo 0.001 porque ahora confiamos más en la IMU interna que antes. Los modos de asistencia están diseñados para "tirar" muy suavemente de la IMU interna hacia la fuente de asistencia elegida sin perjudicar la capacidad de respuesta de la IMU interna durante movimientos rápidos.
+Actualizaciones de rendimiento térmico para LL4
+​
+Añadido 'throttle_set'. Procesa un fotograma después de cada N fotogramas omitidos. Ejemplos de patrones:
+throttle_set=1: [omitir, procesar, omitir, procesar]
+throttle_set=2: [omitir, omitir, procesar, omitir, omitir, procesar]
+Las salidas no se ponen a cero/reinician durante los fotogramas omitidos.
+Establece esto en un número alto mientras está deshabilitado (50-200) para gestionar la temperatura de tu LL4.
+Opcionalmente, puedes configurar un pipeline como visor y cambiar a este pipeline mientras está deshabilitado.
+Nuevas opciones de FPS para LL4 y LL3G
+​
+Añadido 1280x800 a 60FPS, 55FPS, 45FPS y 30FPS.
+Usar tasas de captura más bajas te permitirá aumentar el tiempo de exposición para evitar el florecimiento/respiración de la imagen debido a la iluminación AC.
+Actualizaciones de la API REST
+​
+Añadida API REST para Modo IMU - 'update-imumode'
+Añadida API REST para Throttle - 'update-throttle'
+Añadida API REST para IMU ASSIST ALPHA - 'update-imuassistalpha'
+Actualizaciones de FMap
+​
+Los archivos Json de FMap ahora pueden incrustar opcionalmente un SVG codificado en base64
+Los archivos Json de FMap ahora pueden incrustar opcionalmente un PNG codificado en base64
+Redes neuronales ReefScape cargadas
+​
+El Modelo B2 Hailo es nuestro modelo de mejor rendimiento para FRC2025. Fue entrenado con imágenes monocromáticas para adaptarse mejor a LL4.
+Actualizaciones de LL3A
+​
+3A totalmente compatible con las actualizaciones de 2025
+Correcciones de errores
+​
+Los Limelights sin IMU interna ignoran imumode_set
+Los Limelight 3 que han sido actualizados a Limelight 3G utilizarán correctamente el ventilador incorporado
+Corrección del recorte en pipelines de Detector Neural basados en Hailo
+Corrección del recorte en pipelines de AprilTag basados en Hailo
+Limelight OS 2025.0 (15/1/24)
+​
+Soporte para LL4
+​
+Añadido soporte para detección de objetos Hailo y AprilTags acelerados por Hailo
+Añadido soporte para la IMU interna de LL4
+Añadida clave NT "imumode_set"
+0 - Usar IMU externa, no inicializar IMU interna
+1 - Usar IMU externa, inicializar IMU interna
+2 - Usar IMU interna
+Actualizaciones del campo 2025
+​
+El ancho y la altura del campo ahora forman parte de los archivos .fmap
+Actualizado el .fmap predeterminado para coincidir con el campo 2025
+Actualizada la imagen de campo predeterminada
+El constructor de mapas en línea ahora permite configurar el ancho y la altura del campo
+El enlace fmap 2025 en la página de descargas ha sido actualizado.
+Correcciones de errores
+​
+Arreglado el botón "eliminar todas las instantáneas"
+Limelight OS 2024.10.2 (28/10/24)
+​
+Corrección de Snapscript Python (CRÉDITO - EQUIPO FTC 23251 TRIPLE FAULT)
+​
+Las salidas de Python ya no se congelarán al usar el Control Hub con Limelight3A
+Las salidas de Python ya no se congelarán al cambiar entre pipelines de python
+Caso extremo de MT2
+​
+https://github.com/LimelightVision/limelight-feedback/issues/23
+Al probar MT2 sin un robot, es fácil generar una imposibilidad geométrica.
+Este caso extremo no ponía a cero el botpose mt2 - ponía a cero la pose de la cámara.
+El robot ahora se coloca en (0,0,0) cuando se detecta este caso extremo
+Direccionamiento IP estático
+​
+https://github.com/LimelightVision/limelight-feedback/issues/25
+Añadida una advertencia al configurador de dirección IP si la dirección termina en .1-.10 o .20-.255, ya que estas direcciones pueden interferir con el FMS u otros dispositivos
+En 2024.10.1, la interfaz de usuario a veces sugería que se había configurado una IP estática cuando el esquema de direccionamiento estaba establecido en "automático"
+STDDevs NetworkTables
+​
+https://github.com/LimelightVision/limelight-feedback/issues/24
+"stddevs" en networktables contiene todas las desviaciones estándar para mt1 y mt2 (matriz de dobles, 12 elementos)
+Caso extremo de carga de modelos
+​
+Si se carga un modelo de clasificador a un pipeline de detector, se mostrará "check model" en la imagen
+Si se carga un modelo de detector a un pipeline de clasificador, se mostrará "check model" en la imagen
+Limelight OS 2024.10.1 (15/9/24)
+​
+Actualizaciones de Limelight 3A
+​
+Actualizados los valores predeterminados de balance de color
+Actualizada la configuración predeterminada de tamaño de AprilTag a 101.6 mm
+Reducida la tasa de fotogramas predeterminada de transmisión de video a 30FPS
+Ligeramente aumentada la compresión de transmisión de video para reducir la tasa de bits
+Advertencia de tamaño de AprilTag
+​
+Añadida una advertencia al visualizador de espacio de campo si el tamaño configurado de AprilTag no coincide con los tamaños en el mapa de campo cargado.
+Corrección de error en CameraPose_RobotSpace
+​
+La anulación de la Pose de Cámara configurada en la interfaz desde NetworkTables/LimelightLib/REST funciona correctamente de nuevo.
+Limelight OS 2024.10 (4/9/24)
+​
+Soporte para Limelight 3A para FTC
+​
+Limelight3A es totalmente compatible
+3A se puede usar tanto en FTC como en FRC
+Actualizaciones del mapa de AprilTag
+​
+El editor de mapas ahora admite la generación de mapas FTC estándar y de diamante
+La interfaz web de LLOS mostrará automáticamente el tipo de campo correcto según el mapa cargado
+Todos los visualizadores de campo en herramientas e interfaces muestran zonas de alianza y cuadrículas de baldosas ftc.
+Se ha mejorado el rendimiento del visualizador 3D.
+Soporte de Limelight USB en ControlHub y RoboRio.
+​
+Los equipos FTC pueden usar un único Limelight con capacidad USB en el Control Hub
+Los equipos FRC pueden usar hasta 16 Limelights con capacidad USB en el RoboRio. Los limelights USB auto-rellenan networktables igual que los limelights ethernet.
+Para usar múltiples Limelights USB, asigna a cada LL un índice USB único y un nombre de host único.
+Mejoras de conectividad USB
+​
+MacOS ya no usa la interfaz Ethernet USB de Limelight para acceso a internet
+Windows ya no intenta usar la interfaz Ethernet USB de Limelight para acceso a internet
+Actualizaciones de la API REST
+​
+Corregida la solicitud POST update-robotorientation.
+MT2 ahora es totalmente accesible sin NetworkTables.
+Una vez que se utiliza la ruta update-robotorientation, las actualizaciones de orientación de NetworkTables se desactivan hasta el reinicio.
+Limelight OS 2024.9.1 (7/7/24)
+​
+La herramienta Map Builder ahora acepta/convierte diseños de apriltag .json de WPILib
+Añadido AprilTag3 a Python Snapscripts (from apriltag import apriltag)
+Ver ejemplo en el repositorio de ejemplos de github
+Solucionado el problema de puerta de enlace de conectividad USB en Windows.
+Limelight OS 2024.9 (7/5/24)
+​
+Mejoras de MegaTag
+​
+Limelight OS ha hecho la transición a NetworkTables 4.0
+MegaTag2 ahora usa getAtomic() de NT4 para recuperar actualizaciones de IMU con marca de tiempo desde el roboRIO.
+Nuestros fotogramas de imagen con marca de tiempo se emparejan con las dos muestras de IMU más relevantes antes de realizar la interpolación.
+Se ha añadido NT4 flush() a LimelightLib. Agregar Flush() a versiones anteriores de Limelight OS te dará un rendimiento muy cercano al de 2024.9, pero NT4 asegura que la precisión sea siempre alta.
+El robot visualizador de MT2 ahora tiene parachoques verdes, y el robot visualizador de MT1 usa parachoques amarillos.
+Las métricas ahora son plegables, y los robots virtuales pueden ocultarse.
+El siguiente video demuestra cómo el MegaTag 2 de 2024.9 (robot verde) con flush() del lado del robot es más robusto que el MegaTag2 de 2024.5 sin Flush() (robot rojo)
+ID USB y nuevas direcciones IP USB
+​
+Configura el "USB ID" en la página de configuración para usar múltiples Limelights USB en cualquier sistema.
+La interfaz USB-Ethernet que aparece en tu sistema utilizará una dirección IP determinada por el USB ID
+Los sistemas Linux/Android/Mac ahora utilizarán la subred 172.29.0.0/24 por defecto
+Los sistemas Windows ahora utilizarán la subred 172.28.0.0/24 por defecto.
+Si se establece el USBID, la subred cambia a 172.29.(USBID).0/24 para Linux/Android/Mac y 172.28.(USBID).0/24 para Windows.
+Ahora puedes, por ejemplo, conectar cuatro dispositivos Limelight a un solo Hub USB ajustando sus nombres de host y USB IDs
+Clasificadores neuronales de CPU
+​
+Sube un clasificador .tflite para CPU para habilitar la clasificación neural sin Google Coral. Puedes esperar 15-18 FPS en variantes LL3.
+2024.9 viene con un clasificador CPU predeterminado.
+Establece el tiempo de ejecución del clasificador en "CPU" para habilitar esta función
+Detectores neuronales de CPU
+​
+Sube un detector .tflite para CPU para habilitar la detección neural sin Google Coral. Puedes esperar 10 FPS en variantes LL3.
+2024.9 viene con un detector CPU predeterminado.
+Establece el tiempo de ejecución del detector en "CPU" para habilitar esta función
+Limelight OS 2024.8 (7/3/24)
+​
+Añade salida de python (PythonOut), tx, ty, txnc, tync, ta al objeto de resultados json
+Mayor mejora en la compensación de latencia de MT2
+Limelight OS 2024.7 (5/21/24)
+​
+Actualización a Linux 6.6
+Correcciones de errores
+​
+Corrección de la conversión de pipeline de visión
+Corrección de cargas de calibración, cargas de instantáneas y cargas de nn
+Limelight OS 2024.6 (5/8/24)
+​
+LimelightLib Python
+​
+pip install limelightlib-python
+Nuestra biblioteca de Python te permite interactuar con Limelights USB y Ethernet en cualquier plataforma.
+Permite la configuración completa de Limelight sin interacción con la interfaz web.
+Sube pipelines, redes neuronales, mapas de campo, etc.
+Realiza cambios en tiempo real a cualquier parámetro de pipeline con una opción opcional de "guardar en disco"
+Publica datos de entrada personalizados de Python, establece la orientación del robot, etc.
+Mejoras de MegaTag2
+​
+La compensación de latencia del giroscopio de MegaTag2 ha sido mejorada. ¡Espera más mejoras pronto!
+Añadido el deslizador "Ajuste de latencia del giroscopio" a la interfaz. Para ajustar manualmente la compensación de latencia de MegaTag 2, puedes girar tu robot y ajustar el deslizador hasta que los resultados de localización sean perfectos durante la rotación.
+Métricas de Desviación Estándar
+​
+El visualizador de campo 3D ahora incluye desviaciones estándar de MegaTag1 y Megatag2 para x, y, y guiñada.
+Nuevo Tipo de Pipeline "Focus"
+​
+En el modo "focus", tendrás acceso a un deslizador de calidad de transmisión y un deslizador de recorte
+Gira la lente para maximizar la puntuación de "focus".
+Si tu cámara está en una ubicación fija, esto toma menos de un minuto. Recomendamos enfocar con un Limelight fijo/montado.
+Nuevo Tipo de Pipeline "Barcodes"
+​
+Detección y decodificación de múltiples códigos QR a 50-60FPS a 1280x800
+Detección y decodificación de múltiples DataMatrix a 50-60FPS a 1280x800
+UPC, EAN, Code128 y PDF417 múltiples a 30FPS a 1280x800
+Las cadenas de datos de códigos de barras se publican en el array "rawbarcodes" de NT.
+El pipeline de Barcodes completará todas las métricas 2D como tx, ty, ta, tcornxy, etc.
+API REST Completamente Nueva
+​
+https://docs.limelightvision.io/docs/docs-limelight/apis/rest-http-api
+Nuestra API REST/HTTP ha sido reconstruida desde cero.
+La API REST permite la configuración completa de Limelight sin interacción con la interfaz web.
+Sube pipelines, redes neuronales, mapas de campo, etc.
+Realiza cambios en tiempo real a cualquier parámetro de pipeline con una opción opcional de "guardar en disco"
+Publica datos de entrada de Python, establece la orientación del robot, etc.
+Eliminación de la Configuración de Orientación de Cámara de la Interfaz (CAMBIO IMPORTANTE)
+​
+Esto ha sido reemplazado por la opción "orientación de transmisión". La calibración y el apuntado nunca se ven afectados por esta opción.
+La nueva opción solo afecta a la transmisión. Boca abajo, 90 grados en sentido horario, 90 grados en sentido antihorario, espejo horizontal y espejo vertical
+Los equipos ahora necesitarán invertir manualmente tx y ty según sea necesario al usar cámaras rotadas.
+Eliminación del Soporte GRIP (CAMBIO IMPORTANTE)
+​
+Eliminación del Modo "Driver" sin procesamiento (CAMBIO IMPORTANTE)
+​
+Esto ha sido reemplazado por el tipo de pipeline "Viewfinder"
+Añadido el Tipo de Pipeline "Viewfinder"
+​
+El pipeline viewfinder desactiva todo el procesamiento para una latencia mínima
+Esto permite a los equipos diseñar sus propios pipelines "Driver" para modos de solo visualización
+Los Archivos de Pipeline Ahora Usan Formato JSON (CAMBIO IMPORTANTE)
+​
+Los pipelines siguen usando la extensión de archivo .vpr
+(Roto en algunos casos en 2024.6) La interfaz convertirá automáticamente los pipelines a JSON cuando uses el botón "subir".
+(Completamente funcional) También puedes usar
+https://tools.limelightvision.io/pipeline-upgrade
+para actualizar tus pipelines
+Mejora de la Experiencia de Usuario en Calibración
+​
+La configuración de calibración ahora se almacena en caché. Ya no necesitas ingresar tu configuración de calibración cada vez que quieras calibrar.
+El diccionario de calibración predeterminado ha sido actualizado para funcionar con el tablero grueso recomendado de 800x600mm de Calib.io.
+Mosaico de Calibración
+​
+Anteriormente, era difícil determinar la calidad de las imágenes de calibración
+La pestaña de calibración ahora tiene un botón "Descargar Mosaico de Calibración". El mosaico te mostrará exactamente lo que cada imagen está contribuyendo a tu calibración.
+Región de Apuntado "Centroid"
+​
+Se ha añadido el modo de apuntado Centroid a la pestaña "Output" para mejorar el seguimiento de objetos con pipelines de color
+Offset 3D Dinámico (NT: fiducial_offset_set)
+​
+Ahora es posible ajustar el Offset 3D sin cambiar de pipeline. Esto es útil para situaciones en las que tu "punto de apuntado" necesita cambiar según la distancia u otras propiedades.
+Añadido Soporte Modbus
+​
+Limelight OS ahora tiene un servidor modbus siempre activo para aplicaciones de inspección, logística e industriales
+Consulta la especificación de registro modbus aquí:
+https://docs.limelightvision.io/docs/docs-limelight/apis/modbus
+El puerto predeterminado del servidor modbus se puede cambiar en la pestaña de configuración de la interfaz
+A través de modbus y pipelines python snapscript, ahora se admiten aplicaciones de visión completamente personalizadas con comunicación bidireccional.
+Servidor NT personalizado
+​
+La pestaña de configuración ahora contiene una entrada para un servidor NT personalizado.
+Esto permite un nuevo flujo de trabajo que incluye un servidor NT glass ejecutándose en una PC, y Limelight 3G comunicándose a través de USB.
+Cambios en Rawfiducial
+​
+El valor "area" de los fiduciales raw ahora es un valor calibrado y normalizado que va de ~0-1
+Todos los Cambios en NetworkTables y JSON
+​
+Añadido NT getpipetype - Obtener la cadena del tipo de pipeline actual (ej. pipe_color, pipe_fiducial)
+Añadido NT tcclass - Nombre de clase detectada por el pipeline clasificador
+Añadido NT tdclass - Nombre de clase detectada por el pipeline detector
+Añadido NT t2d para apuntado 2d atómico garantizado - [valid,targetcount, targetlatency, capturelatency, tx, ty, txnc, tync, ta, targetid, classifierID, detectorID, tlong, tshort, thor, tvert, ts(skew)]
+Eliminados NT tlong, tshort, thor, tvert, y ts
+Añadido array NT 'crosshairs' [cx0,cy0,cx1,cy1]
+Eliminados NT cx0, cy0, cx1, y cy1
+Añadido NT rawbarcodes - Array de Strings NT de datos de códigos de barras. Hasta 32 entradas.
+Todos los arrays "raw" permiten hasta 32 objetivos (aumentado desde 8)
+Añadido fiducial_offset_set para establecer el Offset 3D dinámico
+Añadido "pType" al resultado de nivel superior de json
+Añadidos "stdev_mt1" y "stdev_mt2" al resultado de nivel superior de json (x,y,z,roll,pitch,yaw) (metros, grados)
+Cambios en Otros Formatos de Archivo y Volcados JSON
+​
+El formato de archivo de calibración se ha simplificado. Las calibraciones antiguas se convierten automáticamente al nuevo formato al subirlas
+Se ha eliminado una capa de anidamiento de los volcados JSON de Results y Status
+Correcciones de Errores
+​
+Anteriormente, si un Google Coral se desconectaba mientras un pipeline Neural estaba activo, el pipeline revertía permanentemente al modo "color/retro"
+Ahora, se imprimirá "CHECK CORAL" o "CHECK MODEL" en la imagen. El tipo de pipeline nunca cambiará
+Anteriormente, las etiquetas que pasaban con éxito a través del filtro de ID fiducial a veces se dibujaban con un contorno rojo en lugar de un contorno verde. Este problema de visualización ha sido corregido.
+Los pipelines de Apriltag completan el array tcornxy de NT
+Los pipelines de Apriltag ahora respetan completamente el deslizador de área mín-máx. Anteriormente, los pipelines de AprilTag filtraban los resultados 2D basados en el Área de Etiqueta, pero no los Resultados 3D / de Localización.
+Limelight OS 2024.5.0 (4/9/24)
+​
+Actualización a Linux 6.1
+Actualización de la Pila de Cámara
+​
+Toda la pila de cámara ha sido actualizada para solucionar un bloqueo de periféricos de cámara en Limelight3G.
+Los síntomas incluyen
+Asegúrate de reajustar la configuración de exposición y ganancia después de aplicar esta actualización.
+Reducción de Escala Dinámica
+​
+Los equipos ahora pueden establecer "fiducial_downscale_set" para anular la configuración de reducción de escala del pipeline actual
+0
+:control
+UI, 1:1x, 2:1.5x, 3:2x, 4:3x, 5:4x
+Usa el nuevo método Helpers con 0.0 (Control UI), 1.0, 1.5, 2.0, 3.0, 4.0
+Esta es una operación sin sobrecarga.
+Al combinar la reducción de escala dinámica y el recorte dinámico, los equipos pueden maximizar los FPS sin gestionar múltiples pipelines
+Mejoras de MegaTag2
+​
+MT2 ahora funciona sin importar la orientación del Limelight, incluidos los modos "retrato" con giros de 90 grados y -90 grados
+Array NT "rawdetections"
+​
+[classID, txnc, tync, ta, corner0x, corner0y, corner1x, corner2y, corner3x, corner3y, corner4x, corner4y]
+las esquinas están en espacio de píxeles sin calibración aplicada
+Actualización de Erosión/Dilatación
+​
+Los pipelines de color ahora admiten hasta 10 pasos de dilatación y 10 pasos de erosión
+Los pipelines de color ahora tienen una opción "reverse morpho" para invertir el orden de los pasos de dilatación y erosión
+LimelightLib 1.6 (4/9/24)
+​
+Añadido void SetFiducialDownscalingOverride(float downscale)
+Establece a 0 para control de pipeline, o uno de los siguientes para anular la configuración de reducción de escala de tu pipeline:
+1, 1.5, 2, 3, 4
+Añadido RawFiducial[] GetRawFiducials()
+Añadido RawDetection[] GetRawDetections()
+Limelight OS 2024.4.0 (4/3/24)
+​
+Gracias a todos los equipos que contribuyeron con ideas para esta actualización.
+Megatag 2
+​
+Megatag 2 es un localizador sin ambigüedades. Tiene mayor precisión y exactitud que Megatag1, y fue construido con los siguientes requisitos:
+Eliminar el problema de ambigüedad de pose y aumentar la robustez contra el ruido de imagen/esquinas.
+Proporcionar excelentes estimaciones de pose con uno o más tags, sin importar la perspectiva.
+Aumentar la robustez contra imprecisiones en la colocación física de AprilTags
+Reducir la cantidad de filtrado necesario en el robot para obtener buenos resultados de estimación de pose
+Observe la diferencia entre MegaTag2 (robot rojo) y Megatag (robot azul) en este caso de un solo tag altamente ambiguo:
+Megatag2 requiere que establezca la orientación de su robot con un nuevo método. Aquí hay un ejemplo completo:
+LimelightHelpers
+.
+SetRobotOrientation
+(
+"limelight"
+,
+m_poseEstimator
+.
+getEstimatedPosition
+(
+)
+.
+getRotation
+(
+)
+.
+getDegrees
+(
+)
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+)
+;
+LimelightHelpers
+.
+PoseEstimate
+mt2
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+"limelight"
+)
+;
+if
+(
+Math
+.
+abs
+(
+m_gyro
+.
+getRate
+(
+)
+)
+>
+720
+)
+// si nuestra velocidad angular es mayor que 720 grados por segundo, ignoramos las actualizaciones de visión
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt2
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+!
+doRejectUpdate
+)
+{
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.6
+,
+.6
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+mt2
+.
+pose
+,
+mt2
+.
+timestampSeconds
+)
+;
+}
+Megatag2 proporciona resultados excelentes, sin ambigüedades a cualquier distancia con un solo tag.
+Esto significa que es perfectamente viable enfocarse solo en tags que sean relevantes y estén dentro de su tolerancia de colocación deseada.
+Si un tag no está en la ubicación correcta o es irrelevante, filtrelo con la nueva función de filtro dinámico.
+Filtrado Dinámico de Apriltag
+​
+Como MegaTag2 no necesita acumular tantos AprilTags como sea posible, puede filtrar de manera segura para obtener tags bien colocados y relevantes:
+int
+[
+]
+validIDs
+=
+{
+3
+,
+4
+}
+;
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+"limelight"
+,
+validIDs
+)
+;
+Transición a MegaTag2
+​
+Megatag2 requiere la orientación de su robot para funcionar correctamente. Una orientación de 0 grados, 360 grados, 720 grados, etc. significa que su robot está mirando hacia la pared de la alianza roja.
+Esta es la misma convención utilizada en PathPlanner, Chorero, Botpose y Botpose_wpiblue.
+Una vez que haya agregado SetRobotOrientation() a su código, verifique el visualizador 3D incorporado. A corta distancia, Megatag2 y Megatag1 deberían coincidir estrechamente, si no exactamente. A larga distancia, Megatag 2 (robot rojo) debería ser más preciso y más estable que Megatag1 (robot azul).
+Una vez que el visualizador incorporado muestre buenos resultados, puede usar Megatag2 con seguridad para guiar su robot durante el período autónomo.
+El único filtro que recomendamos agregar es un filtro de "velocidad angular máxima". Es posible que encuentre que a altas velocidades angulares, sus estimaciones de pose se vuelven ligeramente menos confiables.
+El repositorio de ejemplos tiene un ejemplo de Megatag2 con este filtro.
+if
+(
+Math
+.
+abs
+(
+m_gyro
+.
+getRate
+(
+)
+)
+>
+720
+)
+// si nuestra velocidad angular es mayor que 720 grados por segundo, ignoramos las actualizaciones de visión
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt2
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+LimelightLib 1.5 (4/3/24)
+​
+Añadir
+getBotPoseEstimate_wpiRed_MegaTag2()
+getBotPoseEstimate_wpiBlue_MegaTag2()
+SetRobotOrientation()
+Limelight OS 2024.3.4 (3/20/24)
+​
+Gracias a todos los equipos que contribuyeron con ideas para esta actualización.
+Solucionador de Tag Único de Mayor Precisión
+​
+El solucionador 3D de tag único de MegaTag ha sido mejorado. Es mucho más estable que antes a larga distancia.
+JSON Deshabilitado por Defecto (Cambio Importante)
+​
+JSON ha sido deshabilitado por defecto para reducir el uso de ancho de banda y en general para equipos que utilizan dashboards con auto-suscripción como Shuffleboard.
+Esto también debería reducir la carga de NT y el uso de CPU en el RoboRIO.
+Vuelva a habilitar json por pipeline en la pestaña de salida.
+Esta actualización incluye cambios que deberían permitir que aún más equipos dejen de usar JSON para la estimación de pose.
+Área Sin Distorsión (Cambio Importante)
+​
+Las esquinas se corrigen de distorsión antes de calcular el área de cualquier objetivo.
+Incluir Métricas Por-Fiducial en botpose, botpose_wpiblue y botpose_wpired
+​
+[tx, ty, tz, roll, pitch, yaw, tagCount, tagSpan (metros), averageDistance (metros), averageArea (porcentaje de imagen), (tags) ]
+Para cada tag utilizado por la localización megatag, las matrices anteriores ahora incluyen (tagID, txnc, tync, ta, distanceToCamera, distanceToRobot, ambiguity)
+Ambiguity es una nueva métrica que va de 0 a 1 e indica la ambigüedad de la perspectiva actual del tag. Las actualizaciones de un solo tag con ambigüedades > .9 probablemente deberían rechazarse.
+Matrices NT "rawtargets" y "rawfiducials" (Cambio Importante)
+​
+rawtargets - (txnc,tync,ta) por objetivo
+rawfiducials - (tagID, txnc, tync, ta, distanceToCamera, distanceToRobot, ambiguity) por objetivo
+Las entradas NT rawtargets anteriores (tx0,ty0, etc.) han sido eliminadas.
+Correcciones de Errores
+​
+Poner a cero toda la información 3D de tag único si no se ha encontrado el priorityID. Anteriormente, solo Tx, Ta, Ty y Tv se ponían a cero cuando no se encontraba el priorityTag
+Poner a cero botpose si el único tag visible ha sido filtrado por las funciones "ID Filters" de la interfaz de usuario. Anteriormente, las poses del robot se restablecían al centro del campo en lugar de (0,0,0) si el único tag visible era un tag filtrado;
+2024.2 publicaba NANs en ciertas entradas de networktables en algunos casos raros. Esto ya no sucederá.
+LimelightLib 1.4 (3/21/24)
+​
+Añadir soporte para Raw Fiducials de 2024.3.4. PoseEstimates ahora incluye una matriz de rawFiducials que contienen id, txnc, tync, ta, distanceToCamera, distanceToRobot y ambiguity
+Limelight Hardware Manager 1.4 (3/18/24)
+​
+Corrección de Error
+​
+Los Limelights USB descubiertos se muestran correctamente como una sola entrada en lugar de dos entradas parciales.
+Limelight OS 2024.2.2 (3/17/24)
+​
+Corrección de Error
+​
+TX y TY respetan correctamente la cruz de referencia en las entradas NT.
+Limelight OS 2024.2 (3/8/24)
+​
+Apuntado con Cruz de Referencia Cero con Json (tx_nocross, ty_nocross) y NT (txnc, tync)
+​
+Si está utilizando apuntado con tx/ty con calibración de intrínsecos personalizada, es probable que aún vea variación de cámara a cámara porque la cruz de referencia de Limelight no está alineada con el píxel principal de la cámara. Los equipos que requieren mayor precisión en tx/ty pueden configurar la cruz de referencia para que coincida con el píxel principal o usar estas nuevas métricas.
+Posible cambio importante en tx/ty
+​
+Se introdujo un error a principios de esta temporada que rompió la calibración personalizada específicamente para tx, ty y tx + ty en json. Limelight OS estaba volviendo a las calibraciones predeterminadas en varios casos.
+Mejoras en la Calibración
+​
+La calibración ahora es casi instantánea, sin importar cuántas imágenes se hayan capturado. También hemos corregido un fallo causado por tener más de aproximadamente 30 imágenes en ciertas circunstancias.
+Estamos obteniendo consistentemente un error de reproyección de alrededor de 1 píxel con 15-20 imágenes de objetivos de papel, y un error de .3 píxeles con nuestros objetivos calib.io de alta calidad.
+Corrección de la Interfaz de Filtros de Fiduciales
+​
+El cuadro de texto del filtro de fiduciales ahora acepta cualquier número de filtros.
+Miscelánea
+​
+El Generador de Apriltag por defecto no tiene borde para evitar el escalado con tags de 165.1 mm.
+Limelight OS 2024.1.1 (2/24/24)
+​
+Corregir priorityID
+Limelight OS 2024.1 (24/02/24)
+​
+Métricas de Hardware (clave hw en networktables, solicitud GET /status)
+​
+Los equipos ahora tienen la capacidad de registrar FPS, carga de CPU, uso de RAM y temperatura de CPU.
+Resuelve
+https://github.com/LimelightVision/limelight-feedback/issues/5
+Mejora de Calibración
+​
+Corrige un fallo que podía ocurrir si una imagen de calibración contenía exactamente una detección válida. Mejora la retroalimentación de la interfaz web.
+Mejora de Localización del Robot (conteo de tags y más)
+​
+Todos los arrays de botpose en networktables (botpose, botpose_wpiblue y botpose_wpired) ahora incluyen Conteo de Tags, Extensión de Tags (metros), Distancia Promedio (metros) y Área Promedio (porcentaje de imagen)
+Estas métricas se calculan con tags que están incluidos en el mapa de campo cargado. Los AprilTags personalizados y/o móviles no afectarán estas métricas.
+Con la calibración del dispositivo y esta actualización del array de botpose, no creemos que JSON sea necesario para la gran mayoría de casos de uso este año.
+El volcado JSON ahora incluye botpose_avgarea, botpose_avgdist, botpose_span y botpose_tagcount para mayor comodidad.
+[tx,ty,tz,rx,ry,rz,latency,tagcount,tagspan,avgdist,avgarea]
+Nueva Característica: ID Prioritario (Clave NT priorityid)
+​
+Si tu robot utiliza tanto características basadas en odometría como características basadas en tx/ty, probablemente hayas encontrado el siguiente problema de experiencia de usuario:
+Antes de esta actualización, no había forma fácil de cambiar el ID de tag preferido para el apuntado con tx/ty.
+Aunque existe un filtro de ID en la interfaz de usuario, este
+no es dinámico
+elimina tags de la localización megaTag.
+Esto significaba que los equipos estaban creando varias tuberías: una para localización 3D, y una por tag tx/ty (una tubería para disparar desde el lado azul con el tag 7, una para amplificar desde el lado azul con el tag 6, etc.).
+La nueva característica de ID prioritario (Clave NT priorityid) te permite decirle a tu Limelight "Después de que se complete toda la detección, filtrado y clasificación de tags, enfócate en el tag que coincida con el ID prioritario."
+Esto no afecta la localización de ninguna manera, y solo cambia ligeramente el orden de los tags en los resultados JSON.
+Si tu ID prioritario no es -1, tx/ty/ta devolverán 0 a menos que el tag elegido sea visible.
+Misceláneos
+​
+Corrige la "x" a través de la pantalla mientras se usa el modo de doble objetivo en una tubería de apriltag 3D
+API REST ampliada con cargas de etiquetas de red neuronal (/uploadlabels)
+Incluye el apodo del dispositivo en el json /status
+LimelightLib 1.3
+​
+LimelightLib (Java y CPP) se han actualizado para hacer que la localización sea más fácil que nunca.
+LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+if(limelightMeasurement.tagCount >= 2)
+{
+m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+m_poseEstimator.addVisionMeasurement(
+limelightMeasurement.pose,
+limelightMeasurement.timestampSeconds);
+}
+Nuevos recursos para Equipos
+​
+Retroalimentación y Seguimiento de Problemas de Limelight:
+https://github.com/LimelightVision/limelight-feedback/issues
+​
+Repositorio de Ejemplos:
+https://github.com/LimelightVision/limelight-examples
+​
+Ejemplo de Apuntado y Medición de Distancia con Swerve:
+https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-swerve-aiming-and-ranging
+​
+Ejemplo de Localización MegaTag:
+https://docs.limelightvision.io/docs/docs-limelight/tutorials/tutorial-swerve-pose-estimation
+​
+Gracias a los contribuyentes recientes jasondaming, Gold876, JosephTLockwood, Andrew Gasser y virtuald
+Actualizaciones de Limelight 2024 (6/2/24)
+Actualización de la Documentación de Limelight
+​
+La
+documentación
+ha sido reescrita para agilizar el proceso de configuración
+Generador de AprilTag de Limelight
+​
+https://tools.limelightvision.io/
+ahora presenta el primer generador de AprilTag en línea.
+Selecciona tu tamaño de papel, tamaño de marcador e IDs de tag para generar un PDF imprimible.
+Safari puede no mostrar correctamente los tags en este momento.
+Constructor de Mapas de Limelight
+​
+https://tools.limelightvision.io/map-builder
+Ahora puedes construir mapas personalizados de AprilTag con una interfaz intuitiva.
+La familia predeterminada y el tamaño del tag se han actualizado para coincidir con el campo de 2024.
+Nuevo Administrador de Hardware
+​
+La Herramienta Finder ahora es el Administrador de Hardware de Limelight
+Ha sido reescrito desde cero. Ahora detecta de manera confiable los Limelights, proporciona información de diagnóstico más útil y no requiere reinicios para funcionar correctamente.
+Obténlo ahora desde la
+página de descargas
+Entrena tus propias Redes Neuronales
+​
+Puedes entrenar tus propios modelos de detección de forma gratuita con RoboFlow, el
+Cuaderno de Entrenamiento de Detector Limelight
+,
+y nuestro nuevo
+tutorial
+Mapa de AprilTag 2024 y Detector de Notas
+​
+El mapa y el modelo de detector se han añadido a la página de descargas y a la última imagen de Limelight OS.
+Limelight OS 2024.0 (6/2/24)
+​
+Correcciones de Calibración ChArUco
+​
+La precisión subpixel de nuestro detector ChArUco ha aumentado. Ahora es posible lograr un error de reproyección de 1-2 píxeles con objetivos de portapapeles y 20 imágenes.
+Usando la misma cámara y el mismo objetivo, 2023.6 logró un RPE de 20 píxeles, y 2024.0 logró un RPE de 1.14 píxeles.
+Los campos de entrada ya no aceptan letras y caracteres especiales. Esto elimina la posibilidad de un fallo.
+Mejora de Precisión de Megatag Lista para Usar
+​
+Antes de esta actualización, el generador de mapas Megatag interno de Limelight hacía referencia al control deslizante de tamaño de tag de la interfaz de usuario en lugar de los tamaños de tag proporcionados por el archivo .fmap.
+Megatag ahora respeta los tamaños de tag configurados en los archivos fmap e ignora el control deslizante de tamaño.
+Si tu control deslizante de tamaño no se ha establecido en 165.1 mm, notarás una mejora inmediata en la precisión de localización
+Mejoras de Rendimiento y Correcciones de Errores
+​
+Tuberías de AprilTag con mayor FPS
+El rendimiento del Visualizador de Espacio de Campo ha mejorado significativamente.
+Correcciones de Errores
+​
+Los Apriltags en visualizadores 3D a veces se dibujaban con imágenes de tag incorrectas o corruptas. Los tags ahora siempre se muestran correctamente.
+"v" / tv / "valid" ahora solo devolverá "1" si hay detecciones válidas. Anteriormente, tv siempre era "1"

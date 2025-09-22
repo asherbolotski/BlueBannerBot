@@ -1,0 +1,48 @@
+Théorie Supplémentaire
+Cibles de Vision
+​
+Les concepteurs du jeu FRC placent souvent des "cibles de vision" réfléchissantes sur le terrain à des endroits stratégiques. Ces cibles de vision sont généralement faites de ruban rétro-réfléchissant. Les éléments de score majeurs ont généralement des cibles de vision qui peuvent être utilisées pour viser automatiquement. Ci-dessous, vous pouvez voir deux exemples de cibles de vision des jeux FRC de 2016 et 2017.
+Ces cibles de vision rétro-réfléchissantes ont une propriété très utile : lorsque la lumière est dirigée vers elles, elle se réfléchit directement vers la source lumineuse. C'est pourquoi Limelight a des LED vertes brillantes entourant son objectif de caméra. En réglant l'exposition de la caméra très basse tout en émettant une lumière verte brillante vers la cible, nous pouvons acquérir une image qui est principalement noire avec une cible de vision verte brillante. Cela rend la tâche d'acquisition de la cible relativement facile.
+Voici un exemple d'image idéale. Remarquez comment presque tous les détails de l'image ont disparu en raison du réglage de faible exposition, mais le ruban rétro-réfléchissant ressort brillamment.
+Seuillage
+​
+Le seuillage est la prochaine composante critique de la plupart des algorithmes de suivi de vision FRC. C'est l'acte de prendre une image et de rejeter tous les pixels qui ne sont pas dans une plage de couleurs spécifique. Le résultat du seuillage est généralement une image unidimensionnelle dans laquelle un pixel est soit "allumé" soit "éteint". Le seuillage fonctionne très bien sur les images capturées en utilisant la stratégie ci-dessus (faible exposition, image très sombre avec une cible de vision brillamment illuminée).
+Limelight effectue le seuillage dans l'espace colorimétrique HSV (Teinte-Saturation-Valeur). Vous êtes peut-être habitué à penser aux couleurs dans l'espace colorimétrique RVB (Rouge-Vert-Bleu). HSV est simplement une autre façon de représenter la couleur, similaire à la façon dont les coordonnées cartésiennes ou polaires peuvent être utilisées pour décrire des positions. La raison pour laquelle nous utilisons l'espace colorimétrique HSV est que la Teinte peut être utilisée pour sélectionner très précisément la couleur verte que les LED de Limelight émettent.
+Il est essentiel d'ajuster vos paramètres de seuillage pour éliminer autant que possible de l'image. Vous obtiendrez les meilleurs résultats si vous optimisez chaque étape de votre pipeline de vision avant de passer à l'étape suivante. L'image suivante illustre la différence entre un seuillage inapproprié et un seuillage approprié :
+Parfois, des éléments comme les lumières du plafond ou les fenêtres dans une arène peuvent être difficiles à éliminer de l'image en utilisant le seuillage, ce qui nous amène à l'étape suivante.
+Filtrage des Contours
+​
+Après le seuillage, le pipeline de vision de Limelight génère un ensemble de contours pour l'image. Un contour est une courbe entourant un ensemble contigu de pixels. Parfois, des éléments comme les lumières du plafond, les tableaux de score de l'arène, les fenêtres et autres peuvent passer l'étape de seuillage. C'est là que le filtrage des contours devient utile. L'objectif est d'éliminer tous les contours qui ne sont pas la cible qui nous intéresse.
+Le premier et le plus simple filtre de contour consiste à ignorer tous les contours qui sont plus petits que ce à quoi ressemble notre cible de vision depuis notre distance de tir. Tout ce qui est plus petit que cette taille est évidemment quelque chose de plus éloigné et devrait être ignoré. C'est ce qu'on appelle le filtrage par surface.
+Les cibles de vision FRC ont souvent une propriété géométrique qui peut être exploitée pour nous aider à filtrer les contours. Par exemple, si la cible de vision a un rapport d'aspect large, nous pouvons filtrer tous les contours qui ne sont pas larges :
+Cependant, gardez à l'esprit que votre caméra peut regarder la cible sous un angle étrange. Cela peut affecter considérablement le rapport d'aspect de son contour. Assurez-vous de tester vos paramètres sous une variété d'angles pour vous assurer que vous ne filtrez pas trop agressivement et que vous finissez par ignorer la cible de vision !
+Cette cible suivante est très intéressante. C'est l'une des cibles de vision les mieux conçues en FRC (à notre avis). Limelight calcule automatiquement une valeur appelée la
+plénitude
+d'un contour. La
+plénitude
+est le rapport entre la surface en pixels du contour et sa surface convexe. Cette forme particulière a une très faible plénitude et on ne voit presque jamais de lumières de plafond, de fenêtres, etc. avec une plénitude aussi faible. Vous pouvez donc filtrer très efficacement les contours indésirables si votre cible de vision ressemble à celle-ci.
+Limelight dispose de nombreuses options pour filtrer les contours. Vous pouvez utiliser ces options avec ce que vous savez sur les propriétés géométriques de la cible de vision particulière que vous essayez de suivre.
+Actuellement, si plusieurs contours passent à travers vos options de filtrage, le plus grand contour est choisi. De plus, le pipeline préfère "verrouiller" les contours en utilisant l'hystérésis. C'est une fonctionnalité qui aide à prévenir le scintillement entre des cibles similaires.
+Des Pixels aux Angles
+​
+Le résultat final du pipeline de vision est une position en pixels du meilleur contour dans l'image. Pour la plupart des jeux, nous pouvons simplement viser le centre du contour. Parfois, il est également utile de viser le centre supérieur ou un autre point, mais essentiellement, nous avons une coordonnée en pixels pour l'endroit où nous voulons viser. Pour calculer les angles vers cette cible, nous devons utiliser un peu de trigonométrie.
+D'abord, nous supposons que nous avons une caméra "sténopé" parfaite. En pratique, cela peut être loin de la vérité, mais la caméra de Limelight s'en approche beaucoup. (Une lentille fisheye serait loin de cet idéal comme contre-exemple.)
+La caméra Limelight a un champ de vision horizontal de 54 degrés et un champ de vision vertical de 41 degrés. Elle capture des images à une résolution de 320x240. Nous supposons que le centre de l'image est l'axe optique de la caméra (donc les angles x et y pour cet emplacement sont 0,0). Étant donné ces valeurs connues, nous pouvons utiliser un peu de trigonométrie pour calculer les angles pour n'importe quel pixel dans l'image.
+Le diagramme ci-dessous montre un exemple de point cible pour lequel nous voulons calculer les angles. Les coordonnées des pixels commencent dans le coin supérieur gauche de l'image et sont positives vers la droite et vers le bas.
+Notre première étape sera de convertir les coordonnées en pixels en coordonnées 2D normalisées où 0,0 est le centre de l'image et 1,0 :
+(px, py) = coordonnées en pixels, 0,0 est le coin supérieur gauche, positif vers le bas et vers la droite
+(nx, ny) = coordonnées en pixels normalisées, 0,0 est le centre, positif vers la droite et vers le haut
+nx = (1/160) * (px - 159.5)
+ny = (1/120) * (119.5 - py)
+Ensuite, nous définissons un plan de vue imaginaire et calculons sa taille. Pour simplifier, nous pouvons choisir de placer ce plan à 1,0 unité devant l'emplacement de la caméra. Voici une vue en plongée sur la caméra. Notre objectif est de calculer la largeur et la hauteur du plan de vue car ces valeurs seront utilisées pour calculer les angles plus tard :
+Étant donné une distance de 1,0 unité et un champ de vision horizontal et vertical connu, nous pouvons calculer la taille du rectangle du plan de vue avec les formules suivantes :
+vpw = 2.0*tan(horizontal_fov/2)
+vph = 2.0*tan(vertical_fov/2)
+En utilisant ces deux valeurs, nous pouvons maintenant convertir entre les coordonnées de pixels normalisées et les coordonnées du plan de vue en utilisant une simple multiplication.
+x = vpw/2 * nx;
+y = vph/2 * ny;
+Rappelez-vous que nous avons choisi de positionner notre plan de vue à une distance de 1,0. Maintenant, nous avons tout ce dont nous avons besoin pour calculer les angles vers le point cible.
+tan(ax) = x / 1
+tan(ay) = y / 1
+ax = atan2(x, 1)
+ay = atan2(y, 1)

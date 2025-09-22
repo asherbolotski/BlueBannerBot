@@ -1,0 +1,1876 @@
+FRC Programming with Limelight Lib (WPILib Java & C++)
+https://github.com/LimelightVision/limelightlib-wpijava
+https://github.com/LimelightVision/limelightlib-wpicpp
+JavaDocs:
+https://limelightlib-wpijava-reference.limelightvision.io
+Usage
+​
+This is a single-file library. All you need to do is copy the LimelightHelpers.java file from the latest release (
+https://github.com/LimelightVision/limelightlib-wpijava/releases
+) into your Java project's "robot" folder. You don't need to create any objects for your Limelights - the library is simple and functional to maximize ease of use and reliability.
+Tips for Success
+​
+Start simple! Many successful FRC teams use basic approaches effectively. For example, Team 2056 in 2024 used a standard 90FPS color pipeline instead of neural networks for game piece tracking.
+Think about what you actually need: Do you need full field localization, or would simple target centering work (e.g.,
+driveSpeed = result.getTx() * 0.03
+)?
+Key Concepts
+​
+1. Basic Usage
+​
+Every method accepts a Limelight name parameter. Leave it blank or null to use "limelight":
+// Basic targeting data
+double
+tx
+=
+LimelightHelpers
+.
+getTX
+(
+""
+)
+;
+// Horizontal offset from crosshair to target in degrees
+double
+ty
+=
+LimelightHelpers
+.
+getTY
+(
+""
+)
+;
+// Vertical offset from crosshair to target in degrees
+double
+ta
+=
+LimelightHelpers
+.
+getTA
+(
+""
+)
+;
+// Target area (0% to 100% of image)
+boolean
+hasTarget
+=
+LimelightHelpers
+.
+getTV
+(
+""
+)
+;
+// Do you have a valid target?
+double
+txnc
+=
+LimelightHelpers
+.
+getTXNC
+(
+""
+)
+;
+// Horizontal offset from principal pixel/point to target in degrees
+double
+tync
+=
+LimelightHelpers
+.
+getTYNC
+(
+""
+)
+;
+// Vertical  offset from principal pixel/point to target in degrees
+2. Pipeline Management
+​
+Pipelines are like instantly-swappable programs that change how Limelight processes images. You can set up 10 different pipelines in the web interface:
+// Switch to pipeline 0
+LimelightHelpers
+.
+setPipelineIndex
+(
+""
+,
+0
+)
+;
+3. LED Control
+​
+For Limelights with bright illumination LEDS, you can control the LEDs for different situations:
+// Let the current pipeline control the LEDs
+LimelightHelpers
+.
+setLEDMode_PipelineControl
+(
+""
+)
+;
+// Force LEDs on/off/blink
+LimelightHelpers
+.
+setLEDMode_ForceOn
+(
+""
+)
+;
+LimelightHelpers
+.
+setLEDMode_ForceOff
+(
+""
+)
+;
+LimelightHelpers
+.
+setLEDMode_ForceBlink
+(
+""
+)
+;
+4. Field Localization With MegaTag
+​
+(See the MegaTag documentation and the Swerve Pose Estimation Tutorial for more details.)
+// In your periodic function:
+LimelightHelpers
+.
+PoseEstimate
+limelightMeasurement
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+"limelight"
+)
+;
+if
+(
+limelightMeasurement
+.
+tagCount
+>=
+2
+)
+{
+// Only trust measurement if we see multiple tags
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+0.7
+,
+0.7
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+limelightMeasurement
+.
+pose
+,
+limelightMeasurement
+.
+timestampSeconds
+)
+;
+}
+5. Field Localization With MegaTag2
+​
+(See the MegaTag2 documentation and the Swerve Pose Estimation Tutorial for more details.)
+MegaTag2 enhances localization accuracy by fusing robot orientation data with vision. By providing gyro data, you help MegaTag2 constrain the localization problem and provide excellent results even if only a single tag is visible:
+// First, tell Limelight your robot's current orientation
+double
+robotYaw
+=
+m_gyro
+.
+getYaw
+(
+)
+;
+LimelightHelpers
+.
+SetRobotOrientation
+(
+""
+,
+robotYaw
+,
+0.0
+,
+0.0
+,
+0.0
+,
+0.0
+,
+0.0
+)
+;
+// Get the pose estimate
+LimelightHelpers
+.
+PoseEstimate
+limelightMeasurement
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+""
+)
+;
+// Add it to your pose estimator
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.5
+,
+.5
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+limelightMeasurement
+.
+pose
+,
+limelightMeasurement
+.
+timestampSeconds
+)
+;
+6. Special AprilTag Functionality
+​
+// Set a custom crop window for improved performance (-1 to 1 for each value)
+LimelightHelpers
+.
+setCropWindow
+(
+""
+,
+-
+0.5
+,
+0.5
+,
+-
+0.5
+,
+0.5
+)
+;
+// Change the camera pose relative to robot center (x forward, y left, z up, degrees)
+LimelightHelpers
+.
+setCameraPose_RobotSpace
+(
+""
+,
+0.5
+,
+// Forward offset (meters)
+0.0
+,
+// Side offset (meters)
+0.5
+,
+// Height offset (meters)
+0.0
+,
+// Roll (degrees)
+30.0
+,
+// Pitch (degrees)
+0.0
+// Yaw (degrees)
+)
+;
+// Set AprilTag offset tracking point (meters)
+LimelightHelpers
+.
+setFiducial3DOffset
+(
+""
+,
+0.0
+,
+// Forward offset
+0.0
+,
+// Side offset
+0.5
+// Height offset
+)
+;
+// Configure AprilTag detection
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+""
+,
+new
+int
+[
+]
+{
+1
+,
+2
+,
+3
+,
+4
+}
+)
+;
+// Only track these tag IDs
+LimelightHelpers
+.
+SetFiducialDownscalingOverride
+(
+""
+,
+2.0f
+)
+;
+// Process at half resolution for improved framerate and reduced range
+7. Python Integration
+​
+Communicate with custom Python SnapScripts:
+// Send data to Python
+double
+[
+]
+dataToSend
+=
+{
+1.0
+,
+2.0
+,
+3.0
+}
+;
+LimelightHelpers
+.
+setPythonScriptData
+(
+""
+,
+dataToSend
+)
+;
+// Get data from Python
+double
+[
+]
+dataFromPython
+=
+LimelightHelpers
+.
+getPythonScriptData
+(
+""
+)
+;
+8. Getting Detailed Results From NetworkTables (RawTargets)
+​
+For maximum performance, you can access raw target data directly from NetworkTables, bypassing JSON parsing:
+// Get raw AprilTag/Fiducial data
+RawFiducial
+[
+]
+fiducials
+=
+LimelightHelpers
+.
+getRawFiducials
+(
+""
+)
+;
+for
+(
+RawFiducial
+fiducial
+:
+fiducials
+)
+{
+int
+id
+=
+fiducial
+.
+id
+;
+// Tag ID
+double
+txnc
+=
+fiducial
+.
+txnc
+;
+// X offset (no crosshair)
+double
+tync
+=
+fiducial
+.
+tync
+;
+// Y offset (no crosshair)
+double
+ta
+=
+fiducial
+.
+ta
+;
+// Target area
+double
+distToCamera
+=
+fiducial
+.
+distToCamera
+;
+// Distance to camera
+double
+distToRobot
+=
+fiducial
+.
+distToRobot
+;
+// Distance to robot
+double
+ambiguity
+=
+fiducial
+.
+ambiguity
+;
+// Tag pose ambiguity
+}
+// Get raw neural detector results
+RawDetection
+[
+]
+detections
+=
+LimelightHelpers
+.
+getRawDetections
+(
+""
+)
+;
+for
+(
+RawDetection
+detection
+:
+detections
+)
+{
+int
+classID
+=
+detection
+.
+classId
+;
+double
+txnc
+=
+detection
+.
+txnc
+;
+double
+tync
+=
+detection
+.
+tync
+;
+double
+ta
+=
+detection
+.
+ta
+;
+// Access corner coordinates if needed
+double
+corner0X
+=
+detection
+.
+corner0_X
+;
+double
+corner0Y
+=
+detection
+.
+corner0_Y
+;
+// ... corners 1-3 available similarly
+}
+9. Getting Detailed Results From JSON (Results Object)
+​
+The Results object provides comprehensive access to all Limelight data types. It can take up to 2 ms to parse on the RoboRIO, so we don't recommend using this approach in FRC:
+LimelightResults
+results
+=
+LimelightHelpers
+.
+getLatestResults
+(
+""
+)
+;
+if
+(
+results
+.
+valid
+)
+{
+// Color/Retroreflective targets
+if
+(
+results
+.
+targets_Retro
+.
+length
+>
+0
+)
+{
+LimelightTarget_Retro
+target
+=
+results
+.
+targets_Retro
+[
+0
+]
+;
+double
+skew
+=
+target
+.
+ts
+;
+// Target skew/rotation
+double
+shortSide
+=
+target
+.
+short_side
+;
+// Shortest side in pixels
+double
+longSide
+=
+target
+.
+long_side
+;
+// Longest side in pixels
+Pose3d
+targetPose
+=
+target
+.
+getCameraPose_TargetSpace
+(
+)
+;
+}
+// AprilTags/Fiducials
+if
+(
+results
+.
+targets_Fiducials
+.
+length
+>
+0
+)
+{
+LimelightTarget_Fiducial
+tag
+=
+results
+.
+targets_Fiducials
+[
+0
+]
+;
+double
+id
+=
+tag
+.
+fiducialID
+;
+// Tag ID
+String
+family
+=
+tag
+.
+fiducialFamily
+;
+// Tag family (e.g., "16h5")
+// 3D Pose Data
+Pose3d
+robotPoseField
+=
+tag
+.
+getRobotPose_FieldSpace
+(
+)
+;
+// Robot's pose in field space
+Pose3d
+cameraPoseTag
+=
+tag
+.
+getCameraPose_TargetSpace
+(
+)
+;
+// Camera's pose relative to tag
+Pose3d
+robotPoseTag
+=
+tag
+.
+getRobotPose_TargetSpace
+(
+)
+;
+// Robot's pose relative to tag
+Pose3d
+tagPoseCamera
+=
+tag
+.
+getTargetPose_CameraSpace
+(
+)
+;
+// Tag's pose relative to camera
+Pose3d
+tagPoseRobot
+=
+tag
+.
+getTargetPose_RobotSpace
+(
+)
+;
+// Tag's pose relative to robot
+// 2D targeting data
+double
+tx
+=
+tag
+.
+tx
+;
+// Horizontal offset from crosshair
+double
+ty
+=
+tag
+.
+ty
+;
+// Vertical offset from crosshair
+double
+ta
+=
+tag
+.
+ta
+;
+// Target area (0-100% of image)
+}
+// Neural network detections
+if
+(
+results
+.
+targets_Detector
+.
+length
+>
+0
+)
+{
+LimelightTarget_Detector
+detection
+=
+results
+.
+targets_Detector
+[
+0
+]
+;
+String
+className
+=
+detection
+.
+className
+;
+double
+confidence
+=
+detection
+.
+confidence
+;
+double
+area
+=
+detection
+.
+ta
+;
+}
+// Classifier results
+if
+(
+results
+.
+targets_Classifier
+.
+length
+>
+0
+)
+{
+LimelightTarget_Classifier
+result
+=
+results
+.
+targets_Classifier
+[
+0
+]
+;
+String
+class_name
+=
+result
+.
+className
+;
+double
+confidence
+=
+result
+.
+confidence
+;
+int
+classID
+=
+(
+int
+)
+result
+.
+classID
+;
+}
+// Barcode/QR code results
+if
+(
+results
+.
+targets_Barcode
+.
+length
+>
+0
+)
+{
+LimelightTarget_Barcode
+barcode
+=
+results
+.
+targets_Barcode
+[
+0
+]
+;
+String
+data
+=
+barcode
+.
+data
+;
+String
+family
+=
+barcode
+.
+family
+;
+}
+}
+10. Snapshot Management
+​
+Take snapshots for offline pipeline tuning:
+// Take a snapshot to view it later in the web interface
+LimelightHelpers
+.
+takeSnapshot
+(
+""
+,
+"auto_shot_1"
+)
+;
+11. Miscellaneous Functionality
+​
+// Change stream modes
+LimelightHelpers
+.
+setStreamMode_Standard
+(
+""
+)
+;
+// Side-by-side streams
+LimelightHelpers
+.
+setStreamMode_PiPMain
+(
+""
+)
+;
+// Secondary stream in corner
+LimelightHelpers
+.
+setStreamMode_PiPSecondary
+(
+""
+)
+;
+// Primary stream in corner
+LimelightHelpers Static Methods
+​
+Target Data
+​
+public
+static
+boolean
+getTV
+(
+String
+limelightName
+)
+public
+static
+double
+getTX
+(
+String
+limelightName
+)
+public
+static
+double
+getTY
+(
+String
+limelightName
+)
+public
+static
+double
+getTXNC
+(
+String
+limelightName
+)
+public
+static
+double
+getTYNC
+(
+String
+limelightName
+)
+public
+static
+double
+getTA
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getT2DArray
+(
+String
+limelightName
+)
+public
+static
+int
+getTargetCount
+(
+String
+limelightName
+)
+public
+static
+RawFiducial
+[
+]
+getRawFiducials
+(
+String
+limelightName
+)
+public
+static
+RawDetection
+[
+]
+getRawDetections
+(
+String
+limelightName
+)
+Neural Network Results
+​
+public
+static
+int
+getClassifierClassIndex
+(
+String
+limelightName
+)
+public
+static
+int
+getDetectorClassIndex
+(
+String
+limelightName
+)
+public
+static
+String
+getClassifierClass
+(
+String
+limelightName
+)
+public
+static
+String
+getDetectorClass
+(
+String
+limelightName
+)
+Pose Estimation
+​
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiRed
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+String
+limelightName
+)
+public
+static
+PoseEstimate
+getBotPoseEstimate_wpiRed_MegaTag2
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_wpiRed
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getBotPose3d_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getCameraPose3d_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getTargetPose3d_CameraSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getTargetPose3d_RobotSpace
+(
+String
+limelightName
+)
+public
+static
+Pose3d
+getCameraPose3d_RobotSpace
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+Pose2d
+getBotPose2d_wpiRed
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_wpiRed
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_wpiBlue
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getBotPose_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getCameraPose_TargetSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetPose_CameraSpace
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetPose_RobotSpace
+(
+String
+limelightName
+)
+Camera/Pipeline Configuration
+​
+public
+static
+void
+setPipelineIndex
+(
+String
+limelightName
+,
+int
+pipelineIndex
+)
+public
+static
+void
+setPriorityTagID
+(
+String
+limelightName
+,
+int
+ID
+)
+public
+static
+double
+getCurrentPipelineIndex
+(
+String
+limelightName
+)
+public
+static
+String
+getCurrentPipelineType
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_PipelineControl
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceOff
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceBlink
+(
+String
+limelightName
+)
+public
+static
+void
+setLEDMode_ForceOn
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_Standard
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_PiPMain
+(
+String
+limelightName
+)
+public
+static
+void
+setStreamMode_PiPSecondary
+(
+String
+limelightName
+)
+public
+static
+void
+setCropWindow
+(
+String
+limelightName
+,
+double
+cropXMin
+,
+double
+cropXMax
+,
+double
+cropYMin
+,
+double
+cropYMax
+)
+public
+static
+void
+setCameraPose_RobotSpace
+(
+String
+limelightName
+,
+double
+forward
+,
+double
+side
+,
+double
+up
+,
+double
+roll
+,
+double
+pitch
+,
+double
+yaw
+)
+Advanced AprilTag/Fiducial Settings
+​
+public
+static
+void
+setFiducial3DOffset
+(
+String
+limelightName
+,
+double
+offsetX
+,
+double
+offsetY
+,
+double
+offsetZ
+)
+public
+static
+void
+SetRobotOrientation
+(
+String
+limelightName
+,
+double
+yaw
+,
+double
+yawRate
+,
+double
+pitch
+,
+double
+pitchRate
+,
+double
+roll
+,
+double
+rollRate
+)
+public
+static
+void
+SetFiducialIDFiltersOverride
+(
+String
+limelightName
+,
+int
+[
+]
+validIDs
+)
+public
+static
+void
+SetFiducialDownscalingOverride
+(
+String
+limelightName
+,
+float
+downscale
+)
+Results and Data Access
+​
+public
+static
+double
+getLatency_Pipeline
+(
+String
+limelightName
+)
+public
+static
+double
+getLatency_Capture
+(
+String
+limelightName
+)
+public
+static
+double
+[
+]
+getTargetColor
+(
+String
+limelightName
+)
+public
+static
+double
+getFiducialID
+(
+String
+limelightName
+)
+public
+static
+String
+getNeuralClassID
+(
+String
+limelightName
+)
+public
+static
+String
+[
+]
+getRawBarcodeData
+(
+String
+limelightName
+)
+public
+static
+String
+getJSONDump
+(
+String
+limelightName
+)
+public
+static
+LimelightResults
+getLatestResults
+(
+String
+limelightName
+)
+Python Script Interface
+​
+public
+static
+void
+setPythonScriptData
+(
+String
+limelightName
+,
+double
+[
+]
+outgoingPythonData
+)
+public
+static
+double
+[
+]
+getPythonScriptData
+(
+String
+limelightName
+)
+Utility Methods
+​
+public
+static
+CompletableFuture
+<
+Boolean
+>
+takeSnapshot
+(
+String
+tableName
+,
+String
+snapshotName
+)
+public
+static
+NetworkTable
+getLimelightNTTable
+(
+String
+tableName
+)
+public
+static
+NetworkTableEntry
+getLimelightNTTableEntry
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+double
+getLimelightNTDouble
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+void
+setLimelightNTDouble
+(
+String
+tableName
+,
+String
+entryName
+,
+double
+val
+)
+public
+static
+void
+setLimelightNTDoubleArray
+(
+String
+tableName
+,
+String
+entryName
+,
+double
+[
+]
+val
+)
+public
+static
+double
+[
+]
+getLimelightNTDoubleArray
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+String
+getLimelightNTString
+(
+String
+tableName
+,
+String
+entryName
+)
+public
+static
+URL
+getLimelightURLString
+(
+String
+tableName
+,
+String
+request
+)
+Core Classes
+​
+PoseEstimate
+​
+Represents a 3D Pose Estimate
+Public Properties:
+Pose2d pose
+- The estimated pose
+double timestampSeconds
+- Timestamp of the estimate
+double latency
+- Processing latency
+int tagCount
+- Number of tags used
+double tagSpan
+- Span between detected tags
+double avgTagDist
+- Average distance to tags
+double avgTagArea
+- Average area of tags
+RawFiducial[] rawFiducials
+- Raw fiducial detections
+boolean isMegaTag2
+- Whether this is a MegaTag2 result
+(NetworkTables-derived) RawFiducial
+​
+Represents raw AprilTag/Fiducial detection data
+Public Properties:
+int id
+- AprilTag ID number
+double txnc
+- Horizontal offset from camera center in degrees
+double tync
+- Vertical offset from camera center in degrees
+double ta
+- Target area (0-100% of image)
+double distToCamera
+- Distance from camera to target in meters
+double distToRobot
+- Distance from robot to target in meters
+double ambiguity
+- AprilTag pose ambiguity score
+(NetworkTables-derived)  RawDetection
+​
+Represents raw neural network detection data
+Public Properties:
+int classId
+- Neural network class ID
+double txnc
+- Horizontal offset from camera center in degrees
+double tync
+- Vertical offset from camera center in degrees
+double ta
+- Target area (0-100% of image)
+double corner0_X
+- First corner X coordinate
+double corner0_Y
+- First corner Y coordinate
+double corner1_X
+- Second corner X coordinate
+double corner1_Y
+- Second corner Y coordinate
+double corner2_X
+- Third corner X coordinate
+double corner2_Y
+- Third corner Y coordinate
+double corner3_X
+- Fourth corner X coordinate
+double corner3_Y
+- Fourth corner Y coordinate
+(JSON-derived) LimelightResults
+​
+Contains all results from a Limelight's JSON output
+Public Properties:
+String error
+- Error message if any
+double pipelineID
+- Current pipeline index
+double latency_pipeline
+- Pipeline processing latency (ms)
+double latency_capture
+- Image capture latency (ms)
+double latency_jsonParse
+- JSON parsing latency (ms)
+double timestamp_LIMELIGHT_publish
+- Timestamp when data was published
+double timestamp_RIOFPGA_capture
+- Timestamp when RoboRIO FPGA captured the data
+boolean valid
+- Whether the target is valid
+double[] botpose
+- Robot pose in field space
+double[] botpose_wpired
+- Robot pose in WPILib Red alliance space
+double[] botpose_wpiblue
+- Robot pose in WPILib Blue alliance space
+double botpose_tagcount
+- Number of tags used for pose estimation
+double botpose_span
+- Span between detected tags
+double botpose_avgdist
+- Average distance to detected tags
+double botpose_avgarea
+- Average area of detected tags
+double[] camerapose_robotspace
+- Camera pose relative to robot
+LimelightTarget_Retro[] targets_Retro
+- Array of retroreflective targets
+LimelightTarget_Fiducial[] targets_Fiducials
+- Array of AprilTag targets
+LimelightTarget_Classifier[] targets_Classifier
+- Array of classifier results
+LimelightTarget_Detector[] targets_Detector
+- Array of detector results
+LimelightTarget_Barcode[] targets_Barcode
+- Array of barcode results
+Public Methods:
+Pose3d getBotPose3d()
+Pose3d getBotPose3d_wpiRed()
+Pose3d getBotPose3d_wpiBlue()
+Pose2d getBotPose2d()
+Pose2d getBotPose2d_wpiRed()
+Pose2d getBotPose2d_wpiBlue()
+(JSON-derived) LimelightTarget_Retro
+​
+Represents a Color/Retroreflective Target Result
+Public Properties:
+double ta
+- Target area (0-100% of image)
+double tx
+- Horizontal offset from crosshair to target (-29.8 to 29.8 degrees)
+double ty
+- Vertical offset from crosshair to target (-24.85 to 24.85 degrees)
+double tx_pixels
+- Horizontal offset in pixels
+double ty_pixels
+- Vertical offset in pixels
+double tx_nocrosshair
+- Horizontal offset from camera center
+double ty_nocrosshair
+- Vertical offset from camera center
+double ts
+- Target skew or rotation (-90 to 0 degrees)
+Public Methods:
+Pose3d getCameraPose_TargetSpace()
+Pose3d getRobotPose_FieldSpace()
+Pose3d getRobotPose_TargetSpace()
+Pose3d getTargetPose_CameraSpace()
+Pose3d getTargetPose_RobotSpace()
+Pose2d getCameraPose_TargetSpace2D()
+Pose2d getRobotPose_FieldSpace2D()
+Pose2d getRobotPose_TargetSpace2D()
+Pose2d getTargetPose_CameraSpace2D()
+Pose2d getTargetPose_RobotSpace2D()
+(JSON-derived) LimelightTarget_Fiducial
+​
+Represents an AprilTag/Fiducial Target Result
+Public Properties:
+double fiducialID
+- AprilTag ID number
+String fiducialFamily
+- AprilTag family type
+All properties from LimelightTarget_Retro
+Public Methods:
+All methods from LimelightTarget_Retro
+(JSON-derived) LimelightTarget_Barcode
+​
+Represents a Barcode Target Result
+Public Properties:
+String family
+- Barcode family type (e.g. "QR", "DataMatrix")
+String data
+- Decoded barcode data content
+double tx_pixels
+- Horizontal offset in pixels
+double ty_pixels
+- Vertical offset in pixels
+double tx
+- Horizontal offset from crosshair
+double ty
+- Vertical offset from crosshair
+double tx_nocrosshair
+- Horizontal offset from camera center
+double ty_nocrosshair
+- Vertical offset from camera center
+double ta
+- Target area
+double[][] corners
+- Corner coordinates
+Public Methods:
+String getFamily()
+(JSON-derived) LimelightTarget_Classifier
+​
+Represents a Neural Classifier Pipeline Result
+Public Properties:
+String className
+- Detected class name
+double classID
+- Detected class ID number
+double confidence
+- Detection confidence (0-100%)
+double zone
+- Detection zone
+double tx
+- Horizontal offset from crosshair
+double ty
+- Vertical offset from crosshair
+double txp
+- Horizontal offset in pixels
+double typ
+- Vertical offset in pixels
+(JSON-derived) LimelightTarget_Detector
+​
+Represents a Neural Detector Pipeline Result
+Public Properties:
+String className
+- Detected class name
+double classID
+- Detected class ID number
+double confidence
+- Detection confidence (0-100%)
+double ta
+- Target area
+double tx
+- Horizontal offset from crosshair
+double ty
+- Vertical offset from crosshair
+double txp
+- Horizontal offset in pixels
+double typ
+- Vertical offset in pixels
+double tx_nocrosshair
+- Horizontal offset from camera center
+double ty_nocrosshair
+- Vertical offset from camera center

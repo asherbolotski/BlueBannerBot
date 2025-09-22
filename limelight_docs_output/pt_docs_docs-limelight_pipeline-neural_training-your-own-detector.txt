@@ -1,0 +1,60 @@
+Treinando um Modelo Detector Personalizado
+Com Roboflow, Google Colab e seu próprio conjunto de dados, você pode treinar rapidamente modelos detectores personalizados para o Limelight.
+Aqui está uma visão geral das etapas que você precisará seguir:
+Coletar e anotar imagens de objetos de interesse.
+Neste contexto, "anotação" é o processo de desenhar caixas delimitadoras ao redor de objetos de interesse. Tudo isso pode ser feito na interface web do Roboflow.
+Alternativamente, você pode selecionar um conjunto de dados público do Roboflow Universe
+Exportar o conjunto de dados anotado como um .tfrecord, fazer upload para o Google Drive e usar nosso Notebook de treinamento gratuito com o Google Colab.
+O Google Colab permite que você treine redes neurais usando GPUs poderosas na nuvem gratuitamente.
+Tutorial:
+1. O Conjunto de Dados
+​
+O Notebook de Treinamento do Limelight espera um conjunto de dados .tfrecord compactado. O Roboflow pode exportar arquivos .tfrecord com um clique.
+Você pode construir seu próprio conjunto de dados com o
+Roboflow
+, ou navegar pelo
+Roboflow Universe
+para conjuntos de dados pré-anotados.
+Se você optar por construir seu próprio conjunto de dados, leia o seguinte:
+Você deve maximizar a diversidade do seu conjunto de dados. A diversidade do seu conjunto de dados deve exceder a diversidade do que seu Limelight verá uma vez implantado.
+A qualidade e precisão do seu conjunto de dados são de extrema importância. Certifique-se de que suas caixas delimitadoras sejam precisas e sigam uma única convenção.
+Por exemplo, a caixa delimitadora de um objeto parcialmente oculto deve capturar apenas a parte visível do objeto.
+Use letras minúsculas para rótulos de classe
+Minimize o número de rótulos de classe.
+Utilize as aumentações do Roboflow, mas certifique-se de que façam sentido. Se você está detectando bolas vermelhas e azuis, por exemplo, certifique-se de não estar invertendo ou modificando fortemente o matiz no seu conjunto de dados aumentado.
+Depois de ter rotulado ou encontrado um conjunto de dados, use o botão "Download Dataset" do Roboflow para exportá-lo como um Tensorflow TFRecord. Faça upload deste arquivo para seu Google Drive.
+2. Treinando o Modelo
+​
+Para treinar seu detector personalizado, inicie uma Sessão do Google Colab com o
+Notebook de Treinamento de Detector Limelight
+.
+O Notebook não requer nenhuma alteração de código. Siga estas etapas para treinar seu modelo:
+Seção 1
+​
+Expanda a primeira seção e clique no botão de reprodução no canto superior esquerdo de cada um dos três primeiros blocos de código. O bloco de código final de "teste" pode ser ignorado para economizar tempo.
+Se você vir um botão de reiniciar, ignore-o.
+Se você vir uma janela como esta, clique em "Cancelar"
+Seção 1.1
+​
+Expanda a seção, execute o primeiro bloco de código e insira um link do Google Drive para seu arquivo tfrecord.zip. Certifique-se de que seu tfrecord.zip esteja acessível para "qualquer pessoa com o link" no Google Drive
+Seção 2
+​
+Execute os dois blocos de código para descompactar e analisar o tfrecord.zip
+Seção 3
+​
+Execute todos os blocos de código na seção 3 para preparar o treinamento
+Seção 4
+​
+Execute todos os blocos de código na seção 4 para iniciar o treinamento.
+Enquanto o script de treinamento estiver em execução, você pode atualizar o painel de arquivos e o tensorboard para monitorar o progresso. Um novo checkpoint deve aparecer na pasta "training_progress" a cada 2000 etapas.
+Embora o treinamento pare automaticamente em 40000 etapas, você pode interrompê-lo a qualquer momento com o botão de parada no bloco de código final desta seção. Desde que os checkpoints estejam disponíveis, você pode avançar para a quantização e compilação.
+Seções 5 - 7
+​
+Execute todos os blocos de código na seção 5 para gerar um arquivo de rótulos e converter o modelo para um formato FlatBuffer compatível
+Execute todos os blocos de código na seção 6 para quantizar o modelo para inferência INT8 / 8bit.
+Execute todos os blocos de código na seção 7 para preparar o modelo para o Google Coral e Limelight. O bloco de código final levará algum tempo e baixará o modelo treinado como um arquivo .zip.
+Upload para o Limelight
+​
+Descompacte o arquivo da sua sessão do Colab.
+Equipes FTC - Se você tem um Limelight3A, faça upload do modelo tflite 8bit e do labels.txt. Você precisará alterar o mecanismo de execução de "coral" para "cpu"
+Equipes FRC - Se você tem um Google Coral, faça upload dos arquivos limelight_neural_detector_coral.tflite e labels.txt para o seu Limelight.

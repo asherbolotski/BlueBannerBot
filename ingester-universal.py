@@ -7,6 +7,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
 
 # --- 1. Configuration: Add new directories to this list ---
 DIRECTORIES_TO_INGEST = [
+    {"path": "limelight_docs_output", "content_type": "text"},
     {"path": "ctre_phoenix_pro_output", "content_type": "text"}
 ]
 
@@ -90,6 +91,9 @@ def main():
                 vectors_to_upsert = []
                 for i, chunk in enumerate(chunks):
                     embedding = get_embedding(chunk)
+
+                    time.sleep(0.05)
+
                     if embedding:
                         vector_id = f"{input_directory}-{filename}-{i}"
                         vectors_to_upsert.append({

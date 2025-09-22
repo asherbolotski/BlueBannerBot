@@ -1,0 +1,43 @@
+Apuntando Con Servicio Visual
+Puedes apuntar tu robot con precisión y rapidez utilizando solo una limelight y tu sistema de conducción.
+Todo esto se puede lograr en menos de 1 hora.
+Usando seguimiento de visión de alta velocidad de fotogramas, ahora es posible utilizar el pipeline de visión directamente como el "sensor" en un bucle de control PID para guiar tu robot o torreta. Para probar esta idea, añadimos una limelight a nuestro robot FRC 2017 y lo hicimos apuntar a objetivos de visión utilizando nada más que el sistema de conducción y los datos de la tabla de redes reportados por la limelight.
+En este ejemplo, nuestro candidato de prueba fue un robot FRC 2017 que utiliza un sistema de conducción de 6 ruedas con ruedas Colson. Aquí hay una imagen de nosotros añadiendo una limelight al robot para realizar esta prueba.
+A continuación, añadimos código al robot que se ejecutaría cada vez que el conductor mantiene presionado un botón en el joystick. Este robot utilizaba un estilo de conducción "tanque", por lo que la función OperatorControl generaba un valor 'left_command' y un valor 'right_command' para controlar los lados izquierdo y derecho del sistema de conducción. Después del código de control normal, añadimos un bloque de código como este:
+float Kp = -0.1f;  // Constante de control proporcional
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = tx;
+steering_adjust = Kp * tx;
+left_command+=steering_adjust;
+right_command-=steering_adjust;
+}
+Desde el principio, esto funcionó en su mayoría. El robot gira en la dirección del objetivo automáticamente cada vez que mantienes presionado el botón. Si mueves el objetivo, el robot gira para seguirlo. Sin embargo, usando la transmisión de video en vivo en el tablero, pudimos ver que había un gran problema: el robot no siempre llegaba a alinearse perfectamente con el objetivo. En algunos juegos con objetivos pequeños (como 2016 y 2017), esto no sería suficientemente bueno.
+Lo que hemos implementado hasta ahora es un simple bucle de control proporcional. Calculamos el error en la orientación y lo multiplicamos por una constante, creando así un comando de motor que es proporcional al error. A medida que el error se acerca a cero, nuestro comando también se acercará a cero. El problema es que hay mucha fricción involucrada cuando el robot intenta girar. Los comandos muy pequeños no harán girar el robot en absoluto. Con ángulos pequeños, el comando puede volverse demasiado pequeño para mover realmente el robot. Podrías encontrar que tu robot alcanza bien su objetivo cuando comienzas con un gran error de orientación, pero no puede apuntar en absoluto si comienzas muy cerca.
+Hay algunas formas de resolver este problema, pero aquí hay una solución realmente simple. Utilizamos un concepto de "comando mínimo". Si el error es mayor que cierto umbral, simplemente añade una constante a tu comando de motor que represente aproximadamente la cantidad mínima de potencia necesaria para que el robot realmente se mueva (en realidad quieres usar un poco menos que esto). El nuevo código se ve así:
+float Kp = -0.1f;
+float min_command = 0.05f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = -tx;
+float steering_adjust = 0.0f;
+if (Math.abs(heading_error) > 1.0)
+{
+if (heading_error < 0)
+{
+steering_adjust = Kp*heading_error + min_command;
+}
+else
+{
+steering_adjust = Kp*heading_error - min_command;
+}
+}
+left_command += steering_adjust;
+right_command -= steering_adjust;
+}
+Ten cuidado, si estableces Kp o min_command demasiado altos, tu robot puede volverse inestable y oscilar hacia adelante y hacia atrás mientras sobrepasa el objetivo:
+Después de algunos ajustes en Kp y min_command, deberías conseguir que tu robot apunte directamente al objetivo con mucha precisión y rapidez.

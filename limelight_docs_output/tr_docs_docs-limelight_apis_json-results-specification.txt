@@ -1,0 +1,958 @@
+JSON Sonuçları Spesifikasyonu
+Limelight'ın JSON sonuçları çıktısı, hedefleme sonuçlarını içeren dizilerin bir koleksiyonudur. Retroreflektif, fiducial, sinir ağı sınıflandırıcı ve sinir ağı dedektör sonuçları için ayrı diziler mevcuttur.
+JSON insan tarafından okunabilir ve herhangi bir dilde, herhangi bir platformda ayrıştırılması kolaydır, bu nedenle çoğu kullanım durumu için mükemmeldir.
+Aynı JSON sonuçları çıktısı REST/HTTP, Websocket ve NetworkTables API'leri kullanılarak alınabilir.
+Bu JSON çıktısını ayrıştırmak, FRC kütüphanelerimizle inanılmaz derecede kolaydır.
+Limelightlib, JSON Dump'ı bir LimelightResults nesnesine ayrıştıran yerleşik işlevselliğe sahiptir.
+https://github.com/LimelightVision/limelightlib-wpijava
+https://github.com/LimelightVision/limelightlib-wpicpp
+Her JSON sonucu aşağıdaki girişleri içerir:
+Anahtar Adı
+Değer Açıklaması
+tl
+Hedefleme gecikmesi (bu karede izleme döngüsü tarafından tüketilen milisaniye)
+cl
+Yakalama gecikmesi (orta satırın pozlamasının sonu ile izleme döngüsünün başlangıcı arasındaki milisaniye)
+tx
+Artı İşaretinden Hedefe Yatay Ofset (LL1: -27 derece ile 27 derece / LL2: -29.8 ile 29.8 derece)
+ty
+Artı İşaretinden Hedefe Dikey Ofset (LL1: -20.5 derece ile 20.5 derece / LL2: -24.85 ile 24.85 derece)
+txnc
+Ana Pikselden Hedefe Yatay Ofset (derece)
+tync
+Ana Pikselden Hedefe Dikey Ofset (derece)
+ta
+Bozulmamış, normalleştirilmiş hedef alanı (0-100)
+PythonOut
+Python SnapScript Pipeline'larından çıktı verileri
+stdev_mt1
+MT1 Standart Sapma [x, y, z, yuvarlanma, yunuslama, sapma] (metre, derece)
+stdev_mt2
+MT2 Standart Sapma [x, y, z, yuvarlanma, yunuslama, sapma] (metre, derece)
+pID
+Mevcut Pipeline indeksi
+pTYPE
+Mevcut Pipeline Türü örn. "pipe_color"
+ts
+Başlangıçtan itibaren milisaniye cinsinden zaman damgası.
+v
+Geçerlilik göstergesi. 1 = geçerli hedefler, 0 = geçerli hedef yok
+botpose
+Botpose (MegaTag): x,y,z, yuvarlanma, yunuslama, sapma (metre, derece)
+botpose_wpired
+Botpose (MegaTag, WPI Kırmızı sürücü istasyonu): x,y,z, yuvarlanma, yunuslama, sapma (metre, derece)
+botpose_wpiblue
+Botpose (MegaTag, WPI Mavi sürücü istasyonu): x,y,z, yuvarlanma, yunuslama, sapma (metre, derece)
+botpose_orb
+Botpose (MegaTag2): x,y,z, yuvarlanma, yunuslama, sapma (metre, derece)
+botpose_orb_wpired
+Botpose (MegaTag2, WPI Kırmızı sürücü istasyonu): x,y,z, yuvarlanma, yunuslama, sapma (metre, derece)
+botpose_orb_wpiblue
+Botpose (MegaTag2, WPI Mavi sürücü istasyonu): x,y,z, yuvarlanma, yunuslama, sapma (metre, derece)
+botpose_avgarea
+Botpose hesaplamak için kullanılan etiketlerin ortalama alanı
+botpose_avgdist
+Botpose hesaplamak için kullanılan etiketler arasındaki maksimum mesafe (metre)
+botpose_span
+Botpose hesaplamak için kullanılan etiketler arasındaki maksimum mesafe (metre)
+botpose_tagcount
+Botpose hesaplamak için kullanılan etiket sayısı
+Retro
+Renk/Retroreflektif pipeline sonuçları dizisi
+Fiducial
+AprilTag pipeline sonuçları dizisi
+Detector
+Sinir Ağı Dedektör pipeline sonuçları dizisi
+Classifier
+Sınıflandırıcı pipeline sonuçları dizisi
+Barcode
+Barkod pipeline sonuçları dizisi
+Renk/Retroreflektif Sonuçlar
+​
+"Retro" dizisi aşağıdaki yapıya sahip girişler içerir:
+Anahtar Adı
+Değer Açıklaması
+t6c_ts
+solvepnp tarafından hesaplanan hedef uzayındaki Kamera Pozu (x,y,z,rx,ry,rz)
+t6r_fs
+solvepnp tarafından hesaplanan saha uzayındaki Robot Pozu (x,y,z,rx,ry,rz)
+t6r_ts
+solvepnp tarafından hesaplanan hedef uzayındaki Robot Pozu (x,y,z,rx,ry,rz)
+t6t_cs
+solvepnp tarafından hesaplanan kamera uzayındaki Hedef Pozu (x,y,z,rx,ry,rz)
+t6t_rs
+solvepnp tarafından hesaplanan robot uzayındaki Hedef Pozu (x,y,z,rx,ry,rz)
+ta
+Görüntünün yüzdesi olarak hedefin boyutu (0-1)
+tx
+Hedefin merkezinin artı işaretine göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+tx_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+txp
+Hedefin merkezinin artı işaretine göre piksel cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+ty
+Hedefin merkezinin artı işaretine göre derece cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+ty_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden Y-koordinatı. Sağ-pozitif, merkez-sıfır
+typ
+Hedefin merkezinin artı işaretine göre piksel cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+pts
+Köşeler dizisi (piksel) [x0,y0,x1,y1.....]. Çıktı sekmesinde etkinleştirilmesi gerekir
+Renk / Retroreflektif Pipeline'lar için Örnek JSON
+{
+"Barcode"
+:
+[
+]
+,
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"PythonOut"
+:
+[
+]
+,
+"Retro"
+:
+[
+{
+"pts"
+:
+[
+]
+,
+"t6c_ts"
+:
+[
+]
+,
+"t6r_fs"
+:
+[
+]
+,
+"t6r_ts"
+:
+[
+]
+,
+"t6t_cs"
+:
+[
+]
+,
+"t6t_rs"
+:
+[
+]
+,
+"ta"
+:
+0.00531171215698123
+,
+"tx"
+:
+-4.535492777705656
+,
+"tx_nocross"
+:
+-4.428826910553056
+,
+"txp"
+:
+542.53076171875
+,
+"ty"
+:
+-1.1722867231218714
+,
+"ty_nocross"
+:
+-0.09285491974145543
+,
+"typ"
+:
+504.5538635253906
+}
+,
+{
+"pts"
+:
+[
+]
+,
+"t6c_ts"
+:
+[
+]
+,
+"t6r_fs"
+:
+[
+]
+,
+"t6r_ts"
+:
+[
+]
+,
+"t6t_cs"
+:
+[
+]
+,
+"t6t_rs"
+:
+[
+]
+,
+"ta"
+:
+0.005779948551207781
+,
+"tx"
+:
+8.465099348209478
+,
+"tx_nocross"
+:
+8.571765215362078
+,
+"txp"
+:
+822.1087036132812
+,
+"ty"
+:
+-2.524207730360601
+,
+"ty_nocross"
+:
+-1.444775926980185
+,
+"typ"
+:
+533.6112060546875
+}
+,
+]
+,
+"botpose"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_avgarea"
+:
+0
+,
+"botpose_avgdist"
+:
+0
+,
+"botpose_orb"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_orb_wpiblue"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_orb_wpired"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_span"
+:
+0
+,
+"botpose_tagcount"
+:
+0
+,
+"botpose_wpiblue"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"botpose_wpired"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"cl"
+:
+37.619998931884766
+,
+"focus_metric"
+:
+0
+,
+"pID"
+:
+0
+,
+"pTYPE"
+:
+"pipe_color"
+,
+"stdev_mt1"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"stdev_mt2"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"t6c_rs"
+:
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+,
+"ta"
+:
+0.39156023412942886
+,
+"tl"
+:
+22.64053726196289
+,
+"ts"
+:
+215248.979204
+,
+"tx"
+:
+-4.3848327488723555
+,
+"txnc"
+:
+-4.278166881719756
+,
+"ty"
+:
+-1.1144596937982527
+,
+"tync"
+:
+-0.035027890417836716
+,
+"v"
+:
+1
+}
+AprilTag/Fiducial Sonuçları
+​
+"Fiducial" dizisi aşağıdaki yapıya sahip girişler içerir:
+Anahtar Adı
+Değer Açıklaması
+fid
+Fiducial etiket kimliği
+fam
+Fiducial Ailesi (16H5C, 25H9C, 36H11C, vb.)
+pts
+Bireysel köşe noktalarını döndürür. Etkinleştirilmesi gerekir.
+skew
+Şu anda kullanılmıyor
+t6c_ts
+Bu fiducial tarafından hesaplanan hedef uzayındaki Kamera Pozu (x,y,z,pitch,yaw,roll) (metre, derece)
+t6r_fs
+Bu fiducial tarafından hesaplanan saha uzayındaki Robot Pozu (x,y,z,pitch,yaw,roll) (metre, derece)
+t6r_fs_orb
+Bu fiducial tarafından hesaplanan saha uzayındaki Robot Pozu (Megatag2) (x,y,z,pitch,yaw,roll) (metre, derece)
+t6r_ts
+Bu fiducial tarafından hesaplanan hedef uzayındaki Robot Pozu (x,y,z,pitch,yaw,roll) (metre, derece)
+t6t_cs
+Bu fiducial tarafından hesaplanan kamera uzayındaki Hedef Pozu (x,y,z,pitch,yaw,roll) (metre, derece)
+t6t_rs
+Bu fiducial tarafından hesaplanan robot uzayındaki Hedef Pozu (x,y,z,pitch,yaw,roll) (metre, derece)
+ta
+Hedefin görüntünün yüzdesi olarak boyutu (0-1)
+tx
+Hedefin merkezinin artı işaretine göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+tx_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+txp
+Hedefin merkezinin artı işaretine göre piksel cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+ty
+Hedefin merkezinin artı işaretine göre derece cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+ty_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden Y-koordinatı. Sağ-pozitif, merkez-sıfır
+typ
+Hedefin merkezinin artı işaretine göre piksel cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+pts
+Köşeler dizisi (piksel) [x0,y0,x1,y1.....]. Çıktı sekmesinde etkinleştirilmesi gerekir
+AprilTag İşlem Hatları için Örnek JSON
+{
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+{
+"fID"
+:
+2
+,
+"fam"
+:
+"16H5C"
+,
+"pts"
+:
+[
+]
+,
+"skew"
+:
+[
+]
+,
+"t6c_ts"
+:
+[
+0.33247368976801916
+,
+-0.05672695778305914
+,
+-2.5042031405987144
+,
+-4.680849607956358
+,
+-5.171154989721864
+,
+4.528697946312339
+]
+,
+"t6r_fs"
+:
+[
+4.738896418276903
+,
+-1.5926603672041666
+,
+0.5194469577830592
+,
+4.522658587661256
+,
+4.258580454853879
+,
+5.5236539893713275
+]
+,
+"t6r_ts"
+:
+[
+0.33247368976801916
+,
+-0.05672695778305914
+,
+-2.5042031405987144
+,
+-4.680849607956358
+,
+-5.171154989721864
+,
+4.528697946312339
+]
+,
+"t6t_cs"
+:
+[
+-0.09991902572799474
+,
+-0.1234042720218289
+,
+2.5218203039582496
+,
+4.278368708252767
+,
+5.508508005282244
+,
+-4.1112864453027775
+]
+,
+"t6t_rs"
+:
+[
+-0.09991902572799474
+,
+-0.1234042720218289
+,
+2.5218203039582496
+,
+4.278368708252767
+,
+5.508508005282244
+,
+-4.1112864453027775
+]
+,
+"ta"
+:
+0.005711808800697327
+,
+"tx"
+:
+-2.0525293350219727
+,
+"txp"
+:
+149.4874725341797
+,
+"ty"
+:
+2.7294836044311523
+,
+"typ"
+:
+107.14710235595703
+}
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+19.78130340576172
+,
+"ts"
+:
+3284447.910569
+,
+"v"
+:
+1
+}
+Sinir Ağı Dedektör Sonuçları
+​
+"Detector" dizisi aşağıdaki yapıya sahip girişler içerir:
+Anahtar Adı
+Değer Açıklaması
+class
+İnsan tarafından okunabilir sınıf adı dizesi
+classID
+Sınıf kimliği tamsayısı
+conf
+Tahminin güven değeri
+pts
+Piksel cinsinden [x,y] dizisi olarak bireysel köşe noktaları. Merkez-sıfır, sağ ve aşağı pozitif. Etkinleştirilmesi gerekir.
+ta
+Hedefin görüntünün yüzdesi olarak boyutu (0-1)
+tx
+Hedefin merkezinin artı işaretine göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+tx_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+txp
+Hedefin merkezinin artı işaretine göre piksel cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+ty
+Hedefin merkezinin artı işaretine göre derece cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+ty_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden Y-koordinatı. Sağ-pozitif, merkez-sıfır
+typ
+Hedefin merkezinin artı işaretine göre piksel cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+pts
+Köşeler dizisi (piksel) [x0,y0,x1,y1.....]. Çıktı sekmesinde etkinleştirilmesi gerekir
+Dedektör İşlem Hatları için Örnek JSON
+{
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+{
+"class"
+:
+"person"
+,
+"classID"
+:
+0
+,
+"conf"
+:
+0.83984375
+,
+"pts"
+:
+[
+]
+,
+"ta"
+:
+0.2608712911605835
+,
+"tx"
+:
+-2.45949649810791
+,
+"txp"
+:
+147.5
+,
+"ty"
+:
+-10.066887855529785
+,
+"typ"
+:
+165.5
+}
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+63.50614547729492
+,
+"ts"
+:
+4932985.266867
+,
+"v"
+:
+1
+}
+Sinir Ağı Sınıflandırıcı Sonuçları
+​
+"Classifier" dizisi aşağıdaki yapıya sahip girişler içerir:
+Anahtar Adı
+Değer Açıklaması
+class
+İnsan tarafından okunabilir sınıf adı dizesi
+classID
+Sınıf kimliği tamsayısı
+conf
+Tahminin güven değeri
+Sınıflandırıcı İşlem Hatları için Örnek JSON
+{
+"Classifier"
+:
+[
+{
+"class"
+:
+"digital clock"
+,
+"classID"
+:
+531
+,
+"conf"
+:
+0.16796875
+}
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+16.704740524291992
+,
+"ts"
+:
+4751332.7542280005
+,
+"v"
+:
+1
+}
+Barkod Sonuçları
+​
+"Barcode" dizisi aşağıdaki yapıya sahip girişler içerir:
+Anahtar Adı
+Değer Açıklaması
+fam
+Barkod Ailesi örn. "qr"
+data
+Çözümlenmiş barkod verisi (dize olarak)
+ta
+Hedefin görüntünün yüzdesi olarak boyutu (0-1)
+tx
+Hedefin merkezinin artı işaretine göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+tx_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+txp
+Hedefin merkezinin artı işaretine göre piksel cinsinden X-koordinatı. Sağ-pozitif, merkez-sıfır
+ty
+Hedefin merkezinin artı işaretine göre derece cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+ty_nocross
+Hedefin merkezinin ana piksele göre derece cinsinden Y-koordinatı. Sağ-pozitif, merkez-sıfır
+typ
+Hedefin merkezinin artı işaretine göre piksel cinsinden Y-koordinatı. Aşağı-pozitif, merkez-sıfır
+pts
+Köşeler dizisi (piksel) [x0,y0,x1,y1.....]. Çıktı sekmesinde etkinleştirilmesi gerekir
+Barkod İşlem Hatları için Örnek JSON
+{
+"Barcode"
+:
+[
+{
+"fam"
+:
+"QR"
+,
+"data"
+:
+"Hello, World!"
+,
+"txp"
+:
+150.5
+,
+"typ"
+:
+120.75
+,
+"tx"
+:
+-2.5
+,
+"ty"
+:
+1.8
+,
+"tx_nocross"
+:
+-2.3
+,
+"ty_nocross"
+:
+2.0
+,
+"ta"
+:
+0.05
+,
+"pts"
+:
+[
+[
+140
+,
+110
+]
+,
+[
+160
+,
+110
+]
+,
+[
+160
+,
+130
+]
+,
+[
+140
+,
+130
+]
+]
+}
+]
+,
+"Classifier"
+:
+[
+]
+,
+"Detector"
+:
+[
+]
+,
+"Fiducial"
+:
+[
+]
+,
+"Retro"
+:
+[
+]
+,
+"pID"
+:
+0
+,
+"tl"
+:
+15.2
+,
+"ts"
+:
+4751332.7542280005
+,
+"v"
+:
+1
+}

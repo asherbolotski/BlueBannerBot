@@ -1,0 +1,140 @@
+REST/HTTP API
+Limelight OS features a REST/HTTP server running at
+(ipaddress):5807
+LimelightLib Python
+is an open-source library that utilizes the Limelight HTTP/REST API.
+Note: e.g. http://(limelight-ip-address):5807/results
+General
+​
+Method
+Route
+Description
+GET
+/results
+Retrieve full JSON dump of current targeting results
+GET
+/status
+Retrieve JSON status object with temperature, fps, device name, pipeline index, cpu usage, ram usage
+GET
+/hwreport
+Returns a JSON array of full hardware reports. A hardware report contains human-readable info such as FOV, principal offset, etc.
+Pipeline Management
+​
+Method
+Route
+Description
+GET
+/pipeline-default
+Get default pipeline (JSON)
+GET
+/pipeline-atindex
+Get pipeline[n] from the camera (JSON). Loads pipeline from disk. Include an 'index' url parameter in the request.
+POST
+/pipeline-switch
+Switch to a different pipeline. Include an 'index' url parameter in the request.
+POST
+/reload-pipeline
+Force the camera to reload the current pipeline and all pipeline resources
+POST
+/update-pipeline
+Accepts JSON with one or more settings updates. Set url parameter "flush" to 1 to save these settings to disk.
+POST
+/upload-pipeline
+Upload a pipeline. Send JSON data in the request body. Optionally include an 'index' parameter. Overwrites pipeline on disk
+Camera Management
+​
+Method
+Route
+Description
+POST
+/set-imumode
+Set IMU Mode (JSON)
+POST
+/set-throttle
+Set number of frames to skip between processed frames for thermal management
+POST
+/set-imuassistalpha
+Set IMU Assist Mode complementary filter alpha (default 0.001)
+Resource Management
+​
+Method
+Route
+Description
+POST
+/upload-fieldmap
+Upload a field map. Send JSON data in the request body. Optionally include an 'index' parameter.
+POST
+/upload-python
+Upload Python code. Send the code as plain text in the request body. Optionally include an 'index' parameter.
+POST
+/upload-nn
+Upload a neural network. Include a 'type' parameter ("detector" or "classifier"), the file contents in the request body, and optionally include an 'index' parameter.
+POST
+/upload-nnlabels
+Upload neural network labels. Include a 'type' parameter ("detector" or "classifier"), the file in the request body, and optionally include an 'index' parameter.
+GET
+/getsnapscriptnames
+List of snapscriptpro names
+Python and Robot Orientation
+​
+Method
+Route
+Description
+POST
+/update-pythoninputs
+Update Python inputs for SnapScript pipelines. Send JSON data (array) in the request body.
+POST
+/update-robotorientation
+Update robot orientation. Send JSON data (array) in the request body. EG "[45,0,0,0,0,0]. Use of this method disables NetworkTables-based orientation updates until restart/reboot
+Calibration
+​
+Method
+Route
+Description
+GET
+/cal-default
+Returns default calibration result
+GET
+/cal-file
+Returns custom calibration result (file system)
+GET
+/cal-eeprom
+Returns custom calibration result (eeprom)
+GET
+/cal-latest
+Returns latest custom calibration result. This result is not used unless it is saved to the file system or the eeprom
+POST
+/cal-eeprom
+Update the eeprom calibration result. Send calibration data in the request body.
+POST
+/cal-file
+Update the filesystem calibration result. Send calibration data in the request body.
+DELETE
+/cal-latest
+Delete latest calibration result
+DELETE
+/cal-eeprom
+Delete eeprom calibration result
+DELETE
+/cal-file
+Delete filesystem calibration result
+Snapshots
+​
+Method
+Route
+Description
+POST
+/capture-snapshot
+Capture a snapshot. Include a 'snapname' url parameter to name the snapshot.
+POST
+/upload-snapshot
+Upload a named snapshot. Include a 'snapname' url parameter and an image file in the request body.
+GET
+/snapshotmanifest
+Returns a list of snapshot file names
+DELETE
+/delete-snapshots
+Deletes all snapshots
+DELETE
+/delete-snapshot
+Delete a specific snapshot. Include a 'snapname' parameter in the request.

@@ -1,0 +1,43 @@
+Görsel Servo ile Nişan Alma
+Sadece bir limelight ve sürüş sisteminizi kullanarak robotunuzu doğru ve hızlı bir şekilde hedefleyebilirsiniz.
+Tüm bunlar 1 saatten daha kısa sürede gerçekleştirilebilir.
+Yüksek kare hızlı görüntü işleme sayesinde, artık görüntü işleme hattını doğrudan robotunuzu veya kulenizi yönlendirmek için bir PID kontrol döngüsünde "sensör" olarak kullanmak mümkündür. Bu fikri test etmek için 2017 FRC robotumuza bir limelight ekledik ve sadece sürüş sistemini ve limelight tarafından raporlanan ağ tablosu verilerini kullanarak görüş hedeflerini hedeflemesini sağladık.
+Bu örnekte, test adayımız colson tekerlekli 6 tekerlekli bir sürüş sistemine sahip 2017 FRC robotuydu. İşte bu testi yapmak için robota bir limelight eklememizin resmi.
+Daha sonra sürücü joystick üzerindeki bir düğmeyi basılı tuttuğunda çalışacak kodu robota ekledik. Bu robot "tank" tarzı sürüş kullanıyordu, bu nedenle OperatorControl fonksiyonu, sürüş sisteminin sol ve sağ taraflarını kontrol etmek için bir 'left_command' değeri ve bir 'right_command' değeri üretiyordu. Normal kontrol kodundan sonra, şuna benzer bir kod bloğu ekledik:
+float Kp = -0.1f;  // Orantısal kontrol sabiti
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = tx;
+steering_adjust = Kp * tx;
+left_command+=steering_adjust;
+right_command-=steering_adjust;
+}
+Bu, başlangıçta çoğunlukla işe yaradı. Düğmeyi basılı tuttuğunuzda robot otomatik olarak hedefin yönüne dönüyor. Hedefi hareket ettirirseniz, robot hedefi takip etmek için dönüyor. Ancak, gösterge panelindeki canlı video beslemesini kullanarak, büyük bir sorun olduğunu görebildik: Robot her zaman hedefle mükemmel şekilde hizalanmak için tüm yolu kat etmiyordu. Küçük hedefleri olan bazı oyunlarda (2016 ve 2017 gibi) bu yeterli olmazdı.
+Şimdiye kadar uyguladığımız şey basit bir orantısal kontrol döngüsüdür. Yön hatasını hesapladık ve bunu bir sabit ile çarptık, böylece hataya orantılı bir motor komutu oluşturduk. Hata sıfıra yaklaştıkça, komutumuz da sıfıra yaklaşacaktır. Sorun, robot dönmeye çalıştığında çok fazla sürtünme olmasıdır. Çok küçük komutlar robotu hiç döndürmeyecektir. Küçük açılarda, komut robotu hareket ettiremeyecek kadar küçük olabilir. Robotunuzun büyük bir hedefleme hatası ile başladığınızda hedefe iyi ulaştığını, ancak gerçekten yakın başlarsanız hiç hedefleyemediğini görebilirsiniz.
+Bu sorunu çözmenin birkaç yolu vardır, ancak işte çok basit bir çözüm. "Minimum komut" kavramını kullandık. Hata belirli bir eşikten büyükse, motor komutunuza robotun gerçekten hareket etmesi için gereken minimum güç miktarını temsil eden sabit bir değer ekleyin (aslında bundan biraz daha azını kullanmak istersiniz). Yeni kod şöyle görünüyor:
+float Kp = -0.1f;
+float min_command = 0.05f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = -tx;
+float steering_adjust = 0.0f;
+if (Math.abs(heading_error) > 1.0)
+{
+if (heading_error < 0)
+{
+steering_adjust = Kp*heading_error + min_command;
+}
+else
+{
+steering_adjust = Kp*heading_error - min_command;
+}
+}
+left_command += steering_adjust;
+right_command -= steering_adjust;
+}
+Dikkat edin, eğer Kp veya min_command değerini çok yüksek ayarlarsanız, robotunuz dengesiz hale gelebilir ve hedefi aşarken ileri geri sallanabilir:
+Kp ve min_command üzerinde biraz ayarlama yaptıktan sonra robotunuzun hedefi doğrudan, çok doğru ve hızlı bir şekilde hedeflemesini sağlamalısınız.

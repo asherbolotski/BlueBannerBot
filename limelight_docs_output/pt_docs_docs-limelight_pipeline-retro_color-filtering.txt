@@ -1,0 +1,26 @@
+Limiarização de Cor
+A limiarização é um componente crítico da maioria dos algoritmos de rastreamento de visão. É o ato de pegar uma imagem e descartar quaisquer pixels que não estejam dentro de um intervalo de cor específico. O resultado da limiarização é geralmente uma imagem binária unidimensional na qual cada pixel está "ativado" ou "desativado". Em pipelines de blob de cor / retroreflexivo, esta é a etapa mais crítica.
+Feed de Vídeo (Localizado abaixo do stream)
+​
+Controla qual imagem é transmitida do servidor mjpeg. Você deve mudar para a imagem "threshold" (limiar) se precisar ajustar sua limiarização HSV.
+Ferramentas de Limiarização
+​
+As ferramentas permitem que os usuários cliquem no stream de vídeo do Limelight para realizar limiarização HSV automática.
+O conta-gotas "Eyedropper" centraliza os parâmetros HSV em torno do pixel selecionado
+A ferramenta "Add" (Adicionar) ajusta os parâmetros HSV para incluir o pixel selecionado
+A ferramenta "Subtract" (Subtrair) ajusta os parâmetros HSV para ignorar o pixel selecionado
+Matiz (Hue)
+​
+Descreve uma cor "pura". Uma matiz de "0" descreve vermelho puro, e uma matiz de 1/3 (59 no controle deslizante) descreve verde puro. A matiz é útil porque não muda à medida que um pixel "clareia" ou "escurece". Este é o parâmetro mais importante para ajustar. Se você tornar seu intervalo de matiz o menor possível, terá pouca ou nenhuma dificuldade na transição para um campo FRC real.
+Saturação (Saturation)
+​
+Descreve o quanto uma cor é "pura". Outra maneira de pensar nisso é quão desbotada uma cor aparece, ou seja, quanta "brancura" há em uma cor. Baixa saturação significa que uma cor é quase branca, e alta saturação significa que uma cor é quase "pura".
+Valor (Value)
+​
+Descreve a escuridão de uma cor, ou quanta "negritude" há em uma cor. Um valor baixo corresponde a uma cor quase preta. Você deve absolutamente aumentar o valor mínimo a partir de zero, para que pixels pretos não passem pelo pipeline de processamento.
+Erosão e Dilatação
+​
+A erosão erode ligeiramente o resultado de um limiar HSV. Isso é útil se muitos objetos estiverem passando por um limiar HSV ajustado. A dilatação infla ligeiramente o resultado de um limiar HSV. Use isso para corrigir buracos nos resultados da limiarização.
+Inversão de Matiz
+​
+Use a inversão de matiz para rastrear alvos vermelhos, já que o vermelho existe tanto no início quanto no final do intervalo de matiz.

@@ -1,0 +1,72 @@
+Filtrage et tri des contours
+Après le seuillage des couleurs, Limelight génère une liste de contours. Ensuite, chaque contour est enveloppé dans un rectangle de délimitation ajusté au plus près, un rectangle "non pivoté" et une "enveloppe convexe". Ceux-ci passent par une série de filtres pour déterminer le "meilleur" contour. Si plusieurs contours passent à travers tous les filtres, Limelight choisit le meilleur contour en utilisant le contrôle "Mode de tri".
+Modes de tri
+​
+Contrôle comment les contours sont triés après être passés par tous les autres filtres.
+En 2019, le mode de tri "le plus proche" a été ajouté. Ce mode sélectionnera la cible la plus proche du réticule configurable.
+Zone cible
+​
+Contrôle la plage des surfaces de rectangle de délimitation acceptables, en pourcentages de l'écran. Vous pouvez augmenter la surface minimale pour aider à filtrer les lumières du stade, et diminuer la valeur maximale pour aider à filtrer les grands écrans près du terrain.
+Le curseur de surface n'est pas mis à l'échelle linéairement, mais quartiquement. Cela permet de fournir une précision supplémentaire près de la limite inférieure des valeurs de surface, où se trouvent de nombreuses cibles FRC. La surface d'un carré évolue quadratiquement avec la longueur de son côté, mais l'échelle en x^4 offre une précision encore plus grande là où elle est nécessaire.
+Plénitude de la cible
+​
+La plénitude est le pourcentage de pixels "allumés" dans le rectangle de délimitation du contour choisi. Une cible de rectangle solide aura une plénitude proche de 1.0, tandis qu'une cible en forme de U aura une faible plénitude.
+Rapport d'aspect de la cible
+​
+Le rapport d'aspect est défini par la largeur du rectangle de délimitation du contour choisi divisée par sa hauteur. Un faible rapport d'aspect décrit un rectangle "haut", tandis qu'un rapport d'aspect élevé décrit un rectangle "large".
+Le curseur de rapport d'aspect est également mis à l'échelle quadratiquement.
+Filtre de direction
+​
+Rejette les contours sur la base de leur orientation.
+Rejet intelligent des taches
+​
+Rejette les contours relativement petits (par opposition à absolument petits avec le filtre de surface) qui ont passé tous les autres filtres. C'est essentiel si une cible doit rester traçable à courte et longue distance.
+Cette fonctionnalité a été introduite lors de la saison 2019 pour rejeter les réflexions LED de Limelight lorsque les robots étaient très proches des cibles.
+Groupement de cibles
+​
+Contrôle le "groupement" des cibles. Réglez en mode double pour rechercher des "cibles" composées de deux formes, ou en mode triple pour rechercher des cibles composées de trois formes.
+Le groupement intelligent de cibles peut regrouper un nombre variable de cibles et rejeter les valeurs aberrantes. Il a été ajouté en 2022 pour aider à suivre la cible du hub supérieur.
+Filtre d'intersection (cibles doubles uniquement)
+​
+Rejette les groupes de contours en fonction de la façon dont ils se croiseraient s'ils étaient étendus à l'infini.
+Groupement intelligent de cibles
+​
+Regroupe automatiquement les cibles qui passent tous les filtres de cibles individuelles.
+Regroupera dynamiquement n'importe quel nombre de cibles entre -minimum du curseur de taille de groupe- et -maximum du curseur de taille de groupe-
+Rejet des valeurs aberrantes
+​
+Bien que les cibles de groupe soient plus difficiles que les cibles normales, elles fournissent plus d'informations et d'opportunités de filtrage. Si vous savez qu'un but est composé de plusieurs cibles proches les unes des autres, vous pouvez rejeter les cibles aberrantes qui se tiennent seules.
+Vous devriez vous appuyer presque entièrement sur un bon filtrage de cibles, et n'utiliser le rejet des valeurs aberrantes que si vous voyez ou attendez des valeurs aberrantes dans votre flux de caméra. Si vous avez un mauvais filtrage standard des cibles, la détection des valeurs aberrantes pourrait commencer à jouer contre vous !
+Sortie
+​
+Cet onglet contrôle ce qui se passe pendant la dernière étape du pipeline de vision
+Région de ciblage
+​
+Contrôle le point d'intérêt du rectangle de délimitation du contour choisi. Par défaut, les paramètres de suivi tx et ty représentent les décalages entre votre réticule et le centre du rectangle choisi. Vous pouvez utiliser une autre option si une cible change de taille, ou est composée de deux cibles qui se confondent parfois.
+Envoyer les coins bruts ?
+​
+Réglez ce contrôle sur "oui" pour inclure les emplacements des coins dans les résultats JSON, NetworkTables et API. Ajustez le nombre de coins soumis en réglant la valeur "Simplification de contour" dans la page "Filtrage de contour".
+Envoyer JSON via NT ?
+​
+Réglez ce contrôle sur "oui" pour soumettre JSON via NetworkTables.
+Calibration du réticule
+​
+Contrôle l'"origine" de vos valeurs de ciblage. Supposons qu'un lanceur sur votre robot doive être calibré de manière à toujours pointer un peu à gauche du centre. Vous pouvez aligner votre robot, cliquer sur "calibrer", et toutes vos valeurs de ciblage seront envoyées par rapport à votre nouveau réticule. Voir la page de calibration pour plus de détails !
+3D
+​
+Expérimentez ici avec l'estimation de pose basée sur des points PnP.
+Calculer en 3D
+​
+Contrôle si l'estimation de pose est activée. Vous devez activer le mode haute résolution 960x720 pour que cela fonctionne.
+Forcer convexe
+​
+Utilisez cette option pour sélectionner uniquement les coins "les plus extérieurs" d'une cible pour SolvePnP.
+Simplification de contour
+​
+Utilisez cette option pour supprimer les petits bords bruités de la cible.
+Erreur acceptable
+​
+Limelight ne renverra une cible que si elle passe un test de reprojection avec un certain score en pixels.
+Décalage Z de l'objectif
+​
+Ajuste automatiquement la valeur de profondeur 3D de votre cible (axe Z).

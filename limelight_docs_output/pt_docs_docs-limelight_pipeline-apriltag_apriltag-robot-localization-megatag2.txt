@@ -1,0 +1,199 @@
+Localização de Robô com MegaTag2
+Introduzido em 2024, o Megatag2 é um localizador baseado em AprilTag preciso e sem ambiguidades para robôs móveis. Foi construído com os seguintes objetivos:
+Eliminar o problema de ambiguidade de pose e aumentar a robustez contra ruído de imagem/cantos.
+Fornecer excelentes estimativas de pose com uma única tag, independentemente da perspectiva.
+Aumentar a robustez contra imprecisões na colocação física de AprilTags
+Reduzir a quantidade de filtragem necessária para bons resultados de estimativa de pose
+O Megatag2 fornece excelentes resultados a qualquer distância com uma única tag.
+Isso significa que é perfeitamente viável focar apenas em tags que são relevantes e dentro da tolerância, e filtrar todas as outras tags. Se uma tag não estiver na localização correta, filtre-a com
+o recurso de filtro dinâmico introduzido junto com o MegaTag2.
+int
+[
+]
+validIDs
+=
+{
+3
+,
+4
+}
+;
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+"limelight"
+,
+validIDs
+)
+;
+Diferentemente do MT1, o MT2 assume que você conhece a direção (yaw) do seu robô. Opcionalmente, o Megatag2 aceita uma orientação completa do robô e velocidades angulares.
+Requisitos:
+A pose do seu Limelight no espaço do robô foi configurada na interface web ou via API
+Um mapa de campo (.fmap) foi carregado
+LimelightHelpers.SetRobotOrientation(robotYawInDegrees,0,0,0,0,0) é chamado a cada quadro no código do lado do robô
+SetRobotOrientation assume uma origem centralizada (veja o gerador de mapas) ou no canto azul. CCW-positivo, 0 graus -> voltado para a parede da aliança vermelha na FRC.
+Chaves NetworkTables:
+botpose_orb_wpiblue
+botpose_orb_wpired
+botpose_orb
+Chaves JSON:
+botpose_orb_wpiblue
+botpose_orb_wpired
+botpose_orb
+(Por alvo fiducial) t6r_fs_orb - pose do robô no espaço de campo usando megatag2 baseado apenas nesta tag (sem multitag)
+Observe a diferença entre MegaTag2 (robô vermelho) e Megatag (robô azul)
+neste caso altamente ambíguo de tag única
+Cilindro Dourado / Robô Vermelho: Botpose Megatag2 não filtrado
+Cilindros Amarelos: Botposes Megatag2 de tag única não filtrados
+Cilindro Branco/Robô Azul: Botpose MegaTag1
+Cilindro Verde: Pose individual do robô por tag (MT1)
+Cilindro Azul: Média das poses individuais do robô por tag (MT1)
+info
+Em 2024, a maior parte do Ecossistema WPILib fez a transição para um sistema de coordenadas de origem única.
+Em 2023, a origem do seu sistema de coordenadas mudava com base na cor da sua aliança.
+Para 2024 e além, a origem do seu sistema de coordenadas deve sempre ser a origem "azul". As equipes da FRC devem sempre usar botpose_orb_wpiblue para funcionalidades relacionadas à pose
+Usando o Estimador de Pose do WPILib
+​
+LimelightHelpers
+.
+SetRobotOrientation
+(
+"limelight"
+,
+m_poseEstimator
+.
+getEstimatedPosition
+(
+)
+.
+getRotation
+(
+)
+.
+getDegrees
+(
+)
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+)
+;
+LimelightHelpers
+.
+PoseEstimate
+mt2
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+"limelight"
+)
+;
+// se nossa velocidade angular for maior que 360 graus por segundo, ignore atualizações de visão
+if
+(
+Math
+.
+abs
+(
+m_gyro
+.
+getRate
+(
+)
+)
+>
+360
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt2
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+!
+doRejectUpdate
+)
+{
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.7
+,
+.7
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+mt2
+.
+pose
+,
+mt2
+.
+timestampSeconds
+)
+;
+}
+Configurando a Pose do Espaço do Robô do seu Limelight
+​
+LL Forward, LL Right e LL Up representam distâncias ao longo dos vetores para frente, direita e para cima do Robô, como se você incorporasse o robô (em metros).
+LL Roll, Pitch e Yaw representam a rotação do seu Limelight em graus. Você pode modificar esses valores e observar o modelo 3D do Limelight mudar no visualizador 3D.
+O Limelight usa essa configuração internamente para ir da pose do alvo no espaço da câmera -> pose do robô no espaço do campo.
+Usando o IMU Integrado do Limelight 4 com "imumode_set" / SetIMUMode()
+​
+O Limelight 4 possui um IMU integrado. Você pode usar isso com o MT2 para obter estimativas de pose ainda mais precisas durante as curvas.
+Você deve inicializar a orientação inicial do IMU antes que isso funcione. Isso é chamado de "seeding" (semeadura). Uma vez que seu limelight conhece a orientação inicial do seu robô, ele poderá atualizar a orientação do seu robô por conta própria para realizar cálculos MT2.
+Para usar o IMU do LL4, atualmente seu LL deve ser montado no modo "paisagem".
+O fluxo é assim:
+Chame SetRobotOrientation() com seu IMU "externo", como um Pigeon ou um NavX. Você pode continuar chamando este método com a frequência que desejar.
+Chame SetIMUMode() para configurar como seu Limelight utiliza dados de IMU de IMUs internos e externos.
+Em geral, use o modo 1 enquanto seu robô está aguardando o início do período autônomo. Mude para o modo 2 enquanto estiver habilitado ou enquanto estiver habilitado e girando.
+Zerando / Semeando
+​
+Para redefinir o yaw do robô fundido do IMU interno para o yaw enviado via SetRobotOrientation(), defina o modo IMU do seu Limelight para 1 com LimelightHelpers.SetIMUMode().
+Durante a semeadura, o MegaTag2 continuará a usar o valor de yaw enviado via SetRobotOrientation().
+Usando o IMU Interno com MegaTag2
+​
+Para permitir que o LL4 use seu IMU interno para localização MT2, defina o modo IMU do seu Limelight para 2 com LimelightHelpers.SetIMUMode().
+Modos IMU:
+​
+0 - Use o yaw do IMU externo enviado via SetRobotOrientation() para localização MT2. O IMU interno é completamente ignorado.
+1 - Use o yaw do IMU externo enviado via SetRobotOrientation() e configure o yaw fundido do IMU interno do LL4 para corresponder ao valor de yaw enviado.
+2 - Use o IMU interno para localização MT2.
+3 -

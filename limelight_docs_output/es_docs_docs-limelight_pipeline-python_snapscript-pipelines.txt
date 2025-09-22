@@ -1,0 +1,230 @@
+Tuberías SnapScript de Python
+Con la programación en Python, puedes utilizar todo el poder de OpenCV para construir rápidamente tus propias tuberías. El intérprete de Python está integrado
+en el backend C++ de Limelight, por lo que los errores y fallos se manejan con elegancia.
+Las tuberías regulares de SnapScript se programan directamente en la interfaz web de Limelight.
+Limelight maneja el hardware, la interfaz de la cámara, la red, la transmisión y el preprocesamiento básico de imágenes. Todo lo que necesitas hacer es escribir una función de Python llamada runPipeline().
+Una de las características más importantes que ofrecemos es la mira de un solo clic. La mira, la mira dual, tx, ty, ta, ts, tvert y todas las demás lecturas estándar de NetworkTables de Limelight se engancharán automáticamente al contorno que devuelvas desde la función runPipeline() de Python.
+Escribe tus propias visualizaciones en tiempo real, umbrales, filtrado, y evita nuestro backend por completo si lo deseas.
+La programación en Python de Limelight tiene acceso a las bibliotecas completas de OpenCV y numpy.
+Más allá del acceso a la imagen, la función runPipeline() también tiene acceso a los datos del robot. Los equipos de FTC pueden usar updatePythonInputs()
+y los equipos de FRC pueden actualizar el array de números "llrobot" de NetworkTables. Envía cualquier dato desde tus robots a tus scripts de Python para visualización o aplicaciones avanzadas (Se pueden enviar datos de IMU, datos de pose, velocidad del robot, etc. para usar en scripts de Python)
+La función runPipeline también genera un array de números accesible con getPythonOutputs() y desde el array de números "llpython" de NetworkTables. Esto significa que puedes evitar por completo la mira de Limelight y otras funcionalidades y enviar tus propios datos personalizados de vuelta a tus robots.
+Los scripts de Python están aislados dentro de nuestro entorno C++, por lo que no tienes que preocuparte por los fallos. Los cambios en los scripts se aplican instantáneamente, y cualquier mensaje de error se imprime directamente en la interfaz web.
+Script Python mínimo de Limelight
+​
+import
+cv2
+import
+numpy
+as
+np
+# runPipeline() es llamada en cada fotograma por el backend de Limelight.
+def
+runPipeline
+(
+image
+,
+llrobot
+)
+:
+# convierte la imagen de entrada al espacio de color HSV
+img_hsv
+=
+cv2
+.
+cvtColor
+(
+image
+,
+cv2
+.
+COLOR_BGR2HSV
+)
+# convierte el HSV a una imagen binaria eliminando cualquier píxel
+# que no caiga dentro de los siguientes valores Mín/Máx de HSV
+img_threshold
+=
+cv2
+.
+inRange
+(
+img_hsv
+,
+(
+60
+,
+70
+,
+70
+)
+,
+(
+85
+,
+255
+,
+255
+)
+)
+# encuentra contornos en la nueva imagen binaria
+contours
+,
+_
+=
+cv2
+.
+findContours
+(
+img_threshold
+,
+cv2
+.
+RETR_EXTERNAL
+,
+cv2
+.
+CHAIN_APPROX_SIMPLE
+)
+largestContour
+=
+np
+.
+array
+(
+[
+[
+]
+]
+)
+# inicializa un array vacío de valores para enviar de vuelta al robot
+llpython
+=
+[
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+]
+# si se han detectado contornos, dibújalos
+if
+len
+(
+contours
+)
+>
+0
+:
+cv2
+.
+drawContours
+(
+image
+,
+contours
+,
+-
+1
+,
+255
+,
+2
+)
+# registra el contorno más grande
+largestContour
+=
+max
+(
+contours
+,
+key
+=
+cv2
+.
+contourArea
+)
+# obtiene el rectángulo delimitador no rotado que rodea el contorno
+x
+,
+y
+,
+w
+,
+h
+=
+cv2
+.
+boundingRect
+(
+largestContour
+)
+# dibuja el rectángulo delimitador no rotado
+cv2
+.
+rectangle
+(
+image
+,
+(
+x
+,
+y
+)
+,
+(
+x
++
+w
+,
+y
++
+h
+)
+,
+(
+0
+,
+255
+,
+255
+)
+,
+2
+)
+# registra algunos datos personalizados para enviar de vuelta al robot
+llpython
+=
+[
+1
+,
+x
+,
+y
+,
+w
+,
+h
+,
+9
+,
+8
+,
+7
+]
+#devuelve el contorno más grande para la mira de LL, la imagen modificada y datos personalizados del robot
+return
+largestContour
+,
+image
+,
+llpython

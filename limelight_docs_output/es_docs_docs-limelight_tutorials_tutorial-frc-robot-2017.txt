@@ -1,0 +1,242 @@
+Robot Lanzador de Combustible 2017
+En este ejemplo, presentamos un programa completo de robot que implementa el objetivo de la caldera de 2017. Probamos este programa en el robot 987 de steamworks y pudimos anotar fácilmente combustible en la caldera. Para este ejemplo, apuntamos y nos movemos al rango adecuado utilizando el sistema de conducción del robot. Algo que nos resultó inmediatamente evidente es que limelight nos permitió implementar esta función en una fracción mínima del código y tiempo en comparación con nuestro robot real de 2017.
+También hay algunas otras características en el código a continuación, como la capacidad de hacer parpadear los LEDs y cambiar dinámicamente entre múltiples pipelines de visión. Este ejemplo también muestra cómo usar un controlador de velocidad Talon SRX junto con un codificador magnético para controlar las RPM de la rueda del lanzador.
+#include <iostream>
+#include <string>
+#include <Drive/DifferentialDrive.h>
+#include <Joystick.h>
+#include <SampleRobot.h>
+#include <SmartDashboard/SendableChooser.h>
+#include <SmartDashboard/SmartDashboard.h>
+#include <Spark.h>
+#include <Victor.h>
+#include <Timer.h>
+#include "ctre/phoenix/MotorControl/CAN/TalonSRX.h"
+//
+#define Vic_Drive_Left_1 0
+#define Vic_Drive_Left_2 1
+#define Vic_Drive_Right_1 2
+#define Vic_Drive_Right_2 3
+#define Tal_Shooter_Wheel 21
+#define Tal_Shooter_Wheel_2 2
+#define Tal_Intake 3
+#define Tal_Uptake 9
+class Robot : public frc::SampleRobot
+{
+public:
+Robot() :
+LeftDrive(Vic_Drive_Left_1),
+RightDrive(Vic_Drive_Right_1),
+LeftDrive2(Vic_Drive_Left_2),
+RightDrive2(Vic_Drive_Right_2),
+Shooter(Tal_Shooter_Wheel),
+Shooter_2(Tal_Shooter_Wheel_2),
+Intake(Tal_Intake),
+Uptake(Tal_Uptake)
+{
+// Este código configura dos Talons para trabajar juntos e implementar control de RPM con PID
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.SetClosedLoopOutputDirection(false);
+Shooter.SetStatusFrameRateMs(CTRE::MotorControl::CAN::TalonSRX::StatusFrameRateAnalogTempVbat,10);
+Shooter.SetFeedbackDevice(CTRE::MotorControl::CAN::TalonSRX::CtreMagEncoder_Relative);
+SetShooterConstants(.0002f, .00009f, .0000f, .000006f);  // Constantes P,I,D,F para la rueda del lanzador
+Shooter.SetAllowableClosedLoopErr(10);
+Shooter.ConfigNominalOutputVoltage(+0.f,-0.f);
+Shooter.ConfigPeakOutputVoltage(+12.f,-12.f);
+Shooter.SelectProfileSlot(0);
+Shooter.SetSensorDirection(true);
+Shooter.SetVoltageRampRate(100);
+Shooter.SetIzone(300);
+Shooter_2.SetVoltageRampRate(100);
+}
+void RobotInit()
+{
+}
+void Autonomous()
+{
+}
+/*
+* Control del Operador
+*/
+void OperatorControl() override
+{
+while (IsOperatorControl() && IsEnabled())
+{
+// ¡Leer los joysticks!
+float left_command = m_stickLeft.GetY();
+float right_command = m_stickRight.GetY();
+// Obtener la tabla de limelight para leer datos de seguimiento
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float KpAim = 0.045;
+float KpDist = 0.0f; //0.09;
+float AimMinCmd = 0.095f;
+float targetX = table->GetNumber("tx", 0);
+float targetY = table->GetNumber("ty", 0);
+float targetA = table->GetNumber("ta", 0);
+// Error de puntería y error de distancia basados en la mira calibrada de limelight
+float aim_error = targetX;
+float dist_error = targetY;
+// Ajuste de dirección con una zona muerta de 0.2 grados (suficientemente cerca a 0.2 grados)
+float steeringAdjust = KpAim*aim_error;
+if (targetX > .2f) steeringAdjust += AimMinCmd;
+else if (targetX < -.2f) steeringAdjust -= AimMinCmd;
+// Ajuste de distancia, conducir a la distancia correcta desde el objetivo
+float drivingAdjust = KpDist*dist_error;
+bool doTarget = false;
+if(m_stickLeft.GetRawButton(3))         // Apuntar usando pipeline 0
+{
+doTarget = true;
+table->PutNumber("pipeline", 0);
+}
+else if (m_stickLeft.GetRawButton(2))   // Apuntar usando pipeline 1
+{
+doTarget = true;
+table->PutNumber("pipeline", 1);
+}
+if(doTarget)                            // Si está auto-apuntando, ajustar conducción y dirección
+{
+ShooterSetRPM(3300);
+left_command += drivingAdjust - steeringAdjust;
+right_command += drivingAdjust + steeringAdjust;
+}
+else
+{
+ShooterOff();
+}
+// Conducción tipo tanque, enviar comandos a los motores izquierdo y derecho
+StandardTank(left_command,right_command);
+if(m_stickRight.GetRawButton(3))        // Succionar y disparar pelotas
+{
+IntakeIn();
+UptakeUp();
+}
+else if(m_stickRight.GetRawButton(2))   // Expulsar pelotas
+{
+IntakeIn();
+UptakeDown();
+}
+else                                    // ¡Dejar las pelotas en paz!
+{
+IntakeOff();
+UptakeOff();
+}
+if(m_stickLeft.GetRawButton(5))         // Botón 5 del Joystick = Hacer parpadear los LEDs
+{
+table->PutNumber("ledMode", 2); //hacer parpadear las luces
+}
+else
+{
+table->PutNumber("ledMode", 0); //encender las luces
+}
+// esperar un tiempo de actualización del motor
+frc::Wait(0.005);
+}
+}
+/*
+* Se ejecuta durante el modo de prueba
+*/
+void Test() override {}
+void StandardTank(float left, float right)
+{
+LeftDrive.Set(-left);
+LeftDrive2.Set(-left);
+RightDrive.Set(right);
+RightDrive2.Set(right);
+}
+//
+// Funciones del Lanzador - usa PID del talon para controlar las RPM de la rueda del lanzador
+// Establecer las constantes P,I,D,F en el Talon, estos valores dependen mucho de tu mecanismo
+//
+void SetShooterConstants(float p,float i,float d,float f)
+{
+p *= 1024.f;
+i *= 1024.f;
+d *= 1024.f;
+f *= 1024.f;
+Shooter.SetP(p);
+Shooter.SetI(i);
+Shooter.SetD(d);
+Shooter.SetF(f);
+}
+//
+// Indicar a los talons nuestras RPM deseadas para la rueda del lanzador
+//
+void ShooterSetRPM(float desrpm)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kSpeed);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kFollower);
+Shooter_2.Set(Tal_Shooter_Wheel);
+Shooter.Set(desrpm);
+}
+//
+// Simplemente establecer la potencia -1..+1, actualmente no se usa ahora que el control de RPM está configurado
+//
+void ShooterSetPower(float power)
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.Set(power);
+Shooter.Set(power);
+}
+//
+// Apagar la rueda del lanzador
+//
+void ShooterOff()
+{
+Shooter.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter_2.SetControlMode(CTRE::MotorControl::ControlMode::kPercentVbus);
+Shooter.Set(0.0f);
+Shooter_2.Set(0.0f);
+}
+//
+// Funciones de Intake
+//
+void IntakeIn()
+{
+Intake.Set(-.8f);
+}
+void IntakeOut()
+{
+Intake.Set(.8f);
+}
+void IntakeShooting()
+{
+Intake.Set(-1.0f);
+}
+void IntakeOff()
+{
+Intake.Set(0);
+}
+//
+// Funciones de Uptake
+//
+void UptakeUp()
+{
+Uptake.Set(-1.0f);
+}
+void UptakeDown()
+{
+Uptake.Set(1.0f);
+}
+void UptakeOff()
+{
+Uptake.Set(0);
+}
+private:
+// Sistema de conducción del robot
+frc::Victor LeftDrive;
+frc::Victor RightDrive;
+frc::Victor LeftDrive2;
+frc::Victor RightDrive2;
+// rueda del lanzador
+CTRE::MotorControl::CAN::TalonSRX Shooter;
+CTRE::MotorControl::CAN::TalonSRX Shooter_2;
+CTRE::MotorControl::CAN::TalonSRX Intake;
+CTRE::MotorControl::CAN::TalonSRX Uptake;
+// Entradas de Joystick
+frc::Joystick m_stickLeft{0};
+frc::Joystick m_stickRight{1};
+};
+START_ROBOT_CLASS(Robot)

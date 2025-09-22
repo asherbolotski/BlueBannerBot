@@ -1,0 +1,26 @@
+Seuillage de Couleur
+Le seuillage est un composant essentiel de la plupart des algorithmes de suivi visuel. Il s'agit de prendre une image et d'éliminer tous les pixels qui ne se trouvent pas dans une plage de couleurs spécifique. Le résultat du seuillage est généralement une image binaire unidimensionnelle dans laquelle chaque pixel est soit "activé" soit "désactivé". Dans les pipelines de détection de blob de couleur / rétroréfléchissants, c'est l'étape la plus critique.
+Flux Vidéo (Situé sous le flux)
+​
+Contrôle quelle image est diffusée depuis le serveur mjpeg. Vous devriez passer à l'image "threshold" (seuil) si vous avez besoin d'ajuster votre seuillage HSV.
+Baguettes de Seuillage
+​
+Les baguettes permettent aux utilisateurs de cliquer sur le flux vidéo de Limelight pour effectuer un seuillage HSV automatique.
+La baguette "Pipette" centre les paramètres HSV autour du pixel sélectionné
+La baguette "Ajouter" ajuste les paramètres HSV pour inclure le pixel sélectionné
+La baguette "Soustraire" ajuste les paramètres HSV pour ignorer le pixel sélectionné
+Teinte (Hue)
+​
+Décrit une couleur "pure". Une teinte de "0" décrit le rouge pur, et une teinte de 1/3 (59 sur le curseur) décrit le vert pur. La teinte est utile car elle ne change pas lorsqu'un pixel "s'éclaircit" ou "s'assombrit". C'est le paramètre le plus important à régler. Si vous rendez votre plage de teinte aussi petite que possible, vous n'aurez que peu ou pas de difficulté à faire la transition vers un véritable terrain FRC.
+Saturation
+​
+Décrit dans quelle mesure une couleur est "pure". Une autre façon de voir cela est à quel point une couleur paraît délavée, c'est-à-dire la quantité de "blanc" dans une couleur. Une faible saturation signifie qu'une couleur est presque blanche, et une saturation élevée signifie qu'une couleur est presque "pure".
+Valeur (Value)
+​
+Décrit la noirceur d'une couleur, ou la quantité de "noir" dans une couleur. Une valeur faible correspond à une couleur presque noire. Vous devriez absolument augmenter la valeur minimale à partir de zéro, afin que les pixels noirs ne passent pas par le pipeline de traitement.
+Érosion et Dilatation
+​
+L'érosion érode légèrement le résultat d'un seuil HSV. Cela est utile si de nombreux objets passent à travers un seuil HSV réglé. La dilatation gonfle légèrement le résultat d'un seuil HSV. Utilisez cela pour combler les trous dans les résultats du seuillage.
+Inversion de Teinte
+​
+Utilisez l'inversion de teinte pour suivre les cibles rouges, car le rouge existe à la fois au début et à la fin de la plage de teinte.

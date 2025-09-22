@@ -1,0 +1,270 @@
+Yazılım Değişiklik Günlüğü 2021 - 2023
+2023.6 (18/04/23)
+​
+Kolay ChArUco Kalibrasyonu ve Kalibrasyon Görselleştiricileri
+​
+ChArUco kalibrasyonu, dama tahtası kalibrasyonundan daha iyi kabul edilir çünkü oklüzyonları, kötü köşe algılamalarını ele alır ve tüm tahtanın görünür olmasını gerektirmez. Bu, görüntülerinizin kenarlarına ve köşelerine yakın kalibrasyon tahtası köşelerini yakalamayı çok daha kolaylaştırır. Bu, bozulma katsayısı tahmini için çok önemlidir.
+Limelight'ın kalibrasyon süreci her adımda geri bildirim sağlar ve iyi kalibrasyon sonuçları için gerekli olan her şeyi yapmanızı sağlar. Bu süreci mümkün olduğunca sağlam hale getirmek için çok fazla çaba harcanmıştır.
+En önemlisi, kalibrasyon sonuçlarınızı varsayılan kalibrasyonun hemen yanında görselleştirebilirsiniz. Bir bakışta, kalibrasyon sonucunuzun makul olup olmadığını anlayabilirsiniz.
+Kalibrasyon panosunu bir öğrenme aracı olarak da kullanabilirsiniz. İndirilen kalibrasyon sonuç dosyalarını değiştirebilir ve bunları yeniden yükleyerek içsel matrisin ve bozulma katsayılarının hedefleme sonuçlarını, görüş alanını vb. nasıl etkilediğini öğrenebilirsiniz.
+Bu videoya bir göz atın:
+2023.5.1 & 2023.5.2 (22/03/23)
+​
+2023.5.0'da tanıtılan regresyon düzeltildi - 2023.5, düzlemsel olmayan tüm düzenler için megatag'i düzeltirken, tek etiketli poz tahminlerinin performansını azalttı. Bu düzeltildi. Tek etiketli poz tahminleri, 2023.4'te kullanılan aynı çözücüyü kullanır.
+Daha hızlı anlık görüntü arayüzü. Anlık görüntü ızgarası artık düşük çözünürlüklü 128p küçük resimleri yükler.
+Limeilght Sapma artık 3B görselleştiricilerde düzgün şekilde sunuluyor. Görselleştiricide ve dahili olarak saat yönünün tersine pozitiftir.
+Alan uzayı görselleştiricisinde hangi hedeflerin şu anda izlendiğini gösterir
+2023.5.0 (21/03/23)
+​
+Önemli Değişiklikler
+​
+Regresyon düzeltildi - Limelight Robot Uzayı "Sapma" önceki sürümlerde ters çevrilmişti. Web arayüzündeki Limelight sapması artık dahili olarak Saat Yönünün Tersine Pozitiftir.
+Bölge Seçimi Güncellemesi
+​
+Bölge seçimi artık sinir ağı dedektör boru hatlarında beklendiği gibi çalışıyor.
+Döndürülmemiş hedef dikdörtgeninin merkezini, üstünü, solunu, sağını, üstünü veya altını seçmek için 5 yeni bölge seçeneği eklendi.
+"hwreport" REST API
+​
+:5807/hwreport, kamera içsel parametreleri ve bozulma bilgilerini ayrıntılandıran bir JSON yanıtı döndürür
+MegaTag Düzeltmesi
+​
+Belirli eş düzlemli olmayan apriltag düzenleri MegaTag'de bozuktu. Bu düzeltildi ve poz tahmini artık tüm alan etiketleriyle stabildir. Bu, öncekinden daha uzak mesafelerde bile kararlı poz tahmini sağlar.
+Daha Yüksek tx ve ty doğruluğu
+​
+TX ve TY her zamankinden daha doğru. Hedefler tamamen bozulmasız hale getirildi ve görüş alanı tamamen kamera içsel parametreleri tarafından belirlenir.
+2023.4.0 (18/02/23)
+​
+Sinir Ağı Dedektörü Sınıf Filtresi
+​
+İstenmeyen algılamaların kolay filtrelenmesi için izlemek istediğiniz sınıfları belirtin.
+Sinir Ağı Dedektörü genişletilmiş destek
+​
+Herhangi bir giriş çözünürlüğünü destekler, diğer nesne algılama mimarilerini desteklemek için ek çıkış şekillerini destekler. EfficientDet0 tabanlı modeller artık destekleniyor.
+2023.3.1 (14/02/23)
+​
+AprilTag Doğruluk İyileştirmeleri
+​
+Tüm modeller için geliştirilmiş içsel matris ve en önemlisi, geliştirilmiş bozulma katsayıları. Fark edilir tek AprilTag Lokalizasyon iyileştirmeleri.
+Dedektör Yükleme
+​
+Dedektör yükleme düzeltildi.
+2023.3 (13/02/23)
+​
+Yakalama Gecikmesi (NT Anahtarı: "cl", JSON Sonuçları: "cl")
+​
+Yeni yakalama gecikmesi girişi, Limelight'ın görüntü sensörünün orta satırının pozlamasının sonu ile işleme boru hattının başlangıcı arasındaki süreyi temsil eder.
+AprilTag'ler için Yeni Kalite Eşiği
+​
+Sahte AprilTag'ler artık yeni Kalite Eşiği kaydırıcısı ile daha kolay filtrelenebilir. 2023.3'te ayarlanan varsayılan değer, çoğu sahte algılamayı kaldırmalıdır.
+Kamera Pozisyonu Robot Uzayı Geçersiz Kılma (NT Anahtarları: "camerapose_robotspace_set", "camerapose_robotspace")
+​
+Limelight'ınızın robot uzayındaki konumu artık anında ayarlanabilir. Anahtar sıfırlardan oluşan bir diziye ayarlanırsa, web arayüzünde ayarlanan poz kullanılır.
+İşte bir asansördeki Limelight örneği:
+Arttırılmış Maksimum Pozlama
+​
+Maksimum pozlama süresi artık 33ms (12.5 ms'den yükseltildi). Yüksek-fps yakalama modları hala (1/fps) saniye ile sınırlıdır. Örneğin, 90hz boru hatları, 11ms pozlama süresinin ötesinde daha parlak görüntüler üretmeyecektir.
+Botpose güncellemeleri
+​
+Ağ tablolarındaki üç botpose dizisinin her biri, toplam gecikmeyi (yakalama gecikmesi + hedefleme gecikmesi) temsil eden yedinci bir girişe sahiptir.
+Hata Düzeltmeleri
+​
+Shuffleboard'da LL3 MJPEG akışları düzeltildi
+camMode düzeltildi - sürücü modu artık parlak, kullanılabilir görüntüler üretiyor
+Pozlama etiketi düzeltildi - her "tik" 0.1 ms değil 0.01ms'yi temsil eder
+Sinir ağı dedektör yüklemesi düzeltildi
+2023.2 (28/01/23)
+​
+3D'yi her zamankinden daha kolay hale getiriyoruz.
+WPILib uyumlu Botposes
+​
+Botpose artık kutudan çıktığı gibi kullanımı daha da kolay.
+Bunlar WPILib Koordinat sistemleriyle eşleşir.
+Tüm botpose'lar doğrudan web arayüzündeki alan uzayı görselleştiricisinde yazdırılır, her şeyin düzgün çalıştığını bir bakışta onaylamayı kolaylaştırır.
+3D Verilere Daha Kolay Erişim (Önemli Değişiklikler)
+​
+Hedef Uzayında RobotPose, AprilTag'ler açısından Limelight'tan gelen en kullanışlı veridir. Sadece bunu kullanarak, bir sürüş sistemini alandaki bir AprilTag ile mükemmel şekilde hizalayabilirsiniz.
+NetworkTables Anahtarı "campose" artık "camerapose_targetspace"
+NetworkTables Anahtarı "targetpose" artık "targetpose_cameraspace"
+Yeni NetworkTables Anahtarı - "targetpose_robotspace"
+Yeni NetworkTables Anahtarı - "botpose_targetspace"
+Sinir Ağı Yükleme
+​
+Öğretilebilir makine modellerini Limelight Sınıflandırıcı Boru Hattına yükleyin. Tensorflow Lite EdgeTPU uyumlu modeller olduğundan emin olun.
+.tflite ve .txt etiket dosyalarını ayrı ayrı yükleyin.
+2023.1 (19.01.23)
+​
+MegaTag ve Performans Artışları
+Bir Hatanın Düzeltilmesi
+​
+Kullanıcı arayüzündeki varsayılan işaretçi boyutu parametresi 152.4mm olarak düzeltildi (203.2mm'den düşürüldü). Bu, çoğu doğruluk sorunun temel nedeniydi.
+Artırılmış İzleme Kararlılığı
+​
+AprilTag algılama ve çözümlemeyi ayarlamanın çeşitli yolları vardır. Özellikle düşük ışık / düşük pozlama ortamlarında genel kararlılığı iyileştirdik.
+Ultra Hızlı Gri Tonlama
+​
+Gri tonlama öncekinden 3-6 kat daha hızlı. Takımlar AprilTag'leri izlerken her zaman gri bir video akışı görecekler.
+Performans İçin Kırpma
+​
+AprilTag işlem hatları artık kırpma kaydırıcılarına sahip. Görüntünüzü kırpmak, herhangi bir çözünürlükte daha iyi kare hızları sağlayacaktır.
+Daha Kolay Filtreleme
+​
+AprilTag işlem hatlarında artık JSON çıktısını, botpose etkin etiketleri ve tx/ty etkin etiketleri filtreleyen tek bir "ID filtresi" alanı bulunmaktadır. Çift filtre kurulumu hatalı ve kafa karıştırıcıydı.
+Önemli Değişiklik
+​
+NT Anahtarı "camtran" artık "campose" olarak değiştirildi
+JSON güncellemesi
+​
+"botpose" artık json sonuçları dökümünün bir parçası
+Saha Uzayı Görselleştirici Güncellemesi
+​
+Saha-uzayı görselleştirici artık 2023 FRC sahasını gösteriyor. Artık botpose doğruluğunu bir bakışta değerlendirmek daha kolay olmalı.
+Limelight MegaTag (yeni botpose)
+​
+Benim #1 önceliğim, daha yüksek doğruluk, azaltılmış gürültü ve belirsizlik direnci için botpose'u yeniden yazmaktı. Limelight'ın yeni botpose uygulaması MegaTag olarak adlandırılıyor. Birden fazla bireysel saha-uzayı pozunun aptalca bir ortalamasını hesaplamak yerine, MegaTag esasen tüm etiketleri birkaç anahtar noktası olan dev bir 3D etikette birleştirir. Bunun muazzam faydaları var.
+Aşağıdaki GIF, etiket çevirmesini tetiklemek için tasarlanmış bir durumu gösteriyor: Yeşil Silindir: Etiket başına bireysel bot pozu Mavi Silindir: 2023.0.1 BotPose Beyaz Silindir: Yeni MegaTag Botpose
+Yeni botpose'un (beyaz silindir) eski botpose'a (mavi silindir) kıyasla ne kadar kararlı olduğuna dikkat edin. Ayrıca tx ve ty değerlerini de izleyebilirsiniz.
+İşte etiket belirsizliğini gösteren tam ekran:
+İşte avantajları:
+Botpose artık birden fazla etiket görünüyorsa belirsizliklere (etiket çevirme) karşı dayanıklıdır (yakın ve eş düzlemsel olmadıkları sürece. İdeal olarak anahtar noktalar eş düzlemsel değildir). Botpose artık birden fazla etiket görünüyorsa etiket köşelerindeki gürültüye karşı daha dayanıklıdır. Etiketler birbirinden ne kadar uzaksa, sonuç o kadar iyi olur. Bu, düzlemsel etiketlerle sınırlı değildir. Tam 3D'de ve herhangi bir yönde herhangi bir sayıda etikete ölçeklenir. Zemin etiketleri ve tavan etiketleri mükemmel çalışır.
+İşte basit bir düzlemsel durumda bunun nasıl çalıştığının bir yönünü gösteren bir diyagram. Sonuçlar aslında gösterilenden daha iyidir, çünkü gösterilen MegaTag'de bir nokta yerine üç noktaya önemli bir hata uygulanmıştır. 3D birleşik MegaTag boyut ve anahtar nokta sayısı arttıkça, kararlılığı da artar.
+Sinir Ağı yüklemesi 2023.2'ye ertelendi!
+2023.0.0 ve 2023.0.1 (1/11/23)
+​
+AprilTags, Robot lokalizasyonu, Derin Sinir Ağları, yeniden yazılmış ekran görüntüsü arayüzü ve daha fazlasını tanıtıyoruz.
+Özellikler, Değişiklikler ve Hata Düzeltmeleri
+​
+Yeni sensör yakalama hattı ve Kazanç kontrolü
+Yeni yakalama hattımız, 2022'dekinden 100 kat daha kısa pozlama sürelerine olanak tanır. Yeni hat ayrıca Kazanç Kontrolünü de etkinleştirir. Bu, AprilTags takibi için son derece önemlidir ve retroreflektif hedeflemeyi her zamankinden daha güvenilir hale getirecektir. Limelight OS 2023'ten önce, Limelight'ın sensör kazancı deterministik değildi (yine de çalışması için bazı hileler uyguladık).
+Yeni "Sensör Kazancı" kaydırıcısı ile, takımlar pozlama kaydırıcısına dokunmadan görüntüleri her zamankinden daha karanlık veya daha parlak hale getirebilir. Kazancı artırmak, görüntüdeki gürültüyü artıracaktır.
+Düşük kazancı yeni düşük pozlama süreleriyle birleştirerek, tam parlaklıkta LED'ler ve retroreflektif hedeflerle neredeyse tamamen siyah görüntüler üretmek artık mümkündür. Bu, retroreflektif hedefleri izlerken LED ve güneş ışığı yansımalarını azaltmaya yardımcı olacaktır.
+Sensör Kazancını artırarak ve pozlamayı azaltarak, takımlar AprilTags'i izlerken yüksek pozlama sürelerinden kaynaklanan hareket bulanıklığı etkilerini en aza indirebilecekler.
+Bu yeni hattı tüm özellikleri koruyarak geliştirmeyi başardık - 90fps, donanım yakınlaştırma vb.
+Daha Fazla Çözünürlük Seçeneği
+LL1, LL2 ve LL2+ için iki yeni yakalama çözünürlüğü var: 640x480x90fps ve 1280x960x22fps
+Optimize Edilmiş Web Arayüzü
+Web arayüzü artık robot ağlarında 3 kata kadar daha hızlı yüklenecek ve başlatılacaktır.
+Yeniden Yazılmış Anlık Görüntüler Arayüzü
+Anlık görüntüler özelliği, görüntü yüklemeleri, görüntü indirmeleri ve görüntü silme işlemlerine izin verecek şekilde tamamen yeniden yazıldı. Ayrıca dokümantasyonda detaylandırılan anlık görüntü yakalamak için yeni API'ler de bulunmaktadır.
+SolvePnP İyileştirmeleri
+SolvePnP tabanlı kamera lokalizasyon özelliğimizde, her dört karede bir doğruluğunu ciddi şekilde sınırlayan kötü bir hata vardı. Bu sorun giderildi ve Retroreflektif/Renk SolvePNP görselleştirmeleri için tamamen yeni bir tam 3D tuval oluşturuldu.
+Web Arayüzü Hata Düzeltmesi
+2022'de, web arayüzünün flash işleminden sonraki ilk önyüklemede kalıcı olarak bozulmasına neden olan ve kullanıcıyı yeniden flash yapmaya zorlayan son derece nadir bir sorun vardı. Kök neden bulundu ve tamamen düzeltildi.
+Yeni API'ler
+Limelight artık REST ve Websocket API'leri içeriyor. REST, Websocket ve NetworkTables API'lerinin tümü, FRC ve diğer tüm uygulamalar için insan tarafından okunabilir, basit bir şekilde ayrıştırılabilir formatta tüm hedefler için tüm verileri listeleyen yeni JSON dökümü özelliğini destekliyor.
+Kodsuz Öğrenme Tabanlı Görüş ve Google Coral Desteği
+​
+Google Coral artık tüm Limelight modelleri tarafından destekleniyor. Google Coral, 8-bit sinir ağlarında çıkarım için özel olarak tasarlanmış 4TOPs (Saniyede Trilyon İşlem) USB donanım hızlandırıcısıdır.
+Birkaç yıl önce retroreflektif izleme gibi, FRC robotlarında öğrenme tabanlı görüşün giriş engeli, ortalama bir takımın bile deneme yapması için çok yüksekti. Öğrenme tabanlı görüşü Limelight ile retroreflektif hedefler kadar kolay hale getirmek için gereken tüm altyapıyı geliştirdik.
+Hazır bir bulut GPU kümemiz, eğitim komut dosyalarımız, bir veri seti toplama aracımız ve bir insan etiketleme ekibimiz var. Derin sinir ağlarını ilk kez FRC topluluğuna getirmekten heyecan duyuyoruz.
+Şu anda iki tür modeli destekliyoruz: Nesne Algılama modelleri ve Görüntü sınıflandırma modelleri.
+Nesne algılama modelleri, algılanan tüm nesneler için "sınıf kimlikleri" ve sınırlayıcı kutular (retroreflektif hedeflerimiz gibi) sağlayacaktır. Bu, gerçek zamanlı oyun parçası takibi için mükemmeldir.
+Lütfen burada görüntüler göndererek FRC'nin ilk nesne algılama modeline katkıda bulunun:
+https://datasets.limelightvision.io/frc2023
+Algılama ağlarını kullanmak için tx, ty, ta ve tclass networktables anahtarlarını veya JSON dökümünü kullanın
+Görüntü sınıflandırma modelleri bir görüntüyü alacak ve tek bir sınıf etiketi üretecektir.
+Daha fazla bilgi edinmek ve Limelight için kendi modellerinizi eğitmeye başlamak için Google'ın Teachable Machine'i inceleyin.
+https://www.youtube.com/watch?v=T2qQGqZxkD0
+Teachable machine modelleri doğrudan Limelight ile uyumludur.
+Görüntü sınıflandırıcıları, dahili robot durumunu, saha özelliklerinin durumunu ve çok daha fazlasını sınıflandırmak için kullanılabilir.
+Bu modelleri kullanmak için tclass networktables anahtarını kullanın.
+Limelight OS 2023.0, özel modelleri yükleme yeteneği sağlamıyor. Bu, kısa süre içinde 2023.1'de etkinleştirilecektir.
+Kodsuz AprilTag Desteği
+​
+AprilTags, Limelight ile retroreflektif hedefler kadar kolaydır. Bir kimlik şeklinde doğal bir sert filtreye sahip oldukları için, roboRIO'nuzun herhangi bir görüşle ilgili filtreleme yapması için daha az neden vardır.
+Başlamak için tx, ty ve ta'yı normal şekilde kullanın. Kod değişikliği gerekmez. Herhangi bir hedef özelliğine göre sıralayın, hedef gruplarını kullanın vb.
+AprilTags hem her zaman kare hem de her zaman benzersiz şekilde tanımlanabilir olduğundan, tam 3D poz hesaplamaları için mükemmel bir platform sağlarlar.
+Bu özellik için destek kanallarımızda aldığımız geri bildirimler son derece olumlu oldu. AprilTags'i 2D izlemeden sahada tam 3D robot lokalizasyonuna kadar mümkün olduğunca kolay hale getirdik.
+Daha ayrıntılı bilgi için Saha Haritası Spesifikasyonu ve Koordinat Sistemi Belgesini inceleyin.
+Limelight ile AprilTags'i kullanmanın dört yolu vardır:
+2D'de AprilTags
+tx, ty ve ta kullanın. Pipeline'larınızı belirli bir etiket kimliğini araması için yapılandırın.
+<gif>
+İlgi Noktası 3D AprilTags
+tx ve ty, ta ve tid networktables anahtarlarını kullanın. İlgi noktası ofseti, çoğu takımın doğrudan AprilTags takılı olmayan hedefleri izlemek için ihtiyaç duyacağı tek şeydir.
+<gif>
+Tam 3D
+LL'nizi, robotunuzu veya etiketleri tam 3D olarak izleyin. İlgili verileri roboRio'nuza çekmek için campose veya json kullanın.
+<gif>
+Saha Uzayı Robot Lokalizasyonu
+Limelight'ınıza nasıl monte edildiğini söyleyin, bir saha haritası yükleyin ve LL'niz, WPILib Pose Estimator ile kullanılmak üzere robotunuzun saha pozunu sağlayacaktır.
+Saha koordinat sistemimiz, (0,0) noktasını bir köşe yerine sahanın merkezine yerleştirir.
+Bu özellik için botpose networktables anahtarını kullanın.
+<gif>
+2022.3.0 (4/13/22)
+​
+Hata düzeltmeleri ve heartbeat.
+Hata Düzeltmeleri
+​
+USB Kamera akışları ve çoklu akış örnekleriyle ilgili performans, akış kararlılığı ve akış gecikmesi sorunlarını düzeltin.
+Özellikler ve Değişiklikler
+​
+"hb" Heartbeat NetworkTable anahtarı
+"hb" değeri her işleme karesinde bir kez artar ve 2000000000'da sıfıra sıfırlanır.
+2022.2.3 (3/16/22)
+​
+Hata düzeltmeleri ve robot-kodu kırpma filtreleme.
+Hata Düzeltmeleri
+​
+"stream" networktables anahtarını ve Resim İçinde Resim Modlarını düzeltin
+"snapshot" networktables anahtarını düzeltin. Kullanıcılar ekran görüntüsü almak için "snapshot" anahtarını "1" olarak ayarlamadan önce "0" olarak ayarlamalıdır.
+Web arayüzünden gereksiz python ile ilgili uyarıları kaldırın
+Özellikler ve Değişiklikler
+​
+Manuel Kırpma Filtreleme
+"crop" networktables dizisini kullanarak, takımlar artık robot kodundan kırpma dikdörtgenlerini kontrol edebilir.
+"crop" anahtarının çalışması için, mevcut pipeline varsayılan, geniş açık kırpma dikdörtgenini kullanmalıdır (minX ve minY için -1, maxX ve maxY için +1).
+Ayrıca, "crop" networktable dizisinin tam olarak 4 değeri olmalı ve bu değerlerden en az biri sıfır olmamalıdır.
+2022.2.2 (2/23/22)
+​
+Hafta ve FMS güvenilirlik testlerine dayalı olarak tüm takımlar için zorunlu yükseltme.
+Hata Düzeltmeleri
+​
+Açık web arayüzleri, FMS, FMS benzeri kurulumlar, Çoklu görüntüleyici cihazlar vb. ile ilgili takılma / bağlantı kaybı / hedefleme kaybı sorununu düzeltin.
+Özellikler ve Değişiklikler
+​
+Kırpma Filtreleme
+Belirtilen bir kırpma dikdörtgeninin dışındaki tüm pikselleri yok sayın
+Volanınızın sahada herhangi bir tatlı noktası varsa, belirli pipeline'larda piksellerin büyük çoğunluğunu yok saymak için kırpma filtresini kullanabilirsiniz. Bu özellik, takımların hedef olmayan nesneleri izleme olasılığını azaltmasına yardımcı olmalıdır.
+Kargo izliyorsanız, bu özelliği kullanarak görüntünün yalnızca belirli bir bölümündeki kargoyu arayın. Takımınızın tamponlarını, uzaktaki hedefleri vb. yok saymayı düşünün.
+Köşeler özelliği artık akıllı hedef gruplandırma ile uyumlu
+Bu, RIO'da daha gelişmiş özel görüş yapmak isteyen takımlar içindir
+"tcornxy" köşe sınırı 64 köşeye yükseltildi
+Kontur basitleştirme ve dışbükey zorlama özellikleri artık akıllı hedef gruplandırma ve köşe gönderme ile düzgün çalışıyor
+IQR Filtresi maksimumu 3.0'a yükseltildi
+Web arayüzü canlı hedef güncelleme hızı, web arayüzü açıkken bant genişliği ve cpu yükünü azaltmak için 30fps'den 15fps'ye düşürüldü
+2022.1 (25.01.22)
+​
+Hata Düzeltmeleri
+​
+Limelight 2'de özellikle kullanılan CPU'ların yaklaşık 1/75'ini etkileyen bir sorun (ve çözüm!) hakkında tedarikçilerimizden birinden bilgi edindik (belirli bir parti ile ilgili olabilir). Bu mantıklı, ve 2022 görüntüsü ile 2020 görüntüsü arasındaki kalan birkaç önyükleme farkından biriydi.
+GRIP girişleri ve SolvePNP Modelleri için yükleme düğmelerini düzelttik
+Özellikler
+​
+Ton Gökkuşağı
+Yeni ton gökkuşağı, ton eşiğini yapılandırmayı kolaylaştırır.
+Ton Tersine Çevirme
+Yeni ton tersine çevirme özelliği, kırmızı nesneleri izlemek istiyorsanız kritik bir özelliktir, çünkü kırmızı hem ton aralığının başında hem de sonunda yer alır:
+Yeni Python Kütüphaneleri
+Python sandbox'ımıza scipy, scikit-image, pywavelets, pillow ve pyserial ekledik.
+2022.0 ve 2022.0.3 (15.01.22)
+​
+Bu büyük bir güncelleme. İşte dört ana değişiklik:
+Özellikler
+​
+Akıllı Hedef Gruplama
+Tüm bireysel hedef filtrelerini geçen hedefleri otomatik olarak gruplandırır.
+-grup boyutu sürgüsü minimum- ve -grup boyutu sürgüsü maksimum- arasında herhangi bir sayıda hedefi dinamik olarak gruplandıracaktır
+Aykırı Değer Reddi
+Bu hedef diğer hedeflerden daha zorlu olsa da, bize daha fazla filtreleme fırsatı sunuyor. Kavramsal olarak, bu hedef sadece bir "yeşil leke" değildir. Hedefin birbirine yakın birden fazla hedeften oluştuğunu bildiğimiz için, kendi başına duran aykırı hedefleri gerçekten reddedebiliriz.
+Bu yılın hedefi için neredeyse tamamen iyi hedef filtrelemeye güvenmelisiniz ve yalnızca kamera akışınızda sahte aykırı değerler görürseniz veya bekliyorsanız aykırı değer reddini kullanın. Standart hedef filtrelemeniz zayıfsa, aykırı değer tespiti size karşı çalışmaya başlayabilir!
+Limelight 2022 Görüntü Yükseltmeleri
+Yazılımımızdan yüzlerce hareketli parçayı kaldırdık. İşte sonuçlar:
+Sıkıştırılmış Görüntü Boyutu: 2020'de 1.3 GB → 2022 için 76MB (17 kat azaltıldı!)
+İndirme süresi: 2020'de 10'larca dakika → 2022 için saniyeler
+Flash süresi: 2020'de 5+ dakika → 2022 için saniyeler
+Önyükleme süresi: 2020'de 35+ saniye → 2022 için 14 saniye (LED'lerin yanması için 10 saniye)
+Tam Python Komut Dosyası Oluşturma
+Limelight, çok sayıda öğrenciyi robotik alanında bilgisayarla görmenin bazı yeteneklerine başarıyla maruz bıraktı. Python komut dosyası oluşturma ile takımlar artık kendi görüntü işleme boru hatlarını yazarak bir adım daha ileri gidebilirler.
+Bu güncelleme, Limelight 1 dahil tüm Limelight Donanımlarıyla uyumludur.
+Bilinen sorunlar: Python ile donanım yakınlaştırma kullanmak beklenmeyen sonuçlar üretecektir.
+2022.0.3, 5802 GRIP akışını geri yükler ve bazı önyükleme süresi optimizasyonlarını geri alarak bazı LL2 birimlerindeki önyükleme sorunlarını giderir. Önyükleme süresi 16 saniyeye çıkarılmıştır.

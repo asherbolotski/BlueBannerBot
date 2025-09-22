@@ -1,0 +1,188 @@
+Estimando Distância
+Usando uma Câmera com Ângulo Fixo
+​
+Se sua câmera de rastreamento de visão estiver montada em seu robô de forma que o ângulo entre o plano do chão e sua linha de visão não mude, você pode usar esta técnica para calcular com precisão a distância até um alvo. Você pode então usar esse valor de distância para conduzir seu robô para frente e para trás para entrar no alcance perfeito ou ajustar a potência de um mecanismo de lançamento.
+Veja o diagrama abaixo. Neste contexto, todas as variáveis são conhecidas: a altura do alvo (h2) é conhecida porque é uma propriedade do campo. A altura da sua câmera acima do chão (h1) é conhecida e seu ângulo de montagem é conhecido (a1). O Limelight (ou seu sistema de visão) pode informar o ângulo y até o alvo (a2).
+Podemos resolver d usando a seguinte equação:
+tan(a1+a2) = (h2-h1) / d
+"d = (h2-h1) / tan(a1+a2)"
+A função "tan" geralmente espera uma entrada medida em radianos. Para converter uma medida de ângulo de graus para radianos, multiplique por (3,14159/180,0). Veja o exemplo de código completo abaixo.
+Java
+C++
+NetworkTable
+table
+=
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+;
+NetworkTableEntry
+ty
+=
+table
+.
+getEntry
+(
+"ty"
+)
+;
+double
+targetOffsetAngle_Vertical
+=
+ty
+.
+getDouble
+(
+0.0
+)
+;
+// quantos graus para trás sua limelight está rotacionada a partir da vertical perfeita?
+double
+limelightMountAngleDegrees
+=
+25.0
+;
+// distância do centro da lente do Limelight até o chão
+double
+limelightLensHeightInches
+=
+20.0
+;
+// distância do alvo até o chão
+double
+goalHeightInches
+=
+60.0
+;
+double
+angleToGoalDegrees
+=
+limelightMountAngleDegrees
++
+targetOffsetAngle_Vertical
+;
+double
+angleToGoalRadians
+=
+angleToGoalDegrees
+*
+(
+3.14159
+/
+180.0
+)
+;
+//calcular distância
+double
+distanceFromLimelightToGoalInches
+=
+(
+goalHeightInches
+-
+limelightLensHeightInches
+)
+/
+Math
+.
+tan
+(
+angleToGoalRadians
+)
+;
+std
+::
+shared_ptr
+<
+NetworkTable
+>
+table
+=
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+;
+double
+targetOffsetAngle_Vertical
+=
+table
+->
+GetNumber
+(
+"ty"
+,
+0.0
+)
+;
+// quantos graus para trás sua limelight está rotacionada a partir da vertical perfeita?
+double
+limelightMountAngleDegrees
+=
+25.0
+;
+// distância do centro da lente do Limelight até o chão
+double
+limelightLensHeightInches
+=
+20.0
+;
+// distância do alvo até o chão
+double
+goalHeightInches
+=
+60.0
+;
+double
+angleToGoalDegrees
+=
+limelightMountAngleDegrees
++
+targetOffsetAngle_Vertical
+;
+double
+angleToGoalRadians
+=
+angleToGoalDegrees
+*
+(
+3.14159
+/
+180.0
+)
+;
+//calcular distância
+double
+distanceFromLimelightToGoalInches
+=
+(
+goalHeightInches
+-
+limelightLensHeightInches
+)
+/
+tan
+(
+angleToGoalRadians
+)
+;
+Ao usar esta técnica, é importante escolher cuidadosamente o ângulo de montagem da sua câmera. Você quer ser capaz de ver o alvo tanto quando estiver muito perto quanto muito longe. Você também não quer que esse ângulo mude, então monte-o com segurança e evite usar slots na sua geometria de montagem.
+Se você estiver tendo dificuldades para descobrir qual é o ângulo a1, você também pode usar a equação acima para resolver a1. Basta colocar seu robô a uma distância conhecida (medindo a partir da lente da sua câmera) e resolver a mesma equação para a1.
+No caso em que seu alvo está quase na mesma altura que sua câmera, esta técnica não é útil.
+Usando Área para Estimar Distância
+​
+Outra maneira simples de estimar a distância é usar a área do contorno que você está rastreando. Este é um método muito simples de implementar, mas não fornece resultados extremamente precisos. Tudo o que você precisa fazer é apontar sua câmera de visão para o alvo a partir de uma distância conhecida e anotar a área do blob. Certifique-se de usar uma representação precisa do alvo de visão do campo real e certifique-se de apontar para ele a partir do local de disparo desejado. Você pode fazer isso a partir de algumas distâncias diferentes e criar uma tabela com esses valores. Em 2016, usamos este método para ajustar a mira da nossa torre de 2 eixos com base na distância em que estávamos do gol.

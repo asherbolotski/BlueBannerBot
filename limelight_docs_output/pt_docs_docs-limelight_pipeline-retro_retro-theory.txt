@@ -1,0 +1,48 @@
+Teoria Adicional
+Alvos de Visão
+​
+Os designers do jogo FRC frequentemente colocam "alvos de visão" reflexivos em locais estratégicos do campo. Esses alvos de visão são geralmente feitos de fita retrorrefletiva. Elementos de pontuação importantes geralmente têm alvos de visão que podem ser usados para mira automática. Abaixo você pode ver dois exemplos de alguns dos alvos de visão dos jogos FRC de 2016 e 2017.
+Esses alvos de visão retrorrefletivos têm uma propriedade muito útil: quando a luz é direcionada a eles, ela reflete diretamente de volta para a fonte de luz. É por isso que o Limelight tem LEDs verdes brilhantes ao redor de sua lente de câmera. Ao configurar a exposição da câmera muito baixa enquanto emite uma luz verde brilhante em direção ao alvo, podemos obter uma imagem que é majoritariamente preta com um alvo de visão verde brilhante. Isso torna o trabalho de aquisição do alvo relativamente fácil.
+Aqui você pode ver um exemplo da imagem ideal. Observe como quase todos os detalhes na imagem desaparecem devido à configuração de baixa exposição, mas a fita retrorrefletiva se destaca brilhantemente.
+Limiarização (Thresholding)
+​
+A limiarização é o próximo componente crítico da maioria dos algoritmos de rastreamento de visão FRC. É o ato de pegar uma imagem e descartar quaisquer pixels que não estejam em uma faixa de cor específica. O resultado da limiarização é geralmente uma imagem unidimensional na qual um pixel está "ligado" ou "desligado". A limiarização funciona muito bem em imagens capturadas usando a estratégia acima (baixa exposição, imagem muito escura com um alvo de visão iluminado brilhantemente).
+O Limelight faz limiarização no espaço de cores HSV (Matiz-Saturação-Valor). Você pode estar acostumado a pensar em cores no espaço de cores RGB (Vermelho-Verde-Azul). HSV é apenas outra maneira de representar cores, semelhante à forma como coordenadas cartesianas ou polares podem ser usadas para descrever posições. A razão pela qual usamos o espaço de cores HSV é que a Matiz pode ser usada para selecionar com muita precisão a cor verde que os LEDs do Limelight emitem.
+É fundamental ajustar suas configurações de limiarização para eliminar o máximo possível da imagem. Você obterá os melhores resultados se otimizar cada estágio do seu pipeline de visão antes de passar para o próximo estágio. A imagem a seguir mostra a diferença entre limiarização inadequada e adequada:
+Às vezes, coisas como luzes do teto ou janelas em uma arena podem ser difíceis de remover da imagem usando apenas limiarização, o que nos leva ao próximo estágio.
+Filtragem de Contornos
+​
+Após a limiarização, o pipeline de visão do Limelight gera um conjunto de contornos para a imagem. Um contorno é uma curva que circunda um conjunto contíguo de pixels. Às vezes, coisas como luzes do teto, placares de arena, janelas e outros elementos podem passar pela etapa de limiarização. É aqui que a filtragem de contornos se torna útil. O objetivo é eliminar quaisquer contornos que sabemos não ser o alvo que nos interessa.
+O primeiro e mais fácil filtro de contorno é ignorar quaisquer contornos que sejam menores do que o nosso alvo de visão parece a partir da nossa distância de pontuação. Qualquer coisa menor que esse tamanho é obviamente algo mais distante e deve ser ignorada. Isso é chamado de filtragem por área.
+Os alvos de visão FRC frequentemente têm alguma propriedade geométrica que pode ser explorada para nos ajudar a filtrar contornos. Por exemplo, se o alvo de visão tiver uma proporção larga, podemos filtrar quaisquer contornos que não sejam largos:
+No entanto, tenha em mente que sua câmera pode estar olhando para o alvo de um ângulo estranho. Isso pode afetar drasticamente a proporção do seu contorno. Certifique-se de testar suas configurações a partir de uma variedade de ângulos para garantir que você não filtre de forma muito agressiva e acabe ignorando o alvo de visão!
+Este próximo alvo de imagem é muito interessante. É um dos alvos de visão melhor projetados no FRC (em nossa opinião). O Limelight calcula automaticamente um valor chamado
+preenchimento
+(fullness) de um contorno.
+Preenchimento
+é a razão entre a área de pixels do contorno e sua área convexa. Esta forma particular tem um preenchimento muito baixo e você quase nunca vê luzes de teto, janelas, etc. com um preenchimento tão baixo. Assim, você pode filtrar efetivamente os contornos indesejados se seu alvo de visão se parecer com este.
+O Limelight tem muitas opções para filtrar contornos. Você pode usar essas opções junto com o que você sabe sobre as propriedades geométricas do alvo de visão específico que está tentando rastrear.
+Atualmente, se vários contornos passarem por suas opções de filtragem, o maior contorno é escolhido. Além disso, o pipeline prefere "travar" em contornos usando histerese. Este é um recurso que ajuda a evitar oscilações entre alvos semelhantes.
+De Pixels para Ângulos
+​
+O resultado final do pipeline de visão é uma localização de pixel do melhor contorno na imagem. Para a maioria dos jogos, podemos simplesmente mirar no centro do contorno. Às vezes, também é útil mirar no centro superior ou em algum outro ponto, mas essencialmente temos uma coordenada de pixel para onde queremos mirar. Para calcular os ângulos para este alvo, precisamos usar um pouco de trigonometria.
+Primeiro, assumimos que temos uma câmera "pinhole" perfeita. Na prática, isso pode estar longe da verdade, mas a câmera do Limelight é muito próxima. (Uma lente olho de peixe seria um contra-exemplo longe desse ideal.)
+A câmera do Limelight tem um campo de visão horizontal de 54 graus e um campo de visão vertical de 41 graus. Ela captura imagens com resolução de 320x240. Assumimos que o centro da imagem é o eixo óptico da câmera (então os ângulos x e y para essa localização são 0,0). Dados esses valores conhecidos, podemos usar um pouco de trigonometria para calcular os ângulos para qualquer pixel na imagem.
+O diagrama abaixo mostra um exemplo de ponto alvo para o qual queremos calcular ângulos. As coordenadas de pixel começam no canto superior esquerdo da imagem e são positivas para a direita e para baixo.
+Nosso primeiro passo será converter de coordenadas de pixel para coordenadas 2D normalizadas, onde 0,0 é o centro da imagem e 1,0:
+(px, py) = coordenadas de pixel, 0,0 é o canto superior esquerdo, positivo para baixo e para a direita
+(nx, ny) = coordenadas de pixel normalizadas, 0,0 é o centro, positivo para a direita e para cima
+nx = (1/160) * (px - 159.5)
+ny = (1/120) * (119.5 - py)
+Em seguida, definimos um plano de visão imaginário e calculamos seu tamanho. Para simplificar, podemos escolher colocar este plano a 1,0 unidade na frente da localização da câmera. Aqui está uma vista olhando para baixo na câmera. Nosso objetivo é calcular a largura e a altura do plano de visão, pois esses valores serão usados para calcular os ângulos mais tarde:
+Dada uma distância de 1,0 unidade e um campo de visão horizontal e vertical conhecido, podemos calcular o tamanho do retângulo do plano de visão com as seguintes fórmulas:
+vpw = 2.0*tan(horizontal_fov/2)
+vph = 2.0*tan(vertical_fov/2)
+Usando esses dois valores, agora podemos converter entre coordenadas de pixel normalizadas e coordenadas do plano de visão usando uma simples multiplicação.
+x = vpw/2 * nx;
+y = vph/2 * ny;
+Lembre-se de que escolhemos nosso plano de visão para ser posicionado a uma distância de 1,0. Agora temos tudo o que precisamos para calcular os ângulos para o ponto alvo.
+tan(ax) = x / 1
+tan(ay) = y / 1
+ax = atan2(x, 1)
+ay = atan2(y, 1)

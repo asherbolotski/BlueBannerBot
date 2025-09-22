@@ -1,0 +1,177 @@
+Limelight 1 Hızlı Başlangıç
+Donanım Özellikleri
+​
+Boyut: 3.764inç x 3.764inç (95.67mm x 95.67mm)
+Kalınlık: 0.878inç (22.30mm)
+#10 / M4 Geçme Delik Montajı
+Güç Girişi: 4.1V-16V
+10W maksimum güç tüketimi
+LED Aydınlatma: 400 lümen, yeşil aydınlatma
+Sensör: OV5647 Renkli Rolling Shutter (320x240 @ 90FPS)
+Değiştirilebilir M12 Lens
+Siyah Darbeye Dayanıklı Polikarbonat Muhafaza
+10/100 Ethernet RJ45 Portu
+RS-232 Seri (3.3V)
+USB-A Ana Port (USB 2.0)
+Durum Işıkları: Yeşil (hedef algılama), Sarı (ağ durumu)
+Google Coral USB Sinir Ağı Hızlandırıcı Desteği
+Yazılım Özellikleri (Limelight OS)
+​
+Tak-Çalıştır yüksek performanslı görüntü işleme. Deneyim gerektirmez.
+Görüntü işleme hattı yapılandırması için kendi kendine barındırılan tarayıcı tabanlı kullanıcı arayüzü
+REST/HTTP, Websocket, NetworkTables, ModbusTCP ve ROS desteği
+Yapılandırılabilir sabit pozlama, sensör kazancı, çözünürlük ve kare hızı.
+10 Anında değiştirilebilir Görüntü İşleme Hattı yapılandırması:
+OpenCV 4.10, numpy vb. ile Özel Python İşleme Hatları
+2B, 3B AprilTag Takibi ve Robot Lokalizasyonu
+MegaTag1 ile Tam 3B Lokalizasyon (Robot GPS)
+MegaTag2 ile Harici IMU Füzyonu ile Daha Yüksek Doğrulukta Tam 3B Lokalizasyon (Robot GPS)
+Web arayüzünde tam 3B Görselleştirici
+90FPS Renkli Blob işleme hatları
+Sinir Ağı Nesne Algılama İşleme Hatları
+Sinir Ağı Görüntü Sınıflandırma İşleme Hatları
+Barkod Takip İşleme Hatları
+Düşük gecikme süreli yayın için Vizör işleme hattı
+Dahili düşük gecikmeli MJPEG Yayını. Yapılandırılabilir yayın yönlendirmesi
+1. Limelight 1'i Monte Etme
+​
+Geçme Delik Montajı
+​
+1 1/4" #10-32 veya #10-24 vidalar ve nylock somunlar kullanın
+Alternatif olarak, 38mm M4 cıvatalar ve nylock somunlar kullanın
+Muhafaza yüzeyini korumak için plastik pullar kullanın
+2. Limelight 1'i Kablolama
+​
+Güç
+​
+Limelight'ınızdan PDP/PDH'nizdeki bir yuvaya iki adet 18-20AWG kablo bağlayın
+Aynı yuvaya 5A sigorta ekleyin
+(Gerekli Değil) Optimum sonuçlar için Weidmuller ferrüller kullanın (Resimde, 20AWG Kablo ile Weidmuller 20AWG Turuncu ferrüller)
+Ferrüller:
+https://www.digikey.com/en/products/detail/weidm%C3%BCller/0409500000/491834
+https://store.ctr-electronics.com/products/weidmuller-ferrule-pack-of-20?variant=43631135195309
+Düşük maliyetli Ferrül sıkma aletleri:
+https://store.ctr-electronics.com/products/ferrule-crimper-by-iwiss?_pos=2&_sid=616edc4f4&_ss=r
+https://www.amazon.com/Ferrule-Crimping-Hexagonal-Ferrules-Connectors/dp/B09724DCJH?th=1
+Ethernet
+​
+Limelight'ınızdan robot radyonuza bir ethernet kablosu bağlayın
+Bükümlü Cat6 kablolar ve çok telli kablolar kullanın (ideal olarak 20AWG)
+Ethernet kablonuza bir gerilim giderici ekleyin
+3. Web Arayüzüne Erişim
+​
+Limelight 1'inizi ağınıza bağladıktan sonra:
+Robotunuzu açın ve dizüstü bilgisayarınızı robotunuzun ağına bağlayın
+Web arayüzüne erişmek için şu yöntemlerden birini kullanın:
+Yöntem 1
+: Limelight Hardware Manager uygulamasını açın, Limelight'ları tarayın ve göründüğünde Limelight'ınıza çift tıklayın
+Yöntem 2
+: Bir web tarayıcısı açın ve
+http://limelight.local:5801
+adresine gidin
+Yöntem 3
+: Bir web tarayıcısı açın ve Limelight'ınızın statik IP adresine 5801 portu ile gidin (yapılandırılmışsa)
+Bağlandığınızda şunlara erişebilirsiniz:
+Ayarlar sekmesi - Takım numarası, ana bilgisayar adı ve diğer sistem ayarlarını yapılandırın
+Görüntü İşleme Hattı sekmeleri - Görüntü işleme hatlarınızı kurun ve ayarlayın
+Kamera ve Nişangâh sekmesi - Kamera ayarlarını ve nişangâh parametrelerini ayarlayın
+Tüm yapılandırma bu web arayüzü üzerinden yapılır. Değişiklikler otomatik olarak Limelight'ınıza kaydedilir.
+4. LimelightOS'u Güncelleme
+​
+uyarı
+Bazı Limelight 1 versiyonları mikro-USB portu çevresinde elektrostatik olarak hassastır. Portu hasardan korumak için, mikro-USB portuna bağlanmadan önce kendinizi metal bir şeye topraklayın. Bu, kişisel statik yükünüzün boşaltılmasını sağlayacaktır.
+uyarı
+Yükseltmeden önce işleme hatlarınızı ve betiklerinizi yedekleyin - bu işlem sırasında silineceklerdir!
+Limelight'ınızı kapatın
+En son
+USB sürücülerini, Limelight OS imajını ve Balena Flash aracını
+indirin
+Dizüstü bilgisayarınızdan Limelight'ınıza bir USB->MicroUSB kablosu bağlayın
+Limelight'ınızı açın
+"Balena Etcher"ı yönetici olarak çalıştırın
+Makinenizin kamerayı tanıması 20 saniye kadar sürebilir
+İndirme klasörünüzdeki en son .zip imajını seçin
+"Sürücüler" menüsünde bir "Compute Module" cihazı seçin
+"Flash" düğmesine tıklayın
+Flaşlama tamamlandıktan sonra, Limelight'ınızın gücünü kesin
+bilgi
+Mikro-USB kablosunu yalnızca imajlama sırasında bağlayın. Limelight, microUSB kablosu bağlıyken özel bir flaş moduna girer. Limelight flaş modundayken web arayüzüne erişemezsiniz.
+5. Ağ Yapılandırması
+​
+Takım Numarasını Ayarlama (FRC / Networktables için Gerekli)
+​
+Robotunuzu açın ve dizüstü bilgisayarınızı robotunuzun ağına bağlayın
+Limelight Hardware Manager'ı açın, Limelight'ları tarayın ve görünen girişe çift tıklayın
+Alternatif olarak,
+http://limelight.local:5801
+adresine gidin
+"Ayarlar" sekmesine gidin
+Takım numaranızı girin ve "Takım Numarasını Güncelle" düğmesine basın
+Benzersiz Ana Bilgisayar Adı Ayarlama (Yalnızca birden fazla Limelight kullanan FRC / Networktables sistemleri için gerekli)
+​
+Birden fazla Limelight kullanıyorsanız, her Limelight'ın benzersiz bir ana bilgisayar adı olmalıdır
+Ayarlar sekmesinde, bir ana bilgisayar adı yapılandırın ve "ana bilgisayar adını ayarla" düğmesine tıklayın
+Statik IP Ayarlama (Önerilen, zorunlu değil)
+​
+"IP Ataması"nı "Statik" olarak değiştirin
+IP adresini "10.TE.AM.11" olarak ayarlayın
+916 numaralı takım 10.9.16.xx kullanır
+9106 numaralı takım 10.91.6.xx kullanır
+9016 numaralı takım 10.90.16.xx kullanır
+Ağ maskesini "255.255.255.0" olarak ayarlayın
+Ağ geçidini "10.TE.AM.1" olarak ayarlayın
+"Güncelle" düğmesine tıklayın
+Robotunuzu yeniden başlatın
+Yapılandırma panelinize 10.TE.AM.11:5801 adresinden ve kamera yayınınıza 10.TE.AM.11:5800 adresinden erişin
+Birden fazla Limelight kullanıyorsanız, her Limelight'a benzersiz bir statik IP adresi verin
+S. Neden statik IP adresi kullanımını öneriyoruz?
+C. Limelight'ın başlatma süresinden birkaç saniye kazandırır.
+İkinci olarak, takımlar geçmişte gerçek FRC sahalarında ve etkinlik radyo yazılımlarında
+DHCP ataması ve mDNS yanıtlayıcıları ile ilgili sorunlar yaşamıştır.
+Robo-rio ve sürücü istasyonunuzda da statik IP adresleri ayarlamanızı öneririz.
+Tüm bu cihazlarda kullanılacak ağ ayarları
+bu web sayfasının
+alt yarısında bulunabilir.
+6. LED'leri Kontrol Etme
+​
+Limelight 1, dahili yeşil aydınlatma LED'leri içerir. Bu LED'ler birkaç şekilde kontrol edilebilir:
+Web Arayüzü Üzerinden
+​
+Web arayüzündeki Kamera ve Nişangâh sekmesine gidin
+LED Modu açılır menüsünden seçim yapın:
+Açık - Her zaman açık
+Kapalı - Her zaman kapalı
+Yanıp Sönme - LED'leri yanıp söndür
+İşleme Hattı - Bir hedef algılandığında LED'ler yanar
+NetworkTables veya API Üzerinden
+​
+"ledMode" değerini ayarlayın:
+0: İşleme hattı varsayılanı
+1: Zorla kapalı
+2: Zorla yanıp sönme
+3: Zorla açık
+7. Sorun Giderme
+​
+Durum Işığı Göstergeleri
+​
+Yeşil Işık
+: Yavaşça yanıp söner (hedef yok), hızlıca yanıp söner (hedefler algılandı)
+Sarı Işık
+: Yanıp söner (statik IP yok), sabit yanar (statik IP atanmış)
+LED Tanı Desenleri
+​
+Sol/Sağ veya Üst/Alt dönüşümlü yanıp sönme
+: Dahili kamera kablosu yerinden çıkmış veya görüntü sensörü hasar görmüş
+Hızlı Yanıp Sönme (tüm LED'ler)
+: Ağ sıfırlama düğmesi en az 10 saniye basılı tutulmuş
+Tekrarlanan Başlatma Sırası
+: Yazılım çöküyor, muhtemelen donanım hasarı nedeniyle
+limelight.local:5801 çalışmıyorsa
+​
+Bonjour'un kurulu olup olmadığını kontrol edin (Windows: program ekle/kaldır)
+İki Bonjour öğeniz varsa "bonjour print services"i kaldırın
+Eksikse İndirmeler sayfasından Bonjour'u kurun
+IP adresini sıfırlama
+​
+Limelight'ınız başladıktan sonra yapılandırma düğmesini 10 saniye basılı tutun
+Ağ yapılandırması bir sonraki başlatmada dinamik adreslemeye sıfırlanacaktır

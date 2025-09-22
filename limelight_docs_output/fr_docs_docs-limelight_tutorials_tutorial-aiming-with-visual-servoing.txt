@@ -1,0 +1,43 @@
+Viser avec l'asservissement visuel
+Vous pouvez viser avec précision et rapidité votre robot en utilisant uniquement une Limelight et votre transmission.
+Tout cela peut être accompli en moins d'1 heure.
+En utilisant le suivi visuel à haute fréquence d'images, il est maintenant possible d'utiliser directement le pipeline de vision comme "capteur" dans une boucle de contrôle PID pour guider votre robot ou tourelle. Pour tester cette idée, nous avons ajouté une Limelight à notre robot FRC 2017 et l'avons fait viser des cibles de vision en utilisant uniquement la transmission et les données de la table réseau rapportées par la Limelight.
+Dans cet exemple, notre candidat de test était un robot FRC 2017 qui utilise une transmission à 6 roues avec des roues Colson. Voici une photo de l'ajout d'une Limelight sur le robot pour effectuer ce test.
+Ensuite, nous avons ajouté du code au robot qui s'exécuterait chaque fois que le pilote maintient un bouton sur le joystick. Ce robot utilisait une conduite de style "tank", donc la fonction OperatorControl générait une valeur 'left_command' et une valeur 'right_command' pour contrôler les côtés gauche et droit de la transmission. Après le code de contrôle normal, nous avons ajouté un bloc de code comme celui-ci :
+float Kp = -0.1f;  // Constante de contrôle proportionnel
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = tx;
+steering_adjust = Kp * tx;
+left_command+=steering_adjust;
+right_command-=steering_adjust;
+}
+D'emblée, cela fonctionnait plutôt bien. Le robot tourne automatiquement en direction de la cible chaque fois que vous maintenez le bouton enfoncé. Si vous déplacez la cible, le robot tourne pour suivre la cible. Cependant, en utilisant le flux vidéo en direct sur le tableau de bord, nous avons pu constater qu'il y avait un problème majeur : le robot n'arrivait pas toujours à s'aligner parfaitement avec la cible. Dans certains jeux avec de petites cibles (comme 2016 et 2017), cela ne serait pas suffisant.
+Ce que nous avons implémenté jusqu'à présent est une simple boucle de contrôle proportionnel. Nous avons calculé l'erreur de cap et l'avons multipliée par une constante, créant ainsi une commande moteur proportionnelle à l'erreur. À mesure que l'erreur tend vers zéro, notre commande tendra également vers zéro. Le problème est qu'il y a beaucoup de friction lorsque le robot essaie de tourner. Des commandes très petites ne feront pas tourner le robot du tout. À de petits angles, la commande peut devenir trop faible pour réellement déplacer le robot. Vous pourriez constater que votre robot atteint bien sa cible lorsque vous commencez avec une grande erreur de ciblage, mais qu'il ne peut pas du tout viser si vous commencez très près.
+Il existe plusieurs façons de résoudre ce problème, mais voici une solution très simple. Nous avons utilisé un concept de "commande minimale". Si l'erreur est supérieure à un certain seuil, ajoutez simplement une constante à votre commande moteur qui représente approximativement la quantité minimale de puissance nécessaire pour que le robot bouge réellement (vous voulez en fait utiliser un peu moins que cela). Le nouveau code ressemble à ceci :
+float Kp = -0.1f;
+float min_command = 0.05f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = -tx;
+float steering_adjust = 0.0f;
+if (Math.abs(heading_error) > 1.0)
+{
+if (heading_error < 0)
+{
+steering_adjust = Kp*heading_error + min_command;
+}
+else
+{
+steering_adjust = Kp*heading_error - min_command;
+}
+}
+left_command += steering_adjust;
+right_command -= steering_adjust;
+}
+Attention, si vous définissez Kp ou min_command trop élevés, votre robot peut devenir instable et osciller d'avant en arrière en dépassant la cible :
+Après quelques ajustements de Kp et min_command, vous devriez obtenir un robot qui vise directement la cible avec précision et rapidité.

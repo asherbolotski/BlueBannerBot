@@ -1,0 +1,43 @@
+Mirando Com Servoing Visual
+Você pode mirar seu robô com precisão e rapidez usando apenas um limelight e seu sistema de movimentação.
+Tudo isso pode ser realizado em menos de 1 hora.
+Usando rastreamento de visão de alta taxa de quadros, agora é possível usar o pipeline de visão diretamente como o "sensor" em um loop de controle PID para guiar seu robô ou torre. Para testar essa ideia, adicionamos um limelight ao nosso robô FRC de 2017 e o fizemos mirar em alvos de visão usando nada mais que o sistema de movimentação e os dados da tabela de redes reportados pelo limelight.
+Neste exemplo, nosso candidato de teste foi um robô FRC de 2017 que usa um sistema de movimentação de 6 rodas com rodas Colson. Aqui está uma foto de nós adicionando um limelight ao robô para fazer este teste.
+Em seguida, adicionamos algum código ao robô que seria executado sempre que o piloto mantivesse um botão pressionado no joystick. Este robô usava direção estilo "tank", então a função OperatorControl estava gerando um valor 'left_command' e um valor 'right_command' para controlar os lados esquerdo e direito do sistema de movimentação. Após o código de controle normal, adicionamos um bloco de código como este:
+float Kp = -0.1f;  // Constante de controle proporcional
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = tx;
+steering_adjust = Kp * tx;
+left_command+=steering_adjust;
+right_command-=steering_adjust;
+}
+Logo de cara, isso funcionou em grande parte. O robô vira na direção do alvo automaticamente sempre que você mantém o botão pressionado. Se você mover o alvo, o robô gira para seguir o alvo. No entanto, usando o feed de vídeo ao vivo no painel, pudemos ver que havia um grande problema: o robô nem sempre conseguia se alinhar perfeitamente com o alvo. Em alguns jogos com alvos pequenos (como 2016 e 2017), isso não seria bom o suficiente.
+O que implementamos até agora é um simples loop de controle proporcional. Calculamos o erro de direção e multiplicamos por uma constante, criando assim um comando de motor que é proporcional ao erro. À medida que o erro se aproxima de zero, nosso comando também se aproximará de zero. O problema é que há muita fricção envolvida quando o robô tenta virar. Comandos muito pequenos não farão o robô girar. Em ângulos pequenos, o comando pode se tornar pequeno demais para realmente mover o robô. Você pode descobrir que seu robô alcança bem o alvo quando você começa com um grande erro de mira, mas simplesmente não consegue mirar se começar muito perto.
+Existem algumas maneiras de resolver esse problema, mas aqui está uma solução realmente simples. Usamos um conceito de "comando mínimo". Se o erro for maior que algum limite, basta adicionar uma constante ao seu comando de motor que representa aproximadamente a quantidade mínima de potência necessária para que o robô realmente se mova (na verdade, você quer usar um pouco menos que isso). O novo código se parece com isto:
+float Kp = -0.1f;
+float min_command = 0.05f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+if (joystick->GetRawButton(9))
+{
+float heading_error = -tx;
+float steering_adjust = 0.0f;
+if (Math.abs(heading_error) > 1.0)
+{
+if (heading_error < 0)
+{
+steering_adjust = Kp*heading_error + min_command;
+}
+else
+{
+steering_adjust = Kp*heading_error - min_command;
+}
+}
+left_command += steering_adjust;
+right_command -= steering_adjust;
+}
+Cuidado, se você definir Kp ou min_command muito alto, seu robô pode se tornar instável e oscilar para frente e para trás à medida que ultrapassa o alvo:
+Após alguns ajustes em Kp e min_command, seu robô deve mirar diretamente no alvo com muita precisão e rapidez.

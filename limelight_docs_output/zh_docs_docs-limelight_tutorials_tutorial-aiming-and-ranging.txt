@@ -1,0 +1,27 @@
+同时进行瞄准和测距
+本示例将瞄准和距离调整结合到一个方法中。
+https://thumbs.gfycat.com/UncommonIncomparableDassierat-size_restricted.gif
+这个示例使用了瞄准和距离调整示例中的代码，并将所有内容整合到一个简单的函数中。使用这种方法，您可以让机器人"接近"目标，然后使用代码自动瞄准并驱动到正确的距离。
+float KpAim = -0.1f;
+float KpDistance = -0.1f;
+float min_aim_command = 0.05f;
+std::shared_ptr<NetworkTable> table = NetworkTable::GetTable("limelight");
+float tx = table->GetNumber("tx");
+float ty = table->GetNumber("ty");
+if (joystick->GetRawButton(9))
+{
+float heading_error = -tx;
+float distance_error = -ty;
+float steering_adjust = 0.0f;
+if (tx > 1.0)
+{
+steering_adjust = KpAim*heading_error - min_aim_command;
+}
+else if (tx < -1.0)
+{
+steering_adjust = KpAim*heading_error + min_aim_command;
+}
+float distance_adjust = KpDistance * distance_error;
+left_command += steering_adjust + distance_adjust;
+right_command -= steering_adjust + distance_adjust;
+}

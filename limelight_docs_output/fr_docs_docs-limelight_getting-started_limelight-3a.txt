@@ -1,0 +1,386 @@
+Limelight 3A Guide de Démarrage Rapide
+Spécifications Matérielles
+​
+Dimensions: 2.839po x 1.894po (72.11mm x 48.11mm)
+Épaisseur: 0.661po (16.80mm)
+Masse: 0.20 lb
+Montage: 4x #10 THRU, 4x M3, 6x M4 trous de montage filetés
+Alimentation: 4.1V-5.75V via USB
+Consommation Maximale: 4W
+Capteur: OV5647 Couleur Rolling Shutter (640x480 @ 90FPS)
+Pas d'éclairage LED intégré
+Champ de Vision: H:54.5° V:42°
+Connectivité USB-C uniquement (pas de port RJ45)
+Voyant d'État: Vert (détection de cible)
+Optimisé pour la compatibilité FTC
+Capacités Logicielles (Limelight OS)
+​
+Vision haute performance Plug-and-Play. Aucune expérience requise.
+Interface utilisateur basée sur navigateur auto-hébergée pour la configuration du pipeline de vision
+Support pour FTC (intégration Java directe) et FRC (interface NetworkTables)
+Exposition, gain du capteur, résolution et fréquence d'images configurables
+Configuration de 10 pipelines de vision interchangeables:
+Pipelines Python personnalisés avec OpenCV 4.10, numpy, etc.
+Suivi d'AprilTag 2D, 3D et localisation du robot
+Localisation 3D complète (GPS du robot) avec MegaTag1
+Localisation 3D complète plus précise (GPS du robot) avec fusion IMU externe avec MegaTag2
+20fps @ 1280x960 (réduction 2x), 50fps @ 640x480 (réduction 2x)
+Visualiseur 3D complet dans l'interface web
+Pipelines de détection de blob couleur à 90FPS
+Pipelines de détection d'objets par réseau neuronal (inférence CPU uniquement)
+Pipelines de classification d'images par réseau neuronal (inférence CPU uniquement)
+Pipelines de suivi de codes-barres
+Interface de calibration intrinsèque Charuco intégrée
+Streaming MJPEG à faible latence intégré
+1. Montage du Limelight 3A
+​
+Montage Fileté (Recommandé)
+​
+Utilisez au moins 2 vis M3 ou M4 pour monter votre LL3A sur un profilé Rev ou GoBilda en utilisant les trous de montage filetés
+Vous pouvez également utiliser du ruban VHB ou des colliers de serrage pour fixer votre Limelight
+Montage avec Trous Traversants
+​
+Utilisez des boulons #10-32 ou #10-24 de 1 1/4" avec des écrous nylock
+Alternativement, utilisez des boulons M4 de 28mm avec des écrous nylock
+2. Câblage du Limelight 3A
+​
+Lorsque vous êtes prêt à utiliser votre Limelight sur votre robot:
+Pour FTC
+​
+Connectez un câble USBC vers USBA de votre Limelight 3A au port USB 3.0 de votre Control Hub
+Connectez-vous à votre Control Hub en branchant sur un port USB 3.0 (port bleu)
+Pour FRC
+​
+Connectez votre Limelight 3A au port USB de votre roboRIO
+Utilisez un câble USB-C vers USB-A
+Le Limelight 3A ne prend pas en charge Google Coral. Vous pouvez toujours utiliser des pipelines de détection et de classification neuronales en configurant le moteur d'exécution du réseau neuronal sur "CPU".
+3. Accès à l'Interface Web
+​
+Après avoir connecté votre Limelight 3A à votre ordinateur via USB:
+Attendez que le voyant d'état vert devienne actif (environ 15-20 secondes)
+Utilisez l'une de ces méthodes pour accéder à l'interface web:
+Méthode 1
+: Ouvrez l'application Limelight Hardware Manager, recherchez les Limelights, et double-cliquez sur votre Limelight 3A lorsqu'il apparaît
+Méthode 2
+: Ouvrez un navigateur web et accédez à
+http://limelight.local:5801
+Une fois connecté, vous aurez accès à:
+Onglet Paramètres - Configurez le numéro d'équipe, le nom d'hôte et d'autres paramètres système
+Onglets Pipeline de Vision - Configurez et ajustez vos pipelines de traitement de vision
+Onglet Caméra & Réticule - Ajustez les paramètres de la caméra et du réticule
+Onglet Visualisation 3D - Visualisez la détection et la localisation d'AprilTag en temps réel
+Toute la configuration se fait via cette interface web. Les modifications sont automatiquement enregistrées sur votre Limelight.
+4. Mise à Jour de LimelightOS
+​
+info
+Les Limelights sont livrés avec une image préinstallée. Vous pouvez probablement sauter cette étape pour l'instant.
+Instructions de Mise à Jour (Windows)
+attention
+Sauvegardez vos pipelines avant de mettre à jour LimelightOS. Ils seront supprimés pendant la mise à jour.
+Téléchargez les derniers pilotes USB, l'image Limelight OS et l'outil Balena Flash depuis la
+Page de Téléchargements
+Redémarrez votre machine après l'installation des pilotes
+Maintenez enfoncé le bouton de configuration bleu sur votre Limelight
+Tout en maintenant, branchez un câble USB->USB-C de votre ordinateur portable à votre Limelight (votre Limelight s'allumera automatiquement)
+Après avoir branché votre LL à votre ordinateur portable, vous pouvez relâcher le bouton de configuration bleu
+Votre Limelight est maintenant en mode flash, et ses LED ne clignoteront pas
+Exécutez "Balena Etcher" en tant qu'administrateur
+Votre machine peut prendre jusqu'à 20 secondes pour reconnaître la caméra
+Sélectionnez la dernière image .zip dans votre dossier de téléchargements
+Sélectionnez un périphérique "Compute Module" dans le menu "Drives"
+Cliquez sur "Flash"
+Une fois le flashage terminé, retirez le câble USB de votre Limelight
+Instructions de Mise à Jour (Avancé) (macOS & Linux)
+attention
+Sauvegardez vos pipelines avant de mettre à jour LimelightOS. Ils seront supprimés pendant la mise à jour.
+remarque
+Nous travaillons à simplifier considérablement le processus de mise à jour sur macOS et Linux
+Téléchargez l'image Limelight OS et l'outil Balena Flash depuis la
+Page de Téléchargements
+Construisez vous-même le pilote USB Boot:
+brew install libusb
+brew install pkg-config
+git clone --recurse-submodules --shallow-submodules --depth=1 https://github.com/raspberrypi/usbboot
+cd usbboot
+make
+cd mass-storage-gadget64
+sudo ../rpiboot -d .
+# Tant que rpiboot est en cours d'exécution, votre caméra s'énumérera correctement sur macOS et Linux
+# Vous devez exécuter rpiboot chaque fois que vous voulez flasher.
+Maintenez enfoncé le bouton de configuration bleu sur votre Limelight
+Tout en maintenant, branchez un câble USB->USB-C de votre ordinateur portable à votre Limelight (votre Limelight s'allumera automatiquement)
+Après avoir branché votre LL à votre ordinateur portable, vous pouvez relâcher le bouton de configuration bleu
+Votre Limelight est maintenant en mode flash, et ses LED ne clignoteront pas
+Exécutez "Balena Etcher"
+Votre machine peut prendre jusqu'à 20 secondes pour reconnaître la caméra
+Sélectionnez la dernière image .zip dans votre dossier de téléchargements
+Sélectionnez un périphérique "Compute Module" dans le menu "Drives"
+Cliquez sur "Flash"
+Une fois le flashage terminé, retirez le câble USB de votre Limelight
+5. Processus de Configuration
+​
+Pour FTC
+​
+Connectez votre Limelight à votre ordinateur portable avec un câble USB
+Accédez à l'interface web comme décrit dans la section 3
+Allez dans l'onglet Paramètres et définissez votre numéro d'équipe, puis cliquez sur "Redémarrer le Client Vision"
+Configurez vos pipelines selon vos besoins (AprilTag, Réseaux Neuronaux, Python Personnalisé, etc.)
+Lorsque vous êtes prêt pour la compétition, branchez votre Limelight 3A sur le port USB 3.0 de votre Control Hub
+Dans l'application FTC DriverStation, cliquez sur "Configurer le Robot"
+Si vous n'avez pas de configuration active, vous devrez peut-être en créer une nouvelle
+Cliquez sur le bouton "scanner"
+Vous devriez voir apparaître un "Périphérique Ethernet"
+Vous pouvez modifier le nom de ce périphérique en "limelight" pour plus de clarté
+Maintenant, vous pouvez initialiser un objet Limelight3A dans votre code en utilisant la carte matérielle
+Pour FRC
+​
+Connectez votre Limelight 3A à votre ordinateur portable, attendez l'activité du voyant d'état
+Accédez à l'interface web comme décrit dans la section 3
+Dans l'onglet Paramètres, définissez votre numéro d'équipe et cliquez sur "Redémarrer le Client Vision"
+Configurez vos pipelines selon vos besoins
+Lorsque vous êtes prêt, branchez votre Limelight 3A sur le port USB de votre roboRIO
+Ouvrez votre tableau de bord préféré pour vous assurer que votre 3A soumet des données aux NetworkTables de votre roboRIO
+6. Types de Pipelines Disponibles
+​
+Le Limelight 3A offre les mêmes fonctionnalités de traitement de vision que les autres modèles Limelight:
+Suivi d'AprilTag et localisation du robot
+Suivi de blob couleur
+Détection d'objets par réseau neuronal (CPU uniquement)
+Classification par réseau neuronal
+Suivi de codes-barres
+Pipelines Python personnalisés
+Chaque 3A est livré avec une carte de terrain Into The Deep intégrée pour FTC.
+7. Programmation FTC
+​
+Exemple FTC de base :
+Exemple FTC
+La plupart des applications nécessitent moins de 10 lignes de code :
+public
+class
+Teleop
+extends
+LinearOpMode
+{
+private
+Limelight3A
+limelight
+;
+@Override
+public
+void
+runOpMode
+(
+)
+throws
+InterruptedException
+{
+limelight
+=
+hardwareMap
+.
+get
+(
+Limelight3A
+.
+class
+,
+"limelight"
+)
+;
+telemetry
+.
+setMsTransmissionInterval
+(
+11
+)
+;
+limelight
+.
+pipelineSwitch
+(
+0
+)
+;
+/*
+* Commence à interroger les données.
+*/
+limelight
+.
+start
+(
+)
+;
+while
+(
+opModeIsActive
+(
+)
+)
+{
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose
+(
+)
+;
+telemetry
+.
+addData
+(
+"tx"
+,
+result
+.
+getTx
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"ty"
+,
+result
+.
+getTy
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"Botpose"
+,
+botpose
+.
+toString
+(
+)
+)
+;
+}
+}
+}
+}
+}
+Pour une précision maximale de localisation 3D, appelez
+updateRobotOrientation()
+et utilisez
+getBotPose_MT2()
+:
+while
+(
+opModeIsActive
+(
+)
+)
+{
+YawPitchRollAngles
+orientation
+=
+imu
+.
+getRobotYawPitchRollAngles
+(
+)
+;
+limelight
+.
+updateRobotOrientation
+(
+orientation
+.
+getYaw
+(
+AngleUnit
+.
+DEGREES
+)
+)
+;
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose_MT2
+(
+)
+;
+// Utiliser les données botpose
+}
+}
+}
+Pour plus d'informations, consultez la
+page de programmation FTC
+8. Dépannage
+​
+Indicateurs lumineux d'état
+​
+Lumière verte
+: Clignote lentement (pas de cibles), clignote rapidement (cibles détectées)
+FAQ
+​
+Pourquoi ma Limelight est-elle si chaude ?
+Pour que Limelight fonctionne aussi fraîchement que possible, elle doit nécessairement sembler aussi chaude que possible/que ce qui est sûr au toucher. Son boîtier est un dissipateur thermique hautement conducteur qui aide à maintenir le CPU à une température raisonnablement fraîche.
+Pourquoi l'image semble-t-elle si granuleuse ?
+Pour minimiser la latence, plusieurs filtres normalement présents sur les caméras commerciales sont ignorés. Le flux est également compressé pour minimiser le débit binaire. Dans la version 2024.10.1, nous avons modifié les valeurs d'équilibre des couleurs par défaut pour rendre les images plus naturelles et vibrantes à l'œil humain.
+Qu'offre Limelight par rapport à OpenCV sur le Control Hub ?
+Un algorithme de localisation multi-balises prêt à l'emploi, sans code, avec fusion de capteurs IMU du robot, réseaux de neurones, et plus encore.

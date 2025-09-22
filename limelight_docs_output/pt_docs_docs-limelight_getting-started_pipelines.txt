@@ -1,0 +1,51 @@
+Configuração de Pipeline
+O LimelightOS armazena até 10 pipelines de visão únicas.
+Uma pipeline é como um pequeno programa que recebe uma imagem, processa a imagem e fornece um objeto de resultados para você usar no código do seu robô.
+As pipelines executam de 10fps (Redes Neurais em CPU) a 90fps (rastreamento de objetos baseado em cores).
+Para começar a ajustar as pipelines, conecte-se à interface web via ethernet, wifi ou usb conforme descrito no guia de início rápido da sua unidade.
+Se você é um usuário avançado e alterou o Índice USB ou o Hostname do seu LL, você pode acessar a interface web em
+http://172.28.(usb_index).1:5801
+,
+http://172.29.(usb_index).1:5801
+, ou
+http://.local:5801
+info
+Para editar múltiplas pipelines, você deve primeiro marcar a caixa "Ignore NetworkTables Index" na interface web. Isso diz à câmera para ignorar qualquer código que a instrua a mudar de pipeline.
+Para baixar suas pipelines para backups e compartilhamento, simplesmente clique no botão "download" ao lado do nome da sua pipeline. Para fazer upload de uma pipeline, clique no botão "upload".
+Aqui está um exemplo de um robô que utiliza duas pipelines:
+https://thumbs.gfycat.com/UnfitLankyHadrosaurus-size_restricted.gif
+A primeira pipeline é ajustada para mirar em listras verticais únicas. A segunda pipeline é ajustada para encontrar uma combinação de duas listras horizontais. O código para este robô está disponível no estudo de caso "Aim and Range".
+Observe que quando o robô muda de pipeline, a interface web carrega automaticamente a nova pipeline.
+Aba de Entrada
+​
+A Aba de Entrada contém controles para alterar a imagem bruta da câmera antes de ser passada pela pipeline de processamento.
+Tipo de Pipeline
+​
+Controla o tipo de pipeline desejado (AprilTags, Redes Neurais, Python, etc.)
+Imagem de Origem
+​
+Controla a origem da imagem que é passada pela pipeline. Mude para "Snapshot" para testar suas pipelines de visão em Snapshots armazenados.
+Este controle é automaticamente redefinido para "Camera" quando a GUI é fechada.
+Resolução + Zoom
+​
+Controla a resolução da câmera e da pipeline de visão. Recomendamos usar a pipeline de 320x240, a menos que você esteja utilizando funcionalidades 3D.
+Pipelines de 320x240 executam a 90fps, enquanto pipelines de 960x720 executam a 22 fps. Em 2020, opções de Zoom de Hardware 2x e 3x foram adicionadas a este campo. As opções de zoom não são digitais e usam 100% de pixels reais do sensor.
+LEDs
+​
+Controla o modo LED padrão para esta pipeline. Isso pode ser substituído durante uma partida com a opção "LED" da network table.
+Usuários do Limelight 2+ têm acesso a um controle deslizante "LED Brightness" que permite a regulagem do brilho do LED.
+Orientação do Stream
+​
+Controla a orientação do stream após todo o processamento. Isso não afeta os dados de resultados de forma alguma.
+Exposição
+​
+Controla a configuração de exposição da câmera em intervalos de 0,01 milissegundos. Pense em uma câmera como uma grade de baldes coletores de luz - o tempo de exposição controla por quanto tempo os "baldes" da sua câmera ficam abertos por quadro. Diminuir o tempo de exposição irá efetivamente escurecer sua imagem. Tempos de exposição baixos e fixos são cruciais na FRC, pois eles eliminam a maior parte dos dados de imagem recebidos. Fitas retroreflexivas bem iluminadas se destacarão em uma imagem majoritariamente preta, transformando o processamento de visão em um processo simples.
+Black Level Offset
+​
+Aumentar o black level offset pode escurecer significativamente o stream da sua câmera. Isso deve ser aumentado para remover ainda mais as luzes da arena e pontos brilhantes da sua imagem. Esta é uma configuração no nível do sensor, e não uma configuração digital falsa de brilho.
+Ganho do Sensor
+​
+Aumentar o ganho do sensor irá efetivamente aumentar o brilho da imagem, mas geralmente também adicionará ruído à imagem. Você pode usar o Ganho do Sensor e o Black level offset para clarear a imagem sem aumentar o tempo de exposição. Isso minimizará o desfoque de movimento para aplicações de rastreamento de alta velocidade.
+Balanço de Vermelho, Balanço de Azul
+​
+Controla a intensidade dos componentes de cor Vermelha e Azul na sua imagem. Estes coletivamente controlam o balanço de branco do seu Limelight. Recomendamos deixar estes intocados

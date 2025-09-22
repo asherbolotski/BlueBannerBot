@@ -1,0 +1,70 @@
+ChArUco Kamera Kalibrasyonu
+Bu Neden Önemli?
+​
+Tam kalibre edilmiş bir kamera, daha doğru 2B ve 3B ölçümler sağlar. Bu, "servo" yöntemine dayanmayan herhangi bir görev için faydalıdır.
+Bununla birlikte, mümkün olduğunca "servo" yöntemini kullanmanızı öneririz. Hızlı, hassas ve nesne alma, hedefleme ve hedeflere hizalama gibi görevler için uygundur. İhtiyacınız olduğunu belirlemediğiniz sürece kalibrasyon hakkında endişelenmeyin. Her LL ünitesi, çoğu kullanım durumu için oldukça iyi sonuçlar sağlayacak varsayılan bir kalibrasyonla gelir
+"Servo", hedefiniz yapılandırılabilir bir "artı işareti" ile mükemmel şekilde hizalanana kadar robotunuzu döndürme işlemidir. Bu, robotik görüş problemlerine yaklaşmanın en kolay ve birçok durumda en güvenilir yoludur.
+Kamera Kalibrasyonu Nedir?
+​
+İç kalibrasyon, aşağıdaki iki bileşeni belirleme sürecidir:
+1. Kamera Matrisi
+​
+Genellikle K olarak gösterilen kamera matrisi, lensin ve sensörün 3B dünyayı 2B bir resme nasıl dönüştürdüğünü açıklayan 3x3 bir matristir.
+[fx  0   cx]
+[0   fy  cy]
+[0   0   1]
+cx ve cy, ana nokta / ana pikselin koordinatlarıdır. Ana nokta / ana piksel, optik eksen / lens merkeziyle doğrudan hizalanmış pikseldir. Üretim sırasında, kamera lensi neredeyse hiçbir zaman görüntü sensörünün merkeziyle mükemmel şekilde hizalanmaz. Hangi pikselin gerçek "merkez" piksel olduğunu anlamamız çok önemlidir
+fx ve fy, piksel cinsinden hesaplanmış odak uzunluklarıdır. fx ve fy, kameranın görüş alanını / zoom seviyesini anlamamıza yardımcı olur.
+2. Distorsiyon Katsayıları
+​
+5 distorsiyon katsayısı hesaplıyoruz:
+[k1, k2, p1, p2, k3]
+k1, k2, k3, düz çizgilerin eğri görünmesine neden olan radyal distorsiyon katsayılarıdır.
+p1, p2, lensin görüntü düzlemine paralel olmaması nedeniyle oluşan teğetsel distorsiyon katsayılarıdır.
+ChArUco Kalibrasyonu Gerçekleştirme
+​
+Limelight ile ChArUco kalibrasyonu, mümkün olduğunca sorunsuz ve sağlam olacak şekilde tasarlanmıştır. Aşağıdaki adımları okuyun ve ardından artan doğruluk için kameranızı nasıl kalibre edeceğinizi öğrenmek için aşağıdaki videoyu izleyin.
+bilgi
+Yalnızca bir çözünürlükte kalibrasyon yapmanız gerekir (LL3 için 1280x960 ve LL3G için 1280x800 öneririz). İç parametreler, pipeline'ınızın seçilen çözünürlüğüne uyacak şekilde otomatik olarak ölçeklendirilir ve distorsiyon katsayıları, sabit bir en-boy oranı ve FOV göz önüne alındığında çözünürlükten bağımsızdır. Donanım zoom pipeline'ları ve 5 megapiksel pipeline'lar, özel kalibrasyonları kullanmayan tek pipeline'lardır.
+Tahtayı Hazırlama
+​
+Kameranızı kalibre etmek için herhangi bir dizüstü bilgisayar ekranını kullanabilirsiniz. Ancak maksimum doğruluk için,
+calib.io'dan bu 800mmx600mm kaba tahtayı
+satın almanızı öneririz.
+Bir ChArUco Kalibrasyon Tahtası yazdırın veya büyük bir dizüstü bilgisayar ya da bilgisayar ekranında bir tahta görüntüsü kullanın.
+İndirme sayfamızdaki tahtamızı
+kullanın veya
+kendiniz oluşturun
+.
+Bir satırdaki toplam siyah kare sayısını ve toplam ArUco işaretçi sayısını ekleyerek ızgaranın "genişliğini" bulun (varsayılan Limelight kalibrasyon tahtası için 11).
+Bir sütundaki toplam siyah kare sayısını ve toplam ArUco işaretçi sayısını ekleyerek ızgaranın "yüksekliğini" bulun (varsayılan Limelight kalibrasyon tahtası için 8).
+Bir karenin ve bir işaretçinin kenar uzunluklarını milimetre cinsinden ölçerek "kare boyutu" ve "işaretçi boyutu" ölçümlerini doğrulayın.
+Kare boyutu ve işaretçi boyutu ölçümleri kritik öneme sahiptir, bu nedenle kumpas kullanın.
+Sözlük türünü not edin. İndirme sayfasındaki varsayılan tahta, 5x5_100 sözlüğünü kullanır.
+Kalibrasyon Görüntülerini Yakalama
+​
+Tahtanızın mümkün olduğunca düz olduğundan emin olun.
+Tahtanız düz değilse kalibrasyon yapmamalısınız. calib.io'dan özel tahtalar satın alabilir veya yazdırılmış tahtanızı bir panoya sabitleyebilirsiniz.
+Robotunuzu açın ve Limelight web arayüzüne erişin.
+1280x960 AprilTag pipeline'ı oluşturun.
+"Giriş" kaynak türünü "Kamera"dan "Anlık Görüntü"ye değiştirerek ve "Tüm anlık görüntüleri sil" düğmesine tıklayarak tüm kaydedilmiş anlık görüntüleri silin.
+"Giriş" kaynak türünü tekrar "Kamera"ya değiştirin.
+Başlamak için ChArUco tahtasının en az 25 anlık görüntüsünü yakalayın. İşleme aşina olduğunuzda, toplam en az 50 görüntü yakalamak için geri dönmek isteyeceksiniz.
+ChArUco kalibrasyonunun standart dama tahtası kalibrasyonuna göre ana avantajı, tahtanın yalnızca bir kısmı kameraya görünür olsa bile çalışmasıdır. Bu avantajdan yararlanmak önemlidir.
+Görüntülerinizin aşağıdaki özelliklerin iyi bir karışımına sahip olması gerekir:
+Tahtanız görüntünün geniş bölgelerini kaplar.
+Tahtanız görüntünün en az bir kenarını veya köşesini aşar (Bu, görüntülerin kenarlarındaki distorsiyonu hesaplamaya yardımcı olacaktır).
+Tahtanız genellikle perspektif bozulması olacak şekilde konumlandırılır (Tahta görüntü düzlemine paralel olmamalıdır).
+Tahta pozisyonlarında, perspektiflerde ve kapsamda geniş çeşitlilik hedefleyin.
+Görüntülerinizin %50'si önemli kısalma göstermelidir. Bu, yakındaki işaretçilerin uzaktaki işaretçilerden daha büyük görünmesi etkisidir. Aşağıdaki ekran görüntüsündeki ilk ve son görüntüler kısalmayı gösterir.
+Kalibre Etme
+​
+"Kalibrasyon" sekmesine gidin. Dikey kenar çubuğundaki üçüncü sekmedir.
+"Tahtayı Hazırlama" adımında bulunan beş değeri girin.
+"Anlık Görüntülerle Kalibre Et" düğmesine tıklayın. İşlem bir veya iki dakika sürebilir.
+Başarılı olduğunda, "En Son Kalibrasyon Sonucu" kartı en son kalibrasyon sonucunu gösterecektir.
+Düşük yeniden projeksiyon hatası (ideal olarak 1'den az) ile makul bir sonuç için "En Son Kalibrasyon Sonucu" kartını kontrol edin.
+En son kalibrasyon sonucunu indirin ve "özel - dosya" kalibrasyon yuvasına yükleyin.
+Artık üç doldurulmuş kalibrasyon sonuç kartı görmelisiniz.
+Özel kalibrasyon sonucunuzu kullanmak için "tercih edilen kalibrasyon"u "özel - dosya" olarak değiştirin. Tüm pipeline'lar kalibrasyon sonucunuzu kullanacaktır.
+İşleme aşina olduğunuzda daha fazla ekran görüntüsü yakalamayı ve yeniden kalibre etmeyi düşünün.

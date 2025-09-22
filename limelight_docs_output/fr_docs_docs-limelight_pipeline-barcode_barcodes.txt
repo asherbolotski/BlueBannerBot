@@ -1,0 +1,10 @@
+Décodage et suivi des codes-barres
+LLOS prend en charge le suivi et le décodage des codes QR, DataMatrix, UPC, EAN, Code128 et PDF417
+Avec les caméras intelligentes de la série LL3, vous pouvez vous attendre à :
+Détection et décodage de plusieurs codes QR à 50-60 FPS en 1280x800
+Détection et décodage de plusieurs DataMatrix à 50-60 FPS en 1280x800
+Décodage de plusieurs UPC, EAN, Code128 et PDF417 à 30 FPS en 1280x800
+Gardez à l'esprit les points suivants :
+Les chaînes de données des codes-barres sont publiées dans le tableau nt "rawbarcodes".
+Les données des codes-barres sont également publiées dans le tableau "Barcode" dans la sortie JSON Results.
+Le pipeline Barcodes remplira toutes les métriques 2D telles que tx, ty, ta, tcornxy, etc. dans toutes les API

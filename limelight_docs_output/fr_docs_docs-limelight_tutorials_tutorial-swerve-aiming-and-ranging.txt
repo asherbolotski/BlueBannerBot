@@ -1,0 +1,246 @@
+Visée et Portée Avec Swerve
+Voir le projet d'exemple complet
+ici
+// contrôle de rotation proportionnel simple avec Limelight.
+// le "contrôle proportionnel" est un algorithme de contrôle dans lequel la sortie est proportionnelle à l'erreur.
+// dans ce cas, nous allons renvoyer une vitesse angulaire qui est proportionnelle à la
+// valeur "tx" de la Limelight.
+double
+limelight_aim_proportional
+(
+)
+{
+// kP (constante de proportionnalité)
+// c'est un nombre ajusté manuellement qui détermine l'agressivité de notre boucle de contrôle proportionnel
+// s'il est trop élevé, le robot oscillera.
+// s'il est trop bas, le robot n'atteindra jamais sa cible
+// si le robot ne tourne jamais dans la bonne direction, kP devrait être inversé.
+double
+kP
+=
+.035
+;
+// tx varie de (-hfov/2) à (hfov/2) en degrés. Si votre cible est sur le bord droit extrême de
+// votre flux limelight 3, tx devrait renvoyer environ 31 degrés.
+double
+targetingAngularVelocity
+=
+LimelightHelpers
+.
+getTX
+(
+"limelight"
+)
+*
+kP
+;
+// convertir en radians par seconde pour notre méthode de conduite
+targetingAngularVelocity
+*=
+Drivetrain
+.
+kMaxAngularSpeed
+;
+// inverser car tx est positif lorsque la cible est à droite du réticule
+targetingAngularVelocity
+*=
+-
+1.0
+;
+return
+targetingAngularVelocity
+;
+}
+// contrôle de portée proportionnel simple avec la valeur "ty" de Limelight
+// cela fonctionne mieux si la hauteur de montage de votre Limelight et la hauteur de montage de la cible sont différentes.
+// si votre limelight et la cible sont montées à des hauteurs identiques ou similaires, utilisez "ta" (surface) pour la portée de la cible plutôt que "ty"
+double
+limelight_range_proportional
+(
+)
+{
+double
+kP
+=
+.1
+;
+double
+targetingForwardSpeed
+=
+LimelightHelpers
+.
+getTY
+(
+"limelight"
+)
+*
+kP
+;
+targetingForwardSpeed
+*=
+Drivetrain
+.
+kMaxSpeed
+;
+targetingForwardSpeed
+*=
+-
+1.0
+;
+return
+targetingForwardSpeed
+;
+}
+private
+void
+drive
+(
+boolean
+fieldRelative
+)
+{
+// Obtenir la vitesse x. Nous inversons cela car les manettes Xbox renvoient
+// des valeurs négatives lorsque nous poussons vers l'avant.
+var
+xSpeed
+=
+-
+m_xspeedLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getLeftY
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxSpeed
+;
+// Obtenir la vitesse y ou vitesse latérale/de déplacement. Nous inversons cela car
+// nous voulons une valeur positive lorsque nous tirons vers la gauche. Les manettes Xbox
+// renvoient par défaut des valeurs positives lorsque vous tirez vers la droite.
+var
+ySpeed
+=
+-
+m_yspeedLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getLeftX
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxSpeed
+;
+// Obtenir le taux de rotation angulaire. Nous inversons cela car nous voulons une
+// valeur positive lorsque nous tirons vers la gauche (rappelez-vous, CCW est positif en
+// mathématiques). Les manettes Xbox renvoient par défaut des valeurs positives lorsque vous tirez vers
+// la droite.
+var
+rot
+=
+-
+m_rotLimiter
+.
+calculate
+(
+MathUtil
+.
+applyDeadband
+(
+m_controller
+.
+getRightX
+(
+)
+,
+0.02
+)
+)
+*
+Drivetrain
+.
+kMaxAngularSpeed
+;
+// tant que le bouton A est enfoncé, remplacer certaines des valeurs de conduite par la sortie de nos méthodes limelight
+if
+(
+m_controller
+.
+getAButton
+(
+)
+)
+{
+final
+var
+rot_limelight
+=
+limelight_aim_proportional
+(
+)
+;
+rot
+=
+rot_limelight
+;
+final
+var
+forward_limelight
+=
+limelight_range_proportional
+(
+)
+;
+xSpeed
+=
+forward_limelight
+;
+// lors de l'utilisation de Limelight, désactiver la conduite relative au terrain.
+fieldRelative
+=
+false
+;
+}
+m_swerve
+.
+drive
+(
+xSpeed
+,
+ySpeed
+,
+rot
+,
+fieldRelative
+,
+getPeriod
+(
+)
+)
+;
+}

@@ -1,0 +1,143 @@
+Robot Lokalizasyonu MegaTag ile
+Eğer Limelight'ınızın robot-uzayı pozu web arayüzünde yapılandırılmışsa ve web arayüzü aracılığıyla bir saha haritası yüklenmişse, robotun saha uzayındaki konumu
+getBotpose() ve "botpose" networktables dizisi (x,y,z metre cinsinden, roll, pitch, yaw derece cinsinden) aracılığıyla kullanılabilir olacaktır.
+Robot lokalizasyon algoritmamız MegaTag olarak adlandırılır. Birden fazla etiket görüş alanındaysa, algoritma bireysel etiket belirsizliklerine ve görüntüdeki gürültüye karşı dayanıklıdır.
+Eğer tüm anahtar noktalar eş düzlemsel ise, hala bazı belirsizlik çevirme riskleri vardır.
+Yeşil Silindir: Etiket başına bireysel robot pozu
+Mavi Silindir: Eski BotPose
+Beyaz Silindir: MegaTag Botpose
+Buradaki belirgin poz belirsizliğine dikkat edin:
+Yeni botpose'un (beyaz silindir) eski botpose'a (mavi silindir) kıyasla ne kadar stabil olduğuna dikkat edin. Ayrıca tx ve ty değerlerini de izleyebilirsiniz.
+Bu sadece düzlemsel etiketlerle sınırlı değildir. Tam 3B'de ve herhangi bir yönelimde herhangi bir sayıda etikete ölçeklenebilir. Zemin etiketleri ve tavan etiketleri mükemmel çalışır.
+İşte basit bir düzlemsel durumda bunun nasıl çalıştığının bir yönünü gösteren bir diyagram.
+Sonuçlar aslında gösterilenden daha iyidir, çünkü gösterilen MegaTag'de bir nokta yerine üç noktaya önemli bir hata uygulanmıştır.
+3B birleşik MegaTag boyut ve anahtar nokta sayısı arttıkça, stabilitesi de artar.
+WPILib'in Poz Tahmincisini Kullanma
+​
+bilgi
+2024'te, WPILib Ekosisteminin çoğu tek-orijinli bir koordinat sistemine geçiş yaptı.
+2023'te, koordinat sisteminizin orijini ittifak renginize göre değişiyordu.
+2024 ve sonrası için, koordinat sisteminizin orijini her zaman "mavi" orijin olmalıdır. FRC takımları poz ile ilgili işlevler için her zaman botpose_wpiblue kullanmalıdır
+LimelightHelpers
+.
+PoseEstimate
+mt1
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue
+(
+"limelight"
+)
+;
+if
+(
+mt1
+.
+tagCount
+==
+1
+&&
+mt1
+.
+rawFiducials
+.
+length
+==
+1
+)
+{
+if
+(
+mt1
+.
+rawFiducials
+[
+0
+]
+.
+ambiguity
+>
+.7
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt1
+.
+rawFiducials
+[
+0
+]
+.
+distToCamera
+>
+3
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+}
+if
+(
+mt1
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+!
+doRejectUpdate
+)
+{
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.5
+,
+.5
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+mt1
+.
+pose
+,
+mt1
+.
+timestampSeconds
+)
+;
+}
+Limelight'ınızın Robot-Uzayı Pozunu Yapılandırma
+​
+LL Forward, LL Right ve LL Up, robotu canlandıracak olsaydınız Robotun ileri, sağ ve yukarı vektörleri boyunca mesafeleri temsil eder (metre cinsinden).
+LL Roll, Pitch ve Yaw, Limelight'ınızın derece cinsinden dönüşünü temsil eder. Bu değerleri değiştirebilir ve 3B görüntüleyicide Limelight'ın 3B modelinin değişimini izleyebilirsiniz.
+Limelight, kamera uzayındaki hedef pozundan -> saha uzayındaki robot pozuna geçmek için bu yapılandırmayı dahili olarak kullanır.

@@ -1,0 +1,390 @@
+Limelight 3A Hızlı Başlangıç
+Donanım Özellikleri
+​
+Boyut: 2.839in x 1.894in (72.11mm x 48.11mm)
+Kalınlık: 0.661in (16.80mm)
+Ağırlık: 0.20 lb
+Montaj: 4x #10 THRU, 4x M3, 6x M4 dişli montaj delikleri
+Güç Girişi: 4.1V-5.75V USB üzerinden
+Maksimum Güç Tüketimi: 4W
+Sensör: OV5647 Renkli Rolling Shutter (640x480 @ 90FPS)
+Dahili LED aydınlatma yok
+Görüş Alanı: H:54.5° V:42°
+Sadece USB-C bağlantısı (RJ45 portu yok)
+Durum Işığı: Yeşil (hedef tespiti)
+FTC uyumluluğu için optimize edilmiş
+Yazılım Özellikleri (Limelight OS)
+​
+Tak-Çalıştır yüksek performanslı görüntü işleme. Deneyim gerektirmez.
+Görüntü işleme hattı yapılandırması için kendi kendine barındırılan tarayıcı tabanlı arayüz
+FTC (doğrudan Java entegrasyonu) ve FRC (NetworkTables arayüzü) desteği
+Yapılandırılabilir pozlama, sensör kazancı, çözünürlük ve kare hızı
+10 Anında değiştirilebilir Görüntü İşleme Hattı yapılandırması:
+OpenCV 4.10, numpy vb. ile Özel Python Hatları
+2D, 3D AprilTag Takibi ve Robot Lokalizasyonu
+MegaTag1 ile Tam 3D Lokalizasyon (Robot GPS)
+MegaTag2 ile Harici IMU Füzyonu ile Daha Yüksek Doğrulukta Tam 3D Lokalizasyon (Robot GPS)
+20fps @ 1280x960 (2x ölçek küçültme), 50fps @ 640x480 (2x ölçek küçültme)
+Web arayüzünde Tam 3D Görselleştirici
+90FPS Renkli Blob hatları
+Sinir Ağı Nesne Algılama Hatları (Sadece CPU Çıkarımı)
+Sinir Ağı Görüntü Sınıflandırma Hatları (Sadece CPU Çıkarımı)
+Barkod Takip Hatları
+Dahili Charuco İçsel Kalibrasyon arayüzü
+Dahili düşük gecikmeli MJPEG Akışı
+1. Limelight 3A'yı Monte Etme
+​
+Dişli Montaj (Önerilen)
+​
+LL3A'nızı Rev veya GoBilda Kanala monte etmek için dişli montaj deliklerini kullanarak en az 2 M3 veya M4 vida kullanın
+Limelight'ınızı sabitlemek için VHB bant veya kablo bağları da kullanabilirsiniz
+Geçme Delik Montajı
+​
+1 1/4" #10-32 veya #10-24 cıvataları nylock somunlarla kullanın
+Alternatif olarak, 28mm M4 cıvataları nylock somunlarla kullanın
+2. Limelight 3A'yı Kablolama
+​
+Limelight'ınızı robotunuzda kullanmaya hazır olduğunuzda:
+FTC için
+​
+Limelight 3A'nızdan Kontrol Hub'ınızın USB 3.0 Portuna bir USBC - USBA kablosu bağlayın
+USB 3.0 portuna (mavi port) takarak Kontrol Hub'ınıza bağlanın
+FRC için
+​
+Limelight 3A'nızı roboRIO USB portuna bağlayın
+USB-C - USB-A kablosu kullanın
+Limelight 3A, Google Coral'ı desteklemez. Sinir ağı çalışma motorunu "CPU" olarak ayarlayarak yine de sinir ağı algılama ve sınıflandırma hatlarını kullanabilirsiniz.
+3. Web Arayüzüne Erişim
+​
+Limelight 3A'nızı USB üzerinden bilgisayarınıza bağladıktan sonra:
+Yeşil durum ışığının aktif olmasını bekleyin (yaklaşık 15-20 saniye)
+Web arayüzüne erişmek için şu yöntemlerden birini kullanın:
+Yöntem 1
+: Limelight Hardware Manager uygulamasını açın, Limelight'ları tarayın ve Limelight 3A'nız göründüğünde çift tıklayın
+Yöntem 2
+: Bir web tarayıcısı açın ve
+http://limelight.local:5801
+adresine gidin
+Bağlandığınızda şunlara erişebilirsiniz:
+Ayarlar sekmesi - Takım numarası, ana bilgisayar adı ve diğer sistem ayarlarını yapılandırın
+Görüntü İşleme Hattı sekmeleri - Görüntü işleme hatlarınızı kurun ve ayarlayın
+Kamera ve Nişangâh sekmesi - Kamera ayarlarını ve nişangâh parametrelerini ayarlayın
+3D Görselleştirme sekmesi - Gerçek zamanlı AprilTag algılama ve lokalizasyonu görüntüleyin
+Tüm yapılandırma bu web arayüzü üzerinden yapılır. Değişiklikler otomatik olarak Limelight'ınıza kaydedilir.
+4. LimelightOS'u Güncelleme
+​
+bilgi
+Limelight'lar önceden yüklenmiş bir imajla gelir. Muhtemelen şimdilik bu adımı atlayabilirsiniz.
+Güncelleme Talimatları (Windows)
+warning
+LimelightOS'u güncellemeden önce hatlarınızı kaydedin. Güncelleme sırasında silineceklerdir.
+En son USB sürücülerini, Limelight OS imajını ve Balena Flash aracını
+İndirmeler Sayfası
+'ndan indirin
+Sürücüleri kurduktan sonra bilgisayarınızı yeniden başlatın
+Limelight'ınızdaki mavi yapılandırma düğmesini basılı tutun
+Basılı tutarken, dizüstü bilgisayarınızdan Limelight'ınıza bir USB->USB-C kablosu bağlayın (Limelight'ınız otomatik olarak açılacaktır)
+LL'nizi dizüstü bilgisayarınıza taktıktan sonra mavi yapılandırma düğmesini bırakabilirsiniz
+Limelight'ınız artık flash modundadır ve LED'leri yanıp sönmeyecektir
+"Balena Etcher"ı yönetici olarak çalıştırın
+Bilgisayarınızın kamerayı tanıması 20 saniye kadar sürebilir
+İndirmeler klasörünüzdeki en son .zip imajını seçin
+"Sürücüler" menüsünde bir "Compute Module" cihazı seçin
+"Flash" düğmesine tıklayın
+Flash işlemi tamamlandıktan sonra USB kablosunu Limelight'ınızdan çıkarın
+Güncelleme Talimatları (Gelişmiş) (macOS ve Linux)
+warning
+LimelightOS'u güncellemeden önce hatlarınızı kaydedin. Güncelleme sırasında silineceklerdir.
+not
+macOS ve Linux'ta güncelleme sürecini önemli ölçüde basitleştirmek için çalışıyoruz
+Limelight OS imajını ve Balena Flash aracını
+İndirmeler Sayfası
+'ndan indirin
+USB Boot sürücüsünü kendiniz oluşturun:
+brew install libusb
+brew install pkg-config
+git clone --recurse-submodules --shallow-submodules --depth=1 https://github.com/raspberrypi/usbboot
+cd usbboot
+make
+cd mass-storage-gadget64
+sudo ../rpiboot -d .
+# rpiboot çalıştığı sürece, kameranız macOS ve Linux'ta düzgün şekilde tanınacaktır
+# Her flash yapmak istediğinizde rpiboot'u çalıştırmanız gerekir.
+Limelight'ınızdaki mavi yapılandırma düğmesini basılı tutun
+Basılı tutarken, dizüstü bilgisayarınızdan Limelight'ınıza bir USB->USB-C kablosu bağlayın (Limelight'ınız otomatik olarak açılacaktır)
+LL'nizi dizüstü bilgisayarınıza taktıktan sonra mavi yapılandırma düğmesini bırakabilirsiniz
+Limelight'ınız artık flash modundadır ve LED'leri yanıp sönmeyecektir
+"Balena Etcher"ı çalıştırın
+Bilgisayarınızın kamerayı tanıması 20 saniye kadar sürebilir
+İndirmeler klasörünüzdeki en son .zip imajını seçin
+"Sürücüler" menüsünde bir "Compute Module" cihazı seçin
+"Flash" düğmesine tıklayın
+Flash işlemi tamamlandıktan sonra USB kablosunu Limelight'ınızdan çıkarın
+5. Kurulum Süreci
+​
+FTC için
+​
+Limelight'ınızı bir USB kablosuyla dizüstü bilgisayarınıza bağlayın
+Bölüm 3'te açıklandığı gibi web arayüzüne erişin
+Ayarlar sekmesine gidin ve takım numaranızı ayarlayın, ardından "Görüntü İstemcisini Yeniden Başlat"a tıklayın
+Hatlarınızı istediğiniz gibi yapılandırın (AprilTag, Sinir Ağları, Özel Python vb.)
+Yarışmaya hazır olduğunuzda, Limelight 3A'nızı Kontrol Hub'ınızın USB 3.0 portuna takın
+FTC DriverStation Uygulamasında "Robotu Yapılandır"a tıklayın
+Aktif bir yapılandırmanız yoksa, yeni bir tane oluşturmanız gerekebilir
+"Tara" düğmesine tıklayın
+Bir "Ethernet Cihazı" görünmeli
+Bu cihazın adını netlik için "limelight" olarak düzenleyebilirsiniz
+Artık kodunuzda donanım haritasını kullanarak bir Limelight3A nesnesi başlatabilirsiniz
+FRC için
+​
+Limelight 3A'nızı dizüstü bilgisayarınıza bağlayın, durum ışığı etkinliğini bekleyin
+Bölüm 3'te açıklandığı gibi web arayüzüne erişin
+Ayarlar sekmesinde takım numaranızı ayarlayın ve "Görüntü İstemcisini Yeniden Başlat"a tıklayın
+Hatlarınızı istediğiniz gibi yapılandırın
+Hazır olduğunuzda, Limelight 3A'nızı roboRIO'nuzun USB portuna takın
+3A'nızın roboRIO'nuzun NetworkTables'ına veri gönderdiğinden emin olmak için tercih ettiğiniz gösterge panelini açın
+6. Mevcut Hat Türleri
+​
+Limelight 3A, diğer Limelight modellerinde bulunan aynı görüntü işleme özelliklerini sunar:
+AprilTag takibi ve robot lokalizasyonu
+Renkli blob takibi
+Sinir ağı nesne algılama (sadece CPU)
+Sinir ağı sınıflandırması
+Barkod takibi
+Özel Python hatları
+Her 3A, FTC için yerleşik Into The Deep saha haritasıyla birlikte gelir.
+7. FTC Programming
+​
+Temel FTC Örneği:
+FTC Örneği
+Çoğu uygulama 10 satırdan az kod gerektirir:
+public
+class
+Teleop
+extends
+LinearOpMode
+{
+private
+Limelight3A
+limelight
+;
+@Override
+public
+void
+runOpMode
+(
+)
+throws
+InterruptedException
+{
+limelight
+=
+hardwareMap
+.
+get
+(
+Limelight3A
+.
+class
+,
+"limelight"
+)
+;
+telemetry
+.
+setMsTransmissionInterval
+(
+11
+)
+;
+limelight
+.
+pipelineSwitch
+(
+0
+)
+;
+/*
+* Veri toplamayı başlatır.
+*/
+limelight
+.
+start
+(
+)
+;
+while
+(
+opModeIsActive
+(
+)
+)
+{
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose
+(
+)
+;
+telemetry
+.
+addData
+(
+"tx"
+,
+result
+.
+getTx
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"ty"
+,
+result
+.
+getTy
+(
+)
+)
+;
+telemetry
+.
+addData
+(
+"Botpose"
+,
+botpose
+.
+toString
+(
+)
+)
+;
+}
+}
+}
+}
+}
+Maksimum 3D lokalizasyon doğruluğu için,
+updateRobotOrientation()
+çağırın ve
+getBotPose_MT2()
+kullanın:
+while
+(
+opModeIsActive
+(
+)
+)
+{
+YawPitchRollAngles
+orientation
+=
+imu
+.
+getRobotYawPitchRollAngles
+(
+)
+;
+limelight
+.
+updateRobotOrientation
+(
+orientation
+.
+getYaw
+(
+AngleUnit
+.
+DEGREES
+)
+)
+;
+LLResult
+result
+=
+limelight
+.
+getLatestResult
+(
+)
+;
+if
+(
+result
+!=
+null
+)
+{
+if
+(
+result
+.
+isValid
+(
+)
+)
+{
+Pose3D
+botpose
+=
+result
+.
+getBotpose_MT2
+(
+)
+;
+// Botpose verilerini kullanın
+}
+}
+}
+Daha fazla bilgi için
+FTC Programlama sayfasına
+bakın
+8. Sorun Giderme
+​
+Durum Işığı Göstergeleri
+​
+Yeşil Işık
+: Yavaşça yanıp söner (hedef yok), hızlıca yanıp söner (hedefler algılandı)
+SSS
+​
+Limelight neden bu kadar sıcak hissediyor?
+Limelight'ın mümkün olduğunca serin çalışması için, dokunulduğunda mümkün olduğunca/güvenli olduğu kadar sıcak hissetmesi gerekir. Muhafazası, CPU'yu makul derecede serin bir sıcaklıkta tutmaya yardımcı olan yüksek iletkenliğe sahip bir soğutucudur.
+Görüntü neden bu kadar grenli görünüyor?
+Gecikmeyi en aza indirmek için, ticari kameralarda normalde bulunan birkaç filtre atlanır. Bit hızını en aza indirmek için akış da sıkıştırılır. 2024.10.1'de, görüntülerin insan gözüne daha doğal ve canlı görünmesi için varsayılan renk dengesi değerlerini değiştirdik.
+Limelight, Control Hub üzerindeki OpenCV'ye göre ne sunuyor?
+Kutudan çıkar çıkmaz, sıfır kod, çoklu etiket lokalizasyon algoritması, robot IMU sensör füzyonu, sinir ağları ve daha fazlası.

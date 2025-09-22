@@ -1,0 +1,451 @@
+API de NetworkTables
+Limelight OS incluye un Cliente NetworkTables 4. Se conecta automáticamente
+al Servidor NetworkTables 4 que se ejecuta en Robots FRC basado en el Número de Equipo / ID configurado
+en la interfaz de Configuración.
+Todos los datos se publican en una tabla que coincide con el nombre del dispositivo (por ejemplo, "limelight"). Si se asigna un nombre de host / apodo a tu cámara,
+el nombre de la tabla coincidirá con el nombre completo de limelight (por ejemplo, "limelight-top").
+LimelightLib WPIJava y LimelightLib WPICPP interactúan con los dispositivos Limelight a través de NetworkTables.
+Datos Básicos de Seguimiento
+​
+Utiliza el siguiente código:
+Java
+LabView
+C++
+Python
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"<variablename>"
+)
+.
+getDouble
+(
+0
+)
+;
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+->
+GetNumber
+(
+"<variablename>"
+,
+0.0
+)
+;
+NetworkTables
+.
+getTable
+(
+"limelight"
+)
+.
+getNumber
+(
+'<variablename>'
+)
+;
+para recuperar estos datos:
+clave
+tipo
+descripción
+tv
+int
+1 si existe un objetivo válido. 0 si no existen objetivos válidos
+tx
+double
+Desplazamiento Horizontal Desde la Mira Hasta el Objetivo (LL1: -27 grados a 27 grados / LL2: -29.8 a 29.8 grados)
+ty
+double
+Desplazamiento Vertical Desde la Mira Hasta el Objetivo (LL1: -20.5 grados a 20.5 grados / LL2: -24.85 a 24.85 grados)
+txnc
+double
+Desplazamiento Horizontal Desde el Píxel Principal Hasta el Objetivo (grados)
+tync
+double
+Desplazamiento Vertical Desde el Píxel Principal Hasta el Objetivo (grados)
+ta
+double
+Área del Objetivo (0% de la imagen a 100% de la imagen)
+tl
+double
+Contribución de latencia del pipeline (ms). Añadir a "cl" para obtener la latencia total.
+cl
+double
+Latencia de captura del pipeline (ms). Tiempo entre el final de la exposición de la fila central del sensor hasta el inicio del pipeline de seguimiento.
+t2d
+double
+Array que contiene varios valores para estadísticas con marca de tiempo: [targetValid, targetCount, targetLatency, captureLatency, tx, ty, txnc, tync, ta, tid, targetClassIndexDetector, targetClassIndexClassifier, targetLongSidePixels, targetShortSidePixels, targetHorizontalExtentPixels, targetVerticalExtentPixels, targetSkewDegrees]
+getpipe
+int
+Índice activo real del pipeline de la cámara (0 .. 9)
+getpipetype
+string
+Tipo de Pipeline, por ejemplo "pipe_color"
+json
+string
+Volcado JSON completo de los resultados de seguimiento. Debe habilitarse por pipeline en la pestaña 'output'
+tclass
+string
+Nombre de clase del resultado principal del detector neural o resultado del clasificador neural
+tc
+doubleArray
+Obtener el color HSV promedio debajo de la región de la mira (región de 3x3 píxeles) como un NumberArray
+hb
+double
+valor de latido. Aumenta una vez por fotograma, se reinicia a los 2 mil millones
+hw
+doubleArray
+Métricas de hardware [fps, temperatura de CPU, uso de RAM, temperatura]
+crosshairs
+doubleArray
+Miras 2D [cx0, cy0, cx1, cy1]
+tcclass
+string
+Nombre de la clase calculada por el pipeline clasificador
+tdclass
+string
+Nombre de la detección principal del pipeline detector
+AprilTag y Datos 3D
+​
+Utilice el siguiente código:
+Java
+C++
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"<variablename>"
+)
+.
+getDoubleArray
+(
+new
+double
+[
+6
+]
+)
+;
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+->
+GetNumberArray
+(
+"<variablename>"
+,
+std
+::
+vector
+<
+double
+>
+(
+6
+)
+)
+;
+para recuperar estos datos:
+clave
+tipo
+descripción
+botpose
+doubleArray
+Transformación del robot en el espacio de campo. Traslación (X,Y,Z) en metros, Rotación (Roll,Pitch,Yaw) en grados, latencia total (cl+tl), recuento de tags, extensión de tags, distancia promedio de tags desde la cámara, área promedio de tags (porcentaje de imagen)
+botpose_wpiblue
+doubleArray
+Transformación del robot en el espacio de campo (origen WPILIB de la estación azul). Traslación (X,Y,Z) en metros, Rotación (Roll,Pitch,Yaw) en grados, latencia total (cl+tl), recuento de tags, extensión de tags, distancia promedio de tags desde la cámara, área promedio de tags (porcentaje de imagen)
+botpose_wpired
+doubleArray
+Transformación del robot en el espacio de campo (origen WPILIB de la estación roja). Traslación (X,Y,Z) en metros, Rotación (Roll,Pitch,Yaw) en grados, latencia total (cl+tl), recuento de tags, extensión de tags, distancia promedio de tags desde la cámara, área promedio de tags (porcentaje de imagen)
+botpose_orb
+doubleArray
+Transformación del robot en el espacio de campo (Megatag2). Traslación (X,Y,Z) en metros, Rotación (Roll,Pitch,Yaw) en grados, latencia total (cl+tl), recuento de tags, extensión de tags, distancia promedio de tags desde la cámara, área promedio de tags (porcentaje de imagen)
+botpose_orb_wpiblue
+doubleArray
+Transformación del robot en el espacio de campo (Megatag2) (origen WPILIB de la estación azul). Traslación (X,Y,Z) en metros, Rotación (Roll,Pitch,Yaw) en grados, latencia total (cl+tl), recuento de tags, extensión de tags, distancia promedio de tags desde la cámara, área promedio de tags (porcentaje de imagen)
+botpose_orb_wpired
+doubleArray
+Transformación del robot en el espacio de campo (Megatag2) (origen WPILIB de la estación roja). Traslación (X,Y,Z) en metros, Rotación (Roll,Pitch,Yaw) en grados, latencia total (cl+tl), recuento de tags, extensión de tags, distancia promedio de tags desde la cámara, área promedio de tags (porcentaje de imagen)
+camerapose_targetspace
+doubleArray
+Transformación 3D de la cámara en el sistema de coordenadas del AprilTag principal en vista (array (6))    [tx, ty, tz, pitch, yaw, roll] (metros, grados)
+targetpose_cameraspace
+doubleArray
+Transformación 3D del AprilTag principal en vista en el sistema de coordenadas de la Cámara (array (6)) [tx, ty, tz, pitch, yaw, roll] (metros, grados)
+targetpose_robotspace
+doubleArray
+Transformación 3D del AprilTag principal en vista en el sistema de coordenadas del Robot (array (6))   [tx, ty, tz, pitch, yaw, roll] (metros, grados)
+botpose_targetspace
+doubleArray
+Transformación 3D del robot en el sistema de coordenadas del AprilTag principal en vista (array (6))    [tx, ty, tz, pitch, yaw, roll] (metros, grados)
+camerapose_robotspace
+doubleArray
+Transformación 3D de la cámara en el sistema de coordenadas del robot (array (6))
+tid
+int
+ID del AprilTag principal en vista
+stddevs
+doubleArray
+Desviaciones Estándar de MegaTag [MT1x, MT1y, MT1z, MT1roll, MT1pitch, MT1Yaw, MT2x, MT2y, MT2z, MT2roll, MT2pitch, MT2yaw]
+camerapose_robotspace_set
+doubleArray
+ESTABLECER la pose de la cámara en el sistema de coordenadas del robot.
+priorityid
+int
+ESTABLECER el ID requerido para el objetivo tx/ty. Ignorar otros objetivos. No afecta la localización
+robot_orientation_set
+doubleArray
+ESTABLECER la orientación del robot y velocidades angulares en grados y grados por segundo [yaw,yawrate,pitch,pitchrate,roll,rollrate]
+fiducial_id_filters_set
+doubleArray
+Anular IDs fiduciales válidos para localización (array)
+fiducial_offset_set
+doubleArray
+ESTABLECER el desplazamiento del punto de interés 3D [x,y,z]
+Controles de Cámara
+​
+Utilice el siguiente código:
+Java
+LabView
+C++
+Python
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"<variablename>"
+)
+.
+setNumber
+(
+<
+value
+>
+)
+;
+nt
+::
+NetworkTableInstance
+::
+GetDefault
+(
+)
+.
+GetTable
+(
+"limelight"
+)
+->
+PutNumber
+(
+"<variablename>"
+,
+<
+value
+>
+)
+;
+NetworkTables
+.
+getTable
+(
+"limelight"
+)
+.
+putNumber
+(
+'<variablename>'
+,
+<
+value
+>
+)
+para establecer estos datos:
+ledMode
+Establece el estado del LED de limelight
+[0]
+usar el Modo LED establecido en el pipeline actual
+[1]
+forzar apagado
+[2]
+forzar parpadeo
+[3]
+forzar encendido
+pipeline
+Establece el pipeline actual de limelight
+0 .. 9
+Seleccionar pipeline 0..9
+stream
+Establece el modo de transmisión de limelight
+0
+Estándar - Transmisiones lado a lado si hay una webcam conectada a Limelight
+1
+PiP Principal - La transmisión de la cámara secundaria se coloca en la esquina inferior derecha de la transmisión de la cámara principal
+2
+PiP Secundaria - La transmisión de la cámara principal se coloca en la esquina inferior derecha de la transmisión de la cámara secundaria
+crop
+(Array) Establece el rectángulo de recorte. El pipeline debe utilizar el rectángulo de recorte predeterminado en la interfaz web. El array debe tener exactamente 4 entradas.
+[0]
+X0 - Valor mínimo o máximo de X del rectángulo de recorte (-1 a 1)
+[1]
+X1 - Valor mínimo o máximo de X del rectángulo de recorte (-1 a 1)
+[2]
+Y0 - Valor mínimo o máximo de Y del rectángulo de recorte (-1 a 1)
+[3]
+Y1 - Valor mínimo o máximo de Y del rectángulo de recorte (-1 a 1)
+throttle_set
+(int) Recomendamos establecer esto en 100-200 mientras está deshabilitado. Establece el número de frames a omitir entre frames procesados para reducir el aumento de temperatura. Las salidas no se ponen a cero durante los frames omitidos.
+Java
+C++
+double
+[
+]
+cropValues
+=
+new
+double
+[
+4
+]
+;
+cropValues
+[
+0
+]
+=
+-
+1.0
+;
+cropValues
+[
+1
+]
+=
+1.0
+;
+cropValues
+[
+2
+]
+=
+-
+1.0
+;
+cropValues
+[
+3
+]
+=
+1.0
+;
+NetworkTableInstance
+.
+getDefault
+(
+)
+.
+getTable
+(
+"limelight"
+)
+.
+getEntry
+(
+"crop"
+)
+.
+setDoubleArray
+(
+cropValues
+)
+;
+wip
+Controles de IMU
+​
+clave
+tipo
+descripción
+imumode_set
+int
+Establecer el modo IMU. 0 - usar IMU externo, 1 - usar IMU externo, inicializar IMU interno, 2 - usar interno, 3 - usar interno con convergencia asistida por MT1, 4 - usar IMU interno con convergencia asistida por IMU externo
+imuassistalpha_set
+double
+Filtro complementario alfa / fuerza. Valores más altos harán que el IMU interno converja más rápidamente en la fuente de asistencia. El valor predeterminado se establece en un valor bajo 0.001 porque ahora confiamos más en el IMU interno que antes. Los modos de asistencia están diseñados para "tirar" suavemente del IMU interno hacia la fuente de asistencia elegida.
+Python
+​
+Los scripts de Python permiten datos arbitrarios de entrada y salida.
+llpython
+NumberArray enviado por scripts de Python. Esto es accesible dentro del código del robot.
+llrobot
+NumberArray enviado por el robot. Esto es accesible dentro de los SnapScripts de Python.
+Datos sin procesar
+​
+Esquinas:
+Habilita "send contours" en la pestaña "Output" para transmitir coordenadas de esquinas:
+tcornxy
+Array de números con coordenadas de esquinas [x0,y0,x1,y1......]
+Objetivos sin procesar:
+Limelight publica tres contornos sin procesar en NetworkTables que no están influenciados por tu modo de agrupación. Es decir, se filtran con los parámetros de tu pipeline, pero nunca se agrupan. X e Y se devuelven en espacio de pantalla normalizado (-1 a 1) en lugar de grados.
+rawtargets
+[txnc,tync,ta,txnc2,tync2,ta2....]
+Marcadores fiduciales sin procesar:
+Obtén todos los marcadores fiduciales válidos (sin filtrar)
+rawfiducials
+[id, txnc, tync, ta, distToCamera, distToRobot, ambiguity, id2.....]
+Detecciones sin procesar:
+Obtén todos los resultados válidos (sin filtrar) de detección neuronal
+rawdetections
+[id, txnc, tync, ta, corner0x, corner0y, corner1x, corner1y, corner2x, corner2y, corner3x, corner3y, id2.....]
+Códigos de barras sin procesar:
+Obtén todos los resultados válidos (sin filtrar) de códigos de barras
+rawbarcodes
+array de strings con datos de códigos de barras

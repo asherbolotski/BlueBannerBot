@@ -1,0 +1,69 @@
+Calibration de caméra ChArUco
+Pourquoi est-ce important ?
+​
+Une caméra entièrement calibrée fournira des mesures 2D et 3D plus précises. C'est utile pour toute tâche qui n'est pas basée sur le "servoing" vers le réticule.
+Cela dit, nous recommandons d'utiliser la méthode de "servoing" aussi souvent que possible. Elle est rapide, précise et adaptée à des tâches telles que l'acquisition d'objets, la visée et l'alignement sur des cibles. Ne vous inquiétez pas de la calibration à moins que vous ne déterminiez que vous avez besoin d'une plus grande précision. Chaque unité LL est livrée avec une calibration par défaut qui fournira des résultats assez bons pour la plupart des cas d'utilisation
+Le "servoing" est le processus qui consiste à faire tourner votre robot jusqu'à ce que votre cible soit parfaitement alignée avec un "réticule" configurable. C'est la façon la plus simple et, dans de nombreux cas, la plus fiable d'aborder les problèmes de vision en robotique.
+Qu'est-ce que la calibration de caméra ?
+​
+La calibration des paramètres intrinsèques est le processus de détermination des deux composants suivants :
+1. La matrice de caméra
+​
+La matrice de caméra, souvent notée K, est une matrice 3x3 qui décrit comment l'objectif et le capteur transforment le monde 3D en une image 2D.
+[fx  0   cx]
+[0   fy  cy]
+[0   0   1]
+cx et cy sont les coordonnées du point principal / pixel principal. Le point principal / pixel principal est le pixel qui est directement aligné avec l'axe optique / le centre de l'objectif. Lors de la fabrication, l'objectif de la caméra n'est presque jamais parfaitement aligné avec le centre du capteur d'image. Il est crucial que nous comprenions quel pixel est le véritable pixel "central"
+fx et fy sont des longueurs focales calculées en pixels. fx et fy nous aident à comprendre le champ de vision / niveau de zoom de la caméra.
+2. Coefficients de distorsion
+​
+Nous calculons 5 coefficients de distorsion :
+[k1, k2, p1, p2, k3]
+k1, k2, k3 sont des coefficients de distorsion radiale qui font apparaître les lignes droites comme courbées.
+p1, p2 sont des coefficients de distorsion tangentielle qui se produisent lorsque l'objectif n'est pas parallèle au plan de l'image
+Réalisation de la calibration ChArUco
+​
+La calibration ChArUco avec Limelight a été conçue pour être aussi fluide et fiable que possible. Lisez les étapes suivantes, puis regardez la vidéo ci-dessous pour apprendre à calibrer votre caméra pour une précision accrue.
+info
+Vous n'avez besoin de calibrer qu'à une seule résolution (nous recommandons 1280x960 pour LL3 et 1280x800 pour LL3G). Les paramètres intrinsèques sont automatiquement mis à l'échelle pour correspondre à la résolution choisie par votre pipeline, et les coefficients de distorsion sont invariants en résolution pour un rapport d'aspect et un champ de vision fixes. Les pipelines avec zoom matériel et les pipelines 5 mégapixels sont les seuls pipelines qui n'utiliseront pas de calibrations personnalisées.
+Préparation du tableau
+​
+Vous pouvez utiliser n'importe quel écran d'ordinateur portable pour calibrer votre caméra. Pour une précision maximale, cependant, nous recommandons d'acheter ce
+tableau grossier 800mmx600mm de calib.io
+Imprimez un tableau de calibration ChArUco ou utilisez une image d'un tableau sur un grand écran d'ordinateur portable ou d'ordinateur. Utilisez
+notre tableau depuis la page de téléchargements
+, ou
+générez le vôtre
+.
+Trouvez la "largeur" de la grille en additionnant le nombre total de carrés noirs et le nombre total de marqueurs ArUco dans une rangée (11 pour le tableau de calibration Limelight par défaut).
+Trouvez la "hauteur" de la grille en additionnant le nombre total de carrés noirs et le nombre total de marqueurs ArUco dans une colonne (8 pour le tableau de calibration Limelight par défaut).
+Confirmez les mesures de "taille de carré" et "taille de marqueur" en mesurant les longueurs des côtés d'un carré et d'un marqueur en millimètres.
+Les mesures de taille de carré et de taille de marqueur sont critiques, utilisez donc un pied à coulisse.
+Notez le type de dictionnaire. Le tableau par défaut de la page de téléchargements utilise le dictionnaire 5x5_100.
+Capture d'images de calibration
+​
+Assurez-vous que votre tableau est aussi plat que possible.
+Vous ne devriez pas effectuer de calibration si votre tableau n'est pas plat. Vous pouvez acheter des tableaux spéciaux chez calib.io, ou fixer votre tableau imprimé à un clipboard.
+Allumez votre robot et accédez à l'interface web Limelight.
+Créez un pipeline AprilTag 1280x960.
+Supprimez tous les instantanés enregistrés en changeant le type de source "input" de "Camera" à "Snapshot" et en cliquant sur "Delete all snapshots".
+Changez le type de source "input" à nouveau en "Camera".
+Capturez au moins 25 instantanés du tableau ChArUco pour commencer. Une fois que vous serez familiarisé avec le processus, vous voudrez revenir pour capturer un total d'au moins 50 images.
+Le principal avantage de la calibration ChArUco par rapport à la calibration standard de l'échiquier est qu'elle fonctionne même si seulement une partie du tableau est visible par la caméra. Il est important d'utiliser cet avantage.
+Vos images devraient présenter un bon mélange des qualités suivantes :
+Votre tableau couvre de grandes régions de l'image.
+Votre tableau s'étend au-delà d'au moins un bord ou coin de l'image (Cela aidera à calculer la distorsion autour des bords des images).
+Votre tableau est souvent positionné de manière à avoir une déformation de perspective (Le tableau ne doit pas être parallèle au plan de l'image).
+Visez une grande diversité dans les positions du tableau, les perspectives et la couverture.
+50% de vos images devraient illustrer un raccourcissement significatif. C'est l'effet où les marqueurs plus proches apparaissent plus grands que les marqueurs éloignés. La première et la dernière image de la capture d'écran suivante démontrent le raccourcissement
+Calibration
+​
+Naviguez vers l'onglet "Calibration". C'est le troisième onglet dans la barre latérale verticale.
+Entrez les cinq valeurs trouvées à l'étape "Préparation du tableau".
+Cliquez sur le bouton "Calibrate with Snapshots". Le processus peut prendre une minute ou deux pour se terminer.
+En cas de succès, la carte "Latest Calibration Result" affichera le dernier résultat de calibration.
+Vérifiez la carte "Latest Calibration Result" pour un résultat raisonnable avec une faible erreur de reprojection (idéalement inférieure à 1).
+Téléchargez le dernier résultat de calibration et téléversez-le dans l'emplacement de calibration "custom - file".
+Vous devriez maintenant voir trois cartes de résultat de calibration remplies.
+Changez votre "preferred calibration" à "custom - file" pour utiliser votre résultat de calibration personnalisé. Tous les pipelines utiliseront votre résultat de calibration.
+Envisagez de capturer plus de captures d'écran et de recalibrer une fois que vous êtes familiarisé avec le processus.

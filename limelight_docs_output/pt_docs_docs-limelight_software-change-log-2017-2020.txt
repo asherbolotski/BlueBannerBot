@@ -1,0 +1,356 @@
+Registro de Alterações de Software 2017 - 2020
+2020.4  (11/03/20)
+​
+2020.4 é mais uma atualização crítica que elimina a falha intermitente de 2-4 segundos que poderia ocorrer durante uma desconexão abrupta do stream mjpeg. Isso frequentemente acontecia no final da partida e, em alguns casos, poderia acontecer durante as partidas.
+2020.3  (25/02/20)
+​
+2020.3 é uma atualização crítica que resolve reinicializações intermitentes relacionadas à rede e corrige uma falha que ocorreria após a desconexão da câmera USB.
+2020.2  (30/01/20)
+​
+2020.2 leva o hardware do Limelight ainda mais longe, adicionando a capacidade de panorâmica e zoom para qualquer ponto. Também adiciona um novo modo de vídeo e correções importantes de bugs. Informe-nos quais recursos você gostaria de ver em atualizações futuras!
+Recursos
+​
+Zoom de Hardware 3x a 60 FPS
+Nossa última atualização adicionou Zoom de Hardware 2x para todos os modelos Limelight sem nenhum custo. Conseguimos levar nosso zoom de hardware ainda mais longe com o Zoom de Hardware 3x. Todos os modelos Limelight agora são capazes de Zoom de Hardware 3x a 60fps. Isso torna o rastreamento em quadra completa ainda mais fácil para todas as equipes.
+Panorâmica de Hardware
+Robôs capazes de atirar de distâncias longas e curtas em 2020 teriam dificuldade em usar o Zoom de Hardware em seus Limelights sem o uso de um suporte Limelight ajustável e ativo. Incorporamos a Panorâmica de Hardware para resolver esse problema.
+Correções de Bugs
+​
+Resolução de problemas de driver que estavam quebrando os controles deslizantes de balanço de cores
+Reversão de todos os drivers relacionados à rede para variantes da temporada 2019 para resolver um pequeno número de relatórios de desempenho de rede das equipes
+2020.1  (16/01/20)
+​
+2020.1 adiciona um dos recursos mais interessantes do Limelight até agora: Zoom de Hardware 2x. Isso não é zoom digital, e agora está habilitado para todas as versões do Limelight.
+Recursos
+​
+Zoom de Hardware 2x
+Não é zoom digital
+Habilite o zoom de hardware 2x para obter rastreamento vastamente melhorado a longa distância e rastreamento estável em distâncias de quadra completa.
+Este recurso não tem absolutamente nenhum custo de latência ou taxa de quadros - o rastreamento continua a ser executado a 90fps sem sobrecarga adicional.
+Miras Manuais
+Ajuste manualmente as localizações de mira única e dupla com controles deslizantes na interface web
+Novos recursos SolvePNP / 3D (Ainda experimentais)
+Adicionamos a opção "Forçar Convexo" para usar apenas os pontos mais externos de um alvo - isso é necessário em 2020 devido à fita fina usada para o alvo hexagonal.
+A opção "vincular alvo" foi adicionada. Este recurso vincula "tx" e "ty" ao alvo 3D. Isso é necessário para guiar robôs para pontuar usando alvos 3D.
+Finalmente, adicionamos a opção "Deslocamento Z do Objetivo" para compensar automaticamente a localização desejada do alvo no espaço 3D no eixo Z.
+No Infinite Recharge, o "Deslocamento Z do Objetivo" seria usado para rastrear o centro do pequeno objetivo circular atrás do objetivo hexagonal.
+Detecção de cor com "tc"
+Leia o novo array "tc" nas Network Tables para obter valores de Vermelho, Verde e Azul na localização da mira. Ajuste o "Balanço de Azul" e "Balanço de Vermelho" na aba de entrada para obter detecção perfeita de cores.
+Correções de Bugs
+​
+A funcionalidade da Câmera USB quebrada em 2020.0 agora está corrigida em 2020.1
+A funcionalidade SolvePnP quebrada em 2020.0 agora está corrigida em 2020.1
+SolvePnP agora usa corretamente o centro do modelo como o centro de visualização do eixo
+2019.7 (05/04/19)
+​
+2019.7 adiciona dois novos recursos.
+Recursos
+​
+Streaming 160x120 a 30fps
+Streaming mais suave e de menor largura de banda para equipes que usam câmeras USB de grande angular. A largura de banda do nosso stream de câmera de 180 graus caiu de ~3,7mbps para ~1,8 mbps.
+Altere a resolução do stream na aba de configurações.
+Alterando a resolução do stream em um Limelight com uma câmera USB de grande angular conectada. Sem Picture-in-Picture e taxa de stream normal.
+Rejeição Inteligente de Manchas
+Equipes que montaram suas câmeras alinhadas com o alvo este ano tiveram que lidar com reflexões de LED indesejadas.
+O controle deslizante de área nem sempre resolve esse problema, pois as equipes querem rastrear pequenos alvos de visão a grandes distâncias.
+Este novo recurso rejeitará automaticamente contornos
+relativamente
+pequenos que passaram por todos os outros filtros.
+À medida que um robô se afasta de um alvo de visão (diminuindo seu tamanho), o SSR se ajustará automaticamente para rejeitar apenas contornos
+relativamente
+pequenos.
+Mudanças
+​
+Dicas de ferramentas
+Dicas de ferramentas agora estão disponíveis em alguns controles do Limelight
+2019.6.1 Hotfix (14/03/19)
+​
+2019.6.1 corrige uploads do Grip.
+2019.6 (12/03/19)
+​
+2019.6 é tudo sobre confiabilidade.
+Correções de Bugs
+​
+Câmeras USB
+Resolução de problema que poderia fazer com que algumas câmeras USB falhassem na inicialização.
+FMS
+Tornar o Limelight mais (se não completamente) resistente a reinicializações do FMS e mudanças de rede de campo/laptop.
+O Limelight não travará mais após uma mudança repentina na rede do cliente.
+Classificação de Contorno Bruto (MUDANÇA SIGNIFICATIVA)
+Filtros de interseção não afetam mais a classificação de contorno bruto.
+Postagem automática no Smartdashboard
+LL posta automaticamente certas informações no SmartDashboard (Endereço IP, URL da interface, etc.). Os nomes desses valores agora contêm o nome do host.
+Recursos e Mudanças
+​
+Aumento significativo da precisão e estabilidade do recurso compute3d. Medições de translação e rotação são estáveis a distâncias maiores.
+Deslocamento Máximo de Nível Preto aumentado para 40 (de 25) para imagens ainda mais escuras.
+Novas opções de classificação "Mais Próximo" na aba "Saída" enquanto o modo "Mira Dupla" está habilitado.
+Padrão - Implementação atual de classificação "mais próximo" com modo "Mira Dupla".
+Padrão V2 - Implementação experimental e inteligente de classificação "mais próximo" com modo "Mira Dupla".
+Média das Miras - A origem da classificação "Mais Próximo" com o modo "Mira Dupla" é a média das duas miras.
+Mira A - A origem da classificação "Mais Próximo" com o modo "Mira Dupla" é a mira A.
+Mira B - A origem da classificação "Mais Próximo" com o modo "Mira Dupla" é a mira B.
+Novas opções de pipeline "Modo LED": "Metade Esquerda", "Metade Direita"
+Valores de cantos brutos de ponto flutuante enquanto compute3D está habilitado.
+Ocultar decorações de imagem ao usar varinhas mágicas
+Stream maior na interface web
+2019.5 (09/02/19)
+​
+Com o 2019.5, estamos introduzindo o novíssimo recurso de localização de câmera compute3D. Apenas um punhado de equipes já tentou adicionar esse recurso aos seus sistemas de visão, e agora está disponível para todos os usuários do Limelight 1 e Limelight 2.
+Isso não é uma solução mágica para o jogo deste ano. Recomendamos fortemente pensar em maneiras criativas de usar o rastreamento padrão de alta velocidade de 90 fps, a menos que este recurso seja absolutamente necessário.
+Recursos
+​
+Modo de Alta Precisão e PnP
+No gif a seguir, um Limelight 2 foi colocado a 37 polegadas atrás e 14,5 polegadas à direita do alvo.
+O Limelight foi posteriormente girado à mão. Observe como as distâncias permanecem praticamente inalteradas.
+Com o 2019.4, introduzimos o envio de cantos. Isso permitiu que equipes avançadas escrevessem seus próprios algoritmos usando o solvePNP() do OpenCV. Com o 2019.5, tudo isso é feito a bordo.
+Faça upload de um arquivo csv de texto simples com um modelo do seu alvo. Temos modelos pré-construídos de alvos de 2019 hospedados em nosso site. Todos os modelos devem ter uma origem centralizada e usar ordenação de pontos no sentido anti-horário com escala em polegadas.
+Habilite o novo modo de alta resolução 960x720 e, em seguida, habilite "Resolver 3D" para adquirir a posição e rotação do seu Limelight em relação ao seu alvo.
+Os números dos cantos agora são exibidos na imagem para facilitar a criação de modelos e o ajuste de limites.
+Leia todas as 6 dimensões da transformação da sua câmera (x,y,z,pitch,yaw,roll) lendo o array de números "camtran" da networktable.
+Nível de Preto
+Com o novo controle deslizante de nível de preto, o limiar é ainda mais fácil. Aumente o deslocamento do nível de preto para escurecer ainda mais suas imagens.
+Mudanças Significativas
+​
+O FOV vertical relatado para LL2 foi corrigido para corresponder ao valor listado de 49,7 graus. Isso mudará seus valores "ty"
+Correções de Bugs
+​
+Correção de falha apenas de stream que poderia ocorrer quando câmeras USB olho-de-peixe estavam conectadas.
+Correção de travamento raro causado por driver relacionado à rede.
+A aproximação de cantos agora está sempre ativa.
+2019.4 (26/01/19)
+​
+Acreditamos que todos os relatórios de bugs críticos estão cobertos com esta versão.
+Recursos
+​
+Cantos
+Envie os cantos do seu alvo como dois arrays (tcornx, tcorny) *AGORA tcornxy habilitando "enviar cantos" na aba "Saída". Isso permitirá ainda mais às equipes interessadas em pipelines avançados com métodos como solvePNP().
+Ajuste a aproximação de cantos com o controle deslizante "aproximação de cantos" na aba "Saída".
+Correções de Bugs
+​
+Correção de travamento + falha rara que ocorreria quando dois alvos tinham exatamente a mesma área, coordenada x ou coordenada y.
+Correção do cálculo de área nos modos de alvo duplo e triplo.
+Otimização da classificação de contorno para melhor desempenho.
+2019.3 (1/19/19)
+​
+2019.3 aborda vários bugs e solicitações de recursos.
+Recursos
+​
+Taxa de Stream (redução de largura de banda)
+Defina a taxa de stream como "baixa" na página de configurações para um stream de vídeo de 15fps com menor largura de banda.
+Contornos Brutos desativados no NetworkTables (redução de largura de banda)
+Contornos brutos agora estão desativados por padrão. Isso reduzirá ainda mais a largura de banda geral do Limelight.
+Agora há cerca de 180 entradas a menos no networktables enviadas por segundo por padrão.
+Veja a nova opção de pipeline "Contornos Brutos" na aba "Saída" para reativar os contornos brutos.
+Índice de Pipeline Ativo
+Leia a chave networktable "getpipe" para obter o verdadeiro índice de pipeline ativo da câmera. Isso é atualizado a 90hz.
+O índice de pipeline ativo agora é escrito no videostream abaixo da exibição de FPS.
+Filtros de Interseção Esquerda e Direita
+As equipes agora podem escolher entre filtros de interseção de contorno duplo "esquerda" e "direita". Os filtros de interseção "acima" e "abaixo" foram adicionados no 2019.2.
+Correções de Bugs
+​
+Corrigido o bug de streaming do LabView Dashboard introduzido no 2019.2
+A página web não solicita mais fontes de ícones da internet. Todas as fontes são armazenadas localmente. Isso deve acelerar o carregamento da interface.
+Reduzida a exposição do "modo de piloto".
+Corrigida a implementação GRIP de "Transformação de Distância"
+Corrigidos atrasos de comunicação de 20 segundos causados pela alteração do hostname.
+2019.2 (1/7/19)
+​
+2019.2 adiciona novos recursos para melhor equipar as equipes para a temporada de 2019.
+Filtro de Interseção
+Filtro de Direção
+Mudanças e Correções Adicionais
+​
+O endereço IP é automaticamente postado no SmartDashboard/Shuffleboard para facilitar a solução de problemas em eventos. Tivemos quase nenhum relato disso ser um problema, mas isso serve como outro recurso de contingência.
+O nome do pipeline é automaticamente postado no SmartDashboard/Shuffleboard
+Acesse a largura e altura da caixa delimitadora aproximada em pixels com novas chaves de networktables.
+Acesse o lado mais longo e o lado mais curto da caixa delimitadora perfeita em pixels com novas chaves de networktables.
+"Modo de Classificação" agora se aplica a contornos duplos
+"Modo de Classificação" agora está corrigido
+O stream 5802 é menos exigente para a câmera
+2019.1 (18/12/18)
+​
+2019.1 corrige todos os principais bugs relatados durante a versão beta
+O desempenho voltou a ser estável em 90fps. Um problema de driver foi a causa raiz dos nossos problemas de desempenho durante a versão beta
+As configurações de IP e hostname realmente são aplicadas e "permanecem"
+As Varinhas Mágicas foram reordenadas para corresponder às do software Limelight 2018
+Agora suportamos entradas Grip como máscaras através da interface web
+Corrigido o congelamento do NetworkTables
+2019.0 (10/12/18)
+​
+Com 2019, estamos introduzindo suporte GRIP, uma interface totalmente nova e um procedimento de flashing mais limpo.
+Suporte Grip
+Construa pipelines com GRIP para Limelight e exporte arquivos "LL Script" para carregar em sua câmera.
+Suporte a máscaras e NetworkTables será adicionado em uma atualização futura
+Exponha um stream de vídeo básico em
+http://limelighturl:5802
+para testes no grip
+Interface web totalmente nova
+Controles menores
+Mais dicas de ferramentas
+Adiciona a capacidade de desligar os LEDs a partir da interface
+Move a caixa combinada de exibição para baixo do stream para facilitar a troca de exibição
+Comunicação mais rápida com o Limelight. Nova tecnologia web nos permitiu simplificar outras partes do nosso código.
+Flashing
+Migramos para o "Balena Etcher"
+O Etcher é duas vezes mais rápido e funciona em todas as plataformas
+Os popups de flash são corrigidos com a migração.
+Outros
+O Modo LED foi modificado para permitir Modos LED específicos por pipeline
+Tempos de inicialização mais rápidos no modo de atribuição automática de IP.
+Otimizações e correções de bugs menores
+2018.5 (28/3/18)
+​
+2018.5 corrige um problema crítico que impedia os usuários de ajustar pipelines em snapshots.
+2018.4 (19/3/18)
+​
+2018.4 adiciona novas opções de classificação de contorno. Estas são bastante importantes para o rastreamento de cubos este ano, já que as equipes não necessariamente querem rastrear o maior cubo à vista. Em muitos casos, as equipes querem rastrear o cubo que está mais próximo de suas entradas. Muitos usuários tiveram que usar o recurso de contornos brutos para implementar sua própria classificação, então queremos tornar isso o mais fácil possível.
+Recursos
+​
+Modo de Classificação de Contorno
+Selecione entre as opções de classificação "maior", "menor", "mais alto", "mais baixo", "mais à esquerda", "mais à direita" e "mais próximo".
+Acreditamos que muitas equipes farão uso da opção "mais próximo" para rastreamento de cubos.
+2018.3 (28/2/18)
+​
+2018.3 corrige um grande bug de reconexão do networktables que fazia com que as alterações de configurações do NetworkTables não se propagassem para o Limelight. Agradecemos a Peter Johnson e à equipe do WPILib por identificar e corrigir o bug subjacente do NT. Este foi (até onde sabemos) o último bug de alta prioridade que afetava o Limelight.
+Alterações de configurações como ledMode, pipeline e camMode devem sempre se aplicar ao Limelight. Você não deve mais precisar de soluções alternativas para alterar as configurações do Limelight durante a depuração, após reiniciar o código do robô e após reinicializar o roborio.
+Mudanças
+​
+Corrigido o grande problema de sincronização do NT que quebrava as alterações de configurações (ledMode, pipeline e camMode) durante a depuração do LabView e após uma reinicialização/reboot do roborio.
+Varinha conta-gotas:
+A varinha conta-gotas usa a mesma janela de 10 unidades para Matiz, mas agora usa uma janela de 30 unidades para saturação e valor. Isso significa que o limiar é mais frequentemente uma operação de um clique, em vez de um processo de várias etapas.
+Snapshots
+Definir o valor do snapshot como "1" tirará apenas um único snapshot e redefinirá o valor para 0. O snapshot é limitado a 2 snapshots por segundo.
+Limite de snapshot aumentado para 100 imagens.
+A área do seletor de snapshot agora é rolável para suportar 100 imagens.
+2018.2 (10/2/18)
+​
+2018.2 corrige todos os bugs de streaming conhecidos com vários painéis FRC. Também torna o Limelight mais fácil de ajustar e mais versátil durante os eventos.
+Recursos
+​
+Varinhas de limiar
+Configure parâmetros de limiar HSV com apenas alguns cliques
+A varinha "Definir" centraliza os parâmetros HSV em torno do pixel selecionado
+A varinha "Adicionar" ajusta os parâmetros HSV para incluir o pixel selecionado
+A varinha "Subtrair" ajusta os parâmetros HSV para ignorar o pixel selecionado
+Snapshots
+Os snapshots permitem que os usuários salvem o que o Limelight está vendo durante as partidas ou calibração de eventos, e ajustem pipelines enquanto estão longe do campo.
+Salve um snapshot com a interface web ou postando um "1" na chave "snapshot" do NetworkTables
+Para visualizar snapshots, altere a caixa combinada "Fonte de Imagem" na aba de entrada. Isso permitirá que você teste seus pipelines em snapshots em vez do feed da câmera do Limelight
+O Limelight armazenará até 32 snapshots. Ele excluirá automaticamente snapshots antigos se você exceder esse limite.
+Novas opções de Streaming
+Introduzimos a chave "stream" do NetworkTables para controlar o modo de streaming do Limelight. Recebemos solicitações para modos PiP (Picture-in-Picture) para acomodar melhor certos painéis.
+0 - Padrão - Streams lado a lado se uma webcam estiver conectada ao Limelight
+1 - PiP Principal - O stream da câmera secundária é colocado no canto inferior direito do stream da câmera principal.
+2 - PiP Secundário - O stream da câmera principal é colocado no canto inferior direito do stream da câmera secund ária.
+Aumento da taxa de quadros de streaming para 22fps
+Erosão e Dilatação
+Ative até uma iteração de erosão e dilatação.
+A erosão irá erodir ligeiramente o resultado de um limiar HSV. Isso é útil se muitos objetos estiverem passando por um limiar HSV ajustado.
+A dilatação irá inflar ligeiramente o resultado de um limiar HSV. Use isso para corrigir buracos nos resultados de limiarização.
+Botão de Reiniciar
+Reinicie o rastreamento de visão do Limelight a partir da interface web. Isso só é útil para equipes que experimentam problemas intermitentes ao depurar código LabView.
+Otimizações
+​
+Redução do tempo de execução do pipeline em estado estacionário para 3,5-4ms.
+Correções de Bugs
+​
+Corrigidos problemas de streaming do Shuffleboard
+Corrigidos problemas de streaming do painel LabView
+2018.1 (8/1/18)
+​
+Controle deslizante de Equilíbrio-Vermelho
+Controle deslizante de Equilíbrio-Azul
+Melhores configurações padrão de equilíbrio de cores
+Configuração de exposição máxima aumentada
+2018.0 (1/3/18)
+​
+Além de uma tonelada de novos estudos de caso, documentação mais detalhada e um programa de exemplo completo para um atirador autônomo STEAMWORKS, o software recebeu uma grande atualização.
+Recursos
+​
+Nova interface de Pipeline de Visão
+Adicione até 10 pipelines de visão únicas, cada uma com miras personalizadas, opções de limiarização, exposição, opções de filtragem, etc.
+Nomeie cada pipeline de visão.
+Marque qualquer pipeline como pipeline "padrão".
+Alterne instantaneamente entre pipelines durante uma partida com o novo valor "pipeline" no NetworkTables. Isso é útil para jogos que têm múltiplos alvos de visão (por exemplo, o pino de engrenagem e a caldeira de 2017). Isso também é útil para equipes que precisam usar opções de mira ligeiramente diferentes por robô, campo, aliança, etc.
+Baixe pipelines de visão do Limelight para backup ou compartilhamento com outras equipes.
+Faça upload de pipelines de visão para qualquer "slot" para usar pipelines baixadas.
+Opção de "Agrupamento" de alvos
+Prefira instantaneamente alvos que consistem em duas formas com o modo de agrupamento "dual". Opções "Single" e "Tri" também estão disponíveis
+Nova interface de Calibração de Mira
+Modos de mira "Single" e "Dual".
+O modo "Single" é o que o Limelight utilizava antes desta atualização. As equipes alinham seus robôs manualmente e "calibram" para zerar novamente os valores de mira sobre a retícula.
+O modo "Dual" é um recurso avançado para robôs que precisam de uma mira dinâmica que se ajusta automaticamente conforme a área do alvo/distância ao alvo muda. Usamos esse recurso em alguns de nossos robôs atiradores, já que alguns deles atiravam com uma leve curva. Este recurso também será útil para robôs com montagens de Limelight descentradas e/ou desalinhadas.
+Calibração separada de X e Y.
+Adicionada chave de Alvo Válido "tv" ao Network Tables.
+Adicionada chave de Latência de Mira "tl" ao Network Tables. "tl" mede o tempo de execução do pipeline de visão. Adicione pelo menos 11 ms para o tempo de captura.
+Desenha retângulo adicional para ajudar a explicar o cálculo da proporção.
+Remove o recurso de limitação e bloqueia o Limelight a 90fps.
+Desativa o foco na maioria dos botões da interface web. Corrige problema de fluxo de trabalho relatado por equipes que calibravam suas miras e depois pressionavam "enter" para ativar seus robôs.
+Publica três contornos "brutos" e ambas as miras no Network Tables.
+Acesse um contorno bruto com tx0, tx1, ta0, ta1, etc.
+Acesse ambas as miras brutas com cx0, cy0, cx1, cy1.
+Todos os valores x/y estão no espaço de tela normalizado (-1.0 a 1.0)
+Adiciona opção de "sufixo" à interface web. Permite aos usuários adicionar um sufixo aos hostnames e NetworkTables de seus Limelights (por exemplo, limelight-boiler). Este recurso só deve ser utilizado se as equipes pretendem usar múltiplos Limelights em um único robô.
+Exibe a versão da imagem na interface web
+Otimizações
+​
+Diminui a latência relacionada à rede para ~0,2 ms de ~10ms (Obrigado Thad House)
+Move a codificação de stream e compressão jpg para o terceiro núcleo, eliminando o atraso de 10ms (atraso de 25 - 30ms com duas câmeras) visto a cada seis quadros.
+Reduz o tempo de execução do pipeline em estado estável para 5ms com otimizações SIMD.
+Correções de Bugs
+​
+Corrige imprecisão menor no valor da área que impedia que o valor atingisse 100% (máximo ~99%).
+Corrige deslocamento de meio pixel em todos os cálculos de mira
+Corrige informações de stream da câmera que não eram preenchidas para servidores NT iniciados após a sequência de inicialização do Limelight. Atualiza regularmente as informações de stream da câmera.
+Corrige bug que causava "inversão" ocasional da proporção.
+Força saída de stream padrão (em vez de saída limiarizada) no modo de piloto.
+Corrige bug que impedia os LEDs de piscar após redefinir as informações de Rede
+2017.7 (21/11/17)
+​
+Melhorou a classificação de contornos. Estava favorecendo contornos pequenos sobre contornos maiores.
+Novo sistema de coordenadas: O centro é (0,0). ty aumenta conforme o alvo se move "para cima" no eixo y, e tx aumenta conforme o alvo se move "para a direita" ao longo do eixo x.
+Cálculos de ângulo mais precisos (modelo de câmera pinhole).
+Exibe informações de mira (tx, ty, ta e ts) na página web
+Valores de mira padrão são zeros. Isso significa que zeros são retornados se nenhum alvo estiver visível.
+Novo layout de página web lado a lado. Ainda colapsa para coluna única em dispositivos pequenos.
+Atualizações contínuas do controle deslizante não prejudicam o desempenho do painel de configuração.
+Área enviada para NT como porcentagem (0-100)
+Tamanho da imagem reduzido para 700MB de 2.1GB
+2017.6 (13/11/17)
+​
+Nova ferramenta de criação de imagem. Testada no Win7, Win8 e Win10.
+Publica o fluxo da câmera para streams do cameraserver. Funciona com streams de câmera do smart dashboard, mas o shuffleboard tem bugs conhecidos aqui
+Escala quártica nos controles deslizantes de área, escala quadrática nos controles deslizantes de proporção. Isso torna a calibração muito mais fácil
+Organiza os controles em abas "entrada", "limite", "filtro" e "saída"
+Atualizações contínuas ao arrastar os controles deslizantes
+Área enviada para NT como porcentagem (0-100)
+Tamanho da imagem de exibição reduzido para 700MB de 2.1GB
+2017.5 (9/11/17)
+​
+Tamanho da imagem reduzido para 2.1GB de 3.9GB
+Adiciona APIs de modo de condução e modo LED
+Defina ledMode para 0, 1 ou 2 na tabela limelight.
+Defina camMode para 0 ou 1 na tabela limelight.
+Adiciona capacidade de alternar entre imagem com limite e imagem bruta via interface web (será melhorado em versão posterior)
+Publica fluxo de câmera para network tables em CameraPublishing/limelight/streams (precisará de um hotfix)
+Adiciona inclinação às informações de mira ("ts" na tabela limelight)
+Adiciona "CommInterface" base em antecipação a mais protocolos
+2017.4 (30/10/17)
+​
+Muitas melhorias na inicialização e desligamento
+2017.3 (25/10/17)
+​
+Intervalo de matiz é 0-179 de 0-255
+Diminui o tamanho máximo do log, limpa logs, limpa cache apt
+2017.2 (23/10/17)
+​
+Sensibilidade ISO manual
+Exposição mínima aumentada para 2
+2017.1 (21/10/17)
+​
+Otimizações
+"Convexidade" alterada para "Preenchimento"
+Intervalo de exposição definido para 0-128 ms de 0-255 ms
+Suporte para duas câmeras
+Suporte completo para calibração de ponto único

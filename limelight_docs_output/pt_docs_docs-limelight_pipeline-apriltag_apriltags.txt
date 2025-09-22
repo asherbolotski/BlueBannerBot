@@ -1,0 +1,58 @@
+Rastreamento de AprilTags
+Os AprilTags são rastreados usando os valores padrão "tx", "ty" e "ta". Nenhuma alteração de código é necessária para atualizar um robô de rastreamento colorido/retroreflexivo para apriltags.
+"botpose" e "campose" também podem ser usados para rastreamento 3D no espaço do campo e no espaço do alvo.
+Para uso mais avançado com várias tags, o dump de resultados JSON pode ser usado.
+Início Rápido para AprilTags na FRC
+​
+Aba Input - Altere "Pipeline Type" para "Fiducial Markers"
+Aba Input - Use a resolução mais alta disponível para rastreamento 3D, ou use 640x480 para rastreamento 2D puro.
+Aba Standard - Certifique-se de que "family" esteja configurado para "AprilTag Classic 36h11"
+Aba Input - Defina "Black Level" como zero
+Aba Input - Defina "Gain" como 15
+Aba Input - Reduza a exposição para diminuir a perda de rastreamento durante o movimento devido ao desfoque de movimento. Pare de reduzir quando a confiabilidade do rastreamento diminuir. Pode ser necessário aumentar a exposição em eventos com pouca iluminação.
+Aba Standard - Se quiser aumentar sua taxa de quadros, aumente o "Detector Downscale"
+Se você quiser usar rastreamento 3D e rastreamento 2D tx/ty simultaneamente, defina a prioridade do ID da Tag nas networktables para configurar a tag preferida para rastreamento 2D.
+Clique no ícone "Engrenagem" e certifique-se de que o número da sua equipe esteja definido e que um IP estático esteja configurado.
+Clique em "Change Team Number" e "Change IP Settings" se você alterou as configurações correspondentes. Reinicie seu robô.
+Pronto! Use "tx" e "ty" das networktables. Copie o exemplo de código na página "getting started".
+Dicas
+​
+Para um rastreamento ideal, considere o seguinte:
+Suas tags devem ser o mais planas possível.
+Sua Limelight deve ser montada acima ou abaixo da altura da tag e angulada para cima/baixo de modo que o alvo fique centralizado. Seu alvo deve parecer o mais trapezoidal possível da perspectiva da sua câmera. Você não quer que sua câmera esteja completamente "de frente" para uma tag se quiser evitar a inversão da tag.
+Existe uma interação entre as seguintes variáveis para o Rastreamento de AprilTag:
+Aumentar a resolução de captura sempre aumentará a precisão 3D e aumentará a estabilidade 3D. Isso também reduzirá a taxa de inversão por ambiguidade na maioria das perspectivas. Geralmente aumentará o alcance. Isso reduzirá a taxa de quadros do pipeline.
+Aumentar o downscale do detector sempre aumentará a taxa de quadros do pipeline. Diminuirá o alcance efetivo, mas em alguns casos isso pode ser insignificante. Não afetará a precisão 3D, estabilidade 3D ou precisão de decodificação.
+Reduzir a exposição sempre melhorará a resistência ao desfoque de movimento. Isso é realmente fácil de observar. Isso pode reduzir o alcance.
+Reduzir o brilho e o contraste da imagem geralmente melhorará a taxa de quadros do pipeline e reduzirá o alcance.
+Aumentar o ganho do sensor permite aumentar o brilho sem aumentar a exposição. Pode reduzir a estabilidade 3D e pode reduzir a estabilidade do rastreamento.
+Aba Input
+​
+A Aba Input contém controles para alterar a imagem bruta da câmera antes de ser passada pelo pipeline de processamento. Veja a página "Building a retroreflective/color pipeline" para mais detalhes.
+Para rastrear AprilTags:
+Altere "Pipeline Type" para "Fiducial Markers"
+Defina "Black Level" como zero
+Neste ponto, é uma questão de equilibrar o ganho do sensor e o tempo de exposição. Você quer ser capaz de ver as tags com a menor exposição possível para minimizar o desfoque de movimento.
+Isso geralmente requer uma configuração de ganho de sensor alta. Para rastreamento 2D simples,
+muitas vezes é aconselhável maximizar o ganho do sensor e depois aumentar a exposição a partir de zero até que os alvos sejam rastreados adequadamente. Certifique-se de que a família correta esteja selecionada na aba "Standard" se o rastreamento não estiver funcionando.
+Aba Standard
+​
+Family
+​
+Seleciona o tipo de família fiducial/AprilTag. Para a FRC, você deve selecionar "AprilTag Classic 36h11"
+Marker Size
+​
+Define o tamanho esperado das tags que seu robô encontrará em mm. Para a FRC, isso deve ser definido como 165.1 (152.4 para tags de 2023)
+Detector Downscale
+​
+Aumentar este número resultará em ganhos significativos de desempenho. Isso às vezes resultará em alcance reduzido, mas o custo geralmente é mínimo.
+ID Filters
+​
+Os Filtros de ID permitem especificar exatamente quais tags você se importa. Para a maioria das equipes da FRC, cada pipeline deve ser configurado para rastrear exatamente um ID de tag.
+Esta é uma lista de números separados por vírgulas (por exemplo, "0,1"). Este recurso é importante para eliminar a grande maioria dos falsos positivos.
+Cropping
+​
+O recorte remove conteúdo da imagem para obter enormes ganhos de desempenho. Use a chave NT "crop" para recortar dinamicamente durante as partidas
+Multi-Target Sorting and Grouping
+​
+Isso permite a funcionalidade exata de agrupamento vista em pipelines retroreflexivos padrão. Na maioria dos jogos, o único recurso a ser modificado é o filtro "Area", que permitirá filtrar tags pequenas.

@@ -1,0 +1,58 @@
+AprilTag Takibi
+AprilTag'ler standart "tx", "ty" ve "ta" değerleri kullanılarak takip edilir. Renk/retroreflektif takip robotunuzu apriltag'lere yükseltmek için kod değişikliği gerekmez.
+Saha-uzayı ve hedef-uzayı 3B takibi için "botpose" ve "campose" da kullanılabilir.
+Birden fazla etiketle daha gelişmiş kullanım için JSON sonuç dökümü kullanılabilir.
+FRC AprilTag'ler için Hızlı Başlangıç
+​
+Giriş Sekmesi - "Pipeline Tipi"ni "Fiducial Markers" olarak değiştirin
+Giriş Sekmesi - 3B takip için mevcut en yüksek çözünürlüğü kullanın veya saf 2B takip için 640x480 kullanın.
+Standart Sekmesi - "family" seçeneğinin "AprilTag Classic 36h11" olarak ayarlandığından emin olun
+Giriş Sekmesi - "Black Level" değerini sıfıra ayarlayın
+Giriş Sekmesi - "Gain" değerini 15'e ayarlayın
+Giriş Sekmesi - Hareket bulanıklığı nedeniyle hareket halindeyken takip kaybını azaltmak için pozlama süresini azaltın. Takip güvenilirliği azalmaya başladığında azaltmayı durdurun. Loş ışıklı etkinliklerde pozlamayı artırmanız gerekebilir.
+Standart Sekmesi - Kare hızınızı artırmak istiyorsanız, "Detector Downscale" değerini artırın
+3B takip ve 2B tx/ty takibini aynı anda kullanmak istiyorsanız, 2B takip için tercih edilen etiketi yapılandırmak üzere networktables üzerinden öncelikli Tag ID'yi ayarlayın.
+"Dişli" simgesine tıklayın ve takım numaranızın ayarlandığından ve statik bir IP'nin yapılandırıldığından emin olun.
+İlgili ayarları değiştirdiyseniz "Takım Numarasını Değiştir" ve "IP Ayarlarını Değiştir" seçeneklerine tıklayın. Robotunuzu yeniden başlatın.
+İşlem tamamlandı! Networktables'dan "tx" ve "ty" değerlerini kullanın. "Başlarken" sayfasındaki kod örneğini kopyalayın.
+İpuçları
+​
+İdeal takip için aşağıdakileri göz önünde bulundurun:
+Etiketleriniz mümkün olduğunca düz olmalıdır.
+Limelight'ınız etiket yüksekliğinin üstüne veya altına monte edilmeli ve hedef merkezlenecek şekilde yukarı/aşağı açılandırılmalıdır. Hedef, kameranızın bakış açısından mümkün olduğunca yamuk görünmelidir. Etiket çevrilmesini önlemek istiyorsanız, kameranızın bir etiketle asla tamamen "karşı karşıya" olmasını istemezsiniz.
+AprilTag Takibi için aşağıdaki değişkenler arasında bir etkileşim vardır:
+Yakalama çözünürlüğünü artırmak her zaman 3B doğruluğu ve 3B stabiliteyi artıracaktır. Bu aynı zamanda çoğu bakış açısından belirsizlik çevrilme oranını azaltacaktır. Genellikle menzili artıracaktır. Bu, pipeline kare hızını düşürecektir.
+Detector downscale değerini artırmak her zaman pipeline kare hızını artıracaktır. Etkili menzili azaltacaktır, ancak bazı durumlarda bu ihmal edilebilir olabilir. 3B doğruluğu, 3B stabiliteyi veya kod çözme doğruluğunu etkilemeyecektir.
+Pozlamayı azaltmak her zaman hareket bulanıklığına karşı dayanıklılığı artıracaktır. Bu gerçekten gözlemlemesi kolaydır. Bu, menzili azaltabilir.
+Görüntünün parlaklığını ve kontrastını azaltmak genellikle pipeline kare hızını artıracak ve menzili azaltacaktır.
+Sensör kazancını artırmak, pozlamayı artırmadan parlaklığı artırmanıza olanak tanır. 3B stabiliteyi azaltabilir ve takip stabilitesini düşürebilir.
+Giriş Sekmesi
+​
+Giriş Sekmesi, işleme pipeline'ından geçirilmeden önce ham kamera görüntüsünü değiştirmek için kontroller içerir. Daha fazla ayrıntı için "Retroreflektif/renk pipeline'ı oluşturma" sayfasına bakın.
+AprilTag'leri takip etmek için:
+"Pipeline Tipi"ni "Fiducial Markers" olarak değiştirin
+"Black Level" değerini sıfıra ayarlayın
+Bu noktada, sensör kazancı ve pozlama süresini dengelemek önemlidir. Hareket bulanıklığını en aza indirmek için etiketleri mümkün olan en küçük pozlamayla görebilmeniz gerekir.
+Bu genellikle yüksek bir sensör kazanç ayarı gerektirir. Basit 2B takip için,
+sensör kazancınızı maksimuma çıkarmanız ve ardından hedefler yeterince takip edilene kadar pozlamanızı sıfırdan artırmanız önerilir. Takip çalışmıyorsa "Standart" sekmesinde doğru ailenin seçili olduğundan emin olun.
+Standart Sekmesi
+​
+Aile
+​
+Fiducial/AprilTag aile tipini seçer. FRC için "AprilTag Classic 36h11" seçeneğini seçmelisiniz.
+İşaretleyici Boyutu
+​
+Robotunuzun karşılaşacağı etiketlerin beklenen boyutunu mm cinsinden ayarlar. FRC için bu değer 165.1 olarak ayarlanmalıdır (2023 etiketleri için 152.4)
+Detector Downscale
+​
+Bu sayıyı artırmak önemli performans artışları sağlayacaktır. Bu bazen menzilde azalmaya neden olabilir, ancak maliyet genellikle minimal düzeydedir.
+ID Filtreleri
+​
+ID Filtreleri, tam olarak hangi etiketlerle ilgilendiğinizi belirtmenize olanak tanır. Çoğu FRC takımı için, her pipeline tam olarak bir etiket ID'sini takip edecek şekilde yapılandırılmalıdır.
+Bu, virgülle ayrılmış sayılar listesidir (örn. "0,1"). Bu özellik, yanlış pozitiflerin büyük çoğunluğunu ortadan kaldırmak için önemlidir.
+Kırpma
+​
+Kırpma, büyük performans artışları için görüntüden içerik kaldırır. Maçlar sırasında dinamik olarak kırpmak için NT "crop" anahtarını kullanın
+Çoklu Hedef Sıralama ve Gruplama
+​
+Bu, standart retroreflektif pipeline'larda görülen tam gruplama işlevselliğine olanak tanır. Çoğu oyunda, değiştirmeniz gereken tek özellik, küçük etiketleri filtrelemenize olanak tanıyan "Alan" filtresidir.

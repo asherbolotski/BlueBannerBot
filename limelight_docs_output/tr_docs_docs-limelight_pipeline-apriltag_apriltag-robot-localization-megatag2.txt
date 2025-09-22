@@ -1,0 +1,197 @@
+Robot Lokalizasyonu MegaTag2 ile
+2024'te tanıtılan Megatag2, mobil robotlar için hassas ve belirsizlik içermeyen AprilTag tabanlı bir lokalizasyon sistemidir. Aşağıdaki hedeflerle geliştirilmiştir:
+Poz belirsizliği sorununu ortadan kaldırmak ve görüntü/köşe gürültüsüne karşı dayanıklılığı artırmak.
+Tek bir etiket kullanarak, perspektif ne olursa olsun mükemmel poz tahminleri sağlamak.
+Fiziksel AprilTag yerleşim hatalarına karşı dayanıklılığı artırmak.
+İyi poz tahmini sonuçları için gereken filtreleme miktarını azaltmak.
+Megatag2, tek bir etiket kullanarak herhangi bir mesafede mükemmel sonuçlar sağlar.
+Bu, yalnızca hem ilgili hem de tolerans dahilindeki etiketlere odaklanmanın ve diğer tüm etiketleri filtrelemenin tamamen uygulanabilir olduğu anlamına gelir. Bir etiket doğru konumda değilse, MegaTag2 ile birlikte sunulan dinamik filtreleme özelliğiyle filtreleyebilirsiniz.
+int
+[
+]
+validIDs
+=
+{
+3
+,
+4
+}
+;
+LimelightHelpers
+.
+SetFiducialIDFiltersOverride
+(
+"limelight"
+,
+validIDs
+)
+;
+MT1'in aksine, MT2 robotunuzun yönünü (yaw) bildiğinizi varsayar. İsteğe bağlı olarak, Megatag2 tam bir robot oryantasyonu ve açısal hızları kabul eder.
+Gereksinimler:
+Limelight'ınızın robot-uzay pozu webUI'da veya API aracılığıyla yapılandırılmış olmalı
+Bir saha haritası (.fmap) yüklenmiş olmalı
+LimelightHelpers.SetRobotOrientation(robotYawInDegrees,0,0,0,0,0) robot tarafındaki kodda her karede çağrılmalı
+SetRobotOrientation, merkezlenmiş (harita oluşturucuya bakın) veya mavi köşe orijinini varsayar. CCW-pozitif, 0 derece -> FRC'de kırmızı ittifak duvarına bakıyor.
+NetworkTables Anahtarları:
+botpose_orb_wpiblue
+botpose_orb_wpired
+botpose_orb
+JSON Anahtarları:
+botpose_orb_wpiblue
+botpose_orb_wpired
+botpose_orb
+(Her fiducial hedef için) t6r_fs_orb - yalnızca bu etiketi kullanarak megatag2 tabanlı saha uzayında robot pozu (çoklu etiket yok)
+Bu oldukça belirsiz tek etiketli durumda MegaTag2 (kırmızı robot) ile Megatag (mavi robot) arasındaki farka dikkat edin
+Altın Silindir / Kırmızı Robot: Filtrelenmemiş Megatag2 botpose
+Sarı Silindirler: Filtrelenmemiş tek etiketli Megatag2 botposes
+Beyaz Silindir/Mavi Robot: MegaTag1 Botpose
+Yeşil Silindir: Etiket başına bireysel bot pozu (MT1)
+Mavi Silindir: Etiket başına bireysel bot pozlarının ortalaması (MT1)
+bilgi
+2024'te, WPILib Ekosisteminin çoğu tek orijinli koordinat sistemine geçiş yaptı.
+2023'te, koordinat sisteminizin orijini ittifak renginize göre değişiyordu.
+2024 ve sonrası için, koordinat sisteminizin orijini her zaman "mavi" orijin olmalıdır. FRC takımları, poz ile ilgili işlevler için her zaman botpose_orb_wpiblue kullanmalıdır.
+WPILib'in Poz Tahmincisini Kullanma
+​
+LimelightHelpers
+.
+SetRobotOrientation
+(
+"limelight"
+,
+m_poseEstimator
+.
+getEstimatedPosition
+(
+)
+.
+getRotation
+(
+)
+.
+getDegrees
+(
+)
+,
+0
+,
+0
+,
+0
+,
+0
+,
+0
+)
+;
+LimelightHelpers
+.
+PoseEstimate
+mt2
+=
+LimelightHelpers
+.
+getBotPoseEstimate_wpiBlue_MegaTag2
+(
+"limelight"
+)
+;
+// eğer açısal hızımız saniyede 360 dereceden fazlaysa, görüş güncellemelerini yoksay
+if
+(
+Math
+.
+abs
+(
+m_gyro
+.
+getRate
+(
+)
+)
+>
+360
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+mt2
+.
+tagCount
+==
+0
+)
+{
+doRejectUpdate
+=
+true
+;
+}
+if
+(
+!
+doRejectUpdate
+)
+{
+m_poseEstimator
+.
+setVisionMeasurementStdDevs
+(
+VecBuilder
+.
+fill
+(
+.7
+,
+.7
+,
+9999999
+)
+)
+;
+m_poseEstimator
+.
+addVisionMeasurement
+(
+mt2
+.
+pose
+,
+mt2
+.
+timestampSeconds
+)
+;
+}
+Limelight'ınızın Robot-Uzay Pozunu Yapılandırma
+​
+LL İleri, LL Sağ ve LL Yukarı, robotun içinde olsaydınız Robotun ileri, sağ ve yukarı vektörleri boyunca mesafeleri temsil eder (metre cinsinden).
+LL Yuvarlanma, Yunuslama ve Sapma, Limelight'ınızın derece cinsinden dönüşünü temsil eder. Bu değerleri değiştirebilir ve 3D görüntüleyicide Limelight'ın 3D modelinin değişimini izleyebilirsiniz.
+Limelight, kamera uzayındaki hedef pozundan -> saha uzayındaki robot pozuna geçmek için bu yapılandırmayı dahili olarak kullanır.
+Limelight 4'ün Dahili IMU'sunu "imumode_set" / SetIMUMode() ile Kullanma
+​
+Limelight 4'ün dahili bir IMU'su vardır. Bunu MT2 ile kullanarak dönüş sırasında daha doğru poz tahminleri elde edebilirsiniz.
+Bu çalışmadan önce IMU'nun başlangıç oryantasyonunu belirlemeniz gerekir. Buna "tohumlama" denir. Limelight'ınız robotunuzun başlangıç oryantasyonunu öğrendikten sonra, MT2 hesaplamalarını gerçekleştirmek için robotunuzun oryantasyonunu kendi başına güncelleyebilecektir.
+LL4 IMU'yu kullanmak için, şu anda LL'nizin "yatay" modda monte edilmiş olması gerekir.
+Akış şu şekildedir:
+SetRobotOrientation() metodunu Pigeon veya NavX gibi "harici" IMU'nuzla çağırın. Bu metodu istediğiniz sıklıkta çağırmaya devam edebilirsiniz.
+Limelight'ınızın dahili ve harici IMU'lardan IMU verilerini nasıl kullanacağını yapılandırmak için SetIMUMode() metodunu çağırın.
+Genel olarak, robotunuz otonom periyodun başlamasını beklerken mod 1'i kullanın. Etkinken veya etkinken ve dönerken mod 2'ye geçin.
+Sıfırlama / Tohumlama
+​
+Dahili IMU'nun birleştirilmiş robot sapmasını SetRobotOrientation() aracılığıyla gönderilen sapmaya sıfırlamak için, Limelight'ınızın IMU modunu LimelightHelpers.SetIMUMode() ile 1'e ayarlayın.
+Tohumlama sırasında, MegaTag2 SetRobotOrientation() aracılığıyla gönderilen sapma değerini kullanmaya devam edecektir.
+Dahili IMU'yu MegaTag2 ile Kullanma
+​
+LL4'ün MT2 lokalizasyonu için dahili IMU'sunu kullanmasına izin vermek için, Limelight'ınızın IMU modunu LimelightHelpers.SetIMUMode() ile 2'ye ayarlayın.
+IMU Modları:
+​
+0 - MT2 lokalizasyonu için SetRobotOrientation() aracılığıyla gönderilen harici IMU sapmasını kullanın. Dahili IMU tamamen göz ardı edilir.
+1 - SetRobotOrientation() aracılığıyla gönderilen harici IMU sapmasını kullanın ve LL4 dahili IMU'sunun birleştirilmiş sapmasını gönderilen sapma değeriyle eşleşecek şekilde yapılandırın.
+2 - MT2 lokalizasyonu için dahili IMU'yu kullanın.
+3 -

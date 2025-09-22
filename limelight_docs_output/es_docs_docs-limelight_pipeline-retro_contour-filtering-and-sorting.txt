@@ -1,0 +1,72 @@
+Filtrado y Ordenación de Contornos
+Después del umbral de color, Limelight genera una lista de contornos. Luego, cada contorno se envuelve en un rectángulo de ajuste más estrecho, un rectángulo "no rotado" y un "casco convexo". Estos pasan por una serie de filtros para determinar el "mejor" contorno. Si varios contornos pasan por todos los filtros, Limelight elige el mejor contorno utilizando el Control "Modo de Ordenación".
+Modos de Ordenación
+​
+Controla cómo se ordenan los contornos después de pasar por todos los demás filtros.
+En 2019, se añadió el modo de ordenación "más cercano". Este modo seleccionará el objetivo que esté más cerca de la cruz de mira configurable.
+Área del Objetivo
+​
+Controla el rango de áreas aceptables del rectángulo delimitador, como porcentajes de la pantalla. Puedes aumentar el área mínima para ayudar a filtrar las luces del estadio, y disminuir el valor máximo para ayudar a filtrar cosas como grandes pantallas cerca del campo.
+El control deslizante de área no está escalado linealmente, sino cuárticamente. Esto se hace para proporcionar precisión adicional cerca del extremo inferior de los valores de área, donde se encuentran muchos objetivos de FRC. El área de un cuadrado escala cuadráticamente con la longitud de su lado, pero el escalado x^4 proporciona aún mayor precisión donde se necesita.
+Plenitud del Objetivo
+​
+La plenitud es el porcentaje de píxeles "encendidos" en el rectángulo delimitador del contorno elegido. Un objetivo de rectángulo sólido tendrá una plenitud cercana a 1.0, mientras que un objetivo en forma de U tendrá una plenitud baja.
+Relación de Aspecto del Objetivo
+​
+La relación de aspecto se define por el ancho del rectángulo delimitador del contorno elegido dividido por su altura. Una relación de aspecto baja describe un rectángulo "alto", mientras que una relación de aspecto alta describe un rectángulo "ancho".
+El control deslizante de relación de aspecto también está escalado cuadráticamente.
+Filtro de Dirección
+​
+Rechaza contornos en base a su orientación.
+Rechazo Inteligente de Manchas
+​
+Rechaza contornos relativamente pequeños (a diferencia de absolutamente pequeños con el filtro de área) que han pasado por todos los demás filtros. Esto es esencial si un objetivo debe permanecer rastreable desde corta y larga distancia.
+Esta característica se introdujo en la temporada 2019 para rechazar los reflejos LED de Limelight cuando los robots estaban muy cerca de los objetivos.
+Agrupación de Objetivos
+​
+Controla la "agrupación" de objetivos. Configúralo en modo dual para buscar "objetivos" que consistan en dos formas, o en modo tri para buscar objetivos que consistan en tres formas.
+La Agrupación Inteligente de Objetivos puede agrupar un número variable de objetivos y rechazar valores atípicos. Se añadió en 2022 para ayudar a rastrear el objetivo del hub superior.
+Filtro de Intersección (Solo Objetivos Duales)
+​
+Rechaza grupos de contornos basándose en cómo se intersectarían si se extendieran hasta el infinito.
+Agrupación Inteligente de Objetivos
+​
+Agrupa automáticamente los objetivos que pasan todos los filtros de objetivos individuales.
+Agrupará dinámicamente cualquier número de objetivos entre -mínimo del control deslizante de tamaño de grupo- y -máximo del control deslizante de tamaño de grupo-
+Rechazo de Valores Atípicos
+​
+Aunque los objetivos de grupo son más desafiantes que los objetivos normales, proporcionan más información y oportunidades para el filtrado. Si sabes que una meta está compuesta por múltiples objetivos que están cerca unos de otros, puedes rechazar objetivos atípicos que se encuentran por sí solos.
+Debes confiar casi exclusivamente en un buen filtrado de objetivos estándar, y solo usar el rechazo de valores atípicos si ves o esperas valores atípicos espurios en tu transmisión de cámara. Si tienes un filtrado de objetivos estándar deficiente, ¡la detección de valores atípicos podría comenzar a trabajar en tu contra!
+Salida
+​
+Esta pestaña controla lo que sucede durante la última etapa del pipeline de visión
+Región de Apuntado
+​
+Controla el punto de interés del rectángulo delimitador del contorno elegido. Por defecto, los parámetros de seguimiento tx y ty representan los desplazamientos desde tu cruz de mira hasta el centro del rectángulo elegido. Puedes usar otra opción si un objetivo cambia de tamaño, o está compuesto por dos objetivos que a veces se fusionan.
+¿Enviar Esquinas Sin Procesar?
+​
+Establece este control en "sí" para incluir ubicaciones de esquinas en JSON, NetworkTables y resultados de API. Ajusta el número de esquinas enviadas ajustando el valor de "Simplificación de Contorno" en la página "Filtrado de Contorno".
+¿Enviar JSON a través de NT?
+​
+Establece este control en "sí" para enviar JSON a través de NetworkTables.
+Calibración de Cruz de Mira
+​
+Controla el "origen" de tus valores de apuntado. Supongamos que un lanzador en tu robot necesita ser calibrado de manera que siempre apunte un poco a la izquierda del centro. Puedes alinear tu robot, hacer clic en "calibrar", y todos tus valores de apuntado se enviarán en relación con tu nueva cruz de mira. ¡Consulta la página de calibración para más detalles!
+3D
+​
+Experimenta con la estimación de pose basada en puntos PnP aquí.
+Calcular 3D
+​
+Controla si la estimación de pose está habilitada. Debes habilitar el modo de alta resolución 960x720 para que esto funcione.
+Forzar Convexo
+​
+Usa esta opción para seleccionar solo las esquinas "más externas" de un objetivo para SolvePnP.
+Simplificación de Contorno
+​
+Usa esta opción para eliminar bordes pequeños y ruidosos del objetivo.
+Error Aceptable
+​
+Limelight solo devolverá un objetivo si pasa una prueba de reproyección con una cierta puntuación en píxeles.
+Desplazamiento Z del Objetivo
+​
+Ajusta automáticamente el valor de Profundidad 3D de tu objetivo (Eje Z).
