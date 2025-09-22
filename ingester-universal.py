@@ -25,7 +25,6 @@ def chunk_text(text, content_type, chunk_size=1000, chunk_overlap=200):
     Splits text using the appropriate chunker based on content type.
     """
     if content_type == 'code':
-        # Use a code-aware splitter for Java
         text_splitter = RecursiveCharacterTextSplitter.from_language(
             language=Language.JAVA, 
             chunk_size=chunk_size, 
@@ -61,6 +60,11 @@ def main():
     index = pc.Index(INDEX_NAME)
     print(f"Successfully connected to index '{INDEX_NAME}'.")
 
+    # --- NEW: Rate Limiting Variables ---
+    request_counter = 0
+    start_time = time.time()
+    # ------------------------------------
+
     for directory_info in DIRECTORIES_TO_INGEST:
         input_directory = directory_info["path"]
         content_type = directory_info["content_type"]
@@ -86,14 +90,24 @@ def main():
                 chunks = chunk_text(file_text, content_type)
                 print(f"  - Created {len(chunks)} chunks using '{content_type}' splitter.")
 
-                # --- UPDATED: Process and upsert in smaller batches ---
-                batch_size = 100 # A safe batch size for Pinecone
+                batch_size = 100
                 vectors_to_upsert = []
                 for i, chunk in enumerate(chunks):
+                    # --- MODIFIED: Rate Limiting Logic ---
+                    if request_counter >= 59: # Check if we are near the limit
+                        elapsed_time = time.time() - start_time
+                        if elapsed_time < 60:
+                            wait_time = 60 - elapsed_time
+                            print(f"  - Rate limit approaching. Pausing for {wait_time:.2f} seconds...")
+                            time.sleep(wait_time)
+                        # Reset the counter and timer for the next minute
+                        request_counter = 0
+                        start_time = time.time()
+                    # -------------------------------------
+
                     embedding = get_embedding(chunk)
-
-                    time.sleep(0.05)
-
+                    request_counter += 1 # Increment after each request
+                    
                     if embedding:
                         vector_id = f"{input_directory}-{filename}-{i}"
                         vectors_to_upsert.append({
@@ -102,12 +116,11 @@ def main():
                             "metadata": {"text": chunk, "source": filename}
                         })
                     
-                    # When the batch is full, or we're at the last chunk, upsert.
                     if len(vectors_to_upsert) >= batch_size or (i == len(chunks) - 1 and vectors_to_upsert):
                         print(f"  - Upserting batch of {len(vectors_to_upsert)} vectors to Pinecone...")
                         index.upsert(vectors=vectors_to_upsert)
                         print("  - Batch upsert complete.")
-                        vectors_to_upsert = [] # Clear the batch
+                        vectors_to_upsert = []
 
     print("\n--- All Ingestion Complete ---")
     print(f"Final index stats: {index.describe_index_stats()}")
