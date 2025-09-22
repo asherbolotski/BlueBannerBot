@@ -1,0 +1,251 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Talon FX
+¶
+Kraken X60
+The Kraken X60 powered by Talon FX is a brushless motor developed by
+WestCoast Products
+that uses the latest BLDC motor control technology from CTR Electronics. The integrated Talon FX unlocks the full performance of the Kraken X60 BLDC motor while providing best-in-class motion control.
+Store Page
+CAD and purchase instructions.
+https://store.ctr-electronics.com/products/kraken-x60/
+Hardware User Manual
+Wiring and mount instructions available on the WestCoast Products documentation site.
+https://docs.wcproducts.com/kraken-x60/
+Kraken X44
+The Kraken X44 powered by Talon FX is a compact brushless motor developed by
+WestCoast Products
+that uses the latest BLDC motor control technology from CTR Electronics. The integrated Talon FX unlocks the full performance of the Kraken X44 BLDC motor while providing best-in-class motion control.
+Store Page
+CAD and purchase instructions.
+https://store.ctr-electronics.com/products/kraken-x44/
+Hardware User Manual
+Wiring and mount instructions available on the WestCoast Products documentation site.
+https://docs.wcproducts.com/kraken-x44/
+Falcon 500
+The Falcon 500 powered by Talon FX is a brushless motor with an integrated motor controller and high-resolution encoder, custom designed specifically for the FIRST Robotics Competition, through a collaboration between Cross the Road Electronics and
+VEX Robotics
+.
+Store Page
+CAD, Firmware and purchase instructions.
+https://store.ctr-electronics.com/falcon-500-powered-by-talon-fx/
+Hardware User Manual
+Wiring and mount instructions in PDF format.
+https://ctre.download/files/user-manual/Falcon%20500%20v3%20User’s%20Guide.pdf
+Utilizing your TalonFX
+¶
+Improving Performance with Current Limits
+Motor Orientation
+¶
+Talon FX supports Clockwise and Counter Clockwise inverts. Inverts are determined from the perspective of looking at the face of the motor.
+Counter Clockwise
+Clockwise
+Actuator Limits
+¶
+CTR Electronics actuators, such as the Talon FX, support various kinds of hardware and software limits.
+Note
+The TalonFX + Kraken X60 does not support hardware limit switches. Instead,
+control request limit
+overrides can be used, or a CANcoder can be used as a
+remote limit switch
+.
+Documentation on retrieving and configuring limits can be found
+here
+.
+Limit Switches
+¶
+CTR Electronics supported actuators have limit features that will automatically neutral the actuator output (set voltage to 0) if a limit switch is activated. By default, limits are set to “normally open”. This means that the switch needs to be explicitly closed (or grounded) for the actuator output to be set to neutral.
+When the limit switch is closed (connected to ground), the actuator will disable and the pattern will move toward the forward/reverse limit pin (red blink pattern will move toward the forward limit pin when the forward limit is closed, and vice-versa).
+Tip
+For more information on limit switch wiring in the Falcon 500, consult the
+Falcon 500 User’s Guide
+.
+Status Light Reference
+¶
+Blink Codes
+Disabled Codes
+Animation (Click to play)
+LED State
+Cause
+Possible Fix
+LEDs Off
+No Power
+Provide 12V to Red/Black leads.
+Blinking Alternating Red
+Talon FX does not have a valid CAN/PWM signal.
+Ensure good connections between CANH and CANL (Yellow and Green) & robot controller is on.
+Blinking Alternating Orange
+TalonFX detects CAN but does not see Phoenix running on the robot controller.
+If Phoenix is running on the robot controller, ensure good connection between the controller and this device. Otherwise, deploy a robot program that uses Phoenix.
+Blinking Simultaneous Orange
+Talon FX has valid CAN signal and is disabled. Phoenix is running in robot controller
+and
+Talon FX has good CAN connection to robot controller.
+If robot is enabled, ensure a control request is being sent to the Talon FX.
+Enabled Codes
+Both Solid Orange
+Talon FX enabled with neutral output.
+Blinking Simultaneous Red
+Talon FX driving in reverse. Rate of blink corresponds to duty cycle applied.
+Blinking Simultaneous Green
+Talon FX driving forward. Rate of blink corresponds to duty cycle applied.
+Offset Alternating Red/Off
+Talon FX limited (hard or soft limit). Direction of offset determines forward/reverse limit.
+Special Codes
+Offset Orange/Off
+Talon FX in thermal cutoff.
+Allow Talon FX to cool. Consider configuring Stator Current Limits to reduce heat generation.
+Alternate Red/Green
+Talon FX driven with Pro-only command while unlicensed.
+Use non-Pro-only command, or license device for Pro.
+Alternate Red/Orange
+Damaged Hardware.
+Use Tuner X Self Test to confirm the LEDs and that the hardware fault is set, then contact CTRE
+Single LED alternates Green/Orange
+Talon FX in bootloader.
+Field-upgrade device in Tuner X.
+On this page
+Talon FX
+Utilizing your TalonFX
+Motor Orientation
+Actuator Limits
+Limit Switches
+Status Light Reference

@@ -1,0 +1,215 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Validating the Drivetrain
+¶
+Tuner performs several validation procedures to confirm inverts, offsets and mechanical functionality of the drivetrain.
+This test consists of two steps:
+Verify Steer
+Verify Drive
+Verify Steer
+¶
+The
+Verify Steer
+test is used to confirm that the module azimuth (or steer) can rotate freely and what direction they rotate in.
+This test simply rotates all of the modules and confirms with the user if they rotated clockwise or counter-clockwise. The modules should rotate
+counter-clockwise
+(looking down at the module).
+Verify Drive
+¶
+The
+Verify Drive
+test is used to determine if the offsets were correctly applied and what the inverts of the drive motors should be. This process is as listed:
+Rotate the modules until they are at position 0 (the module 0 should be calibrated from the
+calibration
+step).
+Apply ~10% dutycycle.
+Confirm with the user if the robot would’ve moved forward or backwards.
+Without placing the robot on the ground, forward can be determined with the following steps.
+Look at the robot from the right side of the robot.
+Observe the wheels rotating. If the wheels rotate
+clockwise
+, this is forward (for the right side of the robot!).
+Repeat for the left side of the robot, but instead of clockwise, forward is
+counter-clockwise
+.
+Troubleshooting
+¶
+A couple of common troubleshooting steps are listed below.
+Q: The left or right-side of the drivetrain rotates in the wrong direction!
+¶
+Note
+If
+both
+sides are rotating in the incorrect direction, simply select
+No
+in the prompt that appears at the end of the test.
+Answer:
+Go back to the configuration page and reperform CANcoder calibration. Ensure that the bevel gear of the robot is facing toward the vertical center of the robot and that the module is centered (either with a locking pin or ruler).
+Q: The robot wheels did not move!
+¶
+Answer:
+Ensure that the robot is enabled in the
+FRC Driver Station
+.
+Q: The robot says the average velocity was too small!
+¶
+Answer:
+Confirm what direction the wheel is rotating. Same solution as
+Q: The left or right-side of the drivetrain rotates in the wrong direction!
+.
+Q: My motors are stall-whistling
+¶
+Answer:
+The motors will whistle (or screech) if they have stalled (outputting power, but the motor output shaft can’t move). Verify by hand that the steer and drive motors can turn freely.
+Q: My robot is spinning or stuttering
+¶
+Answer:
+Ensure the battery voltage is above 11V. Place the robot on blocks and rerun the steer test. If the modules aren’t aligned the robot forward direction (determined from the device assignment in a previous step), then the robot inverts will not be correct.
+On this page
+Validating the Drivetrain
+Verify Steer
+Verify Drive
+Troubleshooting
+Q: The left or right-side of the drivetrain rotates in the wrong direction!
+Q: The robot wheels did not move!
+Q: The robot says the average velocity was too small!
+Q: My motors are stall-whistling
+Q: My robot is spinning or stuttering

@@ -1,0 +1,711 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Unit Testing
+¶
+High-fidelity simulation
+with CTR Electronics devices can be used for
+unit testing
+robot applications.
+When writing unit tests, the regular device APIs should be used to control devices and read status signals. Just like in simulation, the device
+SimState
+API can be used to update the simulated state of the device.
+Additionally, users must ensure the robot is enabled prior to controlling actuators. This can be accomplished in WPILib by calling
+DriverStationSim.setEnabled(true)
+(
+Java
+,
+C++
+), followed by
+DriverStation.notifyNewData()
+to apply the change (
+Java
+,
+C++
+).
+Important
+There may be a short delay between enabling the robot and the simulated actuators being enabled. Unit tests should delay for ~100ms after constructing all devices and enabling the robot to account for this delay.
+In unit tests, users should utilize the
+StatusSignal.waitForUpdate()
+and
+BaseStatusSignal.waitForAll()
+APIs to wait for fresh data after sending a control request or modifying the simulated device state.
+Important
+There may be a short delay between sending a control request and the simulated device applying the control. Unit tests should delay for ~20ms after sending a control request to account for this delay.
+Below is an example unit test that verifies the robot is enabled and verifies that the device responds to a control request.
+Java
+public
+class
+TalonFXTest
+implements
+AutoCloseable
+{
+static
+final
+double
+DELTA
+=
+1e-3
+;
+// acceptable deviation range
+static
+final
+double
+kGearRatio
+=
+10.0
+;
+TalonFX
+m_fx
+;
+TalonFXSimState
+m_fxSim
+;
+DCMotorSim
+m_motorSim
+;
+@Override
+public
+void
+close
+()
+{
+/* destroy our TalonFX object */
+m_fx
+.
+close
+();
+}
+@BeforeEach
+public
+void
+constructDevices
+()
+{
+assert
+HAL
+.
+initialize
+(
+500
+,
+0
+);
+/* create the TalonFX */
+m_fx
+=
+new
+TalonFX
+(
+0
+);
+m_fxSim
+=
+m_fx
+.
+getSimState
+();
+/* create the simulated DC motor */
+var
+gearbox
+=
+DCMotor
+.
+getKrakenX60Foc
+(
+1
+);
+m_motorSim
+=
+new
+DCMotorSim
+(
+LinearSystemId
+.
+createDCMotorSystem
+(
+gearbox
+,
+0.001
+,
+kGearRatio
+),
+gearbox
+);
+/* enable the robot */
+DriverStationSim
+.
+setEnabled
+(
+true
+);
+DriverStationSim
+.
+notifyNewData
+();
+/* delay ~100ms so the devices can start up and enable */
+Timer
+.
+delay
+(
+0.100
+);
+}
+@AfterEach
+void
+shutdown
+()
+{
+close
+();
+}
+@Test
+public
+void
+robotIsEnabled
+()
+{
+/* verify that the robot is enabled */
+assertTrue
+(
+DriverStation
+.
+isEnabled
+());
+}
+@Test
+public
+void
+motorDrives
+()
+{
+/* set the voltage supplied by the battery */
+m_fxSim
+.
+setSupplyVoltage
+(
+RobotController
+.
+getBatteryVoltage
+());
+var
+dutyCycle
+=
+m_fx
+.
+getDutyCycle
+();
+/* wait for a fresh duty cycle signal */
+dutyCycle
+.
+waitForUpdate
+(
+0.100
+);
+/* verify that the motor output is zero */
+assertEquals
+(
+dutyCycle
+.
+getValueAsDouble
+(),
+0.0
+,
+DELTA
+);
+/* request 100% output */
+m_fx
+.
+setControl
+(
+new
+DutyCycleOut
+(
+1.0
+));
+/* wait for the control to apply and the motor to accelerate */
+for
+(
+int
+i
+=
+0
+;
+i
+<
+10
+;
+++
+i
+)
+{
+Timer
+.
+delay
+(
+0.020
+);
+m_motorSim
+.
+setInputVoltage
+(
+m_fxSim
+.
+getMotorVoltage
+());
+m_motorSim
+.
+update
+(
+0.020
+);
+m_fxSim
+.
+setRawRotorPosition
+(
+m_motorSim
+.
+getAngularPosition
+().
+times
+(
+kGearRatio
+));
+m_fxSim
+.
+setRotorVelocity
+(
+m_motorSim
+.
+getAngularVelocity
+().
+times
+(
+kGearRatio
+));
+}
+/* wait for a new duty cycle signal */
+dutyCycle
+.
+waitForUpdate
+(
+0.100
+);
+/* verify that the motor output is 1.0 */
+assertEquals
+(
+dutyCycle
+.
+getValueAsDouble
+(),
+1.0
+,
+DELTA
+);
+}
+}
+C++
+class
+TalonFXTest
+:
+public
+testing
+::
+Test
+{
+protected
+:
+static
+constexpr
+double
+kGearRatio
+=
+10.0
+;
+/* create the TalonFX */
+hardware
+::
+TalonFX
+m_fx
+{
+0
+};
+sim
+::
+TalonFXSimState
+&
+m_fxSim
+{
+m_fx
+.
+GetSimState
+()};
+/* create the simulated DC motor */
+frc
+::
+sim
+::
+DCMotorSim
+m_motorSim
+{
+frc
+::
+LinearSystemId
+::
+DCMotorSystem
+{
+frc
+::
+DCMotor
+::
+KrakenX60FOC
+(
+1
+),
+0.001
+_kg_sq_m
+,
+kGearRatio
+},
+frc
+::
+DCMotor
+::
+KrakenX60FOC
+(
+1
+)
+};
+void
+SetUp
+()
+override
+{
+/* enable the robot */
+frc
+::
+sim
+::
+DriverStationSim
+::
+SetEnabled
+(
+true
+);
+frc
+::
+sim
+::
+DriverStationSim
+::
+NotifyNewData
+();
+/* delay ~100ms so the devices can start up and enable */
+std
+::
+this_thread
+::
+sleep_for
+(
+std
+::
+chrono
+::
+milliseconds
+{
+100
+});
+}
+};
+TEST_F
+(
+TalonFXTest
+,
+RobotIsEnabled
+)
+{
+/* verify that the robot is enabled */
+EXPECT_TRUE
+(
+frc
+::
+DriverStation
+::
+IsEnabled
+());
+}
+TEST_F
+(
+TalonFXTest
+,
+MotorDrives
+)
+{
+/* set the voltage supplied by the battery */
+m_fxSim
+.
+SetSupplyVoltage
+(
+frc
+::
+RobotController
+::
+GetBatteryVoltage
+());
+auto
+&
+dutyCycle
+=
+m_fx
+.
+GetDutyCycle
+();
+/* wait for a fresh duty cycle signal */
+dutyCycle
+.
+WaitForUpdate
+(
+100
+_ms
+);
+/* verify that the motor output is zero */
+EXPECT_DOUBLE_EQ
+(
+dutyCycle
+.
+GetValue
+(),
+0.0
+);
+/* request 100% output */
+m_fx
+.
+SetControl
+(
+controls
+::
+DutyCycleOut
+{
+1.0
+});
+/* wait for the control to apply and the motor to accelerate */
+for
+(
+int
+i
+=
+0
+;
+i
+<
+10
+;
+++
+i
+)
+{
+std
+::
+this_thread
+::
+sleep_for
+(
+std
+::
+chrono
+::
+milliseconds
+{
+20
+});
+m_motorSim
+.
+SetInputVoltage
+(
+m_fxSim
+.
+GetMotorVoltage
+());
+m_motorSim
+.
+Update
+(
+20
+_ms
+);
+m_fxSim
+.
+SetRawRotorPosition
+(
+kGearRatio
+*
+m_motorSim
+.
+GetAngularPosition
+());
+m_fxSim
+.
+SetRotorVelocity
+(
+kGearRatio
+*
+m_motorSim
+.
+GetAngularVelocity
+());
+}
+/* wait for a new duty cycle signal */
+dutyCycle
+.
+WaitForUpdate
+(
+100
+_ms
+);
+/* verify that the motor output is 1.0 */
+EXPECT_DOUBLE_EQ
+(
+dutyCycle
+.
+GetValue
+(),
+1.0
+);
+}

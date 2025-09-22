@@ -1,0 +1,447 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Open-Loop Control
+¶
+Open-Loop control typically refers to directly controlling device output.
+There are open-loop control requests for all TalonFX control output types. With the exception of FOC-only control requests, all open-loop control requests follow the naming pattern
+{ControlOutputType}Out
+. For example, the open-loop Voltage control request is called
+VoltageOut
+. FOC-only control requests follow the naming pattern
+{ControlOutputType}
+.
+In the below example, note that devices are initialized with two arguments. These arguments correspond to
+the device ID
+and CAN bus name. For CANivore, this is the name of the CANivore as configured in
+Phoenix Tuner X
+. For more information, see the
+CANivore API
+documentation.
+Java
+// initialize devices on the rio can bus
+final
+TalonFX
+m_leftLeader
+=
+new
+TalonFX
+(
+0
+,
+"rio"
+);
+final
+TalonFX
+m_rightLeader
+=
+new
+TalonFX
+(
+1
+,
+"rio"
+);
+// users should reuse control requests when possible
+final
+DutyCycleOut
+m_leftRequest
+=
+new
+DutyCycleOut
+(
+0.0
+);
+final
+DutyCycleOut
+m_rightRequest
+=
+new
+DutyCycleOut
+(
+0.0
+);
+// retrieve joystick inputs
+var
+forward
+=
+-
+m_driverJoy
+.
+getLeftY
+();
+var
+turn
+=
+m_driverJoy
+.
+getRightX
+();
+// calculate motor outputs, utilizes a "arcade" style of driving;
+// where left Y controls forward and right X controls rotation/turn
+var
+leftOut
+=
+forward
++
+turn
+;
+var
+rightOut
+=
+forward
+-
+turn
+;
+// set request to motor controller
+m_leftLeader
+.
+setControl
+(
+m_leftRequest
+.
+withOutput
+(
+leftOut
+));
+m_rightLeader
+.
+setControl
+(
+m_rightRequest
+.
+withOutput
+(
+rightOut
+));
+C++
+// initialize devices on the rio can bus
+hardware
+::
+TalonFX
+m_leftLeader
+{
+0
+,
+"rio"
+};
+hardware
+::
+TalonFX
+m_rightLeader
+{
+1
+,
+"rio"
+};
+// users should reuse control requests when possible
+controls
+::
+DutyCycleOut
+m_leftRequest
+{
+0.0
+};
+controls
+::
+DutyCycleOut
+m_rightRequest
+{
+0.0
+};
+// retrieve joystick inputs
+auto
+forward
+=
+-
+m_driverJoy
+.
+GetLeftY
+();
+auto
+turn
+=
+m_driverJoy
+.
+GetRightX
+();
+// calculate motor outputs, utilizes a "arcade" style of driving;
+// where left Y controls forward and right X controls rotation/turn
+auto
+leftOut
+=
+forward
++
+turn
+;
+auto
+rightOut
+=
+forward
+-
+turn
+;
+// set request to motor controller
+m_leftLeader
+.
+SetControl
+(
+m_leftRequest
+.
+WithOutput
+(
+leftOut
+));
+m_rightLeader
+.
+SetControl
+(
+m_rightRequest
+.
+WithOutput
+(
+rightOut
+));
+Python
+# initialize devices on the rio can bus
+self
+.
+left_leader
+=
+hardware
+.
+TalonFX
+(
+0
+,
+"rio"
+)
+self
+.
+right_leader
+=
+hardware
+.
+TalonFX
+(
+1
+,
+"rio"
+)
+# users should reuse control requests when possible
+self
+.
+left_request
+=
+controls
+.
+DutyCycleOut
+(
+0.0
+)
+self
+.
+right_request
+=
+controls
+.
+DutyCycleOut
+(
+0.0
+)
+# retrieve joystick inputs
+forward
+=
+-
+self
+.
+driver_joy
+.
+getLeftY
+()
+turn
+=
+self
+.
+driver_joy
+.
+getRightX
+()
+# calculate motor outputs, utilizes a "arcade" style of driving
+# where left Y controls forward and right X controls rotation/turn
+left_out
+=
+forward
++
+turn
+right_out
+=
+forward
+-
+turn
+# set request to motor controllers
+self
+.
+left_leader
+.
+set_control
+(
+self
+.
+left_request
+.
+with_output
+(
+left_out
+))
+self
+.
+right_leader
+.
+set_control
+(
+self
+.
+right_request
+.
+with_output
+(
+right_out
+))

@@ -1,0 +1,1022 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+TalonFX Remote Sensors
+¶
+The TalonFX supports various remote sensors. Remote sensors allow onboard closed-loop functionality at rates faster than a traditional robot processor (~1Khz) by reading the remote sensor directly from the CAN bus. This allows supported motor controllers to execute closed-loop modes with sensor values sourced by supported sensors.
+A list of supported remote sensors can be found in the API docs (
+Java
+,
+C++
+,
+Python
+).
+Remote sensors can be configured using
+Tuner X
+or via code. This document highlights how to configure a remote sensor in a robot program.
+RemoteCANcoder
+¶
+A supported motor controller will update its position and velocity whenever the CANcoder publishes its information on the CAN bus.
+Java
+var
+fx_cfg
+=
+new
+TalonFXConfiguration
+();
+fx_cfg
+.
+Feedback
+.
+FeedbackRemoteSensorID
+=
+m_cancoder
+.
+getDeviceID
+();
+fx_cfg
+.
+Feedback
+.
+FeedbackSensorSource
+=
+FeedbackSensorSourceValue
+.
+RemoteCANcoder
+;
+m_talonFX
+.
+getConfigurator
+().
+apply
+(
+fx_cfg
+);
+C++
+configs
+::
+TalonFXConfiguration
+fx_cfg
+{};
+fx_cfg
+.
+Feedback
+.
+FeedbackRemoteSensorID
+=
+m_cancoder
+.
+GetDeviceID
+();
+fx_cfg
+.
+Feedback
+.
+FeedbackSensorSource
+=
+signals
+::
+FeedbackSensorSourceValue
+::
+RemoteCANcoder
+;
+m_talonFX
+.
+GetConfigurator
+().
+Apply
+(
+fx_cfg
+);
+Python
+fx_cfg
+=
+configs
+.
+TalonFXConfiguration
+()
+fx_cfg
+.
+feedback
+.
+feedback_remote_sensor_id
+=
+self
+.
+cancoder
+.
+device_id
+fx_cfg
+.
+feedback
+.
+feedback_sensor_source
+=
+signals
+.
+FeedbackSensorSourceValue
+.
+REMOTE_CANCODER
+self
+.
+talonfx
+.
+configurator
+.
+apply
+(
+fx_cfg
+)
+FusedCANcoder
+¶
+Important
+This feature requires the device to be
+Pro licensed
+. When unlicensed, the TalonFX will fall back to
+RemoteCANcoder
+and trip the UsingFusedCANcoderWhileUnlicensed fault.
+New in Phoenix 6 is a feedback sensor type called
+FusedCANcoder
+.
+FusedCANcoder
+will fuse another CANcoder’s information with the motor’s internal rotor, which provides the best possible position and velocity for accuracy and bandwidth. This is useful in applications such as swerve azimuth.
+FusedCANcoder
+requires the configuration of several
+Feedback
+config group items, shown below.
+Full example:
+Java
+,
+C++
+Java
+60
+/* Configure CANcoder to zero the magnet appropriately */
+61
+CANcoderConfiguration
+cc_cfg
+=
+new
+CANcoderConfiguration
+();
+62
+cc_cfg
+.
+MagnetSensor
+.
+AbsoluteSensorRange
+=
+AbsoluteSensorRangeValue
+.
+Signed_PlusMinusHalf
+;
+63
+cc_cfg
+.
+MagnetSensor
+.
+SensorDirection
+=
+SensorDirectionValue
+.
+CounterClockwise_Positive
+;
+64
+cc_cfg
+.
+MagnetSensor
+.
+withMagnetOffset
+(
+Rotations
+.
+of
+(
+0.4
+));
+65
+m_cc
+.
+getConfigurator
+().
+apply
+(
+cc_cfg
+);
+66
+67
+TalonFXConfiguration
+fx_cfg
+=
+new
+TalonFXConfiguration
+();
+68
+fx_cfg
+.
+Feedback
+.
+FeedbackRemoteSensorID
+=
+m_cc
+.
+getDeviceID
+();
+69
+fx_cfg
+.
+Feedback
+.
+FeedbackSensorSource
+=
+FeedbackSensorSourceValue
+.
+FusedCANcoder
+;
+70
+fx_cfg
+.
+Feedback
+.
+SensorToMechanismRatio
+=
+1.0
+;
+71
+fx_cfg
+.
+Feedback
+.
+RotorToSensorRatio
+=
+12.8
+;
+72
+73
+m_fx
+.
+getConfigurator
+().
+apply
+(
+fx_cfg
+);
+C++
+11
+/* Configure CANcoder to zero the magnet appropriately */
+12
+configs
+::
+CANcoderConfiguration
+cc_cfg
+{};
+13
+cc_cfg
+.
+MagnetSensor
+.
+AbsoluteSensorRange
+=
+signals
+::
+AbsoluteSensorRangeValue
+::
+Signed_PlusMinusHalf
+;
+14
+cc_cfg
+.
+MagnetSensor
+.
+SensorDirection
+=
+signals
+::
+SensorDirectionValue
+::
+CounterClockwise_Positive
+;
+15
+cc_cfg
+.
+MagnetSensor
+.
+MagnetOffset
+=
+0.4
+_tr
+;
+16
+m_cc
+.
+GetConfigurator
+().
+Apply
+(
+cc_cfg
+);
+17
+18
+configs
+::
+TalonFXConfiguration
+fx_cfg
+{};
+19
+fx_cfg
+.
+Feedback
+.
+FeedbackRemoteSensorID
+=
+m_cc
+.
+GetDeviceID
+();
+20
+fx_cfg
+.
+Feedback
+.
+FeedbackSensorSource
+=
+signals
+::
+FeedbackSensorSourceValue
+::
+FusedCANcoder
+;
+21
+fx_cfg
+.
+Feedback
+.
+SensorToMechanismRatio
+=
+1.0
+;
+22
+fx_cfg
+.
+Feedback
+.
+RotorToSensorRatio
+=
+12.8
+;
+23
+24
+m_fx
+.
+GetConfigurator
+().
+Apply
+(
+fx_cfg
+);
+Python
+cc_cfg
+=
+configs
+.
+CANcoderConfiguration
+()
+cc_cfg
+.
+magnet_sensor
+.
+absolute_sensor_range
+=
+signals
+.
+AbsoluteSensorRangeValue
+.
+SIGNED_PLUS_MINUS_HALF
+cc_cfg
+.
+magnet_sensor
+.
+sensor_direction
+=
+signals
+.
+SensorDirectionValue
+.
+COUNTER_CLOCKWISE_POSITIVE
+cc_cfg
+.
+magnet_sensor
+.
+magnet_offset
+=
+0.4
+self
+.
+cc
+.
+configurator
+.
+apply
+(
+cc_cfg
+)
+fx_cfg
+=
+configs
+.
+TalonFXConfiguration
+()
+fx_cfg
+.
+feedback
+.
+feedback_remote_sensor_id
+=
+self
+.
+cc
+.
+device_id
+fx_cfg
+.
+feedback
+.
+feedback_sensor_source
+=
+signals
+.
+FeedbackSensorSourceValue
+.
+FUSED_CANCODER
+fx_cfg
+.
+feedback
+.
+sensor_to_mechanism_ratio
+=
+1.0
+fx_cfg
+.
+feedback
+.
+rotor_to_sensor_ratio
+=
+12.8
+self
+.
+fx
+.
+configurator
+.
+apply
+(
+fx_cfg
+)
+Usage is the same as any
+status signal
+:
+Java
+fx_pos
+.
+refresh
+();
+cc_pos
+.
+refresh
+();
+System
+.
+out
+.
+println
+(
+"FX Position: "
++
+fx_pos
+.
+toString
+());
+System
+.
+out
+.
+println
+(
+"CANcoder Position: "
++
+cc_pos
+.
+toString
+());
+C++
+fx_pos
+.
+Refresh
+();
+cc_pos
+.
+Refresh
+();
+std
+::
+cout
+<<
+"FX Position: "
+<<
+fx_pos
+<<
+std
+::
+endl
+;
+std
+::
+cout
+<<
+"CANcoder Position: "
+<<
+cc_pos
+<<
+std
+::
+endl
+;
+Python
+fx_pos
+.
+refresh
+()
+cc_pos
+.
+refresh
+()
+print
+(
+"FX Position: "
++
+fx_pos
+.
+value
+)
+print
+(
+"CANcoder Position: "
++
+cc_pos
+.
+value
+)
+SyncCANcoder
+¶
+Important
+This feature requires the device to be
+Pro licensed
+. When unlicensed, the TalonFX will fall back to
+RemoteCANcoder
+and trip the UsingFusedCANcoderWhileUnlicensed fault.
+SyncCANcoder
+allows users to synchronize the TalonFX’s internal rotor sensor against the remote CANcoder, but continue to use the rotor sensor for all closed loop control. TalonFX will continue to monitor the remote CANcoder and report if its internal position differs significantly from the reported position or if the remote CANcoder disappears from the bus.
+Users may want
+SyncCANcoder
+instead of
+FusedCANcoder
+if there is risk that the sensor can fail in a way that the sensor is still reporting “good” data, but the data does not match the mechanism, such as if the entire sensor mount assembly breaks off. Using
+SyncCANcoder
+over
+FusedCANcoder
+will not benefit from backlash compensation, as the CANcoder position is not continually fused in.
+SyncCANcoder
+requires the configuration of several
+Feedback
+config group items, shown below.
+Java
+/* Configure CANcoder to zero the magnet appropriately */
+CANcoderConfiguration
+cc_cfg
+=
+new
+CANcoderConfiguration
+();
+cc_cfg
+.
+MagnetSensor
+.
+AbsoluteSensorRange
+=
+AbsoluteSensorRangeValue
+.
+Signed_PlusMinusHalf
+;
+cc_cfg
+.
+MagnetSensor
+.
+SensorDirection
+=
+SensorDirectionValue
+.
+CounterClockwise_Positive
+;
+cc_cfg
+.
+MagnetSensor
+.
+MagnetOffset
+=
+0.4
+;
+m_cc
+.
+getConfigurator
+().
+apply
+(
+cc_cfg
+);
+TalonFXConfiguration
+fx_cfg
+=
+new
+TalonFXConfiguration
+();
+fx_cfg
+.
+Feedback
+.
+FeedbackRemoteSensorID
+=
+m_cc
+.
+getDeviceID
+();
+fx_cfg
+.
+Feedback
+.
+FeedbackSensorSource
+=
+FeedbackSensorSourceValue
+.
+SyncCANcoder
+;
+fx_cfg
+.
+Feedback
+.
+SensorToMechanismRatio
+=
+1.0
+;
+fx_cfg
+.
+Feedback
+.
+RotorToSensorRatio
+=
+12.8
+;
+m_fx
+.
+getConfigurator
+().
+apply
+(
+fx_cfg
+);
+C++
+/* Configure CANcoder to zero the magnet appropriately */
+configs
+::
+CANcoderConfiguration
+cc_cfg
+{};
+cc_cfg
+.
+MagnetSensor
+.
+AbsoluteSensorRange
+=
+signals
+::
+AbsoluteSensorRangeValue
+::
+Signed_PlusMinusHalf
+;
+cc_cfg
+.
+MagnetSensor
+.
+SensorDirection
+=
+signals
+::
+SensorDirectionValue
+::
+CounterClockwise_Positive
+;
+cc_cfg
+.
+MagnetSensor
+.
+MagnetOffset
+=
+0.4
+;
+m_cc
+.
+GetConfigurator
+().
+Apply
+(
+cc_cfg
+);
+configs
+::
+TalonFXConfiguration
+fx_cfg
+{};
+fx_cfg
+.
+Feedback
+.
+FeedbackRemoteSensorID
+=
+m_cc
+.
+GetDeviceID
+();
+fx_cfg
+.
+Feedback
+.
+FeedbackSensorSource
+=
+signals
+::
+FeedbackSensorSourceValue
+::
+SyncCANcoder
+;
+fx_cfg
+.
+Feedback
+.
+SensorToMechanismRatio
+=
+1.0
+;
+fx_cfg
+.
+Feedback
+.
+RotorToSensorRatio
+=
+12.8
+;
+m_fx
+.
+GetConfigurator
+().
+Apply
+(
+fx_cfg
+);
+Python
+cc_cfg
+=
+configs
+.
+CANcoderConfiguration
+()
+cc_cfg
+.
+magnet_sensor
+.
+absolute_sensor_range
+=
+signals
+.
+AbsoluteSensorRangeValue
+.
+SIGNED_PLUS_MINUS_HALF
+cc_cfg
+.
+magnet_sensor
+.
+sensor_direction
+=
+signals
+.
+SensorDirectionValue
+.
+COUNTER_CLOCKWISE_POSITIVE
+cc_cfg
+.
+magnet_sensor
+.
+magnet_offset
+=
+0.4
+self
+.
+cc
+.
+configurator
+.
+apply
+(
+cc_cfg
+)
+fx_cfg
+=
+configs
+.
+TalonFXConfiguration
+()
+fx_cfg
+.
+feedback
+.
+feedback_remote_sensor_id
+=
+self
+.
+cc
+.
+device_id
+fx_cfg
+.
+feedback
+.
+feedback_sensor_source
+=
+signals
+.
+FeedbackSensorSourceValue
+.
+SYNC_CANCODER
+fx_cfg
+.
+feedback
+.
+sensor_to_mechanism_ratio
+=
+1.0
+fx_cfg
+.
+feedback
+.
+rotor_to_sensor_ratio
+=
+12.8
+self
+.
+fx
+.
+configurator
+.
+apply
+(
+fx_cfg
+)
+On this page
+TalonFX Remote Sensors
+RemoteCANcoder
+FusedCANcoder
+SyncCANcoder

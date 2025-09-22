@@ -1,0 +1,258 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Device Licensing
+¶
+Note
+Users utilizing season pass must attach a team number before continuing. See
+Attaching a Team Number to Season Pass
+for more information.
+The following devices are eligible for single-device licensing:
+TalonFX (Falcon 500, Kraken X60)
+Pigeon 2
+CANcoder
+Additionally, CANivore is supported for licensing. When a CANivore is licensed, all devices on that bus are
+Pro
+enabled without additional activation.
+Important
+All license activation and verification features are only available in
+Phoenix Tuner X
+. Phoenix Tuner v1 does not support licensing actions.
+Purchasing a License
+¶
+Licenses can be purchased in the licensing section on the CTR Electronics store. Click
+here
+to purchase a license.
+Once a license has been purchased, you will receive an email confirmation confirming your purchase. Once this email is received, the license should be visible in the list of licenses in Tuner X.
+Activating a License
+¶
+Licenses are activated by first clicking on the
+LIC
+icon in the bottom right corner of the device card.
+This will open up a screen which displays a list of currently attached licenses for that device. Click on the
+Activate a new license
+button on the bottom of the popup.
+A list of purchased (but unattached) license seats are shown here. Click on the license you would like to redeem and press the
+Activate Selected License
+button to confirm redemption of that seat.
+Warning
+Users should be aware that license activation is permanent and irreversible
+Once the activation is complete, the license will be downloaded to the device. In the event that Tuner X disconnects from the internet or from the robot before this completes, the license is still activated and available for download the next time Tuner X is connected to the internet/robot.
+Batch Activating Licenses
+¶
+Tuner X also supports batch activating licenses from the
+Devices
+page. The user can either select devices by their checkbox (in the top right corner of their respective card) or by selecting the checkmark icon in the top right.
+Tip
+Selecting a device using their checkbox and clicking the checkmark in the top right will select all devices of the same models
+Step 1 in the above image selects all devices of the same models selected (or all devices if no device is currently check-boxed).
+Step 2 in the above image opens the batch licensing dialog.
+Once the dialog is opened, select a license from the dropdown at the top of the popup.
+The first list contains devices that will be batch licensed, while the second list contains devices that are ineligible due to one of the following:
+Device is not running Phoenix 6 firmware that supports licensing
+Device does not support the selected license
+Device is already licensed with the selected license
+The
+License devices
+button at the bottom of the popup shows the number of device licenses that will be applied and the number of seats currently available. After confirming that everything looks correct, press the
+License devices
+button to apply the licenses.
+Activating a License without a Robot
+¶
+Devices that have been seen by Tuner X at least once will be available in
+Device History
+. This can be useful for licensing a device when disconnected from the robot.
+Verifying Activation State
+¶
+An icon displaying the license state of your device is located in the bottom right of the device card.
+The below table can be used to determine your device license state for troubleshooting.
+State
+Image
+Description
+Licensed
+Device is licensed for the current version of the Phoenix 6 API.
+CANivore contains
+Licenses
+CANivore contains at least one bus license, which it will use to
+remote-license all compliant CAN devices.
+Pro Licensing Error
+Device is licensed and there was an error communicating license state.
+Licensing Error
+Device is not licensed and there was an error communicating license state.
+Not Licensed
+Device is not licensed for this version of the Phoenix 6 API.
+Licensing Not
+Supported
+Icon not present
+Device does not support licensing or is using an incompatible firmware for
+device licensing.
+Additionally, users can perform a
+Self Test
+to verify that the device has a valid license.
+Troubleshooting
+¶
+Did you activate a license for this device?
+Clicking on the icon will show licenses that are attached to this device
+Is the latest diagnostic server running?
+Check the version at the bottom of Tuner X’s devices page.
+Latest version details can be found in the
+changelog
+under the latest Phoenix-6/Libs version.
+Confirm the
+vendordep
+in your robot project is the latest version.
+Alternatively, you can deploy the
+temporary diagnostic server
+.
+Is the latest
+Phoenix 6
+firmware flashed onto the device?
+FRC Only
+: If using Season Pass, is the roboRIO configured with the
+correct team number
+?
+On this page
+Device Licensing
+Purchasing a License
+Activating a License
+Batch Activating Licenses
+Activating a License without a Robot
+Verifying Activation State
+Troubleshooting

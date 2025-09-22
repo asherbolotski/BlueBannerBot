@@ -1,0 +1,314 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+API Overview
+¶
+The Phoenix 6 API resides in the
+com.ctre.phoenix6
+package in Java, the
+ctre::phoenix6
+namespace in C++, and the
+phoenix6
+module in Python. The API is then further organized into smaller packages and namespaces that group together similar types of classes and functions:
+configs
+- classes related to device
+configuration
+controls
+- classes related to device
+control
+hardware
+- the device hardware classes, such as
+TalonFX
+signals
+- enumeration types for device
+signals
+sim
+- classes related to device
+simulation
+C++ IntelliSense
+¶
+In C++, this namespace structure has the advantage of cleaning up IntelliSense when searching for classes:
+// first use the ctre::phoenix6 namespace
+using
+namespace
+ctre
+::
+phoenix6
+;
+// now types are organized cleanly by namespace
+hardware
+::
+TalonFX
+m_talonFX
+{
+0
+};
+sim
+::
+TalonFXSimState
+&
+m_talonFXSim
+{
+m_talonFX
+.
+GetSimState
+()};
+controls
+::
+DutyCycleOut
+m_talonFXOut
+{
+0
+};
+configs
+::
+TalonFXConfiguration
+m_talonFXConfig
+{};
+signals
+::
+InvertedValue
+m_talonFXInverted
+{
+signals
+::
+InvertedValue
+::
+CounterClockwise_Positive
+};
+All C++ code examples in this documentation will assume the presence of
+using
+namespace
+ctre::phoenix6;
+.
+Python Imports
+¶
+Python also takes advantage of the module structure to improve IntelliSense:
+# first import the relevant modules and types
+from
+phoenix6
+import
+controls
+,
+configs
+,
+hardware
+,
+signals
+# now types are organized cleanly by module
+self
+.
+talonfx
+=
+hardware
+.
+TalonFX
+(
+0
+)
+self
+.
+talonfx_out
+=
+controls
+.
+DutyCycleOut
+(
+0
+)
+talonfx_configs
+=
+configs
+.
+TalonFXConfiguration
+()
+talonfx_inverted
+=
+signals
+.
+InvertedValue
+.
+COUNTER_CLOCKWISE_POSITIVE
+All Python code examples in this documentation will assume the presence of
+from
+phoenix6
+import
+*
+.
+Thread Safety
+¶
+The vast majority of Phoenix 6 is thread-safe with a few exceptions. Objects that are
+not
+thread-safe include:
+StatusSignal
+objects
+Calling the same device
+StatusSignal
+getter (e.g.
+TalonFX.getVelocity()
+) from multiple threads is unsafe. This is because device signal getters refresh the
+StatusSignal
+implicitly.
+Users should clone or copy a
+StatusSignal
+object to get a unique instance for a given thread.
+Config
+objects
+Includes
+TalonFX.setInverted()
+and
+TalonFX.setNeutralMode()
+However, device
+Configurator
+objects and other setters (e.g.
+TalonFX.setPosition()
+)
+are
+thread-safe.
+Control
+objects
+However, sending a control request to a device
+is
+thread-safe.
+On this page
+API Overview
+C++ IntelliSense
+Python Imports
+Thread Safety

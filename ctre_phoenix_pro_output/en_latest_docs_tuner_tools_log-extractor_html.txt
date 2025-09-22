@@ -1,0 +1,261 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Extracting Signal Logs
+¶
+Tip
+Information on how to use the signal logger API can be found in the
+corresponding API article
+.
+Tuner X offers in-app functionality to retrieve, manage, and convert
+hoot
+logs to compatible formats.
+CTRE
+hoot
+logs can be retrieved utilizing the file explorer on the left of the application. The file explorer offers the functionality to download and delete logs on a remote target.
+On the right side, the
+Convert
+tab can be used to import and convert
+hoot
+logs to available formats.
+Once a
+hoot
+log has been downloaded, it is automatically placed in the conversion queue to the right. Logs can also be manually imported or removed using the two buttons at the top-right of the conversion queue.
+If a log file is reported as unlicensed, users can perform a
+Deep Scan
+of the log if they believe it should contain pro-licensed devices. By default, Tuner will only scan the first few megabytes of the log for pro-licensed devices to save time during scan and export.
+Filtering for Signals
+¶
+Since
+hoot
+logs can contain a massive amount of data, users may want to trim the exported log file. Tuner supports simple search and regex filtering of signals in a
+hoot
+. Filters are optional and configured on a per-log basis.
+Note
+If no signals are selected, all signals will be exported during conversion.
+In the below picture, regex is used to select only the
+MotorVoltage
+,
+Position
+, and
+Velocity
+signals for
+TalonFX-11
+.
+Important
+If the
+hoot
+log does not contain any Pro-licensed devices, a
+limited set of signals
+may be exported for free using the
+AdvantageScope (wpilog)
+option.
+Converting
+¶
+After adding
+hoot
+logs to the queue, select the output directory and one of the output types. Then, click the
+Convert
+button to begin the conversion process. This may take some time depending on the output format, the size of the
+hoot
+file, and the number of selected signals.
+Common Issues
+¶
+Problem: When converting, I get
+hoot
+log
+API
+version
+too
+old,
+cannot
+export
+its
+signals
+¶
+Solution:
+This may happen if your hoot file was generated using an old version of Phoenix. Update your Phoenix installation (by updating your vendordep in
+Installing Phoenix 6
+) and recreate your log file. If the log file recorded is critical, reach out to
+support
+@
+ctr-electronics
+.
+com
+.
+Problem: When converting, I get
+Could
+not
+read
+to
+end
+of
+input
+file
+¶
+Solution:
+This occurs when the converter encounters bad data. This typically occurs when the robot is turned off in the middle of writing to the log. Users can often ignore this error message, although the last few seconds of data may be lost. To avoid this issue, run
+SignalLogger.stop()
+before shutting down the robot program.
+On this page
+Extracting Signal Logs
+Filtering for Signals
+Converting
+Common Issues
+Problem: When converting, I get
+hoot
+log
+API
+version
+too
+old,
+cannot
+export
+its
+signals
+Problem: When converting, I get
+Could
+not
+read
+to
+end
+of
+input
+file

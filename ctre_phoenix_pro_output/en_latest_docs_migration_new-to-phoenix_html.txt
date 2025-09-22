@@ -1,0 +1,419 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Phoenix 6 Features
+¶
+Phoenix 6 currently offers the following features and will further expand.
+Phoenix 6
+¶
+The following features are available for free in the Phoenix 6 API.
+Comprehensive API
+¶
+Device signal getters return a
+StatusSignal
+object, expanding the functionality of status signals.
+Control devices with an extensive list of flexible, strongly-typed
+control request objects
+.
+Canonical Units
+¶
+Uses the popular
+C++ units library
+and standardizes on SI units.
+Provides overloads using the
+Java units library
+.
+Signals are documented with the unit type and the minimum and maximum values.
+Improved Device Control
+¶
+New and improved
+control output types
+and
+closed-loop
+configuration.
+Improved
+Motion Magic®
+with jerk control and support for modifying the profile on the fly.
+New
+Motion Magic® Expo
+control to use an exponential profile following system dynamics, reducing both overshoot and time to target.
+Kalman-based algorithms to reduce latency while maintaining smooth data.
+Swerve API
+¶
+High-performance Swerve API using synchronous, latency-compensated odometry.
+Eliminate the boilerplate from copying swerve template code.
+Supported in Java, C++, and Python.
+Minimized GC impact in Java and Python using native C++ implementation.
+Improved
+odometry performance
+with CANivore and Phoenix Pro.
+Tuner X
+Swerve Project Generator
+gets swerve drive up and running quickly.
+Built-in high-fidelity
+simulation
+support.
+Enhanced Support for
+CAN FD
+¶
+Improved CAN FD framing further reduces any
+CAN bus utilization
+issues.
+Larger CAN frames allow for the addition of more advanced features.
+New Tuner X
+Self Tests
+and
+Plotting
+¶
+Detailed and resolute self tests to improve debugging.
+Plot signals at the configured signal update frequency.
+Combine multiple signal axes together and customize display of signal plots.
+Free
+High-Fidelity Simulation
+¶
+Simulation closely follows the behavior of real hardware.
+Write unit-tests for your robot code, and make sure the robot works before deploying.
+Continuous Wrap Mode
+¶
+Takes the shortest path for continuous mechanisms.
+Ideal for mechanisms such as Swerve Drive Steer.
+Phoenix Pro
+¶
+Certain Phoenix 6 features require the device or CANivore to be
+Pro licensed
+. The list of features that require licensing is available below.
+Field Oriented Control (FOC)
+¶
+~15% increase in peak power.
+Increased torque output; faster acceleration and higher speeds under load.
+Greater efficiency; the motor draws less current for the same output power, increasing battery life.
+Support for direct
+torque control
+.
+Time Base Synchronization
+¶
+Using
+CANivore Timesync
+, signals from all devices are sampled and published to the CAN bus at the same time.
+API can synchronously wait for data from multiple devices on a CANivore to arrive.
+Device timestamps captured when the signal is sampled provides best possible latency compensation.
+Fused CANcoder
+¶
+Fuse a CANcoder
+with the motor’s internal rotor, getting absolute data all the time while using the fast internal sensor for closed looping.
+Real-Time High-Fidelity
+Signal Logger
+¶
+Log all status signals from every device with timestamps from CAN.
+Data captured as it arrives at the full update rate of the status signals.
+Improved sensitivity and accuracy of system identification with
+WPILib SysId
+.
+Automatically starts logging during an FRC match.
+Support for
+custom user signals
+alongside auto-captured data.
+Efficient
+hoot
+logging format minimizes disk space and CPU usage.
+Export to multiple formats
+including WPILOG and MCAP.
+Free users can export a
+limited set of signals
+to WPILOG.
+Replay Hoot Logs
+¶
+Rerun your robot program in simulation using status signals and custom signals from a
+hoot
+log generated by the robot.
+No architecture changes necessary for automatic replay of device status signals.
+Robot automatically enables in the correct mode and runs through all maneuvers in the hoot log.
+Test code changes such as odometry improvements or failure condition detection and handling.
+Support for step timing and changing the speed of playback.
+Feature Breakdown
+¶
+A full comparison of features between the free Phoenix 6 API and Phoenix Pro is shown below.
+Feature
+Phoenix 6 (rio)
+Phoenix 6 + Pro (rio)
+Phoenix 6 (CANivore)
+Phoenix 6 + Pro (CANivore)
+Canonical Units
+x
+x
+x
+x
+Improved Bus Utilization
+x
+x
+x
+x
+CANcoder Always Absolute
+x
+x
+x
+x
+Kalman-based Velocity
+x
+x
+x
+x
+Synchronous Wait for Data
+x
+x
+x
+x
+System Timestamps
+x
+x
+x
+x
+Limited Signal Logger WPILOG Export
+x
+x
+x
+x
+Explicit Control Requests
+x
+x
+x
+x
+Motion Magic®
+x
+x
+x
+x
+Motion Magic® Velocity
+x
+x
+x
+x
+Motion Magic® Expo
+x
+x
+x
+x
+Continuous Wrap Mode
+x
+x
+x
+x
+Simple Differential Control
+x
+x
+x
+x
+Improved Self-Test Snapshot
+x
+x
+x
+x
+Improved Tuner X Plotting
+x
+x
+x
+x
+CANivore Timestamps
+x
+x
+CAN FD
+x
+x
+Field Oriented Control (FOC)
+x
+x
+Fused CANcoder + TalonFX
+x
+x
+Sync CANcoder + Talon FX
+x
+x
+Full Signal Logger Export
+x
+x
+Signal Logger
+MCAP
+Export
+x
+x
+Hoot Log Replay
+x
+x
+Time-Synced Signal Publishing
+x
+Device Timestamps
+x
+Dynamic Motion Magic®
+x
+Full Differential Control
+x
+Swerve API
++
+++
+++
++++
+Note
++
+The Swerve API is freely available; however, performance improves when used on a CANivore bus and further improves when used with Pro devices. For more information, see
+Factors that Impact Odometry
+.
+On this page
+Phoenix 6 Features
+Phoenix 6
+Comprehensive API
+Canonical Units
+Improved Device Control
+Swerve API
+Enhanced Support for CAN FD
+New Tuner X
+Self Tests
+and
+Plotting
+Free
+High-Fidelity Simulation
+Continuous Wrap Mode
+Phoenix Pro
+Field Oriented Control (FOC)
+Time Base Synchronization
+Fused CANcoder
+Real-Time High-Fidelity
+Signal Logger
+Replay Hoot Logs
+Feature Breakdown

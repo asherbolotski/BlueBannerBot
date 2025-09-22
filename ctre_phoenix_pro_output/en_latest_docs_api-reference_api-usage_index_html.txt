@@ -1,0 +1,197 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+General API Usage
+¶
+This section serves to provide general API usage for the Phoenix 6 API. For full details, please visit the API docs (
+Java
+,
+C++
+,
+Python
+).
+Important
+While Phoenix 6 and Phoenix 5 devices may exist on the same CAN bus and same robot project, each robot project
+must
+use the API tied to the device firmware version.
+This means Phoenix 5 devices
+must
+use the Phoenix 5 API, and Phoenix 6 devices
+must
+use the Phoenix 6 API.
+There are three major components to the Phoenix 6 API:
+Configs
+Configs represent a
+persistent configuration
+for a device. For example, closed-loop gains.
+Configuration
+Control Requests
+Control Requests represent the
+output
+of a device, typically a motor controller.
+Control Requests
+Signals
+Signals represent
+data retrieved
+from a device. This can be velocity, position, yaw, pitch, roll, temperature, etc.
+Status Signals
+TalonFX Quickstart
+Quickstart on controlling a TalonFX with open loop control requests and a Joystick.
+Open-Loop Control
+API Overview
+Details a high level overview of what makes up the Phoenix 6 API.
+Configuration
+Describes configuring device configs via code.
+Control Requests
+Highlights using control requests to control the output of actuators such as the TalonFX.
+Status Signals
+Details using status signals to retrieve sensor data from devices.
+Signal Logging
+Information on the signal logging API used for capturing signal traffic on the bus.
+Hoot Replay
+Highlights playing back captured signals from a hoot log to test robot program changes.
+Device Faults
+Documents how faults are used to indicate device hardware status.
+Enabling Actuators
+Information on the FRC Lock safety feature and enabling actuators.
+Actuator Limits
+Documents how to retrieve and configure software and hardware actuator limits.
+Orchestra
+Information on playing music and sounds using the Orchestra API.

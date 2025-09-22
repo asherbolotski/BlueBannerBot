@@ -1,0 +1,576 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Control Requests
+¶
+Phoenix 6 provides an extensive list of flexible control modes through the use of strongly-typed control requests.
+Note
+For more information about control requests in Phoenix 6, see
+Control Requests
+.
+Using Control Requests
+¶
+v5
+Java
+// robot init, set voltage compensation to 12 V
+m_motor
+.
+configVoltageComSaturation
+(
+12
+);
+m_motor
+.
+enableVoltageCompensation
+(
+true
+);
+// main robot code, command 12 V output
+m_motor
+.
+set
+(
+ControlMode
+.
+PercentOutput
+,
+1.0
+);
+C++
+// robot init, set voltage compensation to 12 V
+m_motor
+.
+ConfigVoltageComSaturation
+(
+12
+);
+m_motor
+.
+EnableVoltageCompensation
+(
+true
+);
+// main robot code, command 12 V output
+m_motor
+.
+Set
+(
+ControlMode
+::
+PercentOutput
+,
+1.0
+);
+v6
+Java
+// class member variable
+final
+VoltageOut
+m_request
+=
+new
+VoltageOut
+(
+0
+);
+// main robot code, command 12 V output
+m_motor
+.
+setControl
+(
+m_request
+.
+withOutput
+(
+12.0
+));
+// the control request `with` methods also accept unit types
+m_motor
+.
+setControl
+(
+m_request
+.
+withOutput
+(
+Volts
+.
+of
+(
+12.0
+)));
+C++
+// class member variable
+controls
+::
+VoltageOut
+m_request
+{
+0
+_V
+};
+// main robot code, command 12 V output
+m_motor
+.
+SetControl
+(
+m_request
+.
+WithOutput
+(
+12
+_V
+));
+Follower Motors
+¶
+v5
+Java
+// robot init, set m_follower to follow m_leader
+m_follower
+.
+follow
+(
+m_leader
+);
+// m_follower should NOT oppose m_leader
+m_follower
+.
+setInverted
+(
+TalonFXInvertType
+.
+FollowMaster
+);
+// set m_strictFollower to follow m_leader
+m_strictFollower
+.
+follow
+(
+m_leader
+);
+// set m_strictFollower to ignore m_leader invert and use its own
+m_strictFollower
+.
+setInverted
+(
+TalonFXInvertType
+.
+CounterClockwise
+);
+// main robot code, command 100% output for m_leader
+m_leader
+.
+set
+(
+ControlMode
+.
+PercentOutput
+,
+1.0
+);
+// - m_follower and m_strictFollower will also run at 100% output
+// - m_follower will follow m_leader's invert, while m_strictFollower
+//   ignores it and uses its own
+// NOTE: if set(), neutralOutput(), or disable() is ever called on
+//       the followers, they will stop following
+C++
+// robot init, set m_follower to follow m_leader
+m_follower
+.
+Follow
+(
+m_leader
+);
+// m_follower should NOT oppose m_leader
+m_follower
+.
+SetInverted
+(
+TalonFXInvertType
+::
+FollowMaster
+);
+// set m_strictFollower to follow m_leader
+m_strictFollower
+.
+Follow
+(
+m_leader
+);
+// set m_strictFollower to ignore m_leader invert and use its own
+m_strictFollower
+.
+SetInverted
+(
+TalonFXInvertType
+::
+CounterClockwise
+);
+// main robot code, command 100% output for m_leader
+m_leader
+.
+Set
+(
+ControlMode
+::
+PercentOutput
+,
+1.0
+);
+// - m_follower and m_strictFollower will also run at 100% output
+// - m_follower will follow m_leader's invert, while m_strictFollower
+//   ignores it and uses its own
+// NOTE: if Set(), NeutralOutput(), or Disable() is ever called on
+//       the followers, they will stop following
+v6
+Java
+// class member variables
+final
+DutyCycleOut
+m_request
+=
+new
+DutyCycleOut
+(
+0
+);
+// robot init, set m_follower to follow m_leader
+// m_follower should NOT oppose leader
+m_follower
+.
+setControl
+(
+new
+Follower
+(
+m_leader
+.
+getDeviceID
+(),
+false
+));
+// set m_strictFollower to strict-follow m_leader
+// strict followers ignore the leader's invert and use their own
+m_strictFollower
+.
+setControl
+(
+new
+StrictFollower
+(
+m_leader
+.
+getDeviceID
+()));
+// main robot code, command 100% output for m_leader
+m_motor
+.
+setControl
+(
+m_request
+.
+withOutput
+(
+1.0
+));
+// - m_follower and m_strictFollower will also run at 100% output
+// - m_follower will follow m_leader's invert, while m_strictFollower
+//   ignores it and uses its own
+C++
+// class member variables
+controls
+::
+DutyCycleOut
+m_request
+{
+0
+};
+// robot init, set m_follower to follow m_leader
+// m_follower should NOT oppose leader
+m_follower
+.
+SetControl
+(
+controls
+::
+Follower
+{
+m_leader
+.
+GetDeviceID
+(),
+false
+});
+// set m_strictFollower to strict-follow m_leader
+// strict followers ignore the leader's invert and use their own
+m_strictFollower
+.
+SetControl
+(
+controls
+::
+StrictFollower
+{
+m_leader
+.
+GetDeviceID
+()});
+// main robot code, command 100% output for m_leader
+m_motor
+.
+SetControl
+(
+m_request
+.
+WithOutput
+(
+1.0
+));
+// - m_follower and m_strictFollower will also run at 100% output
+// - m_follower will follow m_leader's invert, while m_strictFollower
+//   ignores it and uses its own
+Changing Update Frequency (Control Frame Period)
+¶
+v5
+Java
+// slow down the Control 3 frame (general control) to 50 Hz (20ms)
+m_talonFX
+.
+setControlFramePeriod
+(
+ControlFrame
+.
+Control_3_General
+,
+20
+);
+C++
+// slow down the Control 3 frame (general control) to 50 Hz (20ms)
+m_talonFX
+.
+SetControlFramePeriod
+(
+ControlFrame
+::
+Control_3_General
+,
+20
+);
+v6
+Java
+// class member variables
+final
+DutyCycleOut
+m_request
+=
+new
+DutyCycleOut
+(
+0
+);
+// slow down the control request to 50 Hz
+m_request
+.
+UpdateFreqHz
+=
+50
+;
+C++
+// class member variables
+controls
+::
+DutyCycleOut
+m_request
+{
+0
+};
+// slow down the control request to 50 Hz
+m_request
+.
+UpdateFreqHz
+=
+50
+_Hz
+;
+Tip
+UpdateFreqHz
+can be set to 0 Hz to synchronously one-shot the control request. In this case, users must ensure the control request is sent periodically in their robot code. Therefore, we recommend users call
+setControl
+no slower than 20 Hz (50 ms) when the control is one-shot.
+Control Types
+¶
+In Phoenix 6, voltage compensation has been replaced with the ability to directly specify the
+control output type
+.
+All control output types are supported in open-loop and closed-loop control requests.
+Open-loop Control Requests
+¶
+Phoenix 5
+Phoenix 6
+PercentOutput
+DutyCycleOut
+PercentOutput + Voltage Compensation
+VoltageOut
+Phoenix 5 does not support torque control
+TorqueCurrentFOC (requires Pro)
+Current closed-loop
+This has been deprecated in Phoenix 6.
+Users looking to control torque should use TorqueCurrentFOC (requires Pro)
+Users looking to limit current should use supply and stator current limits
+Closed-loop Control Requests
+¶
+Phoenix 5
+Phoenix 6
+Position
+PositionDutyCycle
+Velocity
+VelocityDutyCycle
+MotionMagic
+MotionMagicDutyCycle
+Closed-loop + Voltage Compensation
+{ClosedLoop}Voltage
+Closed-loop + Torque Control (not supported in Phoenix 5)
+{ClosedLoop}TorqueCurrentFOC (requires Pro)
+On this page
+Control Requests
+Using Control Requests
+Follower Motors
+Changing Update Frequency (Control Frame Period)
+Control Types

@@ -1,0 +1,460 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Swerve Simulation
+¶
+Important
+Swerve simulation is only supported for FRC users.
+The API supports a functionality focused simulation. This means that the simulation API assumes that the swerve drive is perfect (no scrub and no wheel slip). Additionally, it assumes a constant drive motor inertia regardless of the type of motion.
+To update the simulated swerve robot state, ensure
+drivetrain.updateSimState(...)
+(
+Java
+,
+C++
+,
+Python
+) is called in
+simulationPeriodic()
+. The typical update rate of a robot project is 20 ms (0.020 seconds), and
+RobotController.getBatteryVoltage()
+(
+Java
+,
+C++
+,
+Python
+) can be used to get the simulated battery voltage.
+The behavior of the simulated drivetrain can be improved to more closely match hardware by running the simulation logic at a faster update rate, such as by using a WPILib
+Notifier
+as demonstrated below.
+Important
+When using
+CommandSwerveDrivetrain
+from our examples or Tuner X, this is already handled by the subsystem.
+Java
+private
+static
+final
+double
+kSimLoopPeriod
+=
+0.004
+;
+// 4 ms
+private
+Notifier
+m_simNotifier
+=
+null
+;
+private
+double
+m_lastSimTime
+;
+@Override
+public
+void
+simulationInit
+()
+{
+m_lastSimTime
+=
+Utils
+.
+getCurrentTimeSeconds
+();
+/* Run simulation at a faster rate so PID gains behave more reasonably */
+m_simNotifier
+=
+new
+Notifier
+(()
+->
+{
+final
+double
+currentTime
+=
+Utils
+.
+getCurrentTimeSeconds
+();
+double
+deltaTime
+=
+currentTime
+-
+m_lastSimTime
+;
+m_lastSimTime
+=
+currentTime
+;
+/* Use the measured time delta, get battery voltage from WPILib */
+drivetrain
+.
+updateSimState
+(
+deltaTime
+,
+RobotController
+.
+getBatteryVoltage
+());
+});
+m_simNotifier
+.
+startPeriodic
+(
+kSimLoopPeriod
+);
+}
+C++
+private
+:
+static
+constexpr
+units
+::
+second_t
+kSimLoopPeriod
+=
+4
+_ms
+;
+std
+::
+unique_ptr
+<
+frc
+::
+Notifier
+>
+m_simNotifier
+;
+units
+::
+second_t
+m_lastSimTime
+;
+public
+:
+void
+SimulationInit
+()
+override
+{
+m_lastSimTime
+=
+utils
+::
+GetCurrentTime
+();
+/* Run simulation at a faster rate so PID gains behave more reasonably */
+m_simNotifier
+=
+std
+::
+make_unique
+<
+frc
+::
+Notifier
+>
+([
+this
+]
+{
+units
+::
+second_t
+const
+currentTime
+=
+utils
+::
+GetCurrentTime
+();
+auto
+const
+deltaTime
+=
+currentTime
+-
+m_lastSimTime
+;
+m_lastSimTime
+=
+currentTime
+;
+/* Use the measured time delta, get battery voltage from WPILib */
+drivetrain
+.
+UpdateSimState
+(
+deltaTime
+,
+frc
+::
+RobotController
+::
+GetBatteryVoltage
+());
+});
+m_simNotifier
+->
+StartPeriodic
+(
+kSimLoopPeriod
+);
+}
+Python
+_SIM_LOOP_PERIOD
+:
+units
+.
+second
+=
+0.004
+# 4 ms
+def
+__init__
+(
+self
+):
+self
+.
+_sim_notifier
+:
+Notifier
+|
+None
+=
+None
+self
+.
+_last_sim_time
+:
+units
+.
+second
+=
+0.0
+# ...
+def
+simulationInit
+(
+self
+):
+def
+_sim_periodic
+():
+current_time
+=
+utils
+.
+get_current_time_seconds
+()
+delta_time
+=
+current_time
+-
+self
+.
+_last_sim_time
+self
+.
+_last_sim_time
+=
+current_time
+# Use the measured time delta, get battery voltage from WPILib
+self
+.
+drivetrain
+.
+update_sim_state
+(
+delta_time
+,
+RobotController
+.
+getBatteryVoltage
+())
+# Run simulation at a faster rate so PID gains behave more reasonably
+self
+.
+_last_sim_time
+=
+utils
+.
+get_current_time_seconds
+()
+self
+.
+_sim_notifier
+=
+Notifier
+(
+_sim_periodic
+)
+self
+.
+_sim_notifier
+.
+startPeriodic
+(
+self
+.
+_SIM_LOOP_PERIOD
+)
+Simulation FAQ
+¶
+Q: My robot does not move in simulation
+¶
+A: Verify that all gains are non-zero and that the steer/drive inertia is non-zero.
+Q: My robot drifts a bit when driving while rotating
+¶
+A: Azimuth inertia and control latency is simulated. As a result, simulated swerve modules match the behavior of hardware in lagging behind the module targets, which can be improved by tuning the steer PID gains.
+On this page
+Swerve Simulation
+Simulation FAQ
+Q: My robot does not move in simulation
+Q: My robot drifts a bit when driving while rotating

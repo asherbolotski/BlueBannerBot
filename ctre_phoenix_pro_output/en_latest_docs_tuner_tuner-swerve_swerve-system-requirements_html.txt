@@ -1,0 +1,194 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Swerve Requirements
+¶
+The swerve project creator and
+swerve API
+have several limitations. These limitations are in place to maximize performance and improve maintainability.
+Only Phoenix 6 supported hardware (e.g. Talon FX, Talon FXS, CANcoder, CANdi™, Pigeon 2.0).
+8 Talon FX or Talon FXS (4 steer, 4 drive)
+4 CANcoder (4 steer)
+OR
+4 Talon FXS + PWM encoder
+OR
+4 CANdi™
+1 Pigeon 2.0
+Requires Phoenix 6 software released for the current release year of Tuner X.
+Firmware version of devices should match the API year (25.X firmware corresponds to 2025 API/Tuner)
+Ensure Tuner X shows server version (located at the bottom of Tuner X) that matches the Tuner X major version (2025 Tuner X requires 2025 server version)
+Temporary diagnostic server (or an existing robot project for that year of software) must be running and Tuner should be connected to the robot.
+This allows the generator to perform it’s setup and auto-calibration routines
+Some of these requirements are inforced via a mechanism called “precheck”. You can see and refresh the precheck status by clicking the
+Refresh
+button in the top right.
+Note
+While the Swerve API and project generator can be utilized without Pro or FD, both of these enhance robot control. When utilizing Pro and CAN FD, sensor data is acquired synchronously.
+FusedCANcoder
+and FusedCANdi improves the accuracy of module positions.
+Requirement Checklist
+¶
+Users can utilize the below checklist to ensure their robot is ready for project generation.
+Requirement
+Done?
+REQUIRED:
+Is there the minimum number of devices?
+(8 Talon FX/FXS, 4 CANcoder/CANdi™/Talon FXS + PWM encoder, 1 Pigeon 2.0)
+REQUIRED:
+Do all devices appear in Tuner X?
+REQUIRED:
+Are all devices on the same CAN bus?
+REQUIRED:
+Is all firmware up-to-date? (25.X)
+REQUIRED:
+Is the current year (2025) of diagnostics running?
+Recommended:
+Have devices been renamed?
+(e.g. “TalonFX (Device ID 1)” -> “FL Steer Motor”)
+Recommended:
+Are the devices on a CANivore?
+Recommended:
+Are the devices Pro-licensed?
+Once the user has reviewed the requirements, continue to
+Creating your Project
+to get started.
+On this page
+Swerve Requirements
+Requirement Checklist

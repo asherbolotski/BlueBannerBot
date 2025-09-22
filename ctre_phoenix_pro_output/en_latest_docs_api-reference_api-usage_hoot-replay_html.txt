@@ -1,0 +1,1330 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Hoot Replay
+¶
+Note
+Information on logging to
+hoot
+files can be found in
+Signal Logging
+.
+Hoot Replay allows users to playback hoot logs in their robot program. This allows for testing changes to robot code in simulation using measurements recorded from the real robot.
+Important
+Hoot Replay requires the hoot log to have a Pro-licensed device. Currently, only one hoot log may be replayed at a time.
+Compared to other replay frameworks, Hoot Replay offers
+automatic
+status signal playback without any code changes. However, replaying custom logged signals still requires modifications to the robot’s subsystems.
+Hoot Replay is controlled using the
+HootReplay
+class (
+Java
+,
+C++
+,
+Python
+) and supports playing back device status signals and custom user signals. Configs and control requests are ignored during replay.
+Hoot Replay uses a different vendordep (see
+Installing Phoenix 6
+) that replaces
+Hardware-Attached Simulation
+with Hoot Replay. Note that only one Phoenix 6 vendordep may be used in the
+vendordeps
+folder at a time.
+Starting Hoot Replay
+¶
+At the start of the robot program, the desired hoot log can be loaded using
+HootReplay.loadFile(fileName)
+(
+Java
+,
+C++
+,
+Python
+). Hoot Replay will start automatically after the log has been loaded.
+Java
+HootReplay
+.
+loadFile
+(
+"./logs/example.hoot"
+);
+C++
+HootReplay
+::
+LoadFile
+{
+"./logs/example.hoot"
+};
+Python
+HootReplay
+.
+load_file
+(
+"./logs/example.hoot"
+)
+It is important that the hoot log is loaded before any devices are constructed or configured. To make this process easier, the
+CANBus(canbus,
+fileName)
+constructor (
+Java
+,
+C++
+,
+Python
+) can instead be used to load the hoot log.
+Java
+// construct the CANBus with the hoot log
+final
+CANBus
+canbus
+=
+new
+CANBus
+(
+"canivore"
+,
+"./logs/example.hoot"
+);
+// now the log is guaranteed to be loaded before devices are constructed
+final
+TalonFX
+talonFX
+=
+new
+TalonFX
+(
+0
+,
+canbus
+);
+C++
+// construct the CANBus with the hoot log
+CANBus
+canbus
+{
+"canivore"
+,
+"./logs/example.hoot"
+};
+// now the log is guaranteed to be loaded before devices are constructed
+hardware
+::
+TalonFX
+talonFX
+{
+0
+,
+canbus
+};
+Python
+# construct the CANBus with the hoot log
+self
+.
+_canbus
+=
+CANBus
+(
+"canivore"
+,
+"./logs/example.hoot"
+)
+# now the log is guaranteed to be loaded before devices are constructed
+self
+.
+_talon_fx
+=
+hardware
+.
+TalonFX
+(
+0
+,
+canbus
+)
+Controlling Replay
+¶
+During Hoot Replay, the simulated robot will automatically enable and run through all the maneuvers recorded in the hoot log. There are also several APIs that can be used to manage playback.
+HootReplay.pause()
+temporarily pauses playback
+HootReplay.play()
+resumes playback from the current point in the file
+HootReplay.stop()
+pauses playback and returns to the start of the file
+HootReplay.restart()
+restarts playback from the start of the file
+HootReplay.setSpeed(speed)
+changes the speed of playback by a scalar
+The status of Hoot Replay can be checked using
+HootReplay.isFileLoaded()
+and
+HootReplay.isPlaying()
+. Threads can also wait for Hoot Replay to start using
+HootReplay.waitForPlaying(timeout)
+.
+Tip
+HootReplay.isPlaying()
+and
+HootReplay.waitForPlaying(timeout)
+immediately return true when running on the robot or in regular simulation.
+Additionally, after pausing or stopping Hoot Replay, playback can advance by a fixed timestep using
+HootReplay.stepTiming(timeDelta)
+, updating all signals accordingly.
+Java
+// stop and return to start of log
+HootReplay
+.
+stop
+();
+var
+startPos
+=
+talonFX
+.
+getPosition
+().
+getValue
+();
+// advance by 1 second and compare positions
+HootReplay
+.
+stepTiming
+(
+1.0
+);
+var
+endPos
+=
+talonFX
+.
+getPosition
+().
+getValue
+();
+C++
+// stop and return to start of log
+HootReplay
+::
+Stop
+();
+auto
+const
+startPos
+=
+talonFX
+.
+GetPosition
+().
+GetValue
+();
+// advance by 1 second and compare positions
+HootReplay
+::
+StepTiming
+(
+1
+_s
+);
+auto
+const
+endPos
+=
+talonFX
+.
+GetPosition
+().
+GetValue
+();
+Python
+# stop and return to start of log
+HootReplay
+.
+stop
+()
+start_pos
+=
+self
+.
+_talon_fx
+.
+get_position
+()
+.
+value
+# advance by 1 second and compare positions
+HootReplay
+.
+step_timing
+(
+1.0
+)
+end_pos
+=
+self
+.
+_talon_fx
+.
+get_position
+()
+.
+value
+Replaying Custom Signals
+¶
+Users can also fetch custom signals written to the loaded hoot log by utilizing the
+get*()
+functions. An example application of this is replaying vision data to test changes in the drivetrain pose estimator.
+All custom signal getters return a
+HootReplay.SignalData
+(
+Java
+,
+C++
+,
+Python
+) object containing information about the signal, including its timestamp and any logged units. The success of fetching the custom signal can be validated by checking the
+status
+field.
+Java
+// Fetch the logged raw vision measurements
+var
+visionData
+=
+HootReplay
+.
+getDoubleArray
+(
+"camera pose"
+);
+if
+(
+visionData
+.
+status
+.
+isOK
+())
+{
+var
+camPose
+=
+new
+Pose2d
+(
+visionData
+.
+value
+[
+0
+]
+,
+visionData
+.
+value
+[
+1
+]
+,
+Rotation2d
+.
+fromDegrees
+(
+visionData
+.
+value
+[
+2
+]
+)
+);
+// now run regular vision processing on the vision data
+if
+(
+isCameraPoseValid
+(
+camPose
+))
+{
+drivetrain
+.
+addVisionMeasurement
+(
+camPose
+,
+visionData
+.
+timestampSeconds
+);
+}
+}
+C++
+// Fetch the logged raw vision measurements
+auto
+const
+visionData
+=
+HootReplay
+::
+GetDoubleArray
+(
+"camera pose"
+);
+if
+(
+visionData
+.
+status
+.
+IsOK
+())
+{
+frc
+::
+Pose2d
+const
+camPose
+{
+visionData
+.
+value
+[
+0
+]
+*
+1
+_m
+,
+visionData
+.
+value
+[
+1
+]
+*
+1
+_m
+,
+frc
+::
+Rotation2d
+{
+visionData
+.
+value
+[
+2
+]
+*
+1
+_deg
+}
+};
+// now run regular vision processing on the vision data
+if
+(
+IsCameraPoseValid
+(
+camPose
+))
+{
+drivetrain
+.
+AddVisionMeasurement
+(
+camPose
+,
+visionData
+.
+timestamp
+);
+}
+}
+Python
+# Fetch the logged raw vision measurements
+vision_data
+=
+HootReplay
+.
+get_double_array
+(
+"camera pose"
+)
+if
+visionData
+.
+status
+.
+is_ok
+():
+cam_pose
+=
+Pose2d
+(
+vision_data
+.
+value
+[
+0
+],
+vision_data
+.
+value
+[
+1
+],
+Rotation2d
+.
+fromDegrees
+(
+vision_data
+.
+value
+[
+2
+])
+)
+# now run regular vision processing on the vision data
+if
+is_camera_pose_valid
+(
+cam_pose
+):
+drivetrain
+.
+add_vision_measurement
+(
+cam_pose
+,
+vision_data
+.
+timestamp
+)
+Adjusting Robot Code Architecture
+¶
+Replaying custom signals typically requires changes to the architecture of the robot’s subsystems or other hardware classes. As an example, consider changes to a
+Vision
+class.
+When working with vision, a robot program will typically fetch raw/unfiltered camera/pose data (the “inputs”) from the vision library (such as a list of targets). Then, it will perform some additional processing and filtering on that data to get the final vision pose estimate (the “output”).
+The goal is to
+replay the “inputs”
+so the replayed program can test changes to the subsequent data processing and filtering. This means the robot program should only replay data that is
+unaffected by code logic
+, letting the program determine all the new outputs.
+The simplest way to make the code easily replayed is to consolidate all input fetches into a single
+fetchInputs()
+function, save the results to class member variables, and log the data using
+SignalLogger
+. From there, a single periodic function would be responsible for calling that function and performing all data processing to get the outputs.
+For example, if the only data pulled from the vision library is the raw vision pose estimate and its timestamp:
+Java
+public
+class
+Vision
+{
+private
+final
+Camera
+camera
+=
+new
+Camera
+(...);
+/* vision inputs */
+private
+PoseEstimate
+cameraPoseEst
+=
+new
+PoseEstimate
+();
+// ...
+private
+void
+fetchInputs
+()
+{
+// fetch and log inputs
+cameraPoseEst
+=
+camera
+.
+getPoseEstimate
+();
+final
+var
+poseArr
+=
+new
+double
+[
+3
+]
+{
+cameraPoseEst
+.
+pose
+.
+getX
+(),
+cameraPoseEst
+.
+pose
+.
+getY
+(),
+cameraPoseEst
+.
+pose
+.
+getRotation
+().
+getDegrees
+()
+};
+SignalLogger
+.
+writeDoubleArray
+(
+"CameraPoseEst/pose"
+,
+poseArr
+);
+SignalLogger
+.
+writeDouble
+(
+"CameraPoseEst/timestamp"
+,
+cameraPoseEst
+.
+timestamp
+);
+}
+public
+void
+periodic
+()
+{
+fetchInputs
+();
+// process inputs here...
+}
+}
+C++
+class
+Vision
+{
+private
+:
+Camera
+camera
+{...};
+/* vision inputs */
+PoseEstimate
+cameraPoseEst
+{};
+// ...
+void
+FetchInputs
+()
+{
+// fetch and log inputs
+cameraPoseEst
+=
+camera
+.
+GetPoseEstimate
+();
+std
+::
+array
+<
+double
+,
+3
+>
+const
+poseArr
+{
+cameraPoseEst
+.
+pose
+.
+X
+().
+value
+(),
+cameraPoseEst
+.
+pose
+.
+Y
+().
+value
+(),
+cameraPoseEst
+.
+pose
+.
+Rotation
+().
+Degrees
+().
+value
+()
+};
+SignalLogger
+::
+WriteDoubleArray
+(
+"CameraPoseEst/pose"
+,
+poseArr
+);
+SignalLogger
+::
+WriteValue
+(
+"CameraPoseEst/timestamp"
+,
+cameraPoseEst
+.
+timestamp
+);
+}
+public
+:
+void
+Periodic
+()
+{
+FetchInputs
+();
+// process inputs here...
+}
+};
+Python
+class
+Vision
+:
+def
+__init__
+(
+self
+):
+self
+.
+_camera
+=
+Camera
+(
+...
+)
+# vision inputs
+self
+.
+_camera_pose_est
+=
+PoseEstimate
+()
+# ...
+def
+_fetch_inputs
+(
+self
+):
+# fetch and log inputs
+self
+.
+_camera_pose_est
+=
+camera
+.
+getPoseEstimate
+()
+pose_arr
+=
+[
+self
+.
+_camera_pose_est
+.
+pose
+.
+x
+,
+self
+.
+_camera_pose_est
+.
+pose
+.
+y
+,
+self
+.
+_camera_pose_est
+.
+pose
+.
+rotation
+()
+.
+degrees
+()
+]
+SignalLogger
+.
+write_double_array
+(
+"CameraPoseEst/pose"
+,
+pose_arr
+)
+SignalLogger
+.
+write_double
+(
+"CameraPoseEst/timestamp"
+,
+self
+.
+_camera_pose_est
+.
+timestamp
+)
+def
+periodic
+(
+self
+):
+self
+.
+_fetch_inputs
+()
+# process inputs here...
+This makes it easy to implement a
+fetchInputsReplay()
+function, which can be called when
+Utils.isReplay()
+(
+Java
+,
+C++
+,
+Python
+) returns true. This function would do the reverse of the regular
+fetchInputs()
+, pulling out the data from
+HootReplay
+and saving it to the class member variables.
+For example, the previous
+Vision
+example would now have:
+Java
+private
+void
+fetchInputsReplay
+()
+{
+// pull out inputs from the log
+final
+var
+cameraPoseEst_pose
+=
+HootReplay
+.
+getDoubleArray
+(
+"CameraPoseEst/pose"
+);
+final
+var
+cameraPoseEst_timestamp
+=
+HootReplay
+.
+getDouble
+(
+"CameraPoseEst/timestamp"
+);
+if
+(
+cameraPoseEst_pose
+.
+status
+.
+isOK
+()
+&&
+cameraPoseEst_timestamp
+.
+status
+.
+isOK
+()
+)
+{
+cameraPoseEst
+=
+new
+PoseEstimate
+();
+cameraPoseEst
+.
+pose
+=
+new
+Pose2d
+(
+cameraPoseEst_pose
+.
+value
+[
+0
+]
+,
+cameraPoseEst_pose
+.
+value
+[
+1
+]
+,
+Rotation2d
+.
+fromDegrees
+(
+cameraPoseEst_pose
+.
+value
+[
+2
+]
+)
+);
+cameraPoseEst
+.
+timestamp
+=
+cameraPoseEst_timestamp
+.
+value
+;
+}
+}
+public
+void
+periodic
+()
+{
+if
+(
+Utils
+.
+isReplay
+())
+{
+fetchInputsReplay
+();
+}
+else
+{
+fetchInputs
+();
+}
+// process inputs here...
+}
+C++
+private
+:
+void
+FetchInputsReplay
+()
+{
+// pull out inputs from the log
+auto
+const
+cameraPoseEst_pose
+=
+HootReplay
+::
+GetDoubleArray
+(
+"CameraPoseEst/pose"
+);
+auto
+const
+cameraPoseEst_timestamp
+=
+HootReplay
+::
+GetValue
+<
+units
+::
+second_t
+>
+(
+"CameraPoseEst/timestamp"
+);
+if
+(
+cameraPoseEst_pose
+.
+status
+.
+IsOK
+()
+&&
+cameraPoseEst_timestamp
+.
+status
+.
+IsOK
+()
+)
+{
+cameraPoseEst
+=
+PoseEstimate
+{};
+cameraPoseEst
+.
+pose
+=
+frc
+::
+Pose2d
+{
+cameraPoseEst_pose
+.
+value
+[
+0
+]
+*
+1
+_m
+,
+cameraPoseEst_pose
+.
+value
+[
+1
+]
+*
+1
+_m
+,
+frc
+::
+Rotation2d
+{
+cameraPoseEst_pose
+.
+value
+[
+2
+]
+*
+1
+_deg
+}
+};
+cameraPoseEst
+.
+timestamp
+=
+cameraPoseEst_timestamp
+.
+value
+;
+}
+}
+public
+:
+void
+Periodic
+()
+{
+if
+(
+utils
+::
+IsReplay
+())
+{
+FetchInputsReplay
+();
+}
+else
+{
+FetchInputs
+();
+}
+// process inputs here...
+}
+Python
+def
+_fetch_inputs_replay
+(
+self
+):
+# pull out inputs from the log
+self
+.
+_camera_pose_est_pose
+=
+HootReplay
+.
+get_double_array
+(
+"CameraPoseEst/pose"
+)
+self
+.
+_camera_pose_est_timestamp
+=
+HootReplay
+.
+get_double
+(
+"CameraPoseEst/timestamp"
+)
+if
+(
+self
+.
+_camera_pose_est_pose
+.
+status
+.
+is_ok
+()
+and
+self
+.
+_camera_pose_est_timestamp
+.
+status
+.
+is_ok
+()
+):
+self
+.
+_camera_pose_est
+=
+PoseEstimate
+()
+self
+.
+_camera_pose_est
+.
+pose
+=
+[
+self
+.
+_camera_pose_est_pose
+.
+value
+[
+0
+],
+self
+.
+_camera_pose_est_pose
+.
+value
+[
+1
+],
+Rotation2d
+.
+fromDegrees
+(
+self
+.
+_camera_pose_est_pose
+.
+value
+[
+2
+])
+]
+self
+.
+_camera_pose_est
+.
+timestamp
+=
+self
+.
+_camera_pose_est_timestamp
+.
+value
+def
+periodic
+(
+self
+):
+if
+Utils
+.
+is_replay
+():
+self
+.
+_fetch_inputs_replay
+()
+else
+:
+self
+.
+_fetch_inputs
+()
+# process inputs here...
+On this page
+Hoot Replay
+Starting Hoot Replay
+Controlling Replay
+Replaying Custom Signals
+Adjusting Robot Code Architecture

@@ -1,0 +1,240 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Feature Replacements
+¶
+In addition to the changes shown in the other sections, several other Phoenix 5 features have been replaced or improved upon in Phoenix 6.
+Motor Invert
+¶
+In Phoenix 6, motor invert is now a persistent config (
+Java
+,
+C++
+) instead of a control signal.
+Warning
+Since invert is a persistent config, getting and setting motor inverts are now blocking API calls. We recommend that users only set the invert once at program startup.
+Neutral Mode
+¶
+In Phoenix 6, Neutral mode is now available in API as a config (
+Java
+,
+C++
+). Many control requests also have the ability to override the neutral mode to either force braking (
+Java
+,
+C++
+) or force coasting (
+Java
+,
+C++
+).
+Nominal Output
+¶
+The Talon FX forward and reverse Nominal Output configs have been removed in Phoenix 6.
+The typical use case of the nominal output configs is to overcome friction in closed-loop control modes, which can now be achieved using the
+kS
+feedforward parameter (
+Java
+,
+C++
+).
+Sensor Phase
+¶
+The Talon FX
+setSensorPhase()
+method has been removed in Phoenix 6.
+The Talon FX integrated sensor is always in phase, so the method does nothing in Phoenix 5.
+When using a remote sensor, you can invert the remote sensor to bring it in phase with the Talon FX.
+Sensor Initialization Strategy
+¶
+The Talon FX and CANcoder sensors are always initialized to their absolute position in Phoenix 6.
+Clear Position on Limit
+¶
+In Phoenix 5, users could configure the TalonFX to clear its sensor position (i.e. set to 0) when a limit switch is triggered. In Phoenix 6, this feature has been improved to allow users to specify the applied sensor position when a limit switch is triggered. This can be configured using the
+*LimitAutosetPositionValue
+configs (
+Java
+,
+C++
+).
+Velocity Measurement Period/Window
+¶
+In Phoenix 6, the velocity rolling average window in Talon FX and CANcoder has been replaced with a Kalman filter, resulting in a less noisy velocity signal with a minimal impact on latency (~1 ms). As a result, the velocity measurement period/window configs are no longer necessary in Phoenix 6 and have been removed.
+Integral Zone and Max Integral Accumulator
+¶
+Phoenix 6 automatically prevents integral windup in closed-loop controls. As a result, the Integral Zone and Max Integral Accumulator configs are no longer necessary and have been removed.
+CANcoder Sensor Coefficient and Units
+¶
+In Phoenix 6, CANcoder does not support setting a custom sensor coefficient, unit string, and sensor time base. Instead, the CANcoder uses canonical units of rotations and rotations per second using the
+C++ units library
+.
+Features to Be Implemented
+¶
+The following Phoenix 5 features are not implemented in the current release of Phoenix 6 but are planned to be implemented in the future.
+Feature
+Status
+CANdle Support
+Normal priority
+Features Omitted
+¶
+The following Phoenix 5 features have been omitted from Phoenix 6. While there are no plans for these features to be added, if there is customer demand for these features, they may be considered for addition in the future.
+Feedback is welcome at
+feedback
+@
+ctr-electronics
+.
+com
+.
+Motion Profile Executor
+Control requests have been improved to cover many of the use cases of the Motion Profile Executor.
+Allowable Closed-Loop Error
+On this page
+Feature Replacements
+Motor Invert
+Neutral Mode
+Nominal Output
+Sensor Phase
+Sensor Initialization Strategy
+Clear Position on Limit
+Velocity Measurement Period/Window
+Integral Zone and Max Integral Accumulator
+CANcoder Sensor Coefficient and Units
+Features to Be Implemented
+Features Omitted

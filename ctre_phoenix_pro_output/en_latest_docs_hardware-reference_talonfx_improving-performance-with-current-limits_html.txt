@@ -1,0 +1,388 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Improving Performance with Current Limits
+¶
+Current limiting is the process of restricting motor output when a given current has surpassed a limit. There are two types of current limits available: stator and supply. Each of these limits accomplishes different goals. This article goes over
+why
+current limiting is important,
+when
+to configure these limits, and
+how
+to configure them.
+Note
+By default, devices are configured with default current limits, listed in the relevant config API documentation. However, the optimal limits depend on how the motor is integrated into the system. There are additional safety measures in place to prevent damage to the motor or motor controller under excessive load.
+Stator and Supply Current Limits
+¶
+It’s important to understand the need for current limits and how they work. When a motor is under a load, it takes an increasing amount of current to continue rotating the shaft of the motor (and by extension the mechanism). The cumulative sum of all the currents in a multi-motor system, such as a robot, may excessively drain batteries, trigger brownout protection, or in the worst case trip breakers.
+There are two forms of current limiting: stator and supply. The relevant
+configs
+are located in the
+CurrentLimits
+config group (
+Java
+,
+C++
+,
+Python
+). All current limits must be
+separately enabled
+using the appropriate enable config.
+Note
+Current limits are applied in
+TorqueCurrentFOC
+in addition to the
+PeakForwardTorqueCurrent
+and
+PeakReverseTorqueCurrent
+configs, where the most restrictive limit is used. Torque current is equivalent to stator current in magnitude.
+Stator Limits
+¶
+Stator current is the output current of the motor and is directly proportional to torque.
+80 A stator current limit taking effect
+¶
+Stator current limits are used to restrict the torque output of the motor. This can be used to prevent wheel slip or avoid damaging a mechanism when running into a hard stop. Stator current limits also reduce heat buildup in the motor.
+Since stator current limits also limit supply current, they are also effective at preventing brownouts when accelerating from zero velocity.
+Relationship between Supply and Stator Current
+Note
+This explanation ignores energy loss from heat or other inefficiencies.
+By conservation of energy, power going into the motor must equal power out. Since power is equivalent to voltage times current,
+\(V_{supply} * I_{supply} = V_{stator} * I_{stator}\)
+, where
+\(V_{stator}\)
+is the output voltage of the motor. The duty cycle output of a motor is equivalent to
+\(V_{stator} / V_{supply}\)
+, so the relationship between supply and stator current can be described as
+\(I_{supply} = I_{stator} * duty cycle\)
+.
+As an example, if a motor is applied 100% output (~12 V) and has 80 A of measured stator current, as is the case at a high rotor velocity, then the supply current will also be 80 A. However, if the motor is applied 50% output (~6 V) and has 80 A of measured stator current, as is the case at a low rotor velocity, then supply current will only be 40 A.
+This means that stator current limits also effectively limit supply current. Supply current will not exceed a stator current limit and is often significantly lower than stator current.
+Another impact that stator current limits have is that they restrict acceleration. Stator current limits cap the torque output of the motor, which directly increases the amount of time it takes to accelerate to max velocity. As a result, it is important not to set stator current limits too low, otherwise performance may be negatively impacted.
+Without stator limit (~170 rotations/second²)
+With 80 A stator limit (~75 rotations/second²)
+Supply Limits
+¶
+Supply current is the current drawn from the battery. As a result, limiting supply current can avoid brownouts, prevent breakers from tripping, and improve the longevity of the battery.
+Tip
+Since stator current limits also limit supply current, it is sometimes not necessary to enable both limits.
+When enabled, the supply current limiter always ensures that the supply current does not exceed the configured
+SupplyCurrentLimit
+, preventing brownouts. Optionally, if the supply current limiter has been actively limiting for the
+SupplyCurrentLowerTime
+, the limit will be reduced to the
+SupplyCurrentLowerLimit
+until supply current is below that limit, preventing breakers from tripping.
+If the robot experiences brownouts despite configuring stator current limits, a supply current limit can also further help avoid brownouts. However, such brownouts are often caused by a bad battery or poor power wiring, so those should be examined first.
+Determining Current Limits
+¶
+While supply current limits can be theoretically estimated by calculating max supply draw for every mechanism, stator limits are not easy to estimate. Determine your stator current limits first, then supply if necessary. In some cases, stator current limits are sufficient to prevent battery brownouts, as stator current limits also limit supply current.
+Preventing Wheel Slip
+¶
+Stator current limits are excellent at preventing wheel slip, which is necessary to maximize power output of the system. To determine wheel slip, perform the following instructions:
+Place the robot on carpet against a wall.
+Begin plotting velocity and stator current in
+Tuner X
+.
+Slowly increase voltage output until the velocity becomes non-zero and the stator current drops.
+Set your stator current limit to a value below the observed stator current in Tuner. In the example below, the wheels began slipping at around 130 A.
+Preventing Brownouts
+¶
+Brownouts occur when the robot voltage dips below a threshold. For the
+FRC roboRIO
+, this threshold is 6.3 V on the roboRIO 1 and 6.75 V (by default) on the roboRIO 2. When the roboRIO dips below the threshold, it will disable all actuators to prevent a total robot reboot.
+Brownouts most commonly occur when the motor accelerates or is otherwise under high load (such as in a pushing match). Since stator current limits are highly effective at limiting supply current, especially at the start of acceleration, they are also highly effective at preventing brownouts in both of these scenarios.
+For some high-inertia mechanisms, such as some flywheels, supply current limits can also be used to further prevent brownouts during long periods of acceleration or high load. However, the robot should be checked for some common electrical issues before considering more restrictive current limits:
+Check the health of the battery, which can be done using a
+Battery Beak
+or by performing a full discharge test with a
+battery analyzer
+.
+Make sure your battery leads are properly tightened to the battery, and the battery connector is properly crimped.
+If using the CTRE PDP, make sure the leads going into the PDP are properly crimped and secured.
+Check all device power connections at the PDP/PDH. The PDP/PDH should be clearly connected to copper and not wire insulation.
+As motor supply currents increase, the battery voltage will decrease in a similar fashion. A simplified equation for modeling voltage sag is shown below along with a calculator. However, it is easier and more accurate to empirically determine supply current limits. The process of empirically finding these limits is the same as in
+Improving Battery Longevity
+.
+\[V_{loaded} = V_{unloaded} - (I_{totalsupply} * R_{battery})\]
+Loaded Battery Voltage Calculator
+Unloaded voltage (V)
+Total current draw (A)
+Battery resistance (mOhms)
+=
+0 V
+Be aware that battery health (in the form of battery resistance above) significantly impacts how large current draw affects the output voltage of the battery. Health of the battery can be roughly determined via a
+Battery Beak
+or by performing a battery discharge test with a
+battery analyzer
+.
+Improving Battery Longevity
+¶
+While supply limits can be estimated using battery datasheets and average mechanism current draw, the easiest and most reliable method is to test, analyze, and reduce. By applying a conservative supply limit to mechanisms that can operate with minimal current draw, you can improve the performance of other mechanisms (e.g. reducing your intake current limits to increase the amount of current available for a swerve drivetrain).
+Plot a mechanism’s supply currents throughout the match.
+Reduce the supply current limits until your performance begins to suffer (unable to intake items, etc.). Increase this value slightly for some comfort room.
+Repeat this for all mechanisms on a fresh battery each time. Time how long it takes before brownouts are regular and battery capacity has dropped.
+For example, a user may have the following mechanisms and current limits:
+x4 Kraken(s) on swerve drive - 120 A stator, 70 A supply
+x4 Kraken(s) on swerve azimuth - 60 A stator, no supply limit (<60 A)
+x1 Kraken(s) on elevator - 80 A stator, 30 A supply
+x1 Kraken(s) on intake - 20 A stator, no supply limit (<20 A)
+This would yield a peak supply current of <570 A in the worst case scenario. However, this current draw is
+extremely unlikely
+. Stator current limits ensure all motors and mechanisms will not be under peak load at the same time. Peak current draw occurs towards the end of acceleration when stator current limits are enabled. Additionally, peak supply current is often extremely brief (>60 A on all 4 swerve drive motors lasts <0.5 seconds). A more common scenario is 4 swerve drive motors accelerating at the same time for a peak supply current of 280 A.
+When determining supply current limits for a mechanism, ensure that its peak supply current and the duration of that peak does not cause any breakers to trip. FRC breakers typically trip from temperature and can sustain well beyond their rated amperage for a given amount of time. Consult the manufacturer datasheet for the breakers you use to see their trip times.
+Reduce your current limits until your battery life is in an acceptable range.
+How to Apply Current Limits
+¶
+Current limits must be
+enabled
+and
+configured
+. This can be done in
+Tuner X configs
+or using the Phoenix 6
+configuration API
+.
+Java
+var
+talonFXConfigurator
+=
+m_talonFX
+.
+getConfigurator
+();
+var
+limitConfigs
+=
+new
+CurrentLimitsConfigs
+();
+// enable stator current limit
+limitConfigs
+.
+StatorCurrentLimit
+=
+120
+;
+limitConfigs
+.
+StatorCurrentLimitEnable
+=
+true
+;
+talonFXConfigurator
+.
+apply
+(
+limitConfigs
+);
+C++
+auto
+&
+talonFXConfigurator
+=
+m_talonFX
+.
+GetConfigurator
+();
+configs
+::
+CurrentLimitsConfigs
+limitConfigs
+{};
+// enable stator current limit
+limitConfigs
+.
+StatorCurrentLimit
+=
+120
+;
+limitConfigs
+.
+StatorCurrentLimitEnable
+=
+true
+;
+talonFXConfigurator
+.
+Apply
+(
+limitConfigs
+);
+Python
+talonfx_configurator
+=
+self
+.
+talonfx
+.
+configurator
+limit_configs
+=
+configs
+.
+CurrentLimitsConfigs
+()
+# enable stator current limit
+limit_configs
+.
+stator_current_limit
+=
+120
+limit_configs
+.
+stator_current_limit_enable
+=
+true
+talonfx_configurator
+.
+apply
+(
+limit_configs
+)
+On this page
+Improving Performance with Current Limits
+Stator and Supply Current Limits
+Stator Limits
+Supply Limits
+Determining Current Limits
+Preventing Wheel Slip
+Preventing Brownouts
+Improving Battery Longevity
+How to Apply Current Limits

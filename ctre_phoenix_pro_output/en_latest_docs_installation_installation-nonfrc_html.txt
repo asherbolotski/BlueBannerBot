@@ -1,0 +1,481 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Installing Phoenix 6 (non-FRC)
+¶
+Important
+Users in FRC can skip this article.
+Phoenix 6 is fully supported outside of
+FRC
+on
+supported
+systems with a USB to CAN adapter.
+Note
+CANivore
+is the recommended USB to CAN adapter with support for
+CAN FD
+, name specification, and Windows (as host).
+Installation
+¶
+Installation is composed of a few primary pieces. Users may skip CANivore installation if they are using a generic USB-to-CAN adapter.
+Installing the Phoenix APT Repository
+(Optional)
+CANivore Installation
+API Installation
+Installing the Phoenix APT Repository
+¶
+Phoenix 6 is distributed through our APT repository. Begin with adding the repository to your APT sources.
+YEAR
+=
+<year>
+sudo
+curl
+-s
+--compressed
+-o
+/usr/share/keyrings/ctr-pubkey.gpg
+"https://deb.ctr-electronics.com/ctr-pubkey.gpg"
+sudo
+curl
+-s
+--compressed
+-o
+/etc/apt/sources.list.d/ctr
+${
+YEAR
+}
+.list
+"https://deb.ctr-electronics.com/ctr
+${
+YEAR
+}
+.list"
+Note
+<year>
+should be replaced with the year of Phoenix 6 software for which you have purchased licenses.
+Open
+/etc/apt/sources.list.d/ctr${YEAR}.list
+with an editor of your choice.
+sudo
+nano
+/etc/apt/sources.list.d/ctr
+${
+YEAR
+}
+.list
+In the
+tools
+entry, replace
+stable
+with the distribution you want to use.
+# APT repo for CTR tools, including canivore-usb
+deb
+[
+signed-by
+=
+/usr/share/keyrings/ctr-pubkey.gpg
+]
+https://deb.ctr-electronics.com/tools
+stable
+main
+For example. Raspberry Pi would look like:
+# APT repo for CTR tools, including canivore-usb
+deb
+[
+signed-by
+=
+/usr/share/keyrings/ctr-pubkey.gpg
+]
+https://deb.ctr-electronics.com/tools
+raspberrypi
+main
+Available distributions can be found in the dropdown below.
+Modifying
+.list
+Distribution
+System
+<dist>
+Raspberry Pi
+raspberrypi
+NVIDIA Jetson
+jetson
+Other Linux systems (default)
+stable
+Warning
+Do not modify the distribution of the
+libs/<year>
+entry in the
+.list
+file.
+CANivore Installation
+¶
+On non-FRC Linux systems, the
+canivore-usb
+kernel module must be installed to add SocketCAN support for the CANivore. The kernel module is distributed through our APT repository.
+Note
+Custom bit rates and CAN 2.0 are not supported at this time.
+The parameters passed into SocketCAN are not applied by the firmware.
+Raspberry Pi
+Warning
+Raspberry Pi 4 with 32-bit OS require additional instructions. See
+Raspberry Pi Errata
+for more information.
+Install the Raspberry Pi kernel headers.
+sudo
+apt
+install
+raspberrypi-kernel-headers
+Update APT and install
+canivore-usb
+sudo
+apt
+update
+sudo
+apt
+install
+canivore
+-
+usb
+-
+y
+Other Supported Distributions
+Update APT and install
+canivore-usb
+.
+sudo
+apt
+update
+sudo
+apt
+install
+canivore-usb
+Tip
+To get a robot application up and running quickly, check out our
+non-FRC Linux example
+.
+API Installation
+¶
+C++ (Linux)
+Phoenix 6 can be installed and updated using the following:
+sudo
+apt
+update
+sudo
+apt
+install
+phoenix6
+Tip
+To get a robot application up and running quickly, check out our
+non-FRC Linux example
+.
+Python
+Installation is available through
+PyPI
+.
+py
+-3
+-m
+pip
+install
+phoenix6
+C# (Windows)
+Installation is available through
+Nuget
+.  An example on adding Nuget packages to a Visual Studio project is available in the
+Microsoft Quickstart
+.
+Firmware Installation
+¶
+Device firmware upgrading is handled by the
+Phoenix Tuner X
+configuration client.
+Simulation vs Hardware
+¶
+Python
+Users may notice the robot program is using simulated devices by default. This is the default behavior if the host platform supports simulation (see
+requirements
+for a full list of supported platforms).
+In order for the robot program to communicate with physical devices (on platforms that support both simulation and hardware), the
+CTR_TARGET
+environment variable must be set. Possible values of
+CTR_TARGET
+are:
+Hardware
+(see
+Hardware-Attached Simulation
+)
+Simulation
+(see
+Introduction to Simulation
+)
+Replay
+(see
+Hoot Replay
+)
+Examples of setting
+CTR_TARGET
+are shown below.
+Windows
+$env:CTR_TARGET
+=
+"Hardware"
+# Set the environment variable, which will persist for the duration of this powershell instance.
+Linux
+export
+CTR_TARGET
+=
+Hardware
+# Export the environment variable so it's persistent in the shell
+Or
+CTR_TARGET
+=
+Hardware
+python3
+application.py
+# Set the environment variable only for the python call
+Troubleshooting
+¶
+Bad
+return
+status
+on
+module...
+¶
+This error can show up on Raspberry Pi or Jetson systems when using the incorrect tools distribution for APT. Refer to
+Modifying list Distribution
+to correct your
+.list
+file.
+Diagnostics is running but no CAN
+¶
+Symptom:
+Tuner can ping the system and see that diagnostics is running but there are no devices.
+Possible Solutions:
+Verify that the CAN Bus is valid. Motors should be blinking orange. Consult
+Hardware Reference
+for a full list of LED codes.
+Verify that the
+canivore-usb
+kernel module is correctly installed by running
+modinfo
+canivore-usb
+.
+If
+canivore-usb
+shows installed with APT but does not appear with
+modinfo
+, then an update may have broken the module. Uninstall and reinstall
+canivore-usb
+with:
+sudo
+apt
+remove
+canivore-usb
+canivore-usb-kernel
+sudo
+apt
+install
+canivore-usb
+Raspberry Pi Errata
+¶
+On a Raspberry Pi 4 or newer, the latest 32-bit Raspberry Pi OS image will default to using the 64-bit kernel while still using 32-bit APT packages. As a result, the canivore-usb kernel module will fail to install.
+There are two options to work around this issue:
+(Recommended) Use the 64-bit Raspberry Pi OS. This allows programs to use all available RAM and improves overall system performance and stability.
+Add
+arm_64bit=0
+to /boot/config.txt and reboot. This forces the Raspberry Pi to use the 32-bit kernel. Note that programs will be limited to using 3 GB of RAM, and system performance may be impacted.
+Warning
+Do not add
+arm_64bit=0
+to /boot/config.txt when using the 64-bit Raspberry Pi OS. Attempting to do so may cause the Pi to be unable to boot.
+Examples
+¶
+The same Phoenix 6 examples can be used as a reference outside of FRC. The function calls are identical, although the framework that is used to call them may be different and specialized for FRC.
+Non FRC Projects
+¶
+We recommend that users use the standard language projects to use our library outside of FRC. For example, a typical Python project will have a
+main.py
+that utilizes the
+phoenix6
+library that’s installed with
+pip
+.
+A typical C# project is a
+Visual Studio
+project that includes our libraries via nuget.
+For C++, an example utilizing CMake is provided
+here
+.
+Note
+When utilizing actuators outside of FRC, the user must continuously feed an enable signal to the device. For more information, see
+Enabling Actuators
+.
+Alternative Support
+¶
+In the event that the Phoenix 6 API does not fit the user’s needs (e.g. when using devices such as a
+TalonSRX
+), users can utilize the
+Phoenix 5 API
+.
+We also provide a hardware robot controller called the
+HERO development board
+. The HERO can be programmed in C# to utilize
+compatible
+v5
+devices.
+On this page
+Installing Phoenix 6 (non-FRC)
+Installation
+Installing the Phoenix APT Repository
+CANivore Installation
+API Installation
+Firmware Installation
+Simulation vs Hardware
+Troubleshooting
+Bad
+return
+status
+on
+module...
+Diagnostics is running but no CAN
+Raspberry Pi Errata
+Examples
+Non FRC Projects
+Alternative Support

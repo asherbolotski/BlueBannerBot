@@ -1,0 +1,1089 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Status Signals
+¶
+Signals represent live data reported by a device; these can be yaw, position, etc. To make use of the live data, users need to know the value, timestamp, latency, units, and error condition of the data. Additionally, users may need to synchronize with fresh data to minimize latency.
+Tip
+A
+Signal Logging
+API is available for logging received signals. This can be useful for any form of post analysis, including diagnosing issues after a match or using
+WPILib SysId
+.
+StatusSignal
+¶
+The
+StatusSignal
+(
+Java
+,
+C++
+,
+Python
+) is a signal object that provides APIs to address all of the requirements listed above.
+The device object provides getters for all available signals. Each getter returns a
+StatusSignal
+that is typed appropriately for the signal.
+Note
+The device getters return a cached
+StatusSignal
+. As a result, frequently calling the getter does not influence RAM performance.
+Java
+var
+supplyVoltageSignal
+=
+m_device
+.
+getSupplyVoltage
+();
+C++
+auto
+&
+supplyVoltageSignal
+=
+m_device
+.
+GetSupplyVoltage
+();
+Python
+supply_voltage_signal
+=
+self
+.
+device
+.
+get_supply_voltage
+()
+The value of the signal can be retrieved from the
+StatusSignal
+by calling
+getValue()
+.
+Java
+// get the value as a unit type
+var
+supplyVoltage
+=
+supplyVoltageSignal
+.
+getValue
+();
+// convert the unit type to our desired units
+double
+supplyVoltageVolts
+=
+supplyVoltage
+.
+in
+(
+Volts
+);
+// alternatively, get the value as a double in the documented canonical units
+double
+supplyVoltage
+=
+supplyVoltageSignal
+.
+getValueAsDouble
+();
+C++
+// get the value as a unit type
+auto
+supplyVoltage
+=
+supplyVoltageSignal
+.
+GetValue
+();
+// pull out the underlying value from the unit type
+double
+supplyVoltageVolts
+=
+supplyVoltage
+.
+value
+();
+// alternatively, get the value as a double in the documented canonical units
+double
+supplyVoltage
+=
+supplyVoltageSignal
+.
+GetValueAsDouble
+();
+Python
+supply_voltage
+=
+supply_voltage_signal
+.
+value
+Note
+Phoenix 6 utilizes the
+Java units library
+and
+C++ units library
+when applicable. Using the Java units library may increase GC overhead.
+The
+StatusCode
+(
+Java
+,
+C++
+,
+Python
+) of the signal can be retrieved by calling
+getStatus()
+. This can be used to determine if the device is not present on the CAN bus.
+Note
+If a status signal is not available on the CAN bus, an error will be reported to the Driver Station.
+Refreshing the Signal Value
+¶
+The device
+StatusSignal
+getters implicitly refresh the cached signal values. However, if the user application caches the
+StatusSignal
+object, the
+refresh()
+method must be called to fetch fresh data. Multiple signals can be refreshed in one call using
+BaseStatusSignal.refreshAll()
+(
+Java
+,
+C++
+,
+Python
+), which can improve performance compared to individual refreshes.
+Tip
+The
+refresh()
+method can be method-chained. As a result, you can call
+refresh()
+and
+getValue()
+on one line.
+Java
+// refresh the supply voltage signal
+supplyVoltageSignal
+.
+refresh
+();
+// refresh the position and velocity signals
+BaseStatusSignal
+.
+refreshAll
+(
+positionSignal
+,
+velocitySignal
+);
+// refresh an array of differential signals
+BaseStatusSignal
+[]
+signals
+=
+{
+diffPositionSignal
+,
+diffVelocitySignal
+};
+BaseStatusSignal
+.
+refreshAll
+(
+signals
+);
+C++
+// refresh the supply voltage signal
+supplyVoltageSignal
+.
+Refresh
+();
+// refresh the position and velocity signals
+BaseStatusSignal
+::
+RefreshAll
+(
+positionSignal
+,
+velocitySignal
+);
+// refresh a std::array or std::vector of differential signals
+std
+::
+vector
+<
+BaseStatusSignal
+*>
+signals
+{
+&
+diffPositionSignal
+,
+&
+diffVelocitySignal
+};
+BaseStatusSignal
+::
+RefreshAll
+(
+signals
+);
+Python
+# refresh the supply voltage signal
+supply_voltage_signal
+.
+refresh
+()
+# refresh the position and velocity signals
+BaseStatusSignal
+.
+refresh_all
+(
+position_signal
+,
+velocity_signal
+)
+# refresh a list of differential signals
+signals
+=
+[
+diff_position_signal
+,
+diff_velocity_signal
+]
+BaseStatusSignal
+.
+refresh_all
+(
+signals
+)
+Waiting for Signal Updates
+¶
+Instead of using the latest value, the user can instead opt to synchronously wait for a signal update.
+StatusSignal
+provides a
+waitForUpdate(timeoutSec)
+method that will block the current robot loop until the signal is retrieved or the timeout has been exceeded. This replaces the need to call
+refresh()
+on cached
+StatusSignal
+objects.
+Tip
+If you want to zero your sensors, you can use this API to ensure the set operation has completed before continuing program flow.
+Tip
+The
+waitForUpdate()
+method can be method-chained. As a result, you can call
+waitForUpdate()
+and
+getValue()
+on one line.
+Java
+// wait up to 1 robot loop iteration (20ms) for fresh data
+supplyVoltageSignal
+.
+waitForUpdate
+(
+0.020
+);
+C++
+// wait up to 1 robot loop iteration (20ms) for fresh data
+supplyVoltageSignal
+.
+WaitForUpdate
+(
+20
+_ms
+);
+Python
+# wait up to 1 robot loop iteration (20ms) for fresh data
+supply_voltage_signal
+.
+wait_for_update
+(
+0.020
+)
+Changing Update Frequency
+¶
+All signals can have their update frequency configured via the
+setUpdateFrequency()
+method. Additionally, the update frequency of multiple signals can be specified at once using
+BaseStatusSignal.setUpdateFrequencyForAll()
+(
+Java
+,
+C++
+,
+Python
+).
+Warning
+Increasing signal frequency will also increase CAN bus utilization, which can cause indeterminate behavior at high utilization rates (>90%). This is less of a concern when using CANivore, which uses the higher-bandwidth
+CAN FD
+bus.
+Java
+// disable supply voltage reporting (0 Hz)
+supplyVoltageSignal
+.
+setUpdateFrequency
+(
+0
+);
+// speed up position and velocity reporting to 200 Hz
+BaseStatusSignal
+.
+setUpdateFrequencyForAll
+(
+200
+,
+positionSignal
+,
+velocitySignal
+);
+// speed up array of differential signals to 100 Hz
+BaseStatusSignal
+[]
+signals
+=
+{
+diffPositionSignal
+,
+diffVelocitySignal
+};
+BaseStatusSignal
+.
+setUpdateFrequencyForAll
+(
+100
+,
+signals
+);
+C++
+// disable supply voltage reporting (0 Hz)
+supplyVoltageSignal
+.
+SetUpdateFrequency
+(
+0
+_Hz
+);
+// speed up position and velocity reporting to 200 Hz
+BaseStatusSignal
+::
+SetUpdateFrequencyForAll
+(
+200
+_Hz
+,
+positionSignal
+,
+velocitySignal
+);
+// speed up std::array or std::vector of differential signals to 100 Hz
+std
+::
+vector
+<
+BaseStatusSignal
+*>
+signals
+{
+&
+diffPositionSignal
+,
+&
+diffVelocitySignal
+};
+BaseStatusSignal
+::
+SetUpdateFrequencyForAll
+(
+100
+_Hz
+,
+signals
+);
+Python
+# disable supply voltage reporting (0 Hz)
+supply_voltage_signal
+.
+set_update_frequency
+(
+0
+)
+# speed up position and velocity reporting to 200 Hz
+BaseStatusSignal
+.
+set_update_frequency_for_all
+(
+200
+,
+position_signal
+,
+velocity_signal
+)
+# speed up list of differential signals to 100 Hz
+signals
+=
+[
+diff_position_signal
+,
+diff_velocity_signal
+]
+BaseStatusSignal
+.
+set_update_frequency_for_all
+(
+100
+,
+signals
+)
+When different update frequencies are specified for signals that share a status frame, the highest update frequency of all the relevant signals will be applied to the entire frame. Users can get a signal’s applied update frequency using the
+getAppliedUpdateFrequency()
+method.
+Signal update frequencies are automatically reapplied by the robot program on device reset.
+Optimizing Bus Utilization
+¶
+For users that wish to disable every unused status signal for their devices to reduce bus utilization, device objects have an
+optimizeBusUtilization()
+method (
+Java
+,
+C++
+,
+Python
+). Additionally, multiple devices can be optimized at once using
+ParentDevice.optimizeBusUtilizationForAll()
+(
+Java
+,
+C++
+,
+Python
+).
+When optimizing the bus utilization for devices, all status signals that have not been given an update frequency using
+setUpdateFrequency()
+will be disabled. This results in an opt-in model for status signals, maximizing the reduction in bus utilization.
+Tip
+Instead of disabling all unused status signals, an update frequency can be specified instead to keep them enabled at a slower update rate (
+Java
+,
+c++
+,
+Python
+). This is useful when using
+Signal Logging
+.
+Warning
+When using followers, the leader motor must keep the
+DutyCycle
+,
+MotorVoltage
+, and
+TorqueCurrent
+status signals enabled. Additionally, remote sensors must keep related status signals enabled (such as position and velocity).
+Java
+m_pigeon
+.
+optimizeBusUtilization
+();
+ParentDevice
+.
+optimizeBusUtilizationForAll
+(
+m_leftMotor
+,
+m_rightMotor
+,
+m_cancoder
+);
+C++
+m_pigeon
+.
+OptimizeBusUtilization
+();
+hardware
+::
+ParentDevice
+::
+OptimizeBusUtilizationForAll
+(
+m_leftMotor
+,
+m_rightMotor
+,
+m_cancoder
+);
+Python
+self
+.
+pigeon
+.
+optimize_bus_utilization
+()
+hardware
+.
+ParentDevice
+.
+optimize_bus_utilization_for_all
+(
+self
+.
+left_motor
+,
+self
+.
+right_motor
+,
+self
+.
+cancoder
+)
+Resetting All to Default
+¶
+The update frequencies of all status signals for a device can be reset to the defaults by calling
+resetSignalFrequencies()
+on the device (
+Java
+,
+C++
+,
+Python
+). Additionally, multiple devices can be reset at once using
+ParentDevice.resetSignalFrequenciesForAll()
+(
+Java
+,
+C++
+,
+Python
+).
+Since devices typically maintain their configured status signal update frequencies until they are power cycled, this can be useful to restore everything to the defaults before reconfiguring update frequencies.
+Java
+m_pigeon
+.
+resetSignalFrequencies
+();
+ParentDevice
+.
+resetSignalFrequenciesForAll
+(
+m_leftMotor
+,
+m_rightMotor
+,
+m_cancoder
+);
+C++
+m_pigeon
+.
+ResetSignalFrequencies
+();
+hardware
+::
+ParentDevice
+::
+ResetSignalFrequenciesForAll
+(
+m_leftMotor
+,
+m_rightMotor
+,
+m_cancoder
+);
+Python
+self
+.
+pigeon
+.
+reset_signal_frequencies
+()
+hardware
+.
+ParentDevice
+.
+reset_signal_frequencies_for_all
+(
+self
+.
+left_motor
+,
+self
+.
+right_motor
+,
+self
+.
+cancoder
+)
+Timestamps
+¶
+The timestamps of a
+StatusSignal
+can be retrieved by calling
+getAllTimestamps()
+, which returns a collection of
+Timestamp
+(
+Java
+,
+C++
+,
+Python
+) objects. The
+Timestamp
+objects can be used to perform latency compensation math.
+CANivore Timesync
+¶
+Important
+CANivore Timesync requires the devices or the CANivore to be
+Pro licensed
+.
+When using
+CANivore
+, the attached CAN devices will automatically synchronize their time bases. This allows devices to sample and publish their signals in a synchronized manner.
+Users can synchronously wait for these signals to update using
+BaseStatusSignal.waitForAll()
+(
+Java
+,
+C++
+,
+Python
+).
+Tip
+waitForAll()
+with a timeout of zero matches the behavior of
+refreshAll()
+, performing a non-blocking refresh on all signals passed in.
+Because the devices are synchronized, time-critical signals are sampled and published on the same schedule. This combined with the
+waitForAll()
+routine means applications can considerably reduce the latency of the timesync signals. This is particularly useful for multi-device mechanisms, such as swerve odometry.
+Note
+When using a non-zero timeout, the signals passed into
+waitForAll()
+should have the same update frequency for synchronous data acquisition. This can be done by calling
+setUpdateFrequency()
+or by referring to the API documentation.
+The diagram below demonstrates the benefits of using timesync to synchronously acquire signals from multiple devices.
+Check the API documentation for information on whether a status signal supports CANivore Timesync.
+Java
+var
+talonFXPositionSignal
+=
+m_talonFX
+.
+getPosition
+();
+var
+cancoderPositionSignal
+=
+m_cancoder
+.
+getPosition
+();
+var
+pigeon2YawSignal
+=
+m_pigeon2
+.
+getYaw
+();
+BaseStatusSignal
+.
+waitForAll
+(
+0.020
+,
+talonFXPositionSignal
+,
+cancoderPositionSignal
+,
+pigeon2YawSignal
+);
+// can also send down an array of signals
+BaseStatusSignal
+[]
+signals
+=
+{
+talonFXPositionSignal
+,
+cancoderPositionSignal
+,
+pigeon2YawSignal
+};
+BaseStatusSignal
+.
+waitForAll
+(
+0.020
+,
+signals
+);
+C++
+auto
+&
+talonFXPositionSignal
+=
+m_talonFX
+.
+GetPosition
+();
+auto
+&
+cancoderPositionSignal
+=
+m_cancoder
+.
+GetPosition
+();
+auto
+&
+pigeon2YawSignal
+=
+m_pigeon2
+.
+GetYaw
+();
+BaseStatusSignal
+::
+WaitForAll
+(
+20
+_ms
+,
+talonFXPositionSignal
+,
+cancoderPositionSignal
+,
+pigeon2YawSignal
+);
+// can also send down a std::array or std::vector of signal pointers
+std
+::
+vector
+<
+BaseStatusSignal
+*>
+signals
+{
+&
+talonFXPositionSignal
+,
+&
+cancoderPositionSignal
+,
+&
+pigeon2YawSignal
+};
+BaseStatusSignal
+::
+WaitForAll
+(
+20
+_ms
+,
+signals
+);
+Python
+talonfx_position_signal
+=
+self
+.
+talonfx
+.
+get_position
+()
+cancoder_position_signal
+=
+self
+.
+cancoder
+.
+get_position
+()
+pigeon2_yaw_signal
+=
+self
+.
+pigeon2
+.
+get_yaw
+()
+BaseStatusSignal
+.
+wait_for_all
+(
+0.020
+,
+talonfx_position_signal
+,
+cancoder_position_signal
+,
+pigeon2_yaw_signal
+)
+# can also send down a list of signals
+signals
+=
+[
+talonfx_position_signal
+,
+cancoder_position_signal
+,
+pigeon2_yaw_signal
+]
+BaseStatusSignal
+.
+wait_for_all
+(
+0.020
+,
+signals
+)
+Latency Compensation
+¶
+Users can perform latency compensation using
+BaseStatusSignal.getLatencyCompensatedValue()
+(
+Java
+,
+C++
+,
+Python
+).
+Important
+getLatencyCompensatedValue()
+does not automatically refresh the signals. As a result, the user must ensure the
+signal
+and
+signalSlope
+parameters are refreshed before retrieving a compensated value.
+Java
+double
+compensatedTurns
+=
+BaseStatusSignal
+.
+getLatencyCompensatedValue
+(
+m_motor
+.
+getPosition
+(),
+m_motor
+.
+getVelocity
+());
+C++
+auto
+compensatedTurns
+=
+BaseStatusSignal
+::
+GetLatencyCompensatedValue
+(
+m_motor
+.
+GetPosition
+(),
+m_motor
+.
+GetVelocity
+());
+Python
+compensated_turns
+=
+BaseStatusSignal
+.
+get_latency_compensated_value
+(
+self
+.
+motor
+.
+get_position
+(),
+self
+.
+motor
+.
+get_velocity
+())
+SignalMeasurement
+¶
+All
+StatusSignal
+objects have a
+getDataCopy()
+method that returns a new
+SignalMeasurement
+(
+Java
+,
+C++
+) object.
+SignalMeasurement
+is a
+Passive Data Structure
+that provides all the information about a signal at the time of the
+getDataCopy()
+call, which can be useful for data logging.
+Warning
+getDataCopy()
+returns a
+new
+SignalMeasurement
+object every call.
+Java
+users should
+avoid
+using this API in RAM-constrained applications.
+On this page
+Status Signals
+StatusSignal
+Refreshing the Signal Value
+Waiting for Signal Updates
+Changing Update Frequency
+Optimizing Bus Utilization
+Resetting All to Default
+Timestamps
+CANivore Timesync
+Latency Compensation
+SignalMeasurement

@@ -1,0 +1,462 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+API Structure
+¶
+Phoenix 6 uses a separate, simpler set of namespaces and packages from Phoenix 5.
+Note
+For more information about the structure of Phoenix 6, see
+API Overview
+.
+v5
+Java
+// Phoenix 5 is in the com.ctre.phoenix.* packages
+import
+com.ctre.phoenix.motorcontrol.can.WPI_TalonFX
+;
+import
+com.ctre.phoenix.motorcontrol.TalonFXConfiguration
+;
+import
+com.ctre.phoenix.motorcontrol.TalonFXControlMode
+;
+import
+com.ctre.phoenix.motorcontrol.TalonFXInvertType
+;
+import
+com.ctre.phoenix.motorcontrol.TalonFXSimCollection
+;
+import
+com.ctre.phoenix.sensors.CANCoderConfiguration
+;
+import
+com.ctre.phoenix.sensors.WPI_CANCoder
+;
+// WPI_* for WPILib integration
+final
+WPI_TalonFX
+m_talonFX
+=
+new
+WPI_TalonFX
+(
+0
+);
+final
+WPI_CANCoder
+m_cancoder
+=
+new
+WPI_CANCoder
+(
+0
+);
+final
+TalonFXSimCollection
+m_talonFXSim
+=
+m_talonFX
+.
+getSimCollection
+();
+final
+TalonFXConfiguration
+m_talonConfig
+=
+new
+TalonFXConfiguration
+();
+final
+CANCoderConfiguration
+m_cancoderConfig
+=
+new
+CANCoderConfiguration
+();
+TalonFXInvertType
+m_talonFXInverted
+=
+TalonFXInvertType
+.
+CounterClockwise
+;
+m_talonFX
+.
+set
+(
+TalonFXControlMode
+.
+PercentOutput
+,
+0
+);
+C++
+// Phoenix 5 is in the ctre/phoenix headers
+#include
+"ctre/phoenix/motorcontrol/can/WPI_TalonFX.h"
+#include
+"ctre/phoenix/sensors/WPI_CANCoder.h"
+// Phoenix 5 uses the ctre::phoenix namespace
+using
+namespace
+ctre
+::
+phoenix
+;
+// WPI_* for WPILib integration
+motorcontrol
+::
+can
+::
+WPI_TalonFX
+m_talonFX
+{
+0
+};
+sensors
+::
+WPI_CANCoder
+m_cancoder
+{
+0
+};
+motorcontrol
+::
+TalonFXSimCollection
+&
+m_talonFXSim
+{
+m_talonFX
+.
+GetSimCollection
+()};
+motorcontrol
+::
+TalonFXConfiguration
+m_talonConfig
+{};
+sensors
+::
+CANCoderConfiguration
+m_cancoderConfig
+{};
+motorcontrol
+::
+TalonFXInvertType
+m_talonFXInverted
+{
+motorcontrol
+::
+TalonFXInvertType
+::
+CounterClockwise
+};
+m_talonFX
+.
+Set
+(
+motorcontrol
+::
+TalonFXControlMode
+::
+PercentOutput
+,
+0
+);
+v6
+Java
+// Phoenix 6 is in the com.ctre.phoenix6.* packages
+import
+com.ctre.phoenix6.configs.CANcoderConfiguration
+;
+import
+com.ctre.phoenix6.configs.TalonFXConfiguration
+;
+import
+com.ctre.phoenix6.controls.DutyCycleOut
+;
+import
+com.ctre.phoenix6.hardware.CANcoder
+;
+import
+com.ctre.phoenix6.hardware.TalonFX
+;
+import
+com.ctre.phoenix6.signals.InvertedValue
+;
+import
+com.ctre.phoenix6.sim.TalonFXSimState
+;
+// All hardware classes already have WPILib integration
+final
+TalonFX
+m_talonFX
+=
+new
+TalonFX
+(
+0
+);
+final
+CANcoder
+m_cancoder
+=
+new
+CANcoder
+(
+0
+);
+final
+TalonFXSimState
+m_talonFXSim
+=
+m_talonFX
+.
+getSimState
+();
+final
+DutyCycleOut
+m_talonFXOut
+=
+new
+DutyCycleOut
+(
+0
+);
+final
+TalonFXConfiguration
+m_talonFXConfig
+=
+new
+TalonFXConfiguration
+();
+final
+CANcoderConfiguration
+m_cancoderConfig
+=
+new
+CANcoderConfiguration
+();
+InvertedValue
+m_talonFXInverted
+=
+InvertedValue
+.
+CounterClockwise_Positive
+;
+m_talonFX
+.
+setControl
+(
+m_talonFXOut
+);
+C++
+// Phoenix 6 is in the ctre/phoenix6 headers
+#include
+"ctre/phoenix6/CANcoder.hpp"
+#include
+"ctre/phoenix6/TalonFX.hpp"
+// Phoenix 6 uses the ctre::phoenix6 namespace
+using
+namespace
+ctre
+::
+phoenix6
+;
+// now types are organized cleanly by namespace
+// All hardware classes already have WPILib integration
+hardware
+::
+TalonFX
+m_talonFX
+{
+0
+};
+hardware
+::
+CANcoder
+m_cancoder
+{
+0
+};
+sim
+::
+TalonFXSimState
+&
+m_talonFXSim
+{
+m_talonFX
+.
+GetSimState
+()};
+controls
+::
+DutyCycleOut
+m_talonFXOut
+{
+0
+};
+configs
+::
+TalonFXConfiguration
+m_talonFXConfig
+{};
+configs
+::
+CANcoderConfiguration
+m_cancoderConfig
+{};
+signals
+::
+InvertedValue
+m_talonFXInverted
+{
+signals
+::
+InvertedValue
+::
+CounterClockwise_Positive
+};
+m_talonFX
+.
+SetControl
+(
+m_talonFXOut
+);

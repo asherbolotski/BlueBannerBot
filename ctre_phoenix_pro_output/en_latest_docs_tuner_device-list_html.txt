@@ -1,0 +1,216 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Device List
+¶
+Card Layout
+Grid Layout
+The
+Devices
+page is the first page that is shown to the user upon launching the application. The
+Devices
+page by default shows a grid of cards, but can be changed to a flat grid view (similar to Phoenix Tuner v1) by clicking on the 4 grid square icon located in the top right corner (not available in Android Tuner X).
+Card Colors
+¶
+The color of the device cards is helpful as a visual indicator of device state. The meaning of the card color is also shown as text underneath the device title.
+Color
+Description
+Green
+Device has latest firmware.
+Purple
+Device has an unexpected/beta firmware version.
+Yellow
+A new firmware version is available. Check the
+changelog to determine if the new version
+matters to your application
+Red
+Device has a duplicate ID.
+Blue
+Failed to retrieve list of available firmware.
+Clipboard Options & Licensing
+¶
+Phoenix Tuner X provides icons at the bottom right of each card that will allow the user to copy to the clipboard the device details, configs and Self Test. This can be useful for support requests and additional debugging.
+Devices that support
+CAN FD
+are shown via a
+CAN FD
+icon in the bottom right of the card.
+Note
+The
+CAN FD
+icon does
+not
+indicate that the device is currently on a CAN FD bus, merely that it supports CAN FD.
+The other major icon in the bottom right of the device card is the licensing indicator. This showcases the
+licensing states
+and when clicked, will open the licensing dialog.
+Batch Field Upgrade
+¶
+Phoenix Tuner X allows the user to batch field upgrade from the
+Devices
+page. The user can either select devices by their checkbox (in the top right corner of their respective card) or by selecting the checkmark icon in the top right.
+Tip
+Selecting a device using their checkbox and clicking the checkmark in the top right will select all devices of the same models
+Step 1 in the above image selects all devices of the same models selected (or all devices if no device is currently check-boxed).
+Step 2 in the above image opens the field-upgrade dialog.
+Once the dialog is opened, information detailing the device name, model, ID, and firmware version is presented. There is a year selector in the top-left corner to select the firmware version year.
+Once the correct firmware year is selected user can begin the upgrade progress by selecting
+Update to latest
+. If the user does not want to use the latest firmware version, the
+Custom
+year selection allows for the selection of a specific firmware version for each device model.
+Tip
+Generally, users should update their devices to the latest available firmware version. If manually selecting a CRF is important, the firmware files are available for download on our
+GitHub Repo
+.
+Important
+While the user can cancel firmware upgrading using the “X” button in the top-right, this will
+not
+cancel the current device in progress. It will finish upgrading the current device and will not upgrade subsequent devices. Typical Tuner X behavior will resume once the current device finishes flashing.
+Batch Licensing
+¶
+See
+Batch Activating Licenses
+On this page
+Device List
+Card Colors
+Clipboard Options & Licensing
+Batch Field Upgrade
+Batch Licensing

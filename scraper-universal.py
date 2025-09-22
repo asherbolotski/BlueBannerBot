@@ -4,13 +4,23 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import time
 
-# --- 1. Configuration: Add new websites to this list ---
+# --- 1. Configuration: Modified for CTRE Documentation ---
 SITES_TO_SCRAPE = [
     {
-    "base_url": "https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary",
-    "allowed_domain": "docs.limelightvision.io",
-    "output_dir": "limelight_docs_output",
-    "content_selector": ("article", {"class": "theme-doc-markdown"}) 
+        # --- NEW: Configuration for CTRE Phoenix Pro / Phoenix 6 ---
+        # This covers the latest generation of CTRE devices and software.
+        "base_url": "https://pro.docs.ctr-electronics.com/en/latest/index.html",
+        "allowed_domain": "pro.docs.ctr-electronics.com",
+        "output_dir": "ctre_phoenix_pro_output",
+        "content_selector": ("div", {"role": "main"}) # The main content area in CTRE's docs
+    },
+    {
+        # --- NEW: Configuration for CTRE Phoenix 5 ---
+        # This covers the previous generation, which is still very common.
+        "base_url": "https://docs.ctr-electronics.com/en/latest/index.html",
+        "allowed_domain": "docs.ctr-electronics.com",
+        "output_dir": "ctre_phoenix5_output",
+        "content_selector": ("div", {"role": "main"})
     },
 ]
 
@@ -33,19 +43,16 @@ def scrape_page(url, content_selector):
         tag, attrs = content_selector
         main_content = soup.find(tag, attrs=attrs)
 
-        # --- NEW: Fallback Logic ---
         if not main_content:
             print(f"  - WARNING: Main content selector ('{tag}' with attrs {attrs}) not found.")
             print("  - Falling back to scraping the entire <body>.")
-            main_content = soup.find('body') # Use the whole body as a fallback
+            main_content = soup.find('body')
 
         if main_content:
-            # Clean up the content by removing script and style tags
             for element in main_content(["script", "style", "nav", "footer", "header"]):
                 element.decompose()
             return main_content.get_text(separator='\n', strip=True), soup
         else:
-            # This will only happen if a page has no body tag, which is very rare.
             print("  - ERROR: Could not find any content to scrape.")
             return None, soup 
 

@@ -7,7 +7,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter, Language
 
 # --- 1. Configuration: Add new directories to this list ---
 DIRECTORIES_TO_INGEST = [
-    {"path": "limelight_docs_output", "content_type": "text"}
+    {"path": "ctre_phoenix_pro_output", "content_type": "text"}
 ]
 
 # --- 2. Load Environment Variables and Initialize Clients ---

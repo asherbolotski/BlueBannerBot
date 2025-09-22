@@ -1,0 +1,226 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Talon FXS
+¶
+Talon FXS is a versatile motor controller compatible with the CTRE software ecosystem. This standalone device seamlessly supports both brushless and brushed motors, offering unparalleled flexibility and performance.
+The Talon FXS supports the
+CTR Electronics Minion
+and other third-party motors. Talon FXS also employs methods to reduce hall sensor velocity measurement noise and phase delay - a common problem with similar standalone motor controllers.
+Phoenix Pro users also benefit with “Advanced Hall Support” which can increase motor peak efficiency as high as an additional 2% percentage points and further reduce velocity measurement noise, making it ideal for velocity closed loop modes.
+Store Page
+CAD and purchase instructions.
+https://store.ctr-electronics.com/products/talon-fxs
+Supported Motors
+¶
+CTR Electronics Minion
+Third-party NEO
+Third-party NEO 550
+Third-party NEO Vortex with Solo Adapter
+Most 3rd party brushed motors
+Blink Codes
+Disabled Codes
+Animation (Click to play)
+LED State
+Cause
+Possible Fix
+LEDs Off
+No Power
+Provide 12V to Red/Black leads.
+Blinking Alternating Red
+Talon FXS does not have a valid CAN/PWM signal.
+Ensure good connections between CANH and CANL (Yellow and Green) & robot controller is on.
+Blinking Alternating Orange
+TalonFXS detects CAN but does not see Phoenix running on the robot controller.
+If Phoenix is running on the robot controller, ensure good connection between the controller and this device. Otherwise, deploy a robot program that uses Phoenix.
+Blinking Simultaneous Orange
+Talon FXS has valid CAN signal and is disabled. Phoenix is running in robot controller
+and
+Talon FXS has good CAN connection to robot controller.
+If robot is enabled, ensure a control request is being sent to the Talon FXS.
+Enabled Codes
+Both Solid Orange
+Talon FXS enabled with neutral output.
+Blinking Simultaneous Red
+Talon FXS driving in reverse. Rate of blink corresponds to duty cycle applied.
+Blinking Simultaneous Green
+Talon FXS driving forward. Rate of blink corresponds to duty cycle applied.
+Offset Alternating Red/Off
+Talon FXS limited (hard or soft limit). Direction of offset determines forward/reverse limit.
+Special Codes
+Offset Orange/Off
+Talon FXS in thermal cutoff or temperature measurement is missing.
+Please see
+"Troubleshooting Fault LED"
+for potential solutions.
+Alternate Red/Green
+Talon FXS driven with Pro-only command while unlicensed.
+Use non-Pro-only command, or license device for Pro.
+Alternate Orange/Green
+Talon FXS driven with no motor selected in motor arrangement.
+Configure the Talon FXS with the attached motor.
+Alternate Red/Orange
+Damaged Hardware.
+Use Tuner X Self Test to confirm the LEDs and that the hardware fault is set, then contact CTRE
+Single LED alternates Green/Orange
+Talon FXS in bootloader.
+Field-upgrade device in Tuner X.
+Troubleshooting Fault LED
+¶
+A Talon FXS thermal fault, as indicated with an “Offset Orange/Off” blink code, can be triggered for a variety of reasons. The following list can be used to help identify the reason and a potential solution.
+Brushless Motor
+JST is disconnected or damaged. Plug-in the motor JST cable into the JST port and ensure the cable is not damaged.
+Motor arrangement is incorrect. Please select the correct motor in
+configs
+.
+Talon FXS or motor has reached thermal cut-off. Allow time for the device to cool and consider configuring a
+Stator Current limit
+.
+Brushed Motor
+Motor arrangement is incorrect. Please select one of the brushed options in
+configs
+.
+Talon FXS has reached thermal cut-off. Allow time for the device to cool and consider configuring a
+Stator Current limit
+.
+On this page
+Talon FXS
+Supported Motors
+Troubleshooting Fault LED

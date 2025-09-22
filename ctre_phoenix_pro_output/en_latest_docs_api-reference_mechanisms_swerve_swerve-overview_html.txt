@@ -1,0 +1,292 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Swerve Overview
+¶
+Important
+Some swerve features, such as simulation support, are only available for FRC users.
+Phoenix 6 incorporates a high performance swerve API supported in Java, C++, and Python. This API simplifies the boilerplate necessary for swerve and maximizes performance.
+Tip
+Tuner X supports a
+swerve project creator
+that greatly simplifies the setup process and eliminates common error cases.
+Small API surface, easily debuggable
+Build robot characteristics using
+SwerveModuleConstants
+(
+Java
+,
+C++
+,
+Python
+) and
+SwerveDrivetrainConstants
+(
+Java
+,
+C++
+,
+Python
+).
+Integrates cleanly into the WPILib
+command-based
+framework using
+CommandSwerveDrivetrain
+(from our examples or Tuner X).
+Provide a lambda to telemetrize directly in the odometry loop using
+registerTelemetry(...)
+(
+Java
+,
+C++
+,
+Python
+).
+Extensible and powerful control of the drivetrain via
+SwerveRequest
+(
+Java
+,
+C++
+,
+Python
+).
+Built-in requests tuned for both autonomous and teleoperated robot-centric, field-centric and field-centric facing angle control.
+Supports common scenarios such as X brake (point all modules toward the center of the robot).
+Simulation
+Test your autonomous paths and pose estimation without a physical robot.
+Simply call
+updateSimState(...)
+(
+Java
+,
+C++
+,
+Python
+) in
+simulationPeriodic()
+or on a separate thread.
+Performance
+Odometry is updated synchronously with the motor controllers.
+Odometry is received as fast as possible using a separate thread.
+Control is run inline with odometry updates.
+Combine with
+Phoenix Pro
+and a
+CANivore
+with
+timesync
+for improved performance.
+Tip
+Simulation boilerplate is automatically handled when generating a robot project using Tuner X.
+Hardware Requirements
+¶
+Utilizing the swerve API requires that the robot drivetrain is composed of supported Phoenix 6 devices. At a minimum, these requirements are:
+4 Talon FX or Talon FXS drive motor controllers
+4 Talon FX or Talon FXS steer motor controllers
+1 Pigeon 2.0
+4 encoders (must all be one of the following)
+4 CANcoders
+4 PWM absolute encoders connected to at least 2 CANdi
+4 PWM absolute encoders connected to their corresponding steer Talon FXS
+Note
+All drive motor controllers must be of the same type, and all steer motor controllers must be of the same type. However, the drive and steer motor controllers can be different types from each other. For example, you can utilize 4 Talon FXS connected to a Minion for steer and 4 Kraken X60 for drive.
+Overview on the API
+¶
+Simple usage is comprised of 5 core APIs:
+SwerveDrivetrainConstants
+(
+Java
+,
+C++
+,
+Python
+)
+This class handles characteristics of the robot that are not module specific. e.g. CAN bus, Pigeon 2 ID, whether FD is enabled or not.
+SwerveModuleConstantsFactory
+(
+Java
+,
+C++
+,
+Python
+)
+Factory class with common constants used to instantiate
+SwerveModuleConstants
+for each module on the robot.
+SwerveModuleConstants
+(
+Java
+,
+C++
+,
+Python
+)
+Represents the characteristics for a given module.
+SwerveDrivetrain
+(
+Java
+,
+C++
+,
+Python
+)
+Created using
+SwerveDrivetrainConstants
+and a
+SwerveModuleConstants
+for each module, this is used to control the swerve drivetrain.
+SwerveRequest
+(
+Java
+,
+C++
+,
+Python
+)
+Controls the drivetrain, such as driving field-centric.
+Usage of these classes is available in the following articles in this section.
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+On this page
+Swerve Overview
+Hardware Requirements
+Overview on the API

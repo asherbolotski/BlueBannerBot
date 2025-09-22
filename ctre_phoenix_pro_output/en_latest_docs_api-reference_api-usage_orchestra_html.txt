@@ -1,0 +1,306 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Orchestra
+¶
+Compatible motors powered by Talon FX have the ability to produce audible output through the
+MusicTone
+(
+Java
+,
+C++
+,
+Python
+) control request. The Orchestra API extends this ability and orchestrates multiple motors to play music.
+To get started, construct an
+Orchestra
+(
+Java
+,
+C++
+,
+Python
+) object with an instrument and CHRP. Ensure that
+addInstrument()
+and
+loadMusic()
+are not called periodically, as they are blocking functions.
+Note
+For information on converting MIDI to CHRP, see
+CHRP Converter
+.
+Java
+Orchestra
+m_orchestra
+=
+new
+Orchestra
+();
+// Add a single device to the orchestra
+m_orchestra
+.
+addInstrument
+(
+m_motor
+);
+// Attempt to load the chrp
+var
+status
+=
+m_orchestra
+.
+loadMusic
+(
+"track.chrp"
+);
+if
+(
+!
+status
+.
+isOK
+())
+{
+// log error
+}
+C++
+Orchestra
+m_orchestra
+;
+// Add a single device to the orchestra
+m_orchestra
+.
+addInstrument
+(
+m_motor
+);
+// Attempt to load the chrp
+auto
+status
+=
+m_orchestra
+.
+loadMusic
+(
+"track.chrp"
+);
+if
+(
+!
+status
+.
+IsOK
+())
+{
+// log error
+}
+Python
+self
+.
+orchestra
+=
+Orchestra
+()
+self
+.
+orchestra
+.
+add_instrument
+(
+self
+.
+motor
+);
+status
+=
+self
+.
+orchestra
+.
+load_music
+(
+"track.chrp"
+)
+if
+not
+status
+.
+is_ok
+():
+# log error
+Once the track has been loaded,
+play/pause/stop
+can be used to manage the track.
+play()
+only needs to be called once.
+Java
+m_orchestra
+.
+play
+();
+C++
+m_orchestra
+.
+Play
+();
+Python
+self
+.
+orchestra
+.
+play
+()
+Playback While Disabled (FRC)
+¶
+Playback can be safely enabled during robot disable by enabling the
+Allow
+Music
+Dur
+Disable
+(
+Java
+,
+C++
+,
+Python
+) config.
+On this page
+Orchestra
+Playback While Disabled (FRC)

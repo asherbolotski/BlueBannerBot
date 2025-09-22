@@ -1,0 +1,471 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+CANivore API
+¶
+All device constructors have an overload that takes a string CAN bus identifier. This identifier can be
+rio
+for the native roboRIO CAN bus,
+*
+to select the first available CANivore, or a CANivore’s name or serial number. On non-FRC Linux systems, this string can also be a SocketCAN interface.
+Note
+If there are multiple CANivores with the same name, the system will use the first CANivore found.
+If no CAN bus string is passed into the constructor, or the CAN bus string is empty, the behavior is platform-dependent:
+roboRIO: use the roboRIO native CAN bus
+Windows: use the first CANivore found
+non-FRC Linux: use SocketCAN interface
+can0
+Java
+TalonFX
+fx_default
+=
+new
+TalonFX
+(
+0
+);
+// On roboRIO, this constructs a TalonFX on the RIO native CAN bus
+TalonFX
+fx_rio
+=
+new
+TalonFX
+(
+1
+,
+"rio"
+);
+// This also constructs a TalonFX on the RIO native CAN bus
+TalonFX
+fx_drivebase
+=
+new
+TalonFX
+(
+0
+,
+"Drivebase"
+);
+// This constructs a TalonFX on the CANivore bus named "Drivebase"
+CANcoder
+cc_elevator
+=
+new
+CANcoder
+(
+0
+,
+"Elevator"
+);
+// This constructs a CANcoder on the CANivore bus named "Elevator"
+C++ (Header)
+hardware
+::
+TalonFX
+fx_default
+{
+0
+};
+// On roboRIO, this constructs a TalonFX on the RIO native CAN bus
+hardware
+::
+TalonFX
+fx_rio
+{
+1
+,
+"rio"
+};
+// This also constructs a TalonFX on the RIO native CAN bus
+hardware
+::
+TalonFX
+fx_drivebase
+{
+0
+,
+"Drivebase"
+};
+// This constructs a TalonFX on the CANivore bus named "Drivebase"
+hardware
+::
+CANcoder
+cc_elevator
+{
+0
+,
+"Elevator"
+};
+// This constructs a CANcoder on the CANivore bus named "Elevator"
+Python
+fx_default
+=
+hardware
+.
+TalonFX
+(
+0
+)
+# On roboRIO, this constructs a TalonFX on the RIO native CAN bus
+fx_rio
+=
+hardware
+.
+TalonFX
+(
+1
+,
+"rio"
+)
+# This also constructs a TalonFX on the RIO native CAN bus
+fx_drivebase
+=
+hardware
+.
+TalonFX
+(
+0
+,
+"Drivebase"
+)
+# This constructs a TalonFX on the CANivore bus named "Drivebase"
+cc_elevator
+=
+hardware
+.
+CANcoder
+(
+0
+,
+"Elevator"
+)
+# This constructs a CANcoder on the CANivore bus named "Elevator"
+CANBus
+API
+¶
+Instead of raw strings, a
+CANBus
+object (
+Java
+,
+C++
+,
+Python
+) can be constructed and provided to device constructors. The API can also be used to retrieve information about any given CAN bus, such as the bus utilization.
+Java
+// create a CAN bus for the CANivore named drivetrain
+CANBus
+canbus
+=
+new
+CANBus
+(
+"drivetrain"
+);
+// construct a TalonFX on the CAN bus
+TalonFX
+fx
+=
+new
+TalonFX
+(
+0
+,
+canbus
+);
+// retrieve bus utilization for the CAN bus
+CANBusStatus
+canInfo
+=
+canbus
+.
+getStatus
+();
+float
+busUtil
+=
+canInfo
+.
+BusUtilization
+;
+if
+(
+busUtil
+>
+0.8
+)
+{
+System
+.
+out
+.
+println
+(
+"CAN bus utilization is greater than 80%!"
+);
+}
+C++
+// create a CAN bus for the CANivore named drivetrain
+CANBus
+canbus
+{
+"drivetrain"
+};
+// construct a TalonFX on the CAN bus
+hardware
+::
+TalonFX
+fx
+{
+0
+,
+canbus
+};
+// retrieve bus utilization for the CANivore named drivetrain
+CANBus
+::
+CANBusStatus
+canInfo
+=
+canbus
+.
+GetStatus
+();
+float
+busUtil
+=
+canInfo
+.
+BusUtilization
+;
+if
+(
+busUtil
+>
+0.8
+)
+{
+std
+::
+cout
+<<
+"CAN bus utilization is greater than 80%!"
+<<
+std
+::
+endl
+;
+}
+Python
+# create a CAN bus for the CANivore named drivetrain
+canbus
+=
+CANBus
+(
+"drivetrain"
+)
+# construct a TalonFX on the CAN bus
+fx
+=
+hardware
+.
+TalonFX
+(
+0
+,
+canbus
+)
+# retrieve bus utilization for the CANivore named drivetrain
+can_info
+=
+canbus
+.
+get_status
+()
+bus_util
+=
+can_info
+.
+bus_utilization
+if
+bus_util
+>
+0.8
+:
+print
+(
+"CAN bus utilization is greater than 80%!"
+)
+CANivore Status Prints
+¶
+When working with CANivore CAN buses in a robot program, Phoenix prints some messages to report the state of the CANivore connection. These messages can be useful to debug connection issues (bad USB vs bad CAN) or report bugs to CTR Electronics.
+Connection Messages
+¶
+Message
+Connection Status
+CANbus Failed to Connect
+Could not connect to a CANivore with the given name or serial number
+CANbus Connected
+Successfully found and connected to the CANivore with the given name or serial number
+CANbus Disconnected
+Detected that a CANivore USB device has been disconnected
+CANivore Bring-up Messages (Linux only)
+¶
+Message
+Bring-up Status
+CANbus Failed Bring-up
+Found and connected to the CANivore, but could not configure the device or start the network
+CANbus Successfully Started
+Successfully configured the CANivore and started the network
+Network State Messages
+¶
+Message
+Network State
+CANbus Network Down
+Linux: The SocketCAN network has been deactivated, USB-to-CAN activity has stopped
+Windows: Could not open the communication channels for USB-to-CAN traffic
+CANbus Network Up
+Linux: The SocketCAN network has been activated, USB-to-CAN activity has resumed
+Windows: Successfully opened the communication channels for USB-to-CAN traffic
+On this page
+CANivore API
+CANBus
+API
+CANivore Status Prints

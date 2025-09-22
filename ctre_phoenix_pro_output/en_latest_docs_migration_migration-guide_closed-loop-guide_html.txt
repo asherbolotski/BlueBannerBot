@@ -1,0 +1,1417 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Closed-Loop Control
+¶
+Phoenix 6 enhances the experience of using onboard closed-loop control through the use of standardized units and a variety of control output types.
+Note
+For more information about closed-loop control in Phoenix 6, see
+Closed-Loop Overview
+.
+Closed-Loop Setpoints
+¶
+Phoenix 6 uses canonical units for closed-loop setpoints.
+Note
+This calculator assumes the
+RotorToSensorRatio
+and
+SensorToMechanismRatio
+configs are both set to 1. If this is not the case in your robot program,
+divide
+the resulting values by both ratios.
+Setpoint Conversion
+Name
+Value
+Units
+Formula
+Position
+Original
+\(\mathrm{raw\_units}\)
+\(x_{\mathrm{old}}\)
+New
+\(\mathrm{rotations}\)
+\(x_{\mathrm{new}}=x_{\mathrm{old}} \cdot \frac{1}{2048} \frac{\mathrm{rot}}{\mathrm{raw\_unit}}\)
+Velocity
+Original
+\(\frac{\mathrm{raw\_units}}{\mathrm{100ms}}\)
+\(v_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{rot}}{\mathrm{second}}\)
+\(v_{\mathrm{new}}=v_{\mathrm{old}} \cdot \frac{1}{2048} \frac{\mathrm{rot}}{\mathrm{raw\_unit}} \cdot 10 \frac{\mathrm{100ms}}{\mathrm{second}} \)
+Acceleration
+Original
+\(\frac{\mathrm{raw\_units}}{\mathrm{100ms} \cdot \mathrm{second}}\)
+\(a_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{rot}}{\mathrm{second}^2}\)
+\(a_{\mathrm{new}}=a_{\mathrm{old}} \cdot \frac{1}{2048} \frac{\mathrm{rot}}{\mathrm{raw\_unit}} \cdot 10 \frac{\mathrm{100ms}}{\mathrm{second}} \)
+Closed-Loop Gains
+¶
+Position without Voltage Comp
+¶
+Phoenix 5
+ControlMode.Position
+with voltage compensation
+disabled
+maps to the Phoenix 6
+PositionDutyCycle
+control request.
+Note
+This calculator assumes the
+RotorToSensorRatio
+and
+SensorToMechanismRatio
+configs are both set to 1. If this is not the case in your robot program,
+multiply
+the resulting gains by both ratios.
+Position without Voltage Compensation
+Name
+Value
+Units
+Formula
+kP
+Original
+\(\frac{\mathrm{raw\_output}}{\mathrm{unit}}\)
+\(kP_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{duty\_cycle}}{\mathrm{rot}}\)
+\(kP_{\mathrm{new}}=kP_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}}\)
+kI
+Original
+\(\frac{\mathrm{raw\_output}}{\mathrm{unit} \cdot \mathrm{millisecond}}\)
+\(kI_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{duty\_cycle}}{\mathrm{rot} \cdot \mathrm{second}}\)
+\(kI_{\mathrm{new}}=kI_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot 1000 \frac{\mathrm{millisecond}}{\mathrm{second}}\)
+kD
+Original
+\(\frac{\mathrm{raw\_output}}{\mathrm{unit} / \mathrm{millisecond}}\)
+\(kD_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{duty\_cycle}}{\mathrm{rot} / \mathrm{second}}\)
+\(kD_{\mathrm{new}}=kD_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{1000} \frac{\mathrm{second}}{\mathrm{millisecond}}\)
+Position with Voltage Comp
+¶
+Phoenix 5
+ControlMode.Position
+with voltage compensation
+enabled
+has been replaced with the Phoenix 6
+PositionVoltage
+control request, which directly controls voltage.
+Note
+This calculator assumes the
+RotorToSensorRatio
+and
+SensorToMechanismRatio
+configs are both set to 1. If this is not the case in your robot program,
+multiply
+the resulting gains by both ratios.
+Position with Voltage Compensation
+Voltage Compensation Value:
+Name
+Value
+Units
+Formula
+kP
+Original
+\(\frac{\mathrm{\mathrm{raw\_output}}}{\mathrm{unit}}\)
+\(kP_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{V}}{\mathrm{rot}}\)
+\(kP_{\mathrm{new}}=kP_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \mathrm{V\_comp} \frac{\mathrm{V}}{\mathrm{duty\_cycle}}\)
+kI
+Original
+\(\frac{\mathrm{\mathrm{raw\_output}}}{\mathrm{unit} \cdot \mathrm{millisecond}}\)
+\(kI_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{V}}{\mathrm{rot} \cdot \mathrm{second}}\)
+\(kI_{\mathrm{new}}=kI_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot 1000 \frac{\mathrm{millisecond}}{\mathrm{second}} \cdot \mathrm{V\_comp} \frac{\mathrm{V}}{\mathrm{duty\_cycle}}\)
+kD
+Original
+\(\frac{\mathrm{\mathrm{raw\_output}}}{\mathrm{unit} / \mathrm{millisecond}}\)
+\(kD_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{V}}{\mathrm{rot} / \mathrm{second}}\)
+\(kD_{\mathrm{new}}=kD_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{1000} \frac{\mathrm{second}}{\mathrm{millisecond}} \cdot \mathrm{V\_comp} \frac{\mathrm{V}}{\mathrm{duty\_cycle}}\)
+Velocity without Voltage Comp
+¶
+Phoenix 5
+ControlMode.Velocity
+with voltage compensation
+disabled
+maps to the Phoenix 6
+VelocityDutyCycle
+control request.
+Additionally, kF from Phoenix 5 has been replaced with kV in Phoenix 6.
+Note
+This calculator assumes the
+RotorToSensorRatio
+and
+SensorToMechanismRatio
+configs are both set to 1. If this is not the case in your robot program,
+multiply
+the resulting gains by both ratios.
+Velocity without Voltage Compensation
+Name
+Value
+Units
+Formula
+kP
+Original
+\(\frac{\mathrm{raw\_output}}{\mathrm{unit} / \mathrm{100ms}}\)
+\(kP_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{duty\_cycle}}{\mathrm{rot} / \mathrm{sec}}\)
+\(kP_{\mathrm{new}}=kP_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{10} \frac{\mathrm{sec}}{\mathrm{100ms}}\)
+kI
+Original
+\(\frac{\mathrm{raw\_output}}{(\mathrm{unit} / \mathrm{100ms}) \cdot \mathrm{millisecond}}\)
+\(kI_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{duty\_cycle}}{\mathrm{rot}}\)
+\(kI_{\mathrm{new}}=kI_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot 1000 \frac{\mathrm{millisecond}}{\mathrm{second}} \cdot \frac{1}{10} \frac{\mathrm{sec}}{\mathrm{100ms}}\)
+kD
+Original
+\(\frac{\mathrm{raw\_output}}{(\mathrm{unit} / \mathrm{100ms}) / \mathrm{millisecond}}\)
+\(kD_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{duty\_cycle}}{\mathrm{rot} / \mathrm{second}^{2}}\)
+\(kD_{\mathrm{new}}=kD_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{1000} \frac{\mathrm{second}}{\mathrm{millisecond}} \cdot \frac{1}{10} \frac{\mathrm{sec}}{\mathrm{100ms}}\)
+kF
+kV
+Original
+\(\frac{\mathrm{raw\_output}}{\mathrm{unit} / \mathrm{100millisecond}}\)
+\(kF_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{duty\_cycle}}{\mathrm{rot} / \mathrm{second}}\)
+\(kV_{\mathrm{new}}=kF_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{10} \frac{\mathrm{second}}{\mathrm{100ms}}\)
+Velocity with Voltage Comp
+¶
+Phoenix 5
+ControlMode.Velocity
+with voltage compensation
+enabled
+has been replaced with the Phoenix 6
+VelocityVoltage
+control request, which directly controls voltage.
+Additionally, kF from Phoenix 5 has been replaced with kV in Phoenix 6.
+Note
+This calculator assumes the
+RotorToSensorRatio
+and
+SensorToMechanismRatio
+configs are both set to 1. If this is not the case in your robot program,
+multiply
+the resulting gains by both ratios.
+Velocity with Voltage Compensation
+Voltage Compensation Value:
+Name
+Value
+Units
+Formula
+kP
+Original
+\(\frac{\mathrm{\mathrm{raw\_output}}}{\mathrm{unit} / \mathrm{100ms}}\)
+\(kP_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{V}}{\mathrm{rot} / \mathrm{sec}}\)
+\(kP_{\mathrm{new}}=kP_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{10} \frac{\mathrm{second}}{\mathrm{100ms}} \cdot \mathrm{V\_comp} \frac{\mathrm{V}}{\mathrm{duty\_cycle}}\)
+kI
+Original
+\(\frac{\mathrm{\mathrm{raw\_output}}}{(\mathrm{unit} / \mathrm{100ms}) \cdot \mathrm{millisecond}}\)
+\(kI_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{V}}{\mathrm{rot}}\)
+\(kI_{\mathrm{new}}=kI_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot 1000 \frac{\mathrm{millisecond}}{\mathrm{second}} \cdot \frac{1}{10} \frac{\mathrm{second}}{\mathrm{100ms}} \cdot \mathrm{V\_comp} \frac{\mathrm{V}}{\mathrm{duty\_cycle}}\)
+kD
+Original
+\(\frac{\mathrm{\mathrm{raw\_output}}}{(\mathrm{unit} / \mathrm{100ms}) / \mathrm{millisecond}}\)
+\(kD_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{V}}{\mathrm{rot} / \mathrm{second}^{2}}\)
+\(kD_{\mathrm{new}}=kD_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{1000} \frac{\mathrm{second}}{\mathrm{millisecond}} \cdot \frac{1}{10} \frac{\mathrm{second}}{\mathrm{100ms}} \cdot \mathrm{V\_comp} \frac{\mathrm{V}}{\mathrm{duty\_cycle}}\)
+kF
+kV
+Original
+\(\frac{\mathrm{\mathrm{raw\_output}}}{\mathrm{unit} / \mathrm{100ms}}\)
+\(kF_{\mathrm{old}}\)
+New
+\(\frac{\mathrm{V}}{\mathrm{rot} / \mathrm{second}}\)
+\(kV_{\mathrm{new}}=kF_{\mathrm{old}} \cdot 2048 \frac{\mathrm{unit}}{\mathrm{rot}} \cdot \frac{1}{1023} \frac{\mathrm{duty\_cycle}}{\mathrm{raw\_output}} \cdot \frac{1}{10} \frac{\mathrm{second}}{\mathrm{100ms}} \cdot \mathrm{V\_comp} \frac{\mathrm{V}}{\mathrm{duty\_cycle}}\)
+Using Closed-Loop Control
+¶
+v5
+Java
+// robot init, set slot 0 gains
+m_motor
+.
+config_kF
+(
+0
+,
+0.05
+,
+50
+);
+m_motor
+.
+config_kP
+(
+0
+,
+0.046
+,
+50
+);
+m_motor
+.
+config_kI
+(
+0
+,
+0.0002
+,
+50
+);
+m_motor
+.
+config_kD
+(
+0
+,
+4.2
+,
+50
+);
+// enable voltage compensation
+m_motor
+.
+configVoltageComSaturation
+(
+12
+);
+m_motor
+.
+enableVoltageCompensation
+(
+true
+);
+// periodic, run velocity control with slot 0 configs,
+// target velocity of 50 rps (10240 ticks/100ms)
+m_motor
+.
+selectProfileSlot
+(
+0
+,
+0
+);
+m_motor
+.
+set
+(
+ControlMode
+.
+Velocity
+,
+10240
+);
+C++
+// robot init, set slot 0 gains
+m_motor
+.
+Config_kF
+(
+0
+,
+0.05
+,
+50
+);
+m_motor
+.
+Config_kP
+(
+0
+,
+0.046
+,
+50
+);
+m_motor
+.
+Config_kI
+(
+0
+,
+0.0002
+,
+50
+);
+m_motor
+.
+Config_kD
+(
+0
+,
+4.2
+,
+50
+);
+// enable voltage compensation
+m_motor
+.
+ConfigVoltageComSaturation
+(
+12
+);
+m_motor
+.
+EnableVoltageCompensation
+(
+true
+);
+// periodic, run velocity control with slot 0 configs,
+// target velocity of 50 rps (10240 ticks/100ms)
+m_motor
+.
+SelectProfileSlot
+(
+0
+,
+0
+);
+m_motor
+.
+Set
+(
+ControlMode
+::
+Velocity
+,
+10240
+);
+v6
+Java
+// class member variable
+final
+VelocityVoltage
+m_velocity
+=
+new
+VelocityVoltage
+(
+0
+);
+// robot init, set slot 0 gains
+var
+slot0Configs
+=
+new
+Slot0Configs
+();
+slot0Configs
+.
+kV
+=
+0.12
+;
+slot0Configs
+.
+kP
+=
+0.11
+;
+slot0Configs
+.
+kI
+=
+0.48
+;
+slot0Configs
+.
+kD
+=
+0.01
+;
+m_talonFX
+.
+getConfigurator
+().
+apply
+(
+slot0Configs
+,
+0.050
+);
+// periodic, run velocity control with slot 0 configs,
+// target velocity of 50 rps
+m_velocity
+.
+Slot
+=
+0
+;
+m_motor
+.
+setControl
+(
+m_velocity
+.
+withVelocity
+(
+50
+));
+C++
+// class member variable
+controls
+::
+VelocityVoltage
+m_velocity
+{
+0
+_tps
+};
+// robot init, set slot 0 gains
+configs
+::
+Slot0Configs
+slot0Configs
+{};
+slot0Configs
+.
+kV
+=
+0.12
+;
+slot0Configs
+.
+kP
+=
+0.11
+;
+slot0Configs
+.
+kI
+=
+0.48
+;
+slot0Configs
+.
+kD
+=
+0.01
+;
+m_talonFX
+.
+GetConfigurator
+().
+Apply
+(
+slot0Configs
+,
+50
+_ms
+);
+// periodic, run velocity control with slot 0 configs,
+// target velocity of 50 rps
+m_velocity
+.
+Slot
+=
+0
+;
+m_motor
+.
+SetControl
+(
+m_velocity
+.
+WithVelocity
+(
+50
+_tps
+));
+Motion Magic®
+¶
+v5
+Java
+// robot init, set slot 0 gains
+m_motor
+.
+config_kF
+(
+0
+,
+0.05
+,
+50
+);
+// PID runs on position
+m_motor
+.
+config_kP
+(
+0
+,
+0.2
+,
+50
+);
+m_motor
+.
+config_kI
+(
+0
+,
+0
+,
+50
+);
+m_motor
+.
+config_kD
+(
+0
+,
+4.2
+,
+50
+);
+// set Motion Magic settings
+m_motor
+.
+configMotionCruiseVelocity
+(
+16384
+);
+// 80 rps = 16384 ticks/100ms cruise velocity
+m_motor
+.
+configMotionAcceleration
+(
+32768
+);
+// 160 rps/s = 32768 ticks/100ms/s acceleration
+m_motor
+.
+configMotionSCurveStrength
+(
+3
+);
+// s-curve smoothing strength of 3
+// enable voltage compensation
+m_motor
+.
+configVoltageComSaturation
+(
+12
+);
+m_motor
+.
+enableVoltageCompensation
+(
+true
+);
+// periodic, run Motion Magic with slot 0 configs
+m_motor
+.
+selectProfileSlot
+(
+0
+,
+0
+);
+// target position of 200 rotations (409600 ticks)
+// add 0.02 (2%) arbitrary feedforward to overcome friction
+m_motor
+.
+set
+(
+ControlMode
+.
+MotionMagic
+,
+409600
+,
+DemandType
+.
+ArbitraryFeedforward
+,
+0.02
+);
+C++
+// robot init, set slot 0 gains
+m_motor
+.
+Config_kF
+(
+0
+,
+0.05
+,
+50
+);
+// PID runs on position
+m_motor
+.
+Config_kP
+(
+0
+,
+0.2
+,
+50
+);
+m_motor
+.
+Config_kI
+(
+0
+,
+0
+,
+50
+);
+m_motor
+.
+Config_kD
+(
+0
+,
+4.2
+,
+50
+);
+// set Motion Magic settings
+m_motor
+.
+ConfigMotionCruiseVelocity
+(
+16384
+);
+// 80 rps = 16384 ticks/100ms cruise velocity
+m_motor
+.
+ConfigMotionAcceleration
+(
+32768
+);
+// 160 rps/s = 32768 ticks/100ms/s acceleration
+m_motor
+.
+ConfigMotionSCurveStrength
+(
+3
+);
+// s-curve smoothing strength of 3
+// enable voltage compensation
+m_motor
+.
+ConfigVoltageComSaturation
+(
+12
+);
+m_motor
+.
+EnableVoltageCompensation
+(
+true
+);
+// periodic, run Motion Magic with slot 0 configs
+m_motor
+.
+SelectProfileSlot
+(
+0
+,
+0
+);
+// target position of 200 rotations (409600 ticks)
+// add 0.02 (2%) arbitrary feedforward to overcome friction
+m_motor
+.
+Set
+(
+ControlMode
+::
+MotionMagic
+,
+409600
+,
+DemandType
+::
+ArbitraryFeedforward
+,
+0.02
+);
+v6
+Note
+The Motion Magic® S-Curve Strength has been replaced with jerk control in Phoenix 6.
+Java
+// class member variable
+final
+MotionMagicVoltage
+m_motmag
+=
+new
+MotionMagicVoltage
+(
+0
+);
+// robot init
+var
+talonFXConfigs
+=
+new
+TalonFXConfiguration
+();
+// set slot 0 gains
+var
+slot0Configs
+=
+talonFXConfigs
+.
+Slot0Configs
+;
+slot0Configs
+.
+kS
+=
+0.24
+;
+// add 0.24 V to overcome friction
+slot0Configs
+.
+kV
+=
+0.12
+;
+// apply 12 V for a target velocity of 100 rps
+// PID runs on position
+slot0Configs
+.
+kP
+=
+4.8
+;
+slot0Configs
+.
+kI
+=
+0
+;
+slot0Configs
+.
+kD
+=
+0.1
+;
+// set Motion Magic settings
+var
+motionMagicConfigs
+=
+talonFXConfigs
+.
+MotionMagicConfigs
+;
+motionMagicConfigs
+.
+MotionMagicCruiseVelocity
+=
+80
+;
+// 80 rps cruise velocity
+motionMagicConfigs
+.
+MotionMagicAcceleration
+=
+160
+;
+// 160 rps/s acceleration (0.5 seconds)
+motionMagicConfigs
+.
+MotionMagicJerk
+=
+1600
+;
+// 1600 rps/s^2 jerk (0.1 seconds)
+m_talonFX
+.
+getConfigurator
+().
+apply
+(
+talonFXConfigs
+,
+0.050
+);
+// periodic, run Motion Magic with slot 0 configs,
+// target position of 200 rotations
+m_motmag
+.
+Slot
+=
+0
+;
+m_motor
+.
+setControl
+(
+m_motmag
+.
+withPosition
+(
+200
+));
+C++
+// class member variable
+controls
+::
+MotionMagicVoltage
+m_motmag
+{
+0
+_tr
+};
+// robot init
+configs
+::
+TalonFXConfiguration
+talonFXConfigs
+{};
+// set slot 0 gains
+auto
+&
+slot0Configs
+=
+talonFXConfigs
+.
+Slot0Configs
+;
+slot0Configs
+.
+kS
+=
+0.24
+;
+// add 0.24 V to overcome friction
+slot0Configs
+.
+kV
+=
+0.12
+;
+// apply 12 V for a target velocity of 100 rps
+// PID runs on position
+slot0Configs
+.
+kP
+=
+4.8
+;
+slot0Configs
+.
+kI
+=
+0
+;
+slot0Configs
+.
+kD
+=
+0.1
+;
+// set Motion Magic settings
+auto
+&
+motionMagicConfigs
+=
+talonFXConfigs
+.
+MotionMagicConfigs
+;
+motionMagicConfigs
+.
+MotionMagicCruiseVelocity
+=
+80
+;
+// 80 rps cruise velocity
+motionMagicConfigs
+.
+MotionMagicAcceleration
+=
+160
+;
+// 160 rps/s acceleration (0.5 seconds)
+motionMagicConfigs
+.
+MotionMagicJerk
+=
+1600
+;
+// 1600 rps/s^2 jerk (0.1 seconds)
+m_talonFX
+.
+GetConfigurator
+().
+Apply
+(
+talonFXConfigs
+,
+50
+_ms
+);
+// periodic, run Motion Magic with slot 0 configs,
+// target position of 200 rotations
+m_motmag
+.
+Slot
+=
+0
+;
+m_motor
+.
+SetControl
+(
+m_motmag
+.
+WithPosition
+(
+200
+_tr
+));
+Motion Profiling
+¶
+Closed-loop control requests have been expanded to support motion profiles generated by the robot controller.
+Java
+// class member variable
+final
+PositionVoltage
+m_position
+=
+new
+PositionVoltage
+(
+0
+);
+// Trapezoid profile with max velocity 80 rps, max accel 160 rps/s
+final
+TrapezoidProfile
+m_profile
+=
+new
+TrapezoidProfile
+(
+new
+TrapezoidProfile
+.
+Constraints
+(
+80
+,
+160
+)
+);
+// Final target of 200 rot, 0 rps
+TrapezoidProfile
+.
+State
+m_goal
+=
+new
+TrapezoidProfile
+.
+State
+(
+200
+,
+0
+);
+TrapezoidProfile
+.
+State
+m_setpoint
+=
+new
+TrapezoidProfile
+.
+State
+();
+// robot init, set slot 0 gains
+var
+slot0Configs
+=
+new
+Slot0Configs
+();
+slot0Configs
+.
+kS
+=
+0.24
+;
+// add 0.24 V to overcome friction
+slot0Configs
+.
+kV
+=
+0.12
+;
+// apply 12 V for a target velocity of 100 rps
+slot0Configs
+.
+kP
+=
+4.8
+;
+slot0Configs
+.
+kI
+=
+0
+;
+slot0Configs
+.
+kD
+=
+0.1
+;
+m_talonFX
+.
+getConfigurator
+().
+apply
+(
+Slot0Configs
+,
+0.050
+);
+// periodic, update the profile setpoint for 20 ms loop time
+m_setpoint
+=
+m_profile
+.
+calculate
+(
+0.020
+,
+m_setpoint
+,
+m_goal
+);
+// apply the setpoint to the control request
+m_position
+.
+Position
+=
+m_setpoint
+.
+position
+;
+m_position
+.
+Velocity
+=
+m_setpoint
+.
+velocity
+;
+m_motor
+.
+setControl
+(
+m_position
+);
+C++
+// class member variable
+controls
+::
+PositionVoltage
+m_position
+{
+0
+_tr
+};
+// Trapezoid profile with max velocity 80 rps, max accel 160 rps/s
+frc
+::
+TrapezoidProfile
+<
+units
+::
+turns
+>
+m_profile
+{{
+80
+_tps
+,
+160
+_tr_per_s_sq
+}};
+// Final target of 200 rot, 0 rps
+frc
+::
+TrapezoidProfile
+<
+units
+::
+turns
+>::
+State
+m_goal
+{
+200
+_tr
+,
+0
+_tps
+};
+frc
+::
+TrapezoidProfile
+<
+units
+::
+turns
+>::
+State
+m_setpoint
+{};
+// robot init, set slot 0 gains
+configs
+::
+Slot0Configs
+slot0Configs
+{};
+slot0Configs
+.
+kS
+=
+0.24
+;
+// add 0.24 V to overcome friction
+slot0Configs
+.
+kV
+=
+0.12
+;
+// apply 12 V for a target velocity of 100 rps
+slot0Configs
+.
+kP
+=
+4.8
+;
+slot0Configs
+.
+kI
+=
+0
+;
+slot0Configs
+.
+kD
+=
+0.1
+;
+m_talonFX
+.
+GetConfigurator
+().
+Apply
+(
+slot0Configs
+,
+50
+_ms
+);
+// periodic, update the profile setpoint for 20 ms loop time
+m_setpoint
+=
+m_profile
+.
+Calculate
+(
+20
+_ms
+,
+m_setpoint
+,
+m_goal
+);
+// apply the setpoint to the control request
+m_position
+.
+Position
+=
+m_setpoint
+.
+position
+;
+m_position
+.
+Velocity
+=
+m_setpoint
+.
+velocity
+;
+m_motor
+.
+SetControl
+(
+m_position
+);
+On this page
+Closed-Loop Control
+Closed-Loop Setpoints
+Closed-Loop Gains
+Position without Voltage Comp
+Position with Voltage Comp
+Velocity without Voltage Comp
+Velocity with Voltage Comp
+Using Closed-Loop Control
+Motion Magic®
+Motion Profiling

@@ -1,0 +1,188 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Configuring Modules
+¶
+Module configuration is comprised of 4 steps.
+Selecting encoder
+Selecting steer/turning motor
+Selecting drive motor
+Performing encoder calibration
+Selecting Module Devices
+¶
+The first step is to select the encoder and motor controllers for the selected swerve module. In the screenshot below,
+Talon FX (Device ID 0)
+and
+Talon FX (Device ID 1)
+are selected as the steer and drive motor controllers.
+Tip
+If a warning icon shows where the
+Blink
+icon is, this typically means this device has already been assigned to a module.
+Encoder Calibration
+¶
+Once a module’s devices have been selected, an
+Encoder Calibration
+button will appear on the right-side of the screen. This will open a popup that guides the user through aligning their module and calibrating their CANcoder offsets.
+Important
+It’s extremely important for the modules to be aligned such that the bevel gear faces the
+vertical center
+of the robot. Failure to perform this step may lead the drive verification tests to fail.
+Once calibration has been completed, the module will be removed from the
+Incomplete Modules
+list on the left.
+Switching between Modules
+¶
+Modules can be swapped by selecting the module in the dropdown located on the left-hand side of the wizard.
+Alternatively, a module can be selected by clicking on one of the yellow squares on the swerve bot in the top-left corner.
+Warning
+If an encoder has been reassigned to a new module, users should perform encoder calibration. Failure to perform encoder calibration will lead to unexpected module behavior.
+Once all modules have been configured, click on the
+Configuration Completed!
+button that appears.
+Warning
+To ensure the drive and steer tests are accurate, the devices are factory defaulted. It’s recommended that the user makes a
+backup
+of their configs if they are not applied in their robot program.
+On this page
+Configuring Modules
+Selecting Module Devices
+Encoder Calibration
+Switching between Modules

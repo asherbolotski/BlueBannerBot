@@ -1,0 +1,206 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Plotting
+¶
+Phoenix Tuner X supports an accurate and highly performant real-time plotter. Users can plot and manipulate multiple signals simultaneously. Plotter has undergone strenuous stress testing to ensure hours of plotting operation. This can be used in conjunction with
+configs
+and
+control
+for tasks like tuning PID loops.
+Tuner supports plotting signals as they arrive, ensuring that every visible point is a signal update that has been sent by a device. Users can zoom in and hover over points for a tooltip highlighting the exact value of the datapoint.
+Adding a Signal
+¶
+Signals can be added from the right-side menu.
+Manipulating the Plot
+¶
+Horizontal Stretch
+Vertical Stretch
+Panning
+Box Selection
+The plot can be manipulated in a variety of ways:
+Click
++
+Drag
+to pan around the plot
+Scroll
+over the X-axis or the plot to horizontally stretch the timescale
+Shift
++
+Scroll
+over a signal’s Y-axis to vertically stretch that signal
+Shift
++
+Scroll
+over the plot to vertically stretch all visible signals’ Y-axis
+Ctrl
++
+Drag
+to pan across all signals’ Y-axis
+Additional Customizations
+¶
+The topbar of plotter contains a variety of options used for controlling data collection.
+Play
+: Play/Pauses the plotter. Points are
+not
+collected when the plotter is paused.
+Horizontal Tracking
+: Whether the horizontal axis should be locked to the most recent point. This automatically turns off when pan operations occur. Users can click this checkbox to keep their current Y-axis min/max but resume seeking at the beginning.
+Timespan
+: How long points should be kept before being discarded. Increasing this value will result in increased memory usage.
+Update Rate
+: How often to fetch points from the diagnostic server. Update rates larger than 100ms may result in lost points and lower update rates will result in increased CPU utilization.
+Export
+: Export currently visible signals to CSV.
+Clear Point
+: Remove all points and reset the plot back to its default state.
+Reset Zoom
+: Keep current points but reset horizontal and vertical zoom to its defaults
+A plot customization tab is available at the bottom of the device view. This tab allows users to group signals together (create a group with the
+Plus
+icon, and then drag signals over the group name), customize the color of the signal, explicitly set min/max, etc.
+Additionally, statistics for a signal can be viewed under
+Statistics
+.
+On this page
+Plotting
+Adding a Signal
+Manipulating the Plot
+Additional Customizations

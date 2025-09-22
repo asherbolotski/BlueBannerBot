@@ -1,0 +1,420 @@
+Contents
+Menu
+Expand
+Light mode
+Dark mode
+Auto light/dark, in light mode
+Auto light/dark, in dark mode
+Hide navigation sidebar
+Hide table of contents sidebar
+Skip to content
+Phoenix 6
+Getting Started
+Requirements
+Installing Phoenix 6
+Toggle navigation of Installing Phoenix 6
+Installing Phoenix 6 (FRC)
+Installing Phoenix 6 (non-FRC)
+New for 2025
+Migration
+Phoenix 6 Features
+API Migration
+Toggle navigation of API Migration
+API Structure
+Configuration
+Status Signals
+Control Requests
+Closed-Loop Control
+Feature Replacements
+CAN Bus Utilization
+Phoenix Tuner
+Phoenix Tuner X
+Toggle navigation of Phoenix Tuner X
+Connecting Tuner
+Device List
+Tuner History
+Device Details
+Tuner Configs
+Self Test Snapshot
+Controlling Devices
+Plotting
+Pigeon 2.0 Calibration
+Tools
+Toggle navigation of Tools
+Extracting Signal Logs
+CHRP Converter
+Swerve Project Generator
+Toggle navigation of Swerve Project Generator
+Swerve Requirements
+Creating your Project
+Configuring Modules
+Validating the Drivetrain
+Generating the Project
+What is Licensing
+Device Licensing
+Season Pass Licensing
+Hardware Reference
+CANcoder
+CANdi™
+CANdle®
+CANrange
+Pigeon 2.0
+Toggle navigation of Pigeon 2.0
+Pigeon 2 Troubleshooting
+Talon FX
+Toggle navigation of Talon FX
+Improving Performance with Current Limits
+Talon FXS
+API Reference
+General API Usage
+Toggle navigation of General API Usage
+API Overview
+Configuration
+Control Requests
+Status Signals
+Signal Logging
+Hoot Replay
+Device Faults
+Enabling Actuators
+Actuator Limits
+Orchestra
+Device API
+Toggle navigation of Device API
+TalonFX
+Toggle navigation of TalonFX
+Introduction to TalonFX Control
+Open-Loop Control
+Closed-Loop Overview
+Basic PID and Profiling
+Motion Magic® Controls
+TalonFX Remote Sensors
+Mechanisms
+Toggle navigation of Mechanisms
+Swerve Overview
+Toggle navigation of Swerve Overview
+Swerve Builder API
+Swerve Requests
+Swerve Simulation
+Simulation
+Toggle navigation of Simulation
+Introduction to Simulation
+WPILib Integration
+Toggle navigation of WPILib Integration
+MotorController Integration
+SysId Integration
+Toggle navigation of SysId Integration
+Plumbing & Running SysId
+Unit Testing
+Examples
+Toggle navigation of Examples
+Open-Loop Quickstart
+GitHub Examples
+CANivore
+CANivore Intro
+CANivore Setup
+CANivore API
+Hardware-Attached Simulation
+Advanced Configuration
+API docs
+Java API Docs
+C++ API Docs
+Python API Docs
+C# API Docs
+Application Notes
+Development Blog
+Toggle navigation of Development Blog
+Latency and Frequency
+Tuner and an evolution in configuration
+Factors that Impact Odometry
+Tuning CANrange
+Support
+Troubleshooting
+Toggle navigation of Troubleshooting
+CAN Bus Troubleshooting
+Running the Diagnostic Server
+Support
+Back to top
+View this page
+Edit this page
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Status Signals
+¶
+Phoenix 6 expands the functionality of status signals with the introduction of the
+StatusSignal
+(
+Java
+,
+C++
+).
+Note
+For more information about status signals in Phoenix 6, see
+Status Signals
+.
+Using Status Signals
+¶
+v5
+Java
+// get latest TalonFX selected sensor position
+// units are encoder ticks
+int
+sensorPos
+=
+m_talonFX
+.
+getSelectedSensorPosition
+();
+// latency is unknown
+// cannot synchronously wait for new data
+C++
+// get latest TalonFX selected sensor position
+// units are encoder ticks
+int
+sensorPos
+=
+m_talonFX
+.
+GetSelectedSensorPosition
+();
+// latency is unknown
+// cannot synchronously wait for new data
+v6
+Java
+// acquire a refreshed TalonFX rotor position signal
+var
+rotorPosSignal
+=
+m_talonFX
+.
+getRotorPosition
+();
+// because we are calling getRotorPosition() every loop,
+// we do not need to call refresh()
+//rotorPosSignal.refresh();
+// retrieve position value that we just refreshed
+// units are rotations, uses the units library
+var
+rotorPos
+=
+rotorPosSignal
+.
+getValue
+();
+// the units library can be bypassed using getValueAsDouble()
+double
+rotorPosRotations
+=
+rotorPosSignal
+.
+getValueAsDouble
+();
+// get latency of the signal
+var
+rotorPosLatency
+=
+rotorPosSignal
+.
+getTimestamp
+().
+getLatency
+();
+// synchronously wait 20 ms for new data
+rotorPosSignal
+.
+waitForUpdate
+(
+0.020
+);
+C++
+// acquire a refreshed TalonFX rotor position signal
+auto
+&
+rotorPosSignal
+=
+m_talonFX
+.
+GetRotorPosition
+();
+// because we are calling GetRotorPosition() every loop,
+// we do not need to call Refresh()
+//rotorPosSignal.Refresh();
+// retrieve position value that we just refreshed
+// units are rotations, uses the units library
+auto
+rotorPos
+=
+rotorPosSignal
+.
+GetValue
+();
+// get latency of the signal
+auto
+rotorPosLatency
+=
+rotorPosSignal
+.
+GetTimestamp
+().
+GetLatency
+();
+// synchronously wait 20 ms for new data
+rotorPosSignal
+.
+WaitForUpdate
+(
+20
+_ms
+);
+Changing Update Frequency (Status Frame Period)
+¶
+v5
+Java
+// slow down the Status 2 frame (selected sensor data) to 5 Hz (200ms)
+m_talonFX
+.
+setStatusFramePeriod
+(
+StatusFrameEnhanced
+.
+Status_2_Feedback0
+,
+200
+);
+C++
+// slow down the Status 2 frame (selected sensor data) to 5 Hz (200ms)
+m_talonFX
+.
+SetStatusFramePeriod
+(
+StatusFrameEnhanced
+::
+Status_2_Feedback0
+,
+200
+);
+v6
+Java
+// slow down the position signal to 5 Hz
+m_talonFX
+.
+getPosition
+().
+setUpdateFrequency
+(
+5
+);
+C++
+// slow down the position signal to 5 Hz
+m_talonFX
+.
+GetPosition
+().
+SetUpdateFrequency
+(
+5
+_Hz
+);
+Note
+When different update frequencies are specified for signals that share a status frame, the highest update frequency of all the relevant signals will be applied to the entire frame. Users can get a signal’s applied update frequency using the
+getAppliedUpdateFrequency()
+method.
+Common Signals
+¶
+Several status signals have changed name or form in Phoenix 6.
+General Signals
+¶
+Phoenix 5
+Phoenix 6
+BusVoltage
+SupplyVoltage
+Faults
+/
+StickyFaults
+(fills an object)
+Fault_*
+/
+StickyFault_*
+(individual faults)
+FirmwareVersion
+Version
+Talon FX Signals
+¶
+Phoenix 5
+Phoenix 6
+MotorOutputPercent
+DutyCycle
+StatorCurrent
+StatorCurrent
+(motoring +, braking -),
+TorqueCurrent
+(forward +, reverse -)
+Inverted
+(true/false; matches
+setInverted
+)
+AppliedRotorPolarity
+(CCW+/CW+; typically matches
+Inverted
+config, affected by follower features)
+SelectedSensorPosition
+/
+SelectedSensorVelocity
+Position
+/
+Velocity
+IntegratedSensor*
+(in
+SensorCollection
+)
+Rotor*
+ActiveTrajectory*
+(only Motion Magic® and the Motion Profile Executor)
+ClosedLoopReference*
+(all closed-loop control requests)
+IsFwdLimitSwitchClosed
+/
+IsRevLimitSwitchClosed
+(true/false)
+GetForwardLimit
+/
+GetReverseLimit
+(Open/Closed)
+CANcoder Signals
+¶
+Phoenix 5
+Phoenix 6
+MagnetFieldStrength
+MagnetHealth
+Pigeon 2 Signals
+¶
+Note
+Many Pigeon 2 signal getters in Phoenix 5 fill an array, such as
+YawPitchRoll
+. In Phoenix 6, these signals have been broken up into their individual components, such as
+Yaw
+,
+Pitch
+, and
+Roll
+.
+Phoenix 5
+Phoenix 6
+RawGyro
+AngularVelocity*
+6dQuaternion
+Quat*
+BiasedAccelerometer
+Acceleration*
+BiasedMagnetometer
+MagneticField*
+RawMagnetometer
+RawMagneticField*
+On this page
+Status Signals
+Using Status Signals
+Changing Update Frequency (Status Frame Period)
+Common Signals
+General Signals
+Talon FX Signals
+CANcoder Signals
+Pigeon 2 Signals
