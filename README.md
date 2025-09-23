@@ -7,9 +7,9 @@
 
 You can ask technical questions about specific components, rules, or programming libraries. For example:
 
-- *How do I wire a Talon FX motor controller?*
+- *What voltage does a CanCoder require?*
 - *What is the maximum height for a robot this season?*
-- *Can you show me an example of how to use PID control in WPILib?*
+- *Can you show me an example of a default command for a Talon motor whose direction and speed is controlled by a joystick?*
 - *What's the difference between a NEO and a Falcon 500?*
 
 ---
