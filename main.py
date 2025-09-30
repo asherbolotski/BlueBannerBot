@@ -106,7 +106,6 @@ async def is_question_on_topic(question: str) -> bool:
             messages=[{"role": "user", "content": classifier_prompt}],
             # UPDATED PARAMETER for newer models like gpt-5-mini
             max_completion_tokens=5,
-            temperature=0.0
         )
         
         result = response.choices[0].message.content.strip().upper()
