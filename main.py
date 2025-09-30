@@ -74,8 +74,8 @@ class FeedbackRequest(BaseModel):
 
 # Define models for specific tasks
 EMBEDDING_MODEL = "text-embedding-3-small"
-MAIN_ANSWER_MODEL = "gpt-5-mini" # For main RAG answer and summarization
-GUARD_MODEL = "gpt-4o-mini"     # For fast, cheap topic classification
+MAIN_ANSWER_MODEL = "gpt-5-mini" 
+GUARD_MODEL = "gpt-3.5-turbo"
 
 # --- Guard Statement Function ---
 async def is_question_on_topic(question: str) -> bool:
