@@ -74,8 +74,8 @@ class FeedbackRequest(BaseModel):
 
 # Define models for specific tasks
 EMBEDDING_MODEL = "text-embedding-3-small"
-MAIN_ANSWER_MODEL = "gpt-5-mini" 
-GUARD_MODEL = "gpt-5-mini"
+MAIN_ANSWER_MODEL = "gpt-5-mini"      # For main RAG answer and summarization
+GUARD_MODEL = "gpt-5-mini"            # For fast, cheap topic classification
 
 # --- Guard Statement Function ---
 async def is_question_on_topic(question: str) -> bool:
@@ -104,7 +104,8 @@ async def is_question_on_topic(question: str) -> bool:
         response = openai_client.chat.completions.create(
             model=GUARD_MODEL,
             messages=[{"role": "user", "content": classifier_prompt}],
-            max_tokens=5,
+            # UPDATED PARAMETER for newer models like gpt-5-mini
+            max_completion_tokens=5,
             temperature=0.0
         )
         
@@ -255,6 +256,9 @@ async def ask_question(request: QueryRequest):
             model=MAIN_ANSWER_MODEL,
             messages=messages
         )
+        
+        # DEBUG: Check which model was actually used by the API
+        print(f"DEBUG: OpenAI actually used this model: {completion_response.model}")
         
         final_answer = completion_response.choices[0].message.content
         print(f"Received answer: {final_answer}")
