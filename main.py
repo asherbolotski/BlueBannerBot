@@ -72,50 +72,8 @@ class SummaryRequest(BaseModel):
 class FeedbackRequest(BaseModel):
     message: str
 
-# Define models for specific tasks
 EMBEDDING_MODEL = "text-embedding-3-small"
-MAIN_ANSWER_MODEL = "gpt-5-mini"      # For main RAG answer and summarization
-GUARD_MODEL = "gpt-5-mini"            # For fast, cheap topic classification
-
-# --- Guard Statement Function ---
-async def is_question_on_topic(question: str) -> bool:
-    """
-    Uses an LLM call to classify if the question is related to robotics competitions.
-    """
-    print(f"Checking if question is on-topic with {GUARD_MODEL}: '{question}'")
-    
-    classifier_prompt = f"""
-    You are a topic classification model. Your sole purpose is to determine if a user's question is related to robotics competitions (like FRC, VEX, FTC), rules, robot design, game strategy, or technical specifications.
-
-    Respond with only the word 'YES' or 'NO'. Do not provide any other text or explanation.
-
-    Here are some examples:
-    - User question: "How many falcons can I have on my robot?" -> Your response: YES
-    - User question: "What is the capital of France?" -> Your response: NO
-    - User question: "What are the rules about bumper construction?" -> Your response: YES
-    - User question: "Write me a story about a dragon." -> Your response: NO
-
-    ---
-    User question: "{question}"
-    Your response:
-    """
-    
-    try:
-        response = openai_client.chat.completions.create(
-            model=GUARD_MODEL,
-            messages=[{"role": "user", "content": classifier_prompt}],
-            # UPDATED PARAMETER for newer models like gpt-5-mini
-            max_completion_tokens=5,
-        )
-        
-        result = response.choices[0].message.content.strip().upper()
-        print(f"On-topic classification result: {result}")
-        return result == "YES"
-        
-    except Exception as e:
-        print(f"Error during on-topic check: {e}")
-        # Fail open: If the check fails, assume it's on-topic to not block valid questions.
-        return True
+GPT_MODEL = "gpt-5-mini"
 
 # --- 3. Endpoint for Feedback with Structured Logging ---
 @app.post("/feedback")
@@ -131,6 +89,7 @@ async def receive_feedback(request: FeedbackRequest):
             "message_length": len(request.message)
         }
         
+        # Log the feedback to stdout, which Cloud Run's Cloud Logging will capture.
         print(json.dumps(feedback_entry))
         
         return {"status": "success", "message": "Feedback received. Thank you!"}
@@ -142,6 +101,7 @@ async def receive_feedback(request: FeedbackRequest):
             "timestamp": datetime.now().isoformat(),
             "error_message": str(e)
         }
+        # Log the error to stderr, which Cloud Logging also captures.
         print(json.dumps(error_log), file=os.sys.stderr)
         raise HTTPException(status_code=500, detail="Failed to process feedback.")
 
@@ -152,7 +112,7 @@ async def summarize_history(request: SummaryRequest):
     Summarizes the chat history using a language model.
     """
     try:
-        print(f"Summarizing chat history with {MAIN_ANSWER_MODEL}...")
+        print("Summarizing chat history...")
         conversation_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in request.history])
         
         summary_prompt = f"""
@@ -165,7 +125,7 @@ async def summarize_history(request: SummaryRequest):
         """
         
         summary_response = openai_client.chat.completions.create(
-            model=MAIN_ANSWER_MODEL,
+            model=GPT_MODEL,
             messages=[{"role": "user", "content": summary_prompt}]
         )
         
@@ -193,12 +153,6 @@ async def ask_question(request: QueryRequest):
     and uses a model to generate a conversational answer.
     """
     try:
-        # Step 0: Check if the question is on-topic before doing anything else.
-        if not await is_question_on_topic(request.question):
-            print("Question is off-topic. Returning canned response.")
-            return {"answer": "I am the Blue Banner Bot, a robotics competition assistant. I can only answer questions related to robotics rules, manuals, and technical specifications. How can I help you with that?"}
-
-        # Summarize if history is long
         if len(request.history) > 10:
             print("Chat history is long, requesting a summary...")
             summary_response = await summarize_history(SummaryRequest(history=request.history))
@@ -249,32 +203,30 @@ async def ask_question(request: QueryRequest):
         messages.extend(request.history)
         messages.append({"role": "user", "content": request.question})
 
-        # Step 5: Send the complete conversation to the main model
-        print(f"Sending request to {MAIN_ANSWER_MODEL} for final answer...")
+        # Step 5: Send the complete conversation to the model
+        print(f"Sending request to {GPT_MODEL} for final answer...")
         completion_response = openai_client.chat.completions.create(
-            model=MAIN_ANSWER_MODEL,
+            model=GPT_MODEL,
             messages=messages
         )
-        
-        # DEBUG: Check which model was actually used by the API
-        print(f"DEBUG: OpenAI actually used this model: {completion_response.model}")
         
         final_answer = completion_response.choices[0].message.content
         print(f"Received answer: {final_answer}")
         
-        # Structured Logging
+        # <<< START: NEW STRUCTURED LOGGING >>>
         question_log_entry = {
             "event_type": "question_asked",
             "timestamp": datetime.now().isoformat(),
             "question_length": len(request.question),
-            "conversation_length": len(request.history) + 1,
-            "on_topic": True
+            "conversation_length": len(request.history) + 1
         }
         print(json.dumps(question_log_entry))
+        # <<< END: NEW STRUCTURED LOGGING >>>
         
         return {"answer": final_answer}
 
     except Exception as e:
+        # <<< START: NEW STRUCTURED ERROR LOGGING >>>
         error_log = {
             "event_type": "error_occurred",
             "endpoint": "/ask",
@@ -282,6 +234,7 @@ async def ask_question(request: QueryRequest):
             "error_message": str(e)
         }
         print(json.dumps(error_log), file=os.sys.stderr)
+        # <<< END: NEW STRUCTURED ERROR LOGGING >>>
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
 
 @app.get("/")
